@@ -1,3 +1,5 @@
+import { getAccessToken, clearAccessToken } from './auth';
+
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
 export type Dataset = {
@@ -81,19 +83,56 @@ export type TickResult = {
   position: { side: string; quantity: number; entryPrice: number | null };
 };
 
+export type AuthUser = {
+  id: string;
+  email: string;
+  role: string;
+};
+
+export type LoginResponse = {
+  accessToken: string;
+  expiresIn: string;
+  user: AuthUser;
+};
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const headers = new Headers(init?.headers);
+  if (!headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json');
+  }
+
+  const token = getAccessToken();
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
   const res = await fetch(`${apiUrl}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
     ...init,
+    headers,
   });
+
+  if (res.status === 401) {
+    clearAccessToken();
+    if (!window.location.pathname.startsWith('/login')) {
+      window.location.assign('/login');
+    }
+  }
+
   if (!res.ok) {
     const text = await res.text();
     throw new Error(text || `HTTP ${res.status}`);
   }
+
   return res.json() as Promise<T>;
 }
 
 export const api = {
+  login: (email: string, password: string) =>
+    request<LoginResponse>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    }),
+  me: () => request<AuthUser>('/auth/me'),
   importDataset: () =>
     request<{ dataset: Dataset; created: boolean }>('/datasets/import/binance', {
       method: 'POST',

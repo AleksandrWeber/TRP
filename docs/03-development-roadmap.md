@@ -141,4 +141,5 @@ Skip inventing new Architecture documents between these sprints.
 
 ## Stop rule
 
-Architecture is closed. Next work is Sprint 0, then vertical slices in code.
+Architecture is closed. Implementation follows [`Implementation/`](./Implementation/) in order.
+After Stage 0–1 vertical slices, fill remaining foundation gaps (Auth → Workflow → Events → Knowledge → AI Gateway → Dashboard → MVP Checklist) without inventing scope.

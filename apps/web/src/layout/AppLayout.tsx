@@ -1,4 +1,5 @@
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { clearAccessToken } from '../shared/auth';
 
 const links = [
   { to: '/', label: 'Home' },
@@ -8,6 +9,12 @@ const links = [
 
 export function AppLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  function logout() {
+    clearAccessToken();
+    navigate('/login');
+  }
 
   return (
     <div className="min-h-screen">
@@ -29,6 +36,13 @@ export function AppLayout() {
                 {link.label}
               </Link>
             ))}
+            <button
+              type="button"
+              onClick={logout}
+              className="text-sm text-slate-400 hover:text-white"
+            >
+              Logout
+            </button>
             <span className="rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-xs text-sky-300">
               Stage 1
             </span>
