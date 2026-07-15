@@ -32,8 +32,11 @@ export function HomePage() {
       <div>
         <h2 className="text-2xl font-semibold">Research Operating System</h2>
         <p className="mt-2 max-w-2xl text-slate-400">
-          Sprint 0 bootstrap is running. Next: Stage 0 research pipeline (OHLCV → Strategy →
-          Backtest → Validation → Report).
+          Sprint 0 is live. Open{' '}
+          <a href="/research" className="text-emerald-300 underline">
+            Research
+          </a>{' '}
+          to import OHLCV, run the EMA crossover backtest, and view validation reports.
         </p>
       </div>
 

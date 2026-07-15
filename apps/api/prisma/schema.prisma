@@ -7,8 +7,54 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Sprint 0: minimal schema — business models come in later sprints.
-model HealthCheck {
+model Dataset {
+  id          String       @id @default(cuid())
+  symbol      String
+  timeframe   String
+  exchange    String       @default("binance")
+  contentHash String       @unique
+  barCount    Int
+  startTime   DateTime
+  endTime     DateTime
+  gitCommit   String?
+  createdAt   DateTime     @default(now())
+  bars        OhlcvBar[]
+  experiments Experiment[]
+
+  @@index([symbol, timeframe])
+}
+
+model OhlcvBar {
   id        String   @id @default(cuid())
-  checkedAt DateTime @default(now())
+  datasetId String
+  timestamp DateTime
+  open      Float
+  high      Float
+  low       Float
+  close     Float
+  volume    Float
+  dataset   Dataset  @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+
+  @@unique([datasetId, timestamp])
+  @@index([datasetId, timestamp])
+}
+
+model Experiment {
+  id              String   @id @default(cuid())
+  datasetId       String
+  strategyId      String
+  strategyVersion String
+  configHash      String
+  gitCommit       String?
+  verdict         String
+  report          Json
+  metrics         Json
+  validation      Json
+  trades          Json
+  createdAt       DateTime @default(now())
+  dataset         Dataset  @relation(fields: [datasetId], references: [id])
+
+  @@index([datasetId])
+  @@index([createdAt])
+  @@index([verdict])
 }
