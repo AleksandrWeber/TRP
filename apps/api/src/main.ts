@@ -8,7 +8,9 @@ async function bootstrap() {
     new FastifyAdapter({ logger: true }),
   );
 
-  const corsOrigin = process.env.CORS_ORIGIN ?? 'http://localhost:5173';
+  const corsOrigin = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
+    : ['http://localhost:5173', 'http://127.0.0.1:5173'];
   app.enableCors({
     origin: corsOrigin,
     credentials: true,

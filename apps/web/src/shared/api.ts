@@ -136,10 +136,15 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     headers.set('Authorization', `Bearer ${token}`);
   }
 
-  const res = await fetch(`${apiUrl}${path}`, {
-    ...init,
-    headers,
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${apiUrl}${path}`, {
+      ...init,
+      headers,
+    });
+  } catch {
+    throw new Error(`Cannot reach API at ${apiUrl}. Start it with: pnpm --filter api start`);
+  }
 
   if (res.status === 401) {
     clearAccessToken();
