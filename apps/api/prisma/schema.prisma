@@ -70,6 +70,7 @@ model Experiment {
   createdAt       DateTime            @default(now())
   dataset         Dataset             @relation(fields: [datasetId], references: [id])
   deployment      StrategyDeployment?
+  knowledge       KnowledgeEntry[]
 
   @@index([datasetId])
   @@index([createdAt])
@@ -138,4 +139,82 @@ model Execution {
   signal       Signal             @relation(fields: [signalId], references: [id])
 
   @@index([deploymentId, executedAt])
+}
+
+model Workflow {
+  id          String             @id @default(cuid())
+  type        String
+  status      String             @default("pending")
+  context     Json
+  error       String?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  completedAt DateTime?
+  steps       WorkflowStep[]
+  knowledge   KnowledgeEntry[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model WorkflowStep {
+  id          String    @id @default(cuid())
+  workflowId  String
+  name        String
+  stepOrder   Int
+  status      String    @default("pending")
+  result      Json?
+  error       String?
+  startedAt   DateTime?
+  completedAt DateTime?
+  workflow    Workflow  @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@index([workflowId, stepOrder])
+}
+
+model KnowledgeEntry {
+  id               String      @id @default(cuid())
+  type             String
+  title            String
+  description      String
+  category         String
+  tags             String[]
+  version          Int         @default(1)
+  parentId         String?
+  validationStatus String
+  workflowId       String?
+  experimentId     String?
+  authorEmail      String?
+  payload          Json
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  workflow         Workflow?   @relation(fields: [workflowId], references: [id])
+  experiment       Experiment? @relation(fields: [experimentId], references: [id])
+
+  @@index([type])
+  @@index([category])
+  @@index([createdAt])
+}
+
+model DomainEventLog {
+  id            String   @id @default(cuid())
+  type          String
+  correlationId String?
+  payload       Json
+  createdAt     DateTime @default(now())
+
+  @@index([type, createdAt])
+}
+
+model AiRequestLog {
+  id         String   @id @default(cuid())
+  task       String
+  provider   String
+  model      String
+  success    Boolean
+  durationMs Int
+  error      String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
 }

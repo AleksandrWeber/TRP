@@ -138,4 +138,5 @@ If a result cannot be reproduced from these, it is not trusted.
 3. ~~Stage 0 — Research pipeline~~
 4. ~~Stage 1 — Production (paper)~~
 5. ~~Implementation 009 — Authentication (JWT)~~
-6. Next per Implementation order: `010-Workflow-Engine.md` → `011-Event-System.md` → Knowledge (minimal) → AI Gateway → Dashboard → MVP Checklist
+6. ~~010 Workflow · 011 Events · 014 Knowledge · 016 AI · 017 Dashboard~~
+7. ~~018 First Strategy verification · 019 MVP Checklist~~

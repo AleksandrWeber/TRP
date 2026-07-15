@@ -68,5 +68,5 @@ infrastructure/docker/   PostgreSQL for local dev
 
 Follow [`docs/Implementation/`](./docs/Implementation/) in order.
 
-Done: Bootstrap → Stage 0 Research → Stage 1 Production → **009 Auth**  
-Next: **010 Workflow Engine**
+Done: Bootstrap → Stage 0 → Stage 1 → 009 Auth → 010–017 → 018/019  
+See [`docs/Implementation/019-MVP-Verification.md`](./docs/Implementation/019-MVP-Verification.md)

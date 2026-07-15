@@ -1,70 +1,114 @@
-import { useEffect, useState } from 'react';
-
-type ApiHealth = {
-  status: string;
-  timestamp: string;
-  services: {
-    api: string;
-    database: string;
-  };
-};
-
-const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+import { useEffect, useState, type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  api,
+  statusColor,
+  type Deployment,
+  type Experiment,
+  type KnowledgeEntry,
+  type Workflow,
+} from '../shared/api';
 
 export function HomePage() {
-  const [health, setHealth] = useState<ApiHealth | null>(null);
+  const [workflows, setWorkflows] = useState<Workflow[]>([]);
+  const [experiments, setExperiments] = useState<Experiment[]>([]);
+  const [knowledge, setKnowledge] = useState<KnowledgeEntry[]>([]);
+  const [deployments, setDeployments] = useState<Deployment[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${apiUrl}/health`)
-      .then(async (res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
-        return res.json() as Promise<ApiHealth>;
+    Promise.all([
+      api.listWorkflows(),
+      api.listExperiments(),
+      api.listKnowledge(),
+      api.listDeployments(),
+    ])
+      .then(([w, e, k, d]) => {
+        setWorkflows(w);
+        setExperiments(e);
+        setKnowledge(k);
+        setDeployments(d);
       })
-      .then(setHealth)
       .catch((err: Error) => setError(err.message));
   }, []);
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-8">
       <div>
-        <h2 className="text-2xl font-semibold">Research Operating System</h2>
-        <p className="mt-2 max-w-2xl text-slate-400">
-          Stage 1 is live. Use{' '}
-          <a href="/research" className="text-emerald-300 underline">
-            Research
-          </a>{' '}
-          for backtests, then{' '}
-          <a href="/production" className="text-sky-300 underline">
-            Production
-          </a>{' '}
-          to deploy a certified strategy and record paper executions.
+        <h2 className="text-2xl font-semibold">Dashboard</h2>
+        <p className="mt-2 text-slate-400">
+          Implementation 017 — operational overview of workflows, research, knowledge, and
+          production.
         </p>
       </div>
 
-      <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-        <h3 className="text-sm font-medium uppercase tracking-wide text-slate-400">API health</h3>
-        {error && <p className="mt-3 text-sm text-red-300">Could not reach API: {error}</p>}
-        {!error && !health && <p className="mt-3 text-sm text-slate-400">Checking…</p>}
-        {health && (
-          <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-            <div>
-              <dt className="text-slate-400">Status</dt>
-              <dd className="font-medium">{health.status}</dd>
-            </div>
-            <div>
-              <dt className="text-slate-400">Database</dt>
-              <dd className="font-medium">{health.services.database}</dd>
-            </div>
-            <div className="sm:col-span-2">
-              <dt className="text-slate-400">Checked at</dt>
-              <dd className="font-medium">{health.timestamp}</dd>
-            </div>
-          </dl>
-        )}
+      {error && (
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          {error}
+        </div>
+      )}
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Stat label="Workflows" value={String(workflows.length)} to="/workflows" />
+        <Stat label="Experiments" value={String(experiments.length)} to="/research" />
+        <Stat label="Knowledge" value={String(knowledge.length)} to="/knowledge" />
+        <Stat label="Deployments" value={String(deployments.length)} to="/production" />
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Panel title="Recent workflows">
+          {workflows.slice(0, 5).map((wf) => (
+            <Row key={wf.id} title={wf.type} badge={wf.status} />
+          ))}
+          {workflows.length === 0 && <Empty />}
+        </Panel>
+        <Panel title="Recent experiments">
+          {experiments.slice(0, 5).map((ex) => (
+            <Row
+              key={ex.id}
+              title={`${ex.strategyId} · ${ex.dataset?.symbol ?? '—'}`}
+              badge={ex.verdict}
+            />
+          ))}
+          {experiments.length === 0 && <Empty />}
+        </Panel>
       </div>
     </section>
   );
+}
+
+function Stat({ label, value, to }: { label: string; value: string; to: string }) {
+  return (
+    <Link
+      to={to}
+      className="rounded-xl border border-white/10 bg-white/5 p-5 hover:border-white/20"
+    >
+      <p className="text-xs uppercase tracking-wide text-slate-500">{label}</p>
+      <p className="mt-2 text-3xl font-semibold">{value}</p>
+    </Link>
+  );
+}
+
+function Panel({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+      <h3 className="text-sm font-medium uppercase tracking-wide text-slate-400">{title}</h3>
+      <div className="mt-3 space-y-2">{children}</div>
+    </div>
+  );
+}
+
+function Row({ title, badge }: { title: string; badge: string }) {
+  return (
+    <div className="flex items-center justify-between rounded-lg border border-white/5 px-3 py-2 text-sm">
+      <span>{title}</span>
+      <span className={`rounded-full border px-2 py-0.5 text-xs ${statusColor(badge)}`}>
+        {badge.replace('_', ' ')}
+      </span>
+    </div>
+  );
+}
+
+function Empty() {
+  return <p className="text-sm text-slate-500">Nothing yet.</p>;
 }

@@ -6,10 +6,14 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/roles.guard';
+import { AiModule } from './modules/ai/ai.module';
 import { DatasetsModule } from './modules/datasets/datasets.module';
+import { EventsModule } from './modules/events/events.module';
 import { ExperimentsModule } from './modules/experiments/experiments.module';
 import { HealthModule } from './modules/health/health.module';
+import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 import { ProductionModule } from './modules/production/production.module';
+import { WorkflowModule } from './modules/workflow/workflow.module';
 import { PrismaModule } from './storage/prisma/prisma.module';
 
 @Module({
@@ -19,11 +23,15 @@ import { PrismaModule } from './storage/prisma/prisma.module';
       envFilePath: ['.env', '../../.env'],
     }),
     PrismaModule,
+    EventsModule,
     AuthModule,
     HealthModule,
     DatasetsModule,
     ExperimentsModule,
+    KnowledgeModule,
+    WorkflowModule,
     ProductionModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [

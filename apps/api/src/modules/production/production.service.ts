@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { DEFAULT_EMA_CROSSOVER_PARAMS, latestEmaCrossoverSignal, STRATEGY_ID } from '@trp/research';
 import { getGitCommit } from '../../common/git';
 import { BinanceClient } from '../market/binance.client';
+import { EventBus } from '../events/event-bus.service';
 import { PrismaService } from '../../storage/prisma/prisma.module';
 import { PaperBinanceAdapter } from './adapters/paper-binance.adapter';
 import { RiskService } from './risk.service';
@@ -17,6 +18,7 @@ export class ProductionService {
     private readonly prisma: PrismaService,
     private readonly risk: RiskService,
     private readonly adapter: PaperBinanceAdapter,
+    private readonly events: EventBus,
   ) {}
 
   async deploy(experimentId: string, approve = false) {
@@ -59,6 +61,12 @@ export class ProductionService {
         position: { create: { side: 'flat', quantity: 0 } },
       },
       include: { position: true, experiment: { include: { dataset: true } } },
+    });
+
+    await this.events.publish('ProductionStarted', {
+      deploymentId: deployment.id,
+      experimentId,
+      mode: 'paper',
     });
 
     return deployment;

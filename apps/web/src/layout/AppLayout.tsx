@@ -2,9 +2,12 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { clearAccessToken } from '../shared/auth';
 
 const links = [
-  { to: '/', label: 'Home' },
+  { to: '/', label: 'Dashboard' },
+  { to: '/workflows', label: 'Workflows' },
   { to: '/research', label: 'Research' },
+  { to: '/knowledge', label: 'Knowledge' },
   { to: '/production', label: 'Production' },
+  { to: '/ai', label: 'AI' },
 ];
 
 export function AppLayout() {
@@ -19,12 +22,12 @@ export function AppLayout() {
   return (
     <div className="min-h-screen">
       <header className="border-b border-white/10 px-6 py-4">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
           <div>
             <p className="text-sm uppercase tracking-[0.2em] text-slate-400">TRP</p>
             <h1 className="text-lg font-semibold">Trading Research Platform</h1>
           </div>
-          <nav className="flex items-center gap-4">
+          <nav className="flex flex-wrap items-center justify-end gap-3">
             {links.map((link) => (
               <Link
                 key={link.to}
@@ -43,9 +46,6 @@ export function AppLayout() {
             >
               Logout
             </button>
-            <span className="rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-xs text-sky-300">
-              Stage 1
-            </span>
           </nav>
         </div>
       </header>

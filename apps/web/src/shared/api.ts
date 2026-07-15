@@ -1,4 +1,4 @@
-import { getAccessToken, clearAccessToken } from './auth';
+import { clearAccessToken, getAccessToken } from './auth';
 
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
@@ -83,6 +83,36 @@ export type TickResult = {
   position: { side: string; quantity: number; entryPrice: number | null };
 };
 
+export type Workflow = {
+  id: string;
+  type: string;
+  status: string;
+  context: Record<string, unknown>;
+  error: string | null;
+  createdAt: string;
+  completedAt: string | null;
+  steps: Array<{
+    id: string;
+    name: string;
+    stepOrder: number;
+    status: string;
+    result: Record<string, unknown> | null;
+    error: string | null;
+  }>;
+};
+
+export type KnowledgeEntry = {
+  id: string;
+  type: string;
+  title: string;
+  description: string;
+  category: string;
+  tags: string[];
+  version: number;
+  validationStatus: string;
+  createdAt: string;
+};
+
 export type AuthUser = {
   id: string;
   email: string;
@@ -146,6 +176,27 @@ export const api = {
       body: JSON.stringify({ datasetId }),
     }),
   getExperiment: (id: string) => request<Experiment>(`/experiments/${id}`),
+  startWorkflow: (datasetId: string, approveNeedsReview = false) =>
+    request<Workflow>('/workflows', {
+      method: 'POST',
+      body: JSON.stringify({ type: 'research_pipeline', datasetId, approveNeedsReview }),
+    }),
+  listWorkflows: () => request<Workflow[]>('/workflows'),
+  getWorkflow: (id: string) => request<Workflow>(`/workflows/${id}`),
+  listKnowledge: (params?: { q?: string; type?: string; category?: string }) => {
+    const query = new URLSearchParams();
+    if (params?.q) query.set('q', params.q);
+    if (params?.type) query.set('type', params.type);
+    if (params?.category) query.set('category', params.category);
+    const qs = query.toString();
+    return request<KnowledgeEntry[]>(`/knowledge${qs ? `?${qs}` : ''}`);
+  },
+  aiExecute: (task: string, context: Record<string, unknown>) =>
+    request<{ content: string; provider: string; model: string }>('/ai/execute', {
+      method: 'POST',
+      body: JSON.stringify({ task, context }),
+    }),
+  listEvents: () => request<Array<{ id: string; type: string; createdAt: string }>>('/events'),
   deploy: (experimentId: string, approve = false) =>
     request<Deployment>('/production/deployments', {
       method: 'POST',
@@ -166,11 +217,18 @@ export const api = {
 export function verdictColor(verdict: string) {
   if (verdict === 'pass') return 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10';
   if (verdict === 'needs_review') return 'text-amber-300 border-amber-500/30 bg-amber-500/10';
+  if (verdict === 'completed' || verdict === 'active' || verdict === 'filled') {
+    return 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10';
+  }
   return 'text-red-300 border-red-500/30 bg-red-500/10';
 }
 
 export function statusColor(status: string) {
-  if (status === 'active') return 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10';
-  if (status === 'filled') return 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10';
+  if (status === 'active' || status === 'completed' || status === 'filled' || status === 'pass') {
+    return 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10';
+  }
+  if (status === 'running' || status === 'needs_review') {
+    return 'text-amber-300 border-amber-500/30 bg-amber-500/10';
+  }
   return 'text-slate-300 border-slate-500/30 bg-slate-500/10';
 }
