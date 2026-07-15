@@ -3,6 +3,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 const links = [
   { to: '/', label: 'Home' },
   { to: '/research', label: 'Research' },
+  { to: '/production', label: 'Production' },
 ];
 
 export function AppLayout() {
@@ -28,8 +29,8 @@ export function AppLayout() {
                 {link.label}
               </Link>
             ))}
-            <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-300">
-              Stage 0
+            <span className="rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-xs text-sky-300">
+              Stage 1
             </span>
           </nav>
         </div>

@@ -135,4 +135,5 @@ If a result cannot be reproduced from these, it is not trusted.
 
 1. ~~Day Cleanup~~
 2. ~~Sprint 0 — Bootstrap~~
-3. Stage 0 — Research pipeline (vertical slices)
+3. ~~Stage 0 — Research pipeline~~
+4. ~~Stage 1 — Production (paper)~~

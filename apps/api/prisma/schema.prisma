@@ -40,7 +40,7 @@ model OhlcvBar {
 }
 
 model Experiment {
-  id              String   @id @default(cuid())
+  id              String              @id @default(cuid())
   datasetId       String
   strategyId      String
   strategyVersion String
@@ -51,10 +51,75 @@ model Experiment {
   metrics         Json
   validation      Json
   trades          Json
-  createdAt       DateTime @default(now())
-  dataset         Dataset  @relation(fields: [datasetId], references: [id])
+  createdAt       DateTime            @default(now())
+  dataset         Dataset             @relation(fields: [datasetId], references: [id])
+  deployment      StrategyDeployment?
 
   @@index([datasetId])
   @@index([createdAt])
   @@index([verdict])
+}
+
+model StrategyDeployment {
+  id              String              @id @default(cuid())
+  experimentId    String              @unique
+  strategyId      String
+  strategyVersion String
+  symbol          String
+  timeframe       String
+  exchange        String              @default("binance")
+  mode            String              @default("paper")
+  status          String              @default("active")
+  approvedAt      DateTime            @default(now())
+  gitCommit       String?
+  experiment      Experiment          @relation(fields: [experimentId], references: [id])
+  position        ProductionPosition?
+  signals         Signal[]
+  executions      Execution[]
+
+  @@index([status])
+  @@index([symbol, timeframe])
+}
+
+model ProductionPosition {
+  id           String             @id @default(cuid())
+  deploymentId String             @unique
+  side         String             @default("flat")
+  quantity     Float              @default(0)
+  entryPrice   Float?
+  updatedAt    DateTime           @updatedAt
+  deployment   StrategyDeployment @relation(fields: [deploymentId], references: [id], onDelete: Cascade)
+}
+
+model Signal {
+  id           String             @id @default(cuid())
+  deploymentId String
+  type         String
+  price        Float
+  timestamp    DateTime
+  actedOn      Boolean            @default(false)
+  createdAt    DateTime           @default(now())
+  deployment   StrategyDeployment @relation(fields: [deploymentId], references: [id], onDelete: Cascade)
+  execution    Execution?
+
+  @@index([deploymentId, createdAt])
+}
+
+model Execution {
+  id           String             @id @default(cuid())
+  deploymentId String
+  signalId     String             @unique
+  symbol       String
+  side         String
+  quantity     Float
+  price        Float
+  fee          Float
+  mode         String             @default("paper")
+  status       String
+  rejectReason String?
+  executedAt   DateTime           @default(now())
+  deployment   StrategyDeployment @relation(fields: [deploymentId], references: [id], onDelete: Cascade)
+  signal       Signal             @relation(fields: [signalId], references: [id])
+
+  @@index([deploymentId, executedAt])
 }

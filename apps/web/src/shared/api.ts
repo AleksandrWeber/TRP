@@ -39,6 +39,46 @@ export type Experiment = {
   };
   createdAt: string;
   dataset?: { symbol: string; timeframe: string; contentHash: string };
+  deployment?: Deployment | null;
+};
+
+export type Deployment = {
+  id: string;
+  experimentId: string;
+  strategyId: string;
+  strategyVersion: string;
+  symbol: string;
+  timeframe: string;
+  exchange: string;
+  mode: string;
+  status: string;
+  approvedAt: string;
+  position?: { side: string; quantity: number; entryPrice: number | null };
+  experiment?: { verdict: string; configHash: string };
+  _count?: { signals: number; executions: number };
+};
+
+export type Execution = {
+  id: string;
+  deploymentId: string;
+  symbol: string;
+  side: string;
+  quantity: number;
+  price: number;
+  fee: number;
+  mode: string;
+  status: string;
+  rejectReason: string | null;
+  executedAt: string;
+  signal?: { type: string; timestamp: string };
+  deployment?: { symbol: string; strategyId: string };
+};
+
+export type TickResult = {
+  signal: { id: string; type: string; price: number; timestamp: string; actedOn: boolean };
+  execution: Execution | null;
+  risk: { approved: boolean; reason?: string };
+  position: { side: string; quantity: number; entryPrice: number | null };
 };
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -67,10 +107,31 @@ export const api = {
       body: JSON.stringify({ datasetId }),
     }),
   getExperiment: (id: string) => request<Experiment>(`/experiments/${id}`),
+  deploy: (experimentId: string, approve = false) =>
+    request<Deployment>('/production/deployments', {
+      method: 'POST',
+      body: JSON.stringify({ experimentId, approve }),
+    }),
+  listDeployments: () => request<Deployment[]>('/production/deployments'),
+  getDeployment: (id: string) => request<Deployment>(`/production/deployments/${id}`),
+  tick: (deploymentId: string) =>
+    request<TickResult>(`/production/deployments/${deploymentId}/tick`, { method: 'POST' }),
+  stopDeployment: (id: string) =>
+    request<Deployment>(`/production/deployments/${id}/stop`, { method: 'POST' }),
+  listExecutions: (deploymentId?: string) =>
+    request<Execution[]>(
+      `/production/executions${deploymentId ? `?deploymentId=${deploymentId}` : ''}`,
+    ),
 };
 
 export function verdictColor(verdict: string) {
   if (verdict === 'pass') return 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10';
   if (verdict === 'needs_review') return 'text-amber-300 border-amber-500/30 bg-amber-500/10';
   return 'text-red-300 border-red-500/30 bg-red-500/10';
+}
+
+export function statusColor(status: string) {
+  if (status === 'active') return 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10';
+  if (status === 'filled') return 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10';
+  return 'text-slate-300 border-slate-500/30 bg-slate-500/10';
 }

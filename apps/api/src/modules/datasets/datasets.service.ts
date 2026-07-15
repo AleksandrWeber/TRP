@@ -1,29 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { hashBars, type OhlcvBar as ResearchBar } from '@trp/research';
-import { PrismaService } from '../../storage/prisma/prisma.module';
 import { getGitCommit } from '../../common/git';
-
-type BinanceKline = [
-  number,
-  string,
-  string,
-  string,
-  string,
-  string,
-  number,
-  string,
-  number,
-  string,
-  string,
-  string,
-];
+import { BinanceClient } from '../market/binance.client';
+import { PrismaService } from '../../storage/prisma/prisma.module';
 
 @Injectable()
 export class DatasetsService {
+  private readonly binance = new BinanceClient();
+
   constructor(private readonly prisma: PrismaService) {}
 
   async importFromBinance(symbol = 'BTCUSDT', timeframe = '1h', limit = 1000) {
-    const bars = await this.fetchBinanceKlines(symbol, timeframe, limit);
+    const bars = await this.binance.fetchKlines(symbol, timeframe, limit);
     const contentHash = hashBars(bars);
 
     const existing = await this.prisma.dataset.findUnique({ where: { contentHash } });
@@ -89,32 +77,6 @@ export class DatasetsService {
       low: row.low,
       close: row.close,
       volume: row.volume,
-    }));
-  }
-
-  private async fetchBinanceKlines(
-    symbol: string,
-    interval: string,
-    limit: number,
-  ): Promise<ResearchBar[]> {
-    const url = new URL('https://api.binance.com/api/v3/klines');
-    url.searchParams.set('symbol', symbol);
-    url.searchParams.set('interval', interval);
-    url.searchParams.set('limit', String(limit));
-
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Binance API error: ${response.status} ${response.statusText}`);
-    }
-
-    const data = (await response.json()) as BinanceKline[];
-    return data.map((kline) => ({
-      timestamp: kline[0],
-      open: Number(kline[1]),
-      high: Number(kline[2]),
-      low: Number(kline[3]),
-      close: Number(kline[4]),
-      volume: Number(kline[5]),
     }));
   }
 }

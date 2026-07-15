@@ -32,11 +32,15 @@ export function HomePage() {
       <div>
         <h2 className="text-2xl font-semibold">Research Operating System</h2>
         <p className="mt-2 max-w-2xl text-slate-400">
-          Sprint 0 is live. Open{' '}
+          Stage 1 is live. Use{' '}
           <a href="/research" className="text-emerald-300 underline">
             Research
           </a>{' '}
-          to import OHLCV, run the EMA crossover backtest, and view validation reports.
+          for backtests, then{' '}
+          <a href="/production" className="text-sky-300 underline">
+            Production
+          </a>{' '}
+          to deploy a certified strategy and record paper executions.
         </p>
       </div>
 

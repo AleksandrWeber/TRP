@@ -30,6 +30,20 @@ export function emaCrossoverSignals(
   return signals;
 }
 
+/** Evaluate signal on the last complete bar (requires at least emaSlow + 2 bars). */
+export function latestEmaCrossoverSignal(
+  bars: OhlcvBar[],
+  params: StrategyParams,
+): { timestamp: number; signal: Signal } {
+  const signals = emaCrossoverSignals(bars, params);
+  const last = signals.at(-1);
+  if (!last) {
+    const bar = bars.at(-1);
+    return { timestamp: bar?.timestamp ?? Date.now(), signal: 'hold' };
+  }
+  return last;
+}
+
 export const DEFAULT_EMA_CROSSOVER_PARAMS: StrategyParams = {
   emaFast: 20,
   emaSlow: 50,

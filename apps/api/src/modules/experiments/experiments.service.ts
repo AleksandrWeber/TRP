@@ -74,6 +74,9 @@ export class ExperimentsService {
         dataset: {
           select: { symbol: true, timeframe: true, contentHash: true },
         },
+        deployment: {
+          select: { id: true, status: true, mode: true },
+        },
       },
     });
   }

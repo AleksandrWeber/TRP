@@ -3,7 +3,7 @@ import { runBacktest, DEFAULT_BACKTEST_CONFIG } from './backtest/engine';
 import { calculateEma } from './indicators/ema';
 import { hashBars } from './hash';
 import { runExperiment } from './index';
-import { DEFAULT_EMA_CROSSOVER_PARAMS } from './strategies/ema-crossover';
+import { DEFAULT_EMA_CROSSOVER_PARAMS, latestEmaCrossoverSignal } from './strategies/ema-crossover';
 import type { OhlcvBar } from './types';
 
 function makeTrendBars(count: number): OhlcvBar[] {
@@ -45,5 +45,10 @@ describe('research package', () => {
     const report = runExperiment(makeTrendBars(200));
     expect(['pass', 'fail', 'needs_review']).toContain(report.validation.verdict);
     expect(report.datasetBarCount).toBe(200);
+  });
+
+  it('evaluates latest EMA signal', () => {
+    const latest = latestEmaCrossoverSignal(makeTrendBars(120), DEFAULT_EMA_CROSSOVER_PARAMS);
+    expect(['buy', 'sell', 'hold']).toContain(latest.signal);
   });
 });
