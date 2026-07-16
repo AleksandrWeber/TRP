@@ -5,6 +5,7 @@ const links = [
   { to: '/', label: 'Dashboard' },
   { to: '/workflows', label: 'Workflows' },
   { to: '/research', label: 'Research' },
+  { to: '/campaigns/run', label: 'Campaign' },
   { to: '/knowledge', label: 'Knowledge' },
   { to: '/production', label: 'Production' },
   { to: '/ai', label: 'AI' },

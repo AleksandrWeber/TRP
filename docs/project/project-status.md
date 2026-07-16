@@ -326,6 +326,13 @@ US027 — Campaign UI API Integration
 - Tests: web `api.spec.ts` passed.
 - Next: US028.
 
+US028 — Campaign Run Page (MVP)
+
+- Completed Story: minimal Campaign Run form calling `runCampaign()`; shows campaignId / bestExperimentId on success.
+- Changed Files: `CampaignRunPage.tsx`, `CampaignRunPage.spec.ts`, `App.tsx`, `AppLayout.tsx`, `project-status.md`, `roadmap.md`, `CHANGELOG.md`.
+- Tests: web `CampaignRunPage.spec.ts` passed.
+- Next: US029.
+
 ---
 
 # Current Version
