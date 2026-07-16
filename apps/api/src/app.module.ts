@@ -13,6 +13,7 @@ import { ExperimentsModule } from './modules/experiments/experiments.module';
 import { HealthModule } from './modules/health/health.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 import { ProductionModule } from './modules/production/production.module';
+import { ResearchCampaignModule } from './modules/research-campaign/research-campaign.module';
 import { WorkflowModule } from './modules/workflow/workflow.module';
 import { PrismaModule } from './storage/prisma/prisma.module';
 
@@ -29,6 +30,7 @@ import { PrismaModule } from './storage/prisma/prisma.module';
     DatasetsModule,
     ExperimentsModule,
     KnowledgeModule,
+    ResearchCampaignModule,
     WorkflowModule,
     ProductionModule,
     AiModule,

@@ -1,9 +1,9 @@
-import { emaCrossoverSignals } from '../strategies/ema-crossover';
 import type {
   BacktestConfig,
   BacktestMetrics,
   BacktestResult,
   OhlcvBar,
+  Strategy,
   StrategyParams,
   Trade,
 } from '../types';
@@ -56,19 +56,26 @@ function computeMetrics(
 
 export function runBacktest(
   bars: OhlcvBar[],
+  strategy: Strategy<StrategyParams>,
   params: StrategyParams,
   config: BacktestConfig,
 ): BacktestResult {
-  if (bars.length < params.emaSlow + 2) {
+  const normalizedParams = strategy.normalizeParams(params);
+  if (bars.length < strategy.minBars(normalizedParams)) {
     throw new Error('Not enough bars for backtest');
   }
 
-  const signals = emaCrossoverSignals(bars, params);
+  const signals = strategy.signals(bars, normalizedParams);
   const trades: Trade[] = [];
   const equityCurve: Array<{ timestamp: number; equity: number }> = [];
 
   let cash = config.initialCapital;
-  let position: { quantity: number; entryPrice: number; entryTime: number } | null = null;
+  let position: {
+    quantity: number;
+    entryPrice: number;
+    entryTime: number;
+    entryFee: number;
+  } | null = null;
   let equity = config.initialCapital;
 
   const barByTime = new Map(bars.map((b) => [b.timestamp, b]));
@@ -79,19 +86,20 @@ export function runBacktest(
 
     if (signal === 'buy' && !position) {
       const entryPrice = applySlippage(bar.close, config.slippageRate, 'buy');
-      const fee = cash * config.feeRate;
-      const investable = cash - fee;
+      const entryFee = cash * config.feeRate;
+      const investable = cash - entryFee;
       const quantity = investable / entryPrice;
-      position = { quantity, entryPrice, entryTime: timestamp };
+      position = { quantity, entryPrice, entryTime: timestamp, entryFee };
       cash = 0;
       equity = quantity * bar.close;
     } else if (signal === 'sell' && position) {
       const exitPrice = applySlippage(bar.close, config.slippageRate, 'sell');
       const gross = position.quantity * exitPrice;
-      const fee = gross * config.feeRate;
-      const net = gross - fee;
+      const exitFee = gross * config.feeRate;
+      const net = gross - exitFee;
       const entryCost = position.quantity * position.entryPrice;
-      const pnl = net - entryCost;
+      const entryCash = entryCost + position.entryFee;
+      const pnl = net - entryCost - position.entryFee;
 
       trades.push({
         entryTime: position.entryTime,
@@ -101,8 +109,8 @@ export function runBacktest(
         side: 'long',
         quantity: position.quantity,
         pnl,
-        pnlPercent: (pnl / entryCost) * 100,
-        fees: fee + entryCost * config.feeRate,
+        pnlPercent: (pnl / entryCash) * 100,
+        fees: position.entryFee + exitFee,
       });
 
       cash = net;
@@ -121,10 +129,11 @@ export function runBacktest(
     const lastBar = bars.at(-1)!;
     const exitPrice = applySlippage(lastBar.close, config.slippageRate, 'sell');
     const gross = position.quantity * exitPrice;
-    const fee = gross * config.feeRate;
-    const net = gross - fee;
+    const exitFee = gross * config.feeRate;
+    const net = gross - exitFee;
     const entryCost = position.quantity * position.entryPrice;
-    const pnl = net - entryCost;
+    const entryCash = entryCost + position.entryFee;
+    const pnl = net - entryCost - position.entryFee;
 
     trades.push({
       entryTime: position.entryTime,
@@ -134,8 +143,8 @@ export function runBacktest(
       side: 'long',
       quantity: position.quantity,
       pnl,
-      pnlPercent: (pnl / entryCost) * 100,
-      fees: fee + entryCost * config.feeRate,
+      pnlPercent: (pnl / entryCash) * 100,
+      fees: position.entryFee + exitFee,
     });
 
     equity = net;

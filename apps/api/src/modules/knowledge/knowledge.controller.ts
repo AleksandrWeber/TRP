@@ -15,6 +15,11 @@ export class KnowledgeController {
     return this.knowledgeService.search({ q, type, category, tag });
   }
 
+  @Post('backfill')
+  backfill() {
+    return this.knowledgeService.backfillFromExperiments();
+  }
+
   @Get(':id')
   get(@Param('id') id: string) {
     return this.knowledgeService.get(id);

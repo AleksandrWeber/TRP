@@ -199,37 +199,15 @@ export class WorkflowService {
         throw new Error('experimentId missing before store_knowledge');
       }
 
-      const experiment = await this.experiments.get(context.experimentId);
-      const canStore =
-        experiment.verdict === 'pass' ||
-        (experiment.verdict === 'needs_review' && context.approveNeedsReview);
+      const recorded = await this.knowledge.recordFromExperiment(context.experimentId, workflowId);
 
-      if (!canStore) {
-        return {
-          skipped: true,
-          reason: `Verdict ${experiment.verdict} not eligible for knowledge without approval`,
-        };
+      if (recorded.status === 'duplicate') {
+        context.knowledgeId = recorded.existingId;
+        return { knowledgeId: recorded.existingId, duplicate: true };
       }
 
-      const entry = await this.knowledge.create({
-        type: 'experiment',
-        title: `${experiment.strategyId} ${experiment.dataset.symbol} ${experiment.dataset.timeframe}`,
-        description: `Validated experiment ${experiment.id}`,
-        category: 'Experiment',
-        tags: [experiment.dataset.symbol, experiment.strategyId, 'EMA'],
-        validationStatus: experiment.verdict,
-        workflowId,
-        experimentId: experiment.id,
-        payload: {
-          metrics: experiment.metrics,
-          validation: experiment.validation,
-          configHash: experiment.configHash,
-        },
-      });
-
-      context.knowledgeId = entry.id;
-      await this.events.publish('KnowledgeStored', { knowledgeId: entry.id });
-      return { knowledgeId: entry.id };
+      context.knowledgeId = recorded.entry.id;
+      return { knowledgeId: recorded.entry.id };
     }
 
     if (name === 'finish') {

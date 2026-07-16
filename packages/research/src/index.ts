@@ -1,28 +1,32 @@
 import { runBacktest, DEFAULT_BACKTEST_CONFIG } from './backtest/engine';
-import {
-  DEFAULT_EMA_CROSSOVER_PARAMS,
-  STRATEGY_ID,
-  STRATEGY_VERSION,
-} from './strategies/ema-crossover';
+import { STRATEGY_ID } from './strategies/ema-crossover';
+import { resolveStrategy } from './strategies/registry';
 import type { ExperimentConfig, ExperimentReport, OhlcvBar } from './types';
 import { validateBacktest } from './validation/validator';
 
+export function defaultExperimentConfig(strategyId = STRATEGY_ID): ExperimentConfig {
+  const strategy = resolveStrategy(strategyId);
+  return {
+    strategyId: strategy.id,
+    strategyVersion: strategy.version,
+    params: strategy.normalizeParams(strategy.defaultParams),
+    backtest: DEFAULT_BACKTEST_CONFIG,
+  };
+}
+
 export function runExperiment(
   bars: OhlcvBar[],
-  config: ExperimentConfig = {
-    strategyId: STRATEGY_ID,
-    strategyVersion: STRATEGY_VERSION,
-    params: DEFAULT_EMA_CROSSOVER_PARAMS,
-    backtest: DEFAULT_BACKTEST_CONFIG,
-  },
+  config: ExperimentConfig = defaultExperimentConfig(),
 ): ExperimentReport {
-  const backtest = runBacktest(bars, config.params, config.backtest);
+  const strategy = resolveStrategy(config.strategyId);
+  const params = strategy.normalizeParams(config.params);
+  const backtest = runBacktest(bars, strategy, params, config.backtest);
   const validation = validateBacktest(backtest.metrics);
 
   return {
-    strategyId: config.strategyId,
-    strategyVersion: config.strategyVersion,
-    params: config.params,
+    strategyId: strategy.id,
+    strategyVersion: strategy.version,
+    params,
     backtest: config.backtest,
     metrics: backtest.metrics,
     validation,
@@ -35,6 +39,8 @@ export function runExperiment(
 export * from './types';
 export * from './hash';
 export * from './indicators/ema';
+export * from './strategies/donchian-breakout';
 export * from './strategies/ema-crossover';
+export * from './strategies/registry';
 export * from './backtest/engine';
 export * from './validation/validator';

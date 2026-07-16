@@ -13,10 +13,21 @@ export type BacktestConfig = {
   slippageRate: number;
 };
 
-export type StrategyParams = {
-  emaFast: number;
-  emaSlow: number;
+export type StrategyParams = Record<string, string | number | boolean | null>;
+
+export type StrategySignal = {
+  timestamp: number;
+  signal: 'buy' | 'sell' | 'hold';
 };
+
+export interface Strategy<TParams extends object = StrategyParams> {
+  readonly id: string;
+  readonly version: string;
+  readonly defaultParams: TParams;
+  normalizeParams(params?: StrategyParams): TParams;
+  minBars(params: TParams): number;
+  signals(bars: OhlcvBar[], params: TParams): StrategySignal[];
+}
 
 export type Trade = {
   entryTime: number;
@@ -77,6 +88,8 @@ export type ExperimentReport = {
   strategyVersion: string;
   params: StrategyParams;
   backtest: BacktestConfig;
+  researchEngineVersion?: string;
+  validationVersion?: string;
   metrics: BacktestMetrics;
   validation: ValidationResult;
   tradeCount: number;

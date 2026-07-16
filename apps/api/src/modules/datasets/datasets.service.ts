@@ -1,8 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { hashBars, type OhlcvBar as ResearchBar } from '@trp/research';
 import { getGitCommit } from '../../common/git';
 import { BinanceClient } from '../market/binance.client';
 import { PrismaService } from '../../storage/prisma/prisma.module';
+
+export type BinanceImportInput = {
+  symbol?: string;
+  interval?: string;
+  timeframe?: string;
+  startTime?: number;
+  endTime?: number;
+  limit?: number;
+};
 
 @Injectable()
 export class DatasetsService {
@@ -10,8 +19,29 @@ export class DatasetsService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  async importFromBinance(symbol = 'BTCUSDT', timeframe = '1h', limit = 1000) {
-    const bars = await this.binance.fetchKlines(symbol, timeframe, limit);
+  async importFromBinance(input: BinanceImportInput = {}) {
+    const symbol = input.symbol ?? 'BTCUSDT';
+    const timeframe = input.interval ?? input.timeframe ?? '1h';
+    const hasStartTime = input.startTime !== undefined;
+    const hasEndTime = input.endTime !== undefined;
+
+    if (hasStartTime !== hasEndTime) {
+      throw new BadRequestException('startTime and endTime must be provided together');
+    }
+
+    const bars = hasStartTime
+      ? await this.binance.fetchHistoricalKlines(
+          symbol,
+          timeframe,
+          input.startTime!,
+          input.endTime!,
+        )
+      : await this.binance.fetchKlines(symbol, timeframe, input.limit ?? 1000);
+
+    if (bars.length === 0) {
+      throw new BadRequestException('No Binance candles found for the requested period');
+    }
+
     const contentHash = hashBars(bars);
 
     const existing = await this.prisma.dataset.findUnique({ where: { contentHash } });

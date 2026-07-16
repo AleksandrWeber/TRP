@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { DatasetsService } from './datasets.service';
+import { DatasetsService, type BinanceImportInput } from './datasets.service';
 
 @Controller('datasets')
 export class DatasetsController {
@@ -11,8 +11,8 @@ export class DatasetsController {
   }
 
   @Post('import/binance')
-  importFromBinance(@Body() body: { symbol?: string; timeframe?: string; limit?: number } = {}) {
-    return this.datasetsService.importFromBinance(body.symbol, body.timeframe, body.limit);
+  importFromBinance(@Body() body: BinanceImportInput = {}) {
+    return this.datasetsService.importFromBinance(body);
   }
 
   @Get(':id/bars/count')

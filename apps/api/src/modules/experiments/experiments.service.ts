@@ -1,42 +1,53 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import {
   DEFAULT_BACKTEST_CONFIG,
-  DEFAULT_EMA_CROSSOVER_PARAMS,
+  defaultExperimentConfig,
   hashConfig,
+  resolveStrategy,
   runBacktest,
   runExperiment,
-  STRATEGY_ID,
-  STRATEGY_VERSION,
+  type ExperimentReport,
+  type StrategyParams,
   validateBacktest,
 } from '@trp/research';
 import { getGitCommit } from '../../common/git';
 import { PrismaService } from '../../storage/prisma/prisma.module';
 import { DatasetsService } from '../datasets/datasets.service';
+import { KnowledgeService } from '../knowledge/knowledge.service';
+import { RESEARCH_ENGINE_VERSION, VALIDATION_VERSION } from '../knowledge/knowledge.version';
 
 @Injectable()
 export class ExperimentsService {
+  private readonly logger = new Logger(ExperimentsService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly datasetsService: DatasetsService,
+    private readonly knowledge: KnowledgeService,
   ) {}
 
-  async run(datasetId: string) {
+  async run(datasetId: string, strategyId?: string, params?: StrategyParams) {
     const dataset = await this.prisma.dataset.findUnique({ where: { id: datasetId } });
     if (!dataset) {
       throw new NotFoundException(`Dataset ${datasetId} not found`);
     }
 
     const bars = await this.datasetsService.getBars(datasetId);
+    const baseConfig = defaultExperimentConfig(strategyId);
+    const strategy = resolveStrategy(baseConfig.strategyId);
     const config = {
-      strategyId: STRATEGY_ID,
-      strategyVersion: STRATEGY_VERSION,
-      params: DEFAULT_EMA_CROSSOVER_PARAMS,
+      ...baseConfig,
+      params: strategy.normalizeParams(params ?? baseConfig.params),
       backtest: DEFAULT_BACKTEST_CONFIG,
     };
 
-    const backtest = runBacktest(bars, config.params, config.backtest);
+    const backtest = runBacktest(bars, strategy, config.params, config.backtest);
     const validation = validateBacktest(backtest.metrics);
-    const report = runExperiment(bars, config);
+    const report = {
+      ...runExperiment(bars, config),
+      researchEngineVersion: RESEARCH_ENGINE_VERSION,
+      validationVersion: VALIDATION_VERSION,
+    } satisfies ExperimentReport;
     const configHash = hashConfig(config);
 
     const experiment = await this.prisma.experiment.create({
@@ -63,6 +74,13 @@ export class ExperimentsService {
         },
       },
     });
+
+    try {
+      await this.knowledge.recordFromExperiment(experiment.id);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.warn(`Failed to record knowledge for experiment ${experiment.id}: ${message}`);
+    }
 
     return experiment;
   }

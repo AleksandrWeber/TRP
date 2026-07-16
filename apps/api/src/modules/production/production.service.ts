@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { DEFAULT_EMA_CROSSOVER_PARAMS, latestEmaCrossoverSignal, STRATEGY_ID } from '@trp/research';
+import { resolveStrategy, type StrategyParams } from '@trp/research';
 import { getGitCommit } from '../../common/git';
 import { BinanceClient } from '../market/binance.client';
 import { EventBus } from '../events/event-bus.service';
@@ -9,6 +9,19 @@ import { RiskService } from './risk.service';
 
 const MAX_PAPER_NOTIONAL = 1_000;
 const PAPER_CAPITAL = 1_000;
+
+function strategyParamsFromReport(report: unknown): StrategyParams | undefined {
+  if (!report || typeof report !== 'object' || Array.isArray(report)) {
+    return undefined;
+  }
+
+  const params = (report as Record<string, unknown>).params;
+  if (!params || typeof params !== 'object' || Array.isArray(params)) {
+    return undefined;
+  }
+
+  return params as StrategyParams;
+}
 
 @Injectable()
 export class ProductionService {
@@ -43,9 +56,7 @@ export class ProductionService {
       throw new BadRequestException('Human approval required for needs_review experiments');
     }
 
-    if (experiment.strategyId !== STRATEGY_ID) {
-      throw new BadRequestException(`Unsupported strategy: ${experiment.strategyId}`);
-    }
+    resolveStrategy(experiment.strategyId);
 
     const deployment = await this.prisma.strategyDeployment.create({
       data: {
@@ -124,21 +135,33 @@ export class ProductionService {
   async tick(deploymentId: string) {
     const deployment = await this.prisma.strategyDeployment.findUnique({
       where: { id: deploymentId },
-      include: { position: true },
+      include: { position: true, experiment: { select: { report: true } } },
     });
 
     if (!deployment) {
       throw new NotFoundException(`Deployment ${deploymentId} not found`);
     }
 
-    const rawBars = await this.binance.fetchKlines(deployment.symbol, deployment.timeframe, 120);
+    const strategy = resolveStrategy(deployment.strategyId);
+    const params = strategy.normalizeParams(
+      strategyParamsFromReport(deployment.experiment.report) ?? strategy.defaultParams,
+    );
+    const requiredBars = strategy.minBars(params);
+    const rawBars = await this.binance.fetchKlines(
+      deployment.symbol,
+      deployment.timeframe,
+      Math.max(120, requiredBars + 1),
+    );
     const bars = this.binance.closedBars(rawBars);
 
-    if (bars.length < DEFAULT_EMA_CROSSOVER_PARAMS.emaSlow + 2) {
+    if (bars.length < requiredBars) {
       throw new BadRequestException('Insufficient market data for signal evaluation');
     }
 
-    const { signal, timestamp } = latestEmaCrossoverSignal(bars, DEFAULT_EMA_CROSSOVER_PARAMS);
+    const { signal, timestamp } = strategy.signals(bars, params).at(-1) ?? {
+      signal: 'hold',
+      timestamp: bars.at(-1)!.timestamp,
+    };
     const price = bars.at(-1)!.close;
 
     const signalRecord = await this.prisma.signal.create({
