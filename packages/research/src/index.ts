@@ -44,3 +44,5 @@ export * from './strategies/ema-crossover';
 export * from './strategies/registry';
 export * from './backtest/engine';
 export * from './validation/validator';
+
+export * from './dataset-slice';
