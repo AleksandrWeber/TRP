@@ -354,6 +354,13 @@ US021 — AI Research Analysis (deterministic)
 - Tests: `research-analysis.service.spec.ts` (PASS / FAIL / NEEDS_REVIEW / empty) passed.
 - Next: Architecture Review (US026–US030) or analysis API/UI.
 
+US021A — Research Analysis API + UI
+
+- Completed Story: `POST /campaigns/analyze` + read-only `CampaignAnalysisView` under Campaign Results; uses existing `ResearchAnalysisService`.
+- Changed Files: `research-analysis.controller.ts`, `CampaignAnalysisView.tsx`, `CampaignResultsPage.tsx`, `api.ts`, docs.
+- Tests: controller + `CampaignAnalysisView` component tests passed.
+- Next: Architecture Review (US026–US030).
+
 ---
 
 # Current Version

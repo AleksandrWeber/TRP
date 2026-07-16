@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import type { CampaignReport } from '../research-campaign/campaign-report.types';
+import type { CampaignSummary } from '../research-campaign/research-campaign.types';
 import type { ResearchAnalysis } from './research-analysis.types';
 
 @Injectable()
 export class ResearchAnalysisService {
+  analyzeCampaignSummary(summary: CampaignSummary): ResearchAnalysis {
+    return this.buildAnalysis(this.summaryToReport(summary));
+  }
+
   buildAnalysis(report: CampaignReport): ResearchAnalysis {
     return {
       executiveSummary: this.buildExecutiveSummary(report),
@@ -11,6 +16,29 @@ export class ResearchAnalysisService {
       weaknesses: this.buildWeaknesses(report),
       recommendations: this.buildRecommendations(report),
       nextHypothesis: this.buildNextHypothesis(report),
+    };
+  }
+
+  private summaryToReport(summary: CampaignSummary): CampaignReport {
+    const verdict =
+      summary.passCount > 0 ? 'PASS' : summary.needsReviewCount > 0 ? 'NEEDS_REVIEW' : 'FAIL';
+
+    return {
+      campaignId: summary.campaignId,
+      strategyId: summary.strategyId,
+      datasetId: summary.datasetId,
+      totalRuns: summary.totalRuns,
+      passCount: summary.passCount,
+      failCount: summary.failCount,
+      needsReviewCount: summary.needsReviewCount,
+      bestExperimentId: summary.bestExperimentId,
+      bestProfitFactor: null,
+      bestReturn: null,
+      bestExpectancy: null,
+      lowestDrawdown: null,
+      verdict,
+      recommendations: [],
+      createdAt: summary.createdAt,
     };
   }
 

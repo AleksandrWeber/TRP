@@ -53,6 +53,7 @@ Related:
 - US029 — Campaign Results Page (MVP)
 - US030 — Campaign History (MVP)
 - US021 — AI Research Analysis (deterministic CampaignReport analysis)
+- US021A — Research Analysis API + UI (`POST /campaigns/analyze`, CampaignAnalysisView)
 
 ---
 

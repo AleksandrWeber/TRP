@@ -137,6 +137,14 @@ export type CampaignSummary = {
   failedRuns: CampaignFailedRun[];
 };
 
+export type ResearchAnalysis = {
+  executiveSummary: string;
+  strengths: string[];
+  weaknesses: string[];
+  recommendations: string[];
+  nextHypothesis: string;
+};
+
 export type AuthUser = {
   id: string;
   email: string;
@@ -192,6 +200,13 @@ export function runCampaign(body: CampaignRunRequest) {
   });
 }
 
+export function analyzeCampaign(campaignSummary: CampaignSummary) {
+  return request<ResearchAnalysis>('/campaigns/analyze', {
+    method: 'POST',
+    body: JSON.stringify({ campaignSummary }),
+  });
+}
+
 export const api = {
   login: (email: string, password: string) =>
     request<LoginResponse>('/auth/login', {
@@ -228,6 +243,7 @@ export const api = {
     return request<KnowledgeEntry[]>(`/knowledge${qs ? `?${qs}` : ''}`);
   },
   runCampaign,
+  analyzeCampaign,
   aiExecute: (task: string, context: Record<string, unknown>) =>
     request<{ content: string; provider: string; model: string }>('/ai/execute', {
       method: 'POST',
