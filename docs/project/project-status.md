@@ -368,6 +368,13 @@ US022 — Multi-dataset campaigns
 - Tests: single / multiple / one failure / overall best selection passed.
 - Next: US023 — Walk-forward testing (or multi-dataset API).
 
+US022A — Multi-dataset Campaign API
+
+- Completed Story: `POST /campaigns/run-multi` validates input and returns `MultiDatasetCampaignSummary` via existing `MultiDatasetCampaignService`.
+- Changed Files: `campaign.controller.ts`, `campaign.controller.spec.ts`, docs.
+- Tests: valid request / empty datasets / service exception passed.
+- Next: US023 — Walk-forward testing.
+
 ---
 
 # Current Version
