@@ -52,6 +52,7 @@ Related:
 - US028 — Campaign Run Page (MVP)
 - US029 — Campaign Results Page (MVP)
 - US030 — Campaign History (MVP)
+- US021 — AI Research Analysis (deterministic CampaignReport analysis)
 
 ---
 
@@ -63,8 +64,7 @@ Related:
 
 ## Next User Stories
 
-- US020 — Campaign UI
-- US021 — AI Research Analysis
+- US020 — Campaign UI polish / remaining surfaces
 - US022 — Multi-dataset campaigns
 - US023 — Walk-forward testing
 - US024 — Portfolio research

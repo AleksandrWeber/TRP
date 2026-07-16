@@ -26,6 +26,7 @@ Research OS Foundation Release Candidate exists as a local commit; remote push n
 - Campaign Run page (MVP): form for datasetId / strategyId / paramsList JSON → `runCampaign()`.
 - Campaign Results page (MVP): shows CampaignSummary fields + display verdict/recommendations after run.
 - Campaign History view (MVP): localStorage list of CampaignSummary after each successful run (newest first).
+- Deterministic Research Analysis service: `buildAnalysis(CampaignReport)` → executiveSummary / strengths / weaknesses / recommendations / nextHypothesis (no external AI).
 - Project documentation workflow: living Project Status, ADR Index, Version History, Release Process, Roadmap.
 - Root `CHANGELOG.md` (this file).
 - Release Candidate docs: Ready for Commit for Research OS (US003–US019, US020A–US020B) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C), pending explicit commit sequence.

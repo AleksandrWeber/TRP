@@ -347,6 +347,13 @@ US030 — Campaign History (MVP)
 - Tests: web `CampaignHistoryView.spec.tsx` passed.
 - Next: Architecture Review (US026–US030).
 
+US021 — AI Research Analysis (deterministic)
+
+- Completed Story: `ResearchAnalysisService.buildAnalysis(CampaignReport)` returns deterministic executiveSummary / strengths / weaknesses / recommendations / nextHypothesis (no external AI).
+- Changed Files: `apps/api/src/modules/research-analysis/*`, `app.module.ts`, `project-status.md`, `roadmap.md`, `CHANGELOG.md`.
+- Tests: `research-analysis.service.spec.ts` (PASS / FAIL / NEEDS_REVIEW / empty) passed.
+- Next: Architecture Review (US026–US030) or analysis API/UI.
+
 ---
 
 # Current Version
