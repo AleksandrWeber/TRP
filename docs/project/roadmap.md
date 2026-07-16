@@ -51,6 +51,7 @@ Related:
 - US027 — Campaign UI API Integration (`runCampaign` client)
 - US028 — Campaign Run Page (MVP)
 - US029 — Campaign Results Page (MVP)
+- US030 — Campaign History (MVP)
 
 ---
 

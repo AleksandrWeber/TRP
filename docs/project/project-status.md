@@ -340,6 +340,13 @@ US029 — Campaign Results Page (MVP)
 - Tests: web `CampaignResultsView.spec.tsx` + `CampaignRunPage.spec.ts` passed.
 - Next: US030.
 
+US030 — Campaign History (MVP)
+
+- Completed Story: localStorage campaign history + `CampaignHistoryView` (newest first); append after each successful `runCampaign()`.
+- Changed Files: `campaign-history.ts`, `CampaignHistoryView.tsx`, `CampaignHistoryView.spec.tsx`, `CampaignRunPage.tsx`, `CampaignResultsPage.tsx`, docs.
+- Tests: web `CampaignHistoryView.spec.tsx` passed.
+- Next: Architecture Review (US026–US030).
+
 ---
 
 # Current Version

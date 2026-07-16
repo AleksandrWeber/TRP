@@ -1,6 +1,8 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { runCampaign, type CampaignRunRequest } from '../shared/api';
+import { runCampaign, type CampaignRunRequest, type CampaignSummary } from '../shared/api';
+import { appendCampaignHistory, loadCampaignHistory } from './campaign-history';
+import { CampaignHistoryView } from './CampaignHistoryView';
 
 export function parseParamsListJson(raw: string): CampaignRunRequest['paramsList'] {
   const parsed: unknown = JSON.parse(raw);
@@ -30,6 +32,11 @@ export function CampaignRunPage() {
   const [paramsListRaw, setParamsListRaw] = useState('[{"channelPeriod":10}]');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [history, setHistory] = useState<CampaignSummary[]>([]);
+
+  useEffect(() => {
+    setHistory(loadCampaignHistory());
+  }, []);
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
@@ -41,6 +48,8 @@ export function CampaignRunPage() {
         strategyId,
         paramsListRaw,
       });
+      const nextHistory = appendCampaignHistory(summary);
+      setHistory(nextHistory);
       navigate('/campaigns/results', { state: { summary } });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Campaign run failed');
@@ -104,6 +113,8 @@ export function CampaignRunPage() {
           {loading ? 'Running…' : 'Run Campaign'}
         </button>
       </form>
+
+      <CampaignHistoryView items={history} />
     </section>
   );
 }
