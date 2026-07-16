@@ -113,6 +113,30 @@ export type KnowledgeEntry = {
   createdAt: string;
 };
 
+export type CampaignRunRequest = {
+  datasetId: string;
+  strategyId: string;
+  paramsList: Array<Record<string, string | number | boolean | null>>;
+};
+
+export type CampaignFailedRun = {
+  params: Record<string, string | number | boolean | null>;
+  error: string;
+};
+
+export type CampaignSummary = {
+  campaignId: string;
+  strategyId: string;
+  datasetId: string;
+  totalRuns: number;
+  passCount: number;
+  failCount: number;
+  needsReviewCount: number;
+  bestExperimentId: string | null;
+  createdAt: string;
+  failedRuns: CampaignFailedRun[];
+};
+
 export type AuthUser = {
   id: string;
   email: string;
@@ -161,6 +185,13 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+export function runCampaign(body: CampaignRunRequest) {
+  return request<CampaignSummary>('/campaigns/run', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}
+
 export const api = {
   login: (email: string, password: string) =>
     request<LoginResponse>('/auth/login', {
@@ -196,6 +227,7 @@ export const api = {
     const qs = query.toString();
     return request<KnowledgeEntry[]>(`/knowledge${qs ? `?${qs}` : ''}`);
   },
+  runCampaign,
   aiExecute: (task: string, context: Record<string, unknown>) =>
     request<{ content: string; provider: string; model: string }>('/ai/execute', {
       method: 'POST',

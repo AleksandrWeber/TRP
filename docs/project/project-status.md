@@ -319,6 +319,13 @@ US026 — Campaign API
 - Tests: campaign controller + existing campaign suite passed.
 - Next: US027.
 
+US027 — Campaign UI API Integration
+
+- Completed Story: web `runCampaign()` client + `CampaignRunRequest` / `CampaignSummary` types; mock-fetch helper test.
+- Changed Files: `apps/web/src/shared/api.ts`, `apps/web/src/shared/api.spec.ts`, `project-status.md`, `roadmap.md`, `CHANGELOG.md`.
+- Tests: web `api.spec.ts` passed.
+- Next: US028.
+
 ---
 
 # Current Version

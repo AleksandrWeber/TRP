@@ -48,6 +48,7 @@ Related:
 - US025B — Documentation Sync (documentation only)
 - US025C — Documentation Sync (final)
 - US026 — Campaign API (POST /campaigns/run)
+- US027 — Campaign UI API Integration (`runCampaign` client)
 
 ---
 
