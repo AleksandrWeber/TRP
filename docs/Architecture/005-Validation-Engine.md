@@ -118,7 +118,7 @@ Validation follows these principles:
 
 ---
 
-# Stage 1 — Data Quality
+# Validation Step 1 — Data Quality
 
 Validation begins by verifying the dataset.
 
@@ -135,7 +135,7 @@ Poor data invalidates all subsequent results.
 
 ---
 
-# Stage 2 — Backtesting
+# Validation Step 2 — Backtesting
 
 Backtesting evaluates historical performance.
 
@@ -158,7 +158,7 @@ Perfect fills are never assumed.
 
 ---
 
-# Stage 3 — Walk-Forward Analysis
+# Validation Step 3 — Walk-Forward Analysis
 
 Walk-Forward evaluates adaptability.
 
@@ -184,7 +184,7 @@ This method estimates future performance rather than historical optimization.
 
 ---
 
-# Stage 4 — Monte Carlo Simulation
+# Validation Step 4 — Monte Carlo Simulation
 
 Monte Carlo estimates uncertainty.
 
@@ -199,7 +199,7 @@ The objective is to understand possible future outcomes rather than a single his
 
 ---
 
-# Stage 5 — Stress Testing
+# Validation Step 5 — Stress Testing
 
 Strategies must survive adverse conditions.
 
@@ -217,7 +217,7 @@ Failure under stress must be documented.
 
 ---
 
-# Stage 6 — Risk Evaluation
+# Validation Step 6 — Risk Evaluation
 
 Risk evaluation measures capital preservation.
 
@@ -235,7 +235,7 @@ Profit without risk control is unacceptable.
 
 ---
 
-# Stage 7 — Statistical Evaluation
+# Validation Step 7 — Statistical Evaluation
 
 Statistical robustness is evaluated using multiple metrics.
 

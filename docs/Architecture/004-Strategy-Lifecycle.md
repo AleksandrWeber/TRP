@@ -100,7 +100,7 @@ This loop never ends.
 
 ---
 
-# Stage 1 — Idea
+# Lifecycle Step 1 — Idea
 
 Every strategy begins with a hypothesis.
 
@@ -124,7 +124,7 @@ Ideas have no performance metrics.
 
 ---
 
-# Stage 2 — Strategy Draft
+# Lifecycle Step 2 — Strategy Draft
 
 The idea becomes a formal strategy specification.
 
@@ -142,7 +142,7 @@ At this stage the strategy is only a concept.
 
 ---
 
-# Stage 3 — Research Campaign
+# Lifecycle Step 3 — Research Campaign
 
 A Campaign is created to evaluate the strategy.
 
@@ -160,7 +160,7 @@ Multiple campaigns may evaluate the same strategy.
 
 ---
 
-# Stage 4 — Experiments
+# Lifecycle Step 4 — Experiments
 
 The Laboratory generates experiments.
 
@@ -177,7 +177,7 @@ The objective is discovering robust behavior.
 
 ---
 
-# Stage 5 — Candidate Strategy
+# Lifecycle Step 5 — Candidate Strategy
 
 After sufficient experiments, one or more candidate versions emerge.
 
@@ -189,7 +189,7 @@ Candidate strategies proceed to validation.
 
 ---
 
-# Stage 6 — Validation
+# Lifecycle Step 6 — Validation
 
 Validation measures robustness.
 
@@ -208,7 +208,7 @@ Validation answers one question:
 
 ---
 
-# Stage 7 — Strategy Passport
+# Lifecycle Step 7 — Strategy Passport
 
 Successful validation creates or updates the Strategy Passport.
 
@@ -229,7 +229,7 @@ The Passport remains with the strategy throughout its lifetime.
 
 ---
 
-# Stage 8 — Paper Trading
+# Lifecycle Step 8 — Paper Trading
 
 Validated strategies enter simulated live trading.
 
@@ -245,7 +245,7 @@ Paper Trading uses live market data without risking capital.
 
 ---
 
-# Stage 9 — Production Approval
+# Lifecycle Step 9 — Production Approval
 
 Human approval is mandatory.
 

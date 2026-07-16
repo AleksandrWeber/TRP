@@ -4,8 +4,6 @@
 **Status:** Approved (slim)  
 **Source of truth:** [`CANONICAL.md`](./CANONICAL.md)
 
-Pre-cleanup draft (Stages 0–9): [`archive/03-development-roadmap-pre-cleanup.md`](./archive/03-development-roadmap-pre-cleanup.md)
-
 ---
 
 ## Purpose

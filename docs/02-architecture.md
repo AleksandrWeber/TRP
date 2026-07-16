@@ -4,8 +4,6 @@
 **Status:** Approved (slim)  
 **Source of truth:** [`CANONICAL.md`](./CANONICAL.md)
 
-Pre-cleanup draft: [`archive/02-architecture-pre-cleanup.md`](./archive/02-architecture-pre-cleanup.md)
-
 Subsystem detail: [`Architecture/`](./Architecture/)
 
 ---

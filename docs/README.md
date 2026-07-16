@@ -6,6 +6,16 @@
 
 ---
 
+## Documentation Status
+
+- Architecture: Frozen
+- MVP Scope: Frozen
+- Future Features: [`docs/future/`](./future/)
+- Archive: [`docs/archive/`](./archive/)
+- New architecture documents require a new product requirement.
+
+---
+
 ## What TRP is
 
 TRP is not a trading bot, not an AI trader, and not an HFT system.
@@ -82,12 +92,12 @@ Full list: [`00-architecture-principles.md`](./00-architecture-principles.md)
 
 ## Next
 
-1. Sprint 0 — Bootstrap (monorepo, NestJS, Vite, Prisma, Docker Postgres)
-2. Vertical slices — no new Architecture docs without a real need
+1. Run the manual MVP acceptance path in [`Implementation/019-MVP-Verification.md`](./Implementation/019-MVP-Verification.md)
+2. Promote Future scope only by updating [`CANONICAL.md`](./CANONICAL.md) after a concrete need appears
 
 ---
 
 ## Status
 
-Phase: Architecture closed · Cleanup done · Ready for Sprint 0  
-Version: 0.1
+Phase: Architecture closed · MVP implementation complete · Manual acceptance in progress
+Version: 1.0

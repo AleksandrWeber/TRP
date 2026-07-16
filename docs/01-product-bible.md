@@ -4,8 +4,6 @@
 **Status:** Approved (slim)  
 **Source of truth:** [`CANONICAL.md`](./CANONICAL.md)
 
-Pre-cleanup draft: [`archive/01-product-bible-pre-cleanup.md`](./archive/01-product-bible-pre-cleanup.md)
-
 ---
 
 ## Vision
