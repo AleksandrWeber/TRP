@@ -15,7 +15,7 @@ Research OS Foundation
 
 Побудувати Evidence-driven Research OS: reproducible experiments, immutable Knowledge, і чітке provenance/versioning результатів.
 
-Зараз у working tree готові Research Layer extensions, Multi-Strategy, Knowledge Layer, Campaign Runner/Report і Campaign API. Release ще не створено.
+Зараз у working tree / local commits готові Research Layer extensions, Multi-Strategy, Knowledge Layer, Campaign Runner/Report і Campaign API. Remote release ще не запушено.
 
 Next: US020 — Campaign UI.
 
@@ -127,6 +127,7 @@ Completed:
 - Мінімальний Campaign Layer (US017): sequential runner + in-memory summary.
 - Campaign Report Builder (US018): verdict + recommendations поверх Summary + Experiments.
 - Campaign API (US019): `POST /research-campaigns` → summary + report.
+- Campaign API (US026): `POST /campaigns/run` → CampaignSummary.
 
 Next: US020 — Campaign UI.
 
@@ -311,6 +312,13 @@ US025C — Documentation Sync (final) (documentation only)
 - Tests: markdown prettier/check only.
 - Next: Architecture Freeze Review.
 
+US026 — Campaign API
+
+- Completed Story: `POST /campaigns/run` returns CampaignSummary via existing `ResearchCampaignService.run()`.
+- Changed Files: `campaign.controller.ts`, `campaign.controller.spec.ts`, `research-campaign.module.ts`, `project-status.md`, `roadmap.md`, `CHANGELOG.md`.
+- Tests: campaign controller + existing campaign suite passed.
+- Next: US027.
+
 ---
 
 # Current Version
@@ -335,7 +343,7 @@ Note: ці версії стосуються working-tree Research OS semantics;
 - EMA campaign (9 configs на 4344 bars) не всі збережені як окремі Experiments у БД (частина runs була поза API).
 - Experiment не зберігає окремо `accountingVersion`, runtime/env metadata, equity curve.
 - UI Research Page ще EMA-centric у copy; фільтр по strategyId відсутній.
-- Research OS changes still uncommitted (release blocked until explicit commit sequence).
+- Research OS RC commit існує локально; remote push ще не виконано.
 
 ---
 

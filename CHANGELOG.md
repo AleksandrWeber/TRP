@@ -9,7 +9,7 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ## [Unreleased]
 
-Research OS work currently exists in the working tree and is **not** yet represented by dedicated release commits.
+Research OS Foundation Release Candidate exists as a local commit; remote push not performed.
 
 ### Added
 
@@ -21,6 +21,7 @@ Research OS work currently exists in the working tree and is **not** yet represe
 - Campaign Layer: sequential Campaign Runner + in-memory Campaign Summary.
 - Campaign Report Builder with campaign verdict and deterministic recommendations.
 - Campaign API: `POST /research-campaigns` returns summary + report + experimentIds.
+- Campaign API: `POST /campaigns/run` returns `CampaignSummary` via existing `ResearchCampaignService`.
 - Project documentation workflow: living Project Status, ADR Index, Version History, Release Process, Roadmap.
 - Root `CHANGELOG.md` (this file).
 - Release Candidate docs: Ready for Commit for Research OS (US003–US019, US020A–US020B) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C), pending explicit commit sequence.
