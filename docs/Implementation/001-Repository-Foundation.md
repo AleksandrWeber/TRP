@@ -111,12 +111,17 @@ Application entry points.
 ```
 apps/
 
-frontend/
-backend/
-worker/
+api/
+web/
 ```
 
 Each application is independently buildable.
+
+---
+
+## Deferred Notes
+
+A standalone worker is not part of the MVP repository structure. Introduce one only when a real asynchronous workload requires it.
 
 ---
 

@@ -390,15 +390,11 @@ Contains:
 
 Backtesting
 
-Walk-Forward
-
-Monte Carlo
-
-Stress Testing
-
 Performance Metrics
 
-Certification Status
+Pass / Needs Review / Fail Status
+
+Walk-Forward, Monte Carlo, stress testing, and certification views are deferred from the MVP.
 
 ---
 

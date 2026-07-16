@@ -81,7 +81,7 @@ Strategy
 Validation
     │
     ▼
-Strategy Passport
+Strategy Passport (Future)
     │
     ▼
 Production Instance
@@ -319,8 +319,8 @@ Validation answers one question:
 Validation includes:
 
 - Backtesting
-- Walk Forward
-- Monte Carlo
+- Walk Forward (Future)
+- Monte Carlo (Future)
 - Stress Testing
 - Robustness Analysis
 
@@ -346,9 +346,9 @@ Reports are permanent records.
 
 ---
 
-# Strategy Passport
+# Strategy Passport (Future)
 
-The Strategy Passport is the official identity document of a strategy.
+The Strategy Passport is deferred from the MVP.
 
 It contains:
 
@@ -532,7 +532,7 @@ Strategy
 Validation
     │
     ▼
-Strategy Passport
+Strategy Passport (Future)
     │
     ▼
 Production Instance

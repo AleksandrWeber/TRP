@@ -106,7 +106,7 @@ Zod
 # Frontend Structure
 
 ```
-apps/frontend/
+apps/web/
 
 src/
 

@@ -323,11 +323,11 @@ Run Backtest
 
 ↓
 
-Walk Forward
+Walk Forward (Future)
 
 ↓
 
-Monte Carlo
+Monte Carlo (Future)
 
 ↓
 
@@ -557,21 +557,9 @@ Scheduling is managed centrally.
 
 # Security
 
-Workflow execution follows role-based permissions.
+Workflow execution requires the single authenticated Administrator in the MVP.
 
-Examples:
-
-Researcher
-
-May execute research workflows.
-
-Administrator
-
-May deploy production workflows.
-
-AI
-
-May initiate analysis workflows only.
+Multi-role workflow permissions are deferred until a future multi-user requirement updates `CANONICAL.md`.
 
 Permissions are enforced before execution.
 

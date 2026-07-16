@@ -135,11 +135,10 @@ AI never controls capital. See [`007-AI-Gateway.md`](./007-AI-Gateway.md).
 
 # Testing
 
-| Purpose            | Technology |
-| ------------------ | ---------- |
-| Unit Testing       | Vitest     |
-| Backend Testing    | Jest       |
-| End-to-End Testing | Playwright |
+| Purpose                      | Technology |
+| ---------------------------- | ---------- |
+| Unit and Integration Testing | Vitest     |
+| End-to-End Testing           | Playwright |
 
 ---
 

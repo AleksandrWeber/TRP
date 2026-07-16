@@ -57,12 +57,12 @@ The Infrastructure provides:
         ▼                               ▼
     Frontend                       Backend API
                                         │
-        ┌───────────────┬───────────────┴───────────────┐
-        ▼               ▼               ▼               ▼
- PostgreSQL          Redis          MinIO         Worker
-                                        │
-                                        ▼
-                                  Event Processing
+        ┌────────────┴────────────┐
+        ▼                         ▼
+   PostgreSQL                   Worker
+                                   │
+                                   ▼
+                            Event Processing
 ```
 
 Everything runs inside Docker containers.
@@ -174,7 +174,7 @@ Persistent storage.
 
 ---
 
-## Redis
+## Deferred Infrastructure — Redis
 
 Responsibilities:
 
@@ -185,9 +185,11 @@ Responsibilities:
 
 Redis contains no permanent business data.
 
+Redis is not required for the MVP. Introduce it only for a real cache or queue workload.
+
 ---
 
-## MinIO
+## Deferred Infrastructure — MinIO
 
 Stores files.
 
@@ -200,6 +202,8 @@ Examples:
 - Research artifacts
 
 Provides an S3-compatible interface.
+
+MinIO is not required for the MVP. Introduce it only when object storage is needed.
 
 ---
 
@@ -248,7 +252,6 @@ No container orchestration platform is required.
 Persistent volumes are used for:
 
 - PostgreSQL
-- MinIO
 - Logs
 - Backups
 
@@ -315,7 +318,6 @@ Advanced monitoring is introduced later.
 Backups include:
 
 - PostgreSQL
-- MinIO
 - Configuration
 
 Backups are automated.
@@ -361,11 +363,15 @@ Examples:
 - Docker
 - Docker Compose
 - PostgreSQL
-- Redis
-- MinIO
 - Nginx
 
 Operational simplicity has higher priority than maximum scalability.
+
+---
+
+## Deferred Infrastructure
+
+Redis is a future cache/queue option. MinIO is a future object-storage option. Neither is an MVP infrastructure dependency.
 
 ---
 

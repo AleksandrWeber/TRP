@@ -12,7 +12,7 @@ Document Type: Implementation Guide
 
 This document establishes the authentication and authorization foundation for the Trading Research Platform (TRP).
 
-The objective is to securely identify users, control access to protected resources, and establish a permission model that can scale with future platform growth.
+The objective is to securely identify the MVP administrator and protect access to platform resources.
 
 No business-specific authorization rules are implemented during this step.
 
@@ -26,7 +26,6 @@ After completing this step:
 - JWT authentication is configured.
 - Password hashing is implemented.
 - Authorization guards are available.
-- Role-Based Access Control (RBAC) is established.
 - Protected API endpoints function correctly.
 
 No trading functionality or business permissions are implemented.
@@ -40,7 +39,6 @@ After this step:
 - User can authenticate.
 - JWT access token is issued.
 - Protected endpoints require authentication.
-- Roles are recognized.
 - Unauthorized requests are rejected.
 - Passwords are securely hashed.
 
@@ -85,7 +83,6 @@ Each user has:
 - Unique ID
 - Email
 - Password Hash
-- Role
 - Created At
 - Updated At
 
@@ -119,16 +116,9 @@ Authenticated Requests
 
 # Authorization
 
-Authorization uses Role-Based Access Control (RBAC).
+The MVP has one authenticated Administrator.
 
-Initial roles:
-
-- Administrator
-- Researcher
-- Trader
-- Viewer
-
-Additional roles may be introduced later.
+Multi-role RBAC is deferred until a future multi-user requirement updates `CANONICAL.md`.
 
 ---
 

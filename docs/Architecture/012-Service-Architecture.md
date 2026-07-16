@@ -10,72 +10,50 @@ Document Type: Architecture Specification
 
 # Purpose
 
-The Service Architecture defines how the Trading Research Platform (TRP) is decomposed into independent, loosely coupled services.
+This document defines the module boundaries of the Trading Research Platform (TRP).
 
-Each service owns a specific business capability and communicates with other services through well-defined interfaces and the Event Bus.
-
-This architecture enables scalability, maintainability, independent deployment, and long-term evolution of the platform.
+For the MVP, TRP is a modular monolith: one NestJS API application contains the domain modules, and the React web application consumes its API. Modules have explicit interfaces and may use in-process domain events, but they are not independently deployed services.
 
 ---
 
 # Philosophy
 
-A service should own one responsibility.
+Each module owns one responsibility. Modules collaborate through application interfaces and domain events without reaching into each other's internals.
 
-Services collaborate.
-
-They do not control each other.
-
-Every service should be independently understandable, testable, and replaceable.
+The MVP optimizes for a simple, testable system. Separate deployable services are deferred until a concrete operational need justifies them.
 
 ---
 
 # Mission
 
-The Service Architecture provides:
+The module architecture provides:
 
 - Clear responsibility boundaries
-- Independent business domains
-- Modular development
-- Horizontal scalability
-- Fault isolation
-- Technology independence
+- Cohesive business domains
+- Modular development and testing
+- Explicit dependencies
+- A safe path to future extraction when justified
 
 ---
 
-# High-Level Architecture
+# MVP Module Architecture
 
 ```
-                         User
-                           │
-                           ▼
-                     Frontend (Web)
-                           │
-                           ▼
-                     API Gateway
-                           │
- ────────────────────────────────────────────────────────
-                           │
-        ┌──────────────────┼──────────────────┐
-        │                  │                  │
-        ▼                  ▼                  ▼
- Research Service   Production Service   AI Service
-        │                  │                  │
-        └────────────┬─────┴────────────┬─────┘
-                     ▼                  ▼
-             Knowledge Service   Market Data Service
-                     │                  │
-                     └──────────┬───────┘
-                                ▼
-                           Event Bus
-                                │
-     ┌────────────┬────────────┬──────────────┐
-     ▼            ▼            ▼              ▼
- Storage     Notification  Monitoring   Authentication
- Service        Service       Service        Service
+React Web
+   │
+   ▼
+NestJS API (modular monolith)
+   ├── Auth
+   ├── Market Data / Research / Validation
+   ├── Workflow / Events / Knowledge
+   ├── Production (paper) / Risk
+   └── AI Gateway / Dashboard API
+   │
+   ▼
+PostgreSQL
 ```
 
-Every service owns its own business logic.
+The API modules share one deployment and one PostgreSQL database while preserving domain boundaries in code.
 
 ---
 
@@ -85,15 +63,20 @@ The architecture follows these principles:
 
 - Single Responsibility
 - Domain Ownership
-- Event-Driven Communication
+- Explicit module interfaces
+- In-process domain events where they reduce coupling
 - Loose Coupling
 - High Cohesion
-- Independent Scaling
 - Independent Testing
+- No premature service extraction
 
 ---
 
-# Research Service
+# Future — Potential Service Extraction
+
+The following descriptions are not MVP components. They are candidate boundaries for future extraction only after a concrete scaling, reliability, or operational need appears and `CANONICAL.md` is updated.
+
+## Research Service
 
 Mission
 
@@ -122,7 +105,7 @@ Consumes:
 
 ---
 
-# Validation Service
+## Validation Service
 
 Mission
 
@@ -147,7 +130,7 @@ Consumes:
 
 ---
 
-# Production Service
+## Production Service
 
 Mission
 
@@ -174,7 +157,7 @@ Consumes:
 
 ---
 
-# AI Service
+## AI Service
 
 Mission
 
@@ -203,7 +186,7 @@ Consumes:
 
 ---
 
-# Knowledge Service
+## Knowledge Service
 
 Mission
 
@@ -230,7 +213,7 @@ Consumes:
 
 ---
 
-# Market Data Service
+## Market Data Service
 
 Mission
 
@@ -254,7 +237,7 @@ Consumes:
 
 ---
 
-# Storage Service
+## Storage Service
 
 Mission
 
@@ -272,7 +255,7 @@ Other services never communicate directly with databases.
 
 ---
 
-# Notification Service
+## Notification Service
 
 Mission
 
@@ -298,7 +281,7 @@ Notification types
 
 ---
 
-# Monitoring Service
+## Monitoring Service
 
 Mission
 
@@ -317,7 +300,7 @@ Monitors every service.
 
 ---
 
-# Authentication Service
+## Authentication Service
 
 Mission
 
@@ -337,7 +320,7 @@ Every secured request passes through Authentication.
 
 ---
 
-# Reporting Service
+## Reporting Service
 
 Mission
 
@@ -357,7 +340,7 @@ Reports are archived permanently.
 
 ---
 
-# Configuration Service
+## Configuration Service
 
 Mission
 
@@ -375,7 +358,7 @@ Configuration changes are versioned.
 
 ---
 
-# Plugin Service
+## Plugin Service
 
 Mission
 
@@ -393,7 +376,7 @@ Supports future market plugins.
 
 ---
 
-# API Gateway
+## API Gateway
 
 Mission
 
@@ -411,7 +394,7 @@ The Gateway contains no business logic.
 
 ---
 
-# Communication Model
+## Communication Model
 
 Services communicate using:
 
@@ -427,7 +410,7 @@ Synchronous communication should be minimized.
 
 ---
 
-# Service Independence
+## Service Independence
 
 Each service owns:
 
@@ -442,7 +425,7 @@ No service accesses another service's internal implementation.
 
 ---
 
-# Scalability
+## Scalability
 
 Every service may scale independently.
 
@@ -470,7 +453,7 @@ Scaling should be selective.
 
 ---
 
-# Failure Isolation
+## Failure Isolation
 
 Failure of one service must not stop the platform.
 
@@ -490,7 +473,7 @@ Only notifications are delayed.
 
 ---
 
-# Future Expansion
+## Additional Future Capabilities
 
 Future services may include:
 
@@ -509,14 +492,14 @@ The architecture supports unlimited growth.
 
 # Success Criteria
 
-A successful Service Architecture:
+A successful MVP module architecture:
 
 - Clearly separates responsibilities
 - Minimizes coupling
-- Maximizes cohesion
-- Enables independent scaling
+- Keeps the API deployable as one application
+- Keeps persistence inside PostgreSQL
 - Simplifies testing
-- Supports future expansion
+- Documents service extraction as a future decision, not a present requirement
 
 ---
 
@@ -528,15 +511,14 @@ Related specifications:
 - 009-Market-Data-Platform.md
 - 010-Event-Bus.md
 - 011-Storage-Architecture.md
-- 013-Plugin-Architecture.md
 - 014-Security.md
 
 ---
 
 # Summary
 
-The Service Architecture defines the operational structure of TRP.
+For the MVP, TRP is a modular monolith with clear NestJS module boundaries.
 
-Instead of a monolithic application, the platform is composed of specialized services, each responsible for a distinct business capability.
+Research, validation, knowledge, production, authentication, and AI capabilities are modules in one API deployment. The web application communicates with that API, while PostgreSQL stores MVP data.
 
-This modular architecture enables scalability, resilience, maintainability, and long-term evolution while preserving clear ownership and minimizing system complexity.
+Potential services described above are Future options. They are not MVP architecture and may be extracted only after a new product requirement and canonical update.

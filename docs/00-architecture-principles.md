@@ -77,8 +77,8 @@ Every strategy must survive:
 - Historical Backtesting
 - Trading Fees
 - Slippage
-- Walk-Forward Validation
-- Monte Carlo Simulation
+- Walk-Forward Validation (Future)
+- Monte Carlo Simulation (Future)
 - Stress Testing
 - Risk Evaluation
 
@@ -297,7 +297,7 @@ AI Analyst
 
 Explanation
 
-AI Scientist
+AI Scientist (Future)
 
 Discovery
 

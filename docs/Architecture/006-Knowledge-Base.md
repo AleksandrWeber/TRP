@@ -356,9 +356,9 @@ Knowledge is never static.
 
 ---
 
-# Strategy Passport Integration
+# Strategy Passport Integration (Future)
 
-Every Strategy Passport references related knowledge.
+Strategy Passport integration is deferred from the MVP.
 
 Examples:
 

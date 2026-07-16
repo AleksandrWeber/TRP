@@ -256,7 +256,7 @@ Store:
 - metrics
 - references
 
-Large artifacts remain in object storage.
+Large artifacts and object storage are deferred from the MVP.
 
 ---
 

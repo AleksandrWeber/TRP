@@ -127,18 +127,9 @@ It never grants permissions.
 
 # Authorization
 
-Permissions are controlled through Role-Based Access Control (RBAC).
+The MVP has one authenticated Administrator. All protected actions require that authenticated identity.
 
-Example roles:
-
-- Administrator
-- Researcher
-- Trader
-- Viewer
-
-Each role defines allowed actions.
-
-Authorization is enforced on every request.
+Multi-role RBAC is deferred until a future multi-user requirement updates `CANONICAL.md`.
 
 ---
 

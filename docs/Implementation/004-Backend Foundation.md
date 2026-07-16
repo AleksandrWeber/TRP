@@ -80,7 +80,7 @@ pnpm
 # Backend Structure
 
 ```
-apps/backend/
+apps/api/
 
 src/
 

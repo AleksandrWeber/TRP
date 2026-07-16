@@ -10,9 +10,9 @@ Document Type: Architecture Specification
 
 # Purpose
 
-The Production System is responsible for safely executing validated trading strategies in live markets.
+The MVP Production System is responsible for safely executing validated trading strategies through a paper exchange adapter.
 
-Unlike the Research Laboratory, which generates knowledge through experimentation, the Production System operates with real capital.
+Unlike the Research Laboratory, which generates knowledge through experimentation, the MVP Production System simulates execution with paper capital.
 
 Its primary objective is not maximizing profit.
 
@@ -38,17 +38,14 @@ Only scientifically validated strategies may enter Production.
 
 # Mission
 
-The Production System transforms validated research into controlled real-world execution.
+The MVP Production System transforms validated research into controlled paper execution.
 
 Its responsibilities include:
 
 - Executing strategies
-- Managing risk
-- Managing orders
-- Monitoring execution
-- Recording results
-- Detecting incidents
-- Updating the Knowledge Base
+- Applying minimal risk checks
+- Simulating orders through an exchange adapter
+- Recording executions
 
 Production never creates new strategies.
 
@@ -93,16 +90,10 @@ The Production System consists of the following subsystems.
 - Production Manager
 - Strategy Runner
 - Risk Manager
-- Portfolio Manager
-- Position Manager
 - Order Manager
 - Execution Engine
 - Exchange Connector
-- Monitoring Service
-- Reporting Service
-- Incident Manager
 - Kill Switch
-- Knowledge Publisher
 
 ---
 
@@ -159,9 +150,9 @@ Risk Manager decisions override every other subsystem.
 
 ---
 
-# Portfolio Manager
+## Future — Portfolio Manager
 
-The Portfolio Manager controls total capital allocation.
+Portfolio management is deferred from the MVP.
 
 Responsibilities:
 
@@ -175,9 +166,9 @@ The Portfolio Manager operates at the portfolio level rather than the individual
 
 ---
 
-# Position Manager
+## Future — Position Manager
 
-The Position Manager maintains every active position.
+Position management is deferred from the MVP.
 
 Responsibilities:
 

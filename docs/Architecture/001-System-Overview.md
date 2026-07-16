@@ -181,8 +181,8 @@ Validation determines whether a strategy is sufficiently robust before productio
 Typical validation methods include:
 
 - Backtesting
-- Walk-Forward Analysis
-- Monte Carlo Simulation
+- Walk-Forward Analysis (Future)
+- Monte Carlo Simulation (Future)
 - Stress Testing
 - Parameter Stability Analysis
 - Risk Analysis
@@ -476,7 +476,7 @@ Reports
 
 ↓
 
-Strategy Passport
+Strategy Passport (Future)
 
 ↓
 

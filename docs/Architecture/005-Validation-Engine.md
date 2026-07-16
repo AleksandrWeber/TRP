@@ -55,38 +55,22 @@ Data Quality Check
 
 ↓
 
-Backtesting
+Deterministic Backtest
 
 ↓
 
-Walk-Forward Analysis
+Fees and Slippage
 
 ↓
 
-Monte Carlo Simulation
+Validation Rules
 
 ↓
 
-Stress Testing
-
-↓
-
-Risk Evaluation
-
-↓
-
-Statistical Evaluation
-
-↓
-
-Certification
-
-↓
-
-Strategy Passport
+Pass / Needs Review / Fail Report
 ```
 
-A strategy may only move forward after successfully completing every required stage.
+The MVP records an immutable validation report. Only a pass or human-approved needs-review result can move toward paper production.
 
 ---
 
@@ -95,12 +79,9 @@ A strategy may only move forward after successfully completing every required st
 The Validation Engine is responsible for:
 
 - Verifying data quality
-- Executing validation procedures
-- Measuring statistical robustness
-- Detecting overfitting
-- Estimating risk
-- Producing certification reports
-- Updating the Strategy Passport
+- Running deterministic backtests with fees and slippage
+- Applying validation rules
+- Producing validation reports with a pass, needs-review, or fail verdict
 
 ---
 
@@ -158,11 +139,11 @@ Perfect fills are never assumed.
 
 ---
 
-# Validation Step 3 — Walk-Forward Analysis
+# Future — Advanced Validation
 
-Walk-Forward evaluates adaptability.
+Walk-Forward analysis, Monte Carlo simulation, stress testing, and a Strategy Passport are deferred. They may be added only after a concrete requirement updates `CANONICAL.md`.
 
-Process:
+## Walk-Forward Analysis
 
 ```
 Train
@@ -184,7 +165,7 @@ This method estimates future performance rather than historical optimization.
 
 ---
 
-# Validation Step 4 — Monte Carlo Simulation
+## Monte Carlo Simulation
 
 Monte Carlo estimates uncertainty.
 
@@ -199,7 +180,7 @@ The objective is to understand possible future outcomes rather than a single his
 
 ---
 
-# Validation Step 5 — Stress Testing
+## Stress Testing
 
 Strategies must survive adverse conditions.
 
@@ -217,7 +198,7 @@ Failure under stress must be documented.
 
 ---
 
-# Validation Step 6 — Risk Evaluation
+## Risk Evaluation
 
 Risk evaluation measures capital preservation.
 
@@ -235,7 +216,7 @@ Profit without risk control is unacceptable.
 
 ---
 
-# Validation Step 7 — Statistical Evaluation
+## Statistical Evaluation
 
 Statistical robustness is evaluated using multiple metrics.
 
@@ -254,7 +235,7 @@ No single metric determines success.
 
 ---
 
-# Overfitting Detection
+## Overfitting Detection
 
 Validation actively searches for overfitting.
 
@@ -270,7 +251,7 @@ Overfitted strategies are rejected.
 
 ---
 
-# Parameter Stability
+## Parameter Stability
 
 Good strategies remain effective across a range of parameter values.
 
@@ -287,7 +268,7 @@ Stable parameter regions are preferred over isolated peaks.
 
 ---
 
-# Market Regime Testing
+## Market Regime Testing
 
 Strategies are evaluated under different market conditions.
 
@@ -303,7 +284,7 @@ The objective is to understand where the strategy performs well and where it fai
 
 ---
 
-# Cross-Market Validation
+## Cross-Market Validation
 
 When applicable, strategies are tested across multiple markets.
 
@@ -339,27 +320,25 @@ Reports become part of the Knowledge Base.
 
 ---
 
-# Certification
+# MVP Verdict
 
-Validation results in one of four outcomes.
+Validation results in one of three outcomes.
 
 ```
-Certified
+Pass
 
-Conditionally Certified
+Needs Review
 
-Requires Further Research
-
-Rejected
+Fail
 ```
 
-Certification is based on evidence rather than opinion.
+The verdict is based on recorded validation rules and evidence rather than opinion.
 
 ---
 
-# Strategy Passport Update
+# Future — Strategy Passport
 
-Certified strategies automatically update their Strategy Passport.
+The Strategy Passport is deferred from the MVP.
 
 The Passport records:
 

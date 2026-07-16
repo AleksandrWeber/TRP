@@ -244,16 +244,11 @@ Public endpoints are explicitly defined.
 
 # Authorization
 
-Permissions are verified after authentication.
+The MVP has one authenticated Administrator.
 
-Authorization is role-based.
+All protected endpoints require that authenticated identity.
 
-Roles include:
-
-- Administrator
-- Researcher
-- Trader
-- Viewer
+Multi-role RBAC is deferred until a future multi-user requirement updates `CANONICAL.md`.
 
 ---
 
@@ -335,11 +330,9 @@ Examples:
 
 Backtesting
 
-Monte Carlo
-
-Optimization
-
 AI Analysis
+
+Monte Carlo and optimization are deferred from the MVP.
 
 Workflow:
 

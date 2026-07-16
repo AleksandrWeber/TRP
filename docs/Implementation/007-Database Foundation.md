@@ -90,7 +90,7 @@ Business rules belong to application services.
 # Project Structure
 
 ```
-apps/backend/
+apps/api/
 
 prisma/
 

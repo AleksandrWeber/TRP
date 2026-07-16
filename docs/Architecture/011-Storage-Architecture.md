@@ -135,6 +135,8 @@ SQL Database
 
 ## Time-Series Data
 
+Dedicated time-series storage is deferred for the MVP; PostgreSQL stores the initial OHLCV dataset.
+
 Examples:
 
 - Candles
@@ -204,6 +206,8 @@ Object Storage
 
 ## Cache
 
+Caching is deferred for the MVP. PostgreSQL remains the required storage service.
+
 Examples:
 
 - Recent candles
@@ -238,7 +242,9 @@ PostgreSQL is the primary relational database.
 
 ---
 
-# Time-Series Database
+# Deferred Storage — Time-Series Database
+
+Time-series storage is deferred for the MVP. PostgreSQL stores the MVP OHLCV and research data.
 
 Optimized for chronological market data.
 
@@ -261,6 +267,8 @@ Time-series storage must support billions of records.
 
 # Object Storage
 
+Object storage is deferred for the MVP. PostgreSQL remains the required storage service.
+
 Stores large files.
 
 Examples:
@@ -282,6 +290,8 @@ Possible Technologies
 
 # Cache Layer
 
+Caching is deferred for the MVP. PostgreSQL remains the required storage service.
+
 Provides fast temporary access.
 
 Responsibilities:
@@ -301,13 +311,9 @@ Cache is disposable.
 
 # Knowledge Storage
 
-The Knowledge Base evolves over time.
+The MVP Knowledge Base uses PostgreSQL.
 
-Phase 1
-
-SQL
-
-Phase 2
+Future phase:
 
 Graph Database
 
@@ -470,4 +476,4 @@ Related specifications:
 
 The Storage Architecture provides the persistent foundation of TRP.
 
-By combining relational databases, time-series storage, object storage, caching, and future graph technologies, the platform ensures reliable, scalable, and secure data management while supporting research, production, and continuous knowledge growth.
+For the MVP, PostgreSQL is the single active storage service. Time-series, object, cache, and graph storage remain deferred options.

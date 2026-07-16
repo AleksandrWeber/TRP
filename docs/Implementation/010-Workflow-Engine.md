@@ -503,7 +503,7 @@ These metrics are stored for future dashboards.
 
 Only authenticated users may create workflows.
 
-Authorization is role-based.
+The MVP authorizes the single authenticated Administrator.
 
 ---
 

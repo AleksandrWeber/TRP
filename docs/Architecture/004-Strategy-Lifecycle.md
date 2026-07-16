@@ -61,7 +61,7 @@ Validation
 
 ↓
 
-Strategy Passport
+Strategy Passport (Future)
 
 ↓
 
@@ -196,11 +196,8 @@ Validation measures robustness.
 Required validation includes:
 
 - Backtesting
-- Walk-Forward Analysis
-- Monte Carlo Simulation
-- Stress Testing
-- Parameter Stability
-- Risk Analysis
+- Fees and slippage
+- MVP validation rules
 
 Validation answers one question:
 
@@ -208,9 +205,9 @@ Validation answers one question:
 
 ---
 
-# Lifecycle Step 7 — Strategy Passport
+# Future — Strategy Passport
 
-Successful validation creates or updates the Strategy Passport.
+The Strategy Passport is deferred from the MVP. It may be introduced after a concrete requirement updates `CANONICAL.md`.
 
 The Passport becomes the permanent identity of the strategy.
 
@@ -259,15 +256,13 @@ Typical approval checklist:
 
 ✓ Risk reviewed
 
-✓ Passport updated
-
 ✓ Production configuration prepared
 
 Without approval, deployment is impossible.
 
 ---
 
-# Stage 10 — Production
+# Lifecycle Step 10 — Production
 
 The strategy begins live trading.
 
@@ -285,7 +280,7 @@ Production is monitored continuously.
 
 ---
 
-# Stage 11 — Monitoring
+# Lifecycle Step 11 — Monitoring
 
 Monitoring evaluates strategy health.
 
@@ -302,7 +297,7 @@ Monitoring may trigger new research.
 
 ---
 
-# Stage 12 — Knowledge Update
+# Lifecycle Step 12 — Knowledge Update
 
 Production generates valuable knowledge.
 
@@ -318,7 +313,7 @@ Knowledge updates become permanent.
 
 ---
 
-# Stage 13 — Improvement
+# Lifecycle Step 13 — Improvement
 
 Researchers evaluate accumulated knowledge.
 
@@ -334,7 +329,7 @@ Improvements never overwrite previous versions.
 
 ---
 
-# Stage 14 — New Version
+# Lifecycle Step 14 — New Version
 
 Every meaningful improvement creates a new strategy version.
 

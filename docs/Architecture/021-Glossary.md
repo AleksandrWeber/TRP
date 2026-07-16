@@ -195,8 +195,9 @@ A long-running background task executed asynchronously.
 Examples:
 
 - Backtesting
-- Monte Carlo simulation
 - AI analysis
+
+Monte Carlo simulation is deferred from the MVP.
 
 ---
 
@@ -256,9 +257,9 @@ Strategies may perform differently under different regimes.
 
 ---
 
-## Monte Carlo Simulation
+## Monte Carlo Simulation (Future)
 
-A statistical validation technique using randomized scenarios to estimate strategy robustness.
+Deferred statistical validation technique using randomized scenarios to estimate strategy robustness.
 
 ---
 
@@ -423,14 +424,7 @@ A continuous period during which the Production System is active.
 
 A person interacting with TRP.
 
-Roles determine permissions.
-
-Examples:
-
-- Administrator
-- Researcher
-- Trader
-- Viewer
+The MVP has one authenticated Administrator. Multi-role RBAC is deferred.
 
 ---
 
@@ -452,9 +446,9 @@ The subsystem responsible for evaluating strategy quality.
 
 # W
 
-## Walk-Forward Analysis
+## Walk-Forward Analysis (Future)
 
-A validation technique that repeatedly trains and evaluates strategies using sequential historical data.
+Deferred validation technique that repeatedly trains and evaluates strategies using sequential historical data.
 
 ---
 

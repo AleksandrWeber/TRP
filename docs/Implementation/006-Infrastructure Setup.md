@@ -24,8 +24,6 @@ After completing this step:
 
 - Docker Compose is configured.
 - PostgreSQL is running.
-- Redis is running.
-- MinIO is running.
 - Internal Docker networking is configured.
 - Persistent volumes are configured.
 - Health checks are operational.
@@ -40,8 +38,6 @@ After this step:
 
 - `docker compose up` starts all infrastructure services.
 - PostgreSQL accepts connections.
-- Redis accepts connections.
-- MinIO Web Console is accessible.
 - Data persists after container restart.
 - Health checks report healthy status.
 
@@ -62,8 +58,6 @@ This implementation follows:
 Version 1 includes:
 
 - PostgreSQL
-- Redis
-- MinIO
 
 Application containers will be added later.
 
@@ -100,7 +94,7 @@ Requirements:
 
 ---
 
-# Redis
+## Deferred Infrastructure — Redis
 
 Responsibilities:
 
@@ -113,11 +107,11 @@ Requirements:
 - Persistent volume (optional)
 - Health check enabled
 
-Redis stores no permanent business data.
+Redis is deferred until a real cache or asynchronous queue boundary appears. It stores no permanent business data.
 
 ---
 
-# MinIO
+## Deferred Infrastructure — MinIO
 
 Responsibilities:
 
@@ -131,6 +125,8 @@ Requirements:
 - Persistent volume
 - Web Console enabled
 - Configurable credentials
+
+MinIO is deferred until the MVP needs object storage for artifacts or uploaded files.
 
 ---
 
@@ -147,7 +143,6 @@ No database service should be directly exposed to the public Internet.
 Persistent storage is required for:
 
 - PostgreSQL
-- MinIO
 
 Containers must remain disposable.
 
@@ -176,10 +171,8 @@ Secrets must never be committed.
 Official Docker service names:
 
 - postgres
-- redis
-- minio
 
-These names remain stable throughout Version 1.
+Redis and MinIO service names are deferred until those services are introduced.
 
 ---
 
@@ -242,8 +235,6 @@ Infrastructure services should expose only the ports required for development.
 Verify:
 
 - PostgreSQL connection
-- Redis connection
-- MinIO login
 - Docker network
 - Persistent storage
 - Health status
@@ -256,8 +247,6 @@ This step is complete when:
 
 - Docker Compose starts successfully.
 - PostgreSQL is healthy.
-- Redis is healthy.
-- MinIO is healthy.
 - Persistent volumes work correctly.
 - Environment variables are configured.
 

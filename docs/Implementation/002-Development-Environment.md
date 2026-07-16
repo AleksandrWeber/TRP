@@ -116,8 +116,8 @@ Local infrastructure.
 Required for:
 
 - PostgreSQL
-- Redis
-- MinIO
+
+Redis and MinIO are deferred until a real cache, queue, or object-storage need appears.
 
 ---
 
@@ -201,10 +201,14 @@ Docker starts local infrastructure.
 Required containers:
 
 - PostgreSQL
-- Redis
-- MinIO
 
 Application containers are added later.
+
+---
+
+## Deferred Infrastructure
+
+Redis and MinIO are not required for the MVP development environment. Add them only when a concrete cache, queue, or object-storage workload requires them.
 
 ---
 

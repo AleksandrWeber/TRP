@@ -101,9 +101,8 @@ Applications are executable software.
 ```
 apps/
 
-frontend/
-backend/
-worker/
+api/
+web/
 ```
 
 Each application has:
@@ -116,6 +115,12 @@ Each application has:
 Applications communicate through APIs and events.
 
 They never access each other's internal implementation.
+
+---
+
+## Deferred Notes
+
+A standalone worker is not part of the MVP monorepo. Add one only when a real asynchronous workload requires a separate runtime.
 
 ---
 
