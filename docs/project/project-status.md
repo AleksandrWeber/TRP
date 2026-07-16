@@ -15,9 +15,9 @@ Research OS Foundation
 
 Побудувати Evidence-driven Research OS: reproducible experiments, immutable Knowledge, і чітке provenance/versioning результатів.
 
-Зараз у working tree / local commits готові Research Layer extensions, Multi-Strategy, Knowledge Layer, Campaign Runner/Report і Campaign API. Remote release ще не запушено.
+Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); ADR-010 sync (US050A); Dataset Slice stack US045–US047. Remote release ще не запушено.
 
-Next: US020 — Campaign UI.
+Next: US051.
 
 ---
 
@@ -53,7 +53,7 @@ Status: NOT READY for remote release / push
 
 Status: Ready for Commit
 
-Scope: Research OS (US003–US019, US020A–US020B) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C). Product next remains US020 — Campaign UI.
+Scope: Research OS (US003–US019, US020A–US020B, US026–US035, US037–US043, US045–US050) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C, US036, US041A, US043A, US044, US050A). Product next: US051.
 
 Current Research OS implementation exists in working tree.
 Release will be created only after explicit commit sequence.
@@ -76,7 +76,7 @@ Completed:
 - EMA Crossover і Donchian Breakout зареєстровані.
 - Paginated Binance historical import (startTime/endTime, ≤1000 per page).
 
-Next: US020 — Campaign UI.
+Next: US051.
 
 ---
 
@@ -95,7 +95,7 @@ Completed:
 - Single source of truth: `knowledge.version.ts`.
 - Integration/unit tests для create / duplicate / lineage / version consistency.
 
-Next: US020 — Campaign UI.
+Next: US051.
 
 ---
 
@@ -109,8 +109,13 @@ Completed:
 - Provenance audit (US015): що є / чого бракує для reproducibility.
 - `Experiment.report` зберігає `researchEngineVersion` і `validationVersion` (ті самі константи, що Knowledge).
 - `gitCommit` лишається окремим provenance-полем (не version).
+- Optional `sliceIdentity` on ExperimentReport when run via SliceRef (US046).
+- Optional `sliceIdentity` on CampaignReport when campaign runs with SliceRef (US047).
+- Walk-Forward windows carry `trainSliceIdentity` / `testSliceIdentity` (US048).
+- Walk-Forward test evaluation: `trainBestExperimentId` / `testExperimentId` + train/test metrics & verdicts (US049).
+- Walk-Forward Aggregate v2 (US050): Train Aggregate + Test Aggregate; `overallVerdict` from Test only.
 
-Next: US020 — Campaign UI.
+Next: US051.
 
 ---
 
@@ -128,8 +133,25 @@ Completed:
 - Campaign Report Builder (US018): verdict + recommendations поверх Summary + Experiments.
 - Campaign API (US019): `POST /research-campaigns` → summary + report.
 - Campaign API (US026): `POST /campaigns/run` → CampaignSummary.
+- Campaign UI (US027–US030): web client, Run / Results / History.
+- Deterministic Research Analysis (US031–US032): service + `POST /campaigns/analyze` + Results view.
+- Multi-dataset Campaign (US033–US035): orchestration service + API + UI.
+- Walk-Forward foundation (US037): `WalkForwardCampaignService` stub (validate + empty summary).
+- Walk-Forward window builder (US038): `buildWalkForwardWindows()` → index train/test windows in summary.
+- Walk-Forward campaign runner (US039): one `ResearchCampaignService.run` per window; continues on failure.
+- Walk-Forward aggregate report (US040): averages + best/worst window + overallVerdict over successful windows.
+- Walk-Forward analysis (US041): deterministic `WalkForwardAnalysisService` (stability/consistency + ROBUST…UNUSABLE).
+- Walk-Forward API (US042): `POST /campaigns/run-walk-forward` → `WalkForwardCampaignSummary`.
+- Walk-Forward UI (US043): `WalkForwardCampaignPage` at `/campaigns/walk-forward`.
+- Dataset Slice Architecture (US044 / ADR-011): immutable `SliceRef`; `SliceResolver`-only construction (design freeze).
+- Dataset Slice Domain Model (US045): `createSliceRef` / `resolveSlice` in `@trp/research` (bars array only; no DB).
+- Experiment Slice Support (US046): `runExperiment(bars, config?, sliceRef?)` → optional `sliceIdentity` provenance; Engine unchanged.
+- Campaign Slice Support (US047): optional `sliceRef` on `ResearchCampaignService.run`; CampaignReport may include `sliceIdentity`.
+- True Walk-Forward Execution (US048): Train/Test `SliceRef` per window; campaign runs on Train slice only; test identity stored as provenance.
+- Walk-Forward Test Evaluation (US049): best train params re-run on Test SliceRef; window train/test metrics & verdicts.
+- Walk-Forward Aggregate v2 (US050): separate Test Aggregate metrics; `overallVerdict` from Test verdicts only; Train Aggregate kept for reference.
 
-Next: US020 — Campaign UI.
+Next: US051.
 
 ---
 
@@ -345,42 +367,168 @@ US030 — Campaign History (MVP)
 - Completed Story: localStorage campaign history + `CampaignHistoryView` (newest first); append after each successful `runCampaign()`.
 - Changed Files: `campaign-history.ts`, `CampaignHistoryView.tsx`, `CampaignHistoryView.spec.tsx`, `CampaignRunPage.tsx`, `CampaignResultsPage.tsx`, docs.
 - Tests: web `CampaignHistoryView.spec.tsx` passed.
-- Next: Architecture Review (US026–US030).
+- Next: US031.
 
-US021 — AI Research Analysis (deterministic)
+US031 — Deterministic Research Analysis
 
-- Completed Story: `ResearchAnalysisService.buildAnalysis(CampaignReport)` returns deterministic executiveSummary / strengths / weaknesses / recommendations / nextHypothesis (no external AI).
+- Completed Story: `ResearchAnalysisService.buildAnalysis(CampaignReport)` returns deterministic executiveSummary / strengths / weaknesses / recommendations / nextHypothesis (no external AI). Formerly tracked as US021.
 - Changed Files: `apps/api/src/modules/research-analysis/*`, `app.module.ts`, `project-status.md`, `roadmap.md`, `CHANGELOG.md`.
 - Tests: `research-analysis.service.spec.ts` (PASS / FAIL / NEEDS_REVIEW / empty) passed.
-- Next: Architecture Review (US026–US030) or analysis API/UI.
+- Next: US032.
 
-US021A — Research Analysis API + UI
+US032 — Research Analysis API + UI
 
-- Completed Story: `POST /campaigns/analyze` + read-only `CampaignAnalysisView` under Campaign Results; uses existing `ResearchAnalysisService`.
+- Completed Story: `POST /campaigns/analyze` + read-only `CampaignAnalysisView` under Campaign Results; uses existing `ResearchAnalysisService`. Formerly tracked as US021A.
 - Changed Files: `research-analysis.controller.ts`, `CampaignAnalysisView.tsx`, `CampaignResultsPage.tsx`, `api.ts`, docs.
 - Tests: controller + `CampaignAnalysisView` component tests passed.
-- Next: Architecture Review (US026–US030).
+- Next: US033.
 
-US022 — Multi-dataset campaigns
+US033 — Multi-dataset Campaign Service
 
-- Completed Story: `MultiDatasetCampaignService` runs one campaign per dataset via existing `ResearchCampaignService`; continues on dataset failure; aggregates `MultiDatasetCampaignSummary`.
+- Completed Story: `MultiDatasetCampaignService` runs one campaign per dataset via existing `ResearchCampaignService`; continues on dataset failure; aggregates `MultiDatasetCampaignSummary`. Formerly tracked as US022.
 - Changed Files: `multi-dataset-campaign.service.ts`, `multi-dataset-campaign.types.ts`, `multi-dataset-campaign.service.spec.ts`, `research-campaign.module.ts`, docs.
 - Tests: single / multiple / one failure / overall best selection passed.
-- Next: US023 — Walk-forward testing (or multi-dataset API).
+- Next: US034.
 
-US022A — Multi-dataset Campaign API
+US034 — Multi-dataset Campaign API
 
-- Completed Story: `POST /campaigns/run-multi` validates input and returns `MultiDatasetCampaignSummary` via existing `MultiDatasetCampaignService`.
+- Completed Story: `POST /campaigns/run-multi` validates input and returns `MultiDatasetCampaignSummary` via existing `MultiDatasetCampaignService`. Formerly tracked as US022A.
 - Changed Files: `campaign.controller.ts`, `campaign.controller.spec.ts`, docs.
 - Tests: valid request / empty datasets / service exception passed.
-- Next: US023 — Walk-forward testing.
+- Next: US035.
 
-US022B — Multi-dataset Campaign UI
+US035 — Multi-dataset Campaign UI
 
-- Completed Story: `MultiDatasetCampaignPage` with strategy/datasets/params form, calls `runMultiDatasetCampaign`, renders aggregate summary + dataset table.
+- Completed Story: `MultiDatasetCampaignPage` with strategy/datasets/params form, calls `runMultiDatasetCampaign`, renders aggregate summary + dataset table. Formerly tracked as US022B.
 - Changed Files: `MultiDatasetCampaignPage.tsx`, `MultiDatasetCampaignPage.spec.tsx`, `api.ts`, `App.tsx`, `AppLayout.tsx`, docs.
 - Tests: initial render / success / API error / empty datasets validation passed.
-- Next: US023 — Walk-forward testing.
+- Next: US036.
+
+US036 — Documentation Sync + ADR Extension
+
+- Completed Story: sync Project Status / Roadmap after Campaign UI + Analysis + Multi-dataset; add ADR-008 (deterministic analysis) and ADR-009 (multi-dataset campaign); update ADR index + CHANGELOG.
+- Changed Files: `project-status.md`, `roadmap.md`, `CHANGELOG.md`, `docs/adr/README.md`, `ADR-008-deterministic-research-analysis.md`, `ADR-009-multi-dataset-campaign.md`.
+- Tests: markdown prettier/check only.
+- Next: US037 — Walk-Forward Testing Foundation.
+
+US037 — Walk-Forward Testing Foundation
+
+- Completed Story: `WalkForwardCampaignService` orchestration stub — validates request, returns empty `WalkForwardCampaignSummary`, TODO for real walk-forward; no dataset split / backtests / controller.
+- Changed Files: `walk-forward-campaign.types.ts`, `walk-forward-campaign.service.ts`, `walk-forward-campaign.service.spec.ts`, `research-campaign.module.ts`, `project-status.md`, `roadmap.md`, `CHANGELOG.md`.
+- Tests: `walk-forward-campaign.service.spec.ts` (valid / invalid window / invalid step / empty paramsList) passed.
+- Next: US038.
+
+US038 — Walk-Forward Window Builder
+
+- Completed Story: `buildWalkForwardWindows(datasetLength, windowSize, stepSize)` builds inclusive train/test index windows; `WalkForwardCampaignService` returns `windowCount` + `windows` (no experiments).
+- Changed Files: `walk-forward-window-builder.ts`, `walk-forward-window-builder.spec.ts`, `walk-forward-campaign.types.ts`, `walk-forward-campaign.service.ts`, `walk-forward-campaign.service.spec.ts`, docs.
+- Tests: window-builder (normal / exact fit / one window / too small / invalid step / invalid window) + service specs passed.
+- Next: US039.
+
+US039 — Walk-Forward Campaign Runner (без persistence)
+
+- Completed Story: `WalkForwardCampaignService` runs one `ResearchCampaignService.run` per built window; returns `windowCount` / `windows` / `successfulWindows` / `failedWindows`; continues when a window fails; no aggregate metrics.
+- Changed Files: `walk-forward-campaign.service.ts`, `walk-forward-campaign.types.ts`, `walk-forward-campaign.service.spec.ts`, `project-status.md`, `roadmap.md`, `CHANGELOG.md`.
+- Tests: one window / several windows / one failure continues / successful+failed counts passed.
+- Next: US040 — Walk-Forward Aggregate Report.
+
+US040 — Walk-Forward Aggregate Report
+
+- Completed Story: aggregate over successful windows — averages (PF / return / drawdown / expectancy), best/worst window index, pass/needsReview/fail counts, overallVerdict (PASS / NEEDS_REVIEW / FAIL); error windows excluded from averages.
+- Changed Files: `walk-forward-aggregate.ts`, `walk-forward-aggregate.spec.ts`, `walk-forward-campaign.types.ts`, `walk-forward-campaign.service.ts`, `walk-forward-campaign.service.spec.ts`, docs.
+- Tests: aggregate unit + service aggregate cases passed; prior walk-forward tests unchanged and still green.
+- Next: US041.
+
+US041 — Walk-Forward Analysis Service
+
+- Completed Story: deterministic `WalkForwardAnalysisService.buildAnalysis(WalkForwardCampaignSummary)` → overallAssessment / strengths / weaknesses / recommendations / stabilityScore / consistencyScore (no AI).
+- Changed Files: `walk-forward-analysis.types.ts`, `walk-forward-analysis.service.ts`, `walk-forward-analysis.service.spec.ts`, `research-campaign.module.ts`, `project-status.md`, `roadmap.md`, `CHANGELOG.md`.
+- Tests: robust / promising / unstable / all failed / empty / error windows passed.
+- Next: US042.
+
+US041A — Documentation Sync
+
+- Completed Story: sync Current Goal after Walk-Forward Aggregate + Analysis; fix Roadmap Next (remove misplaced US024 — Portfolio research → Future Milestones only); verify CHANGELOG [Unreleased] covers US037–US041.
+- Changed Files: `project-status.md`, `roadmap.md`, `CHANGELOG.md`.
+- Tests: documentation only.
+- Next: US042.
+
+US042 — Walk-Forward API
+
+- Completed Story: `POST /campaigns/run-walk-forward` validates input and returns `WalkForwardCampaignSummary` via existing `WalkForwardCampaignService` (no persistence / Knowledge / Analysis).
+- Changed Files: `campaign.controller.ts`, `campaign.controller.spec.ts`, `project-status.md`, `roadmap.md`, `CHANGELOG.md`.
+- Tests: valid / invalid window / invalid step / service throws / response passthrough passed.
+- Next: US043.
+
+US043 — Walk-Forward UI
+
+- Completed Story: `WalkForwardCampaignPage` at `/campaigns/walk-forward` — form + summary + per-window table via `runWalkForwardCampaign()`; no Analysis / charts / Knowledge / History.
+- Changed Files: `WalkForwardCampaignPage.tsx`, `WalkForwardCampaignPage.spec.tsx`, `api.ts`, `App.tsx`, `AppLayout.tsx`, docs.
+- Tests: initial render / successful request / API error / invalid windowSize passed.
+- Next: US044.
+
+US043A — Walk-Forward Architecture Freeze
+
+- Completed Story: ADR-010 freezes Walk-Forward architecture (role, Window Builder, Runner, Aggregate, Analysis, API, UI) as orchestration above `ResearchCampaignService`; Research Engine not modified; update ADR index + Important Decisions + CHANGELOG.
+- Changed Files: `ADR-010-walk-forward-architecture.md`, `docs/adr/README.md`, `project-status.md`, `roadmap.md`, `CHANGELOG.md`.
+- Tests: markdown prettier/check only.
+- Next: US044.
+
+US044 — ADR-011 Dataset Slice Architecture
+
+- Completed Story: ADR-011 freezes Dataset Slice design — immutable `SliceRef` (`datasetId` + range + role), `sliceIdentity` without separate `sliceId`, no `parentWindowId`, `SliceResolver` as sole construction point, roles include `VALIDATION`, recommend future Result Identity inclusion; Engine unchanged.
+- Changed Files: `ADR-011-dataset-slice-architecture.md`, `docs/adr/README.md`, `project-status.md`, `roadmap.md`, `CHANGELOG.md`.
+- Tests: documentation only.
+- Next: US045.
+
+US045 — Dataset Slice Domain Model
+
+- Completed Story: `@trp/research` `dataset-slice` module — `SliceRole` / `SliceIdentity` / `SliceRef`, `createSliceRef` + `resolveSlice(bars)` per ADR-011; no Experiment/Campaign/WF/Engine integration.
+- Changed Files: `packages/research/src/dataset-slice/*`, `packages/research/src/index.ts`, `project-status.md`, `roadmap.md`, `CHANGELOG.md`.
+- Tests: `slice-resolver.spec.ts` (immutable / valid / invalid / empty / identity / role) passed.
+- Next: US046.
+
+US046 — Experiment Slice Support
+
+- Completed Story: `runExperiment` accepts optional `SliceRef`; resolves bars via `resolveSlice`; Engine still receives plain bars; ExperimentReport includes `sliceIdentity` only for sliced runs.
+- Changed Files: `packages/research/src/index.ts`, `packages/research/src/types.ts`, `packages/research/src/experiment-slice.spec.ts`, docs.
+- Tests: full / train / test / invalid slice / sliceIdentity present/absent passed.
+- Next: US047.
+
+US047 — Campaign Slice Support
+
+- Completed Story: `ResearchCampaignService.run` accepts optional `sliceRef`; all experiments use that slice; Campaign Summary unchanged; CampaignReport may include `sliceIdentity` provenance.
+- Changed Files: `research-campaign.service.ts`, `research-campaign.types.ts`, `campaign-report.service.ts`, `campaign-report.types.ts`, `experiments.service.ts`, specs, docs.
+- Tests: full / train / test / invalid slice / report sliceIdentity present/absent passed.
+- Next: US048.
+
+US048 — True Walk-Forward Execution
+
+- Completed Story: each Walk-Forward window builds Train/Test `SliceRef` via `createSliceRef`; campaign runs with Train slice only (test slice provenance only); window carries `trainSliceIdentity` / `testSliceIdentity`; aggregate/analysis unchanged.
+- Changed Files: `walk-forward-campaign.service.ts`, `walk-forward-campaign.types.ts`, `walk-forward-campaign.service.spec.ts`, docs.
+- Tests: train/test SliceRef per window / campaign uses Train / invalid slice provenance / aggregate unchanged passed.
+- Next: US049.
+
+US049 — Walk-Forward Test Evaluation
+
+- Completed Story: after train campaign, best experiment params are evaluated on Test SliceRef via `ExperimentsService`; window gains train/test experiment ids, metrics, verdicts; test failures do not fail the window or stop others; aggregate remains train-based.
+- Changed Files: `walk-forward-campaign.service.ts`, `walk-forward-campaign.types.ts`, `walk-forward-campaign.service.spec.ts`, docs.
+- Tests: train+best+test flow / test uses best params / test error continues / aggregate unchanged passed.
+- Next: US050.
+
+US050 — Walk-Forward Aggregate v2
+
+- Completed Story: Walk-Forward summary gains independent Test Aggregate (`testPassCount` / averages); Train Aggregate kept for reference; `overallVerdict` uses Test verdicts only; Analysis untouched.
+- Changed Files: `walk-forward-aggregate.ts`, `walk-forward-aggregate.spec.ts`, `walk-forward-campaign.service.ts`, `walk-forward-campaign.types.ts`, related specs, docs.
+- Tests: train-only / train+test / mixed verdicts / failed test / empty test metrics passed.
+- Next: US051.
+
+US050A — Walk-Forward Documentation Sync
+
+- Completed Story: ADR-010 refreshed to current implementation (Dataset Slice, Train/Test slices, Train Campaign, Test Experiment, Aggregate v2, Test-based `overallVerdict`, Analysis still on Train Aggregate by intent); ADR index blurb updated; CHANGELOG note.
+- Changed Files: `docs/adr/ADR-010-walk-forward-architecture.md`, `docs/adr/README.md`, `docs/project/project-status.md`, `CHANGELOG.md`.
+- Tests: n/a (documentation only).
+- Next: US051.
 
 ---
 
@@ -414,7 +562,7 @@ Note: ці версії стосуються working-tree Research OS semantics;
 
 High Priority
 
-- US020 — Campaign UI.
+- US051.
 - Наступна research hypothesis після EMA + Donchian FAIL.
 - За потреби: campaign-level Knowledge summary (не лише per-config).
 
@@ -446,3 +594,5 @@ Low Priority
 - Цей файл (`docs/project/project-status.md`) — єдиний living project status; оновлювати після кожної User Story.
 - Commit після 2–4 US; push лише за явною командою користувача (див. `release-process.md`).
 - Scope > 3 modules або вихід за межі story → Architecture Review замість реалізації.
+- Walk-Forward Architecture Freeze (ADR-010): Campaign Layer orchestration above `ResearchCampaignService` (Window Builder, Runner, Aggregate, Analysis, API, UI); Research Engine is not modified.
+- Dataset Slice Architecture (ADR-011): immutable `SliceRef`; `SliceResolver` sole construction; `sliceIdentity` = datasetId + range + role; recommend future Result Identity inclusion; Engine unchanged.

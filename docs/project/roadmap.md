@@ -52,11 +52,28 @@ Related:
 - US028 — Campaign Run Page (MVP)
 - US029 — Campaign Results Page (MVP)
 - US030 — Campaign History (MVP)
-- US021 — AI Research Analysis (deterministic CampaignReport analysis)
-- US021A — Research Analysis API + UI (`POST /campaigns/analyze`, CampaignAnalysisView)
-- US022 — Multi-dataset campaigns (`MultiDatasetCampaignService`)
-- US022A — Multi-dataset Campaign API (`POST /campaigns/run-multi`)
-- US022B — Multi-dataset Campaign UI (`MultiDatasetCampaignPage`)
+- US031 — Deterministic Research Analysis (`ResearchAnalysisService`)
+- US032 — Research Analysis API + UI (`POST /campaigns/analyze`, CampaignAnalysisView)
+- US033 — Multi-dataset Campaign Service (`MultiDatasetCampaignService`)
+- US034 — Multi-dataset Campaign API (`POST /campaigns/run-multi`)
+- US035 — Multi-dataset Campaign UI (`MultiDatasetCampaignPage`)
+- US036 — Documentation Sync + ADR Extension (ADR-008, ADR-009)
+- US037 — Walk-Forward Testing Foundation (`WalkForwardCampaignService` stub)
+- US038 — Walk-Forward Window Builder (`buildWalkForwardWindows`)
+- US039 — Walk-Forward Campaign Runner (one ResearchCampaign per window)
+- US040 — Walk-Forward Aggregate Report (averages + overallVerdict)
+- US041 — Walk-Forward Analysis Service (deterministic stability/consistency)
+- US041A — Documentation Sync (Walk-Forward status + roadmap cleanup)
+- US042 — Walk-Forward API (`POST /campaigns/run-walk-forward`)
+- US043 — Walk-Forward UI (`WalkForwardCampaignPage`)
+- US043A — Walk-Forward Architecture Freeze (ADR-010)
+- US044 — ADR-011 Dataset Slice Architecture
+- US045 — Dataset Slice Domain Model (`createSliceRef` / `resolveSlice`)
+- US046 — Experiment Slice Support (`runExperiment` + optional `sliceIdentity`)
+- US047 — Campaign Slice Support (`ResearchCampaignService` + optional `sliceRef`)
+- US048 — True Walk-Forward Execution (Train SliceRef campaign; test provenance)
+- US049 — Walk-Forward Test Evaluation (best train params on Test SliceRef)
+- US050 — Walk-Forward Aggregate v2 (Train + Test Aggregate; overall from Test)
 
 ---
 
@@ -68,9 +85,7 @@ Related:
 
 ## Next User Stories
 
-- US020 — Campaign UI polish / remaining surfaces
-- US023 — Walk-forward testing
-- US024 — Portfolio research
+- US051
 
 ---
 

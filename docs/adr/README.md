@@ -4,7 +4,7 @@ Index of accepted architectural decisions for TRP Research OS.
 
 Full living project status: [`docs/project/project-status.md`](../project/project-status.md).
 
-Note: ADR-001…ADR-006 currently exist as index-only decisions. ADR-007 is the first standalone ADR document. Do not create stub files for ADR-001…006.
+Note: ADR-001…ADR-006 currently exist as index-only decisions. ADR-007…ADR-011 are standalone ADR documents. Do not create stub files for ADR-001…006.
 
 ---
 
@@ -29,3 +29,19 @@ Status: Accepted
 ADR-007 — Campaign Layer (batch runner / summary / report; not Research Engine)
 Status: Accepted
 File: [`ADR-007-campaign-layer.md`](./ADR-007-campaign-layer.md)
+
+ADR-008 — Deterministic Research Analysis (CampaignReport only; no AI)
+Status: Accepted
+File: [`ADR-008-deterministic-research-analysis.md`](./ADR-008-deterministic-research-analysis.md)
+
+ADR-009 — Multi-dataset Campaign (orchestration over ResearchCampaignService)
+Status: Accepted
+File: [`ADR-009-multi-dataset-campaign.md`](./ADR-009-multi-dataset-campaign.md)
+
+ADR-010 — Walk-Forward Architecture (Train/Test Slice orchestration; Aggregate v2; Research Engine unchanged)
+Status: Accepted
+File: [`ADR-010-walk-forward-architecture.md`](./ADR-010-walk-forward-architecture.md)
+
+ADR-011 — Dataset Slice Architecture (immutable SliceRef; SliceResolver-only construction)
+Status: Accepted
+File: [`ADR-011-dataset-slice-architecture.md`](./ADR-011-dataset-slice-architecture.md)

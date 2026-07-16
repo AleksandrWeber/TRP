@@ -31,6 +31,13 @@ Research OS Foundation Release Candidate exists as a local commit; remote push n
 - Multi-dataset Campaign runner: `MultiDatasetCampaignService` reuses `ResearchCampaignService` per dataset and aggregates summaries.
 - Multi-dataset Campaign API: `POST /campaigns/run-multi` returns `MultiDatasetCampaignSummary`.
 - Multi-dataset Campaign UI: `MultiDatasetCampaignPage` runs `/campaigns/run-multi` and renders summary + per-dataset table.
+- Walk-Forward Campaign foundation (US037): `WalkForwardCampaignService` validates request and returns empty `WalkForwardCampaignSummary` (stub; no real walk-forward yet).
+- Walk-Forward Window Builder (US038): `buildWalkForwardWindows()` produces inclusive train/test index windows; service returns `windowCount` + `windows` (no experiments).
+- Walk-Forward Campaign Runner (US039): one `ResearchCampaignService.run` per window; returns successful/failed window counts.
+- Walk-Forward Aggregate Report (US040): averages, best/worst window, verdict counts, and `overallVerdict` over successful windows only.
+- Walk-Forward Analysis (US041): deterministic `WalkForwardAnalysisService` with stability/consistency scores and ROBUST / PROMISING / UNSTABLE / UNUSABLE assessment (no AI).
+- Walk-Forward API (US042): `POST /campaigns/run-walk-forward` returns `WalkForwardCampaignSummary` via existing `WalkForwardCampaignService`.
+- Walk-Forward UI (US043): `WalkForwardCampaignPage` at `/campaigns/walk-forward` (summary + window table; no Analysis).
 - Project documentation workflow: living Project Status, ADR Index, Version History, Release Process, Roadmap.
 - Root `CHANGELOG.md` (this file).
 - Release Candidate docs: Ready for Commit for Research OS (US003–US019, US020A–US020B) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C), pending explicit commit sequence.
@@ -39,9 +46,21 @@ Research OS Foundation Release Candidate exists as a local commit; remote push n
 - Research Domain Model: `docs/project/research-domain-model.md` (implemented Research Layer only).
 - Knowledge Domain Model: `docs/project/knowledge-domain-model.md` (implemented Knowledge Layer only).
 - ADR-007 — Campaign Layer: `docs/adr/ADR-007-campaign-layer.md` (Accepted).
+- ADR-008 — Deterministic Research Analysis: `docs/adr/ADR-008-deterministic-research-analysis.md` (Accepted).
+- ADR-009 — Multi-dataset Campaign: `docs/adr/ADR-009-multi-dataset-campaign.md` (Accepted).
+- ADR-010 — Walk-Forward Architecture: `docs/adr/ADR-010-walk-forward-architecture.md` (Accepted).
+- ADR-011 — Dataset Slice Architecture: `docs/adr/ADR-011-dataset-slice-architecture.md` (Accepted).
+- Dataset Slice Domain Model (US045): `@trp/research` `createSliceRef` / `resolveSlice` over in-memory bars (immutable `SliceRef`, no DB).
+- Experiment Slice Support (US046): `runExperiment` accepts optional `SliceRef`; report gets `sliceIdentity` only for sliced runs (Engine unchanged).
+- Campaign Slice Support (US047): `ResearchCampaignService.run` accepts optional `sliceRef`; CampaignReport may include `sliceIdentity`.
+- True Walk-Forward Execution (US048): per-window Train/Test `SliceRef`; campaign runs on Train only; `trainSliceIdentity` / `testSliceIdentity` provenance (test evaluation deferred).
+- Walk-Forward Test Evaluation (US049): best train experiment re-run on Test SliceRef; window train/test metrics & verdicts; aggregate still train-based.
+- Walk-Forward Aggregate v2 (US050): Test Aggregate block + `overallVerdict` from Test only; Train Aggregate retained for reference.
 
 ### Fixed
 
+- Documentation sync (US050A): ADR-010 aligned to Dataset Slice + Train/Test execution + Aggregate v2; Analysis documented as still Train-oriented by intent; ADR index blurb updated.
+- Documentation sync (US041A): Current Goal after Walk-Forward Aggregate + Analysis; Roadmap Next drops misplaced US024 (Portfolio Research remains a Future Milestone); CHANGELOG [Unreleased] labels US037–US041 explicitly.
 - Backtest accounting: trade PnL includes entry fee (Research Engine 1.0.1 semantics).
 - Documentation story IDs: former docs US021–US024 renumbered to DOC-021–DOC-024 (no collision with product backlog US021–US024).
 - Terminology: Config Identity (was Configuration Identity); Research Layer for the architectural layer (ADR-002, Project Status).
