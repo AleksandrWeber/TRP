@@ -158,6 +158,46 @@ export type MultiDatasetCampaignSummary = {
   failedDatasetErrors: MultiDatasetCampaignFailedDataset[];
 };
 
+export type WalkForwardWindowResult = {
+  trainStart: number;
+  trainEnd: number;
+  testStart: number;
+  testEnd: number;
+  summary: CampaignSummary | null;
+  error: string | null;
+};
+
+export type WalkForwardCampaignRequest = {
+  datasetId: string;
+  strategyId: string;
+  paramsList: Array<Record<string, string | number | boolean | null>>;
+  datasetLength: number;
+  windowSize: number;
+  stepSize: number;
+};
+
+export type WalkForwardCampaignSummary = {
+  datasetId: string;
+  strategyId: string;
+  windowSize: number;
+  stepSize: number;
+  paramsCount: number;
+  windowCount: number;
+  successfulWindows: number;
+  failedWindows: number;
+  windows: WalkForwardWindowResult[];
+  averageProfitFactor: number | null;
+  averageReturnPercent: number | null;
+  averageMaxDrawdownPercent: number | null;
+  averageExpectancy: number | null;
+  bestWindowIndex: number | null;
+  worstWindowIndex: number | null;
+  passCount: number | null;
+  needsReviewCount: number | null;
+  failCount: number | null;
+  overallVerdict: 'PASS' | 'NEEDS_REVIEW' | 'FAIL';
+};
+
 export type ResearchAnalysis = {
   executiveSummary: string;
   strengths: string[];
@@ -235,6 +275,13 @@ export function runMultiDatasetCampaign(body: MultiDatasetCampaignRequest) {
   });
 }
 
+export function runWalkForwardCampaign(body: WalkForwardCampaignRequest) {
+  return request<WalkForwardCampaignSummary>('/campaigns/run-walk-forward', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}
+
 export const api = {
   login: (email: string, password: string) =>
     request<LoginResponse>('/auth/login', {
@@ -273,6 +320,7 @@ export const api = {
   runCampaign,
   analyzeCampaign,
   runMultiDatasetCampaign,
+  runWalkForwardCampaign,
   aiExecute: (task: string, context: Record<string, unknown>) =>
     request<{ content: string; provider: string; model: string }>('/ai/execute', {
       method: 'POST',

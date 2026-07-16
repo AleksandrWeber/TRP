@@ -5,6 +5,7 @@ import { CampaignController } from './campaign.controller';
 describe('CampaignController', () => {
   let campaigns: { run: ReturnType<typeof vi.fn> };
   let multiDatasetCampaigns: { run: ReturnType<typeof vi.fn> };
+  let walkForwardCampaigns: { run: ReturnType<typeof vi.fn> };
   let controller: CampaignController;
 
   beforeEach(() => {
@@ -14,7 +15,14 @@ describe('CampaignController', () => {
     multiDatasetCampaigns = {
       run: vi.fn(),
     };
-    controller = new CampaignController(campaigns as never, multiDatasetCampaigns as never);
+    walkForwardCampaigns = {
+      run: vi.fn(),
+    };
+    controller = new CampaignController(
+      campaigns as never,
+      multiDatasetCampaigns as never,
+      walkForwardCampaigns as never,
+    );
   });
 
   describe('POST /campaigns/run', () => {
@@ -147,6 +155,93 @@ describe('CampaignController', () => {
           paramsList: [{ channelPeriod: 10 }],
         }),
       ).rejects.toThrow('campaign runner failed');
+    });
+  });
+
+  describe('POST /campaigns/run-walk-forward', () => {
+    const validBody = () => ({
+      datasetId: 'ds-1',
+      strategyId: 'donchian-breakout',
+      paramsList: [{ channelPeriod: 10 }],
+      datasetLength: 100,
+      windowSize: 40,
+      stepSize: 20,
+    });
+
+    it('validates request and returns WalkForwardCampaignSummary unchanged', async () => {
+      const summary = {
+        datasetId: 'ds-1',
+        strategyId: 'donchian-breakout',
+        windowSize: 40,
+        stepSize: 20,
+        paramsCount: 1,
+        windowCount: 3,
+        successfulWindows: 3,
+        failedWindows: 0,
+        windows: [],
+        averageProfitFactor: 1.2,
+        averageReturnPercent: 4,
+        averageMaxDrawdownPercent: 10,
+        averageExpectancy: 1,
+        bestWindowIndex: 1,
+        worstWindowIndex: 0,
+        passCount: 3,
+        needsReviewCount: 0,
+        failCount: 0,
+        overallVerdict: 'PASS' as const,
+      };
+
+      walkForwardCampaigns.run.mockResolvedValue(summary);
+
+      const result = await controller.runWalkForward(validBody());
+
+      expect(walkForwardCampaigns.run).toHaveBeenCalledWith({
+        datasetId: 'ds-1',
+        strategyId: 'donchian-breakout',
+        paramsList: [{ channelPeriod: 10 }],
+        datasetLength: 100,
+        windowSize: 40,
+        stepSize: 20,
+      });
+      expect(result).toEqual(summary);
+      expect(result).toBe(summary);
+    });
+
+    it('rejects invalid windowSize', async () => {
+      await expect(
+        controller.runWalkForward({
+          ...validBody(),
+          windowSize: 0,
+        }),
+      ).rejects.toBeInstanceOf(BadRequestException);
+      expect(walkForwardCampaigns.run).not.toHaveBeenCalled();
+    });
+
+    it('rejects invalid stepSize', async () => {
+      await expect(
+        controller.runWalkForward({
+          ...validBody(),
+          stepSize: -5,
+        }),
+      ).rejects.toBeInstanceOf(BadRequestException);
+      expect(walkForwardCampaigns.run).not.toHaveBeenCalled();
+    });
+
+    it('propagates service exceptions', async () => {
+      walkForwardCampaigns.run.mockRejectedValue(new Error('walk-forward runner failed'));
+
+      await expect(controller.runWalkForward(validBody())).rejects.toThrow(
+        'walk-forward runner failed',
+      );
+    });
+
+    it('passes through service response without transformation', async () => {
+      const summary = { marker: 'passthrough' };
+      walkForwardCampaigns.run.mockResolvedValue(summary);
+
+      const result = await controller.runWalkForward(validBody());
+
+      expect(result).toBe(summary);
     });
   });
 });

@@ -7,6 +7,7 @@ const links = [
   { to: '/research', label: 'Research' },
   { to: '/campaigns/run', label: 'Campaign' },
   { to: '/campaigns/multi', label: 'Multi-Dataset' },
+  { to: '/campaigns/walk-forward', label: 'Walk-Forward' },
   { to: '/knowledge', label: 'Knowledge' },
   { to: '/production', label: 'Production' },
   { to: '/ai', label: 'AI' },

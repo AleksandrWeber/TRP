@@ -7,6 +7,7 @@ import { HomePage } from '../pages/HomePage';
 import { KnowledgePage } from '../pages/KnowledgePage';
 import { LoginPage } from '../pages/LoginPage';
 import { MultiDatasetCampaignPage } from '../pages/MultiDatasetCampaignPage';
+import { WalkForwardCampaignPage } from '../pages/WalkForwardCampaignPage';
 import { ProductionPage } from '../pages/ProductionPage';
 import { ResearchPage } from '../pages/ResearchPage';
 import { WorkflowsPage } from '../pages/WorkflowsPage';
@@ -25,6 +26,7 @@ export function App() {
             <Route path="campaigns/run" element={<CampaignRunPage />} />
             <Route path="campaigns/results" element={<CampaignResultsPage />} />
             <Route path="campaigns/multi" element={<MultiDatasetCampaignPage />} />
+            <Route path="campaigns/walk-forward" element={<WalkForwardCampaignPage />} />
             <Route path="knowledge" element={<KnowledgePage />} />
             <Route path="production" element={<ProductionPage />} />
             <Route path="ai" element={<AiPage />} />
