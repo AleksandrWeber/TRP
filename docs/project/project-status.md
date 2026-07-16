@@ -375,6 +375,13 @@ US022A — Multi-dataset Campaign API
 - Tests: valid request / empty datasets / service exception passed.
 - Next: US023 — Walk-forward testing.
 
+US022B — Multi-dataset Campaign UI
+
+- Completed Story: `MultiDatasetCampaignPage` with strategy/datasets/params form, calls `runMultiDatasetCampaign`, renders aggregate summary + dataset table.
+- Changed Files: `MultiDatasetCampaignPage.tsx`, `MultiDatasetCampaignPage.spec.tsx`, `api.ts`, `App.tsx`, `AppLayout.tsx`, docs.
+- Tests: initial render / success / API error / empty datasets validation passed.
+- Next: US023 — Walk-forward testing.
+
 ---
 
 # Current Version

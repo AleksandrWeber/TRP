@@ -137,6 +137,27 @@ export type CampaignSummary = {
   failedRuns: CampaignFailedRun[];
 };
 
+export type MultiDatasetCampaignRequest = {
+  strategyId: string;
+  datasets: string[];
+  paramsList: Array<Record<string, string | number | boolean | null>>;
+};
+
+export type MultiDatasetCampaignFailedDataset = {
+  datasetId: string;
+  error: string;
+};
+
+export type MultiDatasetCampaignSummary = {
+  totalDatasets: number;
+  completedDatasets: number;
+  failedDatasets: number;
+  campaignSummaries: CampaignSummary[];
+  overallBestExperimentId: string | null;
+  overallBestProfitFactor: number | null;
+  failedDatasetErrors: MultiDatasetCampaignFailedDataset[];
+};
+
 export type ResearchAnalysis = {
   executiveSummary: string;
   strengths: string[];
@@ -207,6 +228,13 @@ export function analyzeCampaign(campaignSummary: CampaignSummary) {
   });
 }
 
+export function runMultiDatasetCampaign(body: MultiDatasetCampaignRequest) {
+  return request<MultiDatasetCampaignSummary>('/campaigns/run-multi', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}
+
 export const api = {
   login: (email: string, password: string) =>
     request<LoginResponse>('/auth/login', {
@@ -244,6 +272,7 @@ export const api = {
   },
   runCampaign,
   analyzeCampaign,
+  runMultiDatasetCampaign,
   aiExecute: (task: string, context: Record<string, unknown>) =>
     request<{ content: string; provider: string; model: string }>('/ai/execute', {
       method: 'POST',

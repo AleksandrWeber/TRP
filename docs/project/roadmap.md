@@ -56,6 +56,7 @@ Related:
 - US021A — Research Analysis API + UI (`POST /campaigns/analyze`, CampaignAnalysisView)
 - US022 — Multi-dataset campaigns (`MultiDatasetCampaignService`)
 - US022A — Multi-dataset Campaign API (`POST /campaigns/run-multi`)
+- US022B — Multi-dataset Campaign UI (`MultiDatasetCampaignPage`)
 
 ---
 
