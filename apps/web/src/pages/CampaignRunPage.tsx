@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
-import { runCampaign, type CampaignRunRequest, type CampaignSummary } from '../shared/api';
+import { useNavigate } from 'react-router-dom';
+import { runCampaign, type CampaignRunRequest } from '../shared/api';
 
 export function parseParamsListJson(raw: string): CampaignRunRequest['paramsList'] {
   const parsed: unknown = JSON.parse(raw);
@@ -13,7 +14,7 @@ export async function submitCampaignRun(input: {
   datasetId: string;
   strategyId: string;
   paramsListRaw: string;
-}): Promise<CampaignSummary> {
+}) {
   const paramsList = parseParamsListJson(input.paramsListRaw);
   return runCampaign({
     datasetId: input.datasetId.trim(),
@@ -23,25 +24,24 @@ export async function submitCampaignRun(input: {
 }
 
 export function CampaignRunPage() {
+  const navigate = useNavigate();
   const [datasetId, setDatasetId] = useState('');
   const [strategyId, setStrategyId] = useState('donchian-breakout');
   const [paramsListRaw, setParamsListRaw] = useState('[{"channelPeriod":10}]');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<CampaignSummary | null>(null);
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
     setLoading(true);
     setError(null);
-    setResult(null);
     try {
       const summary = await submitCampaignRun({
         datasetId,
         strategyId,
         paramsListRaw,
       });
-      setResult(summary);
+      navigate('/campaigns/results', { state: { summary } });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Campaign run failed');
     } finally {
@@ -104,16 +104,6 @@ export function CampaignRunPage() {
           {loading ? 'Running…' : 'Run Campaign'}
         </button>
       </form>
-
-      {result && (
-        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-sm text-emerald-100">
-          <p className="font-medium">Campaign completed</p>
-          <p className="mt-2 text-emerald-200/80">campaignId: {result.campaignId}</p>
-          <p className="text-emerald-200/80">
-            bestExperimentId: {result.bestExperimentId ?? 'null'}
-          </p>
-        </div>
-      )}
     </section>
   );
 }

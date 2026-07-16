@@ -333,6 +333,13 @@ US028 — Campaign Run Page (MVP)
 - Tests: web `CampaignRunPage.spec.ts` passed.
 - Next: US029.
 
+US029 — Campaign Results Page (MVP)
+
+- Completed Story: after `runCampaign()`, navigate to Results page rendering CampaignSummary (counts, bestExperimentId, verdict, recommendations).
+- Changed Files: `CampaignResultsView.tsx`, `CampaignResultsView.spec.tsx`, `CampaignResultsPage.tsx`, `CampaignRunPage.tsx`, `App.tsx`, `vitest.config.ts`, docs.
+- Tests: web `CampaignResultsView.spec.tsx` + `CampaignRunPage.spec.ts` passed.
+- Next: US030.
+
 ---
 
 # Current Version

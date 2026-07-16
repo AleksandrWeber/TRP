@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AppLayout } from '../layout/AppLayout';
 import { AiPage } from '../pages/AiPage';
+import { CampaignResultsPage } from '../pages/CampaignResultsPage';
 import { CampaignRunPage } from '../pages/CampaignRunPage';
 import { HomePage } from '../pages/HomePage';
 import { KnowledgePage } from '../pages/KnowledgePage';
@@ -21,6 +22,7 @@ export function App() {
             <Route path="workflows" element={<WorkflowsPage />} />
             <Route path="research" element={<ResearchPage />} />
             <Route path="campaigns/run" element={<CampaignRunPage />} />
+            <Route path="campaigns/results" element={<CampaignResultsPage />} />
             <Route path="knowledge" element={<KnowledgePage />} />
             <Route path="production" element={<ProductionPage />} />
             <Route path="ai" element={<AiPage />} />

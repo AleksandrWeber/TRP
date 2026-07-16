@@ -50,6 +50,7 @@ Related:
 - US026 — Campaign API (POST /campaigns/run)
 - US027 — Campaign UI API Integration (`runCampaign` client)
 - US028 — Campaign Run Page (MVP)
+- US029 — Campaign Results Page (MVP)
 
 ---
 
