@@ -54,6 +54,7 @@ Related:
 - US030 — Campaign History (MVP)
 - US021 — AI Research Analysis (deterministic CampaignReport analysis)
 - US021A — Research Analysis API + UI (`POST /campaigns/analyze`, CampaignAnalysisView)
+- US022 — Multi-dataset campaigns (`MultiDatasetCampaignService`)
 
 ---
 
@@ -66,7 +67,6 @@ Related:
 ## Next User Stories
 
 - US020 — Campaign UI polish / remaining surfaces
-- US022 — Multi-dataset campaigns
 - US023 — Walk-forward testing
 - US024 — Portfolio research
 

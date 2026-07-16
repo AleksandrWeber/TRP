@@ -361,6 +361,13 @@ US021A — Research Analysis API + UI
 - Tests: controller + `CampaignAnalysisView` component tests passed.
 - Next: Architecture Review (US026–US030).
 
+US022 — Multi-dataset campaigns
+
+- Completed Story: `MultiDatasetCampaignService` runs one campaign per dataset via existing `ResearchCampaignService`; continues on dataset failure; aggregates `MultiDatasetCampaignSummary`.
+- Changed Files: `multi-dataset-campaign.service.ts`, `multi-dataset-campaign.types.ts`, `multi-dataset-campaign.service.spec.ts`, `research-campaign.module.ts`, docs.
+- Tests: single / multiple / one failure / overall best selection passed.
+- Next: US023 — Walk-forward testing (or multi-dataset API).
+
 ---
 
 # Current Version
