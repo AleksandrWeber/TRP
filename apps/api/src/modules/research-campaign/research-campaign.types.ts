@@ -1,9 +1,11 @@
-import type { StrategyParams } from '@trp/research';
+import type { SliceRef, StrategyParams } from '@trp/research';
 
 export type ResearchCampaignInput = {
   datasetId: string;
   strategyId: string;
   paramsList: StrategyParams[];
+  /** Optional Dataset Slice scope for all experiments in this campaign (ADR-011 / US047). */
+  sliceRef?: SliceRef;
 };
 
 export type CampaignFailedRun = {

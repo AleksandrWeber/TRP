@@ -8,7 +8,11 @@ import type {
 
 @Injectable()
 export class CampaignReportService {
-  build(summary: CampaignSummary, experiments: CampaignReportExperiment[]): CampaignReport {
+  build(
+    summary: CampaignSummary,
+    experiments: CampaignReportExperiment[],
+    options?: { sliceIdentity?: string },
+  ): CampaignReport {
     const verdict = this.resolveVerdict(summary);
     const best = this.resolveBestExperiment(summary, experiments);
     const lowestDrawdown = this.resolveLowestDrawdown(experiments);
@@ -30,6 +34,10 @@ export class CampaignReportService {
       recommendations: this.buildRecommendations(summary, best, verdict),
       createdAt: summary.createdAt,
     };
+
+    if (options?.sliceIdentity !== undefined) {
+      report.sliceIdentity = options.sliceIdentity;
+    }
 
     return report;
   }

@@ -49,6 +49,15 @@ vi.mock('@trp/research', () => ({
     datasetBarCount: 500,
     generatedAt: '2026-07-16T09:00:00.000Z',
   })),
+  resolveSlice: vi.fn(({ bars, startIndex, endIndex }: any) => ({
+    bars: bars.slice(startIndex, endIndex + 1),
+    ref: {},
+    sliceIdentity: 'slice-id',
+  })),
+  buildSliceIdentity: vi.fn(
+    (datasetId: string, startIndex: number, endIndex: number, role: string) =>
+      `${datasetId}:${startIndex}:${endIndex}:${role}`,
+  ),
   hashConfig: vi.fn(() => 'cfg-hash'),
 }));
 

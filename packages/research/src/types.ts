@@ -90,6 +90,8 @@ export type ExperimentReport = {
   backtest: BacktestConfig;
   researchEngineVersion?: string;
   validationVersion?: string;
+  /** Present only when the experiment ran on a Dataset Slice (ADR-011 / US046). */
+  sliceIdentity?: string;
   metrics: BacktestMetrics;
   validation: ValidationResult;
   tradeCount: number;

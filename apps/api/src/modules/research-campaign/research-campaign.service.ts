@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
+import { buildSliceIdentity, type SliceRef } from '@trp/research';
 import { ExperimentsService } from '../experiments/experiments.service';
 import type { CampaignReportExperiment } from './campaign-report.types';
 import type { CampaignSummary, ResearchCampaignInput } from './research-campaign.types';
@@ -13,12 +14,14 @@ type ExperimentLike = {
     expectancy?: number;
     maxDrawdownPercent?: number;
   } | null;
-  report?: { params?: Record<string, unknown> } | null;
+  report?: { params?: Record<string, unknown>; sliceIdentity?: string } | null;
 };
 
 export type ResearchCampaignResult = {
   summary: CampaignSummary;
   experiments: CampaignReportExperiment[];
+  /** Present only when the campaign ran with a SliceRef. */
+  sliceIdentity?: string;
 };
 
 @Injectable()
@@ -39,12 +42,16 @@ export class ResearchCampaignService {
     const failedRuns: CampaignSummary['failedRuns'] = [];
     const experiments: CampaignReportExperiment[] = [];
 
+    const sliceRef = input.sliceRef;
+    const sliceIdentity = sliceRef ? this.sliceIdentityFrom(sliceRef) : undefined;
+
     for (const params of input.paramsList) {
       try {
         const experiment = (await this.experiments.run(
           input.datasetId,
           input.strategyId,
           params,
+          sliceRef,
         )) as ExperimentLike;
 
         experiments.push({
@@ -89,6 +96,19 @@ export class ResearchCampaignService {
       `Campaign ${campaignId} finished: ${summary.passCount} pass / ${summary.failCount} fail / ${summary.needsReviewCount} needs_review / ${failedRuns.length} errors`,
     );
 
-    return { summary, experiments };
+    const result: ResearchCampaignResult = { summary, experiments };
+    if (sliceIdentity !== undefined) {
+      result.sliceIdentity = sliceIdentity;
+    }
+    return result;
+  }
+
+  private sliceIdentityFrom(sliceRef: SliceRef): string {
+    return buildSliceIdentity(
+      sliceRef.datasetId,
+      sliceRef.startIndex,
+      sliceRef.endIndex,
+      sliceRef.role,
+    );
   }
 }

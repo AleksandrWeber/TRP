@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { CampaignReportService } from './campaign-report.service';
 import { ResearchCampaignService } from './research-campaign.service';
 
 describe('ResearchCampaignService', () => {
@@ -144,5 +145,165 @@ describe('ResearchCampaignService', () => {
         error: 'dataset missing',
       },
     ]);
+  });
+});
+
+describe('ResearchCampaignService slice support', () => {
+  let experiments: { run: ReturnType<typeof vi.fn> };
+  let service: ResearchCampaignService;
+  let reports: CampaignReportService;
+
+  beforeEach(() => {
+    experiments = {
+      run: vi.fn(),
+    };
+    service = new ResearchCampaignService(experiments as never);
+    reports = new CampaignReportService();
+  });
+
+  it('runs a campaign on the full dataset without sliceIdentity', async () => {
+    experiments.run.mockResolvedValue({
+      id: 'exp-1',
+      verdict: 'pass',
+      metrics: { profitFactor: 1.2 },
+      report: { params: { channelPeriod: 10 } },
+    });
+
+    const {
+      summary,
+      experiments: created,
+      sliceIdentity,
+    } = await service.run({
+      datasetId: 'ds-1',
+      strategyId: 'donchian-breakout',
+      paramsList: [{ channelPeriod: 10 }],
+    });
+
+    expect(experiments.run).toHaveBeenCalledWith(
+      'ds-1',
+      'donchian-breakout',
+      { channelPeriod: 10 },
+      undefined,
+    );
+    expect(sliceIdentity).toBeUndefined();
+    expect(created).toHaveLength(1);
+
+    const report = reports.build(summary, created);
+    expect(report).not.toHaveProperty('sliceIdentity');
+  });
+
+  it('runs a campaign on a TRAIN slice and records sliceIdentity', async () => {
+    experiments.run.mockResolvedValue({
+      id: 'exp-train',
+      verdict: 'pass',
+      metrics: { profitFactor: 1.1 },
+      report: { params: { channelPeriod: 10 }, sliceIdentity: 'ds-1:0:39:TRAIN' },
+    });
+
+    const sliceRef = {
+      datasetId: 'ds-1',
+      startIndex: 0,
+      endIndex: 39,
+      role: 'TRAIN' as const,
+    };
+
+    const result = await service.run({
+      datasetId: 'ds-1',
+      strategyId: 'donchian-breakout',
+      paramsList: [{ channelPeriod: 10 }, { channelPeriod: 20 }],
+      sliceRef,
+    });
+
+    expect(experiments.run).toHaveBeenCalledTimes(2);
+    expect(experiments.run).toHaveBeenCalledWith(
+      'ds-1',
+      'donchian-breakout',
+      { channelPeriod: 10 },
+      sliceRef,
+    );
+    expect(result.sliceIdentity).toBe('ds-1:0:39:TRAIN');
+
+    const report = reports.build(result.summary, result.experiments, {
+      sliceIdentity: result.sliceIdentity,
+    });
+    expect(report.sliceIdentity).toBe('ds-1:0:39:TRAIN');
+  });
+
+  it('runs a campaign on a TEST slice and records sliceIdentity', async () => {
+    experiments.run.mockResolvedValue({
+      id: 'exp-test',
+      verdict: 'fail',
+      metrics: { profitFactor: 0.8 },
+    });
+
+    const sliceRef = {
+      datasetId: 'ds-1',
+      startIndex: 40,
+      endIndex: 59,
+      role: 'TEST' as const,
+    };
+
+    const result = await service.run({
+      datasetId: 'ds-1',
+      strategyId: 'donchian-breakout',
+      paramsList: [{ channelPeriod: 10 }],
+      sliceRef,
+    });
+
+    expect(experiments.run).toHaveBeenCalledWith(
+      'ds-1',
+      'donchian-breakout',
+      { channelPeriod: 10 },
+      sliceRef,
+    );
+    expect(result.sliceIdentity).toBe('ds-1:40:59:TEST');
+
+    const report = reports.build(result.summary, result.experiments, {
+      sliceIdentity: result.sliceIdentity,
+    });
+    expect(report.sliceIdentity).toBe('ds-1:40:59:TEST');
+  });
+
+  it('records failed runs when the slice is invalid for experiments', async () => {
+    experiments.run.mockRejectedValue(new Error('Slice endIndex 99 is out of bounds'));
+
+    const result = await service.run({
+      datasetId: 'ds-1',
+      strategyId: 'donchian-breakout',
+      paramsList: [{ channelPeriod: 10 }],
+      sliceRef: {
+        datasetId: 'ds-1',
+        startIndex: 0,
+        endIndex: 99,
+        role: 'TRAIN',
+      },
+    });
+
+    expect(result.experiments).toHaveLength(0);
+    expect(result.summary.failedRuns).toHaveLength(1);
+    expect(result.summary.failedRuns[0].error).toContain('out of bounds');
+    expect(result.sliceIdentity).toBe('ds-1:0:99:TRAIN');
+  });
+
+  it('does not put sliceIdentity on full-dataset campaign reports', async () => {
+    experiments.run.mockResolvedValue({
+      id: 'exp-1',
+      verdict: 'pass',
+      metrics: { profitFactor: 1.0 },
+    });
+
+    const {
+      summary,
+      experiments: created,
+      sliceIdentity,
+    } = await service.run({
+      datasetId: 'ds-1',
+      strategyId: 'ema-crossover',
+      paramsList: [{ emaFast: 12, emaSlow: 26 }],
+    });
+
+    expect(sliceIdentity).toBeUndefined();
+    const report = reports.build(summary, created);
+    expect('sliceIdentity' in report).toBe(false);
   });
 });

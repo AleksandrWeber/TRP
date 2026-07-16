@@ -30,4 +30,6 @@ export type CampaignReport = {
   verdict: CampaignReportVerdict;
   recommendations: string[];
   createdAt: string;
+  /** Present only when the campaign ran on a Dataset Slice (US047). */
+  sliceIdentity?: string;
 };

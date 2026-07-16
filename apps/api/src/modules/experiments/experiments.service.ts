@@ -3,10 +3,12 @@ import {
   DEFAULT_BACKTEST_CONFIG,
   defaultExperimentConfig,
   hashConfig,
+  resolveSlice,
   resolveStrategy,
   runBacktest,
   runExperiment,
   type ExperimentReport,
+  type SliceRef,
   type StrategyParams,
   validateBacktest,
 } from '@trp/research';
@@ -26,7 +28,7 @@ export class ExperimentsService {
     private readonly knowledge: KnowledgeService,
   ) {}
 
-  async run(datasetId: string, strategyId?: string, params?: StrategyParams) {
+  async run(datasetId: string, strategyId?: string, params?: StrategyParams, sliceRef?: SliceRef) {
     const dataset = await this.prisma.dataset.findUnique({ where: { id: datasetId } });
     if (!dataset) {
       throw new NotFoundException(`Dataset ${datasetId} not found`);
@@ -41,10 +43,20 @@ export class ExperimentsService {
       backtest: DEFAULT_BACKTEST_CONFIG,
     };
 
-    const backtest = runBacktest(bars, strategy, config.params, config.backtest);
+    const engineBars = sliceRef
+      ? resolveSlice({
+          datasetId: sliceRef.datasetId,
+          startIndex: sliceRef.startIndex,
+          endIndex: sliceRef.endIndex,
+          role: sliceRef.role,
+          bars,
+        }).bars
+      : bars;
+
+    const backtest = runBacktest(engineBars, strategy, config.params, config.backtest);
     const validation = validateBacktest(backtest.metrics);
     const report = {
-      ...runExperiment(bars, config),
+      ...runExperiment(bars, config, sliceRef),
       researchEngineVersion: RESEARCH_ENGINE_VERSION,
       validationVersion: VALIDATION_VERSION,
     } satisfies ExperimentReport;
