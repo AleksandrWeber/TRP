@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-07-16
+Last updated: 2026-07-17
 
 Living roadmap for product direction.
 
@@ -93,6 +93,12 @@ Related:
 - US066 — Replay Foundation (`CampaignReplayService` prepare-only)
 - US067 — Replay Execution (`execute` via ResearchCampaignService; transient)
 - RC-08 — Campaign Import + Replay foundation finalized
+- US069 — Job Domain Model (`Job` / `JobStatus` / `JobType` + JobService create-only)
+- US070 — Job Queue Abstraction (`JobQueue` + `InMemoryJobQueue` via `JOB_QUEUE`)
+- US071 — Background Campaign Runner (`BackgroundJobRunner` → Campaign/Replay)
+- US072 — Job Status API (`GET /jobs`, `GET /jobs/:jobId`)
+- US073 — Job Cancellation (`POST /jobs/:jobId/cancel`; PENDING only)
+- RC-09 — Background Job Execution framework finalized
 
 ---
 
@@ -104,7 +110,7 @@ Related:
 
 ## Next User Stories
 
-- RC-09
+- RC-10
 
 ---
 

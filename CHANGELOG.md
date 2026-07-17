@@ -72,9 +72,15 @@ Research OS Foundation Release Candidate exists as a local commit; remote push n
 - Import API (US065): `POST /campaign-import` with `{ format: "json", payload }` → `CampaignSession` (200) or 400; does not persist.
 - Replay Foundation (US066): `CampaignReplayModule` prepares `ReplayResult` from `CampaignSession` (READY; report copy; no execution/AI/persist/API).
 - Replay Execution (US067): `CampaignReplayService.execute` reuses `ResearchCampaignService.run` with `persistSession: false`; READY→RUNNING→COMPLETED|FAILED; regenerated report.
+- Job Domain Model (US069): `JobsModule` with `Job` / `JobResult` / `JobMetadata`, `JobStatus` / `JobType`, create-only `JobService` (no queue/execution/persist/API).
+- Job Queue Abstraction (US070): `JobQueue` + `JOB_QUEUE` token + `InMemoryJobQueue`; job create auto-enqueues as `PENDING` (no worker/BullMQ/Redis).
+- Background Campaign Runner (US071): `BackgroundJobRunner` executes CAMPAIGN via `ResearchCampaignService` and REPLAY via `CampaignReplayService`; stores `JobResult`; no job persistence.
+- Job Status API (US072): read-only `GET /jobs` and `GET /jobs/:jobId` via `JobController` → `JobService` → `JobQueue` (404 if missing; no processing).
+- Job Cancellation (US073): `POST /jobs/:jobId/cancel` cancels PENDING only (409 otherwise); `BackgroundJobRunner` skips CANCELLED; no execution result.
 
 ### Fixed
 
+- RC-09 finalized: Background Job Execution framework (US069–US073) verified (full monorepo tests green); docs synced; committed and pushed.
 - RC-08 finalized: Campaign Import + Replay stack verified (full monorepo tests green); docs synced; committed and pushed.
 - RC-07 finalized: Campaign Session Persistence + History + Export stack verified (full monorepo tests green); docs synced; committed and pushed.
 - RC-06 Architecture Audit (US060): Campaign Session Persistence stack boundaries, History API, and docs aligned; 63 related unit tests green.

@@ -1,8 +1,8 @@
-# TRP — Campaign History, Export & Import API
+# TRP — Campaign History, Export, Import & Jobs API
 
 Last updated: 2026-07-17
 
-Living HTTP contract for Campaign Session history, export, and import.
+Living HTTP contract for Campaign Session history, export, import, and Jobs status.
 Domain context: [`campaign-domain-model.md`](./campaign-domain-model.md).
 
 ---
@@ -121,3 +121,50 @@ Execution reuses `ResearchCampaignService` with `persistSession: false` (no Hist
 Future HTTP surface will be documented here when introduced.
 
 RC-08: Import + Replay foundation finalized (US063–US067).
+
+---
+
+## Jobs Status (US072–US073)
+
+Inspection and cancellation of in-memory queued jobs. Does not enqueue processing or interrupt RUNNING jobs.
+
+Flow:
+
+```
+JobController
+  → JobService.listJobs / getJob / cancelJob
+      → JobQueue.list / get / cancel
+```
+
+### `GET /jobs`
+
+Returns all jobs known to the queue (`Job[]`).
+
+| Status | Body    |
+| ------ | ------- |
+| `200`  | `Job[]` |
+
+Each `Job` exposes: `jobId`, `status`, `type`, timestamps (`createdAt`, optional `startedAt` / `completedAt`), `metadata`, and `result` when completed (or failed with a result). Cancelled jobs have no `result`.
+
+### `GET /jobs/:jobId`
+
+| Status | When          |
+| ------ | ------------- |
+| `200`  | `Job`         |
+| `404`  | Job not found |
+
+Pending jobs have no `result`. Completed jobs include `result` (`JobResult`).
+
+### `POST /jobs/:jobId/cancel`
+
+Cancel a `PENDING` job only.
+
+| Status | When                                                            |
+| ------ | --------------------------------------------------------------- |
+| `200`  | Cancelled `Job` (`status: CANCELLED`, no `result`)              |
+| `404`  | Job not found                                                   |
+| `409`  | Job is already `RUNNING`, `COMPLETED`, `FAILED`, or `CANCELLED` |
+
+`BackgroundJobRunner` skips CANCELLED jobs and never executes them.
+
+RC-09: Background Job Execution framework finalized (US069–US073).

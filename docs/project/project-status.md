@@ -15,9 +15,9 @@ Research OS Foundation
 
 Побудувати Evidence-driven Research OS: reproducible experiments, immutable Knowledge, і чітке provenance/versioning результатів.
 
-Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slice US045–US047. Campaign Persistence + History API (US051–US059). RC-06 Architecture Audit complete (US060). Export Foundation + Export API (US061–US062). RC-07 finalized. Import Foundation (US063). JSON Import Validation (US064). Import API (US065). Replay Foundation (US066). Replay Execution (US067). RC-08 finalized. Remote release ще не запушено.
+Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slice US045–US047. Campaign Persistence + History API (US051–US059). RC-06 Architecture Audit complete (US060). Export Foundation + Export API (US061–US062). RC-07 finalized. Import Foundation (US063). JSON Import Validation (US064). Import API (US065). Replay Foundation (US066). Replay Execution (US067). RC-08 finalized. Job Domain Model (US069). Job Queue Abstraction (US070). Background Campaign Runner (US071). Job Status API (US072). Job Cancellation (US073). RC-09 finalized. Remote release ще не запушено.
 
-Next: RC-09.
+Next: RC-10.
 
 ---
 
@@ -55,7 +55,7 @@ Status: NOT READY for remote release / push
 
 Status: Ready for Commit
 
-Scope: Research OS (US003–US019, US020A–US020B, US026–US035, US037–US043, US045–US050, US051–US067) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C, US036, US041A, US043A, US044, US050A, US060) + RC-07 (Campaign Session Persistence + History + Export) + RC-08 (Import + Replay). Product next: RC-09.
+Scope: Research OS (US003–US019, US020A–US020B, US026–US035, US037–US043, US045–US050, US051–US073) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C, US036, US041A, US043A, US044, US050A, US060) + RC-07 (Campaign Session Persistence + History + Export) + RC-08 (Import + Replay) + RC-09 (Background Job Execution). Product next: RC-10.
 
 Current Research OS implementation exists in working tree.
 Release will be created only after explicit commit sequence.
@@ -78,7 +78,7 @@ Completed:
 - EMA Crossover і Donchian Breakout зареєстровані.
 - Paginated Binance historical import (startTime/endTime, ≤1000 per page).
 
-Next: RC-09.
+Next: RC-10.
 
 ---
 
@@ -97,7 +97,7 @@ Completed:
 - Single source of truth: `knowledge.version.ts`.
 - Integration/unit tests для create / duplicate / lineage / version consistency.
 
-Next: RC-09.
+Next: RC-10.
 
 ---
 
@@ -117,7 +117,7 @@ Completed:
 - Walk-Forward test evaluation: `trainBestExperimentId` / `testExperimentId` + train/test metrics & verdicts (US049).
 - Walk-Forward Aggregate v2 (US050): Train Aggregate + Test Aggregate; `overallVerdict` from Test only.
 
-Next: RC-09.
+Next: RC-10.
 
 ---
 
@@ -139,7 +139,7 @@ Completed:
 - `ResearchCampaignService.run` creates/persists one `CampaignSession` per execution (`COMPLETED` or `FAILED`).
 - RC-06 Architecture Audit (US060): dependency direction / History flow / API / tests validated PASS.
 
-Next: RC-09.
+Next: RC-10.
 
 ---
 
@@ -157,7 +157,7 @@ Completed:
 - Every `ResearchCampaignService.run` persists exactly one session.
 - `CampaignHistoryService` + History API (US056–US059).
 
-Next: RC-09.
+Next: RC-10.
 
 ---
 
@@ -175,7 +175,7 @@ Completed:
 - `CampaignExportController`: `GET /campaign-history/:sessionId/export?format=json|csv`.
 - Flow: HistoryService.getById → CampaignExportService.export; 200 / 400 / 404; Content-Type set.
 
-Next: RC-09.
+Next: RC-10.
 
 ---
 
@@ -195,7 +195,7 @@ Completed:
 - `CampaignImportController`: `POST /campaign-import` with `{ format, payload }` → `CampaignSession` (200) or 400.
 - Nest `CampaignImportModule` wired in `AppModule` (no persistence side effects).
 
-Next: RC-09.
+Next: RC-10.
 
 ---
 
@@ -213,7 +213,30 @@ Completed:
 - `CampaignReplayService.execute(session)` → ResearchCampaignService.run(`persistSession: false`) → regenerated report; `COMPLETED` / `FAILED`.
 - Reuses existing Campaign pipeline; no History/Repository writes on replay.
 
-Next: RC-09.
+Next: RC-10.
+
+---
+
+## Jobs
+
+Status:
+✅ RC-09 finalized (US069–US073; no scheduler / job persist)
+
+Completed:
+
+- Module `apps/api/src/modules/jobs/` (wired into `AppModule`).
+- `Job`, `JobResult`, `JobMetadata` (incl. `paramsList` / `session` for execution).
+- `JobStatus`: `PENDING` | `RUNNING` | `COMPLETED` | `FAILED` | `CANCELLED`.
+- `JobType`: `CAMPAIGN` | `REPLAY`.
+- `JobQueue` interface + `JOB_QUEUE` token + `InMemoryJobQueue` (FIFO, in-memory; `list` / `get` / `cancel`).
+- `JobService.createCampaignJob` / `createReplayJob` → create `PENDING` job → `JobQueue.enqueue`.
+- `JobService.listJobs` / `getJob` → read-only via queue.
+- `JobService.cancelJob` → PENDING → CANCELLED (conflict otherwise).
+- `JobRunner` + `BackgroundJobRunner`: process → RUNNING → Campaign/Replay → COMPLETED|FAILED (`JobResult`); skips CANCELLED.
+- Job Status API (US072): `GET /jobs`, `GET /jobs/:jobId` (404 if missing).
+- Job Cancellation (US073): `POST /jobs/:jobId/cancel` (200 / 404 / 409).
+
+Next: RC-10.
 
 ---
 
@@ -265,8 +288,14 @@ Completed:
 - Import API (US065): `POST /campaign-import` → validated `CampaignSession` (no persist).
 - Replay Foundation (US066): `CampaignReplayService` prepares `ReplayResult` from `CampaignSession` (no execution/AI/persist).
 - Replay Execution (US067): `execute(session)` via `ResearchCampaignService` (`persistSession: false`); READY→RUNNING→COMPLETED|FAILED.
+- Job Domain Model (US069): `Job` / `JobStatus` / `JobType` + create-only `JobService` (no queue/API/persist).
+- Job Queue Abstraction (US070): `JobQueue` + `JOB_QUEUE` + `InMemoryJobQueue`; create auto-enqueues as `PENDING`.
+- Background Campaign Runner (US071): `BackgroundJobRunner` processes CAMPAIGN/REPLAY jobs → COMPLETED|FAILED (`JobResult`).
+- Job Status API (US072): `GET /jobs` + `GET /jobs/:jobId` (read-only; Controller → JobService → JobQueue).
+- Job Cancellation (US073): `POST /jobs/:jobId/cancel` (PENDING → CANCELLED; runner skips cancelled).
+- RC-09 finalized: Background Job Execution framework (US069–US073).
 
-Next: RC-09.
+Next: RC-10.
 
 ---
 
@@ -778,6 +807,48 @@ RC-08 finalized
 - Tests: monorepo — api 208, web 18, research 24 (all passed).
 - Next: RC-09.
 
+US069 — Job Domain Model
+
+- Completed Story: Jobs domain module with `Job` / `JobResult` / `JobMetadata`, `JobStatus` / `JobType`, and create-only `JobService` (campaign + replay jobs); no queue / execution / persist / API.
+- Changed Files: `apps/api/src/modules/jobs/*`, docs.
+- Tests: create campaign/replay job / default PENDING / timestamps / metadata / enums — 6 passed.
+- Next: US070.
+
+US070 — Job Queue Abstraction
+
+- Completed Story: `JobQueue` interface + `JOB_QUEUE` token + `InMemoryJobQueue` (FIFO); `JobService` creates then enqueues `PENDING` jobs; DI never binds concrete queue into service.
+- Changed Files: `job-queue.ts`, `job-queue.token.ts`, `in-memory-job.queue.ts`, `job.service.ts`, `jobs.module.ts`, specs, docs.
+- Tests: enqueue / dequeue / get / cancel / FIFO / DI token / interface-only dependency — 12 passed.
+- Next: US071.
+
+US071 — Background Campaign Runner
+
+- Completed Story: `BackgroundJobRunner` processes queued CAMPAIGN/REPLAY jobs via `ResearchCampaignService` / `CampaignReplayService`; PENDING→RUNNING→COMPLETED|FAILED with `JobResult`; no job persistence.
+- Changed Files: `background-job.runner.ts`, `job-runner.ts`, `job-metadata.ts`, `jobs.module.ts`, specs, docs.
+- Tests: campaign/replay process / status / completed/failed result / empty queue / no persistence — 20 jobs suite passed.
+- Next: US072.
+
+US072 — Job Status API
+
+- Completed Story: Read-only `JobController` exposes `GET /jobs` and `GET /jobs/:jobId` via `JobService` → `JobQueue.list` / `get`; 404 when missing; no execution/processing.
+- Changed Files: `job.controller.ts`, `job.service.ts`, `job-queue.ts`, `in-memory-job.queue.ts`, `jobs.module.ts`, `app.module.ts`, specs, docs (`api.md`).
+- Tests: list / get / 404 / completed result / pending no result / queue unchanged / controller — 30 jobs suite passed.
+- Next: US073.
+
+US073 — Job Cancellation
+
+- Completed Story: Cancel PENDING jobs via `JobService.cancelJob` → `JobQueue.cancel`; `POST /jobs/:jobId/cancel` (200/404/409); runner skips CANCELLED; no execution result on cancel.
+- Changed Files: `job-queue.ts`, `in-memory-job.queue.ts`, `job.service.ts`, `job.controller.ts`, `job-cancel-conflict.error.ts`, `background-job.runner.ts`, specs, docs.
+- Tests: cancel pending / cannot cancel running|completed|failed|cancelled / runner skip / 404 / 409 / controller — 41 jobs suite passed.
+- Next: US074.
+
+RC-09 finalized
+
+- Completed Story: RC-09 finalized — Jobs framework (US069–US073) verified; full monorepo tests green; RC-09 lint scope clean (pre-existing experiments/knowledge lint debt unchanged); docs synced; committed and pushed.
+- Changed Files: `apps/api/src/modules/jobs/*`, `app.module.ts`, docs (`project-status` / `roadmap` / `CHANGELOG` / `campaign-domain-model` / `architecture-snapshot` / `api.md`).
+- Tests: monorepo — api 249, web 18, research 24 (all passed).
+- Next: RC-10.
+
 ---
 
 # Current Version
@@ -810,7 +881,8 @@ Note: ці версії стосуються working-tree Research OS semantics;
 
 High Priority
 
-- RC-09.
+- US074.
+- RC-10.
 - Наступна research hypothesis після EMA + Donchian FAIL.
 - За потреби: campaign-level Knowledge summary (не лише per-config).
 

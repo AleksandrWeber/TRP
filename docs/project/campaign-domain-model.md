@@ -7,8 +7,9 @@ Source: `apps/api/src/modules/research-campaign/`,
 `apps/api/src/modules/campaign-session/`,
 `apps/api/src/modules/campaign-persistence/`,
 `apps/api/src/modules/campaign-export/`,
-`apps/api/src/modules/campaign-import/`, and
-`apps/api/src/modules/campaign-replay/`.
+`apps/api/src/modules/campaign-import/`,
+`apps/api/src/modules/campaign-replay/`, and
+`apps/api/src/modules/jobs/`.
 
 ---
 
@@ -318,6 +319,42 @@ RC-08: Import + Replay foundation finalized.
 
 ---
 
+## Jobs (US069–US073)
+
+Domain model + queue + background runner + Status/Cancel API for asynchronous
+Campaign / Replay execution (no scheduler or job persistence yet).
+
+Architecture:
+
+```
+Scheduler (future)
+  → BackgroundJobRunner
+      → JOB_QUEUE (InMemoryJobQueue)
+      → ResearchCampaignService.run(..., { persistSession: false })
+      → CampaignReplayService.execute(...)
+
+JobController (GET /jobs, POST /jobs/:jobId/cancel)
+  → JobService.listJobs / getJob / cancelJob
+      → JobQueue.list / get / cancel
+```
+
+- `Job`: `jobId`, timestamps, `status`, `type`, optional `sourceSessionId` / `replayId`, `metadata`, optional `result`
+- `JobMetadata` may carry `paramsList` (CAMPAIGN) or `session` (REPLAY)
+- `JobStatus`: `PENDING` | `RUNNING` | `COMPLETED` | `FAILED` | `CANCELLED`
+- `JobType`: `CAMPAIGN` | `REPLAY`
+- Create → `PENDING` → enqueue; process → RUNNING → COMPLETED|FAILED (`JobResult`)
+- Cancel: PENDING → CANCELLED only (no `JobResult`); runner never executes CANCELLED
+- Status API: `GET /jobs`, `GET /jobs/:jobId` (404 if missing)
+- Cancel API: `POST /jobs/:jobId/cancel` (200 / 404 / 409)
+- No Repository / History writes for jobs; campaign runs use `persistSession: false`
+
+Module: `apps/api/src/modules/jobs/` (`JobsModule`).
+HTTP: see [`api.md`](./api.md).
+
+RC-09: Background Job Execution framework finalized (US069–US073).
+
+---
+
 ## RC-06 Architecture Audit (US060)
 
 Status: **PASS** (documentation sync; no code changes)
@@ -377,6 +414,7 @@ History API (CampaignHistoryController)
 - Export has no ZIP / PDF / bulk export yet.
 - Import has no CSV importer / persist-on-import yet.
 - Replay does not expose HTTP / persist replay results yet.
+- Jobs have in-memory queue + runner; no scheduler / durable persist / HTTP yet.
 
 ---
 
@@ -388,3 +426,4 @@ History API (CampaignHistoryController)
 - ZIP / PDF export formats.
 - Optional persist of imported sessions.
 - Replay HTTP API.
+- Job scheduler + Jobs API.

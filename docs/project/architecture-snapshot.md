@@ -115,6 +115,19 @@ Domain model: [`campaign-domain-model.md`](./campaign-domain-model.md).
 - No Replay HTTP API yet (internal foundation).
 - RC-08 finalized (Import + Replay).
 
+### Jobs
+
+- `JobService` creates in-memory `Job` entities (`CAMPAIGN` / `REPLAY`) in `PENDING` status (US069–US073).
+- `JobQueue` abstraction via `JOB_QUEUE` token; default `InMemoryJobQueue` (FIFO; `list` / `get` / `cancel`).
+- Create path: build job → `enqueue` → return `PENDING` job.
+- Cancel path: PENDING → CANCELLED only; RUNNING/COMPLETED/FAILED/CANCELLED → conflict.
+- `BackgroundJobRunner` processes jobs: RUNNING → Campaign/Replay execute → COMPLETED|FAILED (`JobResult`); skips CANCELLED.
+- Job Status API: `GET /jobs`, `GET /jobs/:jobId`.
+- Job Cancellation API: `POST /jobs/:jobId/cancel` (200 / 404 / 409).
+- `JobStatus`: `PENDING` | `RUNNING` | `COMPLETED` | `FAILED` | `CANCELLED`.
+- No scheduler or job persistence yet.
+- RC-09 finalized (Jobs framework US069–US073).
+
 ### Campaign Report
 
 - `CampaignReportService` builds report from Summary + experiments.
