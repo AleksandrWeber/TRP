@@ -149,6 +149,20 @@ Domain model: [`campaign-domain-model.md`](./campaign-domain-model.md).
 - No scheduler or job persistence yet.
 - RC-09 finalized (Jobs framework US069–US073).
 
+### Pipeline Domain (US081–US085)
+
+- In-memory `Pipeline` / `PipelineRun` / `PipelineContext` / `PipelineResult` / `PipelineMetadata`.
+- `PipelineDomainService`: `createPipeline` / `getPipeline` / `listPipelines` / `createRun` / `getRun` / `listRuns`.
+- `PipelineRunStatus`: `PENDING` | `RUNNING` | `COMPLETED` | `FAILED` | `CANCELLED`.
+- `PipelineStep` + `AbstractPipelineStep` + `PipelineStepMetadata` / `PipelineStepResult`.
+- `PipelineRegistry`: register/get/list executable steps (Pipeline stores metadata only).
+- `PipelineExecutor`: execute by `metadata.order` via registry; context propagation; optional `PipelineRun` lifecycle (PENDING→RUNNING→COMPLETED|FAILED); returns `PipelineResult`.
+- `PipelineHook` + `PipelineHookRegistry` + `LoggingPipelineHook`: optional before/after pipeline/step + onError; hook exceptions ignored; observation only.
+- `PipelineTemplate` + `PipelineTemplateService`: immutable templates; `createPipelineFromTemplate` yields independent Pipeline copies; built-in Campaign / Replay / Knowledge (step metadata only).
+- Generic context only — no Campaign / Experiment / Knowledge coupling.
+- No Events, Event Bus, Repository, or HTTP yet.
+- RC-11 finalized (Research Pipeline Engine US081–US085).
+
 ### Campaign Report
 
 - `CampaignReportService` builds report from Summary + experiments.

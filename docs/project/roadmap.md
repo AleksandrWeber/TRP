@@ -105,6 +105,12 @@ Related:
 - US078 — Experiment Comparison Service (`compareVersions` / `compareExperiments`; structural diffs)
 - US079 — Knowledge Search API (`GET /knowledge?q&tag&experimentId`)
 - RC-10 — Knowledge & Experiment Intelligence architecture finalized
+- US081 — Pipeline Domain Model (`Pipeline` / `PipelineRun` + PipelineDomainService)
+- US082 — Pipeline Step Contract (`PipelineStep` / `AbstractPipelineStep` / `PipelineRegistry`)
+- US083 — Pipeline Executor (`PipelineExecutor`; order-resolved steps; run lifecycle)
+- US084 — Pipeline Hooks (`PipelineHook` / `PipelineHookRegistry` / `LoggingPipelineHook`)
+- US085 — Pipeline Templates (`PipelineTemplate` / `PipelineTemplateService`; built-in Campaign/Replay/Knowledge)
+- US086 — RC-11 Architecture Audit (Research Pipeline Engine finalized)
 
 ---
 
@@ -116,7 +122,7 @@ Related:
 
 ## Next User Stories
 
-- RC-11
+- RC-12
 
 ---
 

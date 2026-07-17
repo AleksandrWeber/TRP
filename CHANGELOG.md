@@ -82,9 +82,15 @@ Research OS Foundation Release Candidate exists as a local commit; remote push n
 - Knowledge Extraction Pipeline (US077): deterministic `KnowledgeExtractionService.extract` from `Experiment.currentVersion.report` + `createFromExperiment` upsert (one entry per experiment; no AI).
 - Experiment Comparison Service (US078): deterministic structural `compareVersions` / `compareExperiments` (insights/summary/tags/metadata; no AI/similarity).
 - Knowledge Search API (US079): `GET /knowledge` over in-memory `KnowledgeEntry` with `q` / `tag` / `experimentId` (AND; case-insensitive; no vectors).
+- Pipeline Domain Model (US081): in-memory `Pipeline` / `PipelineRun` / `PipelineContext` / `PipelineResult` / `PipelineMetadata` + `PipelineDomainService` (no executor/API/Repository).
+- Pipeline Step Contract (US082): `PipelineStep` + `AbstractPipelineStep` + `PipelineStepMetadata` / `PipelineStepResult` + `PipelineRegistry`; Pipeline stores metadata only.
+- Pipeline Executor (US083): `PipelineExecutor` resolves registered steps by `metadata.order`, propagates context, updates optional `PipelineRun` lifecycle, returns `PipelineResult` (no persistence/API).
+- Pipeline Hooks (US084): `PipelineHook` + `PipelineHookRegistry` + `LoggingPipelineHook`; executor lifecycle callbacks; hook failures ignored; no Events/bus.
+- Pipeline Templates (US085): `PipelineTemplate` + `PipelineTemplateService`; built-in Campaign / Replay / Knowledge templates (step metadata only); `createPipelineFromTemplate` yields independent Pipeline copies.
 
 ### Fixed
 
+- RC-11 finalized: Research Pipeline Engine (US081–US085) architecture audit PASS (full monorepo tests green; pipeline lint scope clean); docs synced; committed and pushed.
 - RC-10 finalized: Knowledge & Experiment Intelligence (US075–US079) architecture audit PASS (full monorepo tests green); docs synced; committed and pushed.
 - RC-09 finalized: Background Job Execution framework (US069–US073) verified (full monorepo tests green); docs synced; committed and pushed.
 - RC-08 finalized: Campaign Import + Replay stack verified (full monorepo tests green); docs synced; committed and pushed.

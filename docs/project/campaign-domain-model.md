@@ -439,6 +439,50 @@ RC-10: Knowledge & Experiment Intelligence finalized (US075–US079).
 
 ---
 
+## Pipeline Domain (US081–US085)
+
+Generic Research Pipeline foundation (in-memory; executor + hooks + templates ready; no API yet).
+
+Architecture:
+
+```
+PipelineTemplate
+  → PipelineTemplateService
+      → Pipeline (independent copy)
+
+Pipeline (PipelineStepMetadata[])
+  → PipelineExecutor
+      ├─ PipelineHookRegistry → PipelineHook(s)
+      └─ PipelineRegistry → PipelineStep.execute()
+
+Controller (future)
+  → PipelineDomainService
+      → Pipeline / PipelineRun
+```
+
+- `Pipeline`: `pipelineId`, `name`, `description`, `version`, `steps[]` (`PipelineStepMetadata` only), `metadata`
+- `PipelineStep`: `execute(context) → Promise<PipelineContext>`
+- `AbstractPipelineStep`: exposes metadata; requires `execute()`
+- `PipelineStepMetadata`: `stepId`, `name`, `description`, `order`
+- `PipelineStepResult`: `success`, `context`, `duration`, optional `error`
+- `PipelineRegistry`: `register` / `get` / `list` (in-memory Map; duplicate registration rejected)
+- `PipelineExecutor`: `execute(pipeline, context, run?)` — ordered resolve/execute; context propagation; on throw → failed `PipelineResult`; updates optional `PipelineRun` PENDING→RUNNING→COMPLETED|FAILED
+- `PipelineHook`: optional `beforePipeline` / `afterPipeline` / `beforeStep` / `afterStep` / `onError` (observation only; must not mutate context)
+- `PipelineHookRegistry`: `register` / `list` (duplicate `hookId` rejected)
+- `LoggingPipelineHook`: in-memory lifecycle records (no console)
+- Hook exceptions are caught and ignored — never stop pipeline execution
+- `PipelineTemplate`: `templateId`, `name`, `description`, `version`, `pipelineId`, `defaultMetadata` (immutable)
+- `PipelineTemplateService`: `createTemplate` / `getTemplate` / `listTemplates` / `createPipelineFromTemplate` (independent copies; no execution)
+- Built-in templates: Campaign / Replay / Knowledge (step metadata only; no business step implementations)
+- `PipelineDomainService`: `createPipeline` / `getPipeline` / `listPipelines` / `createRun` / `getRun` / `listRuns`
+- No Repository, Events/Event Bus, Campaign/Replay/Knowledge execution integration, or HTTP
+
+Module: `apps/api/src/modules/pipeline/`.
+
+RC-11: Research Pipeline Engine finalized (US081–US085).
+
+---
+
 ## RC-06 Architecture Audit (US060)
 
 Status: **PASS** (documentation sync; no code changes)
