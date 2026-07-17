@@ -2,13 +2,13 @@
 
 Last updated: 2026-07-17
 
-Single snapshot of the **current** architecture (RC-12). Documentation only. No future ideas.
+Single snapshot of the **current** architecture (RC-13). Documentation only. No future ideas.
 
 ---
 
-## Research Pipeline Engine (RC-12)
+## Research Pipeline Engine (RC-13)
 
-Unified execution runtime for Campaign, Replay, and Knowledge.
+Unified execution and analysis runtime for Research OS pipelines.
 
 ```
 PipelineTemplateService
@@ -19,10 +19,28 @@ PipelineExecutor
         ▼
 PipelineRegistry
         │
-        ├── Campaign Steps
-        ├── Replay Steps
-        └── Knowledge Steps
+        ├── Execution
+        │     ├── Campaign Steps
+        │     ├── Replay Steps
+        │     └── Knowledge Steps
+        │
+        └── Analysis
+              ├── Insight Steps
+              └── Cross-Analysis Steps
 ```
+
+### Pipeline categories
+
+**Execution**
+
+- Campaign
+- Replay
+- Knowledge
+
+**Analysis**
+
+- Insight
+- CrossCampaign
 
 ### Research OS execution
 
@@ -30,12 +48,36 @@ PipelineRegistry
 Campaign
 Replay
 Knowledge
+Insight
+Cross-Campaign Analysis
         │
         ▼
 PipelineExecutor
 ```
 
-- Module: `apps/api/src/modules/pipeline/` (+ `steps/campaign/`, `steps/replay/`, `steps/knowledge/`).
+```
+Insight
+        │
+        ▼
+RecommendationDomainService
+        │
+        ▼
+ResearchReportDomainService.build
+```
+
+### Research Intelligence API (read-only)
+
+```
+Controller (read-only)
+        │
+        ▼
+Domain Service (search / getById)
+        │
+        ▼
+In-memory Domain Store
+```
+
+- Module: `apps/api/src/modules/pipeline/` (+ `steps/campaign/`, `steps/replay/`, `steps/knowledge/`, `steps/insight/`, `steps/cross-analysis/`).
 - Single deterministic runtime: steps resolve via `PipelineRegistry` by `metadata.order`.
 - No Pipeline HTTP API, Repository, or Event Bus on the engine.
 
@@ -54,11 +96,13 @@ No Campaign / Replay / Knowledge-specific fields on the type. Domain accessors c
 
 Built-ins (immutable; `PipelineStepMetadata` only — no executable instances on the template):
 
-| Template  | Template ID          | Steps (order)                                                             |
-| --------- | -------------------- | ------------------------------------------------------------------------- |
-| Campaign  | `campaign-pipeline`  | `campaign.prepare` → `execute` → `aggregate` → `build-report` → `persist` |
-| Replay    | `replay-pipeline`    | `replay.load` → `restore` → `execute` → `finalize`                        |
-| Knowledge | `knowledge-pipeline` | `knowledge.prepare` → `extract` → `upsert`                                |
+| Template                | Template ID                        | Steps (order)                                                             |
+| ----------------------- | ---------------------------------- | ------------------------------------------------------------------------- |
+| Campaign                | `campaign-pipeline`                | `campaign.prepare` → `execute` → `aggregate` → `build-report` → `persist` |
+| Replay                  | `replay-pipeline`                  | `replay.load` → `restore` → `execute` → `finalize`                        |
+| Knowledge               | `knowledge-pipeline`               | `knowledge.prepare` → `extract` → `upsert`                                |
+| Insight                 | `insight-pipeline`                 | `insights.prepare` → `extract` → `persist`                                |
+| Cross-Campaign Analysis | `cross-campaign-analysis-pipeline` | `cross-analysis.prepare` → `compare` → `persist`                          |
 
 - `PipelineTemplateService.createPipelineFromTemplate` yields independent Pipeline copies.
 - Templates never store step class instances.
@@ -79,7 +123,7 @@ Lifecycle only. Hook failures are ignored. No Event Bus / Pub-Sub.
 - `PipelineStep` / `AbstractPipelineStep` / `PipelineStepMetadata` / `PipelineStepResult`
 
 RC-11: engine foundation (US081–US085).  
-RC-12: Campaign + Replay + Knowledge wired as unified runtime (US087–US091).
+RC-13: Execution (Campaign / Replay / Knowledge) + Analysis (Insight / Cross-Campaign) pipelines; Recommendation / ResearchReport domains; Research Intelligence read-only REST (US095–US101).
 
 ---
 
@@ -151,6 +195,63 @@ Domain model: [`knowledge-domain-model.md`](./knowledge-domain-model.md).
 - Relationship: CampaignSession → Experiment → KnowledgeEntry (via extraction pipeline).
 - Independent from Prisma `ExperimentsService` (backtest runner).
 - RC-10 finalized (Experiment intelligence US076–US078).
+
+### Insight Domain (US095–US096)
+
+- In-memory `Insight` (`id`, optional `campaignSessionId` / `experimentId`, `knowledgeEntryIds[]`, `type`, `title`, `summary`, `confidence`, `sources`, `metadata`, `createdAt`).
+- `InsightType`: `PATTERN` | `ANOMALY` | `CORRELATION` | `TREND` | `SUMMARY` | `OBSERVATION`.
+- `InsightSource`: `Campaign` | `Experiment` | `Knowledge` | `AIAnalysis`.
+- `InsightMetadata`: optional `model` / `promptVersion` / `executionTime` / `pipelineRunId`.
+- `InsightDomainService`: `create` / `update` / `delete` / `getById` / `search` / `extractFromKnowledge`.
+- Insight Pipeline (US096): `insights.prepare` → `insights.extract` → `insights.persist` via `PipelineExecutor`; built-in template `insight-pipeline`.
+- Deterministic extraction only (summary / consistent trend / repeated observation / conflicting verdicts) — no LLM.
+- Knowledge remains factual observations; Insight references Knowledge via `knowledgeEntryIds` only — does not duplicate KnowledgeEntry contents.
+- No Jobs / Export / Import / Prisma / Repository coupling; Campaign / Replay / Knowledge pipelines unchanged.
+- Module: `apps/api/src/modules/insight/` (`InsightModule`); steps under `pipeline/steps/insight/`.
+- Read-only REST (US100): `GET /insights`, `GET /insights/:id`.
+
+### Cross-Campaign Analysis (US097)
+
+- `CrossCampaignAnalysisService.analyze(sessions, knowledgeEntries?, insights?)` → `CrossCampaignAnalysisResult`.
+- Pipeline: `cross-analysis.prepare` → `cross-analysis.compare` → `cross-analysis.persist` via `PipelineExecutor`; built-in template `cross-campaign-analysis-pipeline`.
+- Deterministic findings only: repeated findings, recurring patterns, conflicting conclusions, stable trends, unique observations.
+- Read-only over Campaign / Experiment refs / Knowledge / Insight inputs; write-only via `InsightDomainService`.
+- Result: `id`, `comparedCampaignIds`, `findings`, `statistics`, `generatedInsightIds`, `createdAt` (stored after `analyze` for API lookup).
+- No AI / Report Builder.
+- Module: `apps/api/src/modules/cross-campaign-analysis/`; steps under `pipeline/steps/cross-analysis/`.
+- Read-only REST (US100): `GET /cross-campaign-analysis`, `GET /cross-campaign-analysis/:id`.
+
+### Recommendation Domain (US098)
+
+- In-memory `Recommendation` (`id`, `insightIds[]`, `campaignSessionIds[]`, `type`, `priority`, `title`, `description`, `rationale`, `metadata`, `createdAt`).
+- `RecommendationType`: `REPEAT_EXPERIMENT` | `EXPAND_SCOPE` | `VERIFY_RESULT` | `INVESTIGATE_ANOMALY` | `COMPARE_MODELS` | `COLLECT_MORE_DATA`.
+- `RecommendationPriority`: `LOW` | `MEDIUM` | `HIGH` | `CRITICAL`.
+- `RecommendationMetadata`: optional `confidence` / `generatedBy` / `ruleId` / `pipelineRunId`.
+- `RecommendationDomainService`: `create` / `update` / `delete` / `getById` / `search` / `generateFromInsights`.
+- Deterministic generation only (pattern → repeat; conflict → verify; trend → expand; anomaly → investigate; model disagreement → compare; insufficient evidence → collect more data).
+- Insight remains analytical conclusions; Recommendation is actionable guidance referencing `insightIds` only — does not duplicate Insight payload.
+- No PipelineExecutor / Jobs / Export / Import / Prisma / Repository / AI coupling.
+- Module: `apps/api/src/modules/recommendation/` (`RecommendationModule`).
+- Read-only REST (US100): `GET /recommendations`, `GET /recommendations/:id`.
+
+### Research Report Domain (US099)
+
+- In-memory `ResearchReport` (`id`, `campaignSessionIds[]`, `knowledgeEntryIds[]`, `insightIds[]`, `recommendationIds[]`, `sections[]`, `metadata`, `createdAt`).
+- `ReportSection`: `type` (`EXECUTIVE_SUMMARY` | `FINDINGS` | `INSIGHTS` | `RECOMMENDATIONS` | `REFERENCES`) + `itemIds[]`.
+- `ReportMetadata`: optional counts / `generatedBy`.
+- `ResearchReportDomainService`: `create` / `getById` / `search` / `build`.
+- `build()` aggregates Campaign / Knowledge / Insight / Recommendation into a structured report — id references only; no narrative / formatting / export.
+- Aggregation layer only; does not duplicate entity payloads.
+- No Pipeline / AI / Export / Prisma / Repository coupling.
+- Module: `apps/api/src/modules/research-report/` (`ResearchReportModule`).
+- Read-only REST (US100): `GET /reports`, `GET /reports/:id`.
+
+### Research Intelligence API (US100)
+
+- Read-only controllers: `InsightController`, `RecommendationController`, `ResearchReportController`, `CrossCampaignAnalysisController`.
+- List envelope: `HistoryPage<T>` (same as Campaign History).
+- Query: `page` / `pageSize` / `sortBy` / `sortOrder` + domain filters.
+- Controllers → Domain Services → in-memory stores only (no generate / build / pipeline execute).
 
 ### Versioning
 
@@ -296,13 +397,19 @@ Note: versions describe working-tree Research OS semantics; dedicated git releas
 
 Research OS Foundation
 
-RC-12 finalized — Research Pipeline Engine is the unified Campaign / Replay / Knowledge runtime.
+RC-13 finalized — Research Intelligence layer (Insight / Cross-Campaign / Recommendation / ResearchReport + read-only REST) on the unified Pipeline Engine.
 
 ---
 
 ## Known Technical Debt
 
 Living register: [`technical-debt.md`](./technical-debt.md) (US093).
+
+RC-13 notes:
+
+- TD-009 Accepted — Nest `forwardRef` cycle
+- TD-010 Planned — Extract `InsightGenerationService`
+- Accepted Legacy (do not expand; migrate RC-14+): `CampaignReport.recommendations`, `KnowledgeEntry.insights` string[], `ResearchAnalysis` parallel stack (TD-011–TD-013)
 
 Research/data notes:
 
@@ -316,4 +423,4 @@ Research/data notes:
 
 ## Next User Story
 
-RC-13
+RC-14

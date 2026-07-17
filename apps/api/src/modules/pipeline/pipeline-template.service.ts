@@ -6,6 +6,8 @@ import type { PipelineMetadata } from './pipeline-metadata';
 import type { PipelineStepMetadata } from './pipeline-step-metadata';
 import type { PipelineTemplate, PipelineTemplateDefaultMetadata } from './pipeline-template';
 import { CAMPAIGN_PIPELINE_STEPS } from './steps/campaign/campaign-step-metadata';
+import { CROSS_ANALYSIS_PIPELINE_STEPS } from './steps/cross-analysis/cross-analysis-step-metadata';
+import { INSIGHT_PIPELINE_STEPS } from './steps/insight/insight-step-metadata';
 import { KNOWLEDGE_PIPELINE_STEPS } from './steps/knowledge/knowledge-step-metadata';
 import { REPLAY_PIPELINE_STEPS } from './steps/replay/replay-step-metadata';
 
@@ -19,9 +21,9 @@ export type CreatePipelineTemplateInput = {
 };
 
 /**
- * In-memory Pipeline Template service (US085–US090).
+ * In-memory Pipeline Template service (US085–US097).
  * create / get / list templates + instantiate independent Pipelines from templates.
- * Built-ins use Campaign / Replay / Knowledge PipelineStep metadata (executor via domain orchestrators).
+ * Built-ins: Campaign / Replay / Knowledge / Insight / Cross-Campaign Analysis.
  */
 @Injectable()
 export class PipelineTemplateService {
@@ -117,6 +119,24 @@ export class PipelineTemplateService {
       metadata: { author: 'trp', version: 'builtin' },
     });
 
+    const insight = this.pipelines.createPipeline({
+      name: 'Insight Pipeline',
+      description:
+        'Standard insight extraction workflow (Insight PipelineStep metadata; executor via InsightDomainService)',
+      version: '1.0.0',
+      steps: cloneSteps(INSIGHT_PIPELINE_STEPS),
+      metadata: { author: 'trp', version: 'builtin' },
+    });
+
+    const crossCampaignAnalysis = this.pipelines.createPipeline({
+      name: 'Cross-Campaign Analysis Pipeline',
+      description:
+        'Cross-campaign comparison workflow (Cross-Analysis PipelineStep metadata; executor via CrossCampaignAnalysisService)',
+      version: '1.0.0',
+      steps: cloneSteps(CROSS_ANALYSIS_PIPELINE_STEPS),
+      metadata: { author: 'trp', version: 'builtin' },
+    });
+
     this.createTemplate({
       templateId: BUILTIN_PIPELINE_TEMPLATE_IDS.campaign,
       name: 'Campaign Pipeline',
@@ -142,6 +162,24 @@ export class PipelineTemplateService {
       version: '1.0.0',
       pipelineId: knowledge.pipelineId,
       defaultMetadata: { author: 'trp', version: 'knowledge-template' },
+    });
+
+    this.createTemplate({
+      templateId: BUILTIN_PIPELINE_TEMPLATE_IDS.insight,
+      name: 'Insight Pipeline',
+      description: 'Reusable insight extraction pipeline template',
+      version: '1.0.0',
+      pipelineId: insight.pipelineId,
+      defaultMetadata: { author: 'trp', version: 'insight-template' },
+    });
+
+    this.createTemplate({
+      templateId: BUILTIN_PIPELINE_TEMPLATE_IDS.crossCampaignAnalysis,
+      name: 'Cross-Campaign Analysis Pipeline',
+      description: 'Reusable cross-campaign analysis pipeline template',
+      version: '1.0.0',
+      pipelineId: crossCampaignAnalysis.pipelineId,
+      defaultMetadata: { author: 'trp', version: 'cross-campaign-analysis-template' },
     });
   }
 }

@@ -94,9 +94,16 @@ Research OS Foundation Release Candidate exists as a local commit; remote push n
 - Architecture Snapshot Synchronization (US092): `architecture-snapshot.md` aligned to RC-12 unified Pipeline Engine runtime (Campaign / Replay / Knowledge orchestrators; generic PipelineContext; metadata-only templates; lifecycle hooks; no Event Bus); docs only.
 - Technical Debt Register (US093): living `docs/project/technical-debt.md` (Accepted / Deferred / Planned; infrastructure debt + possible RC milestones); linked from Project Status; docs only.
 - Module Maturity Matrix (US094): living `docs/project/module-maturity.md` (status / scope / limitations / next milestone per major module); linked from Project Status; docs only.
+- Insight Domain (US095): in-memory `Insight` / `InsightType` / `InsightSource` / `InsightMetadata` + `InsightDomainService` (`create` / `update` / `delete` / `getById` / `search`); references Knowledge ids only; no AI / Pipeline / REST / Prisma.
+- Insight Extraction Pipeline (US096): `insights.prepare` / `insights.extract` / `insights.persist`; built-in Insight template; deterministic rules; `InsightDomainService.extractFromKnowledge` via `PipelineExecutor`; Campaign / Replay / Knowledge pipelines unchanged.
+- Cross-Campaign Analysis (US097): `CrossCampaignAnalysisService` + pipeline; result store for API lookup (`id` / `createdAt`); writes Insights via `InsightDomainService`.
+- Recommendation Engine (US098): in-memory domain + deterministic `generateFromInsights`.
+- Research Report Domain (US099): in-memory aggregation via `build()` (id refs only).
+- Research Intelligence API (US100): read-only REST — `GET /insights`, `/recommendations`, `/reports`, `/cross-campaign-analysis` (+ `/:id`); `HistoryPage` envelope; pagination / sorting / filtering; domain services only.
 
 ### Fixed
 
+- RC-13 completed: Research Intelligence layer (US095–US100) + RC-13 Architecture Audit (US101) PASS WITH RECOMMENDATIONS; Execution vs Analysis pipeline categories; Living Next RC-14; Accepted Legacy dual paths documented (TD-011–TD-013); full monorepo tests green; docs synced (no remote release yet).
 - RC-12 finalized: Research Pipeline Engine is the unified execution runtime for Campaign / Replay / Knowledge (US081–US091) architecture audit PASS (full monorepo tests green; pipeline orchestration lint scope clean; pre-existing experiments/knowledge Prisma-spec `any` debt unchanged); docs synced; committed and pushed.
 - RC-11 finalized: Research Pipeline Engine (US081–US085) architecture audit PASS (full monorepo tests green; pipeline lint scope clean); docs synced; committed and pushed.
 - RC-10 finalized: Knowledge & Experiment Intelligence (US075–US079) architecture audit PASS (full monorepo tests green); docs synced; committed and pushed.

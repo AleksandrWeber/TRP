@@ -15,9 +15,9 @@ Research OS Foundation
 
 Побудувати Evidence-driven Research OS: reproducible experiments, immutable Knowledge, і чітке provenance/versioning результатів.
 
-Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slice US045–US047. Campaign Persistence + History API (US051–US059). RC-06 Architecture Audit complete (US060). Export Foundation + Export API (US061–US062). RC-07 finalized. Import Foundation (US063). JSON Import Validation (US064). Import API (US065). Replay Foundation (US066). Replay Execution (US067). RC-08 finalized. Job Domain Model (US069). Job Queue Abstraction (US070). Background Campaign Runner (US071). Job Status API (US072). Job Cancellation (US073). RC-09 finalized. Knowledge Domain Model (US075). Experiment Entity & Versioning (US076). Knowledge Extraction Pipeline (US077). Experiment Comparison Service (US078). Knowledge Search API (US079). RC-10 finalized. Pipeline Domain Model (US081). Pipeline Step Contract (US082). Pipeline Executor (US083). Pipeline Hooks (US084). Pipeline Templates (US085). RC-11 finalized. Campaign Pipeline Steps (US087). Execute Campaign through PipelineExecutor (US088). Replay Pipeline Integration (US089). Knowledge Extraction Pipeline Integration (US090). RC-12 Architecture Audit (US091) finalized — Pipeline Engine is the unified execution runtime. Architecture Snapshot Synchronization (US092). Technical Debt Register (US093). Module Maturity Matrix (US094). Remote release ще не запушено.
+Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slice US045–US047. Campaign Persistence + History API (US051–US059). RC-06 Architecture Audit complete (US060). Export Foundation + Export API (US061–US062). RC-07 finalized. Import Foundation (US063). JSON Import Validation (US064). Import API (US065). Replay Foundation (US066). Replay Execution (US067). RC-08 finalized. Job Domain Model (US069). Job Queue Abstraction (US070). Background Campaign Runner (US071). Job Status API (US072). Job Cancellation (US073). RC-09 finalized. Knowledge Domain Model (US075). Experiment Entity & Versioning (US076). Knowledge Extraction Pipeline (US077). Experiment Comparison Service (US078). Knowledge Search API (US079). RC-10 finalized. Pipeline Domain Model (US081). Pipeline Step Contract (US082). Pipeline Executor (US083). Pipeline Hooks (US084). Pipeline Templates (US085). RC-11 finalized. Campaign Pipeline Steps (US087). Execute Campaign through PipelineExecutor (US088). Replay Pipeline Integration (US089). Knowledge Extraction Pipeline Integration (US090). RC-12 Architecture Audit (US091) finalized — Pipeline Engine is the unified execution runtime. Architecture Snapshot Synchronization (US092). Technical Debt Register (US093). Module Maturity Matrix (US094). Insight Domain (US095). Insight Extraction Pipeline (US096). Cross-Campaign Analysis (US097). Recommendation Engine (US098). Research Report Domain (US099). Research Intelligence API (US100). RC-13 Architecture Audit (US101) PASS WITH RECOMMENDATIONS — RC-13 finalized. Remote release ще не запушено.
 
-Next: RC-13.
+Next: RC-14.
 
 ---
 
@@ -59,7 +59,7 @@ Status: NOT READY for remote release / push
 
 Status: Ready for Commit
 
-Scope: Research OS (US003–US019, US020A–US020B, US026–US035, US037–US043, US045–US050, US051–US073, US075–US079, US081–US085, US087–US091) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C, US036, US041A, US043A, US044, US050A, US060) + RC-07 (Campaign Session Persistence + History + Export) + RC-08 (Import + Replay) + RC-09 (Background Job Execution) + RC-10 (Knowledge & Experiment Intelligence) + RC-11 (Research Pipeline Engine). Product next: RC-13.
+Scope: Research OS (US003–US019, US020A–US020B, US026–US035, US037–US043, US045–US050, US051–US073, US075–US079, US081–US085, US087–US091) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C, US036, US041A, US043A, US044, US050A, US060) + RC-07 (Campaign Session Persistence + History + Export) + RC-08 (Import + Replay) + RC-09 (Background Job Execution) + RC-10 (Knowledge & Experiment Intelligence) + RC-11 (Research Pipeline Engine). Product next: RC-14.
 
 Current Research OS implementation exists in working tree.
 Release will be created only after explicit commit sequence.
@@ -82,7 +82,7 @@ Completed:
 - EMA Crossover і Donchian Breakout зареєстровані.
 - Paginated Binance historical import (startTime/endTime, ≤1000 per page).
 
-Next: RC-13.
+Next: RC-14.
 
 ---
 
@@ -105,7 +105,27 @@ Completed:
 - Knowledge Extraction Pipeline Integration (US090): `PrepareKnowledgeExtractionStep` / `ExtractKnowledgeStep` / `UpsertKnowledgeEntryStep`; `createFromExperiment` orchestrates via Knowledge template + `PipelineExecutor`.
 - Knowledge Search API (US079): `search` / `searchByTag` / `searchByExperiment` / `find` + `GET /knowledge?q&tag&experimentId` (AND; case-insensitive; empty array on miss).
 
-Next: RC-13.
+Next: RC-14.
+
+---
+
+## Insight Domain
+
+Status:
+✅ Domain + Pipeline extraction + read-only REST (US095–US096, US100; no AI)
+
+Completed:
+
+- Module `apps/api/src/modules/insight/` (`InsightModule`).
+- `Insight` / `InsightType` / `InsightSource` / `InsightMetadata`.
+- `InsightDomainService`: `create` / `update` / `delete` / `getById` / `search` / `extractFromKnowledge`.
+- Insight Pipeline Steps: `insights.prepare` → `insights.extract` → `insights.persist`.
+- Built-in Insight Pipeline template (`insight-pipeline`); deterministic rules only (no LLM).
+- References Knowledge via `knowledgeEntryIds` only — does not duplicate KnowledgeEntry contents.
+- REST API available (read-only): `GET /insights`, `GET /insights/:id`.
+- No AI / Prisma / Repository / Jobs / Export / Import.
+
+Next: RC-14.
 
 ---
 
@@ -127,7 +147,7 @@ Completed:
 - Experiment Entity & Versioning (US076): in-memory `Experiment` / `ExperimentVersion` / `ExperimentMetadata` + `ExperimentDomainService` (`createFromSession` / `createVersion` / `get` / `list`); links CampaignSession → future KnowledgeEntry via `experimentId` only.
 - Experiment Comparison Service (US078): deterministic `ExperimentComparisonService.compareVersions` / `compareExperiments` (structural insights/summary/tags/metadata diffs; no AI).
 
-Next: RC-13.
+Next: RC-14.
 
 ---
 
@@ -149,7 +169,7 @@ Completed:
 - `ResearchCampaignService.run` creates/persists one `CampaignSession` per execution (`COMPLETED` or `FAILED`).
 - RC-06 Architecture Audit (US060): dependency direction / History flow / API / tests validated PASS.
 
-Next: RC-13.
+Next: RC-14.
 
 ---
 
@@ -167,7 +187,7 @@ Completed:
 - Every `ResearchCampaignService.run` persists exactly one session.
 - `CampaignHistoryService` + History API (US056–US059).
 
-Next: RC-13.
+Next: RC-14.
 
 ---
 
@@ -185,7 +205,7 @@ Completed:
 - `CampaignExportController`: `GET /campaign-history/:sessionId/export?format=json|csv`.
 - Flow: HistoryService.getById → CampaignExportService.export; 200 / 400 / 404; Content-Type set.
 
-Next: RC-13.
+Next: RC-14.
 
 ---
 
@@ -205,7 +225,7 @@ Completed:
 - `CampaignImportController`: `POST /campaign-import` with `{ format, payload }` → `CampaignSession` (200) or 400.
 - Nest `CampaignImportModule` wired in `AppModule` (no persistence side effects).
 
-Next: RC-13.
+Next: RC-14.
 
 ---
 
@@ -224,7 +244,80 @@ Completed:
 - `execute(session)` → Campaign via `persistSession: false` inside Replay steps → regenerated report; `COMPLETED` / `FAILED`.
 - Identical `ReplayResult` / History / Jobs behavior; no History/Repository writes on replay.
 
-Next: RC-13.
+Next: RC-14.
+
+---
+
+## Cross-Campaign Analysis
+
+Status:
+🟡 Foundation (US097, US100; deterministic; REST API available (read-only); no AI)
+
+Completed:
+
+- Module `apps/api/src/modules/cross-campaign-analysis/` (`CrossCampaignAnalysisModule`).
+- `CrossCampaignAnalysisService.analyze` → Cross-Campaign Analysis Pipeline.
+- Steps: `cross-analysis.prepare` → `cross-analysis.compare` → `cross-analysis.persist`.
+- Built-in template `cross-campaign-analysis-pipeline`.
+- Reads CampaignSessions / KnowledgeEntries / Insights; writes only via `InsightDomainService`.
+- Deterministic findings: repeated findings, recurring patterns, conflicting conclusions, stable trends, unique observations.
+- Output: `CrossCampaignAnalysisResult` (`id`, `comparedCampaignIds`, `findings`, `statistics`, `generatedInsightIds`, `createdAt`).
+- REST API available (read-only): `GET /cross-campaign-analysis`, `GET /cross-campaign-analysis/:id`.
+
+Next: RC-14.
+
+---
+
+## Recommendation
+
+Status:
+🟡 Foundation (US098, US100; deterministic; REST API available (read-only); no AI)
+
+Completed:
+
+- Module `apps/api/src/modules/recommendation/` (`RecommendationModule`).
+- Domain models: `Recommendation`, `RecommendationType`, `RecommendationPriority`, `RecommendationMetadata`.
+- `RecommendationDomainService`: `create` / `update` / `delete` / `getById` / `search` / `generateFromInsights`.
+- Deterministic generation from Insights (pattern → repeat; conflict → verify; trend → expand; anomaly → investigate; model disagreement → compare; insufficient evidence → collect more data).
+- Insight id refs only; structured recommendations; no Pipeline / Jobs / Export / Import / Prisma.
+- REST API available (read-only): `GET /recommendations`, `GET /recommendations/:id`.
+
+Next: RC-14.
+
+---
+
+## Research Report
+
+Status:
+🟡 Foundation (US099, US100; structured data only; REST API available (read-only); no export / no AI)
+
+Completed:
+
+- Module `apps/api/src/modules/research-report/` (`ResearchReportModule`).
+- Domain models: `ResearchReport`, `ReportSection`, `ReportMetadata` (`ReportSectionType`).
+- `ResearchReportDomainService`: `create` / `getById` / `search` / `build`.
+- `build()` aggregates Campaign / Knowledge / Insight / Recommendation by id into structured sections.
+- No PDF / HTML / Markdown / AI narrative / Pipeline / Export coupling.
+- REST API available (read-only): `GET /reports`, `GET /reports/:id`.
+
+Next: RC-14.
+
+---
+
+## Research Intelligence API
+
+Status:
+🟡 Foundation (US100; read-only REST)
+
+Completed:
+
+- Controllers: `InsightController`, `RecommendationController`, `ResearchReportController`, `CrossCampaignAnalysisController`.
+- Endpoints: `GET /insights`, `GET /recommendations`, `GET /reports`, `GET /cross-campaign-analysis` (+ `/:id`).
+- List envelope: `HistoryPage<T>`; pagination (`page` / `pageSize`), sorting (`sortBy` / `sortOrder`), filtering.
+- Controllers call Domain Service `search` / `getById` only (no generate / build / pipeline execute).
+- Cross-campaign `analyze()` stores results with `id` / `createdAt` for lookup.
+
+Next: RC-14.
 
 ---
 
@@ -247,14 +340,14 @@ Completed:
 - Job Status API (US072): `GET /jobs`, `GET /jobs/:jobId` (404 if missing).
 - Job Cancellation (US073): `POST /jobs/:jobId/cancel` (200 / 404 / 409).
 
-Next: RC-13.
+Next: RC-14.
 
 ---
 
 ## Pipeline
 
 Status:
-✅ RC-12 finalized — unified Pipeline Engine runtime (US081–US091)
+✅ RC-13 finalized — Execution + Analysis pipelines (US081–US091, US095–US101)
 
 Completed:
 
@@ -274,8 +367,10 @@ Completed:
 - Replay Pipeline Integration (US089): `LoadReplaySessionStep` / `RestoreReplayContextStep` / `ExecuteReplayCampaignStep` / `FinalizeReplayStep` under `pipeline/steps/replay/`; registered on `PipelineRegistry`; Replay template metadata updated; `CampaignReplayService` orchestrates via template + `PipelineExecutor`.
 - Knowledge Extraction Pipeline Integration (US090): `PrepareKnowledgeExtractionStep` / `ExtractKnowledgeStep` / `UpsertKnowledgeEntryStep` under `pipeline/steps/knowledge/`; registered on `PipelineRegistry`; Knowledge template metadata updated; `KnowledgeDomainService.createFromExperiment` orchestrates via template + `PipelineExecutor`.
 - RC-12 Architecture Audit (US091): Pipeline Engine verified as unified Campaign / Replay / Knowledge runtime; isolation PASS; no Event Bus.
+- Insight Extraction Pipeline (US096): `insights.prepare` / `insights.extract` / `insights.persist`; Insight built-in template; `InsightDomainService.extractFromKnowledge` orchestrator.
+- Cross-Campaign Analysis (US097): `cross-analysis.prepare` / `compare` / `persist`; built-in Cross-Campaign Analysis template; `CrossCampaignAnalysisService` orchestrator.
 
-Next: RC-13.
+Next: RC-14.
 
 ---
 
@@ -352,8 +447,10 @@ Completed:
 - Replay Pipeline Integration (US089): `CampaignReplayService` → template → `PipelineExecutor` → Replay steps; identical `ReplayResult` / Jobs / History behavior.
 - Knowledge Extraction Pipeline Integration (US090): `KnowledgeDomainService.createFromExperiment` → template → `PipelineExecutor` → Knowledge steps; identical KnowledgeEntry / upsert.
 - RC-12 Architecture Audit (US091): Pipeline Engine verified as unified Campaign / Replay / Knowledge runtime; isolation PASS; no Event Bus.
+- Insight Extraction Pipeline (US096): `insights.prepare` / `insights.extract` / `insights.persist`; Insight built-in template; `InsightDomainService.extractFromKnowledge` orchestrator.
+- Cross-Campaign Analysis (US097): `cross-analysis.prepare` / `compare` / `persist`; built-in Cross-Campaign Analysis template; `CrossCampaignAnalysisService` orchestrator.
 
-Next: RC-13.
+Next: RC-14.
 
 ---
 
@@ -1045,7 +1142,56 @@ US094 — Module Maturity Matrix
 - Completed Story: Introduced living `docs/project/module-maturity.md` (status / scope / limitations / next milestone for Research Engine, Campaign, Pipeline, Replay, Knowledge, Experiment, Persistence, History, Import, Export, Jobs); linked from Project Status; no implementation changes.
 - Changed Files: `docs/project/module-maturity.md`, `docs/project/project-status.md`, `CHANGELOG.md`, `docs/project/roadmap.md`.
 - Tests: N/A (docs only).
-- Next: RC-13.
+- Next: US095.
+
+US095 — Insight Domain
+
+- Completed Story: Introduced Insight domain (`Insight` / `InsightType` / `InsightSource` / `InsightMetadata`) + in-memory `InsightDomainService` (`create` / `update` / `delete` / `getById` / `search`); `InsightModule` wired in `AppModule`; references Knowledge ids only; no AI / Pipeline / REST / Prisma.
+- Changed Files: `apps/api/src/modules/insight/*`, `app.module.ts`, docs.
+- Tests: InsightDomainService — 10 passed.
+- Next: US096.
+
+US096 — Insight Extraction Pipeline
+
+- Completed Story: Insight Pipeline Steps (`insights.prepare` / `insights.extract` / `insights.persist`); registered on `PipelineRegistry`; built-in Insight template; deterministic extraction rules; `InsightDomainService.extractFromKnowledge` orchestrates via `PipelineExecutor`; Campaign / Replay / Knowledge pipelines unchanged.
+- Changed Files: `apps/api/src/modules/pipeline/steps/insight/*`, `insight-domain.service.ts`, `insight.module.ts`, `pipeline-template.service.ts`, `builtin-pipeline-templates.ts`, specs, docs.
+- Tests: insight + insight pipeline + template — 26 passed.
+- Next: US097.
+
+US097 — Cross-Campaign Analysis
+
+- Completed Story: `CrossCampaignAnalysisService` + Cross-Campaign Analysis Pipeline (`cross-analysis.prepare` / `compare` / `persist`); built-in template; deterministic multi-campaign findings; writes Insights only via `InsightDomainService`; Campaign / Replay / Knowledge / PipelineExecutor unchanged.
+- Changed Files: `apps/api/src/modules/cross-campaign-analysis/*`, `pipeline/steps/cross-analysis/*`, `pipeline-template.service.ts`, `builtin-pipeline-templates.ts`, `app.module.ts`, docs.
+- Tests: cross-campaign analysis + template + insight regression — 27 related passed.
+- Next: US098.
+
+US098 — Recommendation Engine
+
+- Completed Story: `RecommendationModule` + in-memory `RecommendationDomainService` (CRUD + `generateFromInsights`); deterministic rules from Insights; Insight id refs only; no Pipeline / REST / AI / Prisma.
+- Changed Files: `apps/api/src/modules/recommendation/*`, `app.module.ts`, docs.
+- Tests: recommendation rules + domain service — 11 passed.
+- Next: US099.
+
+US099 — Research Report Domain
+
+- Completed Story: `ResearchReportModule` + in-memory `ResearchReportDomainService` (`create` / `getById` / `search` / `build`); structured aggregation of Campaign / Knowledge / Insight / Recommendation by id; no export / AI / REST / Pipeline.
+- Changed Files: `apps/api/src/modules/research-report/*`, `app.module.ts`, docs.
+- Tests: research-report build rules + domain service — 7 passed.
+- Next: US100.
+
+US100 — Research Intelligence API
+
+- Completed Story: Read-only REST for Insights / Recommendations / Reports / Cross-Campaign Analysis; `HistoryPage` lists; Domain Service adapters only; Cross-Campaign result store for GET.
+- Changed Files: controllers + modules under insight / recommendation / research-report / cross-campaign-analysis; `common/api-list`; `docs/project/api.md`; docs.
+- Tests: 4 controller suites + cross-campaign regression — 20 related passed.
+- Next: US101.
+
+US101 — RC-13 Final Architecture Audit
+
+- Completed Story: RC-13 architecture audit PASS WITH RECOMMENDATIONS; docs closeout — Living Next RC-14; Accepted Legacy dual paths (CampaignReport.recommendations / Knowledge.insights string[] / ResearchAnalysis); TD-009 Accepted; TD-010 Planned.
+- Changed Files: docs only (`architecture-snapshot.md`, `project-status.md`, `roadmap.md`, `module-maturity.md`, `CHANGELOG.md`, `technical-debt.md`).
+- Tests: N/A (audit / docs).
+- Next: RC-14.
 
 ---
 
@@ -1070,6 +1216,8 @@ Living register: [`technical-debt.md`](./technical-debt.md) (US093).
 
 Infrastructure / runtime debt (InMemory stores, PipelineRun, Scheduler, AuthZ, vector search, Prisma `any`, `forwardRef`) is tracked there with Accepted / Deferred / Planned status.
 
+Accepted Legacy (do not expand; migrate RC-14+): `CampaignReport.recommendations`, `KnowledgeEntry.insights` string[], `ResearchAnalysis` parallel stack (TD-011–TD-013). TD-009 Accepted; TD-010 Planned.
+
 Research/data notes still relevant locally:
 
 - Legacy Knowledge entries (pre-versioning) без `resultIdentityKey` / version fields — живуть через structural legacy detection.
@@ -1084,7 +1232,7 @@ Research/data notes still relevant locally:
 
 High Priority
 
-- RC-13.
+- RC-14.
 - US074.
 - Наступна research hypothesis після EMA + Donchian FAIL.
 - За потреби: campaign-level Knowledge summary (не лише per-config).

@@ -1,8 +1,8 @@
-# TRP — Campaign History, Export, Import, Jobs & Knowledge API
+# TRP — Campaign History, Export, Import, Jobs, Knowledge & Research Intelligence API
 
 Last updated: 2026-07-17
 
-Living HTTP contract for Campaign Session history, export, import, Jobs status, and Knowledge search.
+Living HTTP contract for Campaign Session history, export, import, Jobs status, Knowledge search, and Research Intelligence (Insights / Recommendations / Reports / Cross-Campaign Analysis).
 Domain context: [`campaign-domain-model.md`](./campaign-domain-model.md).
 
 ---
@@ -201,3 +201,96 @@ Filters combine with **AND**. No filters → all entries.
 Empty array when nothing matches (never 404 for search).
 
 RC-10: Knowledge & Experiment Intelligence finalized (US075–US079).
+
+---
+
+## Research Intelligence API (US100)
+
+Read-only REST adapters over existing in-memory domain services.
+Controllers do **not** generate Insights / Recommendations, build reports, or execute pipelines.
+
+Flow:
+
+```
+Controller
+  → DomainService.search / getById
+      → HistoryPage<T> | entity
+```
+
+List responses use the History envelope: `HistoryPage<T>` (`items`, `totalItems`, `totalPages`, `currentPage`, `pageSize`).
+
+Common list query params:
+
+| Query       | Default     | Notes            |
+| ----------- | ----------- | ---------------- |
+| `page`      | `1`         | Positive integer |
+| `pageSize`  | `20`        | Positive integer |
+| `sortBy`    | `createdAt` | Domain-specific  |
+| `sortOrder` | `DESC`      | `ASC` \| `DESC`  |
+
+### Insights
+
+#### `GET /insights`
+
+Returns `HistoryPage<Insight>`.
+
+| Query               | Notes                                                   |
+| ------------------- | ------------------------------------------------------- |
+| `type`              | `PATTERN` \| `ANOMALY` \| `CORRELATION` \| `TREND` \| … |
+| `campaignSessionId` | Exact match                                             |
+| `experimentId`      | Exact match                                             |
+| `sortBy`            | `createdAt` \| `type` \| `confidence` \| `title`        |
+
+#### `GET /insights/:id`
+
+- `200` — `Insight`
+- `404` — not found
+
+### Recommendations
+
+#### `GET /recommendations`
+
+Returns `HistoryPage<Recommendation>`.
+
+| Query      | Notes                                                         |
+| ---------- | ------------------------------------------------------------- |
+| `type`     | `REPEAT_EXPERIMENT` \| `EXPAND_SCOPE` \| `VERIFY_RESULT` \| … |
+| `priority` | `LOW` \| `MEDIUM` \| `HIGH` \| `CRITICAL`                     |
+| `sortBy`   | `createdAt` \| `type` \| `priority` \| `title`                |
+
+#### `GET /recommendations/:id`
+
+- `200` — `Recommendation`
+- `404` — not found
+
+### Research Reports
+
+#### `GET /reports`
+
+Returns `HistoryPage<ResearchReport>`.
+
+| Query               | Notes                   |
+| ------------------- | ----------------------- |
+| `campaignSessionId` | Exact id in report refs |
+| `sortBy`            | `createdAt`             |
+
+#### `GET /reports/:id`
+
+- `200` — `ResearchReport`
+- `404` — not found
+
+### Cross-Campaign Analysis
+
+#### `GET /cross-campaign-analysis`
+
+Returns `HistoryPage<CrossCampaignAnalysisResult>` (stored analyze results; includes `id` / `createdAt`).
+
+| Query               | Notes                          |
+| ------------------- | ------------------------------ |
+| `campaignSessionId` | Match in `comparedCampaignIds` |
+| `sortBy`            | `createdAt`                    |
+
+#### `GET /cross-campaign-analysis/:id`
+
+- `200` — `CrossCampaignAnalysisResult`
+- `404` — not found

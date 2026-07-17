@@ -46,6 +46,8 @@ describe('PipelineTemplateService (US085)', () => {
     expect(ids).toEqual(
       [
         BUILTIN_PIPELINE_TEMPLATE_IDS.campaign,
+        BUILTIN_PIPELINE_TEMPLATE_IDS.crossCampaignAnalysis,
+        BUILTIN_PIPELINE_TEMPLATE_IDS.insight,
         BUILTIN_PIPELINE_TEMPLATE_IDS.knowledge,
         BUILTIN_PIPELINE_TEMPLATE_IDS.replay,
       ].sort(),

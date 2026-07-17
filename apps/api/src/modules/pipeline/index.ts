@@ -62,3 +62,21 @@ export {
   registerKnowledgePipelineSteps,
   type KnowledgePipelineStepDeps,
 } from './steps/knowledge';
+export {
+  INSIGHT_PIPELINE_STEP_METADATA,
+  INSIGHT_PIPELINE_STEPS,
+  PrepareInsightExtractionStep,
+  ExtractInsightsStep,
+  PersistInsightsStep,
+  registerInsightPipelineSteps,
+  type InsightPipelineStepDeps,
+} from './steps/insight';
+export {
+  CROSS_ANALYSIS_PIPELINE_STEP_METADATA,
+  CROSS_ANALYSIS_PIPELINE_STEPS,
+  PrepareCrossAnalysisStep,
+  CompareCrossAnalysisStep,
+  PersistCrossAnalysisStep,
+  registerCrossAnalysisPipelineSteps,
+  type CrossAnalysisPipelineStepDeps,
+} from './steps/cross-analysis';

@@ -17,6 +17,10 @@ import { ResearchAnalysisModule } from './modules/research-analysis/research-ana
 import { CampaignExportModule } from './modules/campaign-export/campaign-export.module';
 import { CampaignImportModule } from './modules/campaign-import/campaign-import.module';
 import { JobsModule } from './modules/jobs/jobs.module';
+import { InsightModule } from './modules/insight/insight.module';
+import { CrossCampaignAnalysisModule } from './modules/cross-campaign-analysis/cross-campaign-analysis.module';
+import { RecommendationModule } from './modules/recommendation/recommendation.module';
+import { ResearchReportModule } from './modules/research-report/research-report.module';
 import { PipelineModule } from './modules/pipeline/pipeline.module';
 import { ResearchCampaignModule } from './modules/research-campaign/research-campaign.module';
 import { WorkflowModule } from './modules/workflow/workflow.module';
@@ -35,6 +39,10 @@ import { PrismaModule } from './storage/prisma/prisma.module';
     DatasetsModule,
     ExperimentsModule,
     KnowledgeModule,
+    InsightModule,
+    CrossCampaignAnalysisModule,
+    RecommendationModule,
+    ResearchReportModule,
     ResearchCampaignModule,
     PipelineModule,
     CampaignExportModule,

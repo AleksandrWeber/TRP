@@ -121,6 +121,13 @@ Related:
 - US092 — Architecture Snapshot Synchronization (RC-12 docs aligned)
 - US093 — Technical Debt Register (`docs/project/technical-debt.md`)
 - US094 — Module Maturity Matrix (`docs/project/module-maturity.md`)
+- US095 — Insight Domain (`InsightModule` + in-memory InsightDomainService)
+- US096 — Insight Extraction Pipeline (`insights.prepare` / `extract` / `persist`)
+- US097 — Cross-Campaign Analysis (`CrossCampaignAnalysisService` + cross-analysis pipeline)
+- US098 — Recommendation Engine (`RecommendationModule` + in-memory RecommendationDomainService)
+- US099 — Research Report Domain (`ResearchReportModule` + in-memory ResearchReportDomainService)
+- US100 — Research Intelligence API (read-only REST for Insight / Recommendation / Report / Cross-Campaign Analysis)
+- US101 — RC-13 Architecture Audit (Research Intelligence finalized; Living Next RC-14)
 
 ---
 
@@ -128,11 +135,13 @@ Related:
 
 **Research OS Foundation**
 
+**RC-13 complete.**
+
 ---
 
 ## Next User Stories
 
-- RC-13
+- RC-14
 
 ---
 

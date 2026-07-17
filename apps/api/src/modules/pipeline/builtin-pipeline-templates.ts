@@ -6,6 +6,8 @@ export const BUILTIN_PIPELINE_TEMPLATE_IDS = {
   campaign: 'campaign-pipeline',
   replay: 'replay-pipeline',
   knowledge: 'knowledge-pipeline',
+  insight: 'insight-pipeline',
+  crossCampaignAnalysis: 'cross-campaign-analysis-pipeline',
 } as const;
 
 export type BuiltinPipelineTemplateId =

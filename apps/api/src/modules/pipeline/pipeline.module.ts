@@ -13,9 +13,9 @@ import { PipelineTemplateService } from './pipeline-template.service';
 import { registerCampaignPipelineSteps } from './steps/campaign/register-campaign-steps';
 
 /**
- * Generic Research Pipeline Nest module (US081–US090).
+ * Generic Research Pipeline Nest module (US081–US097).
  * Domain + step registry + executor + hooks + templates + Campaign step registration.
- * Campaign / Replay / Knowledge orchestrators execute via PipelineExecutor.
+ * Campaign / Replay / Knowledge / Insight / Cross-Campaign Analysis orchestrators execute via PipelineExecutor.
  */
 @Module({
   imports: [ExperimentsModule, CampaignPersistenceModule],
