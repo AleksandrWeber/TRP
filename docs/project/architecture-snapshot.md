@@ -2,7 +2,7 @@
 
 Last updated: 2026-07-17
 
-Single snapshot of the **current** architecture (RC-13). Documentation only. No future ideas.
+Single snapshot of the **current** architecture (RC-15). Documentation only. No future ideas.
 
 ---
 
@@ -399,6 +399,105 @@ Research OS Foundation
 
 RC-13 finalized — Research Intelligence layer (Insight / Cross-Campaign / Recommendation / ResearchReport + read-only REST) on the unified Pipeline Engine.
 
+RC-14 finalized — production SaaS foundation (Identity / Auth / RBAC / Workspace / Prisma drivers / Queue / Logging / Metrics / Validation / API versioning).
+
+---
+
+## Simulation Stack (RC-15)
+
+Historical market data → backtest / walk-forward → portfolio & trades → performance → comparison → immutable simulation report.
+
+**No paper trading. No live trading. No broker integration. No Simulation REST / UI.**
+
+### Modules (`apps/api/src/modules/`)
+
+| Module             | Path                    | Role                                                         |
+| ------------------ | ----------------------- | ------------------------------------------------------------ |
+| MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped |
+| HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`    |
+| MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)      |
+| Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`            |
+| Portfolio          | `portfolio/`            | `PortfolioEngine` state (cash / equity / PnL)                |
+| Trade              | `trade/`                | Virtual `TradeEngine` → `PortfolioEngine.applyExecution`     |
+| Performance        | `performance/`          | `PerformanceAnalyzer` → immutable `PerformanceReport`        |
+| WalkForward        | `walk-forward/`         | Rolling windows; reuses `BacktestEngine` sequentially        |
+| StrategyComparison | `strategy-comparison/`  | Rankings + weighted overall winner from completed results    |
+| SimulationReport   | `simulation-report/`    | `SimulationReportBuilder` → immutable consolidated artifact  |
+
+### Dependency direction (acyclic)
+
+```
+MarketData
+    ▲
+    │
+HistoricalImport          MarketDataProvider (local → MarketDataDomainService)
+                                │
+                                ▼
+                          Backtesting ──► Trade ──► Portfolio
+                                │
+                                ▼
+                          Performance          (analyzes completed run artifacts)
+                                │
+                     WalkForward ──► Backtesting (reuse only)
+                                │
+              StrategyComparison ──► BacktestResult / WalkForwardResult / PerformanceReport
+                                │
+              SimulationReport   ──► completed artifacts only
+                                     (session + backtest ± walk-forward + portfolio
+                                      + trades + performance ± comparisonScore)
+```
+
+**Forbidden / verified absent**
+
+- Cycles among RC-15 modules (Performance uses `BacktestRunSummary`, not `BacktestResult`, so Backtesting → Performance is one-way).
+- `BacktestEngine` knowledge of `SimulationReport`, `StrategyComparison`, UI, or REST.
+- Simulation / Strategy Comparison / Performance HTTP controllers.
+
+### Runtime flow
+
+```
+ProviderRegistry.fetchHistorical(local)
+        │
+        ▼
+BacktestEngine.run(session, strategy)
+        │  owns PortfolioEngine + TradeEngine per session
+        │  Strategy.onBar may call TradeEngine
+        │  optional snapshotSink for report assembly
+        ▼
+PerformanceAnalyzer.analyze → BacktestResult.performance
+        │
+        ├── WalkForwardEngine (N sequential BacktestEngine runs)
+        ├── StrategyComparisonService.compare([...])
+        └── SimulationReportBuilder.build({ session, backtest, portfolio, snapshots, trades, ... })
+```
+
+### Strategy contract
+
+- `Strategy` receives `StrategyContext` `{ trades, portfolio }`.
+- Strategies must not import repositories or providers.
+- Intended trading path: `context.trades.openTrade` / `closeTrade` (portfolio updates via TradeEngine).
+
+### Workspace isolation
+
+| Layer              | Mechanism                                              |
+| ------------------ | ------------------------------------------------------ |
+| MarketData         | `workspaceId` on `MarketBar` + all repo queries        |
+| HistoricalImport   | Input `workspaceId` stamped on persisted bars          |
+| MarketDataProvider | `HistoricalDataRequest.workspaceId`                    |
+| Backtesting        | `BacktestSession.workspaceId` → provider fetch         |
+| WalkForward        | `WalkForwardSession.workspaceId` → provider + backtest |
+| Portfolio          | `workspaceId` on initialize                            |
+| SimulationReport   | Session slice includes `workspaceId`                   |
+
+Performance / StrategyComparison operate on already-scoped completed artifacts.
+
+### Audit (US125)
+
+- Dependency graph verified acyclic after Performance↔Backtesting decoupling.
+- Layering matches Provider → Backtesting → Trade → Portfolio; Performance consumes run outputs.
+- SimulationReport depends on completed artifacts only.
+- Tests + build green at RC-15 closeout.
+
 ---
 
 ## Known Technical Debt
@@ -423,4 +522,4 @@ Research/data notes:
 
 ## Next User Story
 
-RC-14
+RC-15 release finalize (commit / tag) after US125 audit.

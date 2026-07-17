@@ -13,6 +13,16 @@ import { ExperimentsModule } from './modules/experiments/experiments.module';
 import { HealthModule } from './modules/health/health.module';
 import { IdentityModule } from './modules/identity/identity.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
+import { MarketDataModule } from './modules/market-data/market-data.module';
+import { HistoricalImportModule } from './modules/historical-import/historical-import.module';
+import { MarketDataProviderModule } from './modules/market-data-provider/market-data-provider.module';
+import { BacktestingModule } from './modules/backtesting/backtesting.module';
+import { PortfolioModule } from './modules/portfolio/portfolio.module';
+import { TradeModule } from './modules/trade/trade.module';
+import { PerformanceModule } from './modules/performance/performance.module';
+import { StrategyComparisonModule } from './modules/strategy-comparison/strategy-comparison.module';
+import { SimulationReportModule } from './modules/simulation-report/simulation-report.module';
+import { WalkForwardModule } from './modules/walk-forward/walk-forward.module';
 import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { ProductionModule } from './modules/production/production.module';
 import { ResearchAnalysisModule } from './modules/research-analysis/research-analysis.module';
@@ -45,6 +55,16 @@ import { ValidationModule } from './validation/validation.module';
     AuthModule,
     IdentityModule,
     WorkspaceModule,
+    MarketDataModule,
+    HistoricalImportModule,
+    MarketDataProviderModule,
+    PortfolioModule,
+    TradeModule,
+    PerformanceModule,
+    BacktestingModule,
+    WalkForwardModule,
+    StrategyComparisonModule,
+    SimulationReportModule,
     HealthModule,
     DatasetsModule,
     ExperimentsModule,

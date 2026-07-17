@@ -2,7 +2,7 @@
 
 Last updated: 2026-07-17
 
-Living matrix of implementation maturity for major Research OS modules. Documentation only (US094).
+Living matrix of implementation maturity for major Research OS modules. Documentation only (US094 / US125).
 
 Related:
 
@@ -26,23 +26,33 @@ Related:
 
 ## Summary table
 
-| Module          | Status     | Next milestone                                          |
-| --------------- | ---------- | ------------------------------------------------------- |
-| Research Engine | Stable     | RC-14 (observability / provenance extensions as needed) |
-| Campaign        | Mature     | RC-14 (optional Campaign UI / analytics)                |
-| Pipeline        | Mature     | RC-14+ (PipelineRun persistence / observability)        |
-| Replay          | Foundation | RC-14+ (Replay HTTP API if productized)                 |
-| Knowledge       | Mature     | RC-15+ (vector search / richer intelligence)            |
-| Insight         | Foundation | RC-14 (write / analysis API as productized)             |
-| Cross-Campaign  | Foundation | RC-14 (write / reporting as productized)                |
-| Recommendation  | Foundation | RC-14 (write / Report Builder as productized)           |
-| Research Report | Foundation | RC-14 (export / write API as productized)               |
-| Experiment      | Mature     | RC-14+ (env metadata / accountingVersion / equity)      |
-| Persistence     | Foundation | RC-14+ (durable Repository)                             |
-| History         | Mature     | RC-14+ (follows Persistence durability)                 |
-| Import          | Mature     | RC-14 (additional formats if needed)                    |
-| Export          | Mature     | RC-14 (additional formats if needed)                    |
-| Jobs            | Foundation | RC-14+ (durable queue); RC-14 (Scheduler)               |
+| Module             | Status     | Next milestone                                          |
+| ------------------ | ---------- | ------------------------------------------------------- |
+| Research Engine    | Stable     | RC-14 (observability / provenance extensions as needed) |
+| Campaign           | Mature     | RC-14 (optional Campaign UI / analytics)                |
+| Pipeline           | Mature     | RC-14+ (PipelineRun persistence / observability)        |
+| Replay             | Foundation | RC-14+ (Replay HTTP API if productized)                 |
+| Knowledge          | Mature     | RC-15+ (vector search / richer intelligence)            |
+| Insight            | Foundation | RC-14 (write / analysis API as productized)             |
+| Cross-Campaign     | Foundation | RC-14 (write / reporting as productized)                |
+| Recommendation     | Foundation | RC-14 (write / Report Builder as productized)           |
+| Research Report    | Foundation | RC-14 (export / write API as productized)               |
+| Experiment         | Mature     | RC-14+ (env metadata / accountingVersion / equity)      |
+| Persistence        | Foundation | RC-14+ (durable Repository)                             |
+| History            | Mature     | RC-14+ (follows Persistence durability)                 |
+| Import             | Mature     | RC-14 (additional formats if needed)                    |
+| Export             | Mature     | RC-14 (additional formats if needed)                    |
+| Jobs               | Foundation | RC-14+ (durable queue); RC-14 (Scheduler)               |
+| MarketData         | Foundation | RC-16+ (Prisma / exchange providers)                    |
+| HistoricalImport   | Foundation | RC-16+ (additional formats / REST if productized)       |
+| MarketDataProvider | Foundation | RC-16+ (Binance / Bybit / Polygon adapters)             |
+| Backtesting        | Foundation | RC-16+ (paper trading / richer strategy tooling)        |
+| Portfolio          | Foundation | RC-16+ (multi-instrument / positions book)              |
+| Trade              | Foundation | RC-16+ (slippage / commission models)                   |
+| Performance        | Foundation | RC-16+ (benchmarks / tear sheets)                       |
+| WalkForward        | Foundation | RC-16+ (optimization hooks — out of scope today)        |
+| StrategyComparison | Foundation | RC-16+ (UI / batch research workflows)                  |
+| SimulationReport   | Foundation | RC-16+ (export / persistence)                           |
 
 ---
 
@@ -182,6 +192,60 @@ Related:
 | **Scope**               | `Job` / `JobQueue` / `InMemoryJobQueue`; `JobService` create/list/get/cancel; `BackgroundJobRunner` for CAMPAIGN/REPLAY; REST status + cancel |
 | **Current limitations** | In-memory queue (TD-002); no Scheduler (TD-004); no job persistence                                                                           |
 | **Next milestone**      | RC-14 durable queue / Scheduler                                                                                                               |
+
+### MarketData (RC-15)
+
+| Field                   | Value                                                                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------------ |
+| **Status**              | Foundation                                                                                       |
+| **Scope**               | `MarketBar` / Instrument / Timeframe; `MarketDataDomainService`; InMemory repo; workspace-scoped |
+| **Current limitations** | No Prisma; no REST                                                                               |
+| **Next milestone**      | RC-16+ — durable store / provider-backed ingest                                                  |
+
+### HistoricalImport (RC-15)
+
+| Field                   | Value                                                                         |
+| ----------------------- | ----------------------------------------------------------------------------- |
+| **Status**              | Foundation                                                                    |
+| **Scope**               | `HistoricalDataImporter` + `CsvImporter`; validation; persists via MarketData |
+| **Current limitations** | CSV only; no REST                                                             |
+| **Next milestone**      | RC-16+ — more formats / import API if productized                             |
+
+### MarketDataProvider (RC-15)
+
+| Field                   | Value                                                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Status**              | Foundation                                                                                             |
+| **Scope**               | `MarketDataProvider` / `ProviderRegistry`; `LocalRepositoryProvider`; source enum for future exchanges |
+| **Current limitations** | Local only; no external API calls                                                                      |
+| **Next milestone**      | RC-16+ — Binance / Bybit / Polygon / Yahoo / Alpaca adapters                                           |
+
+### Backtesting (RC-15)
+
+| Field                   | Value                                                                                                               |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Status**              | Foundation                                                                                                          |
+| **Scope**               | `BacktestEngine` + `Strategy` / `StrategyContext`; owns Portfolio + Trade per session; attaches `PerformanceReport` |
+| **Current limitations** | No paper/live trading; no REST; optional `snapshotSink` only (no SimulationReport coupling)                         |
+| **Next milestone**      | RC-16+ — strategy tooling / paper trading                                                                           |
+
+### Portfolio / Trade / Performance (RC-15)
+
+| Field                   | Value                                                                                   |
+| ----------------------- | --------------------------------------------------------------------------------------- |
+| **Status**              | Foundation                                                                              |
+| **Scope**               | PortfolioEngine state; TradeEngine virtual fills; PerformanceAnalyzer immutable metrics |
+| **Current limitations** | Single-instrument trades; no slippage/commission/leverage                               |
+| **Next milestone**      | RC-16+ — richer execution & analytics                                                   |
+
+### WalkForward / StrategyComparison / SimulationReport (RC-15)
+
+| Field                   | Value                                                                                                          |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Status**              | Foundation                                                                                                     |
+| **Scope**               | WalkForwardEngine (sequential BacktestEngine); comparison rankings + weighted winner; immutable report builder |
+| **Current limitations** | No optimization; no UI/REST                                                                                    |
+| **Next milestone**      | RC-16+ — research workflows / export                                                                           |
 
 ---
 

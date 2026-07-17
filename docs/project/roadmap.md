@@ -128,6 +128,18 @@ Related:
 - US099 — Research Report Domain (`ResearchReportModule` + in-memory ResearchReportDomainService)
 - US100 — Research Intelligence API (read-only REST for Insight / Recommendation / Report / Cross-Campaign Analysis)
 - US101 — RC-13 Architecture Audit (Research Intelligence finalized; Living Next RC-14)
+- RC-14 — Production SaaS foundation (`feat(rc14)` / tag `rc-14`)
+- US115 — Market Data Domain
+- US116 — Historical Data Import
+- US117 — Market Data Provider Abstraction
+- US118 — Backtesting Engine
+- US119 — Walk-Forward Engine
+- US120 — Portfolio Simulation
+- US121 — Trade Execution Simulation
+- US122 — Performance Metrics
+- US123 — Strategy Comparison
+- US124 — Simulation Report
+- US125 — RC-15 Architecture Audit
 
 ---
 
@@ -135,13 +147,14 @@ Related:
 
 **Research OS Foundation**
 
-**RC-13 complete.**
+**RC-15 complete** (Simulation Stack audited; release commit/tag pending).
 
 ---
 
 ## Next User Stories
 
-- RC-14
+- RC-15 release finalize (commit / tag)
+- RC-16+
 
 ---
 
