@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-16
+2026-07-17
 
 ---
 
@@ -15,9 +15,9 @@ Research OS Foundation
 
 Побудувати Evidence-driven Research OS: reproducible experiments, immutable Knowledge, і чітке provenance/versioning результатів.
 
-Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); ADR-010 sync (US050A); Dataset Slice stack US045–US047. Remote release ще не запушено.
+Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slice US045–US047. Campaign Persistence + History API (US051–US059). RC-06 Architecture Audit complete (US060). Export Foundation + Export API (US061–US062). RC-07 finalized. Remote release ще не запушено.
 
-Next: US051.
+Next: RC-08.
 
 ---
 
@@ -43,6 +43,8 @@ Roadmap: [`roadmap.md`](./roadmap.md).
 
 Architecture Snapshot: [`architecture-snapshot.md`](./architecture-snapshot.md).
 
+Campaign History & Export API: [`api.md`](./api.md).
+
 ---
 
 # Release Readiness
@@ -53,7 +55,7 @@ Status: NOT READY for remote release / push
 
 Status: Ready for Commit
 
-Scope: Research OS (US003–US019, US020A–US020B, US026–US035, US037–US043, US045–US050) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C, US036, US041A, US043A, US044, US050A). Product next: US051.
+Scope: Research OS (US003–US019, US020A–US020B, US026–US035, US037–US043, US045–US050, US051–US062) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C, US036, US041A, US043A, US044, US050A, US060) + RC-07 (Campaign Session Persistence + History + Export). Product next: RC-08.
 
 Current Research OS implementation exists in working tree.
 Release will be created only after explicit commit sequence.
@@ -76,7 +78,7 @@ Completed:
 - EMA Crossover і Donchian Breakout зареєстровані.
 - Paginated Binance historical import (startTime/endTime, ≤1000 per page).
 
-Next: US051.
+Next: RC-08.
 
 ---
 
@@ -95,7 +97,7 @@ Completed:
 - Single source of truth: `knowledge.version.ts`.
 - Integration/unit tests для create / duplicate / lineage / version consistency.
 
-Next: US051.
+Next: RC-08.
 
 ---
 
@@ -115,7 +117,65 @@ Completed:
 - Walk-Forward test evaluation: `trainBestExperimentId` / `testExperimentId` + train/test metrics & verdicts (US049).
 - Walk-Forward Aggregate v2 (US050): Train Aggregate + Test Aggregate; `overallVerdict` from Test only.
 
-Next: US051.
+Next: RC-08.
+
+---
+
+## Campaign Persistence
+
+Status:
+✅ Integrated (US051–US059; in-memory store + History API)
+
+Completed:
+
+- Domain module `apps/api/src/modules/campaign-persistence/`.
+- `CampaignRecord` stores session fields: `sessionId`, `status`, timestamps, `metadata`, nested `report`.
+- `CampaignRepository` contract: `save` / `findById` / `findAll` / `exists` / `delete`.
+- `CampaignSessionMapper`: `CampaignSession` ↔ `CampaignRecord`.
+- `InMemoryCampaignRepository` (Map-backed; no DB / filesystem / singleton).
+- `CampaignPersistenceService` (writes) + `CampaignHistoryService` (read-only history).
+- `HistoryQuery` filters + `HistoryPageRequest` / `HistoryPage` pagination & sorting.
+- `CampaignHistoryController`: `GET /campaign-history`, `GET /campaign-history/:sessionId`.
+- `ResearchCampaignService.run` creates/persists one `CampaignSession` per execution (`COMPLETED` or `FAILED`).
+- RC-06 Architecture Audit (US060): dependency direction / History flow / API / tests validated PASS.
+
+Next: RC-08.
+
+---
+
+## Campaign Session
+
+Status:
+✅ Integrated with Campaign execution (US053–US055); RC-06 audited
+
+Completed:
+
+- `CampaignSession` execution entity (`id`, `status`, `createdAt`, `completedAt?`, `report`, `metadata`).
+- `CampaignSessionStatus`: `CREATED` / `COMPLETED` / `FAILED`.
+- `CampaignSessionMetadata`: `engineVersion`, optional `datasetId` / `tags`.
+- `CampaignSessionFactory` (DI): creates CREATED sessions; Campaign sets COMPLETED/FAILED + `completedAt` before save.
+- Every `ResearchCampaignService.run` persists exactly one session.
+- `CampaignHistoryService` + History API (US056–US059).
+
+Next: RC-08.
+
+---
+
+## Campaign Export
+
+Status:
+✅ Export API (US061–US062)
+
+Completed:
+
+- Module `apps/api/src/modules/campaign-export/`.
+- `ExportFormat` enum: `JSON` | `CSV`.
+- `CampaignExporter` strategy interface + `JsonCampaignExporter` / `CsvCampaignExporter`.
+- `CampaignExportService` accepts `CampaignSession` only (never `CampaignRecord`); delegates by format.
+- `CampaignExportController`: `GET /campaign-history/:sessionId/export?format=json|csv`.
+- Flow: HistoryService.getById → CampaignExportService.export; 200 / 400 / 404; Content-Type set.
+
+Next: RC-08.
 
 ---
 
@@ -150,8 +210,20 @@ Completed:
 - True Walk-Forward Execution (US048): Train/Test `SliceRef` per window; campaign runs on Train slice only; test identity stored as provenance.
 - Walk-Forward Test Evaluation (US049): best train params re-run on Test SliceRef; window train/test metrics & verdicts.
 - Walk-Forward Aggregate v2 (US050): separate Test Aggregate metrics; `overallVerdict` from Test verdicts only; Train Aggregate kept for reference.
+- Campaign Persistence Domain (US051): `CampaignRecord` / `CampaignRepository` / `CampaignMapper` / `InMemoryCampaignRepository`; Campaign execution unwired.
+- Campaign Persistence Service (US052): `CampaignPersistenceService` orchestrates mapper + repository; exposes `CampaignReport` API only.
+- Campaign Session Model (US053): `CampaignSession` + factory; CREATED sessions with report + metadata; not persisted / not wired.
+- Persist Campaign Session (US054): PersistenceService saves/loads `CampaignSession` via `CampaignSessionMapper` + extended `CampaignRecord`.
+- Integrate Campaign Persistence (US055): `ResearchCampaignService` persists COMPLETED/FAILED sessions via factory + PersistenceService (DI).
+- Campaign History Query Service (US056): read-only `CampaignHistoryService` (`getById` / `getAll` / `exists`); returns `CampaignSession` only.
+- Campaign History Search & Filters (US057): `search(HistoryQuery)` with AND filters over status / engineVersion / datasetId / tags.
+- Campaign History Pagination & Sorting (US058): `search(query, pageRequest)` → `HistoryPage`; sort by createdAt / completedAt / status.
+- Campaign History API (US059): `GET /campaign-history` + `GET /campaign-history/:sessionId` (read-only).
+- RC-06 Architecture Audit (US060): Campaign→Session→Persistence→History→API boundaries PASS; 63 related tests green.
+- Export Foundation (US061): `CampaignExportService` + JSON/CSV exporters (Strategy Pattern); Session-only input.
+- Export API (US062): `GET /campaign-history/:sessionId/export` (json/csv; 404/400; Content-Type).
 
-Next: US051.
+Next: RC-08.
 
 ---
 
@@ -530,6 +602,97 @@ US050A — Walk-Forward Documentation Sync
 - Tests: n/a (documentation only).
 - Next: US051.
 
+US051 — Persistence Domain
+
+- Completed Story: introduced Campaign Persistence domain (`CampaignRecord`, `CampaignRepository`, `CampaignMapper`, `InMemoryCampaignRepository`); Campaign execution / Walk-Forward / API / UI / DB unchanged and unwired.
+- Changed Files: `apps/api/src/modules/campaign-persistence/*`, docs.
+- Tests: repository CRUD / multi-record isolation / mapper CampaignReport → CampaignRecord passed.
+- Next: US052.
+
+US052 — Campaign Persistence Service
+
+- Completed Story: `CampaignPersistenceService` is the Persistence entry point (DI repository + mapper); save maps Report→Record; reads return `CampaignReport` only; Campaign / Walk-Forward / API / UI unwired.
+- Changed Files: `campaign-persistence.service.ts`, `campaign-persistence.module.ts`, mapper `toReport`, specs, docs.
+- Tests: save/mapper delegation / find / exists / delete / exception propagation / no CampaignRecord leak passed.
+- Next: US053.
+
+US053 — Campaign Session Model
+
+- Completed Story: introduced `CampaignSession` domain (`status`, `metadata`, factory); sessions start as CREATED with report assigned; no persistence or Campaign integration.
+- Changed Files: `apps/api/src/modules/campaign-session/*`, docs.
+- Tests: factory create / id / createdAt / CREATED / metadata / report / completedAt undefined passed.
+- Next: US054.
+
+US054 — Persist Campaign Session
+
+- Completed Story: Persistence switched to `CampaignSession`; `CampaignSessionMapper` + extended `CampaignRecord` (status/metadata/timestamps/report); service returns sessions only; Campaign execution unwired.
+- Changed Files: `campaign-record.ts`, `campaign-session.mapper.ts`, `campaign-persistence.service.ts`, in-memory clone, specs, docs; removed report-level `CampaignMapper`.
+- Tests: save/load / mapper both ways / metadata+status+timestamps / multi-session isolation passed.
+- Next: US055.
+
+US055 — Integrate Campaign Persistence
+
+- Completed Story: `ResearchCampaignService.run` builds report, creates CampaignSession via factory, sets COMPLETED/FAILED + `completedAt`, persists via `CampaignPersistenceService`; failures rethrow after FAILED persist; one run = one session.
+- Changed Files: `research-campaign.service.ts`, `research-campaign.module.ts`, `campaign-session.factory.ts` (`@Injectable`), specs, docs.
+- Tests: successful COMPLETED persist / FAILED persist + rethrow / completedAt / one session per execution passed.
+- Next: RC-05 Architecture Audit.
+
+US056 — Campaign History Query Service
+
+- Completed Story: read-only `CampaignHistoryService` queries sessions via repository + mapper; `CampaignRecord` never leaves the service; writes stay on PersistenceService.
+- Changed Files: `campaign-history.service.ts`, module exports, specs, docs.
+- Tests: getById / getAll / exists / empty list / unknown id / Session-only returns passed.
+- Next: US057.
+
+US057 — Campaign History Search & Filters
+
+- Completed Story: `HistoryQuery` + `CampaignHistoryService.search`; filters applied in-service after `findAll`; AND logic; Repository contract unchanged.
+- Changed Files: `history-query.ts`, `campaign-history.service.ts`, specs, docs.
+- Tests: status / engineVersion / datasetId / tags / AND / no filters / no matches passed.
+- Next: US058.
+
+US058 — Campaign History Pagination & Sorting
+
+- Completed Story: `HistoryPageRequest` / `HistoryPage`; `search` applies filter → sort → paginate; sort by createdAt / completedAt / status (ASC/DESC); Repository unchanged.
+- Changed Files: `history-page.ts`, `campaign-history.service.ts`, specs, docs.
+- Tests: first/second page / out of range / ASC/DESC / pagination after filter / totalItems / totalPages passed.
+- Next: US059.
+
+US059 — Campaign History API
+
+- Completed Story: read-only `CampaignHistoryController` exposes list + get-by-id over `CampaignHistoryService`; query params for page/sort/filters; 404 when missing; domain model API docs updated.
+- Changed Files: `campaign-history.controller.ts`, module, specs, `campaign-domain-model.md`, docs.
+- Tests: GET history / GET by id / pagination / sorting / filtering / 404 / empty history passed.
+- Next: US060 — RC-06 Architecture Audit.
+
+US060 — RC-06 Architecture Audit
+
+- Completed Story: validated dependency direction, History flow, public History API, and RC-06 test suite (63 passed); synced campaign-domain-model + architecture-snapshot; no code/contract changes.
+- Changed Files: `docs/project/project-status.md`, `roadmap.md`, `CHANGELOG.md`, `campaign-domain-model.md`, `architecture-snapshot.md`.
+- Tests: campaign-session + campaign-persistence + campaign persistence integration — 63 passed.
+- Next: RC-07.
+
+US061 — Export Foundation
+
+- Completed Story: Campaign Export module with Strategy Pattern (`JsonCampaignExporter` / `CsvCampaignExporter`); `CampaignExportService` exports `CampaignSession` only (never `CampaignRecord`); no HTTP API.
+- Changed Files: `apps/api/src/modules/campaign-export/*`, `docs/project/project-status.md`, `roadmap.md`, `CHANGELOG.md`, `campaign-domain-model.md`, `architecture-snapshot.md`.
+- Tests: JSON export / CSV export / invalid format / metadata + report in payload — 5 passed.
+- Next: US062.
+
+US062 — Export API
+
+- Completed Story: read-only `CampaignExportController` at `GET /campaign-history/:sessionId/export`; loads session via HistoryService, exports via CampaignExportService; Content-Type + 404/400.
+- Changed Files: `campaign-export.controller.ts`, `campaign-export.module.ts`, `app.module.ts`, specs, `docs/project/api.md`, docs.
+- Tests: export JSON / CSV / invalid format / empty format / session not found / content-type — 6 controller + 5 service passed.
+- Next: US063.
+
+RC-07 finalized
+
+- Completed Story: RC-07 finalized — full test suite green, lint clean for RC-07 scope, docs synced (project-status / roadmap / CHANGELOG / campaign-domain-model / architecture-snapshot / api.md), export + session persistence stack committed and pushed.
+- Changed Files: campaign-session, campaign-persistence, campaign-export, research-campaign wiring, docs.
+- Tests: monorepo — api 167, web 18, research 24 (all passed).
+- Next: RC-08.
+
 ---
 
 # Current Version
@@ -562,7 +725,8 @@ Note: ці версії стосуються working-tree Research OS semantics;
 
 High Priority
 
-- US051.
+- US063.
+- RC-08.
 - Наступна research hypothesis після EMA + Donchian FAIL.
 - За потреби: campaign-level Knowledge summary (не лише per-config).
 

@@ -1,16 +1,35 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { CampaignSessionFactory } from '../campaign-session/campaign-session.factory';
+import { CampaignSessionStatus } from '../campaign-session/campaign-session-status';
 import { CampaignReportService } from './campaign-report.service';
 import { ResearchCampaignService } from './research-campaign.service';
+
+function createCampaignService(experiments: { run: ReturnType<typeof vi.fn> }) {
+  const reports = new CampaignReportService();
+  const sessionFactory = new CampaignSessionFactory();
+  const persistence = {
+    save: vi.fn(),
+    findById: vi.fn(),
+    findAll: vi.fn(),
+    exists: vi.fn(),
+    delete: vi.fn(),
+  };
+  const service = new ResearchCampaignService(
+    experiments as never,
+    reports,
+    sessionFactory,
+    persistence as never,
+  );
+  return { service, reports, sessionFactory, persistence };
+}
 
 describe('ResearchCampaignService', () => {
   let experiments: { run: ReturnType<typeof vi.fn> };
   let service: ResearchCampaignService;
 
   beforeEach(() => {
-    experiments = {
-      run: vi.fn(),
-    };
-    service = new ResearchCampaignService(experiments as never);
+    experiments = { run: vi.fn() };
+    ({ service } = createCampaignService(experiments));
   });
 
   it('runs all configs and creates one experiment per config', async () => {
@@ -148,17 +167,98 @@ describe('ResearchCampaignService', () => {
   });
 });
 
+describe('ResearchCampaignService persistence integration', () => {
+  let experiments: { run: ReturnType<typeof vi.fn> };
+  let service: ResearchCampaignService;
+  let persistence: { save: ReturnType<typeof vi.fn> };
+  let reports: CampaignReportService;
+
+  beforeEach(() => {
+    experiments = { run: vi.fn() };
+    ({ service, persistence, reports } = createCampaignService(experiments));
+  });
+
+  it('persists one COMPLETED session for a successful execution', async () => {
+    experiments.run.mockResolvedValue({
+      id: 'exp-1',
+      verdict: 'pass',
+      metrics: { profitFactor: 1.2, totalReturnPercent: 4 },
+      report: { params: { channelPeriod: 10 } },
+    });
+
+    await service.run({
+      datasetId: 'ds-1',
+      strategyId: 'donchian-breakout',
+      paramsList: [{ channelPeriod: 10 }],
+    });
+
+    expect(persistence.save).toHaveBeenCalledTimes(1);
+    const saved = persistence.save.mock.calls[0][0];
+    expect(saved.status).toBe(CampaignSessionStatus.COMPLETED);
+    expect(saved.completedAt).toEqual(expect.any(String));
+    expect(Number.isNaN(Date.parse(saved.completedAt))).toBe(false);
+    expect(saved.report.campaignId).toBeTruthy();
+    expect(saved.report.verdict).toBe('PASS');
+    expect(saved.metadata.datasetId).toBe('ds-1');
+  });
+
+  it('persists one FAILED session and rethrows when execution fails', async () => {
+    experiments.run.mockResolvedValue({
+      id: 'exp-1',
+      verdict: 'pass',
+      metrics: { profitFactor: 1.2 },
+    });
+    vi.spyOn(reports, 'build').mockImplementation(() => {
+      throw new Error('report build failed');
+    });
+
+    await expect(
+      service.run({
+        datasetId: 'ds-1',
+        strategyId: 'donchian-breakout',
+        paramsList: [{ channelPeriod: 10 }],
+      }),
+    ).rejects.toThrow('report build failed');
+
+    expect(persistence.save).toHaveBeenCalledTimes(1);
+    const saved = persistence.save.mock.calls[0][0];
+    expect(saved.status).toBe(CampaignSessionStatus.FAILED);
+    expect(saved.completedAt).toEqual(expect.any(String));
+    expect(saved.report.verdict).toBe('FAIL');
+    expect(saved.report.recommendations).toContain('Campaign execution failed.');
+  });
+
+  it('creates exactly one session per execution', async () => {
+    experiments.run
+      .mockResolvedValueOnce({
+        id: 'exp-1',
+        verdict: 'pass',
+        metrics: { profitFactor: 1.2 },
+      })
+      .mockResolvedValueOnce({
+        id: 'exp-2',
+        verdict: 'fail',
+        metrics: { profitFactor: 0.5 },
+      });
+
+    await service.run({
+      datasetId: 'ds-1',
+      strategyId: 'donchian-breakout',
+      paramsList: [{ channelPeriod: 10 }, { channelPeriod: 20 }],
+    });
+
+    expect(persistence.save).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe('ResearchCampaignService slice support', () => {
   let experiments: { run: ReturnType<typeof vi.fn> };
   let service: ResearchCampaignService;
   let reports: CampaignReportService;
 
   beforeEach(() => {
-    experiments = {
-      run: vi.fn(),
-    };
-    service = new ResearchCampaignService(experiments as never);
-    reports = new CampaignReportService();
+    experiments = { run: vi.fn() };
+    ({ service, reports } = createCampaignService(experiments));
   });
 
   it('runs a campaign on the full dataset without sliceIdentity', async () => {

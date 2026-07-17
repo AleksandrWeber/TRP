@@ -1,6 +1,6 @@
 # TRP — Architecture Snapshot
 
-Last updated: 2026-07-16
+Last updated: 2026-07-17
 
 Single snapshot of the **current** architecture. Documentation only. No future ideas.
 
@@ -73,8 +73,30 @@ Domain model: [`campaign-domain-model.md`](./campaign-domain-model.md).
 ### Campaign Runner
 
 - `ResearchCampaignService` runs a params list sequentially through `ExperimentsService`.
-- In-memory Campaign Summary (not persisted in DB).
-- Failed runs do not stop the campaign; recorded in `failedRuns`.
+- In-memory Campaign Summary (not a DB row).
+- Failed experiment runs do not stop the campaign; recorded in `failedRuns`.
+- After each `run`, builds `CampaignReport`, creates a `CampaignSession`, and persists it via `CampaignPersistenceService` (COMPLETED or FAILED).
+
+### Campaign Session & Persistence
+
+- `CampaignSession` owns report + status + metadata (US053).
+- `CampaignPersistenceService` writes sessions as `CampaignRecord` (in-memory Map).
+- `CampaignHistoryService` is the read path (filter → sort → paginate).
+- `CampaignRecord` never leaves Persistence / History services.
+
+### Campaign History API
+
+- `GET /campaign-history` → `HistoryPage<CampaignSession>` (page / sort / filters).
+- `GET /campaign-history/:sessionId` → `CampaignSession` or 404.
+
+### Campaign Export
+
+- `CampaignExportService` exports a `CampaignSession` as JSON or CSV (`ExportFormat`).
+- Strategy exporters: `JsonCampaignExporter`, `CsvCampaignExporter`.
+- Input is `CampaignSession` only — never `CampaignRecord`.
+- `GET /campaign-history/:sessionId/export?format=json|csv` (US062).
+- HTTP docs: [`api.md`](./api.md).
+- RC-07 finalized (Session Persistence + History + Export).
 
 ### Campaign Report
 
@@ -85,6 +107,7 @@ Domain model: [`campaign-domain-model.md`](./campaign-domain-model.md).
 ### Campaign API
 
 - `POST /research-campaigns` → `{ summary, report, experimentIds }`.
+- `POST /campaigns/run` → `CampaignSummary`.
 - Existing `POST /experiments` unchanged.
 
 ---

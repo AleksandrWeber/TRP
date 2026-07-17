@@ -74,6 +74,19 @@ Related:
 - US048 — True Walk-Forward Execution (Train SliceRef campaign; test provenance)
 - US049 — Walk-Forward Test Evaluation (best train params on Test SliceRef)
 - US050 — Walk-Forward Aggregate v2 (Train + Test Aggregate; overall from Test)
+- US051 — Persistence Domain (CampaignRecord / Repository / Mapper / InMemory)
+- US052 — Campaign Persistence Service (entry point; Report ↔ Record via mapper)
+- US053 — Campaign Session Model (execution entity + factory; not wired)
+- US054 — Persist Campaign Session (Session ↔ Record via CampaignSessionMapper)
+- US055 — Integrate Campaign Persistence (Campaign run → Session → save)
+- US056 — Campaign History Query Service (read-only getById / getAll / exists)
+- US057 — Campaign History Search & Filters (`HistoryQuery` AND filters in-service)
+- US058 — Campaign History Pagination & Sorting (`HistoryPage` + sort)
+- US059 — Campaign History API (`GET /campaign-history`)
+- US060 — RC-06 Architecture Audit (Campaign Session Persistence stack)
+- US061 — Export Foundation (JSON/CSV Strategy exporters for CampaignSession)
+- US062 — Export API (`GET /campaign-history/:sessionId/export`)
+- RC-07 — Campaign Session Persistence + History + Export finalized
 
 ---
 
@@ -85,7 +98,7 @@ Related:
 
 ## Next User Stories
 
-- US051
+- RC-08
 
 ---
 

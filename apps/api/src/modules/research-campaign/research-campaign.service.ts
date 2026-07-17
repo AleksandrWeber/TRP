@@ -1,8 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { buildSliceIdentity, type SliceRef } from '@trp/research';
+import { CampaignPersistenceService } from '../campaign-persistence/campaign-persistence.service';
+import { CampaignSessionFactory } from '../campaign-session/campaign-session.factory';
+import { CampaignSessionStatus } from '../campaign-session/campaign-session-status';
 import { ExperimentsService } from '../experiments/experiments.service';
-import type { CampaignReportExperiment } from './campaign-report.types';
+import { CampaignReportService } from './campaign-report.service';
+import type { CampaignReport, CampaignReportExperiment } from './campaign-report.types';
 import type { CampaignSummary, ResearchCampaignInput } from './research-campaign.types';
 
 type ExperimentLike = {
@@ -28,9 +32,29 @@ export type ResearchCampaignResult = {
 export class ResearchCampaignService {
   private readonly logger = new Logger(ResearchCampaignService.name);
 
-  constructor(private readonly experiments: ExperimentsService) {}
+  constructor(
+    private readonly experiments: ExperimentsService,
+    private readonly reports: CampaignReportService,
+    private readonly sessionFactory: CampaignSessionFactory,
+    private readonly persistence: CampaignPersistenceService,
+  ) {}
 
   async run(input: ResearchCampaignInput): Promise<ResearchCampaignResult> {
+    try {
+      const result = await this.executeCampaign(input);
+      const report = this.reports.build(result.summary, result.experiments, {
+        sliceIdentity: result.sliceIdentity,
+      });
+      this.persistSession(report, CampaignSessionStatus.COMPLETED, input.datasetId);
+      return result;
+    } catch (error) {
+      const report = this.buildFailedExecutionReport(input);
+      this.persistSession(report, CampaignSessionStatus.FAILED, input.datasetId);
+      throw error;
+    }
+  }
+
+  private async executeCampaign(input: ResearchCampaignInput): Promise<ResearchCampaignResult> {
     const campaignId = randomUUID();
     const createdAt = new Date().toISOString();
 
@@ -101,6 +125,42 @@ export class ResearchCampaignService {
       result.sliceIdentity = sliceIdentity;
     }
     return result;
+  }
+
+  private persistSession(
+    report: CampaignReport,
+    status: CampaignSessionStatus.COMPLETED | CampaignSessionStatus.FAILED,
+    datasetId: string,
+  ): void {
+    const session = this.sessionFactory.create({
+      report,
+      metadata: { datasetId },
+    });
+    this.persistence.save({
+      ...session,
+      status,
+      completedAt: new Date().toISOString(),
+    });
+  }
+
+  private buildFailedExecutionReport(input: ResearchCampaignInput): CampaignReport {
+    return {
+      campaignId: randomUUID(),
+      strategyId: input.strategyId,
+      datasetId: input.datasetId,
+      totalRuns: input.paramsList.length,
+      passCount: 0,
+      failCount: 0,
+      needsReviewCount: 0,
+      bestExperimentId: null,
+      bestProfitFactor: null,
+      bestReturn: null,
+      bestExpectancy: null,
+      lowestDrawdown: null,
+      verdict: 'FAIL',
+      recommendations: ['Campaign execution failed.'],
+      createdAt: new Date().toISOString(),
+    };
   }
 
   private sliceIdentityFrom(sliceRef: SliceRef): string {

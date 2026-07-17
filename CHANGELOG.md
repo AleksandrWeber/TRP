@@ -56,9 +56,22 @@ Research OS Foundation Release Candidate exists as a local commit; remote push n
 - True Walk-Forward Execution (US048): per-window Train/Test `SliceRef`; campaign runs on Train only; `trainSliceIdentity` / `testSliceIdentity` provenance (test evaluation deferred).
 - Walk-Forward Test Evaluation (US049): best train experiment re-run on Test SliceRef; window train/test metrics & verdicts; aggregate still train-based.
 - Walk-Forward Aggregate v2 (US050): Test Aggregate block + `overallVerdict` from Test only; Train Aggregate retained for reference.
+- Campaign Persistence Domain (US051): `CampaignRecord`, `CampaignRepository`, `CampaignMapper`, `InMemoryCampaignRepository` (Map-backed; not wired to Campaign execution).
+- Campaign Persistence Service (US052): `CampaignPersistenceService` injects repository, maps `CampaignReport` ↔ `CampaignRecord`, never exposes storage model externally.
+- Campaign Session Model (US053): `CampaignSession` / `CampaignSessionStatus` / `CampaignSessionFactory` (CREATED sessions; no persistence).
+- Persist Campaign Session (US054): `CampaignPersistenceService` persists `CampaignSession` via `CampaignSessionMapper` and session-shaped `CampaignRecord`.
+- Integrate Campaign Persistence (US055): each `ResearchCampaignService.run` persists one COMPLETED or FAILED `CampaignSession` (DI; in-memory).
+- Campaign History Query Service (US056): read-only `CampaignHistoryService` returns `CampaignSession` via repository + mapper.
+- Campaign History Search & Filters (US057): `search(HistoryQuery)` filters by status / engineVersion / datasetId / tags (AND; Repository unchanged).
+- Campaign History Pagination & Sorting (US058): `search(query, pageRequest)` returns `HistoryPage` after filter → sort → paginate.
+- Campaign History API (US059): `GET /campaign-history` (paged/filtered) and `GET /campaign-history/:sessionId` (404 if missing).
+- Export Foundation (US061): `CampaignExportModule` with Strategy Pattern JSON/CSV exporters; `CampaignExportService` accepts `CampaignSession` only (no HTTP API yet).
+- Export API (US062): `GET /campaign-history/:sessionId/export?format=json|csv` (HistoryService → ExportService; 200/400/404; Content-Type).
 
 ### Fixed
 
+- RC-07 finalized: Campaign Session Persistence + History + Export stack verified (full monorepo tests green); docs synced; committed and pushed.
+- RC-06 Architecture Audit (US060): Campaign Session Persistence stack boundaries, History API, and docs aligned; 63 related unit tests green.
 - Documentation sync (US050A): ADR-010 aligned to Dataset Slice + Train/Test execution + Aggregate v2; Analysis documented as still Train-oriented by intent; ADR index blurb updated.
 - Documentation sync (US041A): Current Goal after Walk-Forward Aggregate + Analysis; Roadmap Next drops misplaced US024 (Portfolio Research remains a Future Milestone); CHANGELOG [Unreleased] labels US037–US041 explicitly.
 - Backtest accounting: trade PnL includes entry fee (Research Engine 1.0.1 semantics).
