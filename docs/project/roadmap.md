@@ -87,6 +87,12 @@ Related:
 - US061 — Export Foundation (JSON/CSV Strategy exporters for CampaignSession)
 - US062 — Export API (`GET /campaign-history/:sessionId/export`)
 - RC-07 — Campaign Session Persistence + History + Export finalized
+- US063 — Import Foundation (JSON Strategy importer for CampaignSession)
+- US064 — JSON Import Validation (`CampaignSessionValidator` + `ImportValidationError`)
+- US065 — Import API (`POST /campaign-import`)
+- US066 — Replay Foundation (`CampaignReplayService` prepare-only)
+- US067 — Replay Execution (`execute` via ResearchCampaignService; transient)
+- RC-08 — Campaign Import + Replay foundation finalized
 
 ---
 
@@ -98,7 +104,7 @@ Related:
 
 ## Next User Stories
 
-- RC-08
+- RC-09
 
 ---
 

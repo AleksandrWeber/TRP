@@ -5,8 +5,10 @@ Last updated: 2026-07-17
 Read-only description of the **currently implemented** Campaign Layer.
 Source: `apps/api/src/modules/research-campaign/`,
 `apps/api/src/modules/campaign-session/`,
-`apps/api/src/modules/campaign-persistence/`, and
-`apps/api/src/modules/campaign-export/`.
+`apps/api/src/modules/campaign-persistence/`,
+`apps/api/src/modules/campaign-export/`,
+`apps/api/src/modules/campaign-import/`, and
+`apps/api/src/modules/campaign-replay/`.
 
 ---
 
@@ -258,6 +260,64 @@ RC-07: Persistence + History + Export stack finalized.
 
 ---
 
+## Campaign Session Import (US063–US065)
+
+Import of a `CampaignSession` via Strategy importers + HTTP API (does not persist).
+
+Architecture:
+
+```
+POST /campaign-import
+  → CampaignImportController
+      → CampaignImportService.import
+          → JsonCampaignImporter
+              → parse JSON
+              → CampaignSessionValidator
+                  → CampaignSession
+```
+
+- `ImportFormat`: `JSON` (initial; body `format: "json"`)
+- Body: `{ "format": "json", "payload": "<exported session JSON string>" }`
+- Output: `CampaignSession` only — never `CampaignRecord`
+- `200` — imported session (metadata + report restored)
+- `400` — unsupported format, malformed JSON, invalid schema, validation failed
+- Validator is Persistence-independent (no Repository); import does **not** save
+
+Module: `apps/api/src/modules/campaign-import/` (`CampaignImportModule`).
+HTTP contract: [`api.md`](./api.md).
+
+---
+
+## Campaign Replay (US066–US067)
+
+Internal foundation: prepare + execute replay of a `CampaignSession` (no public HTTP API yet; does not persist).
+
+Architecture:
+
+```
+Controller (future)
+  → CampaignReplayService
+      → ReplayContext
+      → ResearchCampaignService.run(..., { persistSession: false })
+      → CampaignReportService.build
+          → ReplayResult
+```
+
+- `create(session)` → `READY` (report copy; config restored)
+- `execute(session)` → `RUNNING` → `COMPLETED` | `FAILED`
+- `ReplayResult`: `replayId`, `sourceSessionId`, `startedAt`, `completedAt?`, `status`, `campaignConfig`, `report`
+- `campaignConfig.paramsList` from optional `session.metadata.paramsList`
+- Regenerated `report` on successful execute (not a copy)
+- Invalid session → `BadRequestException`; execution errors → `FAILED`
+- Transient: no Repository / Persistence / History writes
+
+Module: `apps/api/src/modules/campaign-replay/` (`CampaignReplayModule`).
+HTTP: not exposed — see [`api.md`](./api.md) (internal foundation note).
+
+RC-08: Import + Replay foundation finalized.
+
+---
+
 ## RC-06 Architecture Audit (US060)
 
 Status: **PASS** (documentation sync; no code changes)
@@ -315,6 +375,8 @@ History API (CampaignHistoryController)
 - Best candidate is by Profit Factor only.
 - Campaign History UI not implemented.
 - Export has no ZIP / PDF / bulk export yet.
+- Import has no CSV importer / persist-on-import yet.
+- Replay does not expose HTTP / persist replay results yet.
 
 ---
 
@@ -324,3 +386,5 @@ History API (CampaignHistoryController)
 - Campaign History UI.
 - Campaign-level Knowledge summary entry.
 - ZIP / PDF export formats.
+- Optional persist of imported sessions.
+- Replay HTTP API.

@@ -30,6 +30,10 @@ export class CampaignSessionFactory {
       metadata.tags = [...input.metadata.tags];
     }
 
+    if (input.metadata?.paramsList !== undefined) {
+      metadata.paramsList = input.metadata.paramsList.map((params) => ({ ...params }));
+    }
+
     return {
       id: randomUUID(),
       status: CampaignSessionStatus.CREATED,

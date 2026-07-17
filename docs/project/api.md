@@ -1,8 +1,8 @@
-# TRP — Campaign History & Export API
+# TRP — Campaign History, Export & Import API
 
 Last updated: 2026-07-17
 
-Living HTTP contract for Campaign Session history and export.
+Living HTTP contract for Campaign Session history, export, and import.
 Domain context: [`campaign-domain-model.md`](./campaign-domain-model.md).
 
 ---
@@ -69,4 +69,55 @@ Body:
 
 Not supported: ZIP, PDF, bulk export.
 
-RC-07: Export Foundation + Export API finalized (US061–US062) with Session Persistence / History stack.
+---
+
+## Import (US065)
+
+### `POST /campaign-import`
+
+Validates and returns a `CampaignSession` from an exported JSON payload.
+**Does not persist** the imported session.
+
+Request:
+
+- `Content-Type: application/json`
+- Body:
+
+```json
+{
+  "format": "json",
+  "payload": "<exported session JSON string>"
+}
+```
+
+Flow:
+
+```
+CampaignImportController
+  → CampaignImportService.import(payload, format)
+      → JsonCampaignImporter → CampaignSessionValidator
+          → CampaignSession
+```
+
+| Status | When                                                           |
+| ------ | -------------------------------------------------------------- |
+| `200`  | Imported `CampaignSession` (metadata + report restored)        |
+| `400`  | Unsupported format, malformed JSON, invalid schema, validation |
+
+Not supported: CSV import, persist-on-import, campaign replay via this endpoint.
+
+---
+
+## Replay (internal foundation — US066–US067)
+
+No public Replay REST endpoints yet.
+
+Internal service API (`CampaignReplayService`):
+
+- `create(session)` → `ReplayResult` (`READY`)
+- `execute(session)` → `ReplayResult` (`COMPLETED` | `FAILED`)
+
+Execution reuses `ResearchCampaignService` with `persistSession: false` (no History writes).
+Future HTTP surface will be documented here when introduced.
+
+RC-08: Import + Replay foundation finalized (US063–US067).

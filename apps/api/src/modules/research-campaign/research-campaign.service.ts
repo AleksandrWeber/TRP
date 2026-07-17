@@ -39,17 +39,25 @@ export class ResearchCampaignService {
     private readonly persistence: CampaignPersistenceService,
   ) {}
 
-  async run(input: ResearchCampaignInput): Promise<ResearchCampaignResult> {
+  async run(
+    input: ResearchCampaignInput,
+    options?: { persistSession?: boolean },
+  ): Promise<ResearchCampaignResult> {
+    const persistSession = options?.persistSession !== false;
     try {
       const result = await this.executeCampaign(input);
       const report = this.reports.build(result.summary, result.experiments, {
         sliceIdentity: result.sliceIdentity,
       });
-      this.persistSession(report, CampaignSessionStatus.COMPLETED, input.datasetId);
+      if (persistSession) {
+        this.persistSession(report, CampaignSessionStatus.COMPLETED, input.datasetId);
+      }
       return result;
     } catch (error) {
       const report = this.buildFailedExecutionReport(input);
-      this.persistSession(report, CampaignSessionStatus.FAILED, input.datasetId);
+      if (persistSession) {
+        this.persistSession(report, CampaignSessionStatus.FAILED, input.datasetId);
+      }
       throw error;
     }
   }

@@ -15,9 +15,9 @@ Research OS Foundation
 
 Побудувати Evidence-driven Research OS: reproducible experiments, immutable Knowledge, і чітке provenance/versioning результатів.
 
-Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slice US045–US047. Campaign Persistence + History API (US051–US059). RC-06 Architecture Audit complete (US060). Export Foundation + Export API (US061–US062). RC-07 finalized. Remote release ще не запушено.
+Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slice US045–US047. Campaign Persistence + History API (US051–US059). RC-06 Architecture Audit complete (US060). Export Foundation + Export API (US061–US062). RC-07 finalized. Import Foundation (US063). JSON Import Validation (US064). Import API (US065). Replay Foundation (US066). Replay Execution (US067). RC-08 finalized. Remote release ще не запушено.
 
-Next: RC-08.
+Next: RC-09.
 
 ---
 
@@ -55,7 +55,7 @@ Status: NOT READY for remote release / push
 
 Status: Ready for Commit
 
-Scope: Research OS (US003–US019, US020A–US020B, US026–US035, US037–US043, US045–US050, US051–US062) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C, US036, US041A, US043A, US044, US050A, US060) + RC-07 (Campaign Session Persistence + History + Export). Product next: RC-08.
+Scope: Research OS (US003–US019, US020A–US020B, US026–US035, US037–US043, US045–US050, US051–US067) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C, US036, US041A, US043A, US044, US050A, US060) + RC-07 (Campaign Session Persistence + History + Export) + RC-08 (Import + Replay). Product next: RC-09.
 
 Current Research OS implementation exists in working tree.
 Release will be created only after explicit commit sequence.
@@ -78,7 +78,7 @@ Completed:
 - EMA Crossover і Donchian Breakout зареєстровані.
 - Paginated Binance historical import (startTime/endTime, ≤1000 per page).
 
-Next: RC-08.
+Next: RC-09.
 
 ---
 
@@ -97,7 +97,7 @@ Completed:
 - Single source of truth: `knowledge.version.ts`.
 - Integration/unit tests для create / duplicate / lineage / version consistency.
 
-Next: RC-08.
+Next: RC-09.
 
 ---
 
@@ -117,7 +117,7 @@ Completed:
 - Walk-Forward test evaluation: `trainBestExperimentId` / `testExperimentId` + train/test metrics & verdicts (US049).
 - Walk-Forward Aggregate v2 (US050): Train Aggregate + Test Aggregate; `overallVerdict` from Test only.
 
-Next: RC-08.
+Next: RC-09.
 
 ---
 
@@ -139,7 +139,7 @@ Completed:
 - `ResearchCampaignService.run` creates/persists one `CampaignSession` per execution (`COMPLETED` or `FAILED`).
 - RC-06 Architecture Audit (US060): dependency direction / History flow / API / tests validated PASS.
 
-Next: RC-08.
+Next: RC-09.
 
 ---
 
@@ -157,7 +157,7 @@ Completed:
 - Every `ResearchCampaignService.run` persists exactly one session.
 - `CampaignHistoryService` + History API (US056–US059).
 
-Next: RC-08.
+Next: RC-09.
 
 ---
 
@@ -175,7 +175,45 @@ Completed:
 - `CampaignExportController`: `GET /campaign-history/:sessionId/export?format=json|csv`.
 - Flow: HistoryService.getById → CampaignExportService.export; 200 / 400 / 404; Content-Type set.
 
-Next: RC-08.
+Next: RC-09.
+
+---
+
+## Campaign Import
+
+Status:
+✅ Import API (US063–US065; does not persist)
+
+Completed:
+
+- Module `apps/api/src/modules/campaign-import/`.
+- `ImportFormat` enum: `JSON` (initial).
+- `CampaignImporter` strategy interface + `JsonCampaignImporter` (string → `CampaignSession`).
+- `CampaignImportService` accepts payload + format; delegates by Strategy Pattern; returns `CampaignSession` only.
+- `CampaignSessionValidator` + `ImportValidationError` (US064): required fields, metadata, report, timestamps, engineVersion semver.
+- Flow: parse → validator → `CampaignSession` (no Persistence / Repository).
+- `CampaignImportController`: `POST /campaign-import` with `{ format, payload }` → `CampaignSession` (200) or 400.
+- Nest `CampaignImportModule` wired in `AppModule` (no persistence side effects).
+
+Next: RC-09.
+
+---
+
+## Campaign Replay
+
+Status:
+🟡 Execution ready (US066–US067; no HTTP / no persist)
+
+Completed:
+
+- Module `apps/api/src/modules/campaign-replay/`.
+- `ReplayStatus`: `READY` | `RUNNING` | `COMPLETED` | `FAILED`.
+- `ReplayContext` + `ReplayCampaignConfig` + `ReplayResult` (`completedAt` on finish).
+- `CampaignReplayService.create(session)` → prepare; status `READY`.
+- `CampaignReplayService.execute(session)` → ResearchCampaignService.run(`persistSession: false`) → regenerated report; `COMPLETED` / `FAILED`.
+- Reuses existing Campaign pipeline; no History/Repository writes on replay.
+
+Next: RC-09.
 
 ---
 
@@ -222,8 +260,13 @@ Completed:
 - RC-06 Architecture Audit (US060): Campaign→Session→Persistence→History→API boundaries PASS; 63 related tests green.
 - Export Foundation (US061): `CampaignExportService` + JSON/CSV exporters (Strategy Pattern); Session-only input.
 - Export API (US062): `GET /campaign-history/:sessionId/export` (json/csv; 404/400; Content-Type).
+- Import Foundation (US063): `CampaignImportService` + `JsonCampaignImporter` (Strategy Pattern); Session-only output; no persist/API.
+- JSON Import Validation (US064): `CampaignSessionValidator` + `ImportValidationError`; parse → validate → session.
+- Import API (US065): `POST /campaign-import` → validated `CampaignSession` (no persist).
+- Replay Foundation (US066): `CampaignReplayService` prepares `ReplayResult` from `CampaignSession` (no execution/AI/persist).
+- Replay Execution (US067): `execute(session)` via `ResearchCampaignService` (`persistSession: false`); READY→RUNNING→COMPLETED|FAILED.
 
-Next: RC-08.
+Next: RC-09.
 
 ---
 
@@ -693,6 +736,48 @@ RC-07 finalized
 - Tests: monorepo — api 167, web 18, research 24 (all passed).
 - Next: RC-08.
 
+US063 — Import Foundation
+
+- Completed Story: Campaign Import module with Strategy Pattern (`JsonCampaignImporter`); `CampaignImportService` parses payload → `CampaignSession` only; no persist / no HTTP API.
+- Changed Files: `apps/api/src/modules/campaign-import/*`, `docs/project/project-status.md`, `roadmap.md`, `CHANGELOG.md`, `campaign-domain-model.md`, `architecture-snapshot.md`.
+- Tests: valid JSON / invalid JSON / unsupported format / metadata restored / report restored — 5 passed.
+- Next: US064.
+
+US064 — JSON Import Validation
+
+- Completed Story: `CampaignSessionValidator` + `ImportValidationError`; `JsonCampaignImporter` flow parse → validator → `CampaignSession`; rejects malformed JSON / missing fields / invalid version / timestamps / schema.
+- Changed Files: `campaign-session.validator.ts`, `import-validation.error.ts`, `json-campaign.importer.ts`, specs, docs.
+- Tests: validator + importer — 19 passed.
+- Next: US065.
+
+US065 — Import API
+
+- Completed Story: `CampaignImportController` at `POST /campaign-import`; body `{ format, payload }` → `CampaignSession`; maps validation errors to 400; does not persist.
+- Changed Files: `campaign-import.controller.ts`, `campaign-import.module.ts`, `app.module.ts`, specs, `docs/project/api.md`, docs.
+- Tests: successful import / malformed JSON / invalid schema / unsupported format / validation error / metadata + report restored — 8 controller (+ existing import suite) passed.
+- Next: US066.
+
+US066 — Replay Foundation
+
+- Completed Story: `CampaignReplayService` prepares `ReplayResult` / `ReplayContext` from `CampaignSession`; restores `campaignConfig`, copies report, status `READY`; no execution / AI / persist / API.
+- Changed Files: `apps/api/src/modules/campaign-replay/*`, docs.
+- Tests: create replay / replayId / source link / config / report copy / READY / invalid session — 7 passed.
+- Next: US067.
+
+US067 — Replay Execution
+
+- Completed Story: `CampaignReplayService.execute` reuses `ResearchCampaignService.run({ persistSession: false })`; regenerates report; statuses RUNNING/COMPLETED/FAILED; transient (no History writes).
+- Changed Files: `campaign-replay.service.ts`, `replay-status.ts`, `research-campaign.service.ts` (optional persist flag), session metadata `paramsList`, specs, docs.
+- Tests: successful replay / status / regenerated report / config reused / source linked / FAILED / no repository — 14 passed.
+- Next: US068.
+
+RC-08 finalized
+
+- Completed Story: RC-08 finalized — Import (US063–US065) + Replay (US066–US067) verified; full monorepo tests green; RC-08 lint scope clean; docs synced; committed and pushed.
+- Changed Files: campaign-import, campaign-replay, session metadata/factory, research-campaign persist flag, app.module, docs.
+- Tests: monorepo — api 208, web 18, research 24 (all passed).
+- Next: RC-09.
+
 ---
 
 # Current Version
@@ -725,8 +810,7 @@ Note: ці версії стосуються working-tree Research OS semantics;
 
 High Priority
 
-- US063.
-- RC-08.
+- RC-09.
 - Наступна research hypothesis після EMA + Donchian FAIL.
 - За потреби: campaign-level Knowledge summary (не лише per-config).
 

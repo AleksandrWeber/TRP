@@ -98,6 +98,23 @@ Domain model: [`campaign-domain-model.md`](./campaign-domain-model.md).
 - HTTP docs: [`api.md`](./api.md).
 - RC-07 finalized (Session Persistence + History + Export).
 
+### Campaign Import
+
+- `CampaignImportService` imports a payload into a `CampaignSession` (`ImportFormat.JSON` initial).
+- Strategy importer: `JsonCampaignImporter` (string → validated session).
+- `CampaignSessionValidator` + `ImportValidationError` (US064): schema, metadata, report, timestamps, engineVersion.
+- `POST /campaign-import` (US065): body `{ format, payload }` → `CampaignSession`; does not persist.
+- HTTP docs: [`api.md`](./api.md).
+
+### Campaign Replay
+
+- `CampaignReplayService` prepares and executes a `ReplayResult` from a `CampaignSession` (US066–US067).
+- `ReplayStatus`: `READY` | `RUNNING` | `COMPLETED` | `FAILED`.
+- `execute` reuses `ResearchCampaignService.run(..., { persistSession: false })` then rebuilds report.
+- Restores `campaignConfig` (identity + `paramsList` from optional session metadata); no History/Repository writes on replay.
+- No Replay HTTP API yet (internal foundation).
+- RC-08 finalized (Import + Replay).
+
 ### Campaign Report
 
 - `CampaignReportService` builds report from Summary + experiments.

@@ -15,6 +15,7 @@ import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 import { ProductionModule } from './modules/production/production.module';
 import { ResearchAnalysisModule } from './modules/research-analysis/research-analysis.module';
 import { CampaignExportModule } from './modules/campaign-export/campaign-export.module';
+import { CampaignImportModule } from './modules/campaign-import/campaign-import.module';
 import { ResearchCampaignModule } from './modules/research-campaign/research-campaign.module';
 import { WorkflowModule } from './modules/workflow/workflow.module';
 import { PrismaModule } from './storage/prisma/prisma.module';
@@ -34,6 +35,7 @@ import { PrismaModule } from './storage/prisma/prisma.module';
     KnowledgeModule,
     ResearchCampaignModule,
     CampaignExportModule,
+    CampaignImportModule,
     ResearchAnalysisModule,
     WorkflowModule,
     ProductionModule,
