@@ -15,9 +15,9 @@ Research OS Foundation
 
 Побудувати Evidence-driven Research OS: reproducible experiments, immutable Knowledge, і чітке provenance/versioning результатів.
 
-Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slice US045–US047. Campaign Persistence + History API (US051–US059). RC-06 Architecture Audit complete (US060). Export Foundation + Export API (US061–US062). RC-07 finalized. Import Foundation (US063). JSON Import Validation (US064). Import API (US065). Replay Foundation (US066). Replay Execution (US067). RC-08 finalized. Job Domain Model (US069). Job Queue Abstraction (US070). Background Campaign Runner (US071). Job Status API (US072). Job Cancellation (US073). RC-09 finalized. Remote release ще не запушено.
+Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slice US045–US047. Campaign Persistence + History API (US051–US059). RC-06 Architecture Audit complete (US060). Export Foundation + Export API (US061–US062). RC-07 finalized. Import Foundation (US063). JSON Import Validation (US064). Import API (US065). Replay Foundation (US066). Replay Execution (US067). RC-08 finalized. Job Domain Model (US069). Job Queue Abstraction (US070). Background Campaign Runner (US071). Job Status API (US072). Job Cancellation (US073). RC-09 finalized. Knowledge Domain Model (US075). Experiment Entity & Versioning (US076). Knowledge Extraction Pipeline (US077). Experiment Comparison Service (US078). Knowledge Search API (US079). RC-10 finalized. Remote release ще не запушено.
 
-Next: RC-10.
+Next: RC-11.
 
 ---
 
@@ -55,7 +55,7 @@ Status: NOT READY for remote release / push
 
 Status: Ready for Commit
 
-Scope: Research OS (US003–US019, US020A–US020B, US026–US035, US037–US043, US045–US050, US051–US073) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C, US036, US041A, US043A, US044, US050A, US060) + RC-07 (Campaign Session Persistence + History + Export) + RC-08 (Import + Replay) + RC-09 (Background Job Execution). Product next: RC-10.
+Scope: Research OS (US003–US019, US020A–US020B, US026–US035, US037–US043, US045–US050, US051–US073, US075–US079) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C, US036, US041A, US043A, US044, US050A, US060) + RC-07 (Campaign Session Persistence + History + Export) + RC-08 (Import + Replay) + RC-09 (Background Job Execution) + RC-10 (Knowledge & Experiment Intelligence). Product next: RC-11.
 
 Current Research OS implementation exists in working tree.
 Release will be created only after explicit commit sequence.
@@ -78,14 +78,14 @@ Completed:
 - EMA Crossover і Donchian Breakout зареєстровані.
 - Paginated Binance historical import (startTime/endTime, ≤1000 per page).
 
-Next: RC-10.
+Next: RC-11.
 
 ---
 
 ## Knowledge Layer
 
 Status:
-✅ Frozen (working tree; not yet released as dedicated commits)
+✅ RC-10 finalized (US075–US079 Knowledge & Experiment Intelligence)
 
 Completed:
 
@@ -96,15 +96,18 @@ Completed:
 - Structural legacy detection (без hardcode package versions).
 - Single source of truth: `knowledge.version.ts`.
 - Integration/unit tests для create / duplicate / lineage / version consistency.
+- Knowledge Domain Model (US075): in-memory `KnowledgeEntry` / `KnowledgeMetadata` / `KnowledgeTag` + `KnowledgeDomainService` (`create` / `update` / `get` / `list`); no Repository / API / extraction.
+- Knowledge Extraction Pipeline (US077): `KnowledgeExtractionService.extract` + `KnowledgeDomainService.createFromExperiment` (deterministic from `Experiment.currentVersion.report`; one entry per experiment; upsert).
+- Knowledge Search API (US079): `search` / `searchByTag` / `searchByExperiment` / `find` + `GET /knowledge?q&tag&experimentId` (AND; case-insensitive; empty array on miss).
 
-Next: RC-10.
+Next: RC-11.
 
 ---
 
 ## Experiment Provenance
 
 Status:
-🟡 Active (working tree; not yet released as dedicated commits)
+✅ RC-10 finalized (US076–US078 Experiment intelligence)
 
 Completed:
 
@@ -116,8 +119,10 @@ Completed:
 - Walk-Forward windows carry `trainSliceIdentity` / `testSliceIdentity` (US048).
 - Walk-Forward test evaluation: `trainBestExperimentId` / `testExperimentId` + train/test metrics & verdicts (US049).
 - Walk-Forward Aggregate v2 (US050): Train Aggregate + Test Aggregate; `overallVerdict` from Test only.
+- Experiment Entity & Versioning (US076): in-memory `Experiment` / `ExperimentVersion` / `ExperimentMetadata` + `ExperimentDomainService` (`createFromSession` / `createVersion` / `get` / `list`); links CampaignSession → future KnowledgeEntry via `experimentId` only.
+- Experiment Comparison Service (US078): deterministic `ExperimentComparisonService.compareVersions` / `compareExperiments` (structural insights/summary/tags/metadata diffs; no AI).
 
-Next: RC-10.
+Next: RC-11.
 
 ---
 
@@ -139,7 +144,7 @@ Completed:
 - `ResearchCampaignService.run` creates/persists one `CampaignSession` per execution (`COMPLETED` or `FAILED`).
 - RC-06 Architecture Audit (US060): dependency direction / History flow / API / tests validated PASS.
 
-Next: RC-10.
+Next: RC-11.
 
 ---
 
@@ -157,7 +162,7 @@ Completed:
 - Every `ResearchCampaignService.run` persists exactly one session.
 - `CampaignHistoryService` + History API (US056–US059).
 
-Next: RC-10.
+Next: RC-11.
 
 ---
 
@@ -175,7 +180,7 @@ Completed:
 - `CampaignExportController`: `GET /campaign-history/:sessionId/export?format=json|csv`.
 - Flow: HistoryService.getById → CampaignExportService.export; 200 / 400 / 404; Content-Type set.
 
-Next: RC-10.
+Next: RC-11.
 
 ---
 
@@ -195,7 +200,7 @@ Completed:
 - `CampaignImportController`: `POST /campaign-import` with `{ format, payload }` → `CampaignSession` (200) or 400.
 - Nest `CampaignImportModule` wired in `AppModule` (no persistence side effects).
 
-Next: RC-10.
+Next: RC-11.
 
 ---
 
@@ -213,7 +218,7 @@ Completed:
 - `CampaignReplayService.execute(session)` → ResearchCampaignService.run(`persistSession: false`) → regenerated report; `COMPLETED` / `FAILED`.
 - Reuses existing Campaign pipeline; no History/Repository writes on replay.
 
-Next: RC-10.
+Next: RC-11.
 
 ---
 
@@ -236,7 +241,7 @@ Completed:
 - Job Status API (US072): `GET /jobs`, `GET /jobs/:jobId` (404 if missing).
 - Job Cancellation (US073): `POST /jobs/:jobId/cancel` (200 / 404 / 409).
 
-Next: RC-10.
+Next: RC-11.
 
 ---
 
@@ -294,8 +299,14 @@ Completed:
 - Job Status API (US072): `GET /jobs` + `GET /jobs/:jobId` (read-only; Controller → JobService → JobQueue).
 - Job Cancellation (US073): `POST /jobs/:jobId/cancel` (PENDING → CANCELLED; runner skips cancelled).
 - RC-09 finalized: Background Job Execution framework (US069–US073).
+- Knowledge Domain Model (US075): in-memory `KnowledgeEntry` + `KnowledgeDomainService` (create/update/get/list).
+- Experiment Entity & Versioning (US076): in-memory `Experiment` + `ExperimentDomainService` (createFromSession/createVersion/get/list).
+- Knowledge Extraction Pipeline (US077): deterministic extract from Experiment report → upsert KnowledgeEntry.
+- Experiment Comparison Service (US078): structural compareVersions / compareExperiments (no AI).
+- Knowledge Search API (US079): `GET /knowledge` with `q` / `tag` / `experimentId` (AND; in-memory).
+- RC-10 finalized: Knowledge & Experiment Intelligence architecture audit PASS.
 
-Next: RC-10.
+Next: RC-11.
 
 ---
 
@@ -849,6 +860,48 @@ RC-09 finalized
 - Tests: monorepo — api 249, web 18, research 24 (all passed).
 - Next: RC-10.
 
+US075 — Knowledge Domain Model
+
+- Completed Story: In-memory Knowledge domain above Experiments — `KnowledgeEntry` / `KnowledgeMetadata` / `KnowledgeTag` + `KnowledgeDomainService` (`create` / `update` / `get` / `list`); independent from Prisma research_outcome; no Repository / API / extraction.
+- Changed Files: `apps/api/src/modules/knowledge/knowledge-entry.ts`, `knowledge-metadata.ts`, `knowledge-tag.ts`, `knowledge-domain.service.ts`, `knowledge.module.ts`, specs, docs.
+- Tests: create / update / get / list / metadata / tags — 7 passed.
+- Next: US076.
+
+US076 — Experiment Entity & Versioning
+
+- Completed Story: In-memory Experiment domain linking CampaignSession → future Knowledge — `Experiment` / `ExperimentVersion` / `ExperimentMetadata` + `ExperimentDomainService` (`createFromSession` / `createVersion` / `get` / `list`); no Repository / API / Knowledge integration.
+- Changed Files: `apps/api/src/modules/experiments/experiment.ts`, `experiment-version.ts`, `experiment-metadata.ts`, `experiment-domain.service.ts`, `experiments.module.ts`, specs, docs.
+- Tests: create / first version / additional version / history / metadata / list / get — 9 passed.
+- Next: US077.
+
+US077 — Knowledge Extraction Pipeline
+
+- Completed Story: Deterministic `KnowledgeExtractionService.extract` from `Experiment.currentVersion.report` + `KnowledgeDomainService.createFromExperiment` upsert (one KnowledgeEntry per Experiment); no AI / Jobs / Events / API.
+- Changed Files: `knowledge-extraction.service.ts`, `knowledge-domain.service.ts`, `knowledge.module.ts`, specs, docs.
+- Tests: extract / update existing / deterministic / duplicate prevention / tags / metadata / summary — 8 extraction + existing domain suite passed.
+- Next: US078.
+
+US078 — Experiment Comparison Service
+
+- Completed Story: Deterministic `ExperimentComparisonService` structural diffs (`compareVersions` / `compareExperiments`) over insights, summary, tags, metadata; `ExperimentComparison` / `ComparisonResult` / `ComparisonChange`; no AI / API / persistence.
+- Changed Files: `experiment-comparison.service.ts`, `experiment-comparison.ts`, `comparison-result.ts`, `comparison-change.ts`, `experiments.module.ts`, specs, docs.
+- Tests: identical / summary / insights / tags / metadata / compare experiments / invalid version / not found — 10 passed.
+- Next: US079.
+
+US079 — Knowledge Search API
+
+- Completed Story: In-memory Knowledge search (`search` / `searchByTag` / `searchByExperiment` / `find`) + `GET /knowledge` with optional `q` / `tag` / `experimentId` (AND; case-insensitive; empty array on miss); no Prisma / AI / vectors.
+- Changed Files: `knowledge-domain.service.ts`, `knowledge.controller.ts`, specs, docs (`api.md`).
+- Tests: list / title / summary / insight / tag / experimentId / combined / empty / case-insensitive / controller — 12 search+controller + suite passed.
+- Next: US080.
+
+RC-10 finalized
+
+- Completed Story: RC-10 finalized — Knowledge & Experiment Intelligence (US075–US079) architecture audit PASS; isolation from Jobs/History/Replay/Export/Import/Persistence verified; full monorepo tests green; RC-10 lint scope clean (pre-existing experiments/knowledge Prisma-spec `any` debt unchanged); docs synced; committed and pushed.
+- Changed Files: knowledge domain (entry/extraction/search/API), experiment domain (versioning/comparison), docs.
+- Tests: monorepo — api 295, web 18, research 24 (all passed).
+- Next: RC-11.
+
 ---
 
 # Current Version
@@ -881,8 +934,8 @@ Note: ці версії стосуються working-tree Research OS semantics;
 
 High Priority
 
+- RC-11.
 - US074.
-- RC-10.
 - Наступна research hypothesis після EMA + Donchian FAIL.
 - За потреби: campaign-level Knowledge summary (не лише per-config).
 

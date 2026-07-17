@@ -355,6 +355,90 @@ RC-09: Background Job Execution framework finalized (US069–US073).
 
 ---
 
+## Knowledge Domain (US075–US079)
+
+Analytical Knowledge layer above Experiments (in-memory; independent from Prisma
+`research_outcome` persistence).
+
+Architecture:
+
+```
+Experiment
+  → KnowledgeExtractionService.extract(currentVersion.report)
+      → KnowledgeDomainService.createFromExperiment (upsert)
+          → KnowledgeEntry
+
+KnowledgeController GET /knowledge
+  → KnowledgeDomainService.find / search / searchByTag / searchByExperiment
+      → KnowledgeEntry[]
+```
+
+- `KnowledgeEntry`: `knowledgeId`, `experimentId`, `createdAt`, `title`, `summary`, `tags`, `insights`, `metadata`
+- `KnowledgeTag`: string label
+- `KnowledgeMetadata`: optional `engineVersion` / `datasetId` / `strategyId` / `source`
+- `KnowledgeDomainService`: `create` / `update` / `get` / `list` / `createFromExperiment` / `search` / `searchByTag` / `searchByExperiment` / `find`
+- `KnowledgeExtractionService`: deterministic mapping from CampaignReport (no AI / LLM)
+- One KnowledgeEntry per Experiment (upsert on re-extract)
+- Search: case-insensitive over title/summary/insights/tags; filters AND; empty array on miss
+- No Repository, Jobs, Events, Scheduler, or vector search
+
+Module: `apps/api/src/modules/knowledge/` (coexists with existing research_outcome `KnowledgeService`).
+HTTP: see [`api.md`](./api.md).
+
+RC-10: Knowledge & Experiment Intelligence finalized (US075–US079).
+
+---
+
+## Experiment Domain (US076)
+
+Primary research entity linking Campaign Sessions and future Knowledge.
+
+Architecture:
+
+```
+CampaignSession
+  → ExperimentDomainService.createFromSession
+      → Experiment (versions[])
+          → KnowledgeEntry (future; stores experimentId only)
+
+Controller (future)
+  → ExperimentDomainService
+      → Experiment
+```
+
+- `Experiment`: `experimentId`, `sessionId`, `createdAt`, `currentVersion`, `versions[]`, `metadata`
+- `ExperimentVersion`: `version`, `report` (CampaignReport), optional `replayId`, `createdAt`, `sourceSessionId`
+- `ExperimentMetadata`: optional `engineVersion` / `datasetId` / `strategyId` / `tags` / `source`
+- `ExperimentDomainService`: `createFromSession` / `createVersion` / `get` / `list`
+- No Repository, API, or Knowledge integration yet
+
+Module: `apps/api/src/modules/experiments/` (coexists with Prisma `ExperimentsService`).
+
+---
+
+## Experiment Comparison (US078)
+
+Deterministic structural comparison of Experiment versions (no AI / similarity / embeddings).
+
+Architecture:
+
+```
+ExperimentDomainService
+  → ExperimentComparisonService.compareVersions / compareExperiments
+      → ExperimentComparison (ComparisonResult)
+```
+
+- `ExperimentComparison`: left/right experiment + version ids + `ComparisonResult`
+- `ComparisonResult`: added/removed insights & tags, `summaryChanged`, metadataDifferences
+- `ComparisonChange`: `{ key, before, after }`
+- Projection aligned with Knowledge extraction mapping (summary/insights/tags/metadata from report)
+- `compareVersions` → `null` if experiment missing; throws if version invalid
+- No API, persistence, or jobs
+
+RC-10: Knowledge & Experiment Intelligence finalized (US075–US079).
+
+---
+
 ## RC-06 Architecture Audit (US060)
 
 Status: **PASS** (documentation sync; no code changes)

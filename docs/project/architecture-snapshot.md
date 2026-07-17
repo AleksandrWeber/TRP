@@ -52,6 +52,27 @@ Domain model: [`knowledge-domain-model.md`](./knowledge-domain-model.md).
 - Payload includes hypothesis, evidence, conclusion, strategyId, params, datasetId, metrics, validation, configHash.
 - Written after experiment create (not via separate campaign Knowledge call).
 
+### Knowledge Domain (US075–US079)
+
+- In-memory `KnowledgeEntry` (`knowledgeId`, `experimentId`, `title`, `summary`, `tags`, `insights`, `metadata`).
+- `KnowledgeDomainService`: `create` / `update` / `get` / `list` / `createFromExperiment` / `search` / `searchByTag` / `searchByExperiment` / `find`.
+- `KnowledgeExtractionService`: deterministic extract from `Experiment.currentVersion.report` (no AI).
+- One KnowledgeEntry per Experiment (upsert; never duplicates).
+- Search API: `GET /knowledge?q&tag&experimentId` (AND; case-insensitive; empty array on miss).
+- Independent from Prisma research_outcome persistence; coexists in `apps/api/src/modules/knowledge/`.
+- KnowledgeEntry stores `experimentId` only (never `sessionId`).
+- RC-10 finalized (Knowledge & Experiment Intelligence US075–US079).
+
+### Experiment Domain (US076–US078)
+
+- In-memory `Experiment` (`experimentId`, `sessionId`, `currentVersion`, `versions[]`, `metadata`).
+- `ExperimentVersion`: `version`, `report`, optional `replayId`, `createdAt`, `sourceSessionId`.
+- `ExperimentDomainService`: `createFromSession` / `createVersion` / `get` / `list`.
+- `ExperimentComparisonService`: deterministic `compareVersions` / `compareExperiments` (structural insights/summary/tags/metadata diffs).
+- Relationship: CampaignSession → Experiment → KnowledgeEntry (via extraction).
+- Independent from Prisma `ExperimentsService` (backtest runner).
+- RC-10 finalized (Experiment intelligence US076–US078).
+
 ### Versioning
 
 - Single source: `apps/api/src/modules/knowledge/knowledge.version.ts`.

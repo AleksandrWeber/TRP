@@ -1,8 +1,8 @@
-# TRP — Campaign History, Export, Import & Jobs API
+# TRP — Campaign History, Export, Import, Jobs & Knowledge API
 
 Last updated: 2026-07-17
 
-Living HTTP contract for Campaign Session history, export, import, and Jobs status.
+Living HTTP contract for Campaign Session history, export, import, Jobs status, and Knowledge search.
 Domain context: [`campaign-domain-model.md`](./campaign-domain-model.md).
 
 ---
@@ -168,3 +168,36 @@ Cancel a `PENDING` job only.
 `BackgroundJobRunner` skips CANCELLED jobs and never executes them.
 
 RC-09: Background Job Execution framework finalized (US069–US073).
+
+---
+
+## Knowledge Search (US079)
+
+Read-only search over the in-memory Knowledge domain (`KnowledgeEntry`).
+No Prisma, AI, vectors, or semantic ranking.
+
+Flow:
+
+```
+KnowledgeController
+  → KnowledgeDomainService.find({ q, tag, experimentId })
+      → KnowledgeEntry[]
+```
+
+### `GET /knowledge`
+
+| Query          | Required | Notes                                                  |
+| -------------- | -------- | ------------------------------------------------------ |
+| `q`            | no       | Case-insensitive text over title/summary/insights/tags |
+| `tag`          | no       | Case-insensitive exact tag match                       |
+| `experimentId` | no       | Exact experiment id                                    |
+
+Filters combine with **AND**. No filters → all entries.
+
+| Status | Body               |
+| ------ | ------------------ |
+| `200`  | `KnowledgeEntry[]` |
+
+Empty array when nothing matches (never 404 for search).
+
+RC-10: Knowledge & Experiment Intelligence finalized (US075–US079).

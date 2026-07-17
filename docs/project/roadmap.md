@@ -99,6 +99,12 @@ Related:
 - US072 — Job Status API (`GET /jobs`, `GET /jobs/:jobId`)
 - US073 — Job Cancellation (`POST /jobs/:jobId/cancel`; PENDING only)
 - RC-09 — Background Job Execution framework finalized
+- US075 — Knowledge Domain Model (`KnowledgeEntry` + in-memory KnowledgeDomainService)
+- US076 — Experiment Entity & Versioning (`Experiment` / `ExperimentVersion` + ExperimentDomainService)
+- US077 — Knowledge Extraction Pipeline (`KnowledgeExtractionService` + createFromExperiment upsert)
+- US078 — Experiment Comparison Service (`compareVersions` / `compareExperiments`; structural diffs)
+- US079 — Knowledge Search API (`GET /knowledge?q&tag&experimentId`)
+- RC-10 — Knowledge & Experiment Intelligence architecture finalized
 
 ---
 
@@ -110,7 +116,7 @@ Related:
 
 ## Next User Stories
 
-- RC-10
+- RC-11
 
 ---
 
