@@ -1,8 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import type { Experiment } from '../experiments/experiment';
+import { BUILTIN_PIPELINE_TEMPLATE_IDS } from '../pipeline/builtin-pipeline-templates';
+import type { PipelineContext } from '../pipeline/pipeline-context';
+import { PipelineDomainService } from '../pipeline/pipeline-domain.service';
+import { PipelineExecutor } from '../pipeline/pipeline-executor';
+import { PipelineTemplateService } from '../pipeline/pipeline-template.service';
+import { readKnowledgeEntry } from '../pipeline/steps/knowledge/knowledge-pipeline-context';
 import type { KnowledgeEntry } from './knowledge-entry';
-import { KnowledgeExtractionService } from './knowledge-extraction.service';
 import type { KnowledgeMetadata } from './knowledge-metadata';
 import type { KnowledgeTag } from './knowledge-tag';
 
@@ -26,8 +31,9 @@ export type UpdateKnowledgeEntryInput = {
 };
 
 /**
- * In-memory Knowledge domain service (US075–US079).
- * create / update / get / list / createFromExperiment / search — no Repository.
+ * In-memory Knowledge domain service (US075–US079, US090).
+ * create / update / get / list / search remain direct store APIs.
+ * createFromExperiment orchestrates via PipelineExecutor + Knowledge PipelineSteps.
  *
  * Distinct from Prisma-backed {@link KnowledgeService} (`research_outcome` persistence).
  */
@@ -37,7 +43,14 @@ export class KnowledgeDomainService {
   /** One KnowledgeEntry per Experiment (US077). */
   private readonly byExperimentId = new Map<string, string>();
 
-  constructor(private readonly extraction: KnowledgeExtractionService) {}
+  constructor(
+    @Inject(PipelineExecutor)
+    private readonly executor: PipelineExecutor,
+    @Inject(PipelineTemplateService)
+    private readonly templates: PipelineTemplateService,
+    @Inject(PipelineDomainService)
+    private readonly pipelines: PipelineDomainService,
+  ) {}
 
   create(input: CreateKnowledgeEntryInput): KnowledgeEntry {
     const existingId = this.byExperimentId.get(input.experimentId);
@@ -75,19 +88,35 @@ export class KnowledgeDomainService {
 
   /**
    * Extract Knowledge from Experiment.currentVersion.report and upsert
-   * (one entry per experimentId — never duplicates).
+   * (one entry per experimentId — never duplicates) via Knowledge pipeline.
    */
-  createFromExperiment(experiment: Experiment): KnowledgeEntry {
-    const extracted = this.extraction.extract(experiment);
-    return this.create({
-      experimentId: extracted.experimentId,
-      title: extracted.title,
-      summary: extracted.summary,
-      tags: extracted.tags,
-      insights: extracted.insights,
-      metadata: extracted.metadata,
-      createdAt: extracted.createdAt,
-    });
+  async createFromExperiment(experiment: Experiment): Promise<KnowledgeEntry> {
+    const pipeline = this.templates.createPipelineFromTemplate(
+      BUILTIN_PIPELINE_TEMPLATE_IDS.knowledge,
+    );
+    if (!pipeline) {
+      throw new Error('Knowledge pipeline template is not registered');
+    }
+
+    const run = this.pipelines.createRun({ pipelineId: pipeline.pipelineId });
+    if (!run) {
+      throw new Error(`Failed to create PipelineRun for ${pipeline.pipelineId}`);
+    }
+
+    const context: PipelineContext = {
+      input: { experiment },
+      output: {},
+      variables: {},
+      metadata: {},
+    };
+
+    const pipelineResult = await this.executor.execute(pipeline, context, run);
+
+    if (!pipelineResult.success) {
+      throw new Error(pipelineResult.error ?? 'Knowledge pipeline failed');
+    }
+
+    return readKnowledgeEntry(pipelineResult.context);
   }
 
   update(knowledgeId: string, input: UpdateKnowledgeEntryInput): KnowledgeEntry | null {

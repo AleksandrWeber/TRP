@@ -2,6 +2,12 @@ import { BadRequestException } from '@nestjs/common';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CampaignSession } from '../campaign-session/campaign-session';
 import { CampaignSessionStatus } from '../campaign-session/campaign-session-status';
+import { PipelineDomainService } from '../pipeline/pipeline-domain.service';
+import { PipelineExecutor } from '../pipeline/pipeline-executor';
+import { PipelineHookRegistry } from '../pipeline/pipeline-hook-registry';
+import { PipelineRegistry } from '../pipeline/pipeline-registry';
+import { PipelineTemplateService } from '../pipeline/pipeline-template.service';
+import { registerReplayPipelineSteps } from '../pipeline/steps/replay/register-replay-steps';
 import type { CampaignReport } from '../research-campaign/campaign-report.types';
 import { CampaignReplayService } from './campaign-replay.service';
 import { ReplayStatus } from './replay-status';
@@ -60,6 +66,24 @@ function regeneratedReport(): CampaignReport {
   };
 }
 
+function createReplayService(
+  campaigns: { run: ReturnType<typeof vi.fn> },
+  reports: {
+    build: ReturnType<typeof vi.fn>;
+  },
+) {
+  const stepRegistry = new PipelineRegistry();
+  registerReplayPipelineSteps(stepRegistry, {
+    campaigns: campaigns as never,
+    reports: reports as never,
+  });
+  const pipelines = new PipelineDomainService();
+  const templates = new PipelineTemplateService(pipelines);
+  const executor = new PipelineExecutor(stepRegistry, new PipelineHookRegistry());
+  const service = new CampaignReplayService(executor, templates, pipelines);
+  return { service, templates, pipelines, executor };
+}
+
 describe('CampaignReplayService', () => {
   let campaigns: { run: ReturnType<typeof vi.fn> };
   let reports: { build: ReturnType<typeof vi.fn> };
@@ -70,7 +94,7 @@ describe('CampaignReplayService', () => {
     campaigns = { run: vi.fn() };
     reports = { build: vi.fn() };
     persistence = { save: vi.fn() };
-    service = new CampaignReplayService(campaigns as never, reports as never);
+    ({ service } = createReplayService(campaigns, reports));
   });
 
   describe('create (US066)', () => {
@@ -121,7 +145,7 @@ describe('CampaignReplayService', () => {
     });
   });
 
-  describe('execute (US067)', () => {
+  describe('execute (US067 / US089)', () => {
     it('successfully replays via ResearchCampaignService', async () => {
       const session = sampleSession();
       const fresh = regeneratedReport();

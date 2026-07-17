@@ -52,13 +52,14 @@ Domain model: [`knowledge-domain-model.md`](./knowledge-domain-model.md).
 - Payload includes hypothesis, evidence, conclusion, strategyId, params, datasetId, metrics, validation, configHash.
 - Written after experiment create (not via separate campaign Knowledge call).
 
-### Knowledge Domain (US075–US079)
+### Knowledge Domain (US075–US079, US090)
 
 - In-memory `KnowledgeEntry` (`knowledgeId`, `experimentId`, `title`, `summary`, `tags`, `insights`, `metadata`).
 - `KnowledgeDomainService`: `create` / `update` / `get` / `list` / `createFromExperiment` / `search` / `searchByTag` / `searchByExperiment` / `find`.
 - `KnowledgeExtractionService`: deterministic extract from `Experiment.currentVersion.report` (no AI).
 - One KnowledgeEntry per Experiment (upsert; never duplicates).
 - Search API: `GET /knowledge?q&tag&experimentId` (AND; case-insensitive; empty array on miss).
+- Knowledge extraction (US090): `KnowledgeDomainService.createFromExperiment` → `PipelineTemplateService` → `PipelineExecutor` → Knowledge steps (`knowledge.prepare` → `knowledge.extract` → `knowledge.upsert`).
 - Independent from Prisma research_outcome persistence; coexists in `apps/api/src/modules/knowledge/`.
 - KnowledgeEntry stores `experimentId` only (never `sessionId`).
 - RC-10 finalized (Knowledge & Experiment Intelligence US075–US079).
@@ -129,11 +130,12 @@ Domain model: [`campaign-domain-model.md`](./campaign-domain-model.md).
 
 ### Campaign Replay
 
-- `CampaignReplayService` prepares and executes a `ReplayResult` from a `CampaignSession` (US066–US067).
+- `CampaignReplayService` prepares and executes a `ReplayResult` from a `CampaignSession` (US066–US067, US089).
 - `ReplayStatus`: `READY` | `RUNNING` | `COMPLETED` | `FAILED`.
-- `execute` reuses `ResearchCampaignService.run(..., { persistSession: false })` then rebuilds report.
+- Replay execution (US089): `CampaignReplayService` → `PipelineTemplateService` → `PipelineExecutor` → Replay steps (`replay.load` → `replay.restore` → `replay.execute` → `replay.finalize`).
+- `replay.execute` reuses `ResearchCampaignService.run(..., { persistSession: false })`; finalize rebuilds report.
 - Restores `campaignConfig` (identity + `paramsList` from optional session metadata); no History/Repository writes on replay.
-- No Replay HTTP API yet (internal foundation).
+- Identical `ReplayResult` shape; no Replay HTTP API yet (internal foundation).
 - RC-08 finalized (Import + Replay).
 
 ### Jobs
@@ -149,7 +151,7 @@ Domain model: [`campaign-domain-model.md`](./campaign-domain-model.md).
 - No scheduler or job persistence yet.
 - RC-09 finalized (Jobs framework US069–US073).
 
-### Pipeline Domain (US081–US085)
+### Pipeline Domain (US081–US090)
 
 - In-memory `Pipeline` / `PipelineRun` / `PipelineContext` / `PipelineResult` / `PipelineMetadata`.
 - `PipelineDomainService`: `createPipeline` / `getPipeline` / `listPipelines` / `createRun` / `getRun` / `listRuns`.
@@ -158,10 +160,16 @@ Domain model: [`campaign-domain-model.md`](./campaign-domain-model.md).
 - `PipelineRegistry`: register/get/list executable steps (Pipeline stores metadata only).
 - `PipelineExecutor`: execute by `metadata.order` via registry; context propagation; optional `PipelineRun` lifecycle (PENDING→RUNNING→COMPLETED|FAILED); returns `PipelineResult`.
 - `PipelineHook` + `PipelineHookRegistry` + `LoggingPipelineHook`: optional before/after pipeline/step + onError; hook exceptions ignored; observation only.
-- `PipelineTemplate` + `PipelineTemplateService`: immutable templates; `createPipelineFromTemplate` yields independent Pipeline copies; built-in Campaign / Replay / Knowledge (step metadata only).
-- Generic context only — no Campaign / Experiment / Knowledge coupling.
-- No Events, Event Bus, Repository, or HTTP yet.
-- RC-11 finalized (Research Pipeline Engine US081–US085).
+- `PipelineTemplate` + `PipelineTemplateService`: immutable templates; `createPipelineFromTemplate` yields independent Pipeline copies; built-in Campaign / Replay / Knowledge.
+- Campaign Pipeline Steps (US087): `PrepareCampaignStep` / `ExecuteResearchStep` / `AggregateResultStep` / `BuildReportStep` / `PersistCampaignStep` registered on `PipelineRegistry`; Campaign template uses their metadata.
+- Campaign execution (US088): `ResearchCampaignService` → `PipelineTemplateService` → `PipelineExecutor` → Campaign steps; public `run()` contract unchanged.
+- Replay Pipeline Steps (US089): `LoadReplaySessionStep` / `RestoreReplayContextStep` / `ExecuteReplayCampaignStep` / `FinalizeReplayStep` registered on `PipelineRegistry`; Replay template uses their metadata.
+- Replay execution (US089): `CampaignReplayService` → `PipelineTemplateService` → `PipelineExecutor` → Replay steps; identical `ReplayResult` / Jobs / History behavior.
+- Knowledge Pipeline Steps (US090): `PrepareKnowledgeExtractionStep` / `ExtractKnowledgeStep` / `UpsertKnowledgeEntryStep` registered on `PipelineRegistry`; Knowledge template uses their metadata.
+- Knowledge extraction (US090): `KnowledgeDomainService.createFromExperiment` → `PipelineTemplateService` → `PipelineExecutor` → Knowledge steps; identical KnowledgeEntry / upsert behavior.
+- No Events, Event Bus, Repository, or Pipeline HTTP yet.
+- RC-11 foundation finalized (Research Pipeline Engine US081–US085).
+- RC-12 finalized (US091): Pipeline Engine verified as unified Campaign / Replay / Knowledge runtime.
 
 ### Campaign Report
 

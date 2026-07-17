@@ -32,3 +32,33 @@ export {
   BUILTIN_PIPELINE_TEMPLATE_IDS,
   type BuiltinPipelineTemplateId,
 } from './builtin-pipeline-templates';
+export {
+  CAMPAIGN_PIPELINE_STEP_METADATA,
+  CAMPAIGN_PIPELINE_STEPS,
+  PrepareCampaignStep,
+  ExecuteResearchStep,
+  AggregateResultStep,
+  BuildReportStep,
+  PersistCampaignStep,
+  registerCampaignPipelineSteps,
+  type CampaignPipelineStepDeps,
+} from './steps/campaign';
+export {
+  REPLAY_PIPELINE_STEP_METADATA,
+  REPLAY_PIPELINE_STEPS,
+  LoadReplaySessionStep,
+  RestoreReplayContextStep,
+  ExecuteReplayCampaignStep,
+  FinalizeReplayStep,
+  registerReplayPipelineSteps,
+  type ReplayPipelineStepDeps,
+} from './steps/replay';
+export {
+  KNOWLEDGE_PIPELINE_STEP_METADATA,
+  KNOWLEDGE_PIPELINE_STEPS,
+  PrepareKnowledgeExtractionStep,
+  ExtractKnowledgeStep,
+  UpsertKnowledgeEntryStep,
+  registerKnowledgePipelineSteps,
+  type KnowledgePipelineStepDeps,
+} from './steps/knowledge';

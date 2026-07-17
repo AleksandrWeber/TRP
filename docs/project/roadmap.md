@@ -111,6 +111,11 @@ Related:
 - US084 — Pipeline Hooks (`PipelineHook` / `PipelineHookRegistry` / `LoggingPipelineHook`)
 - US085 — Pipeline Templates (`PipelineTemplate` / `PipelineTemplateService`; built-in Campaign/Replay/Knowledge)
 - US086 — RC-11 Architecture Audit (Research Pipeline Engine finalized)
+- US087 — Campaign Pipeline Steps (`PrepareCampaignStep` … `PersistCampaignStep`; registry + template)
+- US088 — Execute Campaign through PipelineExecutor (`ResearchCampaignService` orchestrator)
+- US089 — Replay Pipeline Integration (`CampaignReplayService` orchestrator)
+- US090 — Knowledge Extraction Pipeline Integration (`KnowledgeDomainService` orchestrator)
+- US091 — RC-12 Architecture Audit (Pipeline Engine unified runtime finalized)
 
 ---
 
@@ -122,7 +127,7 @@ Related:
 
 ## Next User Stories
 
-- RC-12
+- RC-13
 
 ---
 

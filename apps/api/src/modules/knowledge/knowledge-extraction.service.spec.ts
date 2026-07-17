@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import type { Experiment } from '../experiments/experiment';
 import type { CampaignReport } from '../research-campaign/campaign-report.types';
+import { createKnowledgeDomainService } from './knowledge-domain.test-utils';
 import { KnowledgeDomainService } from './knowledge-domain.service';
 import { KnowledgeExtractionService } from './knowledge-extraction.service';
 
@@ -48,18 +49,17 @@ function sampleExperiment(overrides?: Partial<Experiment>): Experiment {
   };
 }
 
-describe('KnowledgeExtractionService (US077)', () => {
+describe('KnowledgeExtractionService (US077 / US090)', () => {
   let extraction: KnowledgeExtractionService;
   let knowledge: KnowledgeDomainService;
 
   beforeEach(() => {
-    extraction = new KnowledgeExtractionService();
-    knowledge = new KnowledgeDomainService(extraction);
+    ({ service: knowledge, extraction } = createKnowledgeDomainService());
   });
 
-  it('extracts new knowledge from current version report', () => {
+  it('extracts new knowledge from current version report', async () => {
     const experiment = sampleExperiment();
-    const entry = knowledge.createFromExperiment(experiment);
+    const entry = await knowledge.createFromExperiment(experiment);
 
     expect(entry.experimentId).toBe('exp-domain-1');
     expect(entry.knowledgeId.length).toBeGreaterThan(0);
@@ -68,9 +68,9 @@ describe('KnowledgeExtractionService (US077)', () => {
     expect(knowledge.list()).toHaveLength(1);
   });
 
-  it('updates existing knowledge instead of duplicating', () => {
+  it('updates existing knowledge instead of duplicating', async () => {
     const experiment = sampleExperiment();
-    const first = knowledge.createFromExperiment(experiment);
+    const first = await knowledge.createFromExperiment(experiment);
 
     const v2Report = sampleReport({
       verdict: 'FAIL',
@@ -96,7 +96,7 @@ describe('KnowledgeExtractionService (US077)', () => {
       ],
     });
 
-    const second = knowledge.createFromExperiment(updatedExperiment);
+    const second = await knowledge.createFromExperiment(updatedExperiment);
 
     expect(second.knowledgeId).toBe(first.knowledgeId);
     expect(second.createdAt).toBe(first.createdAt);
@@ -120,11 +120,11 @@ describe('KnowledgeExtractionService (US077)', () => {
     expect(a.createdAt).toBe(b.createdAt);
   });
 
-  it('prevents duplicates via createFromExperiment', () => {
+  it('prevents duplicates via createFromExperiment', async () => {
     const experiment = sampleExperiment();
-    knowledge.createFromExperiment(experiment);
-    knowledge.createFromExperiment(experiment);
-    knowledge.createFromExperiment(experiment);
+    await knowledge.createFromExperiment(experiment);
+    await knowledge.createFromExperiment(experiment);
+    await knowledge.createFromExperiment(experiment);
 
     expect(knowledge.list()).toHaveLength(1);
   });

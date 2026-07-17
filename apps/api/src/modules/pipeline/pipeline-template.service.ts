@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { BUILTIN_PIPELINE_TEMPLATE_IDS } from './builtin-pipeline-templates';
 import type { Pipeline } from './pipeline';
 import { PipelineDomainService } from './pipeline-domain.service';
 import type { PipelineMetadata } from './pipeline-metadata';
 import type { PipelineStepMetadata } from './pipeline-step-metadata';
 import type { PipelineTemplate, PipelineTemplateDefaultMetadata } from './pipeline-template';
+import { CAMPAIGN_PIPELINE_STEPS } from './steps/campaign/campaign-step-metadata';
+import { KNOWLEDGE_PIPELINE_STEPS } from './steps/knowledge/knowledge-step-metadata';
+import { REPLAY_PIPELINE_STEPS } from './steps/replay/replay-step-metadata';
 
 export type CreatePipelineTemplateInput = {
   templateId: string;
@@ -16,15 +19,18 @@ export type CreatePipelineTemplateInput = {
 };
 
 /**
- * In-memory Pipeline Template service (US085).
+ * In-memory Pipeline Template service (US085–US090).
  * create / get / list templates + instantiate independent Pipelines from templates.
- * Seeds Campaign / Replay / Knowledge built-ins (metadata only; no execution).
+ * Built-ins use Campaign / Replay / Knowledge PipelineStep metadata (executor via domain orchestrators).
  */
 @Injectable()
 export class PipelineTemplateService {
   private readonly templates = new Map<string, PipelineTemplate>();
 
-  constructor(private readonly pipelines: PipelineDomainService) {
+  constructor(
+    @Inject(PipelineDomainService)
+    private readonly pipelines: PipelineDomainService,
+  ) {
     this.registerBuiltInTemplates();
   }
 
@@ -86,82 +92,28 @@ export class PipelineTemplateService {
   private registerBuiltInTemplates(): void {
     const campaign = this.pipelines.createPipeline({
       name: 'Campaign Pipeline',
-      description: 'Standard campaign research workflow (metadata only)',
+      description:
+        'Standard campaign research workflow (Campaign PipelineStep metadata; no executor wiring)',
       version: '1.0.0',
-      steps: [
-        {
-          stepId: 'campaign.prepare',
-          name: 'Prepare Campaign',
-          description: 'Prepare campaign inputs',
-          order: 1,
-        },
-        {
-          stepId: 'campaign.execute',
-          name: 'Execute Campaign',
-          description: 'Execute campaign run',
-          order: 2,
-        },
-        {
-          stepId: 'campaign.finalize',
-          name: 'Finalize Campaign',
-          description: 'Finalize campaign outputs',
-          order: 3,
-        },
-      ],
+      steps: cloneSteps(CAMPAIGN_PIPELINE_STEPS),
       metadata: { author: 'trp', version: 'builtin' },
     });
 
     const replay = this.pipelines.createPipeline({
       name: 'Replay Pipeline',
-      description: 'Standard campaign replay workflow (metadata only)',
+      description:
+        'Standard campaign replay workflow (Replay PipelineStep metadata; executor via CampaignReplayService)',
       version: '1.0.0',
-      steps: [
-        {
-          stepId: 'replay.load',
-          name: 'Load Session',
-          description: 'Load session for replay',
-          order: 1,
-        },
-        {
-          stepId: 'replay.execute',
-          name: 'Execute Replay',
-          description: 'Execute replay run',
-          order: 2,
-        },
-        {
-          stepId: 'replay.finalize',
-          name: 'Finalize Replay',
-          description: 'Finalize replay outputs',
-          order: 3,
-        },
-      ],
+      steps: cloneSteps(REPLAY_PIPELINE_STEPS),
       metadata: { author: 'trp', version: 'builtin' },
     });
 
     const knowledge = this.pipelines.createPipeline({
       name: 'Knowledge Pipeline',
-      description: 'Standard knowledge extraction workflow (metadata only)',
+      description:
+        'Standard knowledge extraction workflow (Knowledge PipelineStep metadata; executor via KnowledgeDomainService)',
       version: '1.0.0',
-      steps: [
-        {
-          stepId: 'knowledge.extract',
-          name: 'Extract Knowledge',
-          description: 'Extract knowledge from experiment',
-          order: 1,
-        },
-        {
-          stepId: 'knowledge.persist',
-          name: 'Persist Knowledge',
-          description: 'Persist knowledge entry',
-          order: 2,
-        },
-        {
-          stepId: 'knowledge.index',
-          name: 'Index Knowledge',
-          description: 'Index knowledge for search',
-          order: 3,
-        },
-      ],
+      steps: cloneSteps(KNOWLEDGE_PIPELINE_STEPS),
       metadata: { author: 'trp', version: 'builtin' },
     });
 

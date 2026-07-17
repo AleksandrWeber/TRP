@@ -289,30 +289,40 @@ HTTP contract: [`api.md`](./api.md).
 
 ---
 
-## Campaign Replay (US066–US067)
+## Campaign Replay (US066–US067, US089)
 
-Internal foundation: prepare + execute replay of a `CampaignSession` (no public HTTP API yet; does not persist).
+Internal foundation: prepare + execute replay of a `CampaignSession` via PipelineExecutor (no public HTTP API yet; does not persist).
 
 Architecture:
 
 ```
 Controller (future)
   → CampaignReplayService
-      → ReplayContext
-      → ResearchCampaignService.run(..., { persistSession: false })
-      → CampaignReportService.build
-          → ReplayResult
+      → PipelineTemplateService (Replay built-in)
+          → Pipeline + PipelineRun (in-memory)
+              → PipelineExecutor
+                  → PipelineRegistry → Replay PipelineSteps
+                      → ResearchCampaignService.run(..., { persistSession: false })
+                      → CampaignReportService.build
+                          → ReplayResult
+```
+
+Replay Pipeline Steps order:
+
+```
+replay.load → replay.restore → replay.execute → replay.finalize
 ```
 
 - `create(session)` → `READY` (report copy; config restored)
-- `execute(session)` → `RUNNING` → `COMPLETED` | `FAILED`
+- `execute(session)` → `RUNNING` → `COMPLETED` | `FAILED` (via PipelineExecutor)
 - `ReplayResult`: `replayId`, `sourceSessionId`, `startedAt`, `completedAt?`, `status`, `campaignConfig`, `report`
 - `campaignConfig.paramsList` from optional `session.metadata.paramsList`
 - Regenerated `report` on successful execute (not a copy)
 - Invalid session → `BadRequestException`; execution errors → `FAILED`
 - Transient: no Repository / Persistence / History writes
+- `CampaignReplayService` is orchestrator only (US089); business logic in Replay PipelineSteps
 
-Module: `apps/api/src/modules/campaign-replay/` (`CampaignReplayModule`).
+Module: `apps/api/src/modules/campaign-replay/` (`CampaignReplayModule`); steps under `pipeline/steps/replay/`.
 HTTP: not exposed — see [`api.md`](./api.md) (internal foundation note).
 
 RC-08: Import + Replay foundation finalized.
@@ -355,7 +365,7 @@ RC-09: Background Job Execution framework finalized (US069–US073).
 
 ---
 
-## Knowledge Domain (US075–US079)
+## Knowledge Domain (US075–US079, US090)
 
 Analytical Knowledge layer above Experiments (in-memory; independent from Prisma
 `research_outcome` persistence).
@@ -364,13 +374,24 @@ Architecture:
 
 ```
 Experiment
-  → KnowledgeExtractionService.extract(currentVersion.report)
-      → KnowledgeDomainService.createFromExperiment (upsert)
-          → KnowledgeEntry
+  → KnowledgeDomainService.createFromExperiment
+      → PipelineTemplateService (Knowledge built-in)
+          → Pipeline + PipelineRun (in-memory)
+              → PipelineExecutor
+                  → PipelineRegistry → Knowledge PipelineSteps
+                      → KnowledgeExtractionService.extract
+                      → KnowledgeDomainService.create (upsert)
+                          → KnowledgeEntry
 
 KnowledgeController GET /knowledge
   → KnowledgeDomainService.find / search / searchByTag / searchByExperiment
       → KnowledgeEntry[]
+```
+
+Knowledge Pipeline Steps order:
+
+```
+knowledge.prepare → knowledge.extract → knowledge.upsert
 ```
 
 - `KnowledgeEntry`: `knowledgeId`, `experimentId`, `createdAt`, `title`, `summary`, `tags`, `insights`, `metadata`
@@ -379,11 +400,12 @@ KnowledgeController GET /knowledge
 - `KnowledgeDomainService`: `create` / `update` / `get` / `list` / `createFromExperiment` / `search` / `searchByTag` / `searchByExperiment` / `find`
 - `KnowledgeExtractionService`: deterministic mapping from CampaignReport (no AI / LLM)
 - One KnowledgeEntry per Experiment (upsert on re-extract)
+- `createFromExperiment` is orchestrator only (US090); business logic in Knowledge PipelineSteps
 - Search: case-insensitive over title/summary/insights/tags; filters AND; empty array on miss
 - No Repository, Jobs, Events, Scheduler, or vector search
 
-Module: `apps/api/src/modules/knowledge/` (coexists with existing research_outcome `KnowledgeService`).
-HTTP: see [`api.md`](./api.md).
+Module: `apps/api/src/modules/knowledge/` (coexists with existing research_outcome `KnowledgeService`); steps under `pipeline/steps/knowledge/`.
+HTTP: `GET /knowledge` — see [`api.md`](./api.md).
 
 RC-10: Knowledge & Experiment Intelligence finalized (US075–US079).
 
@@ -439,25 +461,49 @@ RC-10: Knowledge & Experiment Intelligence finalized (US075–US079).
 
 ---
 
-## Pipeline Domain (US081–US085)
+## Pipeline Domain (US081–US090)
 
-Generic Research Pipeline foundation (in-memory; executor + hooks + templates ready; no API yet).
+Generic Research Pipeline foundation (in-memory; Campaign, Replay, and Knowledge execution wired through PipelineExecutor).
 
 Architecture:
 
 ```
-PipelineTemplate
-  → PipelineTemplateService
-      → Pipeline (independent copy)
+ResearchCampaignService
+  → PipelineTemplateService (Campaign built-in)
+      → Pipeline + PipelineRun (in-memory)
+          → PipelineExecutor
+              → PipelineRegistry → Campaign PipelineSteps
 
-Pipeline (PipelineStepMetadata[])
-  → PipelineExecutor
-      ├─ PipelineHookRegistry → PipelineHook(s)
-      └─ PipelineRegistry → PipelineStep.execute()
+CampaignReplayService
+  → PipelineTemplateService (Replay built-in)
+      → Pipeline + PipelineRun (in-memory)
+          → PipelineExecutor
+              → PipelineRegistry → Replay PipelineSteps
 
-Controller (future)
-  → PipelineDomainService
-      → Pipeline / PipelineRun
+KnowledgeDomainService.createFromExperiment
+  → PipelineTemplateService (Knowledge built-in)
+      → Pipeline + PipelineRun (in-memory)
+          → PipelineExecutor
+              → PipelineRegistry → Knowledge PipelineSteps
+```
+
+Campaign Pipeline Steps order:
+
+```
+campaign.prepare → campaign.execute → campaign.aggregate
+  → campaign.build-report → campaign.persist
+```
+
+Replay Pipeline Steps order:
+
+```
+replay.load → replay.restore → replay.execute → replay.finalize
+```
+
+Knowledge Pipeline Steps order:
+
+```
+knowledge.prepare → knowledge.extract → knowledge.upsert
 ```
 
 - `Pipeline`: `pipelineId`, `name`, `description`, `version`, `steps[]` (`PipelineStepMetadata` only), `metadata`
@@ -472,14 +518,23 @@ Controller (future)
 - `LoggingPipelineHook`: in-memory lifecycle records (no console)
 - Hook exceptions are caught and ignored — never stop pipeline execution
 - `PipelineTemplate`: `templateId`, `name`, `description`, `version`, `pipelineId`, `defaultMetadata` (immutable)
-- `PipelineTemplateService`: `createTemplate` / `getTemplate` / `listTemplates` / `createPipelineFromTemplate` (independent copies; no execution)
-- Built-in templates: Campaign / Replay / Knowledge (step metadata only; no business step implementations)
+- `PipelineTemplateService`: `createTemplate` / `getTemplate` / `listTemplates` / `createPipelineFromTemplate` (independent copies)
+- Built-in templates: Campaign / Replay / Knowledge
+- Campaign Pipeline Steps (US087–US088): business logic in steps; `ResearchCampaignService` is orchestrator only
+- Replay Pipeline Steps (US089): business logic in steps; `CampaignReplayService` is orchestrator only
+- Knowledge Pipeline Steps (US090): business logic in steps; `KnowledgeDomainService` is orchestrator only for `createFromExperiment`
 - `PipelineDomainService`: `createPipeline` / `getPipeline` / `listPipelines` / `createRun` / `getRun` / `listRuns`
-- No Repository, Events/Event Bus, Campaign/Replay/Knowledge execution integration, or HTTP
+- No Repository, Events/Event Bus, or Pipeline HTTP
+- Public Campaign REST contract, ReplayResult shape, and KnowledgeEntry behavior unchanged
 
-Module: `apps/api/src/modules/pipeline/`.
+Module: `apps/api/src/modules/pipeline/` (+ `steps/campaign/`, `steps/replay/`, `steps/knowledge/`).
 
-RC-11: Research Pipeline Engine finalized (US081–US085).
+RC-11: Research Pipeline Engine foundation finalized (US081–US085).
+US087: Campaign Pipeline Steps extracted.
+US088: Campaign execution through PipelineExecutor.
+US089: Replay execution through PipelineExecutor.
+US090: Knowledge extraction through PipelineExecutor.
+RC-12: Pipeline Engine verified as unified Campaign / Replay / Knowledge runtime (US091).
 
 ---
 

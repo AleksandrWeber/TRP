@@ -1,25 +1,16 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
-import { buildSliceIdentity, type SliceRef } from '@trp/research';
 import { CampaignPersistenceService } from '../campaign-persistence/campaign-persistence.service';
 import { CampaignSessionFactory } from '../campaign-session/campaign-session.factory';
 import { CampaignSessionStatus } from '../campaign-session/campaign-session-status';
-import { ExperimentsService } from '../experiments/experiments.service';
-import { CampaignReportService } from './campaign-report.service';
+import { BUILTIN_PIPELINE_TEMPLATE_IDS } from '../pipeline/builtin-pipeline-templates';
+import type { PipelineContext } from '../pipeline/pipeline-context';
+import { PipelineDomainService } from '../pipeline/pipeline-domain.service';
+import { PipelineExecutor } from '../pipeline/pipeline-executor';
+import { PipelineTemplateService } from '../pipeline/pipeline-template.service';
+import { readExperiments, readSummary } from '../pipeline/steps/campaign/campaign-context';
 import type { CampaignReport, CampaignReportExperiment } from './campaign-report.types';
 import type { CampaignSummary, ResearchCampaignInput } from './research-campaign.types';
-
-type ExperimentLike = {
-  id: string;
-  verdict: string;
-  metrics?: {
-    profitFactor?: number;
-    totalReturnPercent?: number;
-    expectancy?: number;
-    maxDrawdownPercent?: number;
-  } | null;
-  report?: { params?: Record<string, unknown>; sliceIdentity?: string } | null;
-};
 
 export type ResearchCampaignResult = {
   summary: CampaignSummary;
@@ -28,14 +19,23 @@ export type ResearchCampaignResult = {
   sliceIdentity?: string;
 };
 
+/**
+ * Campaign orchestrator (US088).
+ * Delegates execution to PipelineExecutor + Campaign PipelineSteps.
+ * Preserves the public run() contract and persistence/error behavior.
+ */
 @Injectable()
 export class ResearchCampaignService {
-  private readonly logger = new Logger(ResearchCampaignService.name);
-
   constructor(
-    private readonly experiments: ExperimentsService,
-    private readonly reports: CampaignReportService,
+    @Inject(PipelineExecutor)
+    private readonly executor: PipelineExecutor,
+    @Inject(PipelineTemplateService)
+    private readonly templates: PipelineTemplateService,
+    @Inject(PipelineDomainService)
+    private readonly pipelines: PipelineDomainService,
+    @Inject(CampaignSessionFactory)
     private readonly sessionFactory: CampaignSessionFactory,
+    @Inject(CampaignPersistenceService)
     private readonly persistence: CampaignPersistenceService,
   ) {}
 
@@ -44,15 +44,28 @@ export class ResearchCampaignService {
     options?: { persistSession?: boolean },
   ): Promise<ResearchCampaignResult> {
     const persistSession = options?.persistSession !== false;
+
     try {
-      const result = await this.executeCampaign(input);
-      const report = this.reports.build(result.summary, result.experiments, {
-        sliceIdentity: result.sliceIdentity,
-      });
-      if (persistSession) {
-        this.persistSession(report, CampaignSessionStatus.COMPLETED, input.datasetId);
+      const pipeline = this.templates.createPipelineFromTemplate(
+        BUILTIN_PIPELINE_TEMPLATE_IDS.campaign,
+      );
+      if (!pipeline) {
+        throw new Error('Campaign pipeline template is not registered');
       }
-      return result;
+
+      const run = this.pipelines.createRun({ pipelineId: pipeline.pipelineId });
+      if (!run) {
+        throw new Error(`Failed to create PipelineRun for ${pipeline.pipelineId}`);
+      }
+
+      const context = createCampaignPipelineContext(input, persistSession);
+      const pipelineResult = await this.executor.execute(pipeline, context, run);
+
+      if (!pipelineResult.success) {
+        throw new Error(pipelineResult.error ?? 'Campaign pipeline failed');
+      }
+
+      return toCampaignResult(pipelineResult.context);
     } catch (error) {
       const report = this.buildFailedExecutionReport(input);
       if (persistSession) {
@@ -60,79 +73,6 @@ export class ResearchCampaignService {
       }
       throw error;
     }
-  }
-
-  private async executeCampaign(input: ResearchCampaignInput): Promise<ResearchCampaignResult> {
-    const campaignId = randomUUID();
-    const createdAt = new Date().toISOString();
-
-    let passCount = 0;
-    let failCount = 0;
-    let needsReviewCount = 0;
-    let bestExperimentId: string | null = null;
-    let bestProfitFactor = Number.NEGATIVE_INFINITY;
-    const failedRuns: CampaignSummary['failedRuns'] = [];
-    const experiments: CampaignReportExperiment[] = [];
-
-    const sliceRef = input.sliceRef;
-    const sliceIdentity = sliceRef ? this.sliceIdentityFrom(sliceRef) : undefined;
-
-    for (const params of input.paramsList) {
-      try {
-        const experiment = (await this.experiments.run(
-          input.datasetId,
-          input.strategyId,
-          params,
-          sliceRef,
-        )) as ExperimentLike;
-
-        experiments.push({
-          id: experiment.id,
-          verdict: experiment.verdict,
-          metrics: experiment.metrics ?? null,
-          report: experiment.report ?? { params },
-        });
-
-        if (experiment.verdict === 'pass') passCount += 1;
-        else if (experiment.verdict === 'needs_review') needsReviewCount += 1;
-        else failCount += 1;
-
-        const profitFactor = experiment.metrics?.profitFactor;
-        if (typeof profitFactor === 'number' && profitFactor > bestProfitFactor) {
-          bestProfitFactor = profitFactor;
-          bestExperimentId = experiment.id;
-        }
-      } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        this.logger.warn(
-          `Campaign ${campaignId} run failed for params ${JSON.stringify(params)}: ${message}`,
-        );
-        failedRuns.push({ params, error: message });
-      }
-    }
-
-    const summary: CampaignSummary = {
-      campaignId,
-      strategyId: input.strategyId,
-      datasetId: input.datasetId,
-      totalRuns: input.paramsList.length,
-      passCount,
-      failCount,
-      needsReviewCount,
-      bestExperimentId,
-      createdAt,
-      failedRuns,
-    };
-
-    this.logger.log(
-      `Campaign ${campaignId} finished: ${summary.passCount} pass / ${summary.failCount} fail / ${summary.needsReviewCount} needs_review / ${failedRuns.length} errors`,
-    );
-
-    const result: ResearchCampaignResult = { summary, experiments };
-    if (sliceIdentity !== undefined) {
-      result.sliceIdentity = sliceIdentity;
-    }
-    return result;
   }
 
   private persistSession(
@@ -170,13 +110,44 @@ export class ResearchCampaignService {
       createdAt: new Date().toISOString(),
     };
   }
+}
 
-  private sliceIdentityFrom(sliceRef: SliceRef): string {
-    return buildSliceIdentity(
-      sliceRef.datasetId,
-      sliceRef.startIndex,
-      sliceRef.endIndex,
-      sliceRef.role,
-    );
+function createCampaignPipelineContext(
+  input: ResearchCampaignInput,
+  persistSession: boolean,
+): PipelineContext {
+  const contextInput: Record<string, unknown> = {
+    datasetId: input.datasetId,
+    strategyId: input.strategyId,
+    paramsList: input.paramsList,
+    persistSession,
+  };
+
+  if (input.sliceRef !== undefined) {
+    contextInput.sliceRef = input.sliceRef;
   }
+
+  return {
+    input: contextInput,
+    output: {},
+    variables: {},
+    metadata: {},
+  };
+}
+
+function toCampaignResult(context: PipelineContext): ResearchCampaignResult {
+  const summary = readSummary(context);
+  const experiments = readExperiments(context);
+  const result: ResearchCampaignResult = { summary, experiments };
+
+  const sliceIdentity =
+    context.output.sliceIdentity !== undefined
+      ? context.output.sliceIdentity
+      : context.variables.sliceIdentity;
+
+  if (sliceIdentity !== undefined) {
+    result.sliceIdentity = String(sliceIdentity);
+  }
+
+  return result;
 }

@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it } from 'vitest';
+import { createKnowledgeDomainService } from './knowledge-domain.test-utils';
 import { KnowledgeDomainService } from './knowledge-domain.service';
-import { KnowledgeExtractionService } from './knowledge-extraction.service';
 
 describe('KnowledgeDomainService (US075)', () => {
   let service: KnowledgeDomainService;
 
   beforeEach(() => {
-    service = new KnowledgeDomainService(new KnowledgeExtractionService());
+    ({ service } = createKnowledgeDomainService());
   });
 
   it('creates an entry', () => {

@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import type { Pipeline } from './pipeline';
 import type { PipelineContext } from './pipeline-context';
 import type { PipelineHook } from './pipeline-hook';
-import type { PipelineHookRegistry } from './pipeline-hook-registry';
+import { PipelineHookRegistry } from './pipeline-hook-registry';
 import type { PipelineResult } from './pipeline-result';
 import type { PipelineRun } from './pipeline-run';
 import { PipelineRunStatus } from './pipeline-run-status';
-import type { PipelineRegistry } from './pipeline-registry';
+import { PipelineRegistry } from './pipeline-registry';
 import type { PipelineStep } from './pipeline-step';
 import type { PipelineStepMetadata } from './pipeline-step-metadata';
 
@@ -17,7 +17,9 @@ import type { PipelineStepMetadata } from './pipeline-step-metadata';
 @Injectable()
 export class PipelineExecutor {
   constructor(
+    @Inject(PipelineRegistry)
     private readonly registry: PipelineRegistry,
+    @Inject(PipelineHookRegistry)
     private readonly hookRegistry: PipelineHookRegistry,
   ) {}
 

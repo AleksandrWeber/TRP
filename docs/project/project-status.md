@@ -15,9 +15,9 @@ Research OS Foundation
 
 Побудувати Evidence-driven Research OS: reproducible experiments, immutable Knowledge, і чітке provenance/versioning результатів.
 
-Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slice US045–US047. Campaign Persistence + History API (US051–US059). RC-06 Architecture Audit complete (US060). Export Foundation + Export API (US061–US062). RC-07 finalized. Import Foundation (US063). JSON Import Validation (US064). Import API (US065). Replay Foundation (US066). Replay Execution (US067). RC-08 finalized. Job Domain Model (US069). Job Queue Abstraction (US070). Background Campaign Runner (US071). Job Status API (US072). Job Cancellation (US073). RC-09 finalized. Knowledge Domain Model (US075). Experiment Entity & Versioning (US076). Knowledge Extraction Pipeline (US077). Experiment Comparison Service (US078). Knowledge Search API (US079). RC-10 finalized. Pipeline Domain Model (US081). Pipeline Step Contract (US082). Pipeline Executor (US083). Pipeline Hooks (US084). Pipeline Templates (US085). RC-11 finalized. Remote release ще не запушено.
+Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slice US045–US047. Campaign Persistence + History API (US051–US059). RC-06 Architecture Audit complete (US060). Export Foundation + Export API (US061–US062). RC-07 finalized. Import Foundation (US063). JSON Import Validation (US064). Import API (US065). Replay Foundation (US066). Replay Execution (US067). RC-08 finalized. Job Domain Model (US069). Job Queue Abstraction (US070). Background Campaign Runner (US071). Job Status API (US072). Job Cancellation (US073). RC-09 finalized. Knowledge Domain Model (US075). Experiment Entity & Versioning (US076). Knowledge Extraction Pipeline (US077). Experiment Comparison Service (US078). Knowledge Search API (US079). RC-10 finalized. Pipeline Domain Model (US081). Pipeline Step Contract (US082). Pipeline Executor (US083). Pipeline Hooks (US084). Pipeline Templates (US085). RC-11 finalized. Campaign Pipeline Steps (US087). Execute Campaign through PipelineExecutor (US088). Replay Pipeline Integration (US089). Knowledge Extraction Pipeline Integration (US090). RC-12 Architecture Audit (US091) finalized — Pipeline Engine is the unified execution runtime. Remote release ще не запушено.
 
-Next: RC-12.
+Next: RC-13.
 
 ---
 
@@ -55,7 +55,7 @@ Status: NOT READY for remote release / push
 
 Status: Ready for Commit
 
-Scope: Research OS (US003–US019, US020A–US020B, US026–US035, US037–US043, US045–US050, US051–US073, US075–US079, US081–US085) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C, US036, US041A, US043A, US044, US050A, US060) + RC-07 (Campaign Session Persistence + History + Export) + RC-08 (Import + Replay) + RC-09 (Background Job Execution) + RC-10 (Knowledge & Experiment Intelligence) + RC-11 (Research Pipeline Engine). Product next: RC-12.
+Scope: Research OS (US003–US019, US020A–US020B, US026–US035, US037–US043, US045–US050, US051–US073, US075–US079, US081–US085, US087–US091) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C, US036, US041A, US043A, US044, US050A, US060) + RC-07 (Campaign Session Persistence + History + Export) + RC-08 (Import + Replay) + RC-09 (Background Job Execution) + RC-10 (Knowledge & Experiment Intelligence) + RC-11 (Research Pipeline Engine). Product next: RC-13.
 
 Current Research OS implementation exists in working tree.
 Release will be created only after explicit commit sequence.
@@ -78,14 +78,14 @@ Completed:
 - EMA Crossover і Donchian Breakout зареєстровані.
 - Paginated Binance historical import (startTime/endTime, ≤1000 per page).
 
-Next: RC-12.
+Next: RC-13.
 
 ---
 
 ## Knowledge Layer
 
 Status:
-✅ RC-10 finalized (US075–US079 Knowledge & Experiment Intelligence)
+✅ RC-10 finalized + extraction via PipelineExecutor (US075–US079, US090)
 
 Completed:
 
@@ -98,9 +98,10 @@ Completed:
 - Integration/unit tests для create / duplicate / lineage / version consistency.
 - Knowledge Domain Model (US075): in-memory `KnowledgeEntry` / `KnowledgeMetadata` / `KnowledgeTag` + `KnowledgeDomainService` (`create` / `update` / `get` / `list`); no Repository / API / extraction.
 - Knowledge Extraction Pipeline (US077): `KnowledgeExtractionService.extract` + `KnowledgeDomainService.createFromExperiment` (deterministic from `Experiment.currentVersion.report`; one entry per experiment; upsert).
+- Knowledge Extraction Pipeline Integration (US090): `PrepareKnowledgeExtractionStep` / `ExtractKnowledgeStep` / `UpsertKnowledgeEntryStep`; `createFromExperiment` orchestrates via Knowledge template + `PipelineExecutor`.
 - Knowledge Search API (US079): `search` / `searchByTag` / `searchByExperiment` / `find` + `GET /knowledge?q&tag&experimentId` (AND; case-insensitive; empty array on miss).
 
-Next: RC-12.
+Next: RC-13.
 
 ---
 
@@ -122,7 +123,7 @@ Completed:
 - Experiment Entity & Versioning (US076): in-memory `Experiment` / `ExperimentVersion` / `ExperimentMetadata` + `ExperimentDomainService` (`createFromSession` / `createVersion` / `get` / `list`); links CampaignSession → future KnowledgeEntry via `experimentId` only.
 - Experiment Comparison Service (US078): deterministic `ExperimentComparisonService.compareVersions` / `compareExperiments` (structural insights/summary/tags/metadata diffs; no AI).
 
-Next: RC-12.
+Next: RC-13.
 
 ---
 
@@ -144,7 +145,7 @@ Completed:
 - `ResearchCampaignService.run` creates/persists one `CampaignSession` per execution (`COMPLETED` or `FAILED`).
 - RC-06 Architecture Audit (US060): dependency direction / History flow / API / tests validated PASS.
 
-Next: RC-12.
+Next: RC-13.
 
 ---
 
@@ -162,7 +163,7 @@ Completed:
 - Every `ResearchCampaignService.run` persists exactly one session.
 - `CampaignHistoryService` + History API (US056–US059).
 
-Next: RC-12.
+Next: RC-13.
 
 ---
 
@@ -180,7 +181,7 @@ Completed:
 - `CampaignExportController`: `GET /campaign-history/:sessionId/export?format=json|csv`.
 - Flow: HistoryService.getById → CampaignExportService.export; 200 / 400 / 404; Content-Type set.
 
-Next: RC-12.
+Next: RC-13.
 
 ---
 
@@ -200,14 +201,14 @@ Completed:
 - `CampaignImportController`: `POST /campaign-import` with `{ format, payload }` → `CampaignSession` (200) or 400.
 - Nest `CampaignImportModule` wired in `AppModule` (no persistence side effects).
 
-Next: RC-12.
+Next: RC-13.
 
 ---
 
 ## Campaign Replay
 
 Status:
-🟡 Execution ready (US066–US067; no HTTP / no persist)
+✅ Executes via PipelineExecutor (US066–US067, US089; no HTTP / no persist)
 
 Completed:
 
@@ -215,10 +216,11 @@ Completed:
 - `ReplayStatus`: `READY` | `RUNNING` | `COMPLETED` | `FAILED`.
 - `ReplayContext` + `ReplayCampaignConfig` + `ReplayResult` (`completedAt` on finish).
 - `CampaignReplayService.create(session)` → prepare; status `READY`.
-- `CampaignReplayService.execute(session)` → ResearchCampaignService.run(`persistSession: false`) → regenerated report; `COMPLETED` / `FAILED`.
-- Reuses existing Campaign pipeline; no History/Repository writes on replay.
+- Replay Pipeline Integration (US089): `CampaignReplayService` orchestrates via Replay template + `PipelineExecutor`; steps `replay.load` → `replay.restore` → `replay.execute` → `replay.finalize`.
+- `execute(session)` → Campaign via `persistSession: false` inside Replay steps → regenerated report; `COMPLETED` / `FAILED`.
+- Identical `ReplayResult` / History / Jobs behavior; no History/Repository writes on replay.
 
-Next: RC-12.
+Next: RC-13.
 
 ---
 
@@ -241,14 +243,14 @@ Completed:
 - Job Status API (US072): `GET /jobs`, `GET /jobs/:jobId` (404 if missing).
 - Job Cancellation (US073): `POST /jobs/:jobId/cancel` (200 / 404 / 409).
 
-Next: RC-12.
+Next: RC-13.
 
 ---
 
 ## Pipeline
 
 Status:
-✅ RC-11 finalized (US081–US085 Research Pipeline Engine)
+✅ RC-12 finalized — unified Pipeline Engine runtime (US081–US091)
 
 Completed:
 
@@ -256,15 +258,20 @@ Completed:
 - `Pipeline`, `PipelineRun`, `PipelineContext`, `PipelineResult`, `PipelineMetadata`.
 - `PipelineRunStatus`: `PENDING` | `RUNNING` | `COMPLETED` | `FAILED` | `CANCELLED`.
 - `PipelineDomainService`: `createPipeline` / `getPipeline` / `listPipelines` / `createRun` / `getRun` / `listRuns` (in-memory Maps).
-- Generic context only (`input` / `output` / `variables` / `metadata`) — no campaign/knowledge-specific fields.
+- Generic context only (`input` / `output` / `variables` / `metadata`) — no campaign/knowledge/replay-specific fields.
 - Pipeline Step Contract (US082): `PipelineStep` / `AbstractPipelineStep` / `PipelineStepMetadata` / `PipelineStepResult` + `PipelineRegistry` (register/get/list; duplicate rejected).
 - Pipeline stores `PipelineStepMetadata[]` only — never executable instances.
 - Pipeline Executor (US083): `PipelineExecutor.execute(pipeline, context, run?)` resolves steps via registry by `metadata.order`; propagates context; updates optional `PipelineRun` lifecycle; returns `PipelineResult` (success/fail + duration).
 - Pipeline Hooks (US084): `PipelineHook` + `PipelineHookRegistry` + `LoggingPipelineHook`; executor invokes before/after pipeline/step and onError; hook failures ignored; observation only (no context mutation).
-- Pipeline Templates (US085): `PipelineTemplate` + `PipelineTemplateService` (`createTemplate` / `getTemplate` / `listTemplates` / `createPipelineFromTemplate`); built-ins Campaign / Replay / Knowledge (step metadata only); immutable templates → independent Pipeline copies.
-- RC-11 Architecture Audit (US086): architecture PASS; isolation from Campaign/Knowledge/Experiment/Jobs/Replay/History/Export/Import/Persistence verified; no Event Bus; no API/Repository.
+- Pipeline Templates (US085): `PipelineTemplate` + `PipelineTemplateService` (`createTemplate` / `getTemplate` / `listTemplates` / `createPipelineFromTemplate`); built-ins Campaign / Replay / Knowledge; immutable templates → independent Pipeline copies.
+- RC-11 Architecture Audit (US086): architecture PASS; isolation verified; no Event Bus; no API/Repository.
+- Campaign Pipeline Steps (US087): `PrepareCampaignStep` / `ExecuteResearchStep` / `AggregateResultStep` / `BuildReportStep` / `PersistCampaignStep` under `pipeline/steps/campaign/`; registered on `PipelineRegistry`; Campaign template metadata updated.
+- Execute Campaign through PipelineExecutor (US088): `ResearchCampaignService` orchestrates via template + `PipelineExecutor` + in-memory `PipelineRun`; public `run()` contract, REST API, persistence/History, Jobs, and Replay behavior unchanged.
+- Replay Pipeline Integration (US089): `LoadReplaySessionStep` / `RestoreReplayContextStep` / `ExecuteReplayCampaignStep` / `FinalizeReplayStep` under `pipeline/steps/replay/`; registered on `PipelineRegistry`; Replay template metadata updated; `CampaignReplayService` orchestrates via template + `PipelineExecutor`.
+- Knowledge Extraction Pipeline Integration (US090): `PrepareKnowledgeExtractionStep` / `ExtractKnowledgeStep` / `UpsertKnowledgeEntryStep` under `pipeline/steps/knowledge/`; registered on `PipelineRegistry`; Knowledge template metadata updated; `KnowledgeDomainService.createFromExperiment` orchestrates via template + `PipelineExecutor`.
+- RC-12 Architecture Audit (US091): Pipeline Engine verified as unified Campaign / Replay / Knowledge runtime; isolation PASS; no Event Bus.
 
-Next: RC-12.
+Next: RC-13.
 
 ---
 
@@ -316,6 +323,7 @@ Completed:
 - Import API (US065): `POST /campaign-import` → validated `CampaignSession` (no persist).
 - Replay Foundation (US066): `CampaignReplayService` prepares `ReplayResult` from `CampaignSession` (no execution/AI/persist).
 - Replay Execution (US067): `execute(session)` via `ResearchCampaignService` (`persistSession: false`); READY→RUNNING→COMPLETED|FAILED.
+- Replay Pipeline Integration (US089): Replay stages as PipelineSteps; `CampaignReplayService` orchestrates via template + `PipelineExecutor`.
 - Job Domain Model (US069): `Job` / `JobStatus` / `JobType` + create-only `JobService` (no queue/API/persist).
 - Job Queue Abstraction (US070): `JobQueue` + `JOB_QUEUE` + `InMemoryJobQueue`; create auto-enqueues as `PENDING`.
 - Background Campaign Runner (US071): `BackgroundJobRunner` processes CAMPAIGN/REPLAY jobs → COMPLETED|FAILED (`JobResult`).
@@ -325,6 +333,7 @@ Completed:
 - Knowledge Domain Model (US075): in-memory `KnowledgeEntry` + `KnowledgeDomainService` (create/update/get/list).
 - Experiment Entity & Versioning (US076): in-memory `Experiment` + `ExperimentDomainService` (createFromSession/createVersion/get/list).
 - Knowledge Extraction Pipeline (US077): deterministic extract from Experiment report → upsert KnowledgeEntry.
+- Knowledge Extraction Pipeline Integration (US090): Knowledge stages as PipelineSteps; `createFromExperiment` via `PipelineExecutor`.
 - Experiment Comparison Service (US078): structural compareVersions / compareExperiments (no AI).
 - Knowledge Search API (US079): `GET /knowledge` with `q` / `tag` / `experimentId` (AND; in-memory).
 - RC-10 finalized: Knowledge & Experiment Intelligence architecture audit PASS.
@@ -334,8 +343,13 @@ Completed:
 - Pipeline Hooks (US084): optional lifecycle hooks via `PipelineHookRegistry`; `LoggingPipelineHook` reference; no Events/bus.
 - Pipeline Templates (US085): `PipelineTemplate` + `PipelineTemplateService`; built-in Campaign / Replay / Knowledge templates (metadata only); independent copies via `createPipelineFromTemplate`.
 - RC-11 finalized: Research Pipeline Engine architecture audit PASS (US081–US085).
+- Campaign Pipeline Steps (US087): extracted Campaign stages as PipelineSteps; registry + template updated; ResearchCampaignService unchanged.
+- Execute Campaign through PipelineExecutor (US088): `ResearchCampaignService` → template → `PipelineExecutor` → Campaign steps; public contract unchanged.
+- Replay Pipeline Integration (US089): `CampaignReplayService` → template → `PipelineExecutor` → Replay steps; identical `ReplayResult` / Jobs / History behavior.
+- Knowledge Extraction Pipeline Integration (US090): `KnowledgeDomainService.createFromExperiment` → template → `PipelineExecutor` → Knowledge steps; identical KnowledgeEntry / upsert.
+- RC-12 Architecture Audit (US091): Pipeline Engine verified as unified Campaign / Replay / Knowledge runtime; isolation PASS; no Event Bus.
 
-Next: RC-12.
+Next: RC-13.
 
 ---
 
@@ -973,6 +987,41 @@ RC-11 finalized
 - Tests: monorepo — api 345, web 18, research 24 (all passed).
 - Next: RC-12.
 
+US087 — Campaign Pipeline Steps
+
+- Completed Story: Extracted ResearchCampaignService stages into PipelineSteps (`PrepareCampaignStep` / `ExecuteResearchStep` / `AggregateResultStep` / `BuildReportStep` / `PersistCampaignStep`); registered on `PipelineRegistry`; Campaign built-in template metadata updated; `ResearchCampaignService` flow and REST API unchanged — no PipelineExecutor wiring.
+- Changed Files: `apps/api/src/modules/pipeline/steps/campaign/*`, `pipeline-template.service.ts`, `pipeline.module.ts`, `app.module.ts`, specs, docs.
+- Tests: per-step / registry / template order / output parity with ResearchCampaignService — 59 pipeline suite passed.
+- Next: US088.
+
+US088 — Execute Campaign through PipelineExecutor
+
+- Completed Story: `ResearchCampaignService` is now an orchestrator — creates in-memory `PipelineRun`, instantiates Campaign pipeline from built-in template, executes via `PipelineExecutor`; business logic remains in Campaign PipelineSteps; public `run()` contract, FAILED persistence path, REST API, Jobs, and Replay behavior preserved.
+- Changed Files: `research-campaign.service.ts`, `research-campaign.module.ts`, `pipeline.module.ts`, `pipeline-executor.ts`, `pipeline-template.service.ts`, specs, docs.
+- Tests: campaign / pipeline / jobs / replay / persistence regression — 237 related tests passed.
+- Next: US089.
+
+US089 — Replay Pipeline Integration
+
+- Completed Story: Extracted Replay stages into PipelineSteps (`LoadReplaySessionStep` / `RestoreReplayContextStep` / `ExecuteReplayCampaignStep` / `FinalizeReplayStep`); registered on `PipelineRegistry`; Replay built-in template metadata updated; `CampaignReplayService` orchestrates via template + `PipelineExecutor` + in-memory `PipelineRun`; `ReplayResult` / Jobs / History / Campaign execution unchanged.
+- Changed Files: `apps/api/src/modules/pipeline/steps/replay/*`, `campaign-replay.service.ts`, `campaign-replay.module.ts`, `pipeline-template.service.ts`, specs, docs.
+- Tests: replay / pipeline / jobs / campaign regression — 199 related tests passed.
+- Next: US090.
+
+US090 — Knowledge Extraction Pipeline Integration
+
+- Completed Story: Extracted Knowledge extraction stages into PipelineSteps (`PrepareKnowledgeExtractionStep` / `ExtractKnowledgeStep` / `UpsertKnowledgeEntryStep`); registered on `PipelineRegistry`; Knowledge built-in template metadata updated; `KnowledgeDomainService.createFromExperiment` orchestrates via template + `PipelineExecutor` + in-memory `PipelineRun`; identical KnowledgeEntry / upsert / Experiment compatibility; no AI / Events / Jobs / API changes.
+- Changed Files: `apps/api/src/modules/pipeline/steps/knowledge/*`, `knowledge-domain.service.ts`, `knowledge.module.ts`, `knowledge-extraction.service.ts`, `pipeline-template.service.ts`, specs, docs.
+- Tests: knowledge / pipeline / campaign / replay / jobs / experiments regression — 204 related tests passed.
+- Next: US091.
+
+US091 — RC-12 Architecture Audit
+
+- Completed Story: RC-12 finalized — Research Pipeline Engine is the unified execution runtime for Campaign / Replay / Knowledge (US081–US090); architecture checklist PASS; orchestrators only; templates metadata-only; hooks lifecycle-only (no Event Bus); isolation from Jobs/History/Export/Import/REST verified; docs synced; committed and pushed.
+- Changed Files: docs (audit closeout); US087–US090 pipeline migration included in same commit; no external API / behavior changes.
+- Tests: monorepo — api 369, web 18, research 24 (all passed). Lint: pipeline orchestration scope clean; pre-existing experiments/knowledge Prisma-spec `any` debt unchanged (same as RC-11).
+- Next: RC-13.
+
 ---
 
 # Current Version
@@ -1005,7 +1054,7 @@ Note: ці версії стосуються working-tree Research OS semantics;
 
 High Priority
 
-- RC-12.
+- RC-13.
 - US074.
 - Наступна research hypothesis після EMA + Donchian FAIL.
 - За потреби: campaign-level Knowledge summary (не лише per-config).

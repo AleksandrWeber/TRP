@@ -87,9 +87,14 @@ Research OS Foundation Release Candidate exists as a local commit; remote push n
 - Pipeline Executor (US083): `PipelineExecutor` resolves registered steps by `metadata.order`, propagates context, updates optional `PipelineRun` lifecycle, returns `PipelineResult` (no persistence/API).
 - Pipeline Hooks (US084): `PipelineHook` + `PipelineHookRegistry` + `LoggingPipelineHook`; executor lifecycle callbacks; hook failures ignored; no Events/bus.
 - Pipeline Templates (US085): `PipelineTemplate` + `PipelineTemplateService`; built-in Campaign / Replay / Knowledge templates (step metadata only); `createPipelineFromTemplate` yields independent Pipeline copies.
+- Campaign Pipeline Steps (US087): `PrepareCampaignStep` / `ExecuteResearchStep` / `AggregateResultStep` / `BuildReportStep` / `PersistCampaignStep`; registered on `PipelineRegistry`; Campaign template metadata updated; `ResearchCampaignService` unchanged (no executor wiring).
+- Execute Campaign through PipelineExecutor (US088): `ResearchCampaignService` orchestrates Campaign via built-in template + `PipelineExecutor` + in-memory `PipelineRun`; public contract / REST / Jobs / Replay unchanged.
+- Replay Pipeline Integration (US089): `LoadReplaySessionStep` / `RestoreReplayContextStep` / `ExecuteReplayCampaignStep` / `FinalizeReplayStep`; registered on `PipelineRegistry`; Replay template metadata updated; `CampaignReplayService` orchestrates via template + `PipelineExecutor`; identical `ReplayResult` / Jobs / History.
+- Knowledge Extraction Pipeline Integration (US090): `PrepareKnowledgeExtractionStep` / `ExtractKnowledgeStep` / `UpsertKnowledgeEntryStep`; registered on `PipelineRegistry`; Knowledge template metadata updated; `KnowledgeDomainService.createFromExperiment` orchestrates via template + `PipelineExecutor`; identical KnowledgeEntry / upsert / Experiment compatibility.
 
 ### Fixed
 
+- RC-12 finalized: Research Pipeline Engine is the unified execution runtime for Campaign / Replay / Knowledge (US081–US091) architecture audit PASS (full monorepo tests green; pipeline orchestration lint scope clean; pre-existing experiments/knowledge Prisma-spec `any` debt unchanged); docs synced; committed and pushed.
 - RC-11 finalized: Research Pipeline Engine (US081–US085) architecture audit PASS (full monorepo tests green; pipeline lint scope clean); docs synced; committed and pushed.
 - RC-10 finalized: Knowledge & Experiment Intelligence (US075–US079) architecture audit PASS (full monorepo tests green); docs synced; committed and pushed.
 - RC-09 finalized: Background Job Execution framework (US069–US073) verified (full monorepo tests green); docs synced; committed and pushed.

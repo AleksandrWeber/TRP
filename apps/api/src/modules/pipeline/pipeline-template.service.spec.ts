@@ -70,20 +70,32 @@ describe('PipelineTemplateService (US085)', () => {
       {
         stepId: 'campaign.prepare',
         name: 'Prepare Campaign',
-        description: 'Prepare campaign inputs',
+        description: 'Initialize campaign id, timestamps, and slice identity',
         order: 1,
       },
       {
         stepId: 'campaign.execute',
-        name: 'Execute Campaign',
-        description: 'Execute campaign run',
+        name: 'Execute Research',
+        description: 'Run experiments for each parameter set',
         order: 2,
       },
       {
-        stepId: 'campaign.finalize',
-        name: 'Finalize Campaign',
-        description: 'Finalize campaign outputs',
+        stepId: 'campaign.aggregate',
+        name: 'Aggregate Results',
+        description: 'Build campaign summary from experiment outcomes',
         order: 3,
+      },
+      {
+        stepId: 'campaign.build-report',
+        name: 'Build Report',
+        description: 'Build campaign report from summary and experiments',
+        order: 4,
+      },
+      {
+        stepId: 'campaign.persist',
+        name: 'Persist Session',
+        description: 'Persist campaign session when enabled',
+        order: 5,
       },
     ]);
     expect(pipelines.getPipeline(pipeline!.pipelineId)).toBe(pipeline);

@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import type { Experiment } from '../experiments/experiment';
+import { resolveCurrentReport } from '../pipeline/steps/knowledge/knowledge-session.helpers';
 import type { CampaignReport } from '../research-campaign/campaign-report.types';
 import type { KnowledgeEntry } from './knowledge-entry';
 import type { KnowledgeMetadata } from './knowledge-metadata';
 import type { KnowledgeTag } from './knowledge-tag';
 
 /**
- * Deterministic Knowledge extraction from Experiment versions (US077).
+ * Deterministic Knowledge extraction from Experiment versions (US077 / US090).
  * Uses only Experiment.currentVersion.report — no AI / LLM / external services.
  */
 @Injectable()
@@ -25,16 +26,6 @@ export class KnowledgeExtractionService {
       metadata: buildMetadata(report, experiment),
     };
   }
-}
-
-function resolveCurrentReport(experiment: Experiment): CampaignReport {
-  const current = experiment.versions.find((v) => v.version === experiment.currentVersion);
-  if (!current) {
-    throw new Error(
-      `Experiment ${experiment.experimentId} has no version ${experiment.currentVersion}`,
-    );
-  }
-  return current.report;
 }
 
 function buildTitle(report: CampaignReport): string {

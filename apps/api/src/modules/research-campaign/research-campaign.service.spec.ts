@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CampaignSessionFactory } from '../campaign-session/campaign-session.factory';
 import { CampaignSessionStatus } from '../campaign-session/campaign-session-status';
+import { PipelineDomainService } from '../pipeline/pipeline-domain.service';
+import { PipelineExecutor } from '../pipeline/pipeline-executor';
+import { PipelineHookRegistry } from '../pipeline/pipeline-hook-registry';
+import { PipelineRegistry } from '../pipeline/pipeline-registry';
+import { PipelineTemplateService } from '../pipeline/pipeline-template.service';
+import { registerCampaignPipelineSteps } from '../pipeline/steps/campaign/register-campaign-steps';
 import { CampaignReportService } from './campaign-report.service';
 import { ResearchCampaignService } from './research-campaign.service';
 
@@ -14,13 +20,28 @@ function createCampaignService(experiments: { run: ReturnType<typeof vi.fn> }) {
     exists: vi.fn(),
     delete: vi.fn(),
   };
-  const service = new ResearchCampaignService(
-    experiments as never,
+
+  const stepRegistry = new PipelineRegistry();
+  registerCampaignPipelineSteps(stepRegistry, {
+    experiments: experiments as never,
     reports,
+    sessionFactory,
+    persistence: persistence as never,
+  });
+
+  const executor = new PipelineExecutor(stepRegistry, new PipelineHookRegistry());
+  const pipelines = new PipelineDomainService();
+  const templates = new PipelineTemplateService(pipelines);
+
+  const service = new ResearchCampaignService(
+    executor,
+    templates,
+    pipelines,
     sessionFactory,
     persistence as never,
   );
-  return { service, reports, sessionFactory, persistence };
+
+  return { service, reports, sessionFactory, persistence, executor, templates };
 }
 
 describe('ResearchCampaignService', () => {
@@ -249,6 +270,25 @@ describe('ResearchCampaignService persistence integration', () => {
 
     expect(persistence.save).toHaveBeenCalledTimes(1);
   });
+
+  it('skips persistence when persistSession is false', async () => {
+    experiments.run.mockResolvedValue({
+      id: 'exp-1',
+      verdict: 'pass',
+      metrics: { profitFactor: 1.2 },
+    });
+
+    await service.run(
+      {
+        datasetId: 'ds-1',
+        strategyId: 'donchian-breakout',
+        paramsList: [{ channelPeriod: 10 }],
+      },
+      { persistSession: false },
+    );
+
+    expect(persistence.save).not.toHaveBeenCalled();
+  });
 });
 
 describe('ResearchCampaignService slice support', () => {
@@ -405,5 +445,62 @@ describe('ResearchCampaignService slice support', () => {
     expect(sliceIdentity).toBeUndefined();
     const report = reports.build(summary, created);
     expect('sliceIdentity' in report).toBe(false);
+  });
+});
+
+describe('ResearchCampaignService pipeline orchestration (US088)', () => {
+  let experiments: { run: ReturnType<typeof vi.fn> };
+  let service: ResearchCampaignService;
+  let reports: CampaignReportService;
+  let persistence: { save: ReturnType<typeof vi.fn> };
+
+  beforeEach(() => {
+    experiments = { run: vi.fn() };
+    ({ service, reports, persistence } = createCampaignService(experiments));
+  });
+
+  it('produces identical CampaignReport via pipeline context output', async () => {
+    experiments.run
+      .mockResolvedValueOnce({
+        id: 'exp-1',
+        verdict: 'fail',
+        metrics: {
+          profitFactor: 0.5,
+          totalReturnPercent: 1,
+          expectancy: 0.1,
+          maxDrawdownPercent: 8,
+        },
+        report: { params: { channelPeriod: 10 } },
+      })
+      .mockResolvedValueOnce({
+        id: 'exp-2',
+        verdict: 'pass',
+        metrics: {
+          profitFactor: 1.5,
+          totalReturnPercent: 9,
+          expectancy: 0.4,
+          maxDrawdownPercent: 3,
+        },
+        report: { params: { channelPeriod: 20 } },
+      });
+
+    const result = await service.run(
+      {
+        datasetId: 'ds-1',
+        strategyId: 'donchian-breakout',
+        paramsList: [{ channelPeriod: 10 }, { channelPeriod: 20 }],
+      },
+      { persistSession: false },
+    );
+
+    const expectedReport = reports.build(result.summary, result.experiments, {
+      sliceIdentity: result.sliceIdentity,
+    });
+
+    expect(persistence.save).not.toHaveBeenCalled();
+    expect(result.summary.bestExperimentId).toBe('exp-2');
+    expect(expectedReport.verdict).toBe('PASS');
+    expect(expectedReport.bestProfitFactor).toBe(1.5);
+    expect(expectedReport.recommendations.length).toBeGreaterThan(0);
   });
 });
