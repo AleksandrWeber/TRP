@@ -9,6 +9,8 @@ Related:
 - Project Status: [`project-status.md`](./project-status.md)
 - ADR Index: [`../adr/README.md`](../adr/README.md)
 - Release Process: [`release-process.md`](./release-process.md)
+- Technical Debt: [`technical-debt.md`](./technical-debt.md)
+- Module Maturity: [`module-maturity.md`](./module-maturity.md)
 - Changelog: [`../../CHANGELOG.md`](../../CHANGELOG.md)
 
 ---
@@ -116,6 +118,9 @@ Related:
 - US089 — Replay Pipeline Integration (`CampaignReplayService` orchestrator)
 - US090 — Knowledge Extraction Pipeline Integration (`KnowledgeDomainService` orchestrator)
 - US091 — RC-12 Architecture Audit (Pipeline Engine unified runtime finalized)
+- US092 — Architecture Snapshot Synchronization (RC-12 docs aligned)
+- US093 — Technical Debt Register (`docs/project/technical-debt.md`)
+- US094 — Module Maturity Matrix (`docs/project/module-maturity.md`)
 
 ---
 

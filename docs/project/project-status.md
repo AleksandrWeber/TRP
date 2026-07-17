@@ -15,7 +15,7 @@ Research OS Foundation
 
 Побудувати Evidence-driven Research OS: reproducible experiments, immutable Knowledge, і чітке provenance/versioning результатів.
 
-Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slice US045–US047. Campaign Persistence + History API (US051–US059). RC-06 Architecture Audit complete (US060). Export Foundation + Export API (US061–US062). RC-07 finalized. Import Foundation (US063). JSON Import Validation (US064). Import API (US065). Replay Foundation (US066). Replay Execution (US067). RC-08 finalized. Job Domain Model (US069). Job Queue Abstraction (US070). Background Campaign Runner (US071). Job Status API (US072). Job Cancellation (US073). RC-09 finalized. Knowledge Domain Model (US075). Experiment Entity & Versioning (US076). Knowledge Extraction Pipeline (US077). Experiment Comparison Service (US078). Knowledge Search API (US079). RC-10 finalized. Pipeline Domain Model (US081). Pipeline Step Contract (US082). Pipeline Executor (US083). Pipeline Hooks (US084). Pipeline Templates (US085). RC-11 finalized. Campaign Pipeline Steps (US087). Execute Campaign through PipelineExecutor (US088). Replay Pipeline Integration (US089). Knowledge Extraction Pipeline Integration (US090). RC-12 Architecture Audit (US091) finalized — Pipeline Engine is the unified execution runtime. Remote release ще не запушено.
+Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slice US045–US047. Campaign Persistence + History API (US051–US059). RC-06 Architecture Audit complete (US060). Export Foundation + Export API (US061–US062). RC-07 finalized. Import Foundation (US063). JSON Import Validation (US064). Import API (US065). Replay Foundation (US066). Replay Execution (US067). RC-08 finalized. Job Domain Model (US069). Job Queue Abstraction (US070). Background Campaign Runner (US071). Job Status API (US072). Job Cancellation (US073). RC-09 finalized. Knowledge Domain Model (US075). Experiment Entity & Versioning (US076). Knowledge Extraction Pipeline (US077). Experiment Comparison Service (US078). Knowledge Search API (US079). RC-10 finalized. Pipeline Domain Model (US081). Pipeline Step Contract (US082). Pipeline Executor (US083). Pipeline Hooks (US084). Pipeline Templates (US085). RC-11 finalized. Campaign Pipeline Steps (US087). Execute Campaign through PipelineExecutor (US088). Replay Pipeline Integration (US089). Knowledge Extraction Pipeline Integration (US090). RC-12 Architecture Audit (US091) finalized — Pipeline Engine is the unified execution runtime. Architecture Snapshot Synchronization (US092). Technical Debt Register (US093). Module Maturity Matrix (US094). Remote release ще не запушено.
 
 Next: RC-13.
 
@@ -42,6 +42,10 @@ Changelog: [`../../CHANGELOG.md`](../../CHANGELOG.md).
 Roadmap: [`roadmap.md`](./roadmap.md).
 
 Architecture Snapshot: [`architecture-snapshot.md`](./architecture-snapshot.md).
+
+Technical Debt Register: [`technical-debt.md`](./technical-debt.md).
+
+Module Maturity Matrix: [`module-maturity.md`](./module-maturity.md).
 
 Campaign History & Export API: [`api.md`](./api.md).
 
@@ -1020,6 +1024,27 @@ US091 — RC-12 Architecture Audit
 - Completed Story: RC-12 finalized — Research Pipeline Engine is the unified execution runtime for Campaign / Replay / Knowledge (US081–US090); architecture checklist PASS; orchestrators only; templates metadata-only; hooks lifecycle-only (no Event Bus); isolation from Jobs/History/Export/Import/REST verified; docs synced; committed and pushed.
 - Changed Files: docs (audit closeout); US087–US090 pipeline migration included in same commit; no external API / behavior changes.
 - Tests: monorepo — api 369, web 18, research 24 (all passed). Lint: pipeline orchestration scope clean; pre-existing experiments/knowledge Prisma-spec `any` debt unchanged (same as RC-11).
+- Next: US092.
+
+US092 — Architecture Snapshot Synchronization
+
+- Completed Story: Synchronized `architecture-snapshot.md` with RC-12 — Pipeline Engine as unified runtime; Campaign / Replay / Knowledge orchestrator roles; generic PipelineContext; metadata-only templates; lifecycle hooks (no Event Bus); no source/test/API changes.
+- Changed Files: `docs/project/architecture-snapshot.md`, `docs/project/project-status.md`, `CHANGELOG.md`, `docs/project/roadmap.md`.
+- Tests: N/A (docs only).
+- Next: US093.
+
+US093 — Technical Debt Register
+
+- Completed Story: Introduced living `docs/project/technical-debt.md` (Accepted / Deferred / Planned; current infrastructure debt + possible RC milestones); linked from Project Status; no implementation changes.
+- Changed Files: `docs/project/technical-debt.md`, `docs/project/project-status.md`, `CHANGELOG.md`, `docs/project/roadmap.md`, `docs/project/architecture-snapshot.md`.
+- Tests: N/A (docs only).
+- Next: US094.
+
+US094 — Module Maturity Matrix
+
+- Completed Story: Introduced living `docs/project/module-maturity.md` (status / scope / limitations / next milestone for Research Engine, Campaign, Pipeline, Replay, Knowledge, Experiment, Persistence, History, Import, Export, Jobs); linked from Project Status; no implementation changes.
+- Changed Files: `docs/project/module-maturity.md`, `docs/project/project-status.md`, `CHANGELOG.md`, `docs/project/roadmap.md`.
+- Tests: N/A (docs only).
 - Next: RC-13.
 
 ---
@@ -1041,12 +1066,17 @@ Note: ці версії стосуються working-tree Research OS semantics;
 
 # Open Technical Debt
 
+Living register: [`technical-debt.md`](./technical-debt.md) (US093).
+
+Infrastructure / runtime debt (InMemory stores, PipelineRun, Scheduler, AuthZ, vector search, Prisma `any`, `forwardRef`) is tracked there with Accepted / Deferred / Planned status.
+
+Research/data notes still relevant locally:
+
 - Legacy Knowledge entries (pre-versioning) без `resultIdentityKey` / version fields — живуть через structural legacy detection.
 - Donchian(10) Knowledge може відображати pre-accounting PASS (dedup за configHash першого run).
 - EMA campaign (9 configs на 4344 bars) не всі збережені як окремі Experiments у БД (частина runs була поза API).
 - Experiment не зберігає окремо `accountingVersion`, runtime/env metadata, equity curve.
 - UI Research Page ще EMA-centric у copy; фільтр по strategyId відсутній.
-- Research OS RC commit існує локально; remote push ще не виконано.
 
 ---
 

@@ -91,6 +91,9 @@ Research OS Foundation Release Candidate exists as a local commit; remote push n
 - Execute Campaign through PipelineExecutor (US088): `ResearchCampaignService` orchestrates Campaign via built-in template + `PipelineExecutor` + in-memory `PipelineRun`; public contract / REST / Jobs / Replay unchanged.
 - Replay Pipeline Integration (US089): `LoadReplaySessionStep` / `RestoreReplayContextStep` / `ExecuteReplayCampaignStep` / `FinalizeReplayStep`; registered on `PipelineRegistry`; Replay template metadata updated; `CampaignReplayService` orchestrates via template + `PipelineExecutor`; identical `ReplayResult` / Jobs / History.
 - Knowledge Extraction Pipeline Integration (US090): `PrepareKnowledgeExtractionStep` / `ExtractKnowledgeStep` / `UpsertKnowledgeEntryStep`; registered on `PipelineRegistry`; Knowledge template metadata updated; `KnowledgeDomainService.createFromExperiment` orchestrates via template + `PipelineExecutor`; identical KnowledgeEntry / upsert / Experiment compatibility.
+- Architecture Snapshot Synchronization (US092): `architecture-snapshot.md` aligned to RC-12 unified Pipeline Engine runtime (Campaign / Replay / Knowledge orchestrators; generic PipelineContext; metadata-only templates; lifecycle hooks; no Event Bus); docs only.
+- Technical Debt Register (US093): living `docs/project/technical-debt.md` (Accepted / Deferred / Planned; infrastructure debt + possible RC milestones); linked from Project Status; docs only.
+- Module Maturity Matrix (US094): living `docs/project/module-maturity.md` (status / scope / limitations / next milestone per major module); linked from Project Status; docs only.
 
 ### Fixed
 
