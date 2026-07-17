@@ -3,6 +3,7 @@ import type { CampaignSession } from '../campaign-session/campaign-session';
 import { CampaignSessionStatus } from '../campaign-session/campaign-session-status';
 import { createInsightDomainService } from '../insight/insight-domain.test-utils';
 import type { KnowledgeEntry } from '../knowledge/knowledge-entry';
+import { NoOpMetrics } from '../../metrics/noop.metrics';
 import { PipelineDomainService } from '../pipeline/pipeline-domain.service';
 import { PipelineExecutor } from '../pipeline/pipeline-executor';
 import { PipelineHookRegistry } from '../pipeline/pipeline-hook-registry';
@@ -13,6 +14,8 @@ import { registerCrossAnalysisPipelineSteps } from '../pipeline/steps/cross-anal
 import { registerInsightPipelineSteps } from '../pipeline/steps/insight/register-insight-steps';
 import type { CampaignReport } from '../research-campaign/campaign-report.types';
 import { CrossCampaignAnalysisService } from './cross-campaign-analysis.service';
+
+const WORKSPACE_ID = 'ws-1';
 
 function sampleReport(overrides?: Partial<CampaignReport>): CampaignReport {
   return {
@@ -35,9 +38,14 @@ function sampleReport(overrides?: Partial<CampaignReport>): CampaignReport {
   };
 }
 
-function sampleSession(id: string, reportOverrides?: Partial<CampaignReport>): CampaignSession {
+function sampleSession(
+  id: string,
+  reportOverrides?: Partial<CampaignReport>,
+  workspaceId: string = WORKSPACE_ID,
+): CampaignSession {
   return {
     id,
+    workspaceId,
     status: CampaignSessionStatus.COMPLETED,
     createdAt: '2026-07-17T10:00:00.000Z',
     completedAt: '2026-07-17T10:05:00.000Z',
@@ -49,6 +57,7 @@ function sampleSession(id: string, reportOverrides?: Partial<CampaignReport>): C
 function sampleKnowledge(overrides?: Partial<KnowledgeEntry>): KnowledgeEntry {
   return {
     knowledgeId: overrides?.knowledgeId ?? 'k-1',
+    workspaceId: overrides?.workspaceId ?? WORKSPACE_ID,
     experimentId: overrides?.experimentId ?? 'exp-1',
     createdAt: '2026-07-17T10:00:00.000Z',
     title: overrides?.title ?? 'Shared finding',
@@ -66,7 +75,7 @@ function createAnalysisService() {
   const registry = new PipelineRegistry();
   const pipelines = new PipelineDomainService();
   const templates = new PipelineTemplateService(pipelines);
-  const executor = new PipelineExecutor(registry, new PipelineHookRegistry());
+  const executor = new PipelineExecutor(registry, new PipelineHookRegistry(), new NoOpMetrics());
   const { service: insights } = createInsightDomainService();
 
   // Re-register insight steps onto shared registry is unnecessary for cross-analysis;
@@ -106,11 +115,12 @@ describe('CrossCampaignAnalysisService (US097)', () => {
       insights: [],
     });
 
+    expect(result.workspaceId).toBe(WORKSPACE_ID);
     expect(result.comparedCampaignIds).toEqual(['c1', 'c2']);
     expect(result.id.length).toBeGreaterThan(0);
     expect(Number.isNaN(Date.parse(result.createdAt))).toBe(false);
-    expect(service.getById(result.id)).toEqual(result);
-    expect(service.search({ campaignSessionId: 'c1' })).toHaveLength(1);
+    expect(service.getById(result.id, WORKSPACE_ID)).toEqual(result);
+    expect(service.search({ campaignSessionId: 'c1' }, WORKSPACE_ID)).toHaveLength(1);
     expect(result.findings.length).toBeGreaterThan(0);
     expect(result.statistics.campaignCount).toBe(2);
     expect(result.statistics.knowledgeEntryCount).toBe(2);
@@ -118,7 +128,7 @@ describe('CrossCampaignAnalysisService (US097)', () => {
     expect(result.generatedInsightIds).toHaveLength(result.findings.length);
 
     for (const id of result.generatedInsightIds) {
-      expect(insights.getById(id)).not.toBeNull();
+      expect(insights.getById(id, WORKSPACE_ID)).not.toBeNull();
     }
 
     expect(
@@ -138,5 +148,53 @@ describe('CrossCampaignAnalysisService (US097)', () => {
 
     expect(result.findings.some((f) => f.kind === 'conflicting_conclusion')).toBe(true);
     expect(result.generatedInsightIds.length).toBe(result.findings.length);
+  });
+
+  it('rejects analysis across mixed workspaceIds (US109)', async () => {
+    await expect(
+      service.analyze({
+        sessions: [
+          sampleSession('c1', { verdict: 'FAIL' }, 'ws-1'),
+          sampleSession('c2', { verdict: 'FAIL', bestExperimentId: 'exp-2' }, 'ws-2'),
+        ],
+        knowledgeEntries: [],
+        insights: [],
+      }),
+    ).rejects.toThrow(/single workspace/);
+  });
+
+  it('rejects analysis when sessions are empty and no workspaceId is supplied', async () => {
+    await expect(
+      service.analyze({
+        sessions: [],
+        knowledgeEntries: [],
+        insights: [],
+      }),
+    ).rejects.toThrow(/workspaceId/);
+  });
+
+  it('accepts an explicit workspaceId when sessions are empty', async () => {
+    const result = await service.analyze({
+      sessions: [],
+      knowledgeEntries: [],
+      insights: [],
+      workspaceId: WORKSPACE_ID,
+    });
+
+    expect(result.workspaceId).toBe(WORKSPACE_ID);
+  });
+
+  it('does not leak analyses across workspaces', async () => {
+    const result = await service.analyze({
+      sessions: [
+        sampleSession('c1', { verdict: 'FAIL' }, WORKSPACE_ID),
+        sampleSession('c2', { verdict: 'FAIL', bestExperimentId: 'exp-2' }, WORKSPACE_ID),
+      ],
+      knowledgeEntries: [],
+      insights: [],
+    });
+
+    expect(service.getById(result.id, 'ws-2')).toBeNull();
+    expect(service.search({}, 'ws-2')).toHaveLength(0);
   });
 });

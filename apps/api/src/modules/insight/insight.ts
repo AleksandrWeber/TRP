@@ -9,6 +9,7 @@ import type { InsightType } from './insight-type';
  */
 export type Insight = {
   id: string;
+  workspaceId: string;
   campaignSessionId?: string;
   experimentId?: string;
   knowledgeEntryIds: string[];

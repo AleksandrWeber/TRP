@@ -4,6 +4,8 @@ import { CampaignSessionStatus } from '../campaign-session/campaign-session-stat
 import type { CampaignRecord } from './campaign-record';
 import { InMemoryCampaignRepository } from './in-memory-campaign.repository';
 
+const WORKSPACE_ID = 'ws-1';
+
 describe('InMemoryCampaignRepository', () => {
   const report = (): CampaignReport => ({
     campaignId: 'camp-1',
@@ -27,6 +29,7 @@ describe('InMemoryCampaignRepository', () => {
     overrides: Partial<CampaignRecord> & Pick<CampaignRecord, 'id'>,
   ): CampaignRecord => ({
     sessionId: overrides.id,
+    workspaceId: WORKSPACE_ID,
     status: CampaignSessionStatus.CREATED,
     createdAt: '2026-07-17T12:00:00.000Z',
     completedAt: null,
@@ -47,40 +50,59 @@ describe('InMemoryCampaignRepository', () => {
 
     repo.save(saved);
 
-    expect(repo.findById('a')).toEqual(saved);
+    expect(repo.findById('a', WORKSPACE_ID)).toEqual(saved);
   });
 
   it('findById() returns null when missing', () => {
     const repo = new InMemoryCampaignRepository();
-    expect(repo.findById('missing')).toBeNull();
+    expect(repo.findById('missing', WORKSPACE_ID)).toBeNull();
+  });
+
+  it('findById() returns null when workspace does not match', () => {
+    const repo = new InMemoryCampaignRepository();
+    repo.save(record({ id: 'a' }));
+
+    expect(repo.findById('a', 'ws-2')).toBeNull();
   });
 
   it('exists() reflects saved records', () => {
     const repo = new InMemoryCampaignRepository();
-    expect(repo.exists('a')).toBe(false);
+    expect(repo.exists('a', WORKSPACE_ID)).toBe(false);
     repo.save(record({ id: 'a' }));
-    expect(repo.exists('a')).toBe(true);
+    expect(repo.exists('a', WORKSPACE_ID)).toBe(true);
+    expect(repo.exists('a', 'ws-2')).toBe(false);
   });
 
   it('delete() removes a record', () => {
     const repo = new InMemoryCampaignRepository();
     repo.save(record({ id: 'a' }));
 
-    repo.delete('a');
+    repo.delete('a', WORKSPACE_ID);
 
-    expect(repo.exists('a')).toBe(false);
-    expect(repo.findById('a')).toBeNull();
+    expect(repo.exists('a', WORKSPACE_ID)).toBe(false);
+    expect(repo.findById('a', WORKSPACE_ID)).toBeNull();
   });
 
-  it('findAll() returns every stored record', () => {
+  it('delete() does not remove a record from another workspace', () => {
+    const repo = new InMemoryCampaignRepository();
+    repo.save(record({ id: 'a' }));
+
+    repo.delete('a', 'ws-2');
+
+    expect(repo.exists('a', WORKSPACE_ID)).toBe(true);
+  });
+
+  it('findAll() returns every stored record for the workspace', () => {
     const repo = new InMemoryCampaignRepository();
     repo.save(record({ id: 'a' }));
     repo.save(record({ id: 'b' }));
+    repo.save(record({ id: 'c', workspaceId: 'ws-2' }));
 
-    const all = repo.findAll();
+    const all = repo.findAll(WORKSPACE_ID);
 
     expect(all).toHaveLength(2);
     expect(all.map((item) => item.id).sort()).toEqual(['a', 'b']);
+    expect(repo.findAll('ws-2')).toHaveLength(1);
   });
 
   it('stores multiple CampaignRecords independently', () => {
@@ -89,10 +111,10 @@ describe('InMemoryCampaignRepository', () => {
     repo.save(record({ id: 'b', status: CampaignSessionStatus.FAILED }));
     repo.save(record({ id: 'c', status: CampaignSessionStatus.COMPLETED }));
 
-    expect(repo.findById('a')?.status).toBe(CampaignSessionStatus.CREATED);
-    expect(repo.findById('b')?.status).toBe(CampaignSessionStatus.FAILED);
-    expect(repo.findById('c')?.status).toBe(CampaignSessionStatus.COMPLETED);
-    expect(repo.findAll()).toHaveLength(3);
+    expect(repo.findById('a', WORKSPACE_ID)?.status).toBe(CampaignSessionStatus.CREATED);
+    expect(repo.findById('b', WORKSPACE_ID)?.status).toBe(CampaignSessionStatus.FAILED);
+    expect(repo.findById('c', WORKSPACE_ID)?.status).toBe(CampaignSessionStatus.COMPLETED);
+    expect(repo.findAll(WORKSPACE_ID)).toHaveLength(3);
   });
 
   it('deleting one record does not affect others', () => {
@@ -101,14 +123,14 @@ describe('InMemoryCampaignRepository', () => {
     repo.save(record({ id: 'b' }));
     repo.save(record({ id: 'c' }));
 
-    repo.delete('b');
+    repo.delete('b', WORKSPACE_ID);
 
-    expect(repo.exists('a')).toBe(true);
-    expect(repo.exists('b')).toBe(false);
-    expect(repo.exists('c')).toBe(true);
+    expect(repo.exists('a', WORKSPACE_ID)).toBe(true);
+    expect(repo.exists('b', WORKSPACE_ID)).toBe(false);
+    expect(repo.exists('c', WORKSPACE_ID)).toBe(true);
     expect(
       repo
-        .findAll()
+        .findAll(WORKSPACE_ID)
         .map((item) => item.id)
         .sort(),
     ).toEqual(['a', 'c']);
@@ -119,7 +141,7 @@ describe('InMemoryCampaignRepository', () => {
     repo.save(record({ id: 'a', status: CampaignSessionStatus.CREATED }));
     repo.save(record({ id: 'a', status: CampaignSessionStatus.COMPLETED }));
 
-    expect(repo.findById('a')?.status).toBe(CampaignSessionStatus.COMPLETED);
-    expect(repo.findAll()).toHaveLength(1);
+    expect(repo.findById('a', WORKSPACE_ID)?.status).toBe(CampaignSessionStatus.COMPLETED);
+    expect(repo.findAll(WORKSPACE_ID)).toHaveLength(1);
   });
 });

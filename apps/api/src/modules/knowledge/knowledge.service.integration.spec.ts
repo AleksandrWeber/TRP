@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { KnowledgeService } from './knowledge.service';
+import { NoOpLogger } from '../../logging/noop.logger';
 import { buildConfigIdentityKey, buildDedupeKey } from './knowledge.helpers';
 
 type KnowledgeRow = {
@@ -136,7 +137,7 @@ describe('KnowledgeService integration-style behavior', () => {
 
   it('creates one new research_outcome from an experiment', async () => {
     const { prisma, events, knowledgeRows } = makeHarness();
-    const service = new KnowledgeService(prisma, events);
+    const service = new KnowledgeService(prisma, events, new NoOpLogger());
 
     const result = await service.recordFromExperiment('exp-1', 'wf-1');
 
@@ -148,7 +149,7 @@ describe('KnowledgeService integration-style behavior', () => {
 
   it('returns duplicate and does not create a second record for the same resultIdentityKey', async () => {
     const { prisma, events, knowledgeRows, experiment } = makeHarness();
-    const service = new KnowledgeService(prisma, events);
+    const service = new KnowledgeService(prisma, events, new NoOpLogger());
 
     process.env.RESEARCH_ENGINE_VERSION = '1.0.3';
     process.env.VALIDATION_VERSION = '1.0.2';
@@ -188,7 +189,7 @@ describe('KnowledgeService integration-style behavior', () => {
 
   it('creates a new record with same configIdentityKey but new resultIdentityKey when engine version changes', async () => {
     const { prisma, events, knowledgeRows, experiment } = makeHarness();
-    const service = new KnowledgeService(prisma, events);
+    const service = new KnowledgeService(prisma, events, new NoOpLogger());
 
     const configIdentityKey = buildConfigIdentityKey(
       experiment.strategyId,
@@ -232,7 +233,7 @@ describe('KnowledgeService integration-style behavior', () => {
 
   it('getLineage resolves predecessor from payload and successor via reverse lookup without modifying existing entries', async () => {
     const { prisma, events, knowledgeRows } = makeHarness();
-    const service = new KnowledgeService(prisma, events);
+    const service = new KnowledgeService(prisma, events, new NoOpLogger());
 
     knowledgeRows.push(
       {

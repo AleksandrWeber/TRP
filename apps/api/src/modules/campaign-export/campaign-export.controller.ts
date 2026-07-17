@@ -2,37 +2,49 @@ import {
   BadRequestException,
   Controller,
   Get,
+  Headers,
   NotFoundException,
   Param,
   Query,
   Res,
 } from '@nestjs/common';
-import type { FastifyReply } from 'fastify';
+import { requireWorkspaceId } from '../../common/workspace/require-workspace';
+import { ExportCampaignQueryDto, SessionIdParamDto } from '../../validation';
+import { WorkspaceDomainService } from '../workspace';
 import { CampaignHistoryService } from '../campaign-persistence/campaign-history.service';
 import { CampaignExportService } from './campaign-export.service';
 import { ExportFormat } from './export-format';
+
+type ReplyLike = {
+  status: (code: number) => ReplyLike;
+  header: (name: string, value: string) => ReplyLike;
+  send: (payload: unknown) => unknown;
+};
 
 /**
  * Read-only HTTP export of Campaign Sessions (US062).
  * Flow: HistoryService.getById → CampaignExportService.export.
  */
-@Controller('campaign-history')
+@Controller({ path: 'campaign-history', version: '1' })
 export class CampaignExportController {
   constructor(
     private readonly history: CampaignHistoryService,
     private readonly campaignExport: CampaignExportService,
+    private readonly workspaces: WorkspaceDomainService,
   ) {}
 
   @Get(':sessionId/export')
   export(
-    @Param('sessionId') sessionId: string,
-    @Query('format') formatRaw: string | undefined,
-    @Res() reply: FastifyReply,
+    @Param() params: SessionIdParamDto,
+    @Query() query: ExportCampaignQueryDto,
+    @Res() reply: ReplyLike,
+    @Headers('x-workspace-id') workspaceIdHeader?: string,
   ): void {
-    const format = parseExportFormat(formatRaw);
-    const session = this.history.getById(sessionId);
+    const format = parseExportFormat(query.format);
+    const workspaceId = requireWorkspaceId(workspaceIdHeader, this.workspaces);
+    const session = this.history.getById(params.sessionId, workspaceId);
     if (!session) {
-      throw new NotFoundException(`Campaign session ${sessionId} not found`);
+      throw new NotFoundException(`Campaign session ${params.sessionId} not found`);
     }
 
     const content = this.campaignExport.export(session, format);

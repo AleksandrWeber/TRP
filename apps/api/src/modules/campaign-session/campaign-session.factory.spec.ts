@@ -26,10 +26,11 @@ describe('CampaignSessionFactory', () => {
   });
 
   it('creates a valid session with generated id and CREATED status', () => {
-    const session = factory.create({ report: report() });
+    const session = factory.create({ workspaceId: 'ws-1', report: report() });
 
     expect(session.id).toEqual(expect.any(String));
     expect(session.id.length).toBeGreaterThan(0);
+    expect(session.workspaceId).toBe('ws-1');
     expect(session.status).toBe(CampaignSessionStatus.CREATED);
     expect(session.createdAt).toEqual(expect.any(String));
     expect(Number.isNaN(Date.parse(session.createdAt))).toBe(false);
@@ -41,19 +42,20 @@ describe('CampaignSessionFactory', () => {
   });
 
   it('generates unique ids per session', () => {
-    const a = factory.create({ report: report() });
-    const b = factory.create({ report: report() });
+    const a = factory.create({ workspaceId: 'ws-1', report: report() });
+    const b = factory.create({ workspaceId: 'ws-1', report: report() });
     expect(a.id).not.toBe(b.id);
   });
 
   it('assigns the provided report', () => {
     const source = report();
-    const session = factory.create({ report: source });
+    const session = factory.create({ workspaceId: 'ws-1', report: source });
     expect(session.report).toBe(source);
   });
 
   it('initializes metadata with optional datasetId and tags', () => {
     const session = factory.create({
+      workspaceId: 'ws-1',
       report: report(),
       metadata: {
         datasetId: 'ds-99',
@@ -68,6 +70,7 @@ describe('CampaignSessionFactory', () => {
 
   it('allows overriding engineVersion in metadata', () => {
     const session = factory.create({
+      workspaceId: 'ws-1',
       report: report(),
       metadata: { engineVersion: '9.9.9' },
     });
@@ -76,7 +79,7 @@ describe('CampaignSessionFactory', () => {
   });
 
   it('leaves completedAt undefined on create', () => {
-    const session = factory.create({ report: report() });
+    const session = factory.create({ workspaceId: 'ws-1', report: report() });
     expect('completedAt' in session ? session.completedAt : undefined).toBeUndefined();
   });
 });

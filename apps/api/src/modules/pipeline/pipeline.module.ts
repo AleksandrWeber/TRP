@@ -4,6 +4,8 @@ import { CampaignPersistenceService } from '../campaign-persistence/campaign-per
 import { CampaignSessionFactory } from '../campaign-session/campaign-session.factory';
 import { ExperimentsModule } from '../experiments/experiments.module';
 import { ExperimentsService } from '../experiments/experiments.service';
+import type { Logger } from '../../logging/logger';
+import { LOGGER } from '../../logging/logger.token';
 import { CampaignReportService } from '../research-campaign/campaign-report.service';
 import { PipelineDomainService } from './pipeline-domain.service';
 import { PipelineExecutor } from './pipeline-executor';
@@ -54,6 +56,8 @@ export class PipelineModule implements OnModuleInit {
     private readonly sessionFactory: CampaignSessionFactory,
     @Inject(CampaignPersistenceService)
     private readonly persistence: CampaignPersistenceService,
+    @Inject(LOGGER)
+    private readonly logger: Logger,
   ) {}
 
   onModuleInit(): void {
@@ -65,6 +69,7 @@ export class PipelineModule implements OnModuleInit {
       reports: this.reports,
       sessionFactory: this.sessionFactory,
       persistence: this.persistence,
+      logger: this.logger,
     });
   }
 }

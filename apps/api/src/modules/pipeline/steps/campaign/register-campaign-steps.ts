@@ -1,6 +1,7 @@
 import type { CampaignPersistenceService } from '../../../campaign-persistence/campaign-persistence.service';
 import type { CampaignSessionFactory } from '../../../campaign-session/campaign-session.factory';
 import type { ExperimentsService } from '../../../experiments/experiments.service';
+import type { Logger } from '../../../../logging/logger';
 import type { CampaignReportService } from '../../../research-campaign/campaign-report.service';
 import type { PipelineRegistry } from '../../pipeline-registry';
 import { AggregateResultStep } from './aggregate-result.step';
@@ -14,6 +15,7 @@ export type CampaignPipelineStepDeps = {
   reports: CampaignReportService;
   sessionFactory: CampaignSessionFactory;
   persistence: CampaignPersistenceService;
+  logger?: Logger;
 };
 
 /**
@@ -25,8 +27,8 @@ export function registerCampaignPipelineSteps(
   deps: CampaignPipelineStepDeps,
 ): void {
   registry.register(new PrepareCampaignStep());
-  registry.register(new ExecuteResearchStep(deps.experiments));
-  registry.register(new AggregateResultStep());
+  registry.register(new ExecuteResearchStep(deps.experiments, deps.logger));
+  registry.register(new AggregateResultStep(deps.logger));
   registry.register(new BuildReportStep(deps.reports));
   registry.register(new PersistCampaignStep(deps.sessionFactory, deps.persistence));
 }

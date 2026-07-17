@@ -1,10 +1,14 @@
 import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
-import type { StrategyParams } from '@trp/research';
+import {
+  RunCampaignBodyDto,
+  RunMultiCampaignBodyDto,
+  RunWalkForwardCampaignBodyDto,
+} from '../../validation';
 import { MultiDatasetCampaignService } from './multi-dataset-campaign.service';
 import { ResearchCampaignService } from './research-campaign.service';
 import { WalkForwardCampaignService } from './walk-forward-campaign.service';
 
-@Controller('campaigns')
+@Controller({ path: 'campaigns', version: '1' })
 export class CampaignController {
   constructor(
     private readonly campaigns: ResearchCampaignService,
@@ -13,14 +17,7 @@ export class CampaignController {
   ) {}
 
   @Post('run')
-  async run(
-    @Body()
-    body: {
-      datasetId?: string;
-      strategyId?: string;
-      paramsList?: StrategyParams[];
-    },
-  ) {
+  async run(@Body() body: RunCampaignBodyDto) {
     if (!body.datasetId) {
       throw new BadRequestException('datasetId is required');
     }
@@ -41,14 +38,7 @@ export class CampaignController {
   }
 
   @Post('run-multi')
-  async runMulti(
-    @Body()
-    body: {
-      strategyId?: string;
-      datasets?: string[];
-      paramsList?: StrategyParams[];
-    },
-  ) {
+  async runMulti(@Body() body: RunMultiCampaignBodyDto) {
     if (!body.strategyId) {
       throw new BadRequestException('strategyId is required');
     }
@@ -67,17 +57,7 @@ export class CampaignController {
   }
 
   @Post('run-walk-forward')
-  async runWalkForward(
-    @Body()
-    body: {
-      datasetId?: string;
-      strategyId?: string;
-      paramsList?: StrategyParams[];
-      datasetLength?: number;
-      windowSize?: number;
-      stepSize?: number;
-    },
-  ) {
+  async runWalkForward(@Body() body: RunWalkForwardCampaignBodyDto) {
     if (!body.datasetId) {
       throw new BadRequestException('datasetId is required');
     }

@@ -11,7 +11,9 @@ import { DatasetsModule } from './modules/datasets/datasets.module';
 import { EventsModule } from './modules/events/events.module';
 import { ExperimentsModule } from './modules/experiments/experiments.module';
 import { HealthModule } from './modules/health/health.module';
+import { IdentityModule } from './modules/identity/identity.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
+import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { ProductionModule } from './modules/production/production.module';
 import { ResearchAnalysisModule } from './modules/research-analysis/research-analysis.module';
 import { CampaignExportModule } from './modules/campaign-export/campaign-export.module';
@@ -25,6 +27,9 @@ import { PipelineModule } from './modules/pipeline/pipeline.module';
 import { ResearchCampaignModule } from './modules/research-campaign/research-campaign.module';
 import { WorkflowModule } from './modules/workflow/workflow.module';
 import { PrismaModule } from './storage/prisma/prisma.module';
+import { LoggingModule } from './logging/logging.module';
+import { MetricsModule } from './metrics/metrics.module';
+import { ValidationModule } from './validation/validation.module';
 
 @Module({
   imports: [
@@ -32,9 +37,14 @@ import { PrismaModule } from './storage/prisma/prisma.module';
       isGlobal: true,
       envFilePath: ['.env', '../../.env'],
     }),
+    LoggingModule,
+    MetricsModule,
+    ValidationModule,
     PrismaModule,
     EventsModule,
     AuthModule,
+    IdentityModule,
+    WorkspaceModule,
     HealthModule,
     DatasetsModule,
     ExperimentsModule,

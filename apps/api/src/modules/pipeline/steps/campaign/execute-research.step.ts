@@ -1,7 +1,8 @@
-import { Logger } from '@nestjs/common';
 import { AbstractPipelineStep } from '../../abstract-pipeline-step';
 import type { PipelineContext } from '../../pipeline-context';
 import type { ExperimentsService } from '../../../experiments/experiments.service';
+import type { Logger } from '../../../../logging/logger';
+import { NoOpLogger } from '../../../../logging/noop.logger';
 import type { CampaignReportExperiment } from '../../../research-campaign/campaign-report.types';
 import { readCampaignInput, readExecutionState, writeExecutionState } from './campaign-context';
 import { CAMPAIGN_PIPELINE_STEP_METADATA } from './campaign-step-metadata';
@@ -23,10 +24,14 @@ type ExperimentLike = {
  * Extracted from ResearchCampaignService.executeCampaign param loop.
  */
 export class ExecuteResearchStep extends AbstractPipelineStep {
-  private readonly logger = new Logger(ExecuteResearchStep.name);
+  private readonly logger: Logger;
 
-  constructor(private readonly experiments: ExperimentsService) {
+  constructor(
+    private readonly experiments: ExperimentsService,
+    logger: Logger = new NoOpLogger(),
+  ) {
     super(CAMPAIGN_PIPELINE_STEP_METADATA.execute);
+    this.logger = logger.child(ExecuteResearchStep.name);
   }
 
   async execute(context: PipelineContext): Promise<PipelineContext> {
@@ -71,6 +76,7 @@ export class ExecuteResearchStep extends AbstractPipelineStep {
         const message = error instanceof Error ? error.message : String(error);
         this.logger.warn(
           `Campaign ${state.campaignId} run failed for params ${JSON.stringify(params)}: ${message}`,
+          { campaignId: state.campaignId },
         );
         failedRuns.push({ params, error: message });
       }

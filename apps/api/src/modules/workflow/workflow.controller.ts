@@ -1,7 +1,8 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { IdParamDto, StartWorkflowBodyDto } from '../../validation';
 import { WorkflowService } from './workflow.service';
 
-@Controller('workflows')
+@Controller({ path: 'workflows', version: '1' })
 export class WorkflowController {
   constructor(private readonly workflowService: WorkflowService) {}
 
@@ -11,24 +12,17 @@ export class WorkflowController {
   }
 
   @Get(':id')
-  get(@Param('id') id: string) {
-    return this.workflowService.get(id);
+  get(@Param() params: IdParamDto) {
+    return this.workflowService.get(params.id);
   }
 
   @Post()
-  start(
-    @Body()
-    body: {
-      type: string;
-      datasetId?: string;
-      approveNeedsReview?: boolean;
-    },
-  ) {
+  start(@Body() body: StartWorkflowBodyDto) {
     return this.workflowService.start(body);
   }
 
   @Post(':id/cancel')
-  cancel(@Param('id') id: string) {
-    return this.workflowService.cancel(id);
+  cancel(@Param() params: IdParamDto) {
+    return this.workflowService.cancel(params.id);
   }
 }

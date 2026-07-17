@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CampaignPersistenceModule } from '../campaign-persistence/campaign-persistence.module';
+import { WorkspaceModule } from '../workspace';
 import { CampaignExportController } from './campaign-export.controller';
 import { CampaignExportService } from './campaign-export.service';
 import { CAMPAIGN_EXPORTERS } from './campaign-exporters.token';
@@ -11,7 +12,7 @@ import { JsonCampaignExporter } from './json-campaign.exporter';
  * Read-only HTTP: GET /campaign-history/:sessionId/export
  */
 @Module({
-  imports: [CampaignPersistenceModule],
+  imports: [CampaignPersistenceModule, WorkspaceModule],
   controllers: [CampaignExportController],
   providers: [
     JsonCampaignExporter,

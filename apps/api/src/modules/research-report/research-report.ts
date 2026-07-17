@@ -8,6 +8,7 @@ import type { ReportSection } from './report-section';
  */
 export type ResearchReport = {
   id: string;
+  workspaceId: string;
   campaignSessionIds: string[];
   knowledgeEntryIds: string[];
   insightIds: string[];

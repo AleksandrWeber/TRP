@@ -1,5 +1,5 @@
 /**
- * DI token for JobQueue (US070).
- * Bind InMemoryJobQueue (or a future durable queue) in JobsModule.
+ * DI token for JobQueue (US070, US110).
+ * Bind InMemoryQueue or BullMQQueue via QUEUE_DRIVER in JobsModule.
  */
 export const JOB_QUEUE = Symbol('JOB_QUEUE');

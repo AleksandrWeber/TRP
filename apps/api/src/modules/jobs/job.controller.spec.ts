@@ -57,20 +57,20 @@ describe('JobController', () => {
   it('gets a job by id', () => {
     jobs.getJob.mockReturnValue(pendingJob);
 
-    expect(controller.getById('job-pending')).toBe(pendingJob);
+    expect(controller.getById({ jobId: 'job-pending' })).toBe(pendingJob);
     expect(jobs.getJob).toHaveBeenCalledWith('job-pending');
   });
 
   it('returns 404 when job is not found', () => {
     jobs.getJob.mockReturnValue(null);
 
-    expect(() => controller.getById('missing')).toThrow(NotFoundException);
+    expect(() => controller.getById({ jobId: 'missing' })).toThrow(NotFoundException);
   });
 
   it('completed job contains result', () => {
     jobs.getJob.mockReturnValue(completedJob);
 
-    const job = controller.getById('job-done');
+    const job = controller.getById({ jobId: 'job-done' });
 
     expect(job.result).toEqual({
       success: true,
@@ -81,20 +81,20 @@ describe('JobController', () => {
   it('pending job has no result', () => {
     jobs.getJob.mockReturnValue(pendingJob);
 
-    expect(controller.getById('job-pending').result).toBeUndefined();
+    expect(controller.getById({ jobId: 'job-pending' }).result).toBeUndefined();
   });
 
   it('cancels a pending job', () => {
     jobs.cancelJob.mockReturnValue(cancelledJob);
 
-    expect(controller.cancel('job-cancelled')).toEqual(cancelledJob);
+    expect(controller.cancel({ jobId: 'job-cancelled' })).toEqual(cancelledJob);
     expect(jobs.cancelJob).toHaveBeenCalledWith('job-cancelled');
   });
 
   it('returns 404 when cancelling unknown job', () => {
     jobs.cancelJob.mockReturnValue(null);
 
-    expect(() => controller.cancel('missing')).toThrow(NotFoundException);
+    expect(() => controller.cancel({ jobId: 'missing' })).toThrow(NotFoundException);
   });
 
   it('returns 409 when job cannot be cancelled', () => {
@@ -102,6 +102,6 @@ describe('JobController', () => {
       throw new JobCancelConflictError(completedJob as never);
     });
 
-    expect(() => controller.cancel('job-done')).toThrow(ConflictException);
+    expect(() => controller.cancel({ jobId: 'job-done' })).toThrow(ConflictException);
   });
 });

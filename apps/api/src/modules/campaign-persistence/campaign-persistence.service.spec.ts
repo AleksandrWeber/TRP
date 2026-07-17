@@ -8,6 +8,8 @@ import type { CampaignRepository } from './campaign-repository';
 import { CampaignSessionMapper } from './campaign-session.mapper';
 import { InMemoryCampaignRepository } from './in-memory-campaign.repository';
 
+const WORKSPACE_ID = 'ws-1';
+
 describe('CampaignPersistenceService', () => {
   const report = (overrides: Partial<CampaignReport> = {}): CampaignReport => ({
     campaignId: 'camp-1',
@@ -31,6 +33,7 @@ describe('CampaignPersistenceService', () => {
   const session = (
     overrides: Partial<CampaignSession> & Pick<CampaignSession, 'id'> = { id: 'session-1' },
   ): CampaignSession => ({
+    workspaceId: WORKSPACE_ID,
     status: CampaignSessionStatus.CREATED,
     createdAt: '2026-07-17T11:00:00.000Z',
     report: report(),
@@ -64,6 +67,7 @@ describe('CampaignPersistenceService', () => {
       expect.objectContaining({
         id: 'session-1',
         sessionId: 'session-1',
+        workspaceId: WORKSPACE_ID,
         status: CampaignSessionStatus.COMPLETED,
         completedAt: '2026-07-17T12:00:00.000Z',
       }),
@@ -74,6 +78,7 @@ describe('CampaignPersistenceService', () => {
     const stored: CampaignRecord = {
       id: 'session-1',
       sessionId: 'session-1',
+      workspaceId: WORKSPACE_ID,
       status: CampaignSessionStatus.FAILED,
       createdAt: '2026-07-17T11:00:00.000Z',
       completedAt: '2026-07-17T12:30:00.000Z',
@@ -88,10 +93,11 @@ describe('CampaignPersistenceService', () => {
       delete: vi.fn(),
     };
 
-    const found = createService(repository).findById('session-1');
+    const found = createService(repository).findById('session-1', WORKSPACE_ID);
 
     expect(found).toEqual({
       id: 'session-1',
+      workspaceId: WORKSPACE_ID,
       status: CampaignSessionStatus.FAILED,
       createdAt: '2026-07-17T11:00:00.000Z',
       completedAt: '2026-07-17T12:30:00.000Z',
@@ -110,7 +116,7 @@ describe('CampaignPersistenceService', () => {
       delete: vi.fn(),
     };
 
-    expect(createService(repository).findById('missing')).toBeNull();
+    expect(createService(repository).findById('missing', WORKSPACE_ID)).toBeNull();
   });
 
   it('findAll() / exists() / delete() delegate correctly', () => {
@@ -121,6 +127,7 @@ describe('CampaignPersistenceService', () => {
         {
           id: 'a',
           sessionId: 'a',
+          workspaceId: WORKSPACE_ID,
           status: CampaignSessionStatus.CREATED,
           createdAt: '2026-07-17T11:00:00.000Z',
           completedAt: null,
@@ -133,10 +140,10 @@ describe('CampaignPersistenceService', () => {
     };
     const service = createService(repository);
 
-    expect(service.findAll().map((item) => item.id)).toEqual(['a']);
-    expect(service.exists('a')).toBe(true);
-    service.delete('a');
-    expect(repository.delete).toHaveBeenCalledWith('a');
+    expect(service.findAll(WORKSPACE_ID).map((item) => item.id)).toEqual(['a']);
+    expect(service.exists('a', WORKSPACE_ID)).toBe(true);
+    service.delete('a', WORKSPACE_ID);
+    expect(repository.delete).toHaveBeenCalledWith('a', WORKSPACE_ID);
   });
 
   it('save and load round-trip status, metadata, and timestamps', () => {
@@ -151,7 +158,7 @@ describe('CampaignPersistenceService', () => {
     });
 
     service.save(input);
-    const loaded = service.findById('session-42');
+    const loaded = service.findById('session-42', WORKSPACE_ID);
 
     expect(loaded).toEqual(input);
     expect(loaded?.status).toBe(CampaignSessionStatus.COMPLETED);
@@ -184,12 +191,23 @@ describe('CampaignPersistenceService', () => {
       }),
     );
 
-    service.delete('s1');
+    service.delete('s1', WORKSPACE_ID);
 
-    expect(service.exists('s1')).toBe(false);
-    expect(service.findById('s2')?.status).toBe(CampaignSessionStatus.FAILED);
-    expect(service.findById('s2')?.metadata.tags).toEqual(['two']);
-    expect(service.findAll()).toHaveLength(1);
+    expect(service.exists('s1', WORKSPACE_ID)).toBe(false);
+    expect(service.findById('s2', WORKSPACE_ID)?.status).toBe(CampaignSessionStatus.FAILED);
+    expect(service.findById('s2', WORKSPACE_ID)?.metadata.tags).toEqual(['two']);
+    expect(service.findAll(WORKSPACE_ID)).toHaveLength(1);
+  });
+
+  it('does not expose sessions from another workspace', () => {
+    const repository = new InMemoryCampaignRepository();
+    const service = createService(repository);
+
+    service.save(session({ id: 's1' }));
+
+    expect(service.findById('s1', 'ws-2')).toBeNull();
+    expect(service.exists('s1', 'ws-2')).toBe(false);
+    expect(service.findAll('ws-2')).toHaveLength(0);
   });
 
   it('propagates repository exceptions from save()', () => {

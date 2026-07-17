@@ -1,6 +1,8 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { createSliceRef, type StrategyParams } from '@trp/research';
 import { ExperimentsService } from '../experiments/experiments.service';
+import type { Logger } from '../../logging/logger';
+import { LOGGER } from '../../logging/logger.token';
 import type { CampaignReportExperiment } from './campaign-report.types';
 import { ResearchCampaignService } from './research-campaign.service';
 import {
@@ -30,12 +32,15 @@ type ExperimentLike = {
 
 @Injectable()
 export class WalkForwardCampaignService {
-  private readonly logger = new Logger(WalkForwardCampaignService.name);
+  private readonly logger: Logger;
 
   constructor(
-    private readonly campaigns: ResearchCampaignService,
-    private readonly experiments: ExperimentsService,
-  ) {}
+    @Inject(ResearchCampaignService) private readonly campaigns: ResearchCampaignService,
+    @Inject(ExperimentsService) private readonly experiments: ExperimentsService,
+    @Inject(LOGGER) logger: Logger,
+  ) {
+    this.logger = logger.child(WalkForwardCampaignService.name);
+  }
 
   /**
    * Walk-Forward orchestration: Train campaign on train SliceRef, then evaluate
@@ -118,6 +123,7 @@ export class WalkForwardCampaignService {
         const message = error instanceof Error ? error.message : String(error);
         this.logger.warn(
           `Walk-forward window train=${window.trainStart}-${window.trainEnd} failed: ${message}`,
+          { datasetId: request.datasetId },
         );
         windows.push({
           ...window,
@@ -190,6 +196,7 @@ export class WalkForwardCampaignService {
       const message = error instanceof Error ? error.message : String(error);
       this.logger.warn(
         `Walk-forward test evaluation failed for slice ${input.testSliceRef.startIndex}-${input.testSliceRef.endIndex}: ${message}`,
+        { datasetId: input.datasetId },
       );
       return empty;
     }

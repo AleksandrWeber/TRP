@@ -4,6 +4,7 @@ import { InsightDomainService } from '../insight/insight-domain.service';
 import { PipelineModule } from '../pipeline/pipeline.module';
 import { PipelineRegistry } from '../pipeline/pipeline-registry';
 import { registerCrossAnalysisPipelineSteps } from '../pipeline/steps/cross-analysis/register-cross-analysis-steps';
+import { WorkspaceModule } from '../workspace';
 import { CrossCampaignAnalysisController } from './cross-campaign-analysis.controller';
 import { CrossCampaignAnalysisService } from './cross-campaign-analysis.service';
 
@@ -13,7 +14,7 @@ import { CrossCampaignAnalysisService } from './cross-campaign-analysis.service'
  * Read-only REST via CrossCampaignAnalysisController.
  */
 @Module({
-  imports: [PipelineModule, InsightModule],
+  imports: [PipelineModule, InsightModule, WorkspaceModule],
   controllers: [CrossCampaignAnalysisController],
   providers: [CrossCampaignAnalysisService],
   exports: [CrossCampaignAnalysisService],

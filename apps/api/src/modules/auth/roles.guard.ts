@@ -1,9 +1,13 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import type { Role } from '@prisma/client';
+import type { Role } from '../identity/role';
 import { ROLES_KEY } from './decorators/roles.decorator';
 import type { AuthUser } from './jwt.strategy';
 
+/**
+ * Enforces `@Roles(...)` metadata against the authenticated Identity role (US107).
+ * Endpoints without `@Roles` remain open to any authenticated user.
+ */
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}

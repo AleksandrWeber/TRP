@@ -2,6 +2,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { createKnowledgeDomainService } from './knowledge-domain.test-utils';
 import { KnowledgeDomainService } from './knowledge-domain.service';
 
+const WORKSPACE_ID = 'ws-1';
+
 describe('KnowledgeDomainService (US075)', () => {
   let service: KnowledgeDomainService;
 
@@ -11,6 +13,7 @@ describe('KnowledgeDomainService (US075)', () => {
 
   it('creates an entry', () => {
     const entry = service.create({
+      workspaceId: WORKSPACE_ID,
       experimentId: 'exp-1',
       title: 'Donchian breakout note',
       summary: 'Channel period 10 failed on fee-adjusted accounting',
@@ -24,6 +27,7 @@ describe('KnowledgeDomainService (US075)', () => {
     });
 
     expect(entry.knowledgeId.length).toBeGreaterThan(0);
+    expect(entry.workspaceId).toBe(WORKSPACE_ID);
     expect(entry.experimentId).toBe('exp-1');
     expect(entry.createdAt).toEqual(expect.any(String));
     expect(Number.isNaN(Date.parse(entry.createdAt))).toBe(false);
@@ -40,6 +44,7 @@ describe('KnowledgeDomainService (US075)', () => {
 
   it('updates an entry', () => {
     const created = service.create({
+      workspaceId: WORKSPACE_ID,
       experimentId: 'exp-2',
       title: 'Draft',
       summary: 'Initial',
@@ -47,13 +52,17 @@ describe('KnowledgeDomainService (US075)', () => {
       insights: ['a'],
     });
 
-    const updated = service.update(created.knowledgeId, {
-      title: 'Revised',
-      summary: 'Updated summary',
-      tags: ['revised', 'ema'],
-      insights: ['a', 'b'],
-      metadata: { source: 'manual' },
-    });
+    const updated = service.update(
+      created.knowledgeId,
+      {
+        title: 'Revised',
+        summary: 'Updated summary',
+        tags: ['revised', 'ema'],
+        insights: ['a', 'b'],
+        metadata: { source: 'manual' },
+      },
+      WORKSPACE_ID,
+    );
 
     expect(updated).not.toBeNull();
     expect(updated?.title).toBe('Revised');
@@ -66,25 +75,62 @@ describe('KnowledgeDomainService (US075)', () => {
   });
 
   it('returns null when updating missing entry', () => {
-    expect(service.update('missing', { title: 'x' })).toBeNull();
+    expect(service.update('missing', { title: 'x' }, WORKSPACE_ID)).toBeNull();
+  });
+
+  it('returns null when updating an entry in another workspace', () => {
+    const created = service.create({
+      workspaceId: WORKSPACE_ID,
+      experimentId: 'exp-2b',
+      title: 'Draft',
+      summary: 'Initial',
+    });
+
+    expect(service.update(created.knowledgeId, { title: 'x' }, 'ws-2')).toBeNull();
   });
 
   it('gets an entry by id', () => {
     const created = service.create({
+      workspaceId: WORKSPACE_ID,
       experimentId: 'exp-3',
       title: 'Get me',
       summary: 'Summary',
     });
 
-    expect(service.get(created.knowledgeId)).toBe(created);
-    expect(service.get('missing')).toBeNull();
+    expect(service.get(created.knowledgeId, WORKSPACE_ID)).toBe(created);
+    expect(service.get('missing', WORKSPACE_ID)).toBeNull();
+  });
+
+  it('does not return an entry from another workspace', () => {
+    const created = service.create({
+      workspaceId: WORKSPACE_ID,
+      experimentId: 'exp-3b',
+      title: 'Get me',
+      summary: 'Summary',
+    });
+
+    expect(service.get(created.knowledgeId, 'ws-2')).toBeNull();
   });
 
   it('lists entries', () => {
-    const a = service.create({ experimentId: 'e1', title: 'A', summary: 'a' });
-    const b = service.create({ experimentId: 'e2', title: 'B', summary: 'b' });
+    const a = service.create({
+      workspaceId: WORKSPACE_ID,
+      experimentId: 'e1',
+      title: 'A',
+      summary: 'a',
+    });
+    const b = service.create({
+      workspaceId: WORKSPACE_ID,
+      experimentId: 'e2',
+      title: 'B',
+      summary: 'b',
+    });
+    service.create({ workspaceId: 'ws-2', experimentId: 'e3', title: 'C', summary: 'c' });
 
-    expect(service.list().map((e) => e.knowledgeId)).toEqual([a.knowledgeId, b.knowledgeId]);
+    expect(service.list(WORKSPACE_ID).map((e) => e.knowledgeId)).toEqual([
+      a.knowledgeId,
+      b.knowledgeId,
+    ]);
   });
 
   it('clones tags and metadata on create', () => {
@@ -92,6 +138,7 @@ describe('KnowledgeDomainService (US075)', () => {
     const metadata = { datasetId: 'ds-x', strategyId: 'ema-crossover' };
 
     const entry = service.create({
+      workspaceId: WORKSPACE_ID,
       experimentId: 'exp-4',
       title: 'Clone check',
       summary: 's',
@@ -111,6 +158,7 @@ describe('KnowledgeDomainService (US075)', () => {
 
   it('defaults empty tags, insights, and metadata', () => {
     const entry = service.create({
+      workspaceId: WORKSPACE_ID,
       experimentId: 'exp-5',
       title: 'Minimal',
       summary: 'Only required fields',

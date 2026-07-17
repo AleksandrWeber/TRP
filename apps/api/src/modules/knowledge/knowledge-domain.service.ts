@@ -6,12 +6,16 @@ import type { PipelineContext } from '../pipeline/pipeline-context';
 import { PipelineDomainService } from '../pipeline/pipeline-domain.service';
 import { PipelineExecutor } from '../pipeline/pipeline-executor';
 import { PipelineTemplateService } from '../pipeline/pipeline-template.service';
+import { DEFAULT_WORKSPACE_ID } from '../pipeline/workspace-context';
 import { readKnowledgeEntry } from '../pipeline/steps/knowledge/knowledge-pipeline-context';
 import type { KnowledgeEntry } from './knowledge-entry';
 import type { KnowledgeMetadata } from './knowledge-metadata';
 import type { KnowledgeTag } from './knowledge-tag';
+import type { KnowledgeRepository } from './repositories/knowledge.repository';
+import { KNOWLEDGE_REPOSITORY } from './repositories/knowledge.repository.token';
 
 export type CreateKnowledgeEntryInput = {
+  workspaceId: string;
   experimentId: string;
   title: string;
   summary: string;
@@ -31,19 +35,18 @@ export type UpdateKnowledgeEntryInput = {
 };
 
 /**
- * In-memory Knowledge domain service (US075–US079, US090).
- * create / update / get / list / search remain direct store APIs.
+ * Knowledge domain service (US075–US079, US090, US102).
+ * create / update / get / list / search remain domain APIs.
+ * Storage is delegated to KnowledgeRepository (no owned Map).
  * createFromExperiment orchestrates via PipelineExecutor + Knowledge PipelineSteps.
  *
  * Distinct from Prisma-backed {@link KnowledgeService} (`research_outcome` persistence).
  */
 @Injectable()
 export class KnowledgeDomainService {
-  private readonly entries = new Map<string, KnowledgeEntry>();
-  /** One KnowledgeEntry per Experiment (US077). */
-  private readonly byExperimentId = new Map<string, string>();
-
   constructor(
+    @Inject(KNOWLEDGE_REPOSITORY)
+    private readonly repository: KnowledgeRepository,
     @Inject(PipelineExecutor)
     private readonly executor: PipelineExecutor,
     @Inject(PipelineTemplateService)
@@ -53,18 +56,22 @@ export class KnowledgeDomainService {
   ) {}
 
   create(input: CreateKnowledgeEntryInput): KnowledgeEntry {
-    const existingId = this.byExperimentId.get(input.experimentId);
-    if (existingId) {
-      const updated = this.update(existingId, {
-        title: input.title,
-        summary: input.summary,
-        tags: input.tags,
-        insights: input.insights,
-        metadata: input.metadata,
-      });
+    const existing = this.repository.findByExperimentId(input.experimentId, input.workspaceId);
+    if (existing) {
+      const updated = this.update(
+        existing.knowledgeId,
+        {
+          title: input.title,
+          summary: input.summary,
+          tags: input.tags,
+          insights: input.insights,
+          metadata: input.metadata,
+        },
+        input.workspaceId,
+      );
       if (!updated) {
         throw new Error(
-          `Knowledge entry ${existingId} missing for experiment ${input.experimentId}`,
+          `Knowledge entry ${existing.knowledgeId} missing for experiment ${input.experimentId}`,
         );
       }
       return updated;
@@ -72,6 +79,7 @@ export class KnowledgeDomainService {
 
     const entry: KnowledgeEntry = {
       knowledgeId: randomUUID(),
+      workspaceId: input.workspaceId,
       experimentId: input.experimentId,
       createdAt: input.createdAt ?? new Date().toISOString(),
       title: input.title,
@@ -81,8 +89,7 @@ export class KnowledgeDomainService {
       metadata: cloneMetadata(input.metadata),
     };
 
-    this.entries.set(entry.knowledgeId, entry);
-    this.byExperimentId.set(entry.experimentId, entry.knowledgeId);
+    this.repository.save(entry);
     return entry;
   }
 
@@ -90,7 +97,10 @@ export class KnowledgeDomainService {
    * Extract Knowledge from Experiment.currentVersion.report and upsert
    * (one entry per experimentId — never duplicates) via Knowledge pipeline.
    */
-  async createFromExperiment(experiment: Experiment): Promise<KnowledgeEntry> {
+  async createFromExperiment(
+    experiment: Experiment,
+    workspaceId: string = DEFAULT_WORKSPACE_ID,
+  ): Promise<KnowledgeEntry> {
     const pipeline = this.templates.createPipelineFromTemplate(
       BUILTIN_PIPELINE_TEMPLATE_IDS.knowledge,
     );
@@ -104,7 +114,7 @@ export class KnowledgeDomainService {
     }
 
     const context: PipelineContext = {
-      input: { experiment },
+      input: { experiment, workspaceId },
       output: {},
       variables: {},
       metadata: {},
@@ -119,8 +129,12 @@ export class KnowledgeDomainService {
     return readKnowledgeEntry(pipelineResult.context);
   }
 
-  update(knowledgeId: string, input: UpdateKnowledgeEntryInput): KnowledgeEntry | null {
-    const existing = this.entries.get(knowledgeId);
+  update(
+    knowledgeId: string,
+    input: UpdateKnowledgeEntryInput,
+    workspaceId: string,
+  ): KnowledgeEntry | null {
+    const existing = this.repository.findById(knowledgeId, workspaceId);
     if (!existing) return null;
 
     if (input.title !== undefined) existing.title = input.title;
@@ -129,44 +143,43 @@ export class KnowledgeDomainService {
     if (input.insights !== undefined) existing.insights = cloneInsights(input.insights);
     if (input.metadata !== undefined) existing.metadata = cloneMetadata(input.metadata);
 
+    this.repository.save(existing);
     return existing;
   }
 
-  get(knowledgeId: string): KnowledgeEntry | null {
-    return this.entries.get(knowledgeId) ?? null;
+  get(knowledgeId: string, workspaceId: string): KnowledgeEntry | null {
+    return this.repository.findById(knowledgeId, workspaceId);
   }
 
-  getByExperimentId(experimentId: string): KnowledgeEntry | null {
-    const knowledgeId = this.byExperimentId.get(experimentId);
-    if (!knowledgeId) return null;
-    return this.entries.get(knowledgeId) ?? null;
+  getByExperimentId(experimentId: string, workspaceId: string): KnowledgeEntry | null {
+    return this.repository.findByExperimentId(experimentId, workspaceId);
   }
 
-  list(): KnowledgeEntry[] {
-    return Array.from(this.entries.values());
+  list(workspaceId: string): KnowledgeEntry[] {
+    return this.repository.findAll(workspaceId);
   }
 
   /**
    * Case-insensitive text search over title, summary, insights, and tags (US079).
    */
-  search(query: string): KnowledgeEntry[] {
+  search(query: string, workspaceId: string): KnowledgeEntry[] {
     const needle = query.trim().toLowerCase();
-    if (!needle) return this.list();
-    return this.list().filter((entry) => matchesText(entry, needle));
+    if (!needle) return this.list(workspaceId);
+    return this.list(workspaceId).filter((entry) => matchesText(entry, needle));
   }
 
   /** Case-insensitive exact tag match. */
-  searchByTag(tag: string): KnowledgeEntry[] {
+  searchByTag(tag: string, workspaceId: string): KnowledgeEntry[] {
     const needle = tag.trim().toLowerCase();
-    if (!needle) return this.list();
-    return this.list().filter((entry) =>
+    if (!needle) return this.list(workspaceId);
+    return this.list(workspaceId).filter((entry) =>
       entry.tags.some((entryTag) => entryTag.toLowerCase() === needle),
     );
   }
 
   /** Exact experimentId lookup; empty array when missing (no 404). */
-  searchByExperiment(experimentId: string): KnowledgeEntry[] {
-    const entry = this.getByExperimentId(experimentId);
+  searchByExperiment(experimentId: string, workspaceId: string): KnowledgeEntry[] {
+    const entry = this.getByExperimentId(experimentId, workspaceId);
     return entry ? [entry] : [];
   }
 
@@ -174,8 +187,8 @@ export class KnowledgeDomainService {
    * Combined filters with AND semantics (US079).
    * Empty / omitted filters are ignored.
    */
-  find(filters: KnowledgeSearchFilters = {}): KnowledgeEntry[] {
-    let results = this.list();
+  find(filters: KnowledgeSearchFilters, workspaceId: string): KnowledgeEntry[] {
+    let results = this.list(workspaceId);
 
     if (hasValue(filters.experimentId)) {
       results = results.filter((entry) => entry.experimentId === filters.experimentId!.trim());

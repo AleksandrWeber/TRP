@@ -29,6 +29,7 @@ function sampleReport(overrides?: Partial<CampaignReport>): CampaignReport {
 function sampleSession(id: string, reportOverrides?: Partial<CampaignReport>): CampaignSession {
   return {
     id,
+    workspaceId: 'ws-1',
     status: CampaignSessionStatus.COMPLETED,
     createdAt: '2026-07-17T10:00:00.000Z',
     completedAt: '2026-07-17T10:05:00.000Z',
@@ -40,6 +41,7 @@ function sampleSession(id: string, reportOverrides?: Partial<CampaignReport>): C
 function sampleKnowledge(overrides?: Partial<KnowledgeEntry>): KnowledgeEntry {
   return {
     knowledgeId: overrides?.knowledgeId ?? 'k-1',
+    workspaceId: overrides?.workspaceId ?? 'ws-1',
     experimentId: overrides?.experimentId ?? 'exp-1',
     createdAt: '2026-07-17T10:00:00.000Z',
     title: overrides?.title ?? 'Shared finding',

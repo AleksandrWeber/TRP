@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ReplayStatus } from '../../../campaign-replay/replay-status';
 import { CampaignSessionStatus } from '../../../campaign-session/campaign-session-status';
+import { NoOpMetrics } from '../../../../metrics/noop.metrics';
 import { BUILTIN_PIPELINE_TEMPLATE_IDS } from '../../builtin-pipeline-templates';
 import type { PipelineContext } from '../../pipeline-context';
 import { PipelineDomainService } from '../../pipeline-domain.service';
@@ -161,7 +162,7 @@ describe('Replay Pipeline Steps (US089)', () => {
     });
     const pipelines = new PipelineDomainService();
     const templates = new PipelineTemplateService(pipelines);
-    const executor = new PipelineExecutor(registry, new PipelineHookRegistry());
+    const executor = new PipelineExecutor(registry, new PipelineHookRegistry(), new NoOpMetrics());
     const pipeline = templates.createPipelineFromTemplate(BUILTIN_PIPELINE_TEMPLATE_IDS.replay)!;
     const run = pipelines.createRun({ pipelineId: pipeline.pipelineId })!;
 

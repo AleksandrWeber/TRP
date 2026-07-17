@@ -4,9 +4,12 @@ import { CampaignSessionStatus } from '../campaign-session/campaign-session-stat
 import { CampaignExportController } from './campaign-export.controller';
 import { ExportFormat } from './export-format';
 
+const WORKSPACE_ID = 'ws-1';
+
 describe('CampaignExportController', () => {
   let history: { getById: ReturnType<typeof vi.fn> };
   let campaignExport: { export: ReturnType<typeof vi.fn> };
+  let workspaces: { getById: ReturnType<typeof vi.fn> };
   let controller: CampaignExportController;
   let reply: {
     status: ReturnType<typeof vi.fn>;
@@ -16,6 +19,7 @@ describe('CampaignExportController', () => {
 
   const session = {
     id: 'sess-1',
+    workspaceId: WORKSPACE_ID,
     status: CampaignSessionStatus.COMPLETED,
     createdAt: '2026-07-17T10:00:00.000Z',
     completedAt: '2026-07-17T10:05:00.000Z',
@@ -46,7 +50,12 @@ describe('CampaignExportController', () => {
   beforeEach(() => {
     history = { getById: vi.fn() };
     campaignExport = { export: vi.fn() };
-    controller = new CampaignExportController(history as never, campaignExport as never);
+    workspaces = { getById: vi.fn().mockReturnValue({ id: WORKSPACE_ID }) };
+    controller = new CampaignExportController(
+      history as never,
+      campaignExport as never,
+      workspaces as never,
+    );
     reply = {
       status: vi.fn().mockReturnThis(),
       header: vi.fn().mockReturnThis(),
@@ -58,9 +67,9 @@ describe('CampaignExportController', () => {
     history.getById.mockReturnValue(session);
     campaignExport.export.mockReturnValue('{"id":"sess-1"}');
 
-    controller.export('sess-1', 'json', reply as never);
+    controller.export({ sessionId: 'sess-1' }, { format: 'json' }, reply as never, WORKSPACE_ID);
 
-    expect(history.getById).toHaveBeenCalledWith('sess-1');
+    expect(history.getById).toHaveBeenCalledWith('sess-1', WORKSPACE_ID);
     expect(campaignExport.export).toHaveBeenCalledWith(session, ExportFormat.JSON);
     expect(reply.status).toHaveBeenCalledWith(200);
     expect(reply.header).toHaveBeenCalledWith('Content-Type', 'application/json');
@@ -71,7 +80,7 @@ describe('CampaignExportController', () => {
     history.getById.mockReturnValue(session);
     campaignExport.export.mockReturnValue('sessionId,status\nsess-1,COMPLETED');
 
-    controller.export('sess-1', 'csv', reply as never);
+    controller.export({ sessionId: 'sess-1' }, { format: 'csv' }, reply as never, WORKSPACE_ID);
 
     expect(campaignExport.export).toHaveBeenCalledWith(session, ExportFormat.CSV);
     expect(reply.header).toHaveBeenCalledWith('Content-Type', 'text/csv');
@@ -79,24 +88,32 @@ describe('CampaignExportController', () => {
   });
 
   it('rejects unsupported export format with 400', () => {
-    expect(() => controller.export('sess-1', 'xml', reply as never)).toThrow(BadRequestException);
+    expect(() =>
+      controller.export({ sessionId: 'sess-1' }, { format: 'xml' }, reply as never, WORKSPACE_ID),
+    ).toThrow(BadRequestException);
     expect(history.getById).not.toHaveBeenCalled();
     expect(reply.send).not.toHaveBeenCalled();
   });
 
   it('rejects empty export format (format required)', () => {
-    expect(() => controller.export('sess-1', undefined, reply as never)).toThrow(
-      BadRequestException,
-    );
-    expect(() => controller.export('sess-1', '', reply as never)).toThrow(BadRequestException);
-    expect(() => controller.export('sess-1', '   ', reply as never)).toThrow(BadRequestException);
+    expect(() =>
+      controller.export({ sessionId: 'sess-1' }, {}, reply as never, WORKSPACE_ID),
+    ).toThrow(BadRequestException);
+    expect(() =>
+      controller.export({ sessionId: 'sess-1' }, { format: '' }, reply as never, WORKSPACE_ID),
+    ).toThrow(BadRequestException);
+    expect(() =>
+      controller.export({ sessionId: 'sess-1' }, { format: '   ' }, reply as never, WORKSPACE_ID),
+    ).toThrow(BadRequestException);
     expect(history.getById).not.toHaveBeenCalled();
   });
 
   it('returns 404 when session is not found', () => {
     history.getById.mockReturnValue(null);
 
-    expect(() => controller.export('missing', 'json', reply as never)).toThrow(NotFoundException);
+    expect(() =>
+      controller.export({ sessionId: 'missing' }, { format: 'json' }, reply as never, WORKSPACE_ID),
+    ).toThrow(NotFoundException);
     expect(campaignExport.export).not.toHaveBeenCalled();
     expect(reply.send).not.toHaveBeenCalled();
   });
@@ -105,8 +122,14 @@ describe('CampaignExportController', () => {
     history.getById.mockReturnValue(session);
     campaignExport.export.mockReturnValue('{}');
 
-    controller.export('sess-1', 'JSON', reply as never);
+    controller.export({ sessionId: 'sess-1' }, { format: 'JSON' }, reply as never, WORKSPACE_ID);
 
     expect(campaignExport.export).toHaveBeenCalledWith(session, ExportFormat.JSON);
+  });
+
+  it('rejects missing workspace header', () => {
+    expect(() =>
+      controller.export({ sessionId: 'sess-1' }, { format: 'json' }, reply as never, undefined),
+    ).toThrow(BadRequestException);
   });
 });

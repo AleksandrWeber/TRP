@@ -8,6 +8,7 @@ import type { PipelineContext } from '../pipeline/pipeline-context';
 import { PipelineDomainService } from '../pipeline/pipeline-domain.service';
 import { PipelineExecutor } from '../pipeline/pipeline-executor';
 import { PipelineTemplateService } from '../pipeline/pipeline-template.service';
+import { DEFAULT_WORKSPACE_ID } from '../pipeline/workspace-context';
 import { readExperiments, readSummary } from '../pipeline/steps/campaign/campaign-context';
 import type { CampaignReport, CampaignReportExperiment } from './campaign-report.types';
 import type { CampaignSummary, ResearchCampaignInput } from './research-campaign.types';
@@ -69,7 +70,12 @@ export class ResearchCampaignService {
     } catch (error) {
       const report = this.buildFailedExecutionReport(input);
       if (persistSession) {
-        this.persistSession(report, CampaignSessionStatus.FAILED, input.datasetId);
+        this.persistSession(
+          report,
+          CampaignSessionStatus.FAILED,
+          input.datasetId,
+          input.workspaceId ?? DEFAULT_WORKSPACE_ID,
+        );
       }
       throw error;
     }
@@ -79,8 +85,10 @@ export class ResearchCampaignService {
     report: CampaignReport,
     status: CampaignSessionStatus.COMPLETED | CampaignSessionStatus.FAILED,
     datasetId: string,
+    workspaceId: string,
   ): void {
     const session = this.sessionFactory.create({
+      workspaceId,
       report,
       metadata: { datasetId },
     });
@@ -121,6 +129,7 @@ function createCampaignPipelineContext(
     strategyId: input.strategyId,
     paramsList: input.paramsList,
     persistSession,
+    workspaceId: input.workspaceId ?? DEFAULT_WORKSPACE_ID,
   };
 
   if (input.sliceRef !== undefined) {

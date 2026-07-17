@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
+import { DEFAULT_WORKSPACE_ID } from '../pipeline/workspace-context';
 import type { ReportMetadata } from './report-metadata';
 import type { ReportSection } from './report-section';
 import type { ResearchReport } from './research-report';
@@ -7,8 +8,11 @@ import {
   buildResearchReportDraft,
   type ResearchReportBuildInput,
 } from './research-report-build.rules';
+import type { ResearchReportRepository } from './repositories/research-report.repository';
+import { RESEARCH_REPORT_REPOSITORY } from './repositories/research-report.repository.token';
 
 export type CreateResearchReportInput = {
+  workspaceId: string;
   campaignSessionIds?: string[];
   knowledgeEntryIds?: string[];
   insightIds?: string[];
@@ -27,19 +31,24 @@ export type ResearchReportSearchFilters = {
 };
 
 /**
- * In-memory Research Report domain service (US099).
+ * Research Report domain service (US099, US102).
  * create / getById / search / build.
+ * Storage is delegated to ResearchReportRepository (no owned Map).
  *
  * ResearchReport references entities by id only; it must not duplicate entity payloads.
- * No Pipeline / AI / Export / REST / Prisma / Repository coupling.
+ * No Pipeline / AI / Export / REST / Prisma coupling.
  */
 @Injectable()
 export class ResearchReportDomainService {
-  private readonly reports = new Map<string, ResearchReport>();
+  constructor(
+    @Inject(RESEARCH_REPORT_REPOSITORY)
+    private readonly repository: ResearchReportRepository,
+  ) {}
 
   create(input: CreateResearchReportInput): ResearchReport {
     const report: ResearchReport = {
       id: randomUUID(),
+      workspaceId: input.workspaceId,
       createdAt: input.createdAt ?? new Date().toISOString(),
       campaignSessionIds: cloneIds(input.campaignSessionIds),
       knowledgeEntryIds: cloneIds(input.knowledgeEntryIds),
@@ -49,7 +58,7 @@ export class ResearchReportDomainService {
       metadata: cloneMetadata(input.metadata),
     };
 
-    this.reports.set(report.id, report);
+    this.repository.save(report);
     return report;
   }
 
@@ -57,13 +66,13 @@ export class ResearchReportDomainService {
    * Aggregate Campaign / Knowledge / Insight / Recommendation into a structured report.
    * ResearchReportDomainService.create is the only write path.
    */
-  build(input: ResearchReportBuildInput): ResearchReport {
+  build(input: ResearchReportBuildInput, workspaceId: string): ResearchReport {
     const draft = buildResearchReportDraft(input);
-    return this.create(draft);
+    return this.create({ ...draft, workspaceId });
   }
 
-  getById(id: string): ResearchReport | null {
-    return this.reports.get(id) ?? null;
+  getById(id: string, workspaceId: string): ResearchReport | null {
+    return this.repository.findById(id, workspaceId);
   }
 
   /**
@@ -71,8 +80,11 @@ export class ResearchReportDomainService {
    * Empty / omitted filters are ignored.
    * `q` matches report id only (structured data — no narrative fields).
    */
-  search(filters: ResearchReportSearchFilters = {}): ResearchReport[] {
-    let results = Array.from(this.reports.values());
+  search(
+    filters: ResearchReportSearchFilters = {},
+    workspaceId: string = DEFAULT_WORKSPACE_ID,
+  ): ResearchReport[] {
+    let results = this.repository.findAll(workspaceId);
 
     if (hasValue(filters.campaignSessionId)) {
       const sessionId = filters.campaignSessionId!.trim();

@@ -7,13 +7,17 @@ import type { PipelineContext } from '../pipeline/pipeline-context';
 import { PipelineDomainService } from '../pipeline/pipeline-domain.service';
 import { PipelineExecutor } from '../pipeline/pipeline-executor';
 import { PipelineTemplateService } from '../pipeline/pipeline-template.service';
+import { DEFAULT_WORKSPACE_ID } from '../pipeline/workspace-context';
 import { readPersistedInsights } from '../pipeline/steps/insight/insight-pipeline-context';
 import type { Insight } from './insight';
 import type { InsightMetadata } from './insight-metadata';
 import type { InsightSource } from './insight-source';
 import type { InsightType } from './insight-type';
+import type { InsightRepository } from './repositories/insight.repository';
+import { INSIGHT_REPOSITORY } from './repositories/insight.repository.token';
 
 export type CreateInsightInput = {
+  workspaceId: string;
   campaignSessionId?: string;
   experimentId?: string;
   knowledgeEntryIds?: string[];
@@ -25,6 +29,9 @@ export type CreateInsightInput = {
   metadata?: InsightMetadata;
   createdAt?: string;
 };
+
+/** Insight draft without workspaceId — used by pipeline extraction before persist-time stamping (US109). */
+export type InsightDraft = Omit<CreateInsightInput, 'workspaceId'>;
 
 export type UpdateInsightInput = {
   campaignSessionId?: string | null;
@@ -52,20 +59,23 @@ export type ExtractInsightsInput = {
   experimentIds?: string[];
   knowledgeEntries: KnowledgeEntry[];
   session?: CampaignSession;
+  /** Optional workspace scope (US109). Defaults to 'default' when absent. */
+  workspaceId?: string;
 };
 
 /**
- * In-memory Insight domain service (US095–US096).
- * create / update / delete / getById / search remain direct store APIs.
+ * Insight domain service (US095–US096, US102).
+ * create / update / delete / getById / search remain domain APIs.
+ * Storage is delegated to InsightRepository (no owned Map).
  * extractFromKnowledge orchestrates via PipelineExecutor + Insight PipelineSteps.
  *
  * Insight references Knowledge via knowledgeEntryIds; it must not store KnowledgeEntry contents.
  */
 @Injectable()
 export class InsightDomainService {
-  private readonly insights = new Map<string, Insight>();
-
   constructor(
+    @Inject(INSIGHT_REPOSITORY)
+    private readonly repository: InsightRepository,
     @Inject(PipelineExecutor)
     private readonly executor: PipelineExecutor,
     @Inject(PipelineTemplateService)
@@ -79,6 +89,7 @@ export class InsightDomainService {
 
     const insight: Insight = {
       id: randomUUID(),
+      workspaceId: input.workspaceId,
       createdAt: input.createdAt ?? new Date().toISOString(),
       type: input.type,
       title: input.title,
@@ -96,7 +107,7 @@ export class InsightDomainService {
       insight.experimentId = input.experimentId;
     }
 
-    this.insights.set(insight.id, insight);
+    this.repository.save(insight);
     return insight;
   }
 
@@ -120,6 +131,7 @@ export class InsightDomainService {
     const context: PipelineContext = {
       input: {
         knowledgeEntries: input.knowledgeEntries,
+        workspaceId: input.workspaceId ?? DEFAULT_WORKSPACE_ID,
         ...(input.campaignSessionId !== undefined
           ? { campaignSessionId: input.campaignSessionId }
           : {}),
@@ -139,8 +151,8 @@ export class InsightDomainService {
     return readPersistedInsights(pipelineResult.context);
   }
 
-  update(id: string, input: UpdateInsightInput): Insight | null {
-    const existing = this.insights.get(id);
+  update(id: string, input: UpdateInsightInput, workspaceId: string): Insight | null {
+    const existing = this.repository.findById(id, workspaceId);
     if (!existing) return null;
 
     if (input.title !== undefined) existing.title = input.title;
@@ -171,23 +183,27 @@ export class InsightDomainService {
       existing.experimentId = input.experimentId;
     }
 
+    this.repository.save(existing);
     return existing;
   }
 
-  delete(id: string): boolean {
-    return this.insights.delete(id);
+  delete(id: string, workspaceId: string): boolean {
+    return this.repository.delete(id, workspaceId);
   }
 
-  getById(id: string): Insight | null {
-    return this.insights.get(id) ?? null;
+  getById(id: string, workspaceId: string): Insight | null {
+    return this.repository.findById(id, workspaceId);
   }
 
   /**
    * Combined filters with AND semantics.
    * Empty / omitted filters are ignored.
    */
-  search(filters: InsightSearchFilters = {}): Insight[] {
-    let results = Array.from(this.insights.values());
+  search(
+    filters: InsightSearchFilters = {},
+    workspaceId: string = DEFAULT_WORKSPACE_ID,
+  ): Insight[] {
+    let results = this.repository.findAll(workspaceId);
 
     if (filters.type !== undefined) {
       results = results.filter((insight) => insight.type === filters.type);

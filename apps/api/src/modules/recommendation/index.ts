@@ -13,3 +13,6 @@ export {
   draftRecommendationsFromInsights,
   type RecommendationDraft,
 } from './recommendation-generation.rules';
+export type { RecommendationRepository } from './repositories/recommendation.repository';
+export { RECOMMENDATION_REPOSITORY } from './repositories/recommendation.repository.token';
+export { InMemoryRecommendationRepository } from './repositories/in-memory-recommendation.repository';

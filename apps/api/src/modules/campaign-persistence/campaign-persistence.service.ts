@@ -20,21 +20,21 @@ export class CampaignPersistenceService {
     this.repository.save(record);
   }
 
-  findById(id: string): CampaignSession | null {
-    const record = this.repository.findById(id);
+  findById(id: string, workspaceId: string): CampaignSession | null {
+    const record = this.repository.findById(id, workspaceId);
     if (!record) return null;
     return this.mapper.toSession(record);
   }
 
-  findAll(): CampaignSession[] {
-    return this.repository.findAll().map((record) => this.mapper.toSession(record));
+  findAll(workspaceId: string): CampaignSession[] {
+    return this.repository.findAll(workspaceId).map((record) => this.mapper.toSession(record));
   }
 
-  exists(id: string): boolean {
-    return this.repository.exists(id);
+  exists(id: string, workspaceId: string): boolean {
+    return this.repository.exists(id, workspaceId);
   }
 
-  delete(id: string): void {
-    this.repository.delete(id);
+  delete(id: string, workspaceId: string): void {
+    this.repository.delete(id, workspaceId);
   }
 }

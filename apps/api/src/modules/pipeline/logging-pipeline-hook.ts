@@ -63,8 +63,9 @@ export class LoggingPipelineHook implements PipelineHook {
 }
 
 function stepIdOf(step: PipelineStep): string | undefined {
-  if (typeof (step as { getMetadata?: () => { stepId: string } }).getMetadata === 'function') {
-    return (step as { getMetadata: () => { stepId: string } }).getMetadata().stepId;
+  const candidate = step as unknown as { getMetadata?: () => { stepId: string } };
+  if (typeof candidate.getMetadata === 'function') {
+    return candidate.getMetadata().stepId;
   }
   return undefined;
 }

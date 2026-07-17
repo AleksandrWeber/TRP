@@ -7,12 +7,18 @@ import type { KnowledgeMetadata } from './knowledge-metadata';
 import type { KnowledgeTag } from './knowledge-tag';
 
 /**
+ * A KnowledgeEntry draft prior to persistence — lacks workspaceId, which is
+ * stamped by KnowledgeDomainService.create / the upsert pipeline step (US109).
+ */
+export type KnowledgeEntryDraft = Omit<KnowledgeEntry, 'workspaceId'>;
+
+/**
  * Deterministic Knowledge extraction from Experiment versions (US077 / US090).
  * Uses only Experiment.currentVersion.report — no AI / LLM / external services.
  */
 @Injectable()
 export class KnowledgeExtractionService {
-  extract(experiment: Experiment): KnowledgeEntry {
+  extract(experiment: Experiment): KnowledgeEntryDraft {
     const report = resolveCurrentReport(experiment);
 
     return {

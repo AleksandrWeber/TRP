@@ -7,6 +7,7 @@ import type { CampaignSessionMetadata } from './campaign-session-metadata';
 import { CampaignSessionStatus } from './campaign-session-status';
 
 export type CreateCampaignSessionInput = {
+  workspaceId: string;
   report: CampaignReport;
   metadata?: Partial<CampaignSessionMetadata>;
 };
@@ -36,6 +37,7 @@ export class CampaignSessionFactory {
 
     return {
       id: randomUUID(),
+      workspaceId: input.workspaceId,
       status: CampaignSessionStatus.CREATED,
       createdAt: new Date().toISOString(),
       report: input.report,

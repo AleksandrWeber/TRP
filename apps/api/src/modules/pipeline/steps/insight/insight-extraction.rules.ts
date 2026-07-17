@@ -1,4 +1,4 @@
-import type { CreateInsightInput } from '../../../insight/insight-domain.service';
+import type { InsightDraft } from '../../../insight/insight-domain.service';
 import { InsightSource } from '../../../insight/insight-source';
 import { InsightType } from '../../../insight/insight-type';
 import type { KnowledgeEntry } from '../../../knowledge/knowledge-entry';
@@ -10,9 +10,9 @@ const VERDICT_TAGS = new Set(['pass', 'fail', 'needs_review']);
  * Deterministic Insight drafts from Knowledge entries (US096).
  * No LLM / AI providers — rule-based only.
  */
-export function extractInsightDrafts(extraction: InsightExtractionContext): CreateInsightInput[] {
+export function extractInsightDrafts(extraction: InsightExtractionContext): InsightDraft[] {
   const entries = extraction.knowledgeEntries;
-  const drafts: CreateInsightInput[] = [];
+  const drafts: InsightDraft[] = [];
   const baseRefs = {
     campaignSessionId: extraction.campaignSessionId,
     knowledgeEntryIds: extraction.knowledgeEntryIds,
@@ -51,12 +51,9 @@ export function extractInsightDrafts(extraction: InsightExtractionContext): Crea
 
 function buildSummaryDraft(
   entries: KnowledgeEntry[],
-  baseRefs: Pick<
-    CreateInsightInput,
-    'campaignSessionId' | 'knowledgeEntryIds' | 'sources' | 'metadata'
-  >,
+  baseRefs: Pick<InsightDraft, 'campaignSessionId' | 'knowledgeEntryIds' | 'sources' | 'metadata'>,
   extraction: InsightExtractionContext,
-): CreateInsightInput {
+): InsightDraft {
   const strategies = unique(
     entries.map((e) => e.metadata.strategyId).filter((v): v is string => Boolean(v)),
   );
@@ -80,12 +77,9 @@ function buildSummaryDraft(
 
 function buildConsistentTrendDraft(
   entries: KnowledgeEntry[],
-  baseRefs: Pick<
-    CreateInsightInput,
-    'campaignSessionId' | 'knowledgeEntryIds' | 'sources' | 'metadata'
-  >,
+  baseRefs: Pick<InsightDraft, 'campaignSessionId' | 'knowledgeEntryIds' | 'sources' | 'metadata'>,
   extraction: InsightExtractionContext,
-): CreateInsightInput | null {
+): InsightDraft | null {
   if (entries.length < 2) return null;
 
   const verdicts = entries.map(primaryVerdictTag).filter((v): v is string => Boolean(v));
@@ -107,12 +101,9 @@ function buildConsistentTrendDraft(
 
 function buildRepeatedObservationDraft(
   entries: KnowledgeEntry[],
-  baseRefs: Pick<
-    CreateInsightInput,
-    'campaignSessionId' | 'knowledgeEntryIds' | 'sources' | 'metadata'
-  >,
+  baseRefs: Pick<InsightDraft, 'campaignSessionId' | 'knowledgeEntryIds' | 'sources' | 'metadata'>,
   extraction: InsightExtractionContext,
-): CreateInsightInput | null {
+): InsightDraft | null {
   if (entries.length < 2) return null;
 
   const titleCounts = countBy(entries.map((e) => e.title.trim().toLowerCase()));
@@ -134,12 +125,9 @@ function buildRepeatedObservationDraft(
 
 function buildAnomalyDraft(
   entries: KnowledgeEntry[],
-  baseRefs: Pick<
-    CreateInsightInput,
-    'campaignSessionId' | 'knowledgeEntryIds' | 'sources' | 'metadata'
-  >,
+  baseRefs: Pick<InsightDraft, 'campaignSessionId' | 'knowledgeEntryIds' | 'sources' | 'metadata'>,
   extraction: InsightExtractionContext,
-): CreateInsightInput | null {
+): InsightDraft | null {
   if (entries.length < 2) return null;
 
   const verdicts = unique(entries.map(primaryVerdictTag).filter((v): v is string => Boolean(v)));

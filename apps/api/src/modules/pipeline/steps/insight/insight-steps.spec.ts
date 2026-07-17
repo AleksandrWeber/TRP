@@ -15,6 +15,7 @@ import { PrepareInsightExtractionStep } from './prepare-insight-extraction.step'
 function sampleKnowledge(overrides?: Partial<KnowledgeEntry>): KnowledgeEntry {
   return {
     knowledgeId: overrides?.knowledgeId ?? 'k-1',
+    workspaceId: overrides?.workspaceId ?? 'default',
     experimentId: overrides?.experimentId ?? 'exp-1',
     createdAt: '2026-07-17T10:00:00.000Z',
     title: overrides?.title ?? 'Donchian note',

@@ -1,19 +1,26 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { Prisma } from '@prisma/client';
+import type { Logger } from '../../logging/logger';
+import { LOGGER } from '../../logging/logger.token';
 import { PrismaService } from '../../storage/prisma/prisma.module';
 import type { DomainEvent, EventHandler } from './event.types';
 
 @Injectable()
 export class EventBus implements OnModuleInit {
-  private readonly logger = new Logger(EventBus.name);
+  private readonly logger: Logger;
   private readonly handlers = new Map<string, EventHandler[]>();
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(LOGGER) logger: Logger,
+  ) {
+    this.logger = logger.child(EventBus.name);
+  }
 
   onModuleInit() {
     this.on('*', async (event) => {
-      this.logger.log(`Event ${event.type} (${event.id})`);
+      this.logger.info(`Event ${event.type} (${event.id})`);
       await this.prisma.domainEventLog.create({
         data: {
           id: event.id,
@@ -51,9 +58,7 @@ export class EventBus implements OnModuleInit {
       try {
         await handler(event);
       } catch (error) {
-        this.logger.error(
-          `Handler failed for ${type}: ${error instanceof Error ? error.message : String(error)}`,
-        );
+        this.logger.error(`Handler failed for ${type}`, undefined, error);
       }
     }
 

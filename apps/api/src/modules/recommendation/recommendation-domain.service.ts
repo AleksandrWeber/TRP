@@ -1,13 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import type { Insight } from '../insight/insight';
+import { DEFAULT_WORKSPACE_ID } from '../pipeline/workspace-context';
 import { draftRecommendationsFromInsights } from './recommendation-generation.rules';
 import type { Recommendation } from './recommendation';
 import type { RecommendationMetadata } from './recommendation-metadata';
 import type { RecommendationPriority } from './recommendation-priority';
 import type { RecommendationType } from './recommendation-type';
+import type { RecommendationRepository } from './repositories/recommendation.repository';
+import { RECOMMENDATION_REPOSITORY } from './repositories/recommendation.repository.token';
 
 export type CreateRecommendationInput = {
+  workspaceId: string;
   insightIds?: string[];
   campaignSessionIds?: string[];
   type: RecommendationType;
@@ -39,19 +43,24 @@ export type RecommendationSearchFilters = {
 };
 
 /**
- * In-memory Recommendation domain service (US098).
+ * Recommendation domain service (US098, US102).
  * create / update / delete / getById / search / generateFromInsights.
+ * Storage is delegated to RecommendationRepository (no owned Map).
  *
  * Recommendation references Insights via insightIds; it must not duplicate Insight payload.
- * No PipelineExecutor / Jobs / REST / Export / Import / Prisma / Repository coupling.
+ * No PipelineExecutor / Jobs / REST / Export / Import / Prisma coupling.
  */
 @Injectable()
 export class RecommendationDomainService {
-  private readonly recommendations = new Map<string, Recommendation>();
+  constructor(
+    @Inject(RECOMMENDATION_REPOSITORY)
+    private readonly repository: RecommendationRepository,
+  ) {}
 
   create(input: CreateRecommendationInput): Recommendation {
     const recommendation: Recommendation = {
       id: randomUUID(),
+      workspaceId: input.workspaceId,
       createdAt: input.createdAt ?? new Date().toISOString(),
       insightIds: cloneIds(input.insightIds),
       campaignSessionIds: cloneIds(input.campaignSessionIds),
@@ -63,7 +72,7 @@ export class RecommendationDomainService {
       metadata: cloneMetadata(input.metadata),
     };
 
-    this.recommendations.set(recommendation.id, recommendation);
+    this.repository.save(recommendation);
     return recommendation;
   }
 
@@ -71,13 +80,13 @@ export class RecommendationDomainService {
    * Deterministic Recommendation generation from Insights (US098).
    * RecommendationDomainService.create is the only write path.
    */
-  generateFromInsights(insights: Insight[]): Recommendation[] {
+  generateFromInsights(insights: Insight[], workspaceId: string): Recommendation[] {
     const drafts = draftRecommendationsFromInsights(insights);
-    return drafts.map((draft) => this.create(draft));
+    return drafts.map((draft) => this.create({ ...draft, workspaceId }));
   }
 
-  update(id: string, input: UpdateRecommendationInput): Recommendation | null {
-    const existing = this.recommendations.get(id);
+  update(id: string, input: UpdateRecommendationInput, workspaceId: string): Recommendation | null {
+    const existing = this.repository.findById(id, workspaceId);
     if (!existing) return null;
 
     if (input.insightIds !== undefined) {
@@ -95,23 +104,27 @@ export class RecommendationDomainService {
       existing.metadata = cloneMetadata(input.metadata);
     }
 
+    this.repository.save(existing);
     return existing;
   }
 
-  delete(id: string): boolean {
-    return this.recommendations.delete(id);
+  delete(id: string, workspaceId: string): boolean {
+    return this.repository.delete(id, workspaceId);
   }
 
-  getById(id: string): Recommendation | null {
-    return this.recommendations.get(id) ?? null;
+  getById(id: string, workspaceId: string): Recommendation | null {
+    return this.repository.findById(id, workspaceId);
   }
 
   /**
    * Combined filters with AND semantics.
    * Empty / omitted filters are ignored.
    */
-  search(filters: RecommendationSearchFilters = {}): Recommendation[] {
-    let results = Array.from(this.recommendations.values());
+  search(
+    filters: RecommendationSearchFilters = {},
+    workspaceId: string = DEFAULT_WORKSPACE_ID,
+  ): Recommendation[] {
+    let results = this.repository.findAll(workspaceId);
 
     if (filters.type !== undefined) {
       results = results.filter((item) => item.type === filters.type);

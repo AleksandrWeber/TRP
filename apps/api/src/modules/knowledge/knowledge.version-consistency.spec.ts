@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { KnowledgeService } from './knowledge.service';
+import { NoOpLogger } from '../../logging/noop.logger';
 import { buildConfigIdentityKey, buildDedupeKey } from './knowledge.helpers';
 import {
   KNOWLEDGE_SCHEMA_VERSION,
@@ -76,7 +77,7 @@ describe('Knowledge version consistency', () => {
       return { id: 'k1', payload: data.payload };
     });
 
-    const service = new KnowledgeService(prisma, events);
+    const service = new KnowledgeService(prisma, events, new NoOpLogger());
     await service.recordFromExperiment('exp1', 'wf1');
 
     expect(createdPayload).not.toBeNull();

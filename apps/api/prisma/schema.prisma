@@ -218,3 +218,42 @@ model AiRequestLog {
 
   @@index([createdAt])
 }
+
+/// Research OS domain persistence (US104) — JSON payload mirrors domain aggregates.
+/// Distinct from legacy KnowledgeEntry (research_outcome / workflow knowledge).
+
+model ResearchCampaignRecord {
+  id      String @id
+  payload Json
+
+  @@map("research_campaign_records")
+}
+
+model ResearchDomainKnowledge {
+  knowledgeId  String @id @map("knowledge_id")
+  experimentId String @unique @map("experiment_id")
+  payload      Json
+
+  @@map("research_domain_knowledge")
+}
+
+model ResearchInsight {
+  id      String @id
+  payload Json
+
+  @@map("research_insights")
+}
+
+model ResearchRecommendation {
+  id      String @id
+  payload Json
+
+  @@map("research_recommendations")
+}
+
+model ResearchReportAggregate {
+  id      String @id
+  payload Json
+
+  @@map("research_report_aggregates")
+}

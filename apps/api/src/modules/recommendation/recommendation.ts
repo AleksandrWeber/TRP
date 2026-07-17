@@ -9,6 +9,7 @@ import type { RecommendationType } from './recommendation-type';
  */
 export type Recommendation = {
   id: string;
+  workspaceId: string;
   insightIds: string[];
   campaignSessionIds: string[];
   type: RecommendationType;

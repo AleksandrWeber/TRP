@@ -7,6 +7,8 @@ import type { CampaignRepository } from './campaign-repository';
 import { CampaignSessionMapper } from './campaign-session.mapper';
 import type { HistoryPageRequest } from './history-page';
 
+const WORKSPACE_ID = 'ws-1';
+
 describe('CampaignHistoryService', () => {
   const report = (overrides: Partial<CampaignReport> = {}): CampaignReport => ({
     campaignId: 'camp-1',
@@ -31,6 +33,7 @@ describe('CampaignHistoryService', () => {
     overrides: Partial<CampaignRecord> & Pick<CampaignRecord, 'id'>,
   ): CampaignRecord => ({
     sessionId: overrides.id,
+    workspaceId: WORKSPACE_ID,
     status: CampaignSessionStatus.COMPLETED,
     createdAt: '2026-07-17T11:00:00.000Z',
     completedAt: '2026-07-17T12:00:00.000Z',
@@ -56,11 +59,12 @@ describe('CampaignHistoryService', () => {
       delete: vi.fn(),
     };
 
-    const found = createService(repository).getById('session-1');
+    const found = createService(repository).getById('session-1', WORKSPACE_ID);
 
-    expect(repository.findById).toHaveBeenCalledWith('session-1');
+    expect(repository.findById).toHaveBeenCalledWith('session-1', WORKSPACE_ID);
     expect(found).toEqual({
       id: 'session-1',
+      workspaceId: WORKSPACE_ID,
       status: CampaignSessionStatus.COMPLETED,
       createdAt: '2026-07-17T11:00:00.000Z',
       completedAt: '2026-07-17T12:00:00.000Z',
@@ -79,8 +83,8 @@ describe('CampaignHistoryService', () => {
       delete: vi.fn(),
     };
 
-    expect(createService(repository).getById('missing')).toBeNull();
-    expect(repository.findById).toHaveBeenCalledWith('missing');
+    expect(createService(repository).getById('missing', WORKSPACE_ID)).toBeNull();
+    expect(repository.findById).toHaveBeenCalledWith('missing', WORKSPACE_ID);
   });
 
   it('getAll() returns empty list when repository is empty', () => {
@@ -92,7 +96,7 @@ describe('CampaignHistoryService', () => {
       delete: vi.fn(),
     };
 
-    expect(createService(repository).getAll()).toEqual([]);
+    expect(createService(repository).getAll(WORKSPACE_ID)).toEqual([]);
     expect(repository.findAll).toHaveBeenCalledTimes(1);
   });
 
@@ -110,7 +114,7 @@ describe('CampaignHistoryService', () => {
       delete: vi.fn(),
     };
 
-    const all = createService(repository).getAll();
+    const all = createService(repository).getAll(WORKSPACE_ID);
 
     expect(all).toHaveLength(2);
     expect(all.map((item) => item.id)).toEqual(['a', 'b']);
@@ -130,8 +134,8 @@ describe('CampaignHistoryService', () => {
       delete: vi.fn(),
     };
 
-    expect(createService(repository).exists('session-1')).toBe(true);
-    expect(repository.exists).toHaveBeenCalledWith('session-1');
+    expect(createService(repository).exists('session-1', WORKSPACE_ID)).toBe(true);
+    expect(repository.exists).toHaveBeenCalledWith('session-1', WORKSPACE_ID);
   });
 });
 
@@ -158,6 +162,7 @@ describe('CampaignHistoryService.search filters', () => {
     overrides: Partial<CampaignRecord> & Pick<CampaignRecord, 'id'>,
   ): CampaignRecord => ({
     sessionId: overrides.id,
+    workspaceId: WORKSPACE_ID,
     status: CampaignSessionStatus.COMPLETED,
     createdAt: '2026-07-17T11:00:00.000Z',
     completedAt: '2026-07-17T12:00:00.000Z',
@@ -207,7 +212,11 @@ describe('CampaignHistoryService.search filters', () => {
 
   it('filter by status', () => {
     const { service, findAll } = seed();
-    const result = service.search({ status: CampaignSessionStatus.FAILED }, allPage());
+    const result = service.search(
+      { status: CampaignSessionStatus.FAILED },
+      allPage(),
+      WORKSPACE_ID,
+    );
 
     expect(findAll).toHaveBeenCalledTimes(1);
     expect(result.items.map((item) => item.id)).toEqual(['s2']);
@@ -216,25 +225,28 @@ describe('CampaignHistoryService.search filters', () => {
   it('filter by engineVersion', () => {
     const { service } = seed();
     expect(
-      service.search({ engineVersion: '9.9.9' }, allPage()).items.map((item) => item.id),
+      service
+        .search({ engineVersion: '9.9.9' }, allPage(), WORKSPACE_ID)
+        .items.map((item) => item.id),
     ).toEqual(['s3']);
   });
 
   it('filter by datasetId', () => {
     const { service } = seed();
-    expect(service.search({ datasetId: 'ds-2' }, allPage()).items.map((item) => item.id)).toEqual([
-      's2',
-    ]);
+    expect(
+      service.search({ datasetId: 'ds-2' }, allPage(), WORKSPACE_ID).items.map((item) => item.id),
+    ).toEqual(['s2']);
   });
 
   it('filter by tags (all required tags must be present)', () => {
     const { service } = seed();
-    expect(service.search({ tags: ['wf'] }, allPage()).items.map((item) => item.id)).toEqual([
-      's1',
-      's2',
-    ]);
     expect(
-      service.search({ tags: ['wf', 'smoke'] }, allPage()).items.map((item) => item.id),
+      service.search({ tags: ['wf'] }, allPage(), WORKSPACE_ID).items.map((item) => item.id),
+    ).toEqual(['s1', 's2']);
+    expect(
+      service
+        .search({ tags: ['wf', 'smoke'] }, allPage(), WORKSPACE_ID)
+        .items.map((item) => item.id),
     ).toEqual(['s1']);
   });
 
@@ -248,6 +260,7 @@ describe('CampaignHistoryService.search filters', () => {
         tags: ['smoke'],
       },
       allPage(),
+      WORKSPACE_ID,
     );
 
     expect(result.items.map((item) => item.id)).toEqual(['s1']);
@@ -256,7 +269,11 @@ describe('CampaignHistoryService.search filters', () => {
 
   it('no filters returns all', () => {
     const { service, findAll } = seed();
-    expect(service.search({}, allPage()).items.map((item) => item.id)).toEqual(['s1', 's2', 's3']);
+    expect(service.search({}, allPage(), WORKSPACE_ID).items.map((item) => item.id)).toEqual([
+      's1',
+      's2',
+      's3',
+    ]);
     expect(findAll).toHaveBeenCalledTimes(1);
   });
 
@@ -265,10 +282,17 @@ describe('CampaignHistoryService.search filters', () => {
     const result = service.search(
       { status: CampaignSessionStatus.FAILED, datasetId: 'ds-1' },
       allPage(),
+      WORKSPACE_ID,
     );
     expect(result.items).toEqual([]);
     expect(result.totalItems).toBe(0);
     expect(result.totalPages).toBe(0);
+  });
+
+  it('scopes findAll by the requested workspaceId', () => {
+    const { service, findAll } = seed();
+    service.search({}, allPage(), 'ws-2');
+    expect(findAll).toHaveBeenCalledWith('ws-2');
   });
 });
 
@@ -295,6 +319,7 @@ describe('CampaignHistoryService.search pagination & sorting', () => {
     overrides: Partial<CampaignRecord> & Pick<CampaignRecord, 'id'>,
   ): CampaignRecord => ({
     sessionId: overrides.id,
+    workspaceId: WORKSPACE_ID,
     status: CampaignSessionStatus.COMPLETED,
     createdAt: '2026-07-17T11:00:00.000Z',
     completedAt: '2026-07-17T12:00:00.000Z',
@@ -351,6 +376,7 @@ describe('CampaignHistoryService.search pagination & sorting', () => {
     const page = service.search(
       {},
       { page: 1, pageSize: 2, sortBy: 'createdAt', sortDirection: 'ASC' },
+      WORKSPACE_ID,
     );
 
     expect(page.items.map((item) => item.id)).toEqual(['a', 'b']);
@@ -365,6 +391,7 @@ describe('CampaignHistoryService.search pagination & sorting', () => {
     const page = service.search(
       {},
       { page: 2, pageSize: 2, sortBy: 'createdAt', sortDirection: 'ASC' },
+      WORKSPACE_ID,
     );
 
     expect(page.items.map((item) => item.id)).toEqual(['c', 'd']);
@@ -378,6 +405,7 @@ describe('CampaignHistoryService.search pagination & sorting', () => {
     const page = service.search(
       {},
       { page: 9, pageSize: 2, sortBy: 'createdAt', sortDirection: 'ASC' },
+      WORKSPACE_ID,
     );
 
     expect(page.items).toEqual([]);
@@ -391,6 +419,7 @@ describe('CampaignHistoryService.search pagination & sorting', () => {
     const page = service.search(
       {},
       { page: 1, pageSize: 10, sortBy: 'createdAt', sortDirection: 'ASC' },
+      WORKSPACE_ID,
     );
     expect(page.items.map((item) => item.id)).toEqual(['a', 'b', 'c', 'd', 'e']);
   });
@@ -400,6 +429,7 @@ describe('CampaignHistoryService.search pagination & sorting', () => {
     const page = service.search(
       {},
       { page: 1, pageSize: 10, sortBy: 'createdAt', sortDirection: 'DESC' },
+      WORKSPACE_ID,
     );
     expect(page.items.map((item) => item.id)).toEqual(['e', 'd', 'c', 'b', 'a']);
   });
@@ -409,6 +439,7 @@ describe('CampaignHistoryService.search pagination & sorting', () => {
     const byStatus = service.search(
       {},
       { page: 1, pageSize: 10, sortBy: 'status', sortDirection: 'ASC' },
+      WORKSPACE_ID,
     );
     expect(byStatus.items.map((item) => item.status)).toEqual([
       CampaignSessionStatus.COMPLETED,
@@ -421,6 +452,7 @@ describe('CampaignHistoryService.search pagination & sorting', () => {
     const byCompleted = service.search(
       {},
       { page: 1, pageSize: 10, sortBy: 'completedAt', sortDirection: 'ASC' },
+      WORKSPACE_ID,
     );
     expect(byCompleted.items.map((item) => item.id)).toEqual(['a', 'b', 'c', 'd', 'e']);
   });
@@ -430,6 +462,7 @@ describe('CampaignHistoryService.search pagination & sorting', () => {
     const page = service.search(
       { status: CampaignSessionStatus.FAILED },
       { page: 1, pageSize: 1, sortBy: 'createdAt', sortDirection: 'ASC' },
+      WORKSPACE_ID,
     );
 
     expect(page.items.map((item) => item.id)).toEqual(['c']);

@@ -1,6 +1,7 @@
-import { Logger } from '@nestjs/common';
 import { AbstractPipelineStep } from '../../abstract-pipeline-step';
 import type { PipelineContext } from '../../pipeline-context';
+import type { Logger } from '../../../../logging/logger';
+import { NoOpLogger } from '../../../../logging/noop.logger';
 import type { CampaignSummary } from '../../../research-campaign/research-campaign.types';
 import { readCampaignInput, readExecutionState } from './campaign-context';
 import { CAMPAIGN_PIPELINE_STEP_METADATA } from './campaign-step-metadata';
@@ -10,10 +11,11 @@ import { CAMPAIGN_PIPELINE_STEP_METADATA } from './campaign-step-metadata';
  * Extracted from ResearchCampaignService.executeCampaign summary assembly.
  */
 export class AggregateResultStep extends AbstractPipelineStep {
-  private readonly logger = new Logger(AggregateResultStep.name);
+  private readonly logger: Logger;
 
-  constructor() {
+  constructor(logger: Logger = new NoOpLogger()) {
     super(CAMPAIGN_PIPELINE_STEP_METADATA.aggregate);
+    this.logger = logger.child(AggregateResultStep.name);
   }
 
   async execute(context: PipelineContext): Promise<PipelineContext> {
@@ -33,8 +35,9 @@ export class AggregateResultStep extends AbstractPipelineStep {
       failedRuns: state.failedRuns,
     };
 
-    this.logger.log(
+    this.logger.info(
       `Campaign ${summary.campaignId} finished: ${summary.passCount} pass / ${summary.failCount} fail / ${summary.needsReviewCount} needs_review / ${state.failedRuns.length} errors`,
+      { campaignId: summary.campaignId },
     );
 
     const output: PipelineContext['output'] = {

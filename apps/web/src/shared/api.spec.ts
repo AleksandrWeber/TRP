@@ -38,7 +38,7 @@ describe('runCampaign', () => {
     vi.clearAllMocks();
   });
 
-  it('POSTs /campaigns/run and returns CampaignSummary', async () => {
+  it('POSTs /v1/campaigns/run and returns CampaignSummary', async () => {
     const body = {
       datasetId: 'ds-1',
       strategyId: 'donchian-breakout',
@@ -49,7 +49,7 @@ describe('runCampaign', () => {
 
     expect(fetch).toHaveBeenCalledTimes(1);
     const [url, init] = vi.mocked(fetch).mock.calls[0]!;
-    expect(String(url)).toContain('/campaigns/run');
+    expect(String(url)).toContain('/v1/campaigns/run');
     expect(init?.method).toBe('POST');
     expect(init?.body).toBe(JSON.stringify(body));
     expect(result).toEqual(summary);

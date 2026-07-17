@@ -8,6 +8,7 @@ import type { CampaignSessionStatus } from './campaign-session-status';
  */
 export type CampaignSession = {
   id: string;
+  workspaceId: string;
   status: CampaignSessionStatus;
   createdAt: string;
   completedAt?: string;

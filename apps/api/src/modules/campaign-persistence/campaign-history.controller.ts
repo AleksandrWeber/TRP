@@ -2,10 +2,14 @@ import {
   BadRequestException,
   Controller,
   Get,
+  Headers,
   NotFoundException,
   Param,
   Query,
 } from '@nestjs/common';
+import { requireWorkspaceId } from '../../common/workspace/require-workspace';
+import { ListCampaignHistoryQueryDto, SessionIdParamDto } from '../../validation';
+import { WorkspaceDomainService } from '../workspace';
 import { CampaignSessionStatus } from '../campaign-session/campaign-session-status';
 import { CampaignHistoryService } from './campaign-history.service';
 import type { HistoryPageRequest, HistorySortBy, HistorySortDirection } from './history-page';
@@ -15,38 +19,40 @@ const SORT_BY: HistorySortBy[] = ['createdAt', 'completedAt', 'status'];
 const SORT_DIRECTION: HistorySortDirection[] = ['ASC', 'DESC'];
 const STATUSES = Object.values(CampaignSessionStatus);
 
-@Controller('campaign-history')
+@Controller({ path: 'campaign-history', version: '1' })
 export class CampaignHistoryController {
-  constructor(private readonly history: CampaignHistoryService) {}
+  constructor(
+    private readonly history: CampaignHistoryService,
+    private readonly workspaces: WorkspaceDomainService,
+  ) {}
 
   @Get()
   list(
-    @Query('page') page?: string,
-    @Query('pageSize') pageSize?: string,
-    @Query('sortBy') sortBy?: string,
-    @Query('sortDirection') sortDirection?: string,
-    @Query('status') status?: string,
-    @Query('engineVersion') engineVersion?: string,
-    @Query('datasetId') datasetId?: string,
-    @Query('tags') tags?: string | string[],
+    @Query() query: ListCampaignHistoryQueryDto = {},
+    @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
-    const pageRequest = this.toPageRequest({ page, pageSize, sortBy, sortDirection });
-    const query = this.toHistoryQuery({ status, engineVersion, datasetId, tags });
-    return this.history.search(query, pageRequest);
+    const workspaceId = requireWorkspaceId(workspaceIdHeader, this.workspaces);
+    const pageRequest = this.toPageRequest(query);
+    const historyQuery = this.toHistoryQuery(query);
+    return this.history.search(historyQuery, pageRequest, workspaceId);
   }
 
   @Get(':sessionId')
-  getById(@Param('sessionId') sessionId: string) {
-    const session = this.history.getById(sessionId);
+  getById(
+    @Param() params: SessionIdParamDto,
+    @Headers('x-workspace-id') workspaceIdHeader?: string,
+  ) {
+    const workspaceId = requireWorkspaceId(workspaceIdHeader, this.workspaces);
+    const session = this.history.getById(params.sessionId, workspaceId);
     if (!session) {
-      throw new NotFoundException(`Campaign session ${sessionId} not found`);
+      throw new NotFoundException(`Campaign session ${params.sessionId} not found`);
     }
     return session;
   }
 
   private toPageRequest(input: {
-    page?: string;
-    pageSize?: string;
+    page?: number | string;
+    pageSize?: number | string;
     sortBy?: string;
     sortDirection?: string;
   }): HistoryPageRequest {
@@ -96,7 +102,11 @@ export class CampaignHistoryController {
   }
 }
 
-function parsePositiveInt(value: string | undefined, fallback: number, name: string): number {
+function parsePositiveInt(
+  value: string | number | undefined,
+  fallback: number,
+  name: string,
+): number {
   if (value === undefined || value === '') return fallback;
   const parsed = Number(value);
   if (!Number.isInteger(parsed) || parsed <= 0) {

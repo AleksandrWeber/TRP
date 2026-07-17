@@ -3,6 +3,7 @@ import type { PipelineContext } from '../../pipeline-context';
 import type { CampaignPersistenceService } from '../../../campaign-persistence/campaign-persistence.service';
 import type { CampaignSessionFactory } from '../../../campaign-session/campaign-session.factory';
 import { CampaignSessionStatus } from '../../../campaign-session/campaign-session-status';
+import { readWorkspaceId } from '../../workspace-context';
 import { readCampaignInput, readPersistSession, readReport } from './campaign-context';
 import { CAMPAIGN_PIPELINE_STEP_METADATA } from './campaign-step-metadata';
 
@@ -32,6 +33,7 @@ export class PersistCampaignStep extends AbstractPipelineStep {
     const input = readCampaignInput(context);
     const report = readReport(context);
     const session = this.sessionFactory.create({
+      workspaceId: readWorkspaceId(context),
       report,
       metadata: { datasetId: input.datasetId },
     });

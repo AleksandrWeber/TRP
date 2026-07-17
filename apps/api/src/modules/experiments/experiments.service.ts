@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   DEFAULT_BACKTEST_CONFIG,
   defaultExperimentConfig,
@@ -13,6 +13,8 @@ import {
   validateBacktest,
 } from '@trp/research';
 import { getGitCommit } from '../../common/git';
+import type { Logger } from '../../logging/logger';
+import { LOGGER } from '../../logging/logger.token';
 import { PrismaService } from '../../storage/prisma/prisma.module';
 import { DatasetsService } from '../datasets/datasets.service';
 import { KnowledgeService } from '../knowledge/knowledge.service';
@@ -20,13 +22,16 @@ import { RESEARCH_ENGINE_VERSION, VALIDATION_VERSION } from '../knowledge/knowle
 
 @Injectable()
 export class ExperimentsService {
-  private readonly logger = new Logger(ExperimentsService.name);
+  private readonly logger: Logger;
 
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly datasetsService: DatasetsService,
-    private readonly knowledge: KnowledgeService,
-  ) {}
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(DatasetsService) private readonly datasetsService: DatasetsService,
+    @Inject(KnowledgeService) private readonly knowledge: KnowledgeService,
+    @Inject(LOGGER) logger: Logger,
+  ) {
+    this.logger = logger.child(ExperimentsService.name);
+  }
 
   async run(datasetId: string, strategyId?: string, params?: StrategyParams, sliceRef?: SliceRef) {
     const dataset = await this.prisma.dataset.findUnique({ where: { id: datasetId } });
@@ -90,8 +95,12 @@ export class ExperimentsService {
     try {
       await this.knowledge.recordFromExperiment(experiment.id);
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      this.logger.warn(`Failed to record knowledge for experiment ${experiment.id}: ${message}`);
+      this.logger.warn(`Failed to record knowledge for experiment ${experiment.id}`, {
+        campaignId: experiment.id,
+      });
+      this.logger.debug(error instanceof Error ? error.message : String(error), {
+        campaignId: experiment.id,
+      });
     }
 
     return experiment;

@@ -1,3 +1,4 @@
+import { VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
@@ -7,6 +8,13 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter({ logger: true }),
   );
+
+  // Global ValidationPipe is registered via ValidationModule (APP_PIPE) — US113.
+
+  // URI versioning: /v1/... (US114). Health / root remain VERSION_NEUTRAL.
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
 
   const corsOrigin = process.env.CORS_ORIGIN
     ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())

@@ -1,12 +1,13 @@
 import { Controller, Get, Query } from '@nestjs/common';
+import { ListEventsQueryDto } from '../../validation';
 import { EventBus } from './event-bus.service';
 
-@Controller('events')
+@Controller({ path: 'events', version: '1' })
 export class EventsController {
   constructor(private readonly eventBus: EventBus) {}
 
   @Get()
-  list(@Query('limit') limit?: string) {
-    return this.eventBus.listLogs(limit ? Number(limit) : 50);
+  list(@Query() query: ListEventsQueryDto) {
+    return this.eventBus.listLogs(query.limit ?? 50);
   }
 }

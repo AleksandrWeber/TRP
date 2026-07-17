@@ -4,6 +4,7 @@ import { CampaignSessionFactory } from '../../../campaign-session/campaign-sessi
 import { CampaignSessionStatus } from '../../../campaign-session/campaign-session-status';
 import { CampaignReportService } from '../../../research-campaign/campaign-report.service';
 import { ResearchCampaignService } from '../../../research-campaign/research-campaign.service';
+import { NoOpMetrics } from '../../../../metrics/noop.metrics';
 import { BUILTIN_PIPELINE_TEMPLATE_IDS } from '../../builtin-pipeline-templates';
 import type { PipelineContext } from '../../pipeline-context';
 import { PipelineDomainService } from '../../pipeline-domain.service';
@@ -280,7 +281,7 @@ describe('Campaign Pipeline Steps (US087)', () => {
     const pipelines = new PipelineDomainService();
     const templates = new PipelineTemplateService(pipelines);
     const service = new ResearchCampaignService(
-      new PipelineExecutor(stepRegistry, new PipelineHookRegistry()),
+      new PipelineExecutor(stepRegistry, new PipelineHookRegistry(), new NoOpMetrics()),
       templates,
       pipelines,
       deps.sessionFactory,

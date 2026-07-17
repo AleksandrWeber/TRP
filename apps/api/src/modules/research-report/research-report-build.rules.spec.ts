@@ -14,6 +14,7 @@ import { buildResearchReportDraft } from './research-report-build.rules';
 function sampleSession(id: string): CampaignSession {
   return {
     id,
+    workspaceId: 'ws-1',
     status: CampaignSessionStatus.COMPLETED,
     createdAt: '2026-07-17T10:00:00.000Z',
     completedAt: '2026-07-17T10:05:00.000Z',
@@ -41,6 +42,7 @@ function sampleSession(id: string): CampaignSession {
 function sampleKnowledge(knowledgeId: string): KnowledgeEntry {
   return {
     knowledgeId,
+    workspaceId: 'ws-1',
     experimentId: 'exp-1',
     createdAt: '2026-07-17T10:00:00.000Z',
     title: 'Finding',
@@ -54,6 +56,7 @@ function sampleKnowledge(knowledgeId: string): KnowledgeEntry {
 function sampleInsight(id: string): Insight {
   return {
     id,
+    workspaceId: 'ws-1',
     knowledgeEntryIds: ['k-1'],
     type: InsightType.PATTERN,
     title: 'Pattern',
@@ -69,6 +72,7 @@ function sampleInsight(id: string): Insight {
 function sampleRecommendation(id: string): Recommendation {
   return {
     id,
+    workspaceId: 'ws-1',
     insightIds: ['i-1'],
     campaignSessionIds: ['sess-1'],
     type: RecommendationType.REPEAT_EXPERIMENT,

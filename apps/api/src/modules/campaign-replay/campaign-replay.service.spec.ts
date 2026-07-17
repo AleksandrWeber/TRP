@@ -2,6 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CampaignSession } from '../campaign-session/campaign-session';
 import { CampaignSessionStatus } from '../campaign-session/campaign-session-status';
+import { NoOpMetrics } from '../../metrics/noop.metrics';
 import { PipelineDomainService } from '../pipeline/pipeline-domain.service';
 import { PipelineExecutor } from '../pipeline/pipeline-executor';
 import { PipelineHookRegistry } from '../pipeline/pipeline-hook-registry';
@@ -15,6 +16,7 @@ import { ReplayStatus } from './replay-status';
 function sampleSession(overrides?: Partial<CampaignSession>): CampaignSession {
   return {
     id: 'sess-source-1',
+    workspaceId: 'ws-1',
     status: CampaignSessionStatus.COMPLETED,
     createdAt: '2026-07-17T10:00:00.000Z',
     completedAt: '2026-07-17T10:05:00.000Z',
@@ -79,7 +81,11 @@ function createReplayService(
   });
   const pipelines = new PipelineDomainService();
   const templates = new PipelineTemplateService(pipelines);
-  const executor = new PipelineExecutor(stepRegistry, new PipelineHookRegistry());
+  const executor = new PipelineExecutor(
+    stepRegistry,
+    new PipelineHookRegistry(),
+    new NoOpMetrics(),
+  );
   const service = new CampaignReplayService(executor, templates, pipelines);
   return { service, templates, pipelines, executor };
 }

@@ -7,6 +7,7 @@ import type { KnowledgeTag } from './knowledge-tag';
  */
 export type KnowledgeEntry = {
   knowledgeId: string;
+  workspaceId: string;
   experimentId: string;
   createdAt: string;
   title: string;

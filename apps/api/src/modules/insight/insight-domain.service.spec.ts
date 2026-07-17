@@ -4,6 +4,8 @@ import { InsightDomainService } from './insight-domain.service';
 import { InsightSource } from './insight-source';
 import { InsightType } from './insight-type';
 
+const WORKSPACE_ID = 'ws-1';
+
 describe('InsightDomainService (US095)', () => {
   let service: InsightDomainService;
 
@@ -13,6 +15,7 @@ describe('InsightDomainService (US095)', () => {
 
   it('creates an insight with references only', () => {
     const insight = service.create({
+      workspaceId: WORKSPACE_ID,
       campaignSessionId: 'sess-1',
       experimentId: 'exp-1',
       knowledgeEntryIds: ['k-1', 'k-2'],
@@ -30,6 +33,7 @@ describe('InsightDomainService (US095)', () => {
     });
 
     expect(insight.id.length).toBeGreaterThan(0);
+    expect(insight.workspaceId).toBe(WORKSPACE_ID);
     expect(insight.campaignSessionId).toBe('sess-1');
     expect(insight.experimentId).toBe('exp-1');
     expect(insight.knowledgeEntryIds).toEqual(['k-1', 'k-2']);
@@ -49,6 +53,7 @@ describe('InsightDomainService (US095)', () => {
 
   it('defaults optional arrays and clamps confidence', () => {
     const insight = service.create({
+      workspaceId: WORKSPACE_ID,
       type: InsightType.OBSERVATION,
       title: 'Minimal',
       summary: 'Only required fields',
@@ -68,6 +73,7 @@ describe('InsightDomainService (US095)', () => {
     const sources = [InsightSource.Campaign];
 
     const insight = service.create({
+      workspaceId: WORKSPACE_ID,
       type: InsightType.TREND,
       title: 'Clone check',
       summary: 's',
@@ -84,6 +90,7 @@ describe('InsightDomainService (US095)', () => {
 
   it('updates an insight', () => {
     const created = service.create({
+      workspaceId: WORKSPACE_ID,
       type: InsightType.SUMMARY,
       title: 'Draft',
       summary: 'Initial',
@@ -91,17 +98,21 @@ describe('InsightDomainService (US095)', () => {
       knowledgeEntryIds: ['k-1'],
     });
 
-    const updated = service.update(created.id, {
-      title: 'Revised',
-      summary: 'Updated summary',
-      type: InsightType.ANOMALY,
-      confidence: 0.9,
-      knowledgeEntryIds: ['k-1', 'k-3'],
-      sources: [InsightSource.AIAnalysis],
-      metadata: { model: 'manual' },
-      campaignSessionId: 'sess-9',
-      experimentId: 'exp-9',
-    });
+    const updated = service.update(
+      created.id,
+      {
+        title: 'Revised',
+        summary: 'Updated summary',
+        type: InsightType.ANOMALY,
+        confidence: 0.9,
+        knowledgeEntryIds: ['k-1', 'k-3'],
+        sources: [InsightSource.AIAnalysis],
+        metadata: { model: 'manual' },
+        campaignSessionId: 'sess-9',
+        experimentId: 'exp-9',
+      },
+      WORKSPACE_ID,
+    );
 
     expect(updated).not.toBeNull();
     expect(updated?.id).toBe(created.id);
@@ -118,6 +129,7 @@ describe('InsightDomainService (US095)', () => {
 
   it('clears optional refs when update passes null', () => {
     const created = service.create({
+      workspaceId: WORKSPACE_ID,
       campaignSessionId: 'sess-1',
       experimentId: 'exp-1',
       type: InsightType.CORRELATION,
@@ -125,44 +137,75 @@ describe('InsightDomainService (US095)', () => {
       summary: 's',
     });
 
-    const updated = service.update(created.id, {
-      campaignSessionId: null,
-      experimentId: null,
-    });
+    const updated = service.update(
+      created.id,
+      {
+        campaignSessionId: null,
+        experimentId: null,
+      },
+      WORKSPACE_ID,
+    );
 
     expect(updated?.campaignSessionId).toBeUndefined();
     expect(updated?.experimentId).toBeUndefined();
   });
 
   it('returns null when updating missing insight', () => {
-    expect(service.update('missing', { title: 'x' })).toBeNull();
+    expect(service.update('missing', { title: 'x' }, WORKSPACE_ID)).toBeNull();
+  });
+
+  it('returns null when updating an insight in another workspace', () => {
+    const created = service.create({
+      workspaceId: WORKSPACE_ID,
+      type: InsightType.SUMMARY,
+      title: 'Draft',
+      summary: 'Initial',
+    });
+
+    expect(service.update(created.id, { title: 'x' }, 'ws-2')).toBeNull();
   });
 
   it('gets by id', () => {
     const created = service.create({
+      workspaceId: WORKSPACE_ID,
       type: InsightType.OBSERVATION,
       title: 'Get me',
       summary: 'Summary',
     });
 
-    expect(service.getById(created.id)).toBe(created);
-    expect(service.getById('missing')).toBeNull();
+    expect(service.getById(created.id, WORKSPACE_ID)).toBe(created);
+    expect(service.getById('missing', WORKSPACE_ID)).toBeNull();
+    expect(service.getById(created.id, 'ws-2')).toBeNull();
   });
 
   it('deletes an insight', () => {
     const created = service.create({
+      workspaceId: WORKSPACE_ID,
       type: InsightType.TREND,
       title: 'Delete me',
       summary: 's',
     });
 
-    expect(service.delete(created.id)).toBe(true);
-    expect(service.getById(created.id)).toBeNull();
-    expect(service.delete(created.id)).toBe(false);
+    expect(service.delete(created.id, WORKSPACE_ID)).toBe(true);
+    expect(service.getById(created.id, WORKSPACE_ID)).toBeNull();
+    expect(service.delete(created.id, WORKSPACE_ID)).toBe(false);
+  });
+
+  it('does not delete an insight from another workspace', () => {
+    const created = service.create({
+      workspaceId: WORKSPACE_ID,
+      type: InsightType.TREND,
+      title: 'Delete me',
+      summary: 's',
+    });
+
+    expect(service.delete(created.id, 'ws-2')).toBe(false);
+    expect(service.getById(created.id, WORKSPACE_ID)).not.toBeNull();
   });
 
   it('searches with AND filters', () => {
     service.create({
+      workspaceId: WORKSPACE_ID,
       type: InsightType.PATTERN,
       title: 'Donchian fee pattern',
       summary: 'Fees erase edge',
@@ -173,6 +216,7 @@ describe('InsightDomainService (US095)', () => {
     });
 
     service.create({
+      workspaceId: WORKSPACE_ID,
       type: InsightType.ANOMALY,
       title: 'EMA spike',
       summary: 'Unexpected drawdown cluster',
@@ -181,31 +225,56 @@ describe('InsightDomainService (US095)', () => {
       experimentId: 'exp-e',
     });
 
-    expect(service.search()).toHaveLength(2);
-    expect(service.search({ type: InsightType.PATTERN })).toHaveLength(1);
-    expect(service.search({ source: InsightSource.Campaign })).toHaveLength(1);
-    expect(service.search({ q: 'donchian' })[0]?.title).toMatch(/Donchian/);
-    expect(service.search({ knowledgeEntryId: 'k-ema' })).toHaveLength(1);
+    expect(service.search({}, WORKSPACE_ID)).toHaveLength(2);
+    expect(service.search({ type: InsightType.PATTERN }, WORKSPACE_ID)).toHaveLength(1);
+    expect(service.search({ source: InsightSource.Campaign }, WORKSPACE_ID)).toHaveLength(1);
+    expect(service.search({ q: 'donchian' }, WORKSPACE_ID)[0]?.title).toMatch(/Donchian/);
+    expect(service.search({ knowledgeEntryId: 'k-ema' }, WORKSPACE_ID)).toHaveLength(1);
     expect(
-      service.search({
-        type: InsightType.PATTERN,
-        experimentId: 'exp-d',
-        campaignSessionId: 'sess-d',
-        source: InsightSource.Knowledge,
-        knowledgeEntryId: 'k-donchian',
-        q: 'fee',
-      }),
+      service.search(
+        {
+          type: InsightType.PATTERN,
+          experimentId: 'exp-d',
+          campaignSessionId: 'sess-d',
+          source: InsightSource.Knowledge,
+          knowledgeEntryId: 'k-donchian',
+          q: 'fee',
+        },
+        WORKSPACE_ID,
+      ),
     ).toHaveLength(1);
     expect(
-      service.search({
-        type: InsightType.PATTERN,
-        experimentId: 'exp-e',
-      }),
+      service.search(
+        {
+          type: InsightType.PATTERN,
+          experimentId: 'exp-e',
+        },
+        WORKSPACE_ID,
+      ),
     ).toHaveLength(0);
+  });
+
+  it('does not leak insights across workspaces', () => {
+    service.create({
+      workspaceId: WORKSPACE_ID,
+      type: InsightType.PATTERN,
+      title: 'ws-1 insight',
+      summary: 'in ws-1',
+    });
+    service.create({
+      workspaceId: 'ws-2',
+      type: InsightType.PATTERN,
+      title: 'ws-2 insight',
+      summary: 'in ws-2',
+    });
+
+    expect(service.search({}, WORKSPACE_ID)).toHaveLength(1);
+    expect(service.search({}, 'ws-2')).toHaveLength(1);
   });
 
   it('does not embed KnowledgeEntry contents', () => {
     const insight = service.create({
+      workspaceId: WORKSPACE_ID,
       type: InsightType.SUMMARY,
       title: 'Reference only',
       summary: 'Points at knowledge ids',
@@ -225,6 +294,7 @@ describe('InsightDomainService (US095)', () => {
         'summary',
         'title',
         'type',
+        'workspaceId',
       ].sort(),
     );
   });

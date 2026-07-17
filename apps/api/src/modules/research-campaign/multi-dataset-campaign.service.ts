@@ -1,4 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import type { Logger } from '../../logging/logger';
+import { LOGGER } from '../../logging/logger.token';
 import { ResearchCampaignService } from './research-campaign.service';
 import type {
   MultiDatasetCampaignInput,
@@ -7,9 +9,14 @@ import type {
 
 @Injectable()
 export class MultiDatasetCampaignService {
-  private readonly logger = new Logger(MultiDatasetCampaignService.name);
+  private readonly logger: Logger;
 
-  constructor(private readonly campaigns: ResearchCampaignService) {}
+  constructor(
+    @Inject(ResearchCampaignService) private readonly campaigns: ResearchCampaignService,
+    @Inject(LOGGER) logger: Logger,
+  ) {
+    this.logger = logger.child(MultiDatasetCampaignService.name);
+  }
 
   async run(input: MultiDatasetCampaignInput): Promise<MultiDatasetCampaignSummary> {
     const campaignSummaries: MultiDatasetCampaignSummary['campaignSummaries'] = [];
@@ -39,7 +46,9 @@ export class MultiDatasetCampaignService {
         }
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
-        this.logger.warn(`Multi-dataset campaign failed for dataset ${datasetId}: ${message}`);
+        this.logger.warn(`Multi-dataset campaign failed for dataset ${datasetId}: ${message}`, {
+          datasetId,
+        });
         failedDatasetErrors.push({ datasetId, error: message });
       }
     }

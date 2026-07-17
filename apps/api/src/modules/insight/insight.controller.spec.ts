@@ -1,17 +1,22 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ApiSortOrderDto } from '../../validation';
 import { InsightType } from './insight-type';
 import { InsightController } from './insight.controller';
+
+const WORKSPACE_ID = 'ws-1';
 
 describe('InsightController (US100)', () => {
   let insights: {
     search: ReturnType<typeof vi.fn>;
     getById: ReturnType<typeof vi.fn>;
   };
+  let workspaces: { getById: ReturnType<typeof vi.fn> };
   let controller: InsightController;
 
   const insight = (id: string, overrides?: Record<string, unknown>) => ({
     id,
+    workspaceId: WORKSPACE_ID,
     type: InsightType.PATTERN,
     title: `Insight ${id}`,
     summary: 's',
@@ -28,15 +33,16 @@ describe('InsightController (US100)', () => {
       search: vi.fn(),
       getById: vi.fn(),
     };
-    controller = new InsightController(insights as never);
+    workspaces = { getById: vi.fn().mockReturnValue({ id: WORKSPACE_ID }) };
+    controller = new InsightController(insights as never, workspaces as never);
   });
 
   it('lists with default pagination and sorting', () => {
     insights.search.mockReturnValue([insight('i1')]);
 
-    const page = controller.list();
+    const page = controller.list({}, WORKSPACE_ID);
 
-    expect(insights.search).toHaveBeenCalledWith({});
+    expect(insights.search).toHaveBeenCalledWith({}, WORKSPACE_ID);
     expect(page.currentPage).toBe(1);
     expect(page.pageSize).toBe(20);
     expect(page.totalItems).toBe(1);
@@ -50,37 +56,47 @@ describe('InsightController (US100)', () => {
     ]);
 
     const page = controller.list(
-      '1',
-      '1',
-      'createdAt',
-      'ASC',
-      InsightType.PATTERN,
-      'sess-1',
-      'exp-1',
+      {
+        page: 1,
+        pageSize: 1,
+        sortBy: 'createdAt',
+        sortOrder: ApiSortOrderDto.ASC,
+        type: InsightType.PATTERN,
+        campaignSessionId: 'sess-1',
+        experimentId: 'exp-1',
+      },
+      WORKSPACE_ID,
     );
 
-    expect(insights.search).toHaveBeenCalledWith({
-      type: InsightType.PATTERN,
-      campaignSessionId: 'sess-1',
-      experimentId: 'exp-1',
-    });
+    expect(insights.search).toHaveBeenCalledWith(
+      {
+        type: InsightType.PATTERN,
+        campaignSessionId: 'sess-1',
+        experimentId: 'exp-1',
+      },
+      WORKSPACE_ID,
+    );
     expect(page.items[0]?.id).toBe('i1');
     expect(page.totalPages).toBe(2);
   });
 
   it('rejects invalid sortBy and type', () => {
-    expect(() => controller.list(undefined, undefined, 'unknown')).toThrow(BadRequestException);
-    expect(() => controller.list(undefined, undefined, undefined, undefined, 'NOPE')).toThrow(
+    expect(() => controller.list({ sortBy: 'unknown' }, WORKSPACE_ID)).toThrow(BadRequestException);
+    expect(() => controller.list({ type: 'NOPE' as InsightType }, WORKSPACE_ID)).toThrow(
       BadRequestException,
     );
     expect(insights.search).not.toHaveBeenCalled();
   });
 
+  it('rejects missing workspace header', () => {
+    expect(() => controller.list()).toThrow(BadRequestException);
+  });
+
   it('getById returns insight or 404', () => {
     insights.getById.mockReturnValue(insight('i1'));
-    expect(controller.getById('i1').id).toBe('i1');
+    expect(controller.getById({ id: 'i1' }, WORKSPACE_ID).id).toBe('i1');
 
     insights.getById.mockReturnValue(null);
-    expect(() => controller.getById('missing')).toThrow(NotFoundException);
+    expect(() => controller.getById({ id: 'missing' }, WORKSPACE_ID)).toThrow(NotFoundException);
   });
 });

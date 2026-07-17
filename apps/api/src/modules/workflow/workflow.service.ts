@@ -1,8 +1,10 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { EventBus } from '../events/event-bus.service';
 import { ExperimentsService } from '../experiments/experiments.service';
 import { KnowledgeService } from '../knowledge/knowledge.service';
+import type { Logger } from '../../logging/logger';
+import { LOGGER } from '../../logging/logger.token';
 import { PrismaService } from '../../storage/prisma/prisma.module';
 
 type WorkflowContext = {
@@ -17,14 +19,17 @@ const RESEARCH_PIPELINE_STEPS = ['run_research', 'store_knowledge', 'finish'] as
 
 @Injectable()
 export class WorkflowService {
-  private readonly logger = new Logger(WorkflowService.name);
+  private readonly logger: Logger;
 
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly events: EventBus,
-    private readonly experiments: ExperimentsService,
-    private readonly knowledge: KnowledgeService,
-  ) {}
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(EventBus) private readonly events: EventBus,
+    @Inject(ExperimentsService) private readonly experiments: ExperimentsService,
+    @Inject(KnowledgeService) private readonly knowledge: KnowledgeService,
+    @Inject(LOGGER) logger: Logger,
+  ) {
+    this.logger = logger.child(WorkflowService.name);
+  }
 
   async start(input: { type: string; datasetId?: string; approveNeedsReview?: boolean }) {
     if (input.type !== 'research_pipeline') {
@@ -143,7 +148,7 @@ export class WorkflowService {
       });
 
       await this.events.publish('WorkflowCompleted', { workflowId });
-      this.logger.log(`Workflow ${workflowId} completed`);
+      this.logger.info(`Workflow ${workflowId} completed`);
       return completed;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -167,7 +172,7 @@ export class WorkflowService {
       }
 
       await this.events.publish('WorkflowFailed', { workflowId, error: message });
-      this.logger.error(`Workflow ${workflowId} failed: ${message}`);
+      this.logger.error(`Workflow ${workflowId} failed`, { workflowId }, error);
       return this.get(workflowId);
     }
   }

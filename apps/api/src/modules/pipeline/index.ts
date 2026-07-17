@@ -8,6 +8,7 @@ export { PipelineExecutor } from './pipeline-executor';
 export type { Pipeline } from './pipeline';
 export type { PipelineRun } from './pipeline-run';
 export type { PipelineContext } from './pipeline-context';
+export { readWorkspaceId, DEFAULT_WORKSPACE_ID } from './workspace-context';
 export type { PipelineResult } from './pipeline-result';
 export type { PipelineMetadata } from './pipeline-metadata';
 export { PipelineRunStatus } from './pipeline-run-status';

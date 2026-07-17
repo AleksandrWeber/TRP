@@ -28,6 +28,7 @@ describe('CampaignSessionMapper', () => {
 
   const session = (overrides: Partial<CampaignSession> = {}): CampaignSession => ({
     id: 'session-1',
+    workspaceId: 'ws-1',
     status: CampaignSessionStatus.CREATED,
     createdAt: '2026-07-17T11:00:00.000Z',
     report: report(),
@@ -49,6 +50,7 @@ describe('CampaignSessionMapper', () => {
     expect(record).toEqual({
       id: 'session-1',
       sessionId: 'session-1',
+      workspaceId: 'ws-1',
       status: CampaignSessionStatus.COMPLETED,
       createdAt: '2026-07-17T11:00:00.000Z',
       completedAt: '2026-07-17T12:00:00.000Z',

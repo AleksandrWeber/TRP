@@ -57,7 +57,7 @@ function groupKnowledgeByCampaign(
     const linkedCampaignIds = bundle.insights
       .filter((insight) => insight.knowledgeEntryIds.includes(entry.knowledgeId))
       .map((insight) => insight.campaignSessionId)
-      .filter((id): id is string => Boolean(id) && sessionIds.has(id));
+      .filter((id): id is string => typeof id === 'string' && sessionIds.has(id));
 
     const targets =
       linkedCampaignIds.length > 0

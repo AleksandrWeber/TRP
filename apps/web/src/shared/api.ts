@@ -1,6 +1,8 @@
 import { clearAccessToken, getAccessToken } from './auth';
 
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+/** Nest URI versioning prefix (US114). Health remains unversioned. */
+const API_PREFIX = '/v1';
 
 export type Dataset = {
   id: string;
@@ -231,7 +233,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
   let res: Response;
   try {
-    res = await fetch(`${apiUrl}${path}`, {
+    res = await fetch(`${apiUrl}${API_PREFIX}${path}`, {
       ...init,
       headers,
     });

@@ -11,6 +11,7 @@ import { JsonCampaignImporter } from './json-campaign.importer';
 function sampleSession(): CampaignSession {
   return {
     id: 'sess-1',
+    workspaceId: 'ws-1',
     status: CampaignSessionStatus.COMPLETED,
     createdAt: '2026-07-17T10:00:00.000Z',
     completedAt: '2026-07-17T10:05:00.000Z',

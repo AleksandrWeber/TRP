@@ -7,6 +7,7 @@ import { ImportValidationError } from './import-validation.error';
 function sampleSession(): CampaignSession {
   return {
     id: 'sess-1',
+    workspaceId: 'ws-1',
     status: CampaignSessionStatus.COMPLETED,
     createdAt: '2026-07-17T10:00:00.000Z',
     completedAt: '2026-07-17T10:05:00.000Z',
@@ -95,5 +96,11 @@ describe('CampaignSessionValidator', () => {
     const session = sampleSession() as Record<string, unknown>;
     delete session.id;
     expect(() => validator.validate(session)).toThrow(/id must be a non-empty string/);
+  });
+
+  it('rejects missing workspaceId (US109)', () => {
+    const session = sampleSession() as Record<string, unknown>;
+    delete session.workspaceId;
+    expect(() => validator.validate(session)).toThrow(/workspaceId must be a non-empty string/);
   });
 });

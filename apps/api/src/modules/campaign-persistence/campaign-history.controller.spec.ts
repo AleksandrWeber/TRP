@@ -1,17 +1,22 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ApiSortOrderDto } from '../../validation';
 import { CampaignSessionStatus } from '../campaign-session/campaign-session-status';
 import { CampaignHistoryController } from './campaign-history.controller';
+
+const WORKSPACE_ID = 'ws-1';
 
 describe('CampaignHistoryController', () => {
   let history: {
     search: ReturnType<typeof vi.fn>;
     getById: ReturnType<typeof vi.fn>;
   };
+  let workspaces: { getById: ReturnType<typeof vi.fn> };
   let controller: CampaignHistoryController;
 
   const session = (id: string) => ({
     id,
+    workspaceId: WORKSPACE_ID,
     status: CampaignSessionStatus.COMPLETED,
     createdAt: '2026-07-17T11:00:00.000Z',
     completedAt: '2026-07-17T12:00:00.000Z',
@@ -40,7 +45,8 @@ describe('CampaignHistoryController', () => {
       search: vi.fn(),
       getById: vi.fn(),
     };
-    controller = new CampaignHistoryController(history as never);
+    workspaces = { getById: vi.fn().mockReturnValue({ id: WORKSPACE_ID }) };
+    controller = new CampaignHistoryController(history as never, workspaces as never);
   });
 
   describe('GET /campaign-history', () => {
@@ -54,7 +60,7 @@ describe('CampaignHistoryController', () => {
       };
       history.search.mockReturnValue(page);
 
-      const result = controller.list();
+      const result = controller.list({}, WORKSPACE_ID);
 
       expect(history.search).toHaveBeenCalledWith(
         {},
@@ -64,6 +70,7 @@ describe('CampaignHistoryController', () => {
           sortBy: 'createdAt',
           sortDirection: 'DESC',
         },
+        WORKSPACE_ID,
       );
       expect(result).toBe(page);
     });
@@ -77,7 +84,19 @@ describe('CampaignHistoryController', () => {
         pageSize: 5,
       });
 
-      controller.list('2', '5', 'status', 'ASC', 'FAILED', '1.0.3', 'ds-2', 'wf,smoke');
+      controller.list(
+        {
+          page: 2,
+          pageSize: 5,
+          sortBy: 'status',
+          sortDirection: ApiSortOrderDto.ASC,
+          status: 'FAILED' as CampaignSessionStatus,
+          engineVersion: '1.0.3',
+          datasetId: 'ds-2',
+          tags: 'wf,smoke',
+        },
+        WORKSPACE_ID,
+      );
 
       expect(history.search).toHaveBeenCalledWith(
         {
@@ -92,6 +111,7 @@ describe('CampaignHistoryController', () => {
           sortBy: 'status',
           sortDirection: 'ASC',
         },
+        WORKSPACE_ID,
       );
     });
 
@@ -105,18 +125,22 @@ describe('CampaignHistoryController', () => {
       };
       history.search.mockReturnValue(empty);
 
-      expect(controller.list()).toEqual(empty);
+      expect(controller.list({}, WORKSPACE_ID)).toEqual(empty);
     });
 
     it('rejects invalid page', () => {
-      expect(() => controller.list('0')).toThrow(BadRequestException);
+      expect(() => controller.list({ page: 0 }, WORKSPACE_ID)).toThrow(BadRequestException);
       expect(history.search).not.toHaveBeenCalled();
     });
 
     it('rejects invalid sortBy', () => {
-      expect(() => controller.list(undefined, undefined, 'profitFactor')).toThrow(
+      expect(() => controller.list({ sortBy: 'profitFactor' }, WORKSPACE_ID)).toThrow(
         BadRequestException,
       );
+    });
+
+    it('rejects missing workspace header', () => {
+      expect(() => controller.list()).toThrow(BadRequestException);
     });
   });
 
@@ -125,14 +149,16 @@ describe('CampaignHistoryController', () => {
       const found = session('s1');
       history.getById.mockReturnValue(found);
 
-      expect(controller.getById('s1')).toBe(found);
-      expect(history.getById).toHaveBeenCalledWith('s1');
+      expect(controller.getById({ sessionId: 's1' }, WORKSPACE_ID)).toBe(found);
+      expect(history.getById).toHaveBeenCalledWith('s1', WORKSPACE_ID);
     });
 
     it('returns 404 when session is missing', () => {
       history.getById.mockReturnValue(null);
 
-      expect(() => controller.getById('missing')).toThrow(NotFoundException);
+      expect(() => controller.getById({ sessionId: 'missing' }, WORKSPACE_ID)).toThrow(
+        NotFoundException,
+      );
     });
   });
 });

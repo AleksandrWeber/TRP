@@ -1,24 +1,20 @@
 import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import { ImportCampaignBodyDto } from '../../validation';
 import type { CampaignSession } from '../campaign-session/campaign-session';
 import { CampaignImportService } from './campaign-import.service';
 import { ImportFormat } from './import-format';
 import { ImportValidationError } from './import-validation.error';
 
-export type CampaignImportRequestBody = {
-  format?: string;
-  payload?: unknown;
-};
-
 /**
  * HTTP import of Campaign Sessions (US065).
  * Does not persist — returns validated CampaignSession only.
  */
-@Controller('campaign-import')
+@Controller({ path: 'campaign-import', version: '1' })
 export class CampaignImportController {
   constructor(private readonly campaignImport: CampaignImportService) {}
 
   @Post()
-  import(@Body() body: CampaignImportRequestBody): CampaignSession {
+  import(@Body() body: ImportCampaignBodyDto): CampaignSession {
     const format = parseImportFormat(body?.format);
     const payload = requirePayloadString(body?.payload);
 

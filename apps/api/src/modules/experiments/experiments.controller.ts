@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import type { StrategyParams } from '@trp/research';
+import { IdParamDto, RunExperimentBodyDto } from '../../validation';
 import { ExperimentsService } from './experiments.service';
 
-@Controller('experiments')
+@Controller({ path: 'experiments', version: '1' })
 export class ExperimentsController {
   constructor(private readonly experimentsService: ExperimentsService) {}
 
@@ -12,12 +12,12 @@ export class ExperimentsController {
   }
 
   @Get(':id')
-  get(@Param('id') id: string) {
-    return this.experimentsService.get(id);
+  get(@Param() params: IdParamDto) {
+    return this.experimentsService.get(params.id);
   }
 
   @Post()
-  run(@Body() body: { datasetId: string; strategyId?: string; params?: StrategyParams }) {
+  run(@Body() body: RunExperimentBodyDto) {
     return this.experimentsService.run(body.datasetId, body.strategyId, body.params);
   }
 }

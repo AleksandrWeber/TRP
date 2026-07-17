@@ -5,6 +5,7 @@ import type { CampaignReport } from '../../../research-campaign/campaign-report.
 import { BUILTIN_PIPELINE_TEMPLATE_IDS } from '../../builtin-pipeline-templates';
 import type { PipelineContext } from '../../pipeline-context';
 import { PipelineRunStatus } from '../../pipeline-run-status';
+import { DEFAULT_WORKSPACE_ID } from '../../workspace-context';
 import { ExtractKnowledgeStep } from './extract-knowledge.step';
 import { readKnowledgeEntry } from './knowledge-pipeline-context';
 import {
@@ -111,8 +112,10 @@ describe('Knowledge Pipeline Steps (US090)', () => {
       const entry = readKnowledgeEntry(result.context);
       expect(entry.experimentId).toBe('exp-pipeline-1');
       expect(entry.title).toBe('donchian-breakout on ds-1: NEEDS_REVIEW');
-      expect(wired.service.list()).toHaveLength(1);
-      expect(wired.service.getByExperimentId('exp-pipeline-1')).toEqual(entry);
+      expect(wired.service.list(DEFAULT_WORKSPACE_ID)).toHaveLength(1);
+      expect(wired.service.getByExperimentId('exp-pipeline-1', DEFAULT_WORKSPACE_ID)).toEqual(
+        entry,
+      );
     });
 
     it('matches createFromExperiment output', async () => {

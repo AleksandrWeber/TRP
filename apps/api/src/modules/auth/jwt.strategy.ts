@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import type { Role } from '@prisma/client';
+import type { Role } from '../identity/role';
+import { AuthenticationService } from './authentication.service';
 
 export type JwtPayload = {
   sub: string;
@@ -13,12 +14,20 @@ export type JwtPayload = {
 export type AuthUser = {
   userId: string;
   email: string;
+  displayName: string;
   role: Role;
 };
 
+/**
+ * Passport JWT strategy (US106, US107).
+ * Validates signature/expiry, then resolves Identity user (including role) via AuthenticationService.
+ */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(config: ConfigService) {
+  constructor(
+    config: ConfigService,
+    private readonly authentication: AuthenticationService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -27,10 +36,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   validate(payload: JwtPayload): AuthUser {
-    return {
-      userId: payload.sub,
-      email: payload.email,
-      role: payload.role,
-    };
+    if (!payload?.sub) {
+      throw new UnauthorizedException();
+    }
+    return this.authentication.resolveAuthUser(payload.sub);
   }
 }

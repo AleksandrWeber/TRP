@@ -17,26 +17,30 @@ export class CampaignHistoryService {
     private readonly mapper: CampaignSessionMapper,
   ) {}
 
-  getById(sessionId: string): CampaignSession | null {
-    const record = this.repository.findById(sessionId);
+  getById(sessionId: string, workspaceId: string): CampaignSession | null {
+    const record = this.repository.findById(sessionId, workspaceId);
     if (!record) return null;
     return this.mapper.toSession(record);
   }
 
-  getAll(): CampaignSession[] {
-    return this.repository.findAll().map((record) => this.mapper.toSession(record));
+  getAll(workspaceId: string): CampaignSession[] {
+    return this.repository.findAll(workspaceId).map((record) => this.mapper.toSession(record));
   }
 
-  exists(sessionId: string): boolean {
-    return this.repository.exists(sessionId);
+  exists(sessionId: string, workspaceId: string): boolean {
+    return this.repository.exists(sessionId, workspaceId);
   }
 
   /**
-   * Load all → filter → sort → paginate (in-service).
-   * Repository contract is unchanged — always findAll().
+   * Load all (scoped to workspaceId) → filter → sort → paginate (in-service).
+   * Repository contract is unchanged — always findAll(workspaceId).
    */
-  search(query: HistoryQuery, pageRequest: HistoryPageRequest): HistoryPage<CampaignSession> {
-    const filtered = this.getAll().filter((session) => matchesQuery(session, query));
+  search(
+    query: HistoryQuery,
+    pageRequest: HistoryPageRequest,
+    workspaceId: string,
+  ): HistoryPage<CampaignSession> {
+    const filtered = this.getAll(workspaceId).filter((session) => matchesQuery(session, query));
     const sorted = sortSessions(filtered, pageRequest.sortBy, pageRequest.sortDirection);
     return paginate(sorted, pageRequest);
   }

@@ -1,10 +1,11 @@
-import type { CreateInsightInput } from '../../../insight/insight-domain.service';
+import type { InsightDraft } from '../../../insight/insight-domain.service';
 import type { InsightDomainService } from '../../../insight/insight-domain.service';
 import { InsightSource } from '../../../insight/insight-source';
 import { InsightType } from '../../../insight/insight-type';
 import type { CrossCampaignFinding } from '../../../cross-campaign-analysis/cross-campaign-finding';
 import { AbstractPipelineStep } from '../../abstract-pipeline-step';
 import type { PipelineContext } from '../../pipeline-context';
+import { readWorkspaceId } from '../../workspace-context';
 import {
   readCrossAnalysisFindings,
   readCrossAnalysisPrepared,
@@ -22,12 +23,13 @@ export class PersistCrossAnalysisStep extends AbstractPipelineStep {
   }
 
   async execute(context: PipelineContext): Promise<PipelineContext> {
+    const workspaceId = readWorkspaceId(context);
     const prepared = readCrossAnalysisPrepared(context);
     const findings = readCrossAnalysisFindings(context);
 
     const generatedInsightIds: string[] = [];
     for (const finding of findings) {
-      const created = this.insights.create(toInsightInput(finding));
+      const created = this.insights.create({ ...toInsightInput(finding), workspaceId });
       generatedInsightIds.push(created.id);
     }
 
@@ -46,7 +48,7 @@ export class PersistCrossAnalysisStep extends AbstractPipelineStep {
   }
 }
 
-function toInsightInput(finding: CrossCampaignFinding): CreateInsightInput {
+function toInsightInput(finding: CrossCampaignFinding): InsightDraft {
   return {
     campaignSessionId: finding.campaignIds[0],
     experimentId: finding.experimentIds[0],

@@ -22,5 +22,6 @@ export type CrossCampaignAnalysisResultPayload = {
 
 export type CrossCampaignAnalysisResult = CrossCampaignAnalysisResultPayload & {
   id: string;
+  workspaceId: string;
   createdAt: string;
 };

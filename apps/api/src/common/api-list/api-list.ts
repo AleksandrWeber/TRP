@@ -29,8 +29,8 @@ export function parsePositiveInt(
 
 export function parseApiPageRequest(
   input: {
-    page?: string;
-    pageSize?: string;
+    page?: string | number;
+    pageSize?: string | number;
     sortBy?: string;
     sortOrder?: string;
   },
@@ -41,8 +41,18 @@ export function parseApiPageRequest(
     badRequest: (message: string) => Error;
   },
 ): ApiPageRequest {
-  const page = parsePositiveInt(input.page, 1, 'page', options.badRequest);
-  const pageSize = parsePositiveInt(input.pageSize, 20, 'pageSize', options.badRequest);
+  const page = parsePositiveInt(
+    input.page === undefined || input.page === '' ? undefined : String(input.page),
+    1,
+    'page',
+    options.badRequest,
+  );
+  const pageSize = parsePositiveInt(
+    input.pageSize === undefined || input.pageSize === '' ? undefined : String(input.pageSize),
+    20,
+    'pageSize',
+    options.badRequest,
+  );
   const sortBy = input.sortBy ?? options.defaultSortBy;
   if (!options.allowedSortBy.includes(sortBy)) {
     throw options.badRequest(`sortBy must be one of: ${options.allowedSortBy.join(', ')}`);

@@ -1,5 +1,9 @@
 import { Test } from '@nestjs/testing';
 import { describe, expect, it } from 'vitest';
+import { LoggingModule } from '../../logging/logging.module';
+import { MetricsModule } from '../../metrics/metrics.module';
+import { EventsModule } from '../events/events.module';
+import { PrismaModule } from '../../storage/prisma/prisma.module';
 import { InMemoryJobQueue } from './in-memory-job.queue';
 import { JobCancelConflictError } from './job-cancel-conflict.error';
 import type { JobQueue } from './job-queue';
@@ -75,7 +79,7 @@ describe('JobService + JobQueue (US070)', () => {
 
   it('DI registers JOB_QUEUE token (no concrete JobService dependency)', async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [JobsModule],
+      imports: [LoggingModule, MetricsModule, PrismaModule, EventsModule, JobsModule],
     }).compile();
 
     const service = moduleRef.get(JobService);
@@ -96,9 +100,13 @@ describe('JobService + JobQueue (US070)', () => {
         enqueued.push(job.jobId);
       },
       dequeue: () => null,
+      acknowledge: () => undefined,
+      retry: () => undefined,
       cancel: () => null,
       get: () => null,
       list: () => [],
+      listDeadLetters: () => [],
+      getEvents: () => [],
     };
 
     const service = new JobService(fakeQueue);

@@ -6,8 +6,10 @@ import type { CampaignRecord } from './campaign-record';
  */
 export interface CampaignRepository {
   save(record: CampaignRecord): void;
-  findById(id: string): CampaignRecord | null;
-  findAll(): CampaignRecord[];
-  exists(id: string): boolean;
-  delete(id: string): void;
+  /** Returns null when missing OR when the record belongs to a different workspace (US109). */
+  findById(id: string, workspaceId: string): CampaignRecord | null;
+  findAll(workspaceId: string): CampaignRecord[];
+  exists(id: string, workspaceId: string): boolean;
+  /** Deletes only when the record matches workspaceId (US109). */
+  delete(id: string, workspaceId: string): void;
 }

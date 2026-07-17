@@ -13,3 +13,6 @@ export {
   type ResearchReportBuildInput,
   type ResearchReportDraft,
 } from './research-report-build.rules';
+export type { ResearchReportRepository } from './repositories/research-report.repository';
+export { RESEARCH_REPORT_REPOSITORY } from './repositories/research-report.repository.token';
+export { InMemoryResearchReportRepository } from './repositories/in-memory-research-report.repository';

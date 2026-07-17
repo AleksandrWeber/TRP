@@ -14,6 +14,7 @@ export class CampaignSessionMapper {
     return {
       id: session.id,
       sessionId: session.id,
+      workspaceId: session.workspaceId,
       status: session.status,
       createdAt: session.createdAt,
       completedAt: session.completedAt ?? null,
@@ -25,6 +26,7 @@ export class CampaignSessionMapper {
   toSession(record: CampaignRecord): CampaignSession {
     const session: CampaignSession = {
       id: record.sessionId,
+      workspaceId: record.workspaceId,
       status: record.status,
       createdAt: record.createdAt,
       report: cloneReport(record.report),

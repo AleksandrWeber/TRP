@@ -1,4 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
+import type { Metrics } from '../../metrics/metrics';
+import { MetricNames } from '../../metrics/metrics';
+import { METRICS } from '../../metrics/metrics.token';
 import type { Pipeline } from './pipeline';
 import type { PipelineContext } from './pipeline-context';
 import type { PipelineHook } from './pipeline-hook';
@@ -21,6 +24,8 @@ export class PipelineExecutor {
     private readonly registry: PipelineRegistry,
     @Inject(PipelineHookRegistry)
     private readonly hookRegistry: PipelineHookRegistry,
+    @Inject(METRICS)
+    private readonly metrics: Metrics,
   ) {}
 
   /**
@@ -81,6 +86,8 @@ export class PipelineExecutor {
 
       await this.invokeHooks((hook) => hook.afterPipeline?.(result, run));
 
+      this.metrics.timing(MetricNames.pipelineDurationMs, duration, { success: 'true' });
+
       return result;
     } catch (error) {
       const duration = Date.now() - startedAt;
@@ -95,6 +102,8 @@ export class PipelineExecutor {
         run.finishedAt = new Date().toISOString();
         run.context = current;
       }
+
+      this.metrics.timing(MetricNames.pipelineDurationMs, duration, { success: 'false' });
 
       return {
         success: false,

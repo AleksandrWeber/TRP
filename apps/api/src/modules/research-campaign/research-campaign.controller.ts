@@ -1,9 +1,9 @@
 import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
-import type { StrategyParams } from '@trp/research';
+import { RunCampaignBodyDto } from '../../validation';
 import { CampaignReportService } from './campaign-report.service';
 import { ResearchCampaignService } from './research-campaign.service';
 
-@Controller('research-campaigns')
+@Controller({ path: 'research-campaigns', version: '1' })
 export class ResearchCampaignController {
   constructor(
     private readonly campaigns: ResearchCampaignService,
@@ -11,14 +11,7 @@ export class ResearchCampaignController {
   ) {}
 
   @Post()
-  async run(
-    @Body()
-    body: {
-      datasetId?: string;
-      strategyId?: string;
-      paramsList?: StrategyParams[];
-    },
-  ) {
+  async run(@Body() body: RunCampaignBodyDto) {
     if (!body.datasetId) {
       throw new BadRequestException('datasetId is required');
     }

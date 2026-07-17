@@ -1,6 +1,7 @@
 import type { Experiment } from '../../../experiments/experiment';
 import type { CampaignReport } from '../../../research-campaign/campaign-report.types';
 import type { KnowledgeEntry } from '../../../knowledge/knowledge-entry';
+import type { KnowledgeEntryDraft } from '../../../knowledge/knowledge-extraction.service';
 import type { PipelineContext } from '../../pipeline-context';
 
 /**
@@ -33,7 +34,7 @@ export function readPreparedExperiment(context: PipelineContext): Experiment {
 
 export function writeExtractedKnowledge(
   context: PipelineContext,
-  extracted: KnowledgeEntry,
+  extracted: KnowledgeEntryDraft,
 ): PipelineContext {
   return {
     ...context,
@@ -44,8 +45,8 @@ export function writeExtractedKnowledge(
   };
 }
 
-export function readExtractedKnowledge(context: PipelineContext): KnowledgeEntry {
-  return context.variables.extracted as KnowledgeEntry;
+export function readExtractedKnowledge(context: PipelineContext): KnowledgeEntryDraft {
+  return context.variables.extracted as KnowledgeEntryDraft;
 }
 
 export function writeKnowledgeEntry(

@@ -13,22 +13,28 @@ export class InMemoryCampaignRepository implements CampaignRepository {
     this.store.set(record.id, cloneRecord(record));
   }
 
-  findById(id: string): CampaignRecord | null {
+  findById(id: string, workspaceId: string): CampaignRecord | null {
     const found = this.store.get(id);
-    if (!found) return null;
+    if (!found || found.workspaceId !== workspaceId) return null;
     return cloneRecord(found);
   }
 
-  findAll(): CampaignRecord[] {
-    return Array.from(this.store.values()).map((record) => cloneRecord(record));
+  findAll(workspaceId: string): CampaignRecord[] {
+    return Array.from(this.store.values())
+      .filter((record) => record.workspaceId === workspaceId)
+      .map((record) => cloneRecord(record));
   }
 
-  exists(id: string): boolean {
-    return this.store.has(id);
+  exists(id: string, workspaceId: string): boolean {
+    const found = this.store.get(id);
+    return found !== undefined && found.workspaceId === workspaceId;
   }
 
-  delete(id: string): void {
-    this.store.delete(id);
+  delete(id: string, workspaceId: string): void {
+    const found = this.store.get(id);
+    if (found && found.workspaceId === workspaceId) {
+      this.store.delete(id);
+    }
   }
 }
 
@@ -36,6 +42,7 @@ function cloneRecord(record: CampaignRecord): CampaignRecord {
   return {
     id: record.id,
     sessionId: record.sessionId,
+    workspaceId: record.workspaceId,
     status: record.status,
     createdAt: record.createdAt,
     completedAt: record.completedAt,

@@ -1,7 +1,8 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { DatasetsService, type BinanceImportInput } from './datasets.service';
+import { IdParamDto, ImportBinanceBodyDto } from '../../validation';
+import { DatasetsService } from './datasets.service';
 
-@Controller('datasets')
+@Controller({ path: 'datasets', version: '1' })
 export class DatasetsController {
   constructor(private readonly datasetsService: DatasetsService) {}
 
@@ -11,13 +12,13 @@ export class DatasetsController {
   }
 
   @Post('import/binance')
-  importFromBinance(@Body() body: BinanceImportInput = {}) {
+  importFromBinance(@Body() body: ImportBinanceBodyDto = {}) {
     return this.datasetsService.importFromBinance(body);
   }
 
   @Get(':id/bars/count')
-  async barCount(@Param('id') id: string) {
-    const bars = await this.datasetsService.getBars(id);
-    return { datasetId: id, barCount: bars.length };
+  async barCount(@Param() params: IdParamDto) {
+    const bars = await this.datasetsService.getBars(params.id);
+    return { datasetId: params.id, barCount: bars.length };
   }
 }

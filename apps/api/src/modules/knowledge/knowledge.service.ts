@@ -1,6 +1,8 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { EventBus } from '../events/event-bus.service';
+import type { Logger } from '../../logging/logger';
+import { LOGGER } from '../../logging/logger.token';
 import { PrismaService } from '../../storage/prisma/prisma.module';
 import {
   buildConfigIdentityKey,
@@ -42,12 +44,15 @@ export type BackfillResult = {
 
 @Injectable()
 export class KnowledgeService {
-  private readonly logger = new Logger(KnowledgeService.name);
+  private readonly logger: Logger;
 
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly events: EventBus,
-  ) {}
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(EventBus) private readonly events: EventBus,
+    @Inject(LOGGER) logger: Logger,
+  ) {
+    this.logger = logger.child(KnowledgeService.name);
+  }
 
   private getResearchEngineVersion(): string {
     return process.env.RESEARCH_ENGINE_VERSION ?? RESEARCH_ENGINE_VERSION;
@@ -88,7 +93,7 @@ export class KnowledgeService {
       },
     });
 
-    this.logger.log(`Knowledge created ${entry.id}`);
+    this.logger.info(`Knowledge created ${entry.id}`);
     await this.events.publish('KnowledgeCreated', { knowledgeId: entry.id, type: entry.type });
     return entry;
   }
@@ -142,6 +147,7 @@ export class KnowledgeService {
     if (existing) {
       this.logger.debug(
         `Knowledge duplicate skipped for experiment ${experimentId} (${resultIdentityDedupeKey})`,
+        { campaignId: experimentId },
       );
       return { status: 'duplicate', existingId: existing.id };
     }
@@ -150,6 +156,7 @@ export class KnowledgeService {
     if (legacyExisting) {
       this.logger.debug(
         `Knowledge legacy duplicate skipped for experiment ${experimentId} (${configIdentityKey})`,
+        { campaignId: experimentId },
       );
       return { status: 'duplicate', existingId: legacyExisting.id };
     }
@@ -195,7 +202,9 @@ export class KnowledgeService {
       },
     });
 
-    this.logger.log(`Research knowledge created ${entry.id} from experiment ${experimentId}`);
+    this.logger.info(`Research knowledge created ${entry.id} from experiment ${experimentId}`, {
+      campaignId: experimentId,
+    });
     await this.events.publish('KnowledgeCreated', { knowledgeId: entry.id, type: entry.type });
     await this.events.publish('KnowledgeStored', { knowledgeId: entry.id, experimentId });
     return { status: 'created', entry };
@@ -229,7 +238,7 @@ export class KnowledgeService {
       else if (verdict === 'needs_review') result.needs_review += 1;
     }
 
-    this.logger.log(
+    this.logger.info(
       `Knowledge backfill complete: ${result.created} created, ${result.duplicatesSkipped} duplicates skipped`,
     );
     return result;

@@ -1,6 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { WalkForwardCampaignService } from './walk-forward-campaign.service';
+import { NoOpLogger } from '../../logging/noop.logger';
 import type { WalkForwardCampaignRequest } from './walk-forward-campaign.types';
 
 describe('WalkForwardCampaignService', () => {
@@ -11,7 +12,11 @@ describe('WalkForwardCampaignService', () => {
   beforeEach(() => {
     campaigns = { run: vi.fn() };
     experiments = { run: vi.fn() };
-    service = new WalkForwardCampaignService(campaigns as never, experiments as never);
+    service = new WalkForwardCampaignService(
+      campaigns as never,
+      experiments as never,
+      new NoOpLogger(),
+    );
   });
 
   const validRequest = (
@@ -269,7 +274,11 @@ describe('WalkForwardCampaignService aggregate report', () => {
   beforeEach(() => {
     campaigns = { run: vi.fn() };
     experiments = { run: vi.fn().mockResolvedValue({ id: 't', verdict: 'pass', metrics: {} }) };
-    service = new WalkForwardCampaignService(campaigns as never, experiments as never);
+    service = new WalkForwardCampaignService(
+      campaigns as never,
+      experiments as never,
+      new NoOpLogger(),
+    );
   });
 
   const request = (): WalkForwardCampaignRequest => ({
@@ -522,7 +531,11 @@ describe('WalkForwardCampaignService true slice execution', () => {
   beforeEach(() => {
     campaigns = { run: vi.fn() };
     experiments = { run: vi.fn().mockResolvedValue({ id: 't', verdict: 'pass', metrics: {} }) };
-    service = new WalkForwardCampaignService(campaigns as never, experiments as never);
+    service = new WalkForwardCampaignService(
+      campaigns as never,
+      experiments as never,
+      new NoOpLogger(),
+    );
   });
 
   const request = (): WalkForwardCampaignRequest => ({
@@ -715,7 +728,11 @@ describe('WalkForwardCampaignService test evaluation', () => {
   beforeEach(() => {
     campaigns = { run: vi.fn() };
     experiments = { run: vi.fn() };
-    service = new WalkForwardCampaignService(campaigns as never, experiments as never);
+    service = new WalkForwardCampaignService(
+      campaigns as never,
+      experiments as never,
+      new NoOpLogger(),
+    );
   });
 
   const request = (): WalkForwardCampaignRequest => ({

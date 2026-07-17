@@ -9,6 +9,7 @@ import { RecommendationType } from './recommendation-type';
 function insight(partial: Partial<Insight> & Pick<Insight, 'type' | 'title' | 'summary'>): Insight {
   return {
     id: partial.id ?? 'insight-1',
+    workspaceId: partial.workspaceId ?? 'ws-1',
     knowledgeEntryIds: partial.knowledgeEntryIds ?? [],
     sources: partial.sources ?? [InsightSource.Knowledge],
     metadata: partial.metadata ?? {},

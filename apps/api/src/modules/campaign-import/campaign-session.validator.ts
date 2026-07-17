@@ -22,6 +22,7 @@ export class CampaignSessionValidator {
     }
 
     const id = requireNonEmptyString(input, 'id');
+    const workspaceId = requireNonEmptyString(input, 'workspaceId');
     const status = requireStatus(input.status);
     const createdAt = requireTimestamp(input, 'createdAt');
     const completedAt =
@@ -39,6 +40,7 @@ export class CampaignSessionValidator {
 
     return {
       id,
+      workspaceId,
       status,
       createdAt,
       ...(completedAt !== undefined ? { completedAt } : {}),

@@ -4,6 +4,7 @@ import type { CampaignReport } from '../research-campaign/campaign-report.types'
 import { createKnowledgeDomainService } from './knowledge-domain.test-utils';
 import { KnowledgeDomainService } from './knowledge-domain.service';
 import { KnowledgeExtractionService } from './knowledge-extraction.service';
+import { DEFAULT_WORKSPACE_ID } from '../pipeline/workspace-context';
 
 function sampleReport(overrides?: Partial<CampaignReport>): CampaignReport {
   return {
@@ -65,7 +66,7 @@ describe('KnowledgeExtractionService (US077 / US090)', () => {
     expect(entry.knowledgeId.length).toBeGreaterThan(0);
     expect(entry.title).toBe('donchian-breakout on ds-1: NEEDS_REVIEW');
     expect(entry.createdAt).toBe('2026-07-17T10:04:00.000Z');
-    expect(knowledge.list()).toHaveLength(1);
+    expect(knowledge.list(DEFAULT_WORKSPACE_ID)).toHaveLength(1);
   });
 
   it('updates existing knowledge instead of duplicating', async () => {
@@ -102,8 +103,10 @@ describe('KnowledgeExtractionService (US077 / US090)', () => {
     expect(second.createdAt).toBe(first.createdAt);
     expect(second.title).toBe('donchian-breakout on ds-1: FAIL');
     expect(second.summary).toContain('verdict FAIL');
-    expect(knowledge.list()).toHaveLength(1);
-    expect(knowledge.getByExperimentId('exp-domain-1')?.knowledgeId).toBe(first.knowledgeId);
+    expect(knowledge.list(DEFAULT_WORKSPACE_ID)).toHaveLength(1);
+    expect(knowledge.getByExperimentId('exp-domain-1', DEFAULT_WORKSPACE_ID)?.knowledgeId).toBe(
+      first.knowledgeId,
+    );
   });
 
   it('is deterministic for the same experiment version', () => {
@@ -126,7 +129,7 @@ describe('KnowledgeExtractionService (US077 / US090)', () => {
     await knowledge.createFromExperiment(experiment);
     await knowledge.createFromExperiment(experiment);
 
-    expect(knowledge.list()).toHaveLength(1);
+    expect(knowledge.list(DEFAULT_WORKSPACE_ID)).toHaveLength(1);
   });
 
   it('maps tags from strategy, dataset, verdict, and version', () => {

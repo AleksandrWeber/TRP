@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CampaignSessionStatus } from '../campaign-session/campaign-session-status';
 import { ReplayStatus } from '../campaign-replay/replay-status';
+import { NoOpMetrics } from '../../metrics/noop.metrics';
 import { BackgroundJobRunner } from './background-job.runner';
 import { InMemoryJobQueue } from './in-memory-job.queue';
 import { JobService } from './job.service';
@@ -10,6 +11,7 @@ import { JobType } from './job-type';
 function sampleSession() {
   return {
     id: 'sess-1',
+    workspaceId: 'ws-1',
     status: CampaignSessionStatus.COMPLETED,
     createdAt: '2026-07-17T10:00:00.000Z',
     completedAt: '2026-07-17T10:05:00.000Z',
@@ -51,7 +53,12 @@ describe('BackgroundJobRunner', () => {
     campaigns = { run: vi.fn() };
     replays = { execute: vi.fn() };
     persistence = { save: vi.fn() };
-    runner = new BackgroundJobRunner(queue, campaigns as never, replays as never);
+    runner = new BackgroundJobRunner(
+      queue,
+      campaigns as never,
+      replays as never,
+      new NoOpMetrics(),
+    );
   });
 
   it('processes a campaign job to COMPLETED with result', async () => {

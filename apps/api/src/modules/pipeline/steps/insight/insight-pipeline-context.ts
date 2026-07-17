@@ -1,5 +1,5 @@
 import type { CampaignSession } from '../../../campaign-session/campaign-session';
-import type { CreateInsightInput } from '../../../insight/insight-domain.service';
+import type { InsightDraft } from '../../../insight/insight-domain.service';
 import type { Insight } from '../../../insight/insight';
 import type { KnowledgeEntry } from '../../../knowledge/knowledge-entry';
 import type { PipelineContext } from '../../pipeline-context';
@@ -67,7 +67,7 @@ export function readInsightExtractionContext(context: PipelineContext): InsightE
 
 export function writeInsightDrafts(
   context: PipelineContext,
-  drafts: CreateInsightInput[],
+  drafts: InsightDraft[],
 ): PipelineContext {
   return {
     ...context,
@@ -78,9 +78,9 @@ export function writeInsightDrafts(
   };
 }
 
-export function readInsightDrafts(context: PipelineContext): CreateInsightInput[] {
+export function readInsightDrafts(context: PipelineContext): InsightDraft[] {
   const drafts = context.variables.insightDrafts;
-  return Array.isArray(drafts) ? (drafts as CreateInsightInput[]) : [];
+  return Array.isArray(drafts) ? (drafts as InsightDraft[]) : [];
 }
 
 export function writePersistedInsights(

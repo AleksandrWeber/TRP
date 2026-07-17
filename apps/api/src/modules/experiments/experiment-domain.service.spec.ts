@@ -28,6 +28,7 @@ function sampleReport(overrides?: Partial<CampaignReport>): CampaignReport {
 function sampleSession(overrides?: Partial<CampaignSession>): CampaignSession {
   return {
     id: overrides?.id ?? 'sess-1',
+    workspaceId: overrides?.workspaceId ?? 'ws-1',
     status: CampaignSessionStatus.COMPLETED,
     createdAt: '2026-07-17T10:00:00.000Z',
     completedAt: '2026-07-17T10:05:00.000Z',

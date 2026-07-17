@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CampaignSessionFactory } from '../campaign-session/campaign-session.factory';
 import { CampaignSessionStatus } from '../campaign-session/campaign-session-status';
+import { NoOpMetrics } from '../../metrics/noop.metrics';
 import { PipelineDomainService } from '../pipeline/pipeline-domain.service';
 import { PipelineExecutor } from '../pipeline/pipeline-executor';
 import { PipelineHookRegistry } from '../pipeline/pipeline-hook-registry';
@@ -29,7 +30,11 @@ function createCampaignService(experiments: { run: ReturnType<typeof vi.fn> }) {
     persistence: persistence as never,
   });
 
-  const executor = new PipelineExecutor(stepRegistry, new PipelineHookRegistry());
+  const executor = new PipelineExecutor(
+    stepRegistry,
+    new PipelineHookRegistry(),
+    new NoOpMetrics(),
+  );
   const pipelines = new PipelineDomainService();
   const templates = new PipelineTemplateService(pipelines);
 

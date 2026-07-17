@@ -2,6 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CampaignReplayService } from '../campaign-replay/campaign-replay.service';
 import { ReplayStatus } from '../campaign-replay/replay-status';
 import { ResearchCampaignService } from '../research-campaign/research-campaign.service';
+import type { Metrics } from '../../metrics/metrics';
+import { MetricNames } from '../../metrics/metrics';
+import { METRICS } from '../../metrics/metrics.token';
 import type { Job } from './job';
 import type { JobQueue } from './job-queue';
 import { JOB_QUEUE } from './job-queue.token';
@@ -10,22 +13,24 @@ import { JobStatus } from './job-status';
 import { JobType } from './job-type';
 
 /**
- * Executes queued Campaign / Replay jobs via existing services (US071–US073).
- * Uses JOB_QUEUE only — no Repository, History, or HTTP.
+ * Executes queued Campaign / Replay jobs via existing services (US071–US073, US110).
+ * Uses JOB_QUEUE only — acknowledge on success, retry (backoff / DLQ) on failure.
  * CANCELLED jobs are never dequeued for execution (skipped).
  */
 @Injectable()
 export class BackgroundJobRunner implements JobRunner {
+  private active = 0;
+
   constructor(
     @Inject(JOB_QUEUE) private readonly queue: JobQueue,
-    private readonly campaigns: ResearchCampaignService,
-    private readonly replays: CampaignReplayService,
+    @Inject(ResearchCampaignService) private readonly campaigns: ResearchCampaignService,
+    @Inject(CampaignReplayService) private readonly replays: CampaignReplayService,
+    @Inject(METRICS) private readonly metrics: Metrics,
   ) {}
 
   async processNext(): Promise<Job | null> {
     const job = this.queue.dequeue();
     if (!job) return null;
-    // dequeue only returns PENDING; CANCELLED are skipped in the queue
     if (job.status === JobStatus.CANCELLED) return null;
     return this.executeJob(job);
   }
@@ -42,6 +47,9 @@ export class BackgroundJobRunner implements JobRunner {
     job.status = JobStatus.RUNNING;
     job.startedAt = new Date().toISOString();
 
+    this.active += 1;
+    this.metrics.gauge(MetricNames.activeJobs, this.active);
+
     try {
       if (job.type === JobType.CAMPAIGN) {
         await this.executeCampaign(job);
@@ -57,14 +65,27 @@ export class BackgroundJobRunner implements JobRunner {
         success: true,
         message: `${job.type} job completed`,
       };
+      this.queue.acknowledge(job.jobId);
+      this.metrics.increment(MetricNames.jobsProcessedTotal, 1, {
+        type: job.type,
+        status: 'completed',
+      });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      job.status = JobStatus.FAILED;
       job.completedAt = new Date().toISOString();
       job.result = {
         success: false,
         error: message,
       };
+      this.queue.retry(job.jobId, message);
+      this.metrics.increment(MetricNames.jobsProcessedTotal, 1, {
+        type: job.type,
+        status: 'failed',
+      });
+      this.metrics.increment(MetricNames.jobsFailedTotal, 1, { type: job.type });
+    } finally {
+      this.active -= 1;
+      this.metrics.gauge(MetricNames.activeJobs, this.active);
     }
 
     return job;

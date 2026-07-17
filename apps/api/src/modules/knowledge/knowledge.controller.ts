@@ -1,18 +1,22 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Param, Post, Query } from '@nestjs/common';
+import { requireWorkspaceId } from '../../common/workspace/require-workspace';
+import { CreateKnowledgeBodyDto, IdParamDto, ListKnowledgeQueryDto } from '../../validation';
+import { WorkspaceDomainService } from '../workspace';
 import type { KnowledgeEntry } from './knowledge-entry';
 import { KnowledgeDomainService } from './knowledge-domain.service';
 import { KnowledgeService } from './knowledge.service';
 
 /**
  * Knowledge HTTP API.
- * GET /knowledge → in-memory KnowledgeEntry search (US079).
- * Other routes remain Prisma research_outcome (legacy).
+ * GET /knowledge → in-memory KnowledgeEntry search (US079), scoped by X-Workspace-Id (US109).
+ * Other routes remain Prisma research_outcome (legacy) — not workspace-scoped.
  */
-@Controller('knowledge')
+@Controller({ path: 'knowledge', version: '1' })
 export class KnowledgeController {
   constructor(
     private readonly knowledgeService: KnowledgeService,
     private readonly domain: KnowledgeDomainService,
+    private readonly workspaces: WorkspaceDomainService,
   ) {}
 
   /**
@@ -22,11 +26,11 @@ export class KnowledgeController {
    */
   @Get()
   list(
-    @Query('q') q?: string,
-    @Query('tag') tag?: string,
-    @Query('experimentId') experimentId?: string,
+    @Query() query: ListKnowledgeQueryDto,
+    @Headers('x-workspace-id') workspaceIdHeader?: string,
   ): KnowledgeEntry[] {
-    return this.domain.find({ q, tag, experimentId });
+    const workspaceId = requireWorkspaceId(workspaceIdHeader, this.workspaces);
+    return this.domain.find(query, workspaceId);
   }
 
   @Post('backfill')
@@ -35,27 +39,12 @@ export class KnowledgeController {
   }
 
   @Get(':id')
-  get(@Param('id') id: string) {
-    return this.knowledgeService.get(id);
+  get(@Param() params: IdParamDto) {
+    return this.knowledgeService.get(params.id);
   }
 
   @Post()
-  create(
-    @Body()
-    body: {
-      type: string;
-      title: string;
-      description: string;
-      category: string;
-      tags?: string[];
-      validationStatus: string;
-      workflowId?: string;
-      experimentId?: string;
-      authorEmail?: string;
-      payload: Record<string, unknown>;
-      parentId?: string;
-    },
-  ) {
+  create(@Body() body: CreateKnowledgeBodyDto) {
     return this.knowledgeService.create(body);
   }
 }

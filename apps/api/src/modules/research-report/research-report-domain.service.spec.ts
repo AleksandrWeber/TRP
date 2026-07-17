@@ -9,17 +9,21 @@ import type { Recommendation } from '../recommendation/recommendation';
 import { RecommendationPriority } from '../recommendation/recommendation-priority';
 import { RecommendationType } from '../recommendation/recommendation-type';
 import { ReportSectionType } from './report-section-type';
+import { InMemoryResearchReportRepository } from './repositories/in-memory-research-report.repository';
 import { ResearchReportDomainService } from './research-report-domain.service';
+
+const WORKSPACE_ID = 'ws-1';
 
 describe('ResearchReportDomainService (US099)', () => {
   let service: ResearchReportDomainService;
 
   beforeEach(() => {
-    service = new ResearchReportDomainService();
+    service = new ResearchReportDomainService(new InMemoryResearchReportRepository());
   });
 
   it('creates a report with references only', () => {
     const report = service.create({
+      workspaceId: WORKSPACE_ID,
       campaignSessionIds: ['sess-1'],
       knowledgeEntryIds: ['k-1'],
       insightIds: ['i-1'],
@@ -35,6 +39,7 @@ describe('ResearchReportDomainService (US099)', () => {
     });
 
     expect(report.id.length).toBeGreaterThan(0);
+    expect(report.workspaceId).toBe(WORKSPACE_ID);
     expect(report.campaignSessionIds).toEqual(['sess-1']);
     expect(report.knowledgeEntryIds).toEqual(['k-1']);
     expect(report.insightIds).toEqual(['i-1']);
@@ -51,7 +56,7 @@ describe('ResearchReportDomainService (US099)', () => {
     const campaignSessionIds = ['sess-1'];
     const sections = [{ type: ReportSectionType.FINDINGS, itemIds: ['k-1'] }];
 
-    const report = service.create({ campaignSessionIds, sections });
+    const report = service.create({ workspaceId: WORKSPACE_ID, campaignSessionIds, sections });
 
     campaignSessionIds.push('mutated');
     sections[0]!.itemIds.push('mutated');
@@ -62,41 +67,56 @@ describe('ResearchReportDomainService (US099)', () => {
   });
 
   it('getById returns stored report or null', () => {
-    const created = service.create({ insightIds: ['i-1'] });
-    expect(service.getById(created.id)?.insightIds).toEqual(['i-1']);
-    expect(service.getById('missing')).toBeNull();
+    const created = service.create({ workspaceId: WORKSPACE_ID, insightIds: ['i-1'] });
+    expect(service.getById(created.id, WORKSPACE_ID)?.insightIds).toEqual(['i-1']);
+    expect(service.getById('missing', WORKSPACE_ID)).toBeNull();
+    expect(service.getById(created.id, 'ws-2')).toBeNull();
   });
 
   it('searches with AND filters', () => {
     service.create({
+      workspaceId: WORKSPACE_ID,
       campaignSessionIds: ['sess-a'],
       knowledgeEntryIds: ['k-a'],
       insightIds: ['i-a'],
       recommendationIds: ['r-a'],
     });
     service.create({
+      workspaceId: WORKSPACE_ID,
       campaignSessionIds: ['sess-b'],
       knowledgeEntryIds: ['k-b'],
       insightIds: ['i-b'],
       recommendationIds: ['r-b'],
     });
 
-    expect(service.search({ campaignSessionId: 'sess-a' })).toHaveLength(1);
-    expect(service.search({ knowledgeEntryId: 'k-b' })).toHaveLength(1);
-    expect(service.search({ insightId: 'i-a' })).toHaveLength(1);
-    expect(service.search({ recommendationId: 'r-b' })).toHaveLength(1);
+    expect(service.search({ campaignSessionId: 'sess-a' }, WORKSPACE_ID)).toHaveLength(1);
+    expect(service.search({ knowledgeEntryId: 'k-b' }, WORKSPACE_ID)).toHaveLength(1);
+    expect(service.search({ insightId: 'i-a' }, WORKSPACE_ID)).toHaveLength(1);
+    expect(service.search({ recommendationId: 'r-b' }, WORKSPACE_ID)).toHaveLength(1);
     expect(
-      service.search({
-        campaignSessionId: 'sess-a',
-        insightId: 'i-b',
-      }),
+      service.search(
+        {
+          campaignSessionId: 'sess-a',
+          insightId: 'i-b',
+        },
+        WORKSPACE_ID,
+      ),
     ).toHaveLength(0);
+  });
+
+  it('does not leak reports across workspaces', () => {
+    service.create({ workspaceId: WORKSPACE_ID, insightIds: ['i-1'] });
+    service.create({ workspaceId: 'ws-2', insightIds: ['i-2'] });
+
+    expect(service.search({}, WORKSPACE_ID)).toHaveLength(1);
+    expect(service.search({}, 'ws-2')).toHaveLength(1);
   });
 
   it('build aggregates entities into a stored structured report', () => {
     const sessions: CampaignSession[] = [
       {
         id: 'sess-1',
+        workspaceId: WORKSPACE_ID,
         status: CampaignSessionStatus.COMPLETED,
         createdAt: '2026-07-17T10:00:00.000Z',
         metadata: { datasetId: 'ds-1' },
@@ -122,6 +142,7 @@ describe('ResearchReportDomainService (US099)', () => {
     const knowledgeEntries: KnowledgeEntry[] = [
       {
         knowledgeId: 'k-1',
+        workspaceId: WORKSPACE_ID,
         experimentId: 'exp-1',
         createdAt: '2026-07-17T10:00:00.000Z',
         title: 'Finding title must not leak',
@@ -134,6 +155,7 @@ describe('ResearchReportDomainService (US099)', () => {
     const insights: Insight[] = [
       {
         id: 'i-1',
+        workspaceId: WORKSPACE_ID,
         knowledgeEntryIds: ['k-1'],
         type: InsightType.TREND,
         title: 'Trend',
@@ -147,6 +169,7 @@ describe('ResearchReportDomainService (US099)', () => {
     const recommendations: Recommendation[] = [
       {
         id: 'r-1',
+        workspaceId: WORKSPACE_ID,
         insightIds: ['i-1'],
         campaignSessionIds: ['sess-1'],
         type: RecommendationType.EXPAND_SCOPE,
@@ -159,13 +182,17 @@ describe('ResearchReportDomainService (US099)', () => {
       },
     ];
 
-    const report = service.build({
-      sessions,
-      knowledgeEntries,
-      insights,
-      recommendations,
-    });
+    const report = service.build(
+      {
+        sessions,
+        knowledgeEntries,
+        insights,
+        recommendations,
+      },
+      WORKSPACE_ID,
+    );
 
+    expect(report.workspaceId).toBe(WORKSPACE_ID);
     expect(report.campaignSessionIds).toEqual(['sess-1']);
     expect(report.knowledgeEntryIds).toEqual(['k-1']);
     expect(report.insightIds).toEqual(['i-1']);
@@ -177,7 +204,7 @@ describe('ResearchReportDomainService (US099)', () => {
       ReportSectionType.RECOMMENDATIONS,
       ReportSectionType.REFERENCES,
     ]);
-    expect(service.getById(report.id)).toEqual(report);
+    expect(service.getById(report.id, WORKSPACE_ID)).toEqual(report);
     expect(JSON.stringify(report)).not.toContain('Finding title must not leak');
   });
 });

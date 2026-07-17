@@ -1,11 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
+import { NoOpLogger } from '../../logging/noop.logger';
 import { EventBus } from './event-bus.service';
 
 describe('EventBus', () => {
   it('delivers events to typed and wildcard handlers', async () => {
     const create = vi.fn().mockResolvedValue({});
     const prisma = { domainEventLog: { create } } as never;
-    const bus = new EventBus(prisma);
+    const bus = new EventBus(prisma, new NoOpLogger());
     bus.onModuleInit();
 
     const seen: string[] = [];

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AbstractPipelineStep } from './abstract-pipeline-step';
 import { LoggingPipelineHook } from './logging-pipeline-hook';
+import { NoOpMetrics } from '../../metrics/noop.metrics';
 import type { Pipeline } from './pipeline';
 import type { PipelineContext } from './pipeline-context';
 import { PipelineExecutor } from './pipeline-executor';
@@ -77,7 +78,7 @@ describe('PipelineExecutor hooks (US084)', () => {
   beforeEach(() => {
     stepRegistry = new PipelineRegistry();
     hookRegistry = new PipelineHookRegistry();
-    executor = new PipelineExecutor(stepRegistry, hookRegistry);
+    executor = new PipelineExecutor(stepRegistry, hookRegistry, new NoOpMetrics());
   });
 
   it('calls beforePipeline', async () => {

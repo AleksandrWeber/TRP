@@ -66,6 +66,7 @@ vi.mock('../../common/git', () => ({
 }));
 
 import { ExperimentsService } from './experiments.service';
+import { NoOpLogger } from '../../logging/noop.logger';
 import {
   KNOWLEDGE_SCHEMA_VERSION,
   RESEARCH_ENGINE_VERSION,
@@ -112,21 +113,21 @@ describe('ExperimentsService provenance', () => {
   });
 
   it('stores researchEngineVersion in report', async () => {
-    const service = new ExperimentsService(prisma, datasetsService, knowledge);
+    const service = new ExperimentsService(prisma, datasetsService, knowledge, new NoOpLogger());
     const experiment = await service.run('ds-1');
 
     expect(experiment.report.researchEngineVersion).toBe(RESEARCH_ENGINE_VERSION);
   });
 
   it('stores validationVersion in report', async () => {
-    const service = new ExperimentsService(prisma, datasetsService, knowledge);
+    const service = new ExperimentsService(prisma, datasetsService, knowledge, new NoOpLogger());
     const experiment = await service.run('ds-1');
 
     expect(experiment.report.validationVersion).toBe(VALIDATION_VERSION);
   });
 
   it('report versions match the single version source', async () => {
-    const service = new ExperimentsService(prisma, datasetsService, knowledge);
+    const service = new ExperimentsService(prisma, datasetsService, knowledge, new NoOpLogger());
     const experiment = await service.run('ds-1');
 
     expect(experiment.report.researchEngineVersion).toBe(RESEARCH_ENGINE_VERSION);

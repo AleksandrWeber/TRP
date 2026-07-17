@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MultiDatasetCampaignService } from './multi-dataset-campaign.service';
+import { NoOpLogger } from '../../logging/noop.logger';
 
 describe('MultiDatasetCampaignService', () => {
   let campaigns: { run: ReturnType<typeof vi.fn> };
@@ -9,7 +10,7 @@ describe('MultiDatasetCampaignService', () => {
     campaigns = {
       run: vi.fn(),
     };
-    service = new MultiDatasetCampaignService(campaigns as never);
+    service = new MultiDatasetCampaignService(campaigns as never, new NoOpLogger());
   });
 
   it('runs a single dataset campaign', async () => {
