@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E7)
+Last updated: 2026-07-18 (RC-16 M2 Epic E8 US159–US161)
 
 Living roadmap for product direction.
 
@@ -176,7 +176,10 @@ Architecture changes require a new ADR.
 Current: M1 complete (US126–US152). M2 Epic E7 complete (US153–US158):
 decimal financial contracts, durable paper accounts, PostgreSQL Event
 Processing runtime, Trading Sessions with fenced eligibility, and trading
-command authorization/JWT hardening. Next: M2 Epic E8.
+command authorization/JWT hardening.
+M2 Epic E8 progress: US159–US161 complete — deterministic paper Order Intents,
+Orders-owned lifecycle/history, and transactional PostgreSQL Order + Outbox
+persistence. Next: US162 Ledger-owned cash reservation.
 Mini Validation follows M2, M4, and M6.
 
 ---

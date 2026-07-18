@@ -1,0 +1,193 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { PrismaTransactionService } from '../../storage/prisma/prisma-transaction.service';
+import { toDurableEventId, type DurableEventEnvelope } from '../event-processing';
+import { TransactionalOutboxAppender } from '../event-processing/transactional-outbox-appender';
+import {
+  PAPER_ACCOUNT_REPOSITORY,
+  type PaperAccountRepository,
+} from '../paper-account/persistence/paper-account.repository';
+import { assertExecutionEligible } from '../trading-session/domain/execution-eligibility';
+import {
+  TRADING_SESSION_REPOSITORY,
+  type TradingSessionRepository,
+} from '../trading-session/persistence/trading-session.repository';
+import {
+  createOrder,
+  transitionOrder,
+  type Order,
+  type OrderTransitionInput,
+} from './domain/order';
+import { createOrderIntent, type CreateOrderIntentInput } from './domain/order-intent';
+import { OrderStatus } from './domain/order-status';
+import { ORDER_REPOSITORY, type OrderRepository } from './persistence/order.repository';
+
+export type CreateOrderCommand = CreateOrderIntentInput &
+  Readonly<{
+    /** Operational lease check only; excluded from intent identity. */
+    eligibilityCheckedAt: string;
+  }>;
+
+export type TransitionOrderCommand = Readonly<{
+  workspaceId: string;
+  orderId: string;
+  expectedVersion: number;
+  toStatus: OrderStatus;
+  eventType: string;
+  actorId: string;
+  correlationId?: string;
+  reason?: string;
+  riskDecisionId?: string;
+  reservationId?: string;
+  adapterOrderId?: string;
+  occurredAt: string;
+  recordedAt: string;
+}>;
+
+/**
+ * Sole Order lifecycle application boundary (US159-US161 / ADR-018 #3).
+ * Every create/transition commits aggregate + lifecycle history + Outbox atomically.
+ */
+@Injectable()
+export class OrderService {
+  constructor(
+    @Inject(ORDER_REPOSITORY)
+    private readonly orders: OrderRepository,
+    @Inject(PAPER_ACCOUNT_REPOSITORY)
+    private readonly accounts: PaperAccountRepository,
+    @Inject(TRADING_SESSION_REPOSITORY)
+    private readonly sessions: TradingSessionRepository,
+    @Inject(PrismaTransactionService)
+    private readonly transactions: PrismaTransactionService,
+    @Inject(TransactionalOutboxAppender)
+    private readonly outbox: TransactionalOutboxAppender,
+  ) {}
+
+  async create(command: CreateOrderCommand): Promise<Order> {
+    const intent = createOrderIntent(command);
+    const idempotent = await this.orders.findByIdempotencyKey(
+      intent.workspaceId,
+      intent.idempotencyKey,
+    );
+    if (idempotent) {
+      assertSameIntent(idempotent, intent.intentHash);
+      return idempotent;
+    }
+    const sameClient = await this.orders.findByClientOrderId(
+      intent.workspaceId,
+      intent.clientOrderId,
+    );
+    if (sameClient) {
+      assertSameIntent(sameClient, intent.intentHash);
+      return sameClient;
+    }
+
+    const account = await this.accounts.findById(intent.workspaceId, intent.paperAccountId);
+    if (!account || account.mode !== 'paper') {
+      throw new Error('paper account not found in workspace');
+    }
+    const session = await this.sessions.findById(intent.workspaceId, intent.tradingSessionId);
+    if (!session || session.paperAccountId !== intent.paperAccountId) {
+      throw new Error('trading session not found for paper account in workspace');
+    }
+    assertExecutionEligible(session, intent.sessionFencingToken, command.eligibilityCheckedAt);
+
+    const order = createOrder(intent);
+    try {
+      return await this.transactions.run(async (transaction) => {
+        const created = await this.orders.create(order, transaction);
+        await this.outbox.append(transaction, orderEnvelope(created), intent.recordedAt);
+        return created;
+      });
+    } catch (error) {
+      if (isUniqueConflict(error)) {
+        const raced =
+          (await this.orders.findByIdempotencyKey(intent.workspaceId, intent.idempotencyKey)) ??
+          (await this.orders.findByClientOrderId(intent.workspaceId, intent.clientOrderId));
+        if (raced) {
+          assertSameIntent(raced, intent.intentHash);
+          return raced;
+        }
+      }
+      throw error;
+    }
+  }
+
+  async transition(command: TransitionOrderCommand): Promise<Order> {
+    const current = await this.orders.findById(command.workspaceId, command.orderId);
+    if (!current) throw new Error('order not found in workspace');
+    if (current.version !== command.expectedVersion) {
+      throw new Error('order optimistic version conflict');
+    }
+    const transition: OrderTransitionInput = {
+      toStatus: command.toStatus,
+      eventType: command.eventType,
+      actorId: command.actorId,
+      correlationId: command.correlationId,
+      reason: command.reason,
+      riskDecisionId: command.riskDecisionId,
+      reservationId: command.reservationId,
+      adapterOrderId: command.adapterOrderId,
+      occurredAt: command.occurredAt,
+      recordedAt: command.recordedAt,
+    };
+    const next = transitionOrder(current, transition);
+    return this.transactions.run(async (transaction) => {
+      const saved = await this.orders.save(next, current.version, transaction);
+      await this.outbox.append(transaction, orderEnvelope(saved), command.recordedAt);
+      return saved;
+    });
+  }
+
+  get(workspaceId: string, orderId: string): Promise<Order | null> {
+    return this.orders.findById(workspaceId, orderId);
+  }
+
+  list(workspaceId: string): Promise<Order[]> {
+    return this.orders.listByWorkspace(workspaceId);
+  }
+}
+
+function orderEnvelope(order: Order): DurableEventEnvelope {
+  const latest = order.lifecycle.at(-1);
+  if (!latest) throw new Error('order lifecycle entry is required');
+  return Object.freeze({
+    eventId: toDurableEventId(`order:${order.id}:v${order.version}`),
+    eventType: latest.eventType,
+    schemaVersion: 1,
+    aggregateType: 'Order',
+    aggregateId: order.id,
+    aggregateVersion: order.version,
+    workspaceId: order.workspaceId,
+    occurredAt: latest.occurredAt,
+    recordedAt: latest.recordedAt,
+    ...(latest.correlationId !== null ? { correlationId: latest.correlationId } : {}),
+    actorId: latest.actorId,
+    payload: Object.freeze({
+      orderId: order.id,
+      clientOrderId: order.intent.clientOrderId,
+      intentHash: order.intent.intentHash,
+      idempotencyKey: order.intent.idempotencyKey,
+      paperAccountId: order.intent.paperAccountId,
+      tradingSessionId: order.intent.tradingSessionId,
+      fromStatus: latest.fromStatus,
+      toStatus: latest.toStatus,
+      quantity: order.intent.quantity,
+      filledQuantity: order.filledQuantity,
+      riskDecisionId: order.riskDecisionId,
+      reservationId: order.reservationId,
+      adapterOrderId: order.adapterOrderId,
+      reason: latest.reason,
+    }),
+  });
+}
+
+function assertSameIntent(existing: Order, intentHash: string): void {
+  if (existing.intent.intentHash !== intentHash) {
+    throw new Error('idempotency or client order id reused with a different intent');
+  }
+}
+
+function isUniqueConflict(error: unknown): boolean {
+  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002';
+}

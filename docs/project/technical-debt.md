@@ -1,6 +1,6 @@
 # TRP — Technical Debt Register
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E7)
+Last updated: 2026-07-18 (RC-16 M2 Epic E8 US159–US161)
 
 Living register of known technical debt. Reviewed at RC-15.1 closeout after Validation Sprint V1 (VS001–VS004); TD-028…TD-033 added from Validation Sprint findings. TD-035 and TD-038 resolved by M2 US155 PostgreSQL runtime wiring.
 
@@ -41,7 +41,7 @@ Related:
 | TD-011 | Legacy `CampaignReport.recommendations`   | Accepted Legacy | Pre-RC-13 string[] guidance on Campaign Report; overlaps Recommendation domain. **Do not expand.** Migration planned in RC-14+.                                                                                                                                                            | RC-14+                                      |
 | TD-012 | Legacy `KnowledgeEntry.insights` string[] | Accepted Legacy | Free-text bullets (often copied from campaign recommendations); name collides with Insight domain. **Do not expand.** Migration planned in RC-14+.                                                                                                                                         | RC-14+                                      |
 | TD-013 | Legacy `ResearchAnalysis` parallel stack  | Accepted Legacy | Deterministic `ResearchAnalysis` / `POST /campaigns/analyze` duplicates Insight / Recommendation / ResearchReport concerns. **Do not expand.** Migration planned in RC-14+.                                                                                                                | RC-14+                                      |
-| TD-028 | Execution Model                           | Planned         | RC-16 addresses market/limit paper Orders, cancellation, versioned fee/slippage/fill rules, and a single execution entry point under ADR-012. Partial-fill/order-book realism remains optional unless validation requires it.                                                              | RC-16 (ADR-012)                             |
+| TD-028 | Execution Model                           | In progress     | US159–US161 add durable market/limit paper Order intents, lifecycle/history, idempotency, and PostgreSQL Outbox persistence. Remaining: reservations, cancellation/API, mandatory Risk, Execution Engine, Paper Adapter, and deterministic Fills.                                          | RC-16 (ADR-012)                             |
 | TD-029 | Advanced Performance Metrics              | Planned         | `PerformanceReport` covers net profit, total return, CAGR, drawdown, volatility, win rate, profit factor; risk-adjusted metrics (Sharpe, Sortino, Calmar) not yet computed. (VS001/VS004)                                                                                                  | RC-16+ (Performance analytics)              |
 | TD-030 | Scoring Strategy                          | Deferred        | Strategy Comparison uses a fixed weighted-score model with hardcoded weights; deterministic but not configurable/pluggable. (VS001/VS003)                                                                                                                                                  | RC-16+ (Comparison configurability)         |
 | TD-031 | Report Exporters                          | Future          | `SimulationReport` is an immutable in-memory / JSON artifact; no PDF / CSV / HTML exporters. (VS004)                                                                                                                                                                                       | Future (Reporting)                          |
@@ -94,7 +94,7 @@ Related:
 - TD-008 — Prisma `any` in legacy tests (tighten test mock typing; lint now green via scoped config)
 - TD-009 — `forwardRef` module wiring (optional Nest layering cleanup)
 - TD-010 — Extract `InsightGenerationService` (shared deterministic Insight drafting)
-- TD-028 — Execution Model (ADR-012)
+- TD-028 — Execution Model (Order foundation complete; execution/fills pending)
 - TD-029 — Advanced Performance Metrics (Sharpe / Sortino / Calmar)
 - TD-034 — Stage-1 Production Path Consolidation
 - TD-036 — Runtime Recovery and Reconciliation

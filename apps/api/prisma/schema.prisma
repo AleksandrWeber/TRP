@@ -420,3 +420,58 @@ model TradingSession {
   @@index([workspaceId, paperAccountId])
   @@map("trading_sessions")
 }
+
+/// RC-16 M2 US159-US161 durable paper Order aggregate.
+model PaperOrder {
+  id               String                @id
+  workspaceId      String                @map("workspace_id")
+  paperAccountId   String                @map("paper_account_id")
+  tradingSessionId String                @map("trading_session_id")
+  clientOrderId    String                @map("client_order_id")
+  intentHash       String                @map("intent_hash")
+  idempotencyKey   String                @map("idempotency_key")
+  instrument       String
+  side             String
+  type             String
+  quantity         Decimal               @db.Decimal(38, 18)
+  limitPrice       Decimal?              @map("limit_price") @db.Decimal(38, 18)
+  filledQuantity   Decimal               @default(0) @map("filled_quantity") @db.Decimal(38, 18)
+  status           String
+  version          Int                   @default(1)
+  intent           Json
+  riskDecisionId   String?               @map("risk_decision_id")
+  reservationId    String?               @map("reservation_id")
+  adapterOrderId   String?               @map("adapter_order_id")
+  rejectionReason  String?               @map("rejection_reason")
+  createdAt        DateTime              @map("created_at")
+  recordedAt       DateTime              @map("recorded_at")
+  lifecycle        OrderLifecycleEntry[]
+
+  @@unique([workspaceId, clientOrderId])
+  @@unique([workspaceId, idempotencyKey])
+  @@unique([workspaceId, intentHash])
+  @@index([workspaceId, tradingSessionId, status])
+  @@index([workspaceId, paperAccountId])
+  @@map("paper_orders")
+}
+
+/// Append-only Order lifecycle history owned only by Orders.
+model OrderLifecycleEntry {
+  id            String     @id @default(cuid())
+  orderId       String     @map("order_id")
+  workspaceId   String     @map("workspace_id")
+  sequence      Int
+  fromStatus    String?    @map("from_status")
+  toStatus      String     @map("to_status")
+  eventType     String     @map("event_type")
+  reason        String?
+  actorId       String     @map("actor_id")
+  correlationId String?    @map("correlation_id")
+  occurredAt    DateTime   @map("occurred_at")
+  recordedAt    DateTime   @map("recorded_at")
+  order         PaperOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@unique([orderId, sequence])
+  @@index([workspaceId, orderId])
+  @@map("order_lifecycle_history")
+}

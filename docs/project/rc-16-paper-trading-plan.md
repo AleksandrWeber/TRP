@@ -153,6 +153,11 @@ runtime wiring, manual Trading Sessions with fenced eligibility, and trading
 command authorization/JWT hardening. Orders, execution, Fills, Ledger, and
 projections remain in the subsequent M2 epics.
 
+Epic E8 progress (2026-07-18): US159–US161 complete — deterministic manual
+paper Order Intents, explicit Orders-owned lifecycle/history, and transactional
+PostgreSQL Order + Outbox persistence. Reservations, cancellation, and Order API
+remain US162–US164.
+
 Mini Validation 1: idempotency and accounting invariants.
 
 ### M3 — Strategy Trading Sessions

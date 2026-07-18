@@ -81,6 +81,9 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
 - US156–US158 complete: M2 Epic E7-B. Durable manual Trading Sessions with
   fenced execution eligibility; Trader/Admin workspace command authorization;
   production JWT secret hardening. Epic E7 complete.
+- US159–US161 complete: M2 Epic E8 first half. Deterministic paper Order Intent
+  identities, Orders-owned lifecycle/history, and transactional PostgreSQL
+  Order + Outbox persistence.
 
 These changes establish the separate RC-16 paper runtime. Research Engine,
 Validation, Knowledge Schema, and RC-15 simulation calculation versions remain

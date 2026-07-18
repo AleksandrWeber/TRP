@@ -13,6 +13,12 @@ accounting, mandatory Risk, module boundaries, and invariants. Broader
 real-capital, multi-order-type, reporting, and knowledge-publishing concepts in
 this document remain future target ideas unless included by the RC-16 plan.
 
+RC-16 M2 implementation note (US159–US161): the canonical `orders/` module now
+owns immutable manual paper Order Intents and the Order lifecycle. PostgreSQL
+persists Orders and append-only lifecycle history with workspace-scoped unique
+identities and same-transaction Outbox events. Execution, adapter behavior, and
+accounting remain separate later stories.
+
 ---
 
 # Purpose

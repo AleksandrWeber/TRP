@@ -111,8 +111,18 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
   Trader/Admin trading command gate, workspace membership checks, retained
   actor/correlation/idempotency context, and production JWT secret hardening.
   Epic E7 complete.
+- RC-16 M2 US159 — Order Intent and Identity Contracts: immutable paper-only
+  manual market/limit intents with decimal quantity/price, stable Order/client/
+  idempotency/intent identities, fenced Session and market-checkpoint
+  references, and reduce-only sells.
+- RC-16 M2 US160 — Order Aggregate and State Machine: Orders-owned explicit
+  lifecycle, immutable transition history, terminal-state protection, durable
+  Risk/reservation/adapter references, and overfill prevention.
+- RC-16 M2 US161 — Durable Order Repository and Outbox: PostgreSQL
+  `paper_orders` and append-only `order_lifecycle_history`, workspace-scoped
+  uniqueness, optimistic versions, and atomic Order/history/Outbox commits.
 
-RC-15.1 is released. RC-16 M1 complete; M2 Epic E7 complete (US153–US158).
+RC-15.1 is released. RC-16 M1 and Epic E7 complete; Epic E8 US159–US161 complete.
 
 ### Added (architecture)
 

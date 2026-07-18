@@ -299,7 +299,17 @@ M2 Epic E7-B:
 
 Epic E7 complete. Manual Trading Sessions are durable and fenced; trading
 commands require Trader/Admin plus workspace membership; production JWT secrets
-are hardened. Next: M2 Epic E8 — durable Orders and reservations.
+are hardened.
+
+M2 Epic E8 progress:
+
+- ✓ US159 — Order Intent and Identity Contracts
+- ✓ US160 — Order Aggregate and State Machine
+- ✓ US161 — Durable Order Repository and Outbox
+
+US159–US161 complete. Orders is the sole lifecycle owner; Order/history/Outbox
+writes are atomic and workspace-scoped. Next: US162 — Ledger-owned cash
+reservation.
 
 ---
 

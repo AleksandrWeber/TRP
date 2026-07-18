@@ -1,6 +1,6 @@
 # TRP — Architecture Snapshot
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E7 US153–US158)
+Last updated: 2026-07-18 (RC-16 M2 Epic E8 US159–US161)
 
 Single snapshot of the **current** architecture (RC-15). Documentation only. No future ideas.
 
@@ -423,6 +423,7 @@ integration.** A separate Stage-1 manual paper prototype exists under
 | Financial          | `financial/`            | Exact decimal values, explicit scales and rounding; no number conversion (US153)                           |
 | PaperAccount       | `paper-account/`        | Durable paper-only account and opening-capital Ledger instruction (US154)                                  |
 | TradingSession     | `trading-session/`      | Manual ADR-014 sessions, fenced leases, execution eligibility (US156–US157)                                |
+| Orders             | `orders/`               | Deterministic intents, sole lifecycle owner, PostgreSQL aggregate/history + Outbox (US159–US161)           |
 | HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                  |
 | MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                    |
 | Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                          |
@@ -658,3 +659,11 @@ ADR-014 state machine; fenced leases and fencing tokens gate execution
 eligibility; Trader/Admin workspace command authorization retains actor,
 correlation, and idempotency identifiers; production rejects insecure JWT
 secret fallbacks. Epic E7 complete.
+
+M2 Epic E8 progress: US159–US161 complete — manual market/limit Order Intents
+carry workspace/account/session/fence/market-checkpoint references and stable
+client/idempotency/intent identities. Orders exclusively owns the explicit
+lifecycle and immutable history. `paper_orders` and
+`order_lifecycle_history` persist with decimal financial columns, optimistic
+aggregate versions, workspace-scoped uniqueness, and same-transaction Outbox
+events.
