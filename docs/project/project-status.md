@@ -1,13 +1,13 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-18 (RC-16 M2 Epic E10 complete — US172–US178)
+2026-07-18 (RC-16 M2 complete — US153–US183)
 
 ---
 
 # Current Phase
 
-M2 — Durable Paper Order and Accounting Core
+M2 complete — Durable Paper Order and Accounting Core
 
 ---
 
@@ -82,7 +82,32 @@ version/completeness/freshness; deterministic rebuild compares immutable Fills,
 Ledger, and valuation checkpoints without replaying live effects; mismatches
 persist and block affected execution; and authenticated accounting reads are
 workspace/account-scoped with decimal-string serialization.
-Next: M2 Mini Validation (US179–US183).
+M2 Epic E11 Mini Validation complete (US179–US183): contract/state-machine,
+paper-only, RBAC, and workspace boundaries validated; PostgreSQL reservation
+races and concurrent duplicate Fill delivery produce one effect; rollback
+injection leaves no partial Position/Ledger/Outbox/Inbox/checkpoint state;
+semantic replay and ADR-015 accounting identities match across runs;
+reconciliation ambiguity survives restart, blocks execution, and recovers only
+after a matching checkpoint; small/medium/practical performance baselines,
+architecture conformance, full regression, and quality gates pass.
+
+M2 release verdict: **PASS WITH MINOR RECOMMENDATIONS**. No blocker remains for
+M3. Pre-M3 hardening is tracked for exact-decimal mark sources, explicit
+cross-Order Position Fill application ordering, and cursor-paginated Ledger
+history reads. Results:
+[`rc-16-m2-mini-validation.md`](./rc-16-m2-mini-validation.md).
+
+M2 isolated local performance baseline (PostgreSQL at `localhost`, 2026-07-18):
+
+- Small — 100 deterministic Fill calculations in 10.864 ms (9,204 events/s);
+  2.431 MB heap delta; 10.660 ms max synthetic consumer lag; 15.883 ms
+  transaction p95 over 5 samples.
+- Medium — 1,000 in 42.956 ms (23,279 events/s); no positive heap growth;
+  7.871 ms max lag; 6.101 ms transaction p95 over 15 samples.
+- Practical — 5,000 in 150.879 ms (33,139 events/s); 3.436 MB heap delta;
+  5.449 ms max lag; 3.839 ms transaction p95 over 30 samples.
+
+Next: M3 — Strategy Trading Sessions.
 
 ---
 

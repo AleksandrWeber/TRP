@@ -186,7 +186,16 @@ rebuild compares immutable sources without replaying effects, persisting
 execution-blocking mismatches; accounting reads are authenticated,
 workspace/account-scoped, read-only, and decimal-string serialized.
 
-Mini Validation 1: idempotency and accounting invariants.
+Epic E11 Mini Validation complete (2026-07-18): US179–US183 validate M2
+contracts/state machines/authorization, PostgreSQL transaction and concurrency
+behavior, deterministic replay and accounting identities, failure rollback and
+restart-safe reconciliation, and small/medium/practical performance. Full
+quality gates and ADR-012…ADR-018 conformance pass with no blockers.
+
+M2 exit verdict: **PASS WITH MINOR RECOMMENDATIONS**. The recommendations are
+pre-M3 exact mark decimals, explicit cross-Order Position Fill application
+ordering, and cursor pagination for Ledger history. Results:
+[`rc-16-m2-mini-validation.md`](./rc-16-m2-mini-validation.md).
 
 ### M3 — Strategy Trading Sessions
 

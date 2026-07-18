@@ -79,10 +79,13 @@ describe('US174 — atomic idempotent Fill accounting', () => {
 
   async function cleanup() {
     await prisma.inboxRecord.deleteMany({
-      where: { consumerId: FILL_ACCOUNTING_CONSUMER_ID },
+      where: {
+        consumerId: FILL_ACCOUNTING_CONSUMER_ID,
+        eventId: { startsWith: 'fill:fill-us174-' },
+      },
     });
     await prisma.consumerCheckpointRecord.deleteMany({
-      where: { consumerId: FILL_ACCOUNTING_CONSUMER_ID },
+      where: { consumerId: FILL_ACCOUNTING_CONSUMER_ID, workspaceId: WS },
     });
     await prisma.outboxEvent.deleteMany({ where: { workspaceId: WS } });
     await prisma.paperPosition.deleteMany({ where: { workspaceId: WS } });
@@ -177,7 +180,10 @@ describe('US174 — atomic idempotent Fill accounting', () => {
     });
     expect(
       await prisma.inboxRecord.count({
-        where: { consumerId: FILL_ACCOUNTING_CONSUMER_ID },
+        where: {
+          consumerId: FILL_ACCOUNTING_CONSUMER_ID,
+          eventId: 'fill:fill-us174-atomic',
+        },
       }),
     ).toBe(1);
     expect(
@@ -194,7 +200,7 @@ describe('US174 — atomic idempotent Fill accounting', () => {
       }),
     ).toBe(4); // opening Ledger, reservation Ledger, Fill Ledger, Position
     const checkpoint = await prisma.consumerCheckpointRecord.findFirstOrThrow({
-      where: { consumerId: FILL_ACCOUNTING_CONSUMER_ID },
+      where: { consumerId: FILL_ACCOUNTING_CONSUMER_ID, workspaceId: WS },
     });
     expect(checkpoint.lastAppliedSequence).toBe(1);
 
@@ -222,12 +228,15 @@ describe('US174 — atomic idempotent Fill accounting', () => {
     expect(await prisma.paperPosition.count({ where: { workspaceId: WS } })).toBe(0);
     expect(
       await prisma.inboxRecord.count({
-        where: { consumerId: FILL_ACCOUNTING_CONSUMER_ID },
+        where: {
+          consumerId: FILL_ACCOUNTING_CONSUMER_ID,
+          eventId: 'fill:fill-us174-retry',
+        },
       }),
     ).toBe(0);
     expect(
       await prisma.consumerCheckpointRecord.count({
-        where: { consumerId: FILL_ACCOUNTING_CONSUMER_ID },
+        where: { consumerId: FILL_ACCOUNTING_CONSUMER_ID, workspaceId: WS },
       }),
     ).toBe(0);
     expect(

@@ -186,9 +186,22 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 - RC-16 M2 US178 — Accounting Query API: authenticated workspace/account-scoped
   Fill, Position/valuation, authoritative Ledger, Portfolio, and reconciliation
   views with explicit projection labels and decimal-string serialization.
+- RC-16 M2 US179 — contract/state-machine/authorization validation for decimal,
+  paper-only, Session/Order transitions, mandatory Risk references, RBAC,
+  workspace isolation, and API bypass prevention.
+- RC-16 M2 US180 — PostgreSQL row-lock/concurrency, transaction rollback,
+  Outbox/Inbox/checkpoint, and duplicate Fill exactly-once validation.
+- RC-16 M2 US181 — deterministic Order/Fill/Position/Ledger/valuation/Portfolio
+  replay with property fixtures and ADR-015 accounting identities.
+- RC-16 M2 US182 — injected financial-boundary rollback, restart retry,
+  uncertain adapter acknowledgement, and durable reconciliation fencing.
+- RC-16 M2 US183 — small/medium/practical performance baseline, architecture
+  conformance, full regression, quality gates, and release-readiness review.
+  Results: `docs/project/rc-16-m2-mini-validation.md`.
 
 RC-15.1 is released. RC-16 M1, Epic E7, and Epic E8 are complete; Epic E9
-(US165–US171) and Epic E10 (US172–US178) are complete.
+(US165–US171), Epic E10 (US172–US178), and Epic E11 (US179–US183) are
+complete. M2 verdict: **PASS WITH MINOR RECOMMENDATIONS**.
 
 ### Added (architecture)
 

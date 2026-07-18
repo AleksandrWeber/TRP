@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E10 complete)
+Last updated: 2026-07-18 (RC-16 M2 complete)
 
 Living roadmap for product direction.
 
@@ -195,7 +195,12 @@ Ledger + Outbox + checkpoint Fill application with duplicate no-op and full
 rollback on failure; versioned decimal Position valuation; Ledger-driven
 Portfolio with freshness/completeness; deterministic rebuild/reconciliation
 that never reapplies live effects and blocks execution on mismatch; and
-workspace-scoped accounting reads. Next: M2 Mini Validation (US179–US183).
+workspace-scoped accounting reads.
+M2 Epic E11 complete (US179–US183): contracts/state/RBAC, PostgreSQL
+atomicity/concurrency/idempotency, deterministic replay and accounting
+identities, failure/restart/reconciliation behavior, performance, architecture,
+and quality gates validated. M2 verdict: **PASS WITH MINOR RECOMMENDATIONS**.
+Next: M3 Strategy Trading Sessions.
 Mini Validation follows M2, M4, and M6.
 
 ---

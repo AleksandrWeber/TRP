@@ -356,7 +356,23 @@ leaves no partial accounting state. Valuation is decimal and versioned,
 Portfolio remains a Ledger-driven projection, rebuild is deterministic and
 comparison-only, mismatches fence affected execution, and read APIs preserve
 workspace/account scope with decimal strings.
-Next: M2 Mini Validation (US179–US183).
+M2 Epic E11 validation:
+
+- ✓ US179 — Contract, State-Machine, and Authorization Validation
+- ✓ US180 — PostgreSQL Transaction and Idempotency Validation
+- ✓ US181 — Deterministic Replay and Accounting Invariants
+- ✓ US182 — Failure Injection and Reconciliation Validation
+- ✓ US183 — Performance Baseline and Exit Review
+
+US153–US183 are complete. The M2 validation suite proves paper-only/RBAC
+boundaries, PostgreSQL atomicity and race serialization, exactly-once financial
+effects, deterministic semantic replay, ADR-015 equations, failure rollback,
+restart-safe reconciliation fencing, and practical performance. Frozen
+ADR-012…ADR-018 conformance has no blockers.
+
+M2 verdict: **PASS WITH MINOR RECOMMENDATIONS**. Progression to M3 is approved;
+the recommendations are tracked in Technical Debt. Results:
+[`rc-16-m2-mini-validation.md`](./rc-16-m2-mini-validation.md).
 
 ---
 

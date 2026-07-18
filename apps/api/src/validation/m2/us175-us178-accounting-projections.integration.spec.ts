@@ -189,10 +189,13 @@ describe('US175–US178 — durable accounting projections', () => {
 
   async function cleanup() {
     await prisma.inboxRecord.deleteMany({
-      where: { consumerId: 'm2-position-valuation' },
+      where: {
+        consumerId: 'm2-position-valuation',
+        eventId: { in: ['mark-9', 'mark-10'] },
+      },
     });
     await prisma.consumerCheckpointRecord.deleteMany({
-      where: { consumerId: 'm2-position-valuation' },
+      where: { consumerId: 'm2-position-valuation', workspaceId: WS },
     });
     await prisma.outboxEvent.deleteMany({ where: { workspaceId: WS } });
     await prisma.accountingReconciliation.deleteMany({ where: { workspaceId: WS } });

@@ -1,6 +1,6 @@
 # TRP — Architecture Snapshot
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E10 complete)
+Last updated: 2026-07-18 (RC-16 M2 complete)
 
 Single snapshot of the **current** architecture (RC-15). Documentation only. No future ideas.
 
@@ -724,3 +724,19 @@ persists a reconciliation mismatch that fences affected execution. The
 accounting query controller exposes only workspace/account-scoped immutable
 facts or explicitly non-authoritative projections, serialized as decimal
 strings.
+
+M2 Epic E11 Mini Validation complete (US179–US183). Contract and forbidden
+transition/bypass fixtures validate paper-only mode, decimal boundaries,
+Session/Order state ownership, Risk references, and workspace/RBAC checks.
+PostgreSQL validation proves row-locked reservations prevent overspend,
+concurrent duplicate Fill delivery has one accounting effect, and injected
+checkpoint/Outbox failures roll back every projection, Ledger, Inbox, Outbox,
+and checkpoint mutation. Deterministic replay reproduces Order/Fill identities,
+Position rebuild, Ledger checkpoint, valuation, Portfolio source hash, and all
+ADR-015 equations. Reconciliation mismatch remains durable across restart and
+continues to fence execution until a matching checkpoint is recorded.
+Architecture conformance found no blockers. M2 exits with **PASS WITH MINOR
+RECOMMENDATIONS**; exact-decimal mark origins, explicit per-Position Fill
+application order for M3 concurrency, and bounded Ledger-history pagination are
+tracked hardening work. See
+[`rc-16-m2-mini-validation.md`](./rc-16-m2-mini-validation.md).

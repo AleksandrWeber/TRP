@@ -106,6 +106,11 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
   deterministic comparison-only accounting rebuild with execution fencing on
   mismatch, and authenticated workspace/account-scoped decimal-string
   accounting reads.
+- US179–US183 complete: M2 Epic E11 Mini Validation. Contract/state/RBAC,
+  PostgreSQL atomicity and concurrency, deterministic accounting replay,
+  failure/restart reconciliation, performance, architecture, and quality gates
+  pass. M2 exits PASS WITH MINOR RECOMMENDATIONS. See
+  `docs/project/rc-16-m2-mini-validation.md`.
 
 These changes establish the separate RC-16 paper runtime. Research Engine,
 Validation, Knowledge Schema, and RC-15 simulation calculation versions remain

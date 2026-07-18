@@ -1,6 +1,6 @@
 # TRP — Technical Debt Register
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E10 complete)
+Last updated: 2026-07-18 (RC-16 M2 Mini Validation complete)
 
 Living register of known technical debt. Reviewed at RC-15.1 closeout after Validation Sprint V1 (VS001–VS004); TD-028…TD-033 added from Validation Sprint findings. TD-035 and TD-038 resolved by M2 US155 PostgreSQL runtime wiring.
 
@@ -52,6 +52,9 @@ Related:
 | TD-036 | Runtime Recovery and Reconciliation       | Planned         | Active deployments persist, but no always-on ownership lease, semantic checkpoint, startup recovery, or reconciliation exists. ADR-014 freezes the required lifecycle.                                                                                                                     | RC-16 M3–M5                                 |
 | TD-037 | Decimal Ledger Migration                  | Resolved (M2)   | US153 and US172–US178 provide exact decimal contracts, immutable Fill-derived Position accounting, balanced append-only Ledger entries, atomic idempotent Fill application, decimal valuation/Portfolio, and deterministic reconciliation.                                                 | Completed in RC-16 M2                       |
 | TD-038 | Live Market Nest Outbox Wiring            | Resolved (M2)   | US155 switched `EventProcessingModule` to Prisma Outbox/Inbox/ConsumerCheckpoint providers and lifecycle polling without changing ADR-013 contracts.                                                                                                                                       | Completed in RC-16 M2                       |
+| TD-039 | Exact Decimal Mark Source                 | Planned         | M1 `MarkPriceEvent.price` originates as a JavaScript number; M2 immediately converts and quantizes it at the valuation boundary. Move the canonical market event contract and provider midpoint calculation to exact decimal text before M3 strategy execution.                            | RC-16 M3 prerequisite                       |
+| TD-040 | Position Fill Application Ordering        | Planned         | M2 immediate manual Fills rebuild deterministically by immutable event timestamps and identity. Before concurrent M3 strategy execution, persist explicit per-Position Fill application order so cross-Order delivery order can always be reproduced exactly.                              | RC-16 M3 prerequisite                       |
+| TD-041 | Ledger History Pagination                 | Planned         | US178 Ledger history is workspace/account scoped and read-only but currently unbounded. Add stable cursor pagination before M3/M6 operational history grows.                                                                                                                               | RC-16 M3/M6                                 |
 
 ---
 
@@ -99,6 +102,9 @@ Related:
 - TD-029 — Advanced Performance Metrics (Sharpe / Sortino / Calmar)
 - TD-034 — Stage-1 Production Path Consolidation
 - TD-036 — Runtime Recovery and Reconciliation
+- TD-039 — Exact Decimal Mark Source
+- TD-040 — Position Fill Application Ordering
+- TD-041 — Ledger History Pagination
 
 ### Future
 
@@ -113,7 +119,7 @@ Related:
 | RC-13+        | Persistence / durability           | TD-001, TD-002, TD-003                                |
 | RC-14+        | Legacy migration                   | TD-004, TD-011, TD-012, TD-013                        |
 | RC-15+        | Knowledge intelligence             | TD-007                                                |
-| RC-16         | Paper runtime, safety & durability | TD-002, TD-005, TD-006, TD-028, TD-032, TD-034…TD-037 |
+| RC-16         | Paper runtime, safety & durability | TD-002, TD-005, TD-006, TD-028, TD-032, TD-034…TD-041 |
 | RC-16+        | Simulation analytics & scale       | TD-029, TD-030, TD-033                                |
 | Future        | Reporting                          | TD-031                                                |
 | Opportunistic | Hygiene                            | TD-008, TD-009, TD-010                                |

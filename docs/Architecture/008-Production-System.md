@@ -51,6 +51,16 @@ rebuild compares immutable inputs without reapplying effects; a persisted
 mismatch blocks affected execution. Accounting reads are authenticated,
 workspace/account-scoped, read-only, and expose decimal strings.
 
+RC-16 M2 exit note (US179–US183): Mini Validation confirms contract and
+state-machine boundaries, paper-only/RBAC enforcement, PostgreSQL atomicity and
+reservation concurrency, exactly-once Fill accounting, deterministic semantic
+replay and ADR-015 identities, failure rollback, and restart-safe
+reconciliation fencing. Architecture conformance has no blockers. M2 exits
+**PASS WITH MINOR RECOMMENDATIONS**; pre-M3 hardening tracks exact-decimal mark
+origins, explicit cross-Order Position Fill application ordering, and bounded
+Ledger-history pagination. See
+`docs/project/rc-16-m2-mini-validation.md`.
+
 ---
 
 # Purpose

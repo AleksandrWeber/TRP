@@ -46,6 +46,12 @@ while resolving every account lookup inside the authorized workspace. Responses
 exclude adapter/configuration internals and serialize financial values as
 decimal strings.
 
+US179–US183 validate these controls with forbidden transition/bypass fixtures,
+Reader/Researcher and foreign-workspace denial, concurrent reservation
+overspend prevention, duplicate Fill delivery, financial rollback injection,
+and durable reconciliation fencing across restart. No M2 authorization or
+financial-safety blocker remains.
+
 ---
 
 # Purpose
