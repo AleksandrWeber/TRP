@@ -1,8 +1,8 @@
 # TRP — Campaign History, Export, Import, Jobs, Knowledge & Research Intelligence API
 
-Last updated: 2026-07-18
+Last updated: 2026-07-18 (RC-16 M2 Epic E10 accounting reads)
 
-Living HTTP contract for Campaign Session history, export, import, Jobs status, Knowledge search, Research Intelligence (Insights / Recommendations / Reports / Cross-Campaign Analysis), and Live Market Data query/SSE (RC-16 M1).
+Living HTTP contract for Campaign Session history, export, import, Jobs status, Knowledge search, Research Intelligence (Insights / Recommendations / Reports / Cross-Campaign Analysis), Live Market Data query/SSE (RC-16 M1), and Paper Accounting reads (RC-16 M2 US178).
 Domain context: [`campaign-domain-model.md`](./campaign-domain-model.md).
 
 ---
@@ -332,3 +332,31 @@ payload fields; `authoritative: false` / `operationalOnly: true` on views.
 
 Envelopes carry canonical `MarketLatestStateView` only. Slow clients use
 bounded drop-oldest buffers; channel failures never block ingestion.
+
+---
+
+## Paper Accounting (RC-16 M2 US178)
+
+Authenticated, read-only, workspace/account-scoped accounting views.
+Requires JWT + `X-Workspace-Id`. Membership is checked before every lookup.
+Financial values are decimal strings. The API never recalculates authoritative
+accounting and never mutates Fill, Position, Ledger, or Portfolio state.
+
+| Method | Path                                                     | Data class                             | Authoritative |
+| ------ | -------------------------------------------------------- | -------------------------------------- | ------------- |
+| `GET`  | `/v1/accounting/accounts/:paperAccountId/fills`          | `immutable_execution_facts`            | yes (facts)   |
+| `GET`  | `/v1/accounting/accounts/:paperAccountId/positions`      | `position_projection`                  | no            |
+| `GET`  | `/v1/accounting/accounts/:paperAccountId/ledger`         | `authoritative_ledger`                 | yes           |
+| `GET`  | `/v1/accounting/accounts/:paperAccountId/portfolio`      | `portfolio_projection`                 | no            |
+| `GET`  | `/v1/accounting/accounts/:paperAccountId/reconciliation` | `accounting_reconciliation_checkpoint` | no            |
+
+Guarantees:
+
+- Missing `X-Workspace-Id` → `400`
+- Caller not a workspace member → `403`
+- Paper account absent in the authorized workspace → `404`
+- Cross-workspace account ids never resolve into another workspace
+- Projection responses set `projection: true` and `authoritative: false`
+- Ledger responses set `authoritative: true`
+- Portfolio/Position views expose version, freshness, and completeness/source
+  metadata where available; reconciliation exposes match/mismatch status

@@ -631,3 +631,78 @@ model LedgerEntry {
   @@index([workspaceId, account])
   @@map("ledger_entries")
 }
+
+/// Versioned mark-to-market projection; never rewrites Position cost accounting (US175).
+model PositionValuation {
+  id                String   @id
+  workspaceId       String   @map("workspace_id")
+  paperAccountId    String   @map("paper_account_id")
+  positionId        String   @map("position_id")
+  instrument        String
+  positionVersion   Int      @map("position_version")
+  version           Int
+  marketStreamId    String   @map("market_stream_id")
+  marketEventId     String   @map("market_event_id")
+  marketSequence    Int      @map("market_sequence")
+  markPrice         Decimal  @map("mark_price") @db.Decimal(38, 18)
+  quantity          Decimal  @db.Decimal(38, 18)
+  costBasis         Decimal  @map("cost_basis") @db.Decimal(38, 18)
+  realizedPnl       Decimal  @map("realized_pnl") @db.Decimal(38, 18)
+  marketValue       Decimal  @map("market_value") @db.Decimal(38, 18)
+  unrealizedPnl     Decimal  @map("unrealized_pnl") @db.Decimal(38, 18)
+  occurredAt        DateTime @map("occurred_at")
+  recordedAt        DateTime @map("recorded_at")
+
+  @@unique([workspaceId, positionId])
+  @@unique([workspaceId, positionId, marketEventId])
+  @@index([workspaceId, paperAccountId])
+  @@map("position_valuations")
+}
+
+/// Rebuildable account projection sourced only from Ledger and Position valuations (US176).
+model PaperPortfolioProjection {
+  id                  String   @id
+  workspaceId         String   @map("workspace_id")
+  paperAccountId      String   @map("paper_account_id")
+  currency            String
+  availableCash       Decimal  @map("available_cash") @db.Decimal(38, 18)
+  reservedCash        Decimal  @map("reserved_cash") @db.Decimal(38, 18)
+  cash                Decimal  @db.Decimal(38, 18)
+  marketValue         Decimal  @map("market_value") @db.Decimal(38, 18)
+  equity              Decimal  @db.Decimal(38, 18)
+  realizedPnl         Decimal  @map("realized_pnl") @db.Decimal(38, 18)
+  unrealizedPnl       Decimal  @map("unrealized_pnl") @db.Decimal(38, 18)
+  totalPnl            Decimal  @map("total_pnl") @db.Decimal(38, 18)
+  fees                Decimal  @db.Decimal(38, 18)
+  exposure            Decimal  @db.Decimal(38, 18)
+  ledgerVersion       Int      @map("ledger_version")
+  valuationCheckpoint String   @map("valuation_checkpoint")
+  sourceHash          String   @map("source_hash")
+  version             Int
+  complete            Boolean
+  stalePositionIds    Json     @map("stale_position_ids")
+  valuedAt            DateTime? @map("valued_at")
+  recordedAt          DateTime @map("recorded_at")
+
+  @@unique([workspaceId, paperAccountId])
+  @@index([workspaceId, complete])
+  @@map("paper_portfolio_projections")
+}
+
+/// Durable rebuild comparison and execution-safety checkpoint (US177).
+model AccountingReconciliation {
+  id               String    @id
+  workspaceId      String    @map("workspace_id")
+  paperAccountId   String    @map("paper_account_id")
+  status           String
+  sourceHash       String    @map("source_hash")
+  rebuiltHash      String    @map("rebuilt_hash")
+  reason           String?
+  version          Int
+  checkedAt        DateTime  @map("checked_at")
+  lastConsistentAt DateTime? @map("last_consistent_at")
+
+  @@unique([workspaceId, paperAccountId])
+  @@index([workspaceId, status])
+  @@map("accounting_reconciliations")
+}

@@ -16,6 +16,7 @@ export {
   type LedgerEntry,
   type LedgerTransaction,
 } from './domain/ledger-transaction';
+export { summarizeLedger, type LedgerAccountSummary } from './domain/ledger-account-summary';
 export { LEDGER_REPOSITORY, type LedgerRepository } from './persistence/ledger.repository';
 export { PrismaLedgerRepository } from './persistence/prisma-ledger.repository';
 export {

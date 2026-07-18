@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Optional } from '@nestjs/common';
 import { PrismaTransactionService } from '../../storage/prisma/prisma-transaction.service';
 import {
   toDurableEventId,
@@ -15,6 +15,7 @@ import { OrderService } from '../orders/order.service';
 import type { Order } from '../orders/domain/order';
 import { OrderStatus } from '../orders/domain/order-status';
 import { RiskDecisionStatus } from '../risk/domain/risk-decision';
+import { AccountingReconciliationService } from '../positions/reconciliation/accounting-reconciliation.service';
 import { assertExecutionEligible } from '../trading-session/domain/execution-eligibility';
 import {
   TRADING_SESSION_REPOSITORY,
@@ -97,6 +98,9 @@ export class ExecutionEngineService {
     private readonly outbox: TransactionalOutboxAppender,
     @Inject(PAPER_FILL_CONFIGURATION)
     private readonly configuration: PaperFillConfiguration,
+    @Optional()
+    @Inject(AccountingReconciliationService)
+    private readonly accountingReconciliation?: AccountingReconciliationService,
   ) {}
 
   async submit(command: SubmitExecutionCommand): Promise<ExecutionResult> {
@@ -111,6 +115,10 @@ export class ExecutionEngineService {
       return this.existingResult(command.workspaceId, command.orderId, order);
     }
 
+    await this.accountingReconciliation?.assertExecutionEligible(
+      order.workspaceId,
+      order.intent.paperAccountId,
+    );
     assertMandatoryRiskDecision(order, command.occurredAt);
     if (order.reservationId === null) {
       throw new Error('executable order requires a cash reservation');

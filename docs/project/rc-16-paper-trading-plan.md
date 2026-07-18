@@ -172,15 +172,19 @@ append-only PostgreSQL facts committed atomically with their Outbox event and
 the Orders-owned transition, so a duplicate submit cannot duplicate a Fill and
 cancellation reconciliation is idempotent.
 
-Epic E10 progress (2026-07-18): US172–US174 complete — long-only Position
+Epic E10 complete (2026-07-18): US172–US178 — long-only Position
 accounting derives quantity, average entry, cost basis, and realized PnL only
 from immutable Fills; Ledger is the sole financial source of truth and stores
 balanced append-only opening-capital, reserve/release, Fill-cost, fee, cash, and
 realized-PnL transactions; and the Fill accounting consumer commits Inbox,
 Position, Ledger, Position/Ledger Outbox events, and checkpoint atomically.
 Duplicate delivery is a successful no-op and failures remain retryable with no
-partial state. Position valuation, Portfolio, rebuild/reconciliation, and query
-APIs remain US175–US178.
+partial state. Versioned Position valuation stores normalized mark identity and
+decimal outputs without changing accounting; Portfolio consumes only Ledger and
+valuation outputs and publishes version/freshness/completeness; deterministic
+rebuild compares immutable sources without replaying effects, persisting
+execution-blocking mismatches; accounting reads are authenticated,
+workspace/account-scoped, read-only, and decimal-string serialized.
 
 Mini Validation 1: idempotency and accounting invariants.
 

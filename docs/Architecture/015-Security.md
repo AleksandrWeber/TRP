@@ -38,6 +38,14 @@ Ledger identities. Fill accounting accepts only immutable
 and uses Inbox uniqueness plus one PostgreSQL transaction, so duplicate or
 failed delivery cannot create partial or repeated financial effects.
 
+US175–US178 retain that boundary for valuation and reads: mark events are
+workspace/stream scoped and duplicate or out-of-order updates are no-ops;
+Portfolio is projection-only; reconciliation mismatches fence affected
+execution; and accounting endpoints require authenticated workspace membership
+while resolving every account lookup inside the authorized workspace. Responses
+exclude adapter/configuration internals and serialize financial values as
+decimal strings.
+
 ---
 
 # Purpose

@@ -12,5 +12,7 @@ export interface FillRepository {
 
   findByOrder(workspaceId: string, orderId: string): Promise<PaperFill[]>;
 
+  listByAccount(workspaceId: string, paperAccountId: string): Promise<PaperFill[]>;
+
   findById(workspaceId: string, fillId: string): Promise<PaperFill | null>;
 }

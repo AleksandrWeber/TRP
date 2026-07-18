@@ -1,6 +1,6 @@
 # TRP — Technical Debt Register
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E10 US172–US174)
+Last updated: 2026-07-18 (RC-16 M2 Epic E10 complete)
 
 Living register of known technical debt. Reviewed at RC-15.1 closeout after Validation Sprint V1 (VS001–VS004); TD-028…TD-033 added from Validation Sprint findings. TD-035 and TD-038 resolved by M2 US155 PostgreSQL runtime wiring.
 
@@ -41,16 +41,16 @@ Related:
 | TD-011 | Legacy `CampaignReport.recommendations`   | Accepted Legacy | Pre-RC-13 string[] guidance on Campaign Report; overlaps Recommendation domain. **Do not expand.** Migration planned in RC-14+.                                                                                                                                                            | RC-14+                                      |
 | TD-012 | Legacy `KnowledgeEntry.insights` string[] | Accepted Legacy | Free-text bullets (often copied from campaign recommendations); name collides with Insight domain. **Do not expand.** Migration planned in RC-14+.                                                                                                                                         | RC-14+                                      |
 | TD-013 | Legacy `ResearchAnalysis` parallel stack  | Accepted Legacy | Deterministic `ResearchAnalysis` / `POST /campaigns/analyze` duplicates Insight / Recommendation / ResearchReport concerns. **Do not expand.** Migration planned in RC-14+.                                                                                                                | RC-14+                                      |
-| TD-028 | Execution Model                           | In progress     | US159–US174 add the durable Order/Risk/Execution/Fill path plus atomic Position/Ledger accounting. Remaining: Position valuation, Portfolio, accounting rebuild/reconciliation, and read APIs (US175–US178).                                                                               | RC-16 (ADR-012)                             |
+| TD-028 | Execution Model                           | In progress     | US159–US178 complete the durable M2 Order/Risk/Execution/Fill/accounting path, including valuation, Portfolio, reconciliation fencing, and reads. Remaining RC-16 work is Strategy runtime, continuous safety, recovery, and operations.                                                   | RC-16 (ADR-012)                             |
 | TD-029 | Advanced Performance Metrics              | Planned         | `PerformanceReport` covers net profit, total return, CAGR, drawdown, volatility, win rate, profit factor; risk-adjusted metrics (Sharpe, Sortino, Calmar) not yet computed. (VS001/VS004)                                                                                                  | RC-16+ (Performance analytics)              |
 | TD-030 | Scoring Strategy                          | Deferred        | Strategy Comparison uses a fixed weighted-score model with hardcoded weights; deterministic but not configurable/pluggable. (VS001/VS003)                                                                                                                                                  | RC-16+ (Comparison configurability)         |
 | TD-031 | Report Exporters                          | Future          | `SimulationReport` is an immutable in-memory / JSON artifact; no PDF / CSV / HTML exporters. (VS004)                                                                                                                                                                                       | Future (Reporting)                          |
-| TD-032 | Operational Metadata Isolation            | Mitigated (M1)  | ADR-013/014/018 semantic vs operational split is enforced in market event identities, closed-candle semantic equality, checkpoints (heartbeat separate), and M1 Mini Validation (US148/US150). Remaining work: apply the same discipline to M2+ accounting/runtime artifacts.              | RC-16 M2+                                   |
+| TD-032 | Operational Metadata Isolation            | Mitigated (M2)  | ADR-013/014/018 semantic vs operational split is enforced in market events and in M2 Fill, valuation, Portfolio source-hash, and deterministic rebuild inputs. Continue validation across M3+ runtime artifacts.                                                                           | RC-16 M3+                                   |
 | TD-033 | Large Dataset Scalability                 | Deferred        | Million-bar workloads retain full per-bar snapshot arrays in memory (~2.7 GB at 1m×10 in VS002) and required an iterative peak/trough fix (spread over large arrays overflowed the call stack). Consider streaming / aggregated snapshots. (VS002)                                         | RC-16+ (Scalability)                        |
 | TD-034 | Stage-1 Production Path Consolidation     | Planned         | Current manual `ProductionService.tick` and RC-15 simulation Trade/Portfolio abstractions are parallel paths. ADR-012/015/017 require one canonical Session → Order → Execution → accounting path.                                                                                         | RC-16 M2–M3                                 |
 | TD-035 | Durable Event Delivery                    | Resolved (M2)   | US155 binds Nest runtime to Prisma Outbox/Inbox/checkpoints and transactional writer, with lifecycle-managed polling. The process-local Event Bus remains activity-only; retries/dead letters remain durable.                                                                              | Completed in RC-16 M2                       |
 | TD-036 | Runtime Recovery and Reconciliation       | Planned         | Active deployments persist, but no always-on ownership lease, semantic checkpoint, startup recovery, or reconciliation exists. ADR-014 freezes the required lifecycle.                                                                                                                     | RC-16 M3–M5                                 |
-| TD-037 | Decimal Ledger Migration                  | In progress     | US153 and US172–US174 provide exact decimal contracts, immutable Fill-derived Position accounting, balanced append-only Ledger entries, and atomic idempotent Fill application. Remaining: valuation, Portfolio, and deterministic rebuild/reconciliation (US175–US177).                   | RC-16 M2                                    |
+| TD-037 | Decimal Ledger Migration                  | Resolved (M2)   | US153 and US172–US178 provide exact decimal contracts, immutable Fill-derived Position accounting, balanced append-only Ledger entries, atomic idempotent Fill application, decimal valuation/Portfolio, and deterministic reconciliation.                                                 | Completed in RC-16 M2                       |
 | TD-038 | Live Market Nest Outbox Wiring            | Resolved (M2)   | US155 switched `EventProcessingModule` to Prisma Outbox/Inbox/ConsumerCheckpoint providers and lifecycle polling without changing ADR-013 contracts.                                                                                                                                       | Completed in RC-16 M2                       |
 
 ---
@@ -86,6 +86,7 @@ Related:
 ### Resolved
 
 - TD-035 — Durable Event Delivery (PostgreSQL Nest runtime + lifecycle poller)
+- TD-037 — Decimal Ledger Migration (including valuation/Portfolio/reconciliation)
 - TD-038 — Live Market Nest Outbox Wiring
 
 ### Planned
@@ -94,11 +95,10 @@ Related:
 - TD-008 — Prisma `any` in legacy tests (tighten test mock typing; lint now green via scoped config)
 - TD-009 — `forwardRef` module wiring (optional Nest layering cleanup)
 - TD-010 — Extract `InsightGenerationService` (shared deterministic Insight drafting)
-- TD-028 — Execution Model (US172–US174 complete; US175–US178 pending)
+- TD-028 — Execution Model (M2 US159–US178 complete; M3–M6 runtime work remains)
 - TD-029 — Advanced Performance Metrics (Sharpe / Sortino / Calmar)
 - TD-034 — Stage-1 Production Path Consolidation
 - TD-036 — Runtime Recovery and Reconciliation
-- TD-037 — Decimal Ledger Migration (Position/Ledger core complete; valuation/Portfolio/rebuild pending)
 
 ### Future
 

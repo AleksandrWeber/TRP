@@ -11,6 +11,22 @@ type PositionRow = Prisma.PaperPositionGetPayload<Record<string, never>>;
 export class PrismaPositionRepository implements PositionRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
+  async listByAccount(workspaceId: string, paperAccountId: string): Promise<Position[]> {
+    const rows = await this.prisma.paperPosition.findMany({
+      where: { workspaceId, paperAccountId },
+      orderBy: [{ instrument: 'asc' }, { id: 'asc' }],
+    });
+    return rows.map(toDomain);
+  }
+
+  async listByInstrument(workspaceId: string, instrument: string): Promise<Position[]> {
+    const rows = await this.prisma.paperPosition.findMany({
+      where: { workspaceId, instrument },
+      orderBy: [{ paperAccountId: 'asc' }, { id: 'asc' }],
+    });
+    return rows.map(toDomain);
+  }
+
   async findByIdentity(
     workspaceId: string,
     paperAccountId: string,

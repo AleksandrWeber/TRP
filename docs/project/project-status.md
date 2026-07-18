@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-18 (RC-16 M2 Epic E10 first half — US172–US174)
+2026-07-18 (RC-16 M2 Epic E10 complete — US172–US178)
 
 ---
 
@@ -68,15 +68,21 @@ or accounting; idempotent submission and cancellation reconciliation where a
 duplicate submit cannot duplicate a Fill; and append-only PostgreSQL Fill
 persistence committed atomically with its Outbox event and the Orders-owned
 lifecycle transition.
-M2 Epic E10 first half complete (US172–US174): long-only Position accounting
+M2 Epic E10 complete (US172–US178): long-only Position accounting
 derived exclusively from immutable Fill domain values; append-only balanced
 Ledger transactions for opening capital, reservations, releases, Fill cost,
 fees, cash, and realized PnL; and a PostgreSQL atomic Fill accounting consumer
 that commits Inbox deduplication, Position transition, Ledger entries, Position
 and Ledger Outbox events, and consumer checkpoint together. Duplicate Fill
 delivery is a successful no-op, failure rolls back every accounting effect, and
-Ledger remains the only financial source of truth.
-Next: US175 — versioned Position valuation projection.
+Ledger remains the only financial source of truth. Versioned mark-to-market
+Position valuation consumes normalized marks through a decimal boundary;
+Portfolio is a read-only Ledger-and-valuation projection with explicit
+version/completeness/freshness; deterministic rebuild compares immutable Fills,
+Ledger, and valuation checkpoints without replaying live effects; mismatches
+persist and block affected execution; and authenticated accounting reads are
+workspace/account-scoped with decimal-string serialization.
+Next: M2 Mini Validation (US179–US183).
 
 ---
 

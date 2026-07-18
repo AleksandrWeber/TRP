@@ -101,6 +101,11 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
   opening capital, reservations, releases, Fill cost, fees, cash, and realized
   PnL; and atomic Inbox/Position/Ledger/Outbox/checkpoint Fill processing with
   duplicate no-op and full rollback on failure.
+- US175–US178 complete: M2 Epic E10. Versioned decimal Position valuation,
+  Ledger-and-valuation-only Portfolio projection with explicit freshness,
+  deterministic comparison-only accounting rebuild with execution fencing on
+  mismatch, and authenticated workspace/account-scoped decimal-string
+  accounting reads.
 
 These changes establish the separate RC-16 paper runtime. Research Engine,
 Validation, Knowledge Schema, and RC-15 simulation calculation versions remain

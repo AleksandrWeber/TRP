@@ -174,9 +174,21 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
   Position transition, balanced Ledger entries, Position/Ledger Outbox events,
   and checkpoint commit in one PostgreSQL transaction; duplicate delivery is a
   successful no-op and failure rolls back all accounting effects.
+- RC-16 M2 US175 — Position Valuation Projection: normalized mark-price
+  identity/sequence, decimal mark-to-market values, monotonic versions, and
+  duplicate/out-of-order no-op behavior without changing Position or Ledger.
+- RC-16 M2 US176 — Portfolio Projection: versioned Ledger-and-valuation-only
+  cash, equity, fees, exposure, realized/unrealized/total PnL, source hash,
+  completeness, and freshness.
+- RC-16 M2 US177 — Accounting Rebuild/Reconciliation: deterministic immutable
+  Fill/Ledger/valuation comparison without replaying financial effects, with
+  durable mismatch state that blocks affected execution.
+- RC-16 M2 US178 — Accounting Query API: authenticated workspace/account-scoped
+  Fill, Position/valuation, authoritative Ledger, Portfolio, and reconciliation
+  views with explicit projection labels and decimal-string serialization.
 
 RC-15.1 is released. RC-16 M1, Epic E7, and Epic E8 are complete; Epic E9
-(US165–US171) is complete; Epic E10 US172–US174 are complete.
+(US165–US171) and Epic E10 (US172–US178) are complete.
 
 ### Added (architecture)
 

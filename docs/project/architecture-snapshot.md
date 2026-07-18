@@ -1,6 +1,6 @@
 # TRP — Architecture Snapshot
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E10 US172–US174)
+Last updated: 2026-07-18 (RC-16 M2 Epic E10 complete)
 
 Single snapshot of the **current** architecture (RC-15). Documentation only. No future ideas.
 
@@ -702,7 +702,7 @@ are idempotent, so a duplicate submit cannot duplicate an adapter call or a Fill
 and cancellation reconciliation completes the terminal transition and releases the
 reservation through Orders.
 
-M2 Epic E10 first half complete (US172–US174). `positions/` accepts immutable
+M2 Epic E10 complete (US172–US178). `positions/` accepts immutable
 `OrderFillRecorded` facts only and derives a workspace/account/instrument
 long-or-flat Position with decimal quantity, average entry, cost basis, realized
 PnL, monotonic version, and last-applied-Fill sequence. `ledger/` is the only
@@ -713,4 +713,14 @@ consumer commits Inbox deduplication, Position transition, Ledger transaction
 and entries, Position/Ledger Outbox events, and checkpoint in one PostgreSQL
 transaction. Duplicate Fill delivery is a successful no-op and any failure
 rolls back the complete accounting effect. Cash balances are derived Ledger
-projections; Portfolio remains read-only and is not yet implemented.
+projections. Position valuation consumes canonical mark-price events through a
+dedicated decimal boundary and stores mark identity/sequence plus Position and
+valuation versions; duplicate or out-of-order marks are no-ops. Portfolio is a
+read-only projection sourced only from the authoritative Ledger fold and
+Position valuation outputs, with explicit source hash, version, completeness,
+and freshness. Rebuild deterministically folds immutable Fills, Ledger, and
+valuation checkpoints in memory, compares rather than rewriting live state, and
+persists a reconciliation mismatch that fences affected execution. The
+accounting query controller exposes only workspace/account-scoped immutable
+facts or explicitly non-authoritative projections, serialized as decimal
+strings.

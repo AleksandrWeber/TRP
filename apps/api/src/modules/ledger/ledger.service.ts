@@ -25,6 +25,7 @@ import {
   type CreateLedgerTransactionInput,
   type LedgerTransaction,
 } from './domain/ledger-transaction';
+import { summarizeLedger, type LedgerAccountSummary } from './domain/ledger-account-summary';
 import { LEDGER_REPOSITORY, type LedgerRepository } from './persistence/ledger.repository';
 
 export type OpenPaperAccountLedgerCommand = Readonly<{
@@ -151,6 +152,21 @@ export class LedgerService {
     idempotencyKey: string,
   ): Promise<LedgerTransaction | null> {
     return this.ledger.findByIdempotencyKey(workspaceId, idempotencyKey);
+  }
+
+  listByAccount(workspaceId: string, paperAccountId: string): Promise<LedgerTransaction[]> {
+    return this.ledger.listByAccount(workspaceId, paperAccountId);
+  }
+
+  async summarizeAccount(
+    workspaceId: string,
+    paperAccountId: string,
+  ): Promise<LedgerAccountSummary> {
+    return summarizeLedger(
+      workspaceId,
+      paperAccountId,
+      await this.ledger.listByAccount(workspaceId, paperAccountId),
+    );
   }
 
   async recordReservation(

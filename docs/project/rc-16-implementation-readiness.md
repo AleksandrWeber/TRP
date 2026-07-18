@@ -341,15 +341,22 @@ M2 Epic E10 progress:
 - ✓ US172 — Long-Only Position Accounting
 - ✓ US173 — Append-Only Balanced Ledger
 - ✓ US174 — Atomic Fill Accounting Consumer
+- ✓ US175 — Versioned Position Valuation Projection
+- ✓ US176 — Versioned Portfolio Projection
+- ✓ US177 — Deterministic Accounting Rebuild and Reconciliation
+- ✓ US178 — Workspace-Scoped Accounting Query API
 
-US172–US174 complete. Position derives only from immutable Fill domain values,
+US172–US178 complete. Position derives only from immutable Fill domain values,
 rejects over-closing, and records monotonic version/Fill progress. Ledger is the
 only financial source of truth; opening capital, reserve/release, Fill cost,
 fees, cash, and realized PnL use balanced append-only decimal entries with
 durable causes. Inbox, Position, Ledger, Outbox, and checkpoint commit in one
 PostgreSQL transaction; duplicate delivery is a successful no-op and failure
-leaves no partial accounting state.
-Next: US175 — Position Valuation Projection.
+leaves no partial accounting state. Valuation is decimal and versioned,
+Portfolio remains a Ledger-driven projection, rebuild is deterministic and
+comparison-only, mismatches fence affected execution, and read APIs preserve
+workspace/account scope with decimal strings.
+Next: M2 Mini Validation (US179–US183).
 
 ---
 

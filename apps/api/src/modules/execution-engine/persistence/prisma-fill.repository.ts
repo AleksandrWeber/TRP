@@ -25,6 +25,14 @@ export class PrismaFillRepository implements FillRepository {
     return rows.map(toDomain);
   }
 
+  async listByAccount(workspaceId: string, paperAccountId: string): Promise<PaperFill[]> {
+    const rows = await this.prisma.paperFill.findMany({
+      where: { workspaceId, paperAccountId },
+      orderBy: [{ occurredAt: 'asc' }, { id: 'asc' }],
+    });
+    return rows.map(toDomain);
+  }
+
   async findById(workspaceId: string, fillId: string): Promise<PaperFill | null> {
     const row = await this.prisma.paperFill.findFirst({ where: { id: fillId, workspaceId } });
     return row ? toDomain(row) : null;
