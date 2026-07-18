@@ -55,7 +55,15 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
   REST backfill via same validate/admit path, overlap elimination, RECOVERING
   until close, unresolved gaps remain visible. Epic E3-B / Epic E3 complete.
 
-RC-15.1 is released. RC-16 M1 Epic E3 complete (US135–US139).
+- RC-16 M1 US140 — Workspace-Scoped Subscription Registry: deterministic
+  workspace-scoped identity, idempotent subscribe/unsubscribe, desired state
+  survives connector replacement, strict workspace isolation.
+- RC-16 M1 US141 — Durable Market Stream Checkpoints: Prisma-backed
+  market_stream_checkpoints, advance gated on durable event recording,
+  regression rejected, heartbeat separate from semantic progress. Epic E4-A
+  complete. Fixed eslint unused-import in accepted-market-stream-state.
+
+RC-15.1 is released. RC-16 M1 Epic E4-A complete (US140–US141).
 
 ### Added (architecture)
 

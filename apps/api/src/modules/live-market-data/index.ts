@@ -155,3 +155,21 @@ export {
   type GapRecoveryResult,
   type GapRecoveryBackfill,
 } from './integrity/gap-recovery-service';
+
+export {
+  MarketSubscriptionRegistry,
+  subscriptionIdFor,
+  type MarketSubscribeCommand,
+} from './subscriptions/market-subscription-registry';
+
+export {
+  MARKET_CHECKPOINT_PERSISTENCE,
+  type DurableMarketCheckpoint,
+  type MarketCheckpointPersistence,
+} from './checkpoints/market-checkpoint-persistence';
+export { InMemoryMarketCheckpointPersistence } from './checkpoints/in-memory-market-checkpoint.persistence';
+export { PrismaMarketCheckpointPersistence } from './checkpoints/prisma-market-checkpoint.persistence';
+export {
+  MarketCheckpointStore,
+  type AdvanceMarketCheckpointInput,
+} from './checkpoints/market-checkpoint-store';

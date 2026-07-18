@@ -1,5 +1,3 @@
-import type { DurableEventEnvelope } from './durable-event-envelope';
-
 /**
  * Durable accepted market-stream state that publishes with Outbox (US128).
  * Represents last accepted semantic fact for a stream — not trading state.

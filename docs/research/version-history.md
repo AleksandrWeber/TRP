@@ -68,6 +68,7 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
 - US131–US134 complete: M1 Epic E2 (Binance public connector + resilience).
 - US135–US137 complete: M1 Epic E3-A (normalization + quarantine).
 - US138–US139 complete: M1 Epic E3-B (ordering + gap recovery).
+- US140–US141 complete: M1 Epic E4-A (subscription registry + durable checkpoints).
 
 This is an architecture/documentation milestone only. Research Engine,
 Validation, Knowledge Schema, and simulation calculation versions remain

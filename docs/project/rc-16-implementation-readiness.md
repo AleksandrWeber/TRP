@@ -246,7 +246,12 @@ Epic E3-A complete. Epic E3-B progress:
 - ✓ US138 — Duplicate and Stream-Ordering Control
 - ✓ US139 — Gap Detection and REST Recovery
 
-Epic E3 complete (US135–US139). Next: Epic E4 subscription/checkpoint (not started).
+Epic E3 complete (US135–US139). Epic E4-A progress:
+
+- ✓ US140 — Workspace-Scoped Subscription Registry
+- ✓ US141 — Durable Market Stream Checkpoints
+
+Epic E4-A complete. Next: Epic E4-B startup recovery/projection (not started).
 
 ---
 

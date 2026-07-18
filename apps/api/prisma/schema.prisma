@@ -312,6 +312,30 @@ enum ConsumerCheckpointDeliveryStatus {
   error
 }
 
+/// RC-16 US141 durable market stream checkpoints (ADR-013/014, ADR-018 #25).
+/// Semantic progress (sequence/event/occurredAt) is distinct from operational
+/// heartbeat time. Future Trading Sessions read, never write, these rows.
+model MarketStreamCheckpointRecord {
+  workspaceId    String    @map("workspace_id")
+  streamId       String    @map("stream_id")
+  sourceId       String    @map("source_id")
+  instrument     String
+  channel        String
+  timeframe      String?
+  schemaVersion  Int       @default(1) @map("schema_version")
+  lastSequence   Int       @map("last_sequence")
+  lastEventId    String?   @map("last_event_id")
+  lastOccurredAt DateTime? @map("last_occurred_at")
+  health         String
+  /// Operational liveness only — never semantic progress.
+  heartbeatAt    DateTime? @map("heartbeat_at")
+  updatedAt      DateTime  @map("updated_at")
+
+  @@id([workspaceId, streamId])
+  @@index([workspaceId, sourceId])
+  @@map("market_stream_checkpoints")
+}
+
 /// RC-16 ADR-013 consumer checkpoints (US129).
 model ConsumerCheckpointRecord {
   consumerId           String                          @map("consumer_id")

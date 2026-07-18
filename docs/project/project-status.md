@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-18 (RC-16 M1 Epic E3-B complete — US138–US139)
+2026-07-18 (RC-16 M1 Epic E4-A complete — US140–US141)
 
 ---
 
@@ -30,7 +30,9 @@ M1 Epic E3-A complete (US135–US137): closed-candle/mark-price normalization,
 validation, and quarantine (provider payloads stay in adapters).
 M1 Epic E3-B complete (US138–US139): semantic dedup, per-stream ordering,
 gap detection, and REST recovery with overlap elimination.
-Next: M1 Epic E4 — subscription registry, checkpoints, restart recovery (not started).
+M1 Epic E4-A complete (US140–US141): workspace-scoped subscription registry and
+durable (Prisma) market stream checkpoints with heartbeat/progress separation.
+Next: M1 Epic E4-B — startup recovery/resubscription and latest-state projection.
 
 ---
 
