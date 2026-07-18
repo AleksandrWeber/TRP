@@ -63,7 +63,15 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
   regression rejected, heartbeat separate from semantic progress. Epic E4-A
   complete. Fixed eslint unused-import in accepted-market-stream-state.
 
-RC-15.1 is released. RC-16 M1 Epic E4-A complete (US140–US141).
+- RC-16 M1 US142 — Startup Recovery and Resubscription: durable subscription
+  hydrate, checkpoint-seeded integrity, elapsed-gap REST backfill, live-event
+  buffering until reconciliation, healthy only after checkpoint reconcile.
+- RC-16 M1 US143 — Latest Market State Projection: Inbox-idempotent apply,
+  workspace/stream-scoped read model with explicit freshness, rebuild from
+  retained events/checkpoints; no strategy/Position/Portfolio/Risk. Epic E4
+  complete.
+
+RC-15.1 is released. RC-16 M1 Epic E4 complete (US140–US143).
 
 ### Added (architecture)
 

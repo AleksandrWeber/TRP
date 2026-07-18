@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import type { Instrument } from '../../market-data/instrument';
 import type { Timeframe } from '../../market-data/timeframe';
 import type { MarketDataSourceId } from '../domain/market-data-source';
@@ -9,6 +9,10 @@ import {
   type MarketSubscription,
 } from '../domain/market-subscription';
 import { buildMarketStreamId } from '../domain/market-stream-identity';
+import {
+  MARKET_SUBSCRIPTION_PERSISTENCE,
+  type MarketSubscriptionPersistence,
+} from './market-subscription-persistence';
 
 /**
  * Desired-subscription command (US140).
@@ -23,19 +27,43 @@ export type MarketSubscribeCommand = {
 };
 
 /**
- * Workspace-scoped desired-subscription registry (US140 / ADR-017).
- * Desired state is independent of connector socket instances and survives
- * connector replacement. No Trading Session behavior.
+ * Workspace-scoped desired-subscription registry (US140 / US142 / ADR-017).
+ * Desired state is durable via MarketSubscriptionPersistence and survives
+ * process restart and connector replacement. No Trading Session behavior.
  */
 @Injectable()
 export class MarketSubscriptionRegistry {
   private readonly byId = new Map<string, MarketSubscription>();
+  private hydrated = false;
+
+  constructor(
+    @Inject(MARKET_SUBSCRIPTION_PERSISTENCE)
+    private readonly persistence: MarketSubscriptionPersistence,
+  ) {}
+
+  /**
+   * Load durable desired subscriptions into memory (US142).
+   * Startup must call this — process memory alone is not authoritative.
+   */
+  async hydrate(): Promise<void> {
+    const rows = await this.persistence.loadAll();
+    this.byId.clear();
+    for (const row of rows) {
+      this.byId.set(String(row.id), row);
+    }
+    this.hydrated = true;
+  }
+
+  isHydrated(): boolean {
+    return this.hydrated;
+  }
 
   /**
    * Register desire. Idempotent: repeating the same command returns the
    * existing subscription without state loss.
    */
-  subscribe(command: MarketSubscribeCommand, at: string): MarketSubscription {
+  async subscribe(command: MarketSubscribeCommand, at: string): Promise<MarketSubscription> {
+    await this.ensureHydrated();
     const id = subscriptionIdFor(command);
     const existing = this.byId.get(id);
     if (existing && existing.state !== MarketSubscriptionState.STOPPED) {
@@ -54,11 +82,12 @@ export class MarketSubscriptionRegistry {
       updatedAt: at,
     });
     this.byId.set(id, subscription);
+    await this.persistence.save(subscription);
     return subscription;
   }
 
   /** Connector acknowledged the stream. */
-  markActive(workspaceId: string, id: string, at: string): MarketSubscription {
+  async markActive(workspaceId: string, id: string, at: string): Promise<MarketSubscription> {
     return this.transition(workspaceId, id, MarketSubscriptionState.ACTIVE, at);
   }
 
@@ -66,23 +95,28 @@ export class MarketSubscriptionRegistry {
    * Connector instance was replaced or lost: desired subscriptions fall back
    * to DESIRED so a replacement connector can re-arm them. Stopped stays stopped.
    */
-  markDesiredForSource(sourceId: MarketDataSourceId | string, at: string): void {
+  async markDesiredForSource(sourceId: MarketDataSourceId | string, at: string): Promise<void> {
+    await this.ensureHydrated();
     for (const [id, subscription] of this.byId) {
       if (String(subscription.sourceId) !== String(sourceId)) continue;
       if (subscription.state !== MarketSubscriptionState.ACTIVE) continue;
-      this.byId.set(
-        id,
-        createMarketSubscription({
-          ...subscription,
-          state: MarketSubscriptionState.DESIRED,
-          updatedAt: at,
-        }),
-      );
+      const next = createMarketSubscription({
+        ...subscription,
+        state: MarketSubscriptionState.DESIRED,
+        updatedAt: at,
+      });
+      this.byId.set(id, next);
+      await this.persistence.save(next);
     }
   }
 
   /** Idempotent stop; unknown ids are a no-op returning null. */
-  unsubscribe(workspaceId: string, id: string, at: string): MarketSubscription | null {
+  async unsubscribe(
+    workspaceId: string,
+    id: string,
+    at: string,
+  ): Promise<MarketSubscription | null> {
+    await this.ensureHydrated();
     const existing = this.byId.get(id);
     if (!existing || existing.workspaceId !== workspaceId) {
       return null;
@@ -107,7 +141,7 @@ export class MarketSubscriptionRegistry {
 
   /**
    * Desired (non-stopped) subscriptions for a source — what a fresh connector
-   * instance must arm after replacement.
+   * instance must arm after replacement / restart.
    */
   desiredFor(sourceId: MarketDataSourceId | string): ReadonlyArray<MarketSubscription> {
     return Object.freeze(
@@ -120,12 +154,13 @@ export class MarketSubscriptionRegistry {
     );
   }
 
-  private transition(
+  private async transition(
     workspaceId: string,
     id: string,
     state: MarketSubscriptionState,
     at: string,
-  ): MarketSubscription {
+  ): Promise<MarketSubscription> {
+    await this.ensureHydrated();
     const existing = this.byId.get(id);
     if (!existing || existing.workspaceId !== workspaceId) {
       throw new Error(`subscription not found in workspace: ${id}`);
@@ -136,7 +171,14 @@ export class MarketSubscriptionRegistry {
       updatedAt: at,
     });
     this.byId.set(id, next);
+    await this.persistence.save(next);
     return next;
+  }
+
+  private async ensureHydrated(): Promise<void> {
+    if (!this.hydrated) {
+      await this.hydrate();
+    }
   }
 }
 

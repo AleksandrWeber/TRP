@@ -173,3 +173,25 @@ export {
   MarketCheckpointStore,
   type AdvanceMarketCheckpointInput,
 } from './checkpoints/market-checkpoint-store';
+
+export {
+  MARKET_SUBSCRIPTION_PERSISTENCE,
+  type MarketSubscriptionPersistence,
+} from './subscriptions/market-subscription-persistence';
+export { InMemoryMarketSubscriptionPersistence } from './subscriptions/in-memory-market-subscription.persistence';
+export { PrismaMarketSubscriptionPersistence } from './subscriptions/prisma-market-subscription.persistence';
+
+export { LiveEventBuffer } from './recovery/live-event-buffer';
+export {
+  StartupRecoveryService,
+  type StartupRecoveryDeps,
+  type StartupRecoveryResult,
+  type StreamRecoveryReport,
+} from './recovery/startup-recovery.service';
+
+export {
+  LATEST_MARKET_STATE_CONSUMER_ID,
+  LATEST_MARKET_STATE_CONSUMER_VERSION,
+  type LatestMarketState,
+} from './projection/latest-market-state';
+export { LatestMarketStateProjection } from './projection/latest-market-state-projection';

@@ -415,20 +415,20 @@ integration.** A separate Stage-1 manual paper prototype exists under
 
 ### Modules (`apps/api/src/modules/`)
 
-| Module             | Path                    | Role                                                                                                                    |
-| ------------------ | ----------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped                                                            |
-| LiveMarketData     | `live-market-data/`     | Contracts + connectors; normalization/quarantine; integrity/recovery; subscriptions + durable checkpoints (US131–US141) |
-| EventProcessing    | `event-processing/`     | ADR-013 foundation (US128–US130): Outbox, Inbox, checkpoints, at-least-once dispatcher, retry/dead letters              |
-| HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                               |
-| MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                                 |
-| Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                                       |
-| Portfolio          | `portfolio/`            | `PortfolioEngine` state (cash / equity / PnL)                                                                           |
-| Trade              | `trade/`                | Virtual `TradeEngine` → `PortfolioEngine.applyExecution`                                                                |
-| Performance        | `performance/`          | `PerformanceAnalyzer` → immutable `PerformanceReport`                                                                   |
-| WalkForward        | `walk-forward/`         | Rolling windows; reuses `BacktestEngine` sequentially                                                                   |
-| StrategyComparison | `strategy-comparison/`  | Rankings + weighted overall winner from completed results                                                               |
-| SimulationReport   | `simulation-report/`    | `SimulationReportBuilder` → immutable consolidated artifact                                                             |
+| Module             | Path                    | Role                                                                                                                                                   |
+| ------------------ | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped                                                                                           |
+| LiveMarketData     | `live-market-data/`     | Contracts through E4: connectors, normalization, integrity, durable subscriptions/checkpoints, startup recovery, latest-state projection (US131–US143) |
+| EventProcessing    | `event-processing/`     | ADR-013 foundation (US128–US130): Outbox, Inbox, checkpoints, at-least-once dispatcher, retry/dead letters                                             |
+| HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                                                              |
+| MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                                                                |
+| Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                                                                      |
+| Portfolio          | `portfolio/`            | `PortfolioEngine` state (cash / equity / PnL)                                                                                                          |
+| Trade              | `trade/`                | Virtual `TradeEngine` → `PortfolioEngine.applyExecution`                                                                                               |
+| Performance        | `performance/`          | `PerformanceAnalyzer` → immutable `PerformanceReport`                                                                                                  |
+| WalkForward        | `walk-forward/`         | Rolling windows; reuses `BacktestEngine` sequentially                                                                                                  |
+| StrategyComparison | `strategy-comparison/`  | Rankings + weighted overall winner from completed results                                                                                              |
+| SimulationReport   | `simulation-report/`    | `SimulationReportBuilder` → immutable consolidated artifact                                                                                            |
 
 ### Dependency direction (acyclic)
 
@@ -621,3 +621,8 @@ subscription registry (idempotent commands; desired state survives connector
 replacement) and durable Prisma-backed market stream checkpoints (advance only
 after durable event recording; regression rejected; operational heartbeat is
 separate from semantic progress).
+
+M1 Epic E4-B progress: US142–US143 complete — durable subscription hydrate on
+startup, checkpoint-seeded integrity, elapsed-gap backfill, live-event buffer
+until reconciliation, and Inbox-idempotent latest-market-state projection with
+rebuild from retained events/checkpoints. Epic E4 complete.

@@ -336,6 +336,24 @@ model MarketStreamCheckpointRecord {
   @@map("market_stream_checkpoints")
 }
 
+/// RC-16 US142 durable desired subscriptions (ADR-014).
+/// Desired state survives process restart — not connector socket memory.
+model MarketSubscriptionRecord {
+  id          String   @id
+  workspaceId String   @map("workspace_id")
+  sourceId    String   @map("source_id")
+  instrument  String
+  channel     String
+  streamId    String   @map("stream_id")
+  timeframe   String?
+  state       String
+  updatedAt   DateTime @map("updated_at")
+
+  @@unique([workspaceId, streamId])
+  @@index([workspaceId, sourceId, state])
+  @@map("market_subscriptions")
+}
+
 /// RC-16 ADR-013 consumer checkpoints (US129).
 model ConsumerCheckpointRecord {
   consumerId           String                          @map("consumer_id")
