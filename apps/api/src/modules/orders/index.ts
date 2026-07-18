@@ -1,6 +1,7 @@
 export { OrdersModule } from './orders.module';
 export {
   OrderService,
+  type CancelOrderCommand,
   type CreateOrderCommand,
   type TransitionOrderCommand,
 } from './order.service';
@@ -17,6 +18,8 @@ export {
   ORDER_SCHEMA_VERSION,
   createOrder,
   applyOrderFill,
+  completeOrderCancellation,
+  requestOrderCancellation,
   type Order,
   type OrderLifecycleEntry,
   type OrderTransitionInput,

@@ -130,6 +130,34 @@ export function transitionOrder(order: Order, input: OrderTransitionInput): Orde
 }
 
 /**
+ * Idempotent Orders-owned cancellation request (US163).
+ * Adapter-facing cancellation is intentionally not performed by the aggregate.
+ */
+export function requestOrderCancellation(
+  order: Order,
+  input: Omit<OrderTransitionInput, 'toStatus'>,
+): Order {
+  if (order.status === OrderStatus.CANCEL_PENDING || order.status === OrderStatus.CANCELLED) {
+    return order;
+  }
+  if (order.status === OrderStatus.FILLED || order.status === OrderStatus.REJECTED) {
+    throw new Error(`order cannot be cancelled from ${order.status}`);
+  }
+  return transitionOrder(order, { ...input, toStatus: OrderStatus.CANCEL_PENDING });
+}
+
+export function completeOrderCancellation(
+  order: Order,
+  input: Omit<OrderTransitionInput, 'toStatus'>,
+): Order {
+  if (order.status === OrderStatus.CANCELLED) return order;
+  if (order.status !== OrderStatus.CANCEL_PENDING) {
+    throw new Error(`order cancellation cannot complete from ${order.status}`);
+  }
+  return transitionOrder(order, { ...input, toStatus: OrderStatus.CANCELLED });
+}
+
+/**
  * Apply an immutable Fill quantity. M2 permits no overfill. Partial quantity
  * remains ACKNOWLEDGED; exact completion transitions to FILLED.
  */

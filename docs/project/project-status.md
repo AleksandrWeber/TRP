@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-18 (RC-16 M2 Epic E8 progress — US159–US161)
+2026-07-18 (RC-16 M2 Epic E8 complete — US159–US164)
 
 ---
 
@@ -50,11 +50,14 @@ M2 Epic E7-B complete (US156–US158): durable manual Trading Sessions with
 ADR-014 state machine; fenced lease/fencing-token execution eligibility;
 Trader/Admin workspace command authorization; production JWT secret hardening.
 Epic E7 complete.
-M2 Epic E8 first half complete (US159–US161): immutable manual paper Order
+M2 Epic E8 complete (US159–US164): immutable manual paper Order
 Intents with deterministic identities; Orders-owned lifecycle state machine and
 append-only history; PostgreSQL Order persistence with optimistic versions,
-workspace uniqueness, and atomic Outbox events.
-Next: US162 — Ledger-owned cash reservation.
+workspace uniqueness, and atomic Outbox events; Ledger-owned durable cash
+reservation/release through its public port; idempotent pre/post-submission
+cancellation semantics; and authenticated workspace-scoped Order REST commands
+and queries with Trader/Admin command RBAC.
+Next: US165 — mandatory pre-trade Risk decision.
 
 ---
 

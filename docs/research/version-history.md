@@ -84,6 +84,10 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
 - US159–US161 complete: M2 Epic E8 first half. Deterministic paper Order Intent
   identities, Orders-owned lifecycle/history, and transactional PostgreSQL
   Order + Outbox persistence.
+- US162–US164 complete: M2 Epic E8 second half. Ledger-owned durable cash
+  reservation/release, idempotent Orders-owned cancellation, and authenticated
+  workspace/RBAC-scoped Order command and query API with no Risk/Execution
+  bypass. Epic E8 complete.
 
 These changes establish the separate RC-16 paper runtime. Research Engine,
 Validation, Knowledge Schema, and RC-15 simulation calculation versions remain

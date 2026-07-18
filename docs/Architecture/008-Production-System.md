@@ -13,11 +13,14 @@ accounting, mandatory Risk, module boundaries, and invariants. Broader
 real-capital, multi-order-type, reporting, and knowledge-publishing concepts in
 this document remain future target ideas unless included by the RC-16 plan.
 
-RC-16 M2 implementation note (US159–US161): the canonical `orders/` module now
+RC-16 M2 implementation note (US159–US164): the canonical `orders/` module now
 owns immutable manual paper Order Intents and the Order lifecycle. PostgreSQL
 persists Orders and append-only lifecycle history with workspace-scoped unique
-identities and same-transaction Outbox events. Execution, adapter behavior, and
-accounting remain separate later stories.
+identities and same-transaction Outbox events. Cash reservation/release crosses
+only the Ledger public port; cancellation is idempotent and delegates submitted
+adapter work to Execution Engine. The REST adapter exposes propose/cancel and
+queries, not internal Risk or Execution transitions. Fill accounting remains a
+separate later story.
 
 ---
 

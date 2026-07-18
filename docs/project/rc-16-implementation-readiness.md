@@ -301,15 +301,20 @@ Epic E7 complete. Manual Trading Sessions are durable and fenced; trading
 commands require Trader/Admin plus workspace membership; production JWT secrets
 are hardened.
 
-M2 Epic E8 progress:
+M2 Epic E8 complete:
 
 - ✓ US159 — Order Intent and Identity Contracts
 - ✓ US160 — Order Aggregate and State Machine
 - ✓ US161 — Durable Order Repository and Outbox
+- ✓ US162 — Ledger-Owned Cash Reservation
+- ✓ US163 — Order Cancellation Lifecycle
+- ✓ US164 — Authorized Order Command and Query API
 
-US159–US161 complete. Orders is the sole lifecycle owner; Order/history/Outbox
-writes are atomic and workspace-scoped. Next: US162 — Ledger-owned cash
-reservation.
+US159–US164 complete. Orders is the sole lifecycle owner; Order/history/Outbox
+writes are atomic and workspace-scoped. Reservation uses only the Ledger public
+port, Portfolio remains read-only, cancellation is idempotent, and the REST
+adapter exposes no Risk/Execution bypass. Next: US165 — mandatory pre-trade
+Risk decision.
 
 ---
 

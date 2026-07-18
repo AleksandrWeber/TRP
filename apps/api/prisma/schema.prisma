@@ -475,3 +475,40 @@ model OrderLifecycleEntry {
   @@index([workspaceId, orderId])
   @@map("order_lifecycle_history")
 }
+
+/// Ledger-owned cash balance used by the US162 reservation port.
+/// US173 owns creation from append-only Ledger transactions.
+model LedgerCashBalance {
+  id             String   @id
+  workspaceId    String   @map("workspace_id")
+  paperAccountId String   @map("paper_account_id")
+  currency       String
+  postedCash     Decimal  @map("posted_cash") @db.Decimal(38, 18)
+  reservedCash   Decimal  @default(0) @map("reserved_cash") @db.Decimal(38, 18)
+  version        Int      @default(1)
+  updatedAt      DateTime @map("updated_at")
+
+  @@unique([workspaceId, paperAccountId, currency])
+  @@index([workspaceId, paperAccountId])
+  @@map("ledger_cash_balances")
+}
+
+/// Durable, idempotent Ledger-owned Order cash reservation.
+model LedgerCashReservation {
+  id                    String    @id
+  workspaceId           String    @map("workspace_id")
+  paperAccountId        String    @map("paper_account_id")
+  orderId               String    @map("order_id")
+  idempotencyKey        String    @map("idempotency_key")
+  releaseIdempotencyKey String?   @map("release_idempotency_key")
+  currency              String
+  amount                Decimal   @db.Decimal(38, 18)
+  status                String
+  createdAt             DateTime  @map("created_at")
+  releasedAt            DateTime? @map("released_at")
+
+  @@unique([workspaceId, orderId])
+  @@unique([workspaceId, idempotencyKey])
+  @@index([workspaceId, paperAccountId, status])
+  @@map("ledger_cash_reservations")
+}

@@ -17,6 +17,11 @@ RC-16 M2 implementation note (US158): trading commands require Trader or
 Administrator (`Admin`) plus workspace membership. Production startup rejects
 insecure JWT secret fallbacks (`dev-only-change-me` / missing secret).
 
+US164 applies that boundary to Order commands: create/cancel require
+Trader/Admin, active workspace membership, `X-Workspace-Id`, and
+`Idempotency-Key`. Authenticated queries are workspace-membership scoped. No
+public route exposes internal Risk or Execution Engine transitions.
+
 ---
 
 # Purpose

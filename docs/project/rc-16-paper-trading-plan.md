@@ -153,10 +153,11 @@ runtime wiring, manual Trading Sessions with fenced eligibility, and trading
 command authorization/JWT hardening. Orders, execution, Fills, Ledger, and
 projections remain in the subsequent M2 epics.
 
-Epic E8 progress (2026-07-18): US159–US161 complete — deterministic manual
-paper Order Intents, explicit Orders-owned lifecycle/history, and transactional
-PostgreSQL Order + Outbox persistence. Reservations, cancellation, and Order API
-remain US162–US164.
+Epic E8 complete (2026-07-18): US159–US164 — deterministic manual paper Order
+Intents, explicit Orders-owned lifecycle/history, transactional PostgreSQL
+Order + Outbox persistence, Ledger-owned cash reservation, idempotent
+cancellation, and authorized workspace-scoped Order REST commands/queries.
+Mandatory Risk and Execution Engine integration remain subsequent M2 epics.
 
 Mini Validation 1: idempotency and accounting invariants.
 

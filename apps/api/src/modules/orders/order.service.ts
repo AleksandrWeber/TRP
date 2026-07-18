@@ -4,6 +4,10 @@ import { PrismaTransactionService } from '../../storage/prisma/prisma-transactio
 import { toDurableEventId, type DurableEventEnvelope } from '../event-processing';
 import { TransactionalOutboxAppender } from '../event-processing/transactional-outbox-appender';
 import {
+  CASH_RESERVATION_PORT,
+  type CashReservationPort,
+} from '../ledger/ports/cash-reservation.port';
+import {
   PAPER_ACCOUNT_REPOSITORY,
   type PaperAccountRepository,
 } from '../paper-account/persistence/paper-account.repository';
@@ -14,6 +18,8 @@ import {
 } from '../trading-session/persistence/trading-session.repository';
 import {
   createOrder,
+  completeOrderCancellation,
+  requestOrderCancellation,
   transitionOrder,
   type Order,
   type OrderTransitionInput,
@@ -44,6 +50,16 @@ export type TransitionOrderCommand = Readonly<{
   recordedAt: string;
 }>;
 
+export type CancelOrderCommand = Readonly<{
+  workspaceId: string;
+  orderId: string;
+  idempotencyKey: string;
+  actorId: string;
+  correlationId?: string;
+  occurredAt: string;
+  recordedAt: string;
+}>;
+
 /**
  * Sole Order lifecycle application boundary (US159-US161 / ADR-018 #3).
  * Every create/transition commits aggregate + lifecycle history + Outbox atomically.
@@ -61,6 +77,8 @@ export class OrderService {
     private readonly transactions: PrismaTransactionService,
     @Inject(TransactionalOutboxAppender)
     private readonly outbox: TransactionalOutboxAppender,
+    @Inject(CASH_RESERVATION_PORT)
+    private readonly cashReservations: CashReservationPort,
   ) {}
 
   async create(command: CreateOrderCommand): Promise<Order> {
@@ -139,12 +157,76 @@ export class OrderService {
     });
   }
 
+  /**
+   * Idempotent cancellation orchestration (US163).
+   * Pre-submission cancellation releases cash via Ledger and completes locally.
+   * Submitted/acknowledged Orders remain cancel_pending for Execution Engine
+   * adapter handling and later confirmed completion.
+   */
+  async cancel(command: CancelOrderCommand): Promise<Order> {
+    const idempotencyKey = required(command.idempotencyKey, 'idempotency key');
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const current = await this.orders.findById(command.workspaceId, command.orderId);
+      if (!current) throw new Error('order not found in workspace');
+      if (current.status === OrderStatus.CANCELLED) return current;
+
+      const transition = {
+        eventType: 'OrderCancellationRequested',
+        actorId: command.actorId,
+        correlationId: command.correlationId,
+        reason: 'cancel_requested',
+        occurredAt: command.occurredAt,
+        recordedAt: command.recordedAt,
+      } as const;
+      const pending = requestOrderCancellation(current, transition);
+      try {
+        const persisted =
+          pending === current ? current : await this.persistTransition(current, pending);
+
+        // adapterOrderId is only assigned at submission. Orders never calls an
+        // adapter directly; Execution Engine owns cancellation after submission.
+        if (persisted.adapterOrderId !== null) return persisted;
+
+        if (persisted.reservationId !== null) {
+          await this.cashReservations.releaseCash({
+            workspaceId: persisted.workspaceId,
+            orderId: persisted.id,
+            idempotencyKey: `${idempotencyKey}:ledger-release`,
+            actorId: command.actorId,
+            correlationId: command.correlationId,
+            recordedAt: command.recordedAt,
+          });
+        }
+        const cancelled = completeOrderCancellation(persisted, {
+          ...transition,
+          eventType: 'OrderCancelled',
+          reason: 'cancelled_before_submission',
+        });
+        return cancelled === persisted
+          ? persisted
+          : await this.persistTransition(persisted, cancelled);
+      } catch (error) {
+        if (isOptimisticConflict(error) && attempt < 2) continue;
+        throw error;
+      }
+    }
+    throw new Error('order cancellation concurrency limit exceeded');
+  }
+
   get(workspaceId: string, orderId: string): Promise<Order | null> {
     return this.orders.findById(workspaceId, orderId);
   }
 
   list(workspaceId: string): Promise<Order[]> {
     return this.orders.listByWorkspace(workspaceId);
+  }
+
+  private persistTransition(current: Order, next: Order): Promise<Order> {
+    return this.transactions.run(async (transaction) => {
+      const saved = await this.orders.save(next, current.version, transaction);
+      await this.outbox.append(transaction, orderEnvelope(saved), next.recordedAt);
+      return saved;
+    });
   }
 }
 
@@ -190,4 +272,14 @@ function assertSameIntent(existing: Order, intentHash: string): void {
 
 function isUniqueConflict(error: unknown): boolean {
   return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002';
+}
+
+function isOptimisticConflict(error: unknown): boolean {
+  return error instanceof Error && error.message === 'order optimistic version conflict';
+}
+
+function required(value: string, label: string): string {
+  const result = value.trim();
+  if (result === '') throw new Error(`${label} is required`);
+  return result;
 }

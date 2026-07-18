@@ -121,8 +121,20 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 - RC-16 M2 US161 — Durable Order Repository and Outbox: PostgreSQL
   `paper_orders` and append-only `order_lifecycle_history`, workspace-scoped
   uniqueness, optimistic versions, and atomic Order/history/Outbox commits.
+- RC-16 M2 US162 — Ledger-Owned Cash Reservation: decimal-safe PostgreSQL cash
+  balances and idempotent reservations/releases behind the Ledger public port,
+  row-serialized availability checks, and atomic reservation/balance/Outbox
+  writes. Portfolio remains read-only.
+- RC-16 M2 US163 — Order Cancellation Lifecycle: Orders-owned idempotent
+  cancellation; pre-submission cash release through Ledger and terminal
+  completion; submitted/acknowledged requests remain cancel-pending for
+  Execution Engine adapter handling.
+- RC-16 M2 US164 — Authorized Order Command and Query API: authenticated
+  workspace-scoped propose/cancel/read routes, Trader/Admin command RBAC,
+  required command idempotency, DTO validation, and no public Risk/Execution
+  lifecycle bypass.
 
-RC-15.1 is released. RC-16 M1 and Epic E7 complete; Epic E8 US159–US161 complete.
+RC-15.1 is released. RC-16 M1, Epic E7, and Epic E8 are complete.
 
 ### Added (architecture)
 

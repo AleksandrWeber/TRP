@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { TransactionalOutboxAppender } from '../../modules/event-processing/transactional-outbox-appender';
+import type { CashReservationPort } from '../../modules/ledger';
 import { OrderSide, OrderType } from '../../modules/orders/domain/order-intent';
 import { OrderStatus } from '../../modules/orders/domain/order-status';
 import { OrderService } from '../../modules/orders/order.service';
@@ -24,7 +25,21 @@ describe('US161 — transactional PostgreSQL Orders and Outbox', () => {
   const orders = new PrismaOrderRepository(prisma);
   const accountService = new PaperAccountService(accounts, transactions, outbox);
   const sessionService = new TradingSessionService(sessions, accounts, transactions, outbox);
-  const service = new OrderService(orders, accounts, sessions, transactions, outbox);
+  const cashReservations: CashReservationPort = {
+    reserveCash: async () => {
+      throw new Error('not used');
+    },
+    releaseCash: async () => null,
+    findByOrder: async () => null,
+  };
+  const service = new OrderService(
+    orders,
+    accounts,
+    sessions,
+    transactions,
+    outbox,
+    cashReservations,
+  );
 
   beforeAll(() => prisma.$connect());
   beforeEach(cleanup);
@@ -194,11 +209,18 @@ describe('US161 — transactional PostgreSQL Orders and Outbox', () => {
 
   it('rolls back Order and history when Outbox append fails', async () => {
     const command = await createCommand();
-    const failing = new OrderService(orders, accounts, sessions, transactions, {
-      append: async () => {
-        throw new Error('injected order outbox failure');
-      },
-    } as TransactionalOutboxAppender);
+    const failing = new OrderService(
+      orders,
+      accounts,
+      sessions,
+      transactions,
+      {
+        append: async () => {
+          throw new Error('injected order outbox failure');
+        },
+      } as TransactionalOutboxAppender,
+      cashReservations,
+    );
 
     await expect(failing.create(command)).rejects.toThrow(/injected order outbox failure/);
     expect(await prisma.paperOrder.count({ where: { workspaceId: WS } })).toBe(0);

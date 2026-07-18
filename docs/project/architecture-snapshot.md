@@ -1,6 +1,6 @@
 # TRP — Architecture Snapshot
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E8 US159–US161)
+Last updated: 2026-07-18 (RC-16 M2 Epic E8 complete)
 
 Single snapshot of the **current** architecture (RC-15). Documentation only. No future ideas.
 
@@ -423,7 +423,8 @@ integration.** A separate Stage-1 manual paper prototype exists under
 | Financial          | `financial/`            | Exact decimal values, explicit scales and rounding; no number conversion (US153)                           |
 | PaperAccount       | `paper-account/`        | Durable paper-only account and opening-capital Ledger instruction (US154)                                  |
 | TradingSession     | `trading-session/`      | Manual ADR-014 sessions, fenced leases, execution eligibility (US156–US157)                                |
-| Orders             | `orders/`               | Deterministic intents, sole lifecycle owner, PostgreSQL aggregate/history + Outbox (US159–US161)           |
+| Orders             | `orders/`               | Intents, sole lifecycle owner, persistence, cancellation, authorized REST API (US159–US164)                |
+| Ledger             | `ledger/`               | Public durable cash reservation/release port; Portfolio has no write access (US162)                        |
 | HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                  |
 | MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                    |
 | Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                          |
@@ -660,10 +661,19 @@ eligibility; Trader/Admin workspace command authorization retains actor,
 correlation, and idempotency identifiers; production rejects insecure JWT
 secret fallbacks. Epic E7 complete.
 
-M2 Epic E8 progress: US159–US161 complete — manual market/limit Order Intents
+M2 Epic E8 complete: US159–US164 — manual market/limit Order Intents
 carry workspace/account/session/fence/market-checkpoint references and stable
 client/idempotency/intent identities. Orders exclusively owns the explicit
 lifecycle and immutable history. `paper_orders` and
 `order_lifecycle_history` persist with decimal financial columns, optimistic
 aggregate versions, workspace-scoped uniqueness, and same-transaction Outbox
-events.
+events. The Ledger public port owns durable cash reservation and release,
+serializes balance updates, and emits Outbox events without Portfolio writes.
+Orders cancellation is idempotent: pre-submission requests release through
+Ledger and complete locally, while submitted requests remain cancel-pending for
+Execution Engine handling. The authenticated REST adapter exposes propose,
+cancel, and workspace-scoped queries only; Trader/Admin RBAC protects commands,
+and no HTTP route can perform Risk or adapter lifecycle transitions. The
+reservation port consumes Ledger-owned cash-balance rows; US173 will create
+those balances from append-only Ledger transactions and paper-account opening
+instructions.

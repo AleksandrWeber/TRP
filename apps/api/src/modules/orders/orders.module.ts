@@ -3,12 +3,22 @@ import { PrismaService } from '../../storage/prisma/prisma.module';
 import { EventProcessingModule } from '../event-processing';
 import { PaperAccountModule } from '../paper-account';
 import { TradingSessionModule } from '../trading-session';
+import { LedgerModule } from '../ledger';
+import { AuthModule } from '../auth/auth.module';
 import { OrderService } from './order.service';
+import { OrdersController } from './orders.controller';
 import { ORDER_REPOSITORY } from './persistence/order.repository';
 import { PrismaOrderRepository } from './persistence/prisma-order.repository';
 
 @Module({
-  imports: [EventProcessingModule, PaperAccountModule, TradingSessionModule],
+  imports: [
+    EventProcessingModule,
+    PaperAccountModule,
+    TradingSessionModule,
+    LedgerModule,
+    AuthModule,
+  ],
+  controllers: [OrdersController],
   providers: [
     {
       provide: ORDER_REPOSITORY,
