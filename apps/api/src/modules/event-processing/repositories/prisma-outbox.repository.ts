@@ -1,16 +1,17 @@
-import type { OutboxDeliveryStatus, Prisma, PrismaClient } from '@prisma/client';
+import type { OutboxDeliveryStatus, Prisma } from '@prisma/client';
 import { toDurableEventId } from '../domain/durable-event-id';
 import type { DurableEventEnvelope } from '../domain/durable-event-envelope';
 import type { OutboxDeliveryPatch, OutboxRecord } from '../domain/outbox-record';
 import { OutboxStatus } from '../domain/outbox-status';
 import type { OutboxRepository, UnpublishedOutboxQuery } from './outbox.repository';
+import type { PrismaOutboxClient } from './prisma-event-client';
 
 /**
  * PostgreSQL Outbox repository (US149 / ADR-013).
  * Envelope columns are write-once; only delivery metadata mutates.
  */
 export class PrismaOutboxRepository implements OutboxRepository {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaOutboxClient) {}
 
   async insert(envelope: DurableEventEnvelope, createdAt: string): Promise<OutboxRecord> {
     const row = await this.prisma.outboxEvent.create({

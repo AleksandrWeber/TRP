@@ -47,6 +47,14 @@ export class OutboxDispatcher {
     this.consumers.set(consumer.consumerId, consumer);
   }
 
+  consumerCount(): number {
+    return this.consumers.size;
+  }
+
+  hasConsumers(): boolean {
+    return this.consumers.size > 0;
+  }
+
   start(): void {
     this.running = true;
     this.shuttingDown = false;
@@ -69,7 +77,7 @@ export class OutboxDispatcher {
   }
 
   async dispatchOnce(nowIso: string, limit = 100): Promise<DispatchOnceResult> {
-    if (this.shuttingDown || !this.running) {
+    if (this.shuttingDown || !this.running || !this.hasConsumers()) {
       return Object.freeze({
         examined: 0,
         published: 0,

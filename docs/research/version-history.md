@@ -75,7 +75,10 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
   channel). Epic E5 complete. M1 Live Market Data Foundation complete.
 - US148–US152 complete: M1 Epic E6 Mini Validation (PASS WITH MINOR
   RECOMMENDATIONS). See `docs/project/rc-16-m1-mini-validation.md`.
+- US153–US155 complete: M2 Epic E7-A. Canonical decimal-only financial
+  contracts and precision policies; durable paper account with immutable
+  opening-capital Ledger instruction; PostgreSQL Event Processing Nest runtime.
 
-This is an architecture/documentation milestone only. Research Engine,
-Validation, Knowledge Schema, and simulation calculation versions remain
+These changes establish the separate RC-16 paper runtime. Research Engine,
+Validation, Knowledge Schema, and RC-15 simulation calculation versions remain
 unchanged.

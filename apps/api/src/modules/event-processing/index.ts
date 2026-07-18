@@ -48,8 +48,10 @@ export {
 export type { DurableOutboxConsumer } from './domain/durable-outbox-consumer';
 export { OutboxDispatcher } from './outbox-dispatcher.service';
 export type { DispatchOnceResult } from './outbox-dispatcher.service';
+export { OutboxPollingService } from './outbox-polling.service';
 export { OutboxDispatcherMetrics } from './outbox-dispatcher.metrics';
 export type { OutboxDispatcherMetricsSnapshot } from './outbox-dispatcher.metrics';
+export { TransactionalOutboxAppender } from './transactional-outbox-appender';
 
 export type {
   AcceptMarketEventCommand,

@@ -1,6 +1,6 @@
 # TRP — Architecture Snapshot
 
-Last updated: 2026-07-18 (RC-16 M1 US126)
+Last updated: 2026-07-18 (RC-16 M2 Epic E7-A US153–US155)
 
 Single snapshot of the **current** architecture (RC-15). Documentation only. No future ideas.
 
@@ -419,7 +419,9 @@ integration.** A separate Stage-1 manual paper prototype exists under
 | ------------------ | ----------------------- | ---------------------------------------------------------------------------------------------------------- |
 | MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped                                               |
 | LiveMarketData     | `live-market-data/`     | M1 complete (US126–US152): connectors through query/SSE + Mini Validation                                  |
-| EventProcessing    | `event-processing/`     | ADR-013 foundation (US128–US130): Outbox, Inbox, checkpoints, at-least-once dispatcher, retry/dead letters |
+| EventProcessing    | `event-processing/`     | PostgreSQL Outbox/Inbox/checkpoints runtime, transactional appender, lifecycle poller (US128–US130, US155) |
+| Financial          | `financial/`            | Exact decimal values, explicit scales and rounding; no number conversion (US153)                           |
+| PaperAccount       | `paper-account/`        | Durable paper-only account and opening-capital Ledger instruction (US154)                                  |
 | HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                  |
 | MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                    |
 | Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                          |
@@ -640,6 +642,12 @@ from ingestion. UI caches are explicitly non-authoritative. Epic E5 complete.
 M1 Epic E6 Mini Validation: US148–US152 complete — contract/fixtures, PostgreSQL
 Outbox/Inbox/checkpoint integration (Prisma drivers + migration), deterministic
 replay, failure injection, performance baselines, and architecture conformance.
-Verdict: PASS WITH MINOR RECOMMENDATIONS (Nest still defaults to InMemory
-Outbox/Inbox; TD-035). M1 Live Market Data Foundation complete.
+Verdict: PASS WITH MINOR RECOMMENDATIONS. M1 Live Market Data Foundation complete.
 See [`rc-16-m1-mini-validation.md`](./rc-16-m1-mini-validation.md).
+
+M2 Epic E7-A: US153–US155 complete — exact `decimal.js` financial primitives
+serialize only as canonical decimal strings; paper accounts persist to
+PostgreSQL with `DECIMAL(38,18)` opening-capital instructions and atomic
+`PaperAccountCreated` Outbox events; Event Processing Nest providers now use
+Prisma repositories and a lifecycle-managed polling worker. The worker leaves
+events pending until at least one durable consumer is registered.

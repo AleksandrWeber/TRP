@@ -90,8 +90,19 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
   replay, failure injection, performance baselines, architecture conformance.
   Verdict: PASS WITH MINOR RECOMMENDATIONS. Results:
   `docs/project/rc-16-m1-mini-validation.md`. M1 complete.
+- RC-16 M2 US153 — Decimal and Financial Value Contracts: exact decimal
+  arithmetic, canonical string serialization, explicit price/quantity/money/fee
+  scales and rounding policies; binary floating-point input is rejected.
+- RC-16 M2 US154 — Durable Paper Account: PostgreSQL paper-only accounts with
+  `DECIMAL(38,18)` immutable opening-capital instructions, workspace-scoped
+  lookup/idempotency, lifecycle contracts, and atomic `PaperAccountCreated`
+  Outbox commit. Account state is not a mutable cash authority.
+- RC-16 M2 US155 — PostgreSQL Event Runtime Wiring: Nest runtime now binds
+  Outbox/Inbox/checkpoints and transactional writer to Prisma; lifecycle polling
+  preserves unconsumed rows and performs durable at-least-once delivery.
+  TD-035 and TD-038 resolved. Epic E7-A complete.
 
-RC-15.1 is released. RC-16 M1 complete (US126–US152).
+RC-15.1 is released. RC-16 M1 complete; M2 Epic E7-A complete (US153–US155).
 
 ### Added (architecture)
 

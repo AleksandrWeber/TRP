@@ -142,13 +142,13 @@ model Execution {
 }
 
 model Workflow {
-  id          String             @id @default(cuid())
+  id          String           @id @default(cuid())
   type        String
-  status      String             @default("pending")
+  status      String           @default("pending")
   context     Json
   error       String?
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
   completedAt DateTime?
   steps       WorkflowStep[]
   knowledge   KnowledgeEntry[]
@@ -267,26 +267,26 @@ enum OutboxDeliveryStatus {
 }
 
 model OutboxEvent {
-  eventId          String              @id @map("event_id")
-  eventType        String              @map("event_type")
-  schemaVersion    Int                 @map("schema_version")
-  aggregateType    String              @map("aggregate_type")
-  aggregateId      String              @map("aggregate_id")
-  aggregateVersion Int                 @map("aggregate_version")
-  workspaceId      String              @map("workspace_id")
-  occurredAt       DateTime            @map("occurred_at")
-  recordedAt       DateTime            @map("recorded_at")
-  correlationId    String?             @map("correlation_id")
-  causationId      String?             @map("causation_id")
-  actorId          String?             @map("actor_id")
+  eventId          String               @id @map("event_id")
+  eventType        String               @map("event_type")
+  schemaVersion    Int                  @map("schema_version")
+  aggregateType    String               @map("aggregate_type")
+  aggregateId      String               @map("aggregate_id")
+  aggregateVersion Int                  @map("aggregate_version")
+  workspaceId      String               @map("workspace_id")
+  occurredAt       DateTime             @map("occurred_at")
+  recordedAt       DateTime             @map("recorded_at")
+  correlationId    String?              @map("correlation_id")
+  causationId      String?              @map("causation_id")
+  actorId          String?              @map("actor_id")
   payload          Json
   status           OutboxDeliveryStatus @default(pending)
-  attempts         Int                 @default(0)
-  lastError        String?             @map("last_error")
-  nextAttemptAt    DateTime?           @map("next_attempt_at")
-  publishedAt      DateTime?           @map("published_at")
-  createdAt        DateTime            @default(now()) @map("created_at")
-  updatedAt        DateTime            @updatedAt @map("updated_at")
+  attempts         Int                  @default(0)
+  lastError        String?              @map("last_error")
+  nextAttemptAt    DateTime?            @map("next_attempt_at")
+  publishedAt      DateTime?            @map("published_at")
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
 
   @@unique([aggregateType, aggregateId, aggregateVersion])
   @@index([workspaceId, status, createdAt])
@@ -356,18 +356,39 @@ model MarketSubscriptionRecord {
 
 /// RC-16 ADR-013 consumer checkpoints (US129).
 model ConsumerCheckpointRecord {
-  consumerId           String                          @map("consumer_id")
-  streamId             String                          @map("stream_id")
-  consumerVersion      String                          @map("consumer_version")
-  workspaceId          String                          @map("workspace_id")
-  lastAppliedSequence  Int                             @map("last_applied_sequence")
-  lastAppliedEventId   String?                         @map("last_applied_event_id")
-  status               ConsumerCheckpointDeliveryStatus @default(ready)
-  blockedSequence      Int?                            @map("blocked_sequence")
-  lastError            String?                         @map("last_error")
-  updatedAt            DateTime                        @updatedAt @map("updated_at")
+  consumerId          String                           @map("consumer_id")
+  streamId            String                           @map("stream_id")
+  consumerVersion     String                           @map("consumer_version")
+  workspaceId         String                           @map("workspace_id")
+  lastAppliedSequence Int                              @map("last_applied_sequence")
+  lastAppliedEventId  String?                          @map("last_applied_event_id")
+  status              ConsumerCheckpointDeliveryStatus @default(ready)
+  blockedSequence     Int?                             @map("blocked_sequence")
+  lastError           String?                          @map("last_error")
+  updatedAt           DateTime                         @updatedAt @map("updated_at")
 
   @@id([consumerId, streamId])
   @@index([workspaceId, consumerId])
   @@map("consumer_checkpoints")
+}
+
+/// RC-16 M2 US154 durable paper account.
+/// Cash is not authoritative here; openingCapital is an immutable instruction
+/// consumed by the append-only Ledger foundation.
+model PaperAccount {
+  id                         String   @id
+  workspaceId                String   @map("workspace_id")
+  currency                   String
+  mode                       String   @default("paper")
+  status                     String
+  openingCapital             Decimal  @map("opening_capital") @db.Decimal(38, 18)
+  openingLedgerTransactionId String?  @map("opening_ledger_transaction_id")
+  idempotencyKey             String   @map("idempotency_key")
+  version                    Int      @default(1)
+  openedAt                   DateTime @map("opened_at")
+  recordedAt                 DateTime @map("recorded_at")
+
+  @@unique([workspaceId, idempotencyKey])
+  @@index([workspaceId, status])
+  @@map("paper_accounts")
 }

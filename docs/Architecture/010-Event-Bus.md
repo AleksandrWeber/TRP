@@ -12,6 +12,12 @@ durable consumer checkpoints, per-aggregate/stream ordering, retry/dead-letter,
 and at-least-once delivery with idempotent effects. It does not claim global
 ordering, exactly-once delivery, or require a distributed broker.
 
+RC-16 M2 implementation note (US155): `EventProcessingModule` runtime providers
+now use PostgreSQL/Prisma for Outbox, Inbox, and consumer checkpoints. A
+Nest-lifecycle polling worker starts/stops the at-least-once dispatcher and
+leaves rows pending while no durable consumer is registered. The legacy
+process-local Event Bus remains non-authoritative activity delivery.
+
 ---
 
 # Purpose

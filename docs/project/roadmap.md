@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-07-18 (RC-16 Frozen Architecture Audit)
+Last updated: 2026-07-18 (RC-16 M2 Epic E7-A)
 
 Living roadmap for product direction.
 
@@ -155,7 +155,7 @@ Related:
 
 ## Current Phase
 
-**M1 — Live Market Data Foundation**
+**M2 — Durable Paper Order and Accounting Core**
 
 RC-16 Planning, Architecture Freeze, and Frozen Architecture Audit are
 complete. Architecture Approved: YES. Implementation Approved: YES.
@@ -173,9 +173,9 @@ Architecture changes require a new ADR.
 - M6 — Operations Experience
 - M7 — RC-16 Validation and Closeout
 
-Current: M1 complete (US126–US152), including Epic E6 Mini Validation
-(PASS WITH MINOR RECOMMENDATIONS). Next: M2 Durable Paper Order and
-Accounting Core within ADR-012…ADR-018.
+Current: M1 complete (US126–US152). M2 Epic E7-A complete (US153–US155):
+decimal financial contracts, durable paper-account foundation, and
+PostgreSQL Event Processing runtime wiring. Next: M2 Epic E7-B.
 Mini Validation follows M2, M4, and M6.
 
 ---

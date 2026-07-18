@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-18 (RC-16 M1 complete — Epic E6 Mini Validation US148–US152)
+2026-07-18 (RC-16 M2 Epic E7-A complete — US153–US155)
 
 ---
 
@@ -41,7 +41,12 @@ M1 Epic E6 Mini Validation complete (US148–US152): contract/fixtures,
 PostgreSQL Outbox/Inbox integration, deterministic replay, failure injection,
 performance baseline, and architecture conformance —
 **PASS WITH MINOR RECOMMENDATIONS**. M1 Live Market Data Foundation complete.
-Next: M2 — Durable Paper Order and Accounting Core.
+M2 Epic E7-A complete (US153–US155): canonical decimal-only financial values
+and precision policies; durable workspace-owned paper accounts with immutable
+opening-capital instructions; atomic account + Outbox commit; and Prisma-backed
+Nest runtime for Outbox, Inbox, consumer checkpoints, transactional writer, and
+lifecycle polling. TD-035/TD-038 runtime-wiring recommendation is resolved.
+Next: M2 Epic E7-B — durable Orders and execution contracts.
 
 ---
 

@@ -147,6 +147,11 @@ checkpoints, market status, and observable health.
 Usable increment: authorized manual paper Orders produce durable Fills,
 Positions, Ledger entries, and Portfolio state.
 
+Progress (2026-07-18): Epic E7-A / US153–US155 complete — decimal financial
+contracts, durable paper-account foundation, and PostgreSQL Event Processing
+runtime wiring. Orders, execution, Fills, Ledger, and projections remain in the
+subsequent M2 epics.
+
 Mini Validation 1: idempotency and accounting invariants.
 
 ### M3 — Strategy Trading Sessions

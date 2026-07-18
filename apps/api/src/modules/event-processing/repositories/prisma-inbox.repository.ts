@@ -1,15 +1,15 @@
-import type { PrismaClient } from '@prisma/client';
 import { toConsumerId, type ConsumerId } from '../domain/consumer-id';
 import { toDurableEventId, type DurableEventId } from '../domain/durable-event-id';
 import type { InboxRecord } from '../domain/inbox-record';
 import type { InboxRepository } from './inbox.repository';
+import type { PrismaInboxClient } from './prisma-event-client';
 
 /**
  * PostgreSQL Inbox repository (US149 / ADR-013).
  * Unique (consumerId, eventId) enforced by primary key.
  */
 export class PrismaInboxRepository implements InboxRepository {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaInboxClient) {}
 
   async find(
     consumerId: ConsumerId | string,

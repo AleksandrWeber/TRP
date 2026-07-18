@@ -279,7 +279,17 @@ Epic E6 Mini Validation:
 
 Epic E6 complete (US148–US152). Verdict: PASS WITH MINOR RECOMMENDATIONS.
 Results: [`rc-16-m1-mini-validation.md`](./rc-16-m1-mini-validation.md).
-M1 complete. Next: M2 Durable Paper Order and Accounting Core.
+M1 complete.
+
+M2 Epic E7-A:
+
+- ✓ US153 — Decimal and Financial Value Contracts
+- ✓ US154 — Durable Paper Account
+- ✓ US155 — PostgreSQL Event Runtime Wiring
+
+Epic E7-A complete. Decimal values reject binary floating-point inputs;
+paper-account creation and `PaperAccountCreated` commit atomically; Nest runtime
+Outbox/Inbox/checkpoints and polling are PostgreSQL-backed. Next: M2 Epic E7-B.
 
 ---
 

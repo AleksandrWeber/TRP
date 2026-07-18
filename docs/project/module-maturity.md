@@ -1,6 +1,6 @@
 # TRP — Module Maturity Matrix
 
-Last updated: 2026-07-18 (RC-16 Architecture Freeze)
+Last updated: 2026-07-18 (RC-16 M2 Epic E7-A)
 
 Living matrix of implementation maturity for major Research OS modules. Documentation only (US094 / US125).
 
@@ -63,7 +63,9 @@ Related:
 | StrategyComparison | Foundation | RC-16+ (UI / batch research workflows)                  |
 | SimulationReport   | Foundation | RC-16+ (export / persistence)                           |
 | Stage-1 Production | Prototype  | RC-16 (migrate; do not expand as parallel path)         |
-| LiveMarketData     | Planned    | RC-16 M1                                                |
+| LiveMarketData     | Foundation | RC-16 M1 complete                                       |
+| Financial          | Foundation | RC-16 M2 (decimal values / precision)                   |
+| PaperAccount       | Foundation | RC-16 M2 (durable paper-only account)                   |
 | TradingSession     | Planned    | RC-16 M3/M5                                             |
 | StrategyRuntime    | Planned    | RC-16 M3                                                |
 | Orders             | Planned    | RC-16 M2                                                |
@@ -71,7 +73,7 @@ Related:
 | PaperAdapter       | Planned    | RC-16 M2                                                |
 | Risk / KillSwitch  | Planned    | RC-16 M4                                                |
 | Ledger / Portfolio | Planned    | RC-16 M2                                                |
-| EventProcessing    | Planned    | RC-16 M1/M2                                             |
+| EventProcessing    | Foundation | RC-16 M1/M2 (PostgreSQL runtime)                        |
 | Audit / Dashboard  | Planned    | RC-16 M6                                                |
 
 ---
@@ -271,12 +273,13 @@ Related:
 
 | Field                   | Value                                                                                                                                                                                                                                                                          |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Status**              | In progress (M1 complete; M2 next)                                                                                                                                                                                                                                             |
+| **Status**              | In progress (M1 complete; M2 Epic E7-A complete)                                                                                                                                                                                                                               |
 | **Scope**               | Live Market Data; durable Trading Sessions; Strategy Runtime; Orders; mandatory Risk; single Execution Engine; Paper Adapter; Fill → Position → Ledger → Portfolio; Outbox/Inbox; restart recovery; Audit; Dashboard                                                           |
 | **Existing prototype**  | `production/` supports approved deployment, manual tick, basic Risk, immediate paper fill, persisted signal/execution/long-or-flat position. It is not idempotent/transactional/always-on and lacks workspace ownership, durable Orders, Ledger, recovery, and reconciliation. |
 | **Frozen architecture** | ADR-012…ADR-018 and [`rc-16-paper-trading-plan.md`](./rc-16-paper-trading-plan.md)                                                                                                                                                                                             |
 | **M1 progress**         | ✓ Epic E1–E6 (US126–US152): Live Market Data Foundation + Mini Validation (PASS WITH MINOR RECOMMENDATIONS)                                                                                                                                                                    |
-| **Next milestone**      | M2 — Durable Paper Order and Accounting Core                                                                                                                                                                                                                                   |
+| **M2 progress**         | ✓ Epic E7-A (US153–US155): decimal financial contracts, durable paper account, PostgreSQL Event Processing runtime                                                                                                                                                             |
+| **Next milestone**      | M2 Epic E7-B                                                                                                                                                                                                                                                                   |
 
 ---
 

@@ -1,13 +1,14 @@
-import type { ConsumerCheckpointDeliveryStatus, PrismaClient } from '@prisma/client';
+import type { ConsumerCheckpointDeliveryStatus } from '@prisma/client';
 import { toConsumerId, type ConsumerId } from '../domain/consumer-id';
 import { ConsumerCheckpointStatus, type ConsumerCheckpoint } from '../domain/consumer-checkpoint';
 import type { ConsumerCheckpointRepository } from './consumer-checkpoint.repository';
+import type { PrismaConsumerCheckpointClient } from './prisma-event-client';
 
 /**
  * PostgreSQL consumer checkpoint repository (US149 / ADR-013).
  */
 export class PrismaConsumerCheckpointRepository implements ConsumerCheckpointRepository {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaConsumerCheckpointClient) {}
 
   async get(consumerId: ConsumerId | string, streamId: string): Promise<ConsumerCheckpoint | null> {
     const row = await this.prisma.consumerCheckpointRecord.findUnique({
