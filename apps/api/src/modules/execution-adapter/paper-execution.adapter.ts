@@ -4,7 +4,7 @@ import { FinancialDecimal } from '../financial';
 import type {
   AdapterCancellationResult,
   AdapterOrderQueryResult,
-  AdapterSubmissionAcknowledgement,
+  AdapterSubmissionResult,
   ExecutionAdapterCapabilities,
   ExecutionAdapterHealth,
   ExecutionAdapterPort,
@@ -17,29 +17,47 @@ import {
   paperExecutionContextHash,
   paperRoundingContext,
 } from './paper-fill-configuration';
+import { matchPaperOrder } from './paper-matching';
 
 @Injectable()
 export class PaperExecutionAdapter implements ExecutionAdapterPort {
-  async submit(command: PaperExecutionCommand): Promise<AdapterSubmissionAcknowledgement> {
+  async submit(command: PaperExecutionCommand): Promise<AdapterSubmissionResult> {
     assertPaperCommand(command);
     const configuration = assertPaperFillConfiguration(command.configuration);
-    return Object.freeze({
-      outcome: 'acknowledged',
-      mode: 'paper',
-      adapterOrderId: stableAdapterOrderId(
-        command.workspaceId,
-        command.orderId,
-        command.clientOrderId,
-      ),
-      clientOrderId: command.clientOrderId,
-      executionContextHash: paperExecutionContextHash({
-        configuration,
-        orderIntentHash: command.intentHash,
-        marketEventId: command.marketState.eventId,
-        marketSequence: command.marketState.sequence,
-      }),
-      roundingContext: paperRoundingContext(configuration),
+    const adapterOrderId = stableAdapterOrderId(
+      command.workspaceId,
+      command.orderId,
+      command.clientOrderId,
+    );
+    const executionContextHash = paperExecutionContextHash({
+      configuration,
+      orderIntentHash: command.intentHash,
+      marketEventId: command.marketState.eventId,
+      marketSequence: command.marketState.sequence,
     });
+    const base = {
+      mode: 'paper' as const,
+      adapterOrderId,
+      clientOrderId: command.clientOrderId,
+      executionContextHash,
+      roundingContext: paperRoundingContext(configuration),
+    };
+    const match = matchPaperOrder({
+      adapterOrderId,
+      executionContextHash,
+      instrument: command.instrument,
+      side: command.side,
+      type: command.type,
+      quantity: command.quantity,
+      limitPrice: command.limitPrice,
+      referencePrice: command.marketState.referencePrice,
+      occurredAt: command.marketState.occurredAt,
+      configuration,
+    });
+    if (match.outcome === 'filled') {
+      return Object.freeze({ outcome: 'filled', ...base, fill: match.fill });
+    }
+    return Object.freeze({ outcome: 'acknowledged', ...base });
   }
 
   async cancel(command: PaperCancelCommand): Promise<AdapterCancellationResult> {

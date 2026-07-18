@@ -1,4 +1,5 @@
 import type { PaperFillConfiguration, PaperRoundingContext } from './paper-fill-configuration';
+import type { PaperFillFact } from './paper-matching';
 
 export const EXECUTION_ADAPTER = Symbol('EXECUTION_ADAPTER');
 
@@ -38,14 +39,31 @@ export type PaperQueryCommand = Readonly<{
   adapterOrderId: string;
 }>;
 
-export type AdapterSubmissionAcknowledgement = Readonly<{
-  outcome: 'acknowledged';
+type AdapterSubmissionBase = Readonly<{
   mode: 'paper';
   adapterOrderId: string;
   clientOrderId: string;
   executionContextHash: string;
   roundingContext: PaperRoundingContext;
 }>;
+
+/** Deterministic market/limit fill (US168/US169). */
+export type AdapterFilledResult = AdapterSubmissionBase &
+  Readonly<{
+    outcome: 'filled';
+    fill: PaperFillFact;
+  }>;
+
+/** Limit order that did not cross the referenced checkpoint; resting, no fill. */
+export type AdapterAcknowledgedResult = AdapterSubmissionBase &
+  Readonly<{
+    outcome: 'acknowledged';
+  }>;
+
+export type AdapterSubmissionResult = AdapterFilledResult | AdapterAcknowledgedResult;
+
+/** Backwards-compatible alias retained for consumers of the acknowledged shape. */
+export type AdapterSubmissionAcknowledgement = AdapterAcknowledgedResult;
 
 export type AdapterCancellationResult = Readonly<{
   outcome: 'cancel_acknowledged';
@@ -82,7 +100,7 @@ export type ExecutionAdapterHealth = Readonly<{
  * Inputs and returned facts are immutable; the adapter owns no domain state.
  */
 export interface ExecutionAdapterPort {
-  submit(command: PaperExecutionCommand): Promise<AdapterSubmissionAcknowledgement>;
+  submit(command: PaperExecutionCommand): Promise<AdapterSubmissionResult>;
   cancel(command: PaperCancelCommand): Promise<AdapterCancellationResult>;
   query(command: PaperQueryCommand): Promise<AdapterOrderQueryResult>;
   capabilities(): ExecutionAdapterCapabilities;

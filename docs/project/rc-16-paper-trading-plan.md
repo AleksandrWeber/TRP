@@ -159,13 +159,19 @@ Order + Outbox persistence, Ledger-owned cash reservation, idempotent
 cancellation, and authorized workspace-scoped Order REST commands/queries.
 Execution matching and the single Execution Engine remain subsequent M2 stories.
 
-Epic E9 progress (2026-07-18): US165–US167 complete — mandatory versioned
+Epic E9 complete (2026-07-18): US165–US171 — mandatory versioned
 baseline Risk Decisions are immutable, durable, explainable, and required by
 every executable Order; the execution-adapter boundary is structurally
 paper-only and cannot mutate domain state; fee, slippage, precision, rounding,
-and market/limit fill policies have deterministic versioned configuration.
-Market/limit matching, the single Execution Engine, and immutable Fills remain
-US168–US171.
+and market/limit fill policies have deterministic versioned configuration;
+matching produces all-or-none market fills and cross-then-all-or-none limit
+fills (non-crossing limits rest without a Fill); a single Execution Engine is
+the sole adapter entry that re-checks Risk/reservation/checkpoint/Session
+eligibility and never mutates Orders or accounting directly; and Fills are
+append-only PostgreSQL facts committed atomically with their Outbox event and
+the Orders-owned transition, so a duplicate submit cannot duplicate a Fill and
+cancellation reconciliation is idempotent. Accounting (Ledger postings,
+positions, portfolio) remains Epic E10.
 
 Mini Validation 1: idempotency and accounting invariants.
 

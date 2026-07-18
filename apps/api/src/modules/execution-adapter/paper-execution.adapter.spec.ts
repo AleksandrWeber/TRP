@@ -44,7 +44,7 @@ describe('US166 — paper-only Execution Adapter boundary', () => {
     expect(Object.isFrozen(acknowledgement)).toBe(true);
     expect(Object.isFrozen(acknowledgement.roundingContext)).toBe(true);
     expect(acknowledgement).toMatchObject({
-      outcome: 'acknowledged',
+      outcome: 'filled',
       mode: 'paper',
       clientOrderId: command.clientOrderId,
     });

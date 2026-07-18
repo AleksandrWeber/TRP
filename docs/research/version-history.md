@@ -88,10 +88,14 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
   reservation/release, idempotent Orders-owned cancellation, and authenticated
   workspace/RBAC-scoped Order command and query API with no Risk/Execution
   bypass. Epic E8 complete.
-- US165–US167 complete: M2 Epic E9 first half. Mandatory immutable baseline Risk
+- US165–US171 complete: M2 Epic E9. Mandatory immutable baseline Risk
   Decisions, approved/unexpired Risk references on executable Orders,
-  paper-only provider-neutral adapter contracts, and deterministic versioned
-  Paper Fill configuration.
+  paper-only provider-neutral adapter contracts, deterministic versioned
+  Paper Fill configuration, deterministic all-or-none market and
+  cross-then-all-or-none limit matching, a single Execution Engine as the sole
+  adapter entry that never mutates Orders or accounting, idempotent submission
+  and cancellation reconciliation, and append-only Fill persistence committed
+  atomically with its Outbox event and the Orders-owned lifecycle transition.
 
 These changes establish the separate RC-16 paper runtime. Research Engine,
 Validation, Knowledge Schema, and RC-15 simulation calculation versions remain

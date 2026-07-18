@@ -192,12 +192,12 @@ describe('US149 — PostgreSQL event integration', () => {
       },
     });
 
-    await dispatcher.dispatchOnce('2026-07-18T10:00:01.000Z');
+    await dispatcher.dispatchOnce('2026-07-18T10:00:01.000Z', 100, WS);
     let row = await outbox.findByEventId(event.eventId);
     expect(row?.status).toBe(OutboxStatus.PENDING);
     expect(row?.attempts).toBe(1);
 
-    await dispatcher.dispatchOnce('2026-07-18T10:00:02.000Z');
+    await dispatcher.dispatchOnce('2026-07-18T10:00:02.000Z', 100, WS);
     row = await outbox.findByEventId(event.eventId);
     expect(row?.status).toBe(OutboxStatus.DEAD_LETTER);
 
@@ -215,7 +215,7 @@ describe('US149 — PostgreSQL event integration', () => {
         delivered += 1;
       },
     });
-    await restarted.dispatchOnce('2026-07-18T10:00:03.000Z');
+    await restarted.dispatchOnce('2026-07-18T10:00:03.000Z', 100, WS);
     expect(delivered).toBe(1);
     await restarted.stop();
     await dispatcher.stop();

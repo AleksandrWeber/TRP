@@ -76,7 +76,11 @@ export class OutboxDispatcher {
     return this.metrics;
   }
 
-  async dispatchOnce(nowIso: string, limit = 100): Promise<DispatchOnceResult> {
+  async dispatchOnce(
+    nowIso: string,
+    limit = 100,
+    workspaceId?: string,
+  ): Promise<DispatchOnceResult> {
     if (this.shuttingDown || !this.running || !this.hasConsumers()) {
       return Object.freeze({
         examined: 0,
@@ -87,7 +91,9 @@ export class OutboxDispatcher {
       });
     }
 
-    const unpublished = await this.outbox.listUnpublished({ readyAt: nowIso, limit });
+    // workspaceId is optional and defaults to a global poll (production behavior).
+    // Scoping is used to isolate concurrent integration tests on a shared database.
+    const unpublished = await this.outbox.listUnpublished({ readyAt: nowIso, limit, workspaceId });
     let published = 0;
     let retried = 0;
     let deadLettered = 0;

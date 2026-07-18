@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E9 US165–US167)
+Last updated: 2026-07-18 (RC-16 M2 Epic E9 complete — US165–US171)
 
 Living roadmap for product direction.
 
@@ -181,10 +181,13 @@ M2 Epic E8 complete (US159–US164): deterministic paper Order Intents,
 Orders-owned lifecycle/history, transactional PostgreSQL Order + Outbox
 persistence, Ledger-owned durable cash reservation, idempotent cancellation,
 and authorized workspace-scoped Order commands/queries.
-M2 Epic E9 progress: US165–US167 complete — mandatory durable baseline Risk
+M2 Epic E9 complete (US165–US171): mandatory durable baseline Risk
 Decisions, exact unexpired Risk references for executable Orders, a structurally
-paper-only execution-adapter boundary, and versioned deterministic Paper Fill
-configuration. Next: US168 deterministic market Order execution.
+paper-only execution-adapter boundary, versioned deterministic Paper Fill
+configuration, deterministic market and limit matching, a single Execution
+Engine as the sole adapter entry, idempotent submission and cancellation
+reconciliation, and append-only Fill persistence committed atomically with its
+Outbox event. Next: Epic E10 accounting core (Ledger postings and positions).
 Mini Validation follows M2, M4, and M6.
 
 ---

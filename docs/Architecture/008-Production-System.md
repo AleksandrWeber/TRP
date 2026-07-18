@@ -22,14 +22,21 @@ adapter work to Execution Engine. The REST adapter exposes propose/cancel and
 queries, not internal Risk or Execution transitions. Fill accounting remains a
 separate later story.
 
-RC-16 M2 implementation note (US165–US167): baseline Risk evaluation persists
+RC-16 M2 implementation note (US165–US171): baseline Risk evaluation persists
 immutable approved/rejected decisions against exact semantic checkpoint
 references, and Orders rejects executable transitions without an approved,
 unexpired matching decision. The execution-adapter port is provider-neutral but
 runtime binding is paper-only and credential-free; it returns immutable facts
 and has no domain persistence access. Fee, slippage, precision, rounding, and
-market/limit fill rules use stable versioned configuration. Matching and the
-single Execution Engine remain US168–US170.
+market/limit fill rules use stable versioned configuration. Matching is
+deterministic (all-or-none market, cross-then-all-or-none limit; non-crossing
+limits rest without a Fill). The single Execution Engine is the only adapter
+entry: it re-checks Risk/reservation/checkpoint/Session eligibility, drives every
+Order transition through the Orders port, and never mutates Orders or accounting
+directly. Fills are append-only facts committed atomically with their Outbox
+event and the lifecycle transition, so a duplicate submit cannot duplicate a
+Fill and cancellation reconciliation is idempotent. Fill accounting (Ledger
+postings, positions, portfolio) remains Epic E10.
 
 ---
 

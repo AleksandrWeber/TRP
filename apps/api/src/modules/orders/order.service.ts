@@ -1,6 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaTransactionService } from '../../storage/prisma/prisma-transaction.service';
+import {
+  PrismaTransactionService,
+  type TransactionContext,
+} from '../../storage/prisma/prisma-transaction.service';
 import { toDurableEventId, type DurableEventEnvelope } from '../event-processing';
 import { TransactionalOutboxAppender } from '../event-processing/transactional-outbox-appender';
 import {
@@ -18,6 +21,7 @@ import {
   type TradingSessionRepository,
 } from '../trading-session/persistence/trading-session.repository';
 import {
+  applyOrderFill,
   createOrder,
   completeOrderCancellation,
   requestOrderCancellation,
@@ -212,6 +216,92 @@ export class OrderService {
       }
     }
     throw new Error('order cancellation concurrency limit exceeded');
+  }
+
+  /**
+   * Post-submission cancellation completion invoked by the Execution Engine
+   * after the adapter acknowledges cancellation (US163/US170). Orders remains
+   * the sole owner of the transition and the reservation release.
+   */
+  async confirmCancellation(command: CancelOrderCommand): Promise<Order> {
+    const idempotencyKey = required(command.idempotencyKey, 'idempotency key');
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const current = await this.orders.findById(command.workspaceId, command.orderId);
+      if (!current) throw new Error('order not found in workspace');
+      if (current.status === OrderStatus.CANCELLED) return current;
+      if (current.status === OrderStatus.FILLED || current.status === OrderStatus.REJECTED) {
+        throw new Error(`order cannot be cancelled from ${current.status}`);
+      }
+
+      const transition = {
+        eventType: 'OrderCancellationRequested',
+        actorId: command.actorId,
+        correlationId: command.correlationId,
+        reason: 'cancel_requested',
+        occurredAt: command.occurredAt,
+        recordedAt: command.recordedAt,
+      } as const;
+      const pending = requestOrderCancellation(current, transition);
+      try {
+        const persisted =
+          pending === current ? current : await this.persistTransition(current, pending);
+        if (persisted.reservationId !== null) {
+          await this.cashReservations.releaseCash({
+            workspaceId: persisted.workspaceId,
+            orderId: persisted.id,
+            idempotencyKey: `${idempotencyKey}:ledger-release`,
+            actorId: command.actorId,
+            correlationId: command.correlationId,
+            recordedAt: command.recordedAt,
+          });
+        }
+        const cancelled = completeOrderCancellation(persisted, {
+          ...transition,
+          eventType: 'OrderCancelled',
+          reason: 'cancelled_after_submission',
+        });
+        return cancelled === persisted
+          ? persisted
+          : await this.persistTransition(persisted, cancelled);
+      } catch (error) {
+        if (isOptimisticConflict(error) && attempt < 2) continue;
+        throw error;
+      }
+    }
+    throw new Error('order cancellation concurrency limit exceeded');
+  }
+
+  /**
+   * Transaction-aware lifecycle transition for the Execution Engine (US170).
+   * Callers own the transaction so an Order transition, an appended Fill, and
+   * their Outbox events commit atomically. Orders still owns the aggregate.
+   */
+  async applyExecutionTransition(
+    order: Order,
+    input: OrderTransitionInput,
+    transaction: TransactionContext,
+  ): Promise<Order> {
+    const next = transitionOrder(order, input);
+    const saved = await this.orders.save(next, order.version, transaction);
+    await this.outbox.append(transaction, orderEnvelope(saved), input.recordedAt);
+    return saved;
+  }
+
+  /**
+   * Transaction-aware Fill application for the Execution Engine (US170/US171).
+   * The Fill quantity itself is persisted by the Execution Engine within the
+   * same transaction; Orders only advances filled quantity and lifecycle.
+   */
+  async applyExecutionFill(
+    order: Order,
+    fillQuantity: string,
+    input: Omit<OrderTransitionInput, 'toStatus'>,
+    transaction: TransactionContext,
+  ): Promise<Order> {
+    const next = applyOrderFill(order, fillQuantity, input);
+    const saved = await this.orders.save(next, order.version, transaction);
+    await this.outbox.append(transaction, orderEnvelope(saved), input.recordedAt);
+    return saved;
   }
 
   get(workspaceId: string, orderId: string): Promise<Order | null> {

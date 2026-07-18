@@ -22,9 +22,15 @@ Trader/Admin, active workspace membership, `X-Workspace-Id`, and
 `Idempotency-Key`. Authenticated queries are workspace-membership scoped. No
 public route exposes internal Risk or Execution Engine transitions.
 
-US165–US167 fail closed on unknown, stale, duplicate, foreign-workspace, or
+US165–US171 fail closed on unknown, stale, duplicate, foreign-workspace, or
 unreconciled Risk inputs. Runtime adapter construction rejects `live` mode and
 all trading credentials; only the internal paper adapter token is registered.
+The single Execution Engine is the sole adapter entry: it re-verifies the
+mandatory unexpired Risk Decision, the reservation, the approved market
+checkpoint, and fenced Session eligibility before submission, and refuses to
+submit an Order that is not `executable`. Submission and cancellation are
+idempotent, so a duplicate command cannot duplicate an adapter call or an
+append-only Fill.
 
 ---
 

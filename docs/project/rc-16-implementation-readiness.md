@@ -315,18 +315,28 @@ writes are atomic and workspace-scoped. Reservation uses only the Ledger public
 port, Portfolio remains read-only, cancellation is idempotent, and the REST
 adapter exposes no Risk/Execution bypass.
 
-M2 Epic E9 progress:
+M2 Epic E9 complete:
 
 - ✓ US165 — M2 Baseline Risk Decision
 - ✓ US166 — Execution Adapter Port and Paper-Only Binding
 - ✓ US167 — Versioned Paper Fill Configuration
+- ✓ US168 — Deterministic Market Order Execution
+- ✓ US169 — Deterministic Limit Order Execution and Cancellation
+- ✓ US170 — Single Execution Engine
+- ✓ US171 — Immutable Fill Persistence
 
-US165–US167 complete. Risk Decisions are versioned, immutable, explainable,
+US165–US171 complete. Risk Decisions are versioned, immutable, explainable,
 durable, checkpoint-bound, and fail closed; executable Orders require an exact
 approved unexpired reference. The adapter binding is structurally paper-only,
 has no domain mutation dependencies, and deterministic execution configuration
-has stable ID/version/hash plus explicit rounding context. Next: US168 —
-deterministic market Order execution.
+has stable ID/version/hash plus explicit rounding context. Deterministic
+matching produces all-or-none market fills and cross-then-all-or-none limit
+fills; non-crossing limits rest without a Fill. A single Execution Engine is the
+only adapter entry, re-checks Risk/reservation/checkpoint/Session eligibility,
+never mutates Orders or accounting directly, and commits an append-only Fill
+atomically with its Outbox event and the Orders-owned transition; duplicate
+submits cannot duplicate a Fill and cancellation reconciliation is idempotent.
+Next: Epic E10 — accounting core (Ledger postings, positions, portfolio).
 
 ---
 

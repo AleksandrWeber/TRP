@@ -1,6 +1,6 @@
 # TRP — Architecture Snapshot
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E9 US165–US167)
+Last updated: 2026-07-18 (RC-16 M2 Epic E9 complete — US165–US171)
 
 Single snapshot of the **current** architecture (RC-15). Documentation only. No future ideas.
 
@@ -415,27 +415,28 @@ integration.** A separate Stage-1 manual paper prototype exists under
 
 ### Modules (`apps/api/src/modules/`)
 
-| Module             | Path                    | Role                                                                                                       |
-| ------------------ | ----------------------- | ---------------------------------------------------------------------------------------------------------- |
-| MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped                                               |
-| LiveMarketData     | `live-market-data/`     | M1 complete (US126–US152): connectors through query/SSE + Mini Validation                                  |
-| EventProcessing    | `event-processing/`     | PostgreSQL Outbox/Inbox/checkpoints runtime, transactional appender, lifecycle poller (US128–US130, US155) |
-| Financial          | `financial/`            | Exact decimal values, explicit scales and rounding; no number conversion (US153)                           |
-| PaperAccount       | `paper-account/`        | Durable paper-only account and opening-capital Ledger instruction (US154)                                  |
-| TradingSession     | `trading-session/`      | Manual ADR-014 sessions, fenced leases, execution eligibility (US156–US157)                                |
-| Orders             | `orders/`               | Intents, sole lifecycle owner, persistence, cancellation, authorized REST API (US159–US164)                |
-| Risk               | `risk/`                 | Versioned baseline policy, immutable explainable PostgreSQL decisions + Outbox (US165)                     |
-| ExecutionAdapter   | `execution-adapter/`    | Paper-only port/binding and versioned deterministic execution configuration (US166–US167)                  |
-| Ledger             | `ledger/`               | Public durable cash reservation/release port; Portfolio has no write access (US162)                        |
-| HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                  |
-| MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                    |
-| Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                          |
-| Portfolio          | `portfolio/`            | `PortfolioEngine` state (cash / equity / PnL)                                                              |
-| Trade              | `trade/`                | Virtual `TradeEngine` → `PortfolioEngine.applyExecution`                                                   |
-| Performance        | `performance/`          | `PerformanceAnalyzer` → immutable `PerformanceReport`                                                      |
-| WalkForward        | `walk-forward/`         | Rolling windows; reuses `BacktestEngine` sequentially                                                      |
-| StrategyComparison | `strategy-comparison/`  | Rankings + weighted overall winner from completed results                                                  |
-| SimulationReport   | `simulation-report/`    | `SimulationReportBuilder` → immutable consolidated artifact                                                |
+| Module             | Path                    | Role                                                                                                          |
+| ------------------ | ----------------------- | ------------------------------------------------------------------------------------------------------------- |
+| MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped                                                  |
+| LiveMarketData     | `live-market-data/`     | M1 complete (US126–US152): connectors through query/SSE + Mini Validation                                     |
+| EventProcessing    | `event-processing/`     | PostgreSQL Outbox/Inbox/checkpoints runtime, transactional appender, lifecycle poller (US128–US130, US155)    |
+| Financial          | `financial/`            | Exact decimal values, explicit scales and rounding; no number conversion (US153)                              |
+| PaperAccount       | `paper-account/`        | Durable paper-only account and opening-capital Ledger instruction (US154)                                     |
+| TradingSession     | `trading-session/`      | Manual ADR-014 sessions, fenced leases, execution eligibility (US156–US157)                                   |
+| Orders             | `orders/`               | Intents, sole lifecycle owner, persistence, cancellation, authorized REST API (US159–US164)                   |
+| Risk               | `risk/`                 | Versioned baseline policy, immutable explainable PostgreSQL decisions + Outbox (US165)                        |
+| ExecutionAdapter   | `execution-adapter/`    | Paper-only port/binding, versioned deterministic config, deterministic market/limit matching (US166–US169)    |
+| ExecutionEngine    | `execution-engine/`     | Sole adapter entry; idempotent submit/cancel/reconcile; append-only PostgreSQL Fill persistence (US170–US171) |
+| Ledger             | `ledger/`               | Public durable cash reservation/release port; Portfolio has no write access (US162)                           |
+| HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                     |
+| MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                       |
+| Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                             |
+| Portfolio          | `portfolio/`            | `PortfolioEngine` state (cash / equity / PnL)                                                                 |
+| Trade              | `trade/`                | Virtual `TradeEngine` → `PortfolioEngine.applyExecution`                                                      |
+| Performance        | `performance/`          | `PerformanceAnalyzer` → immutable `PerformanceReport`                                                         |
+| WalkForward        | `walk-forward/`         | Rolling windows; reuses `BacktestEngine` sequentially                                                         |
+| StrategyComparison | `strategy-comparison/`  | Rankings + weighted overall winner from completed results                                                     |
+| SimulationReport   | `simulation-report/`    | `SimulationReportBuilder` → immutable consolidated artifact                                                   |
 
 ### Dependency direction (acyclic)
 
@@ -680,7 +681,7 @@ reservation port consumes Ledger-owned cash-balance rows; US173 will create
 those balances from append-only Ledger transactions and paper-account opening
 instructions.
 
-M2 Epic E9 progress: US165–US167 complete. Risk evaluates immutable Order,
+M2 Epic E9 complete (US165–US171). Risk evaluates immutable Order,
 account, Session, market, cash/reservation, Position, Portfolio, duplicate, and
 reconciliation references using a fixed versioned baseline policy. Approved and
 rejected decisions are immutable, explainable PostgreSQL facts with atomic
@@ -688,6 +689,15 @@ Outbox events. Orders cannot enter `executable` without an exact approved,
 unexpired decision. The execution-adapter boundary accepts paper commands only,
 rejects credentials/live mode structurally, returns immutable provider-neutral
 facts, and has no domain repositories. Paper fee, slippage, precision, rounding,
-market/limit policy, and semantic execution context are versioned and hashed;
-deterministic matching remains US168–US169 and the sole Execution Engine remains
-US170.
+market/limit policy, and semantic execution context are versioned and hashed.
+Deterministic matching produces all-or-none market fills and cross-then-all-or-none
+limit fills (non-crossing limits rest without a Fill). The single Execution
+Engine (`execution-engine/`) is the only component that calls the adapter: it
+re-checks the mandatory unexpired Risk Decision, the reservation, the approved
+market checkpoint, and the fenced Session eligibility before submission. It never
+mutates Orders or accounting directly — every lifecycle transition flows through
+the Orders port and every Fill is an append-only fact committed atomically with
+its Outbox event inside one PostgreSQL transaction. Submission and cancellation
+are idempotent, so a duplicate submit cannot duplicate an adapter call or a Fill,
+and cancellation reconciliation completes the terminal transition and releases the
+reservation through Orders.

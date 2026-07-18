@@ -539,3 +539,35 @@ model RiskDecision {
   @@index([workspaceId, expiresAt])
   @@map("risk_decisions")
 }
+
+/// Immutable, append-only paper Fill recorded only by the Execution Engine (US171).
+/// Each Fill references exactly one persisted Order; identity is deterministic so
+/// a replayed adapter result maps to the same row and cannot duplicate a Fill.
+model PaperFill {
+  id                   String   @id
+  workspaceId          String   @map("workspace_id")
+  orderId              String   @map("order_id")
+  paperAccountId       String   @map("paper_account_id")
+  tradingSessionId     String   @map("trading_session_id")
+  adapterOrderId       String   @map("adapter_order_id")
+  adapterFillId        String   @map("adapter_fill_id")
+  sequence             Int
+  instrument           String
+  side                 String
+  price                Decimal  @db.Decimal(38, 18)
+  quantity             Decimal  @db.Decimal(38, 18)
+  grossNotional        Decimal  @map("gross_notional") @db.Decimal(38, 18)
+  fee                  Decimal  @db.Decimal(38, 18)
+  executionContextHash String   @map("execution_context_hash")
+  configurationId      String   @map("configuration_id")
+  configurationVersion Int      @map("configuration_version")
+  configurationHash    String   @map("configuration_hash")
+  occurredAt           DateTime @map("occurred_at")
+  recordedAt           DateTime @map("recorded_at")
+
+  @@unique([workspaceId, orderId, sequence])
+  @@unique([workspaceId, adapterFillId])
+  @@index([workspaceId, orderId])
+  @@index([workspaceId, tradingSessionId])
+  @@map("paper_fills")
+}

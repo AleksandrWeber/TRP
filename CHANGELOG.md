@@ -145,9 +145,27 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
   ID/version/hash, deterministic semantic execution-context identity, explicit
   fee/slippage/precision/rounding and market/limit policies, and immutable
   rounding provenance for future Fill facts.
+- RC-16 M2 US168 — Deterministic Market Order Execution: pure paper matching
+  that produces all-or-none market fills with versioned slippage, fee, and
+  rounding; identical inputs yield identical immutable fill facts and no domain
+  or accounting mutation.
+- RC-16 M2 US169 — Deterministic Limit Order Execution and Cancellation:
+  cross-then-all-or-none limit matching bounded by the limit price, non-crossing
+  limits rest without a Fill, and provider-neutral cancellation reconciliation.
+- RC-16 M2 US170 — Single Execution Engine (`execution-engine/`): the only
+  component permitted to call the adapter; re-checks the mandatory unexpired
+  Risk Decision, reservation, approved market checkpoint, and fenced Session
+  eligibility; drives every Order transition through the Orders port; and keeps
+  submission and cancellation idempotent so a duplicate submit cannot duplicate
+  an adapter call or a Fill.
+- RC-16 M2 US171 — Immutable Fill Persistence: deterministic Fill identity,
+  append-only PostgreSQL `paper_fills` with per-order sequence and adapter-fill
+  uniqueness, each Fill referencing exactly one persisted Order, and atomic
+  commit of the Fill, its Outbox event, and the Orders-owned lifecycle
+  transition inside one transaction.
 
 RC-15.1 is released. RC-16 M1, Epic E7, and Epic E8 are complete; Epic E9
-US165–US167 are complete.
+(US165–US171) is complete.
 
 ### Added (architecture)
 
