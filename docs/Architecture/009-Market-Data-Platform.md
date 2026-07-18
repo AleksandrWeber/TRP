@@ -28,9 +28,11 @@ latest-market-state projection (rebuildable), operational market-health/stalenes
 (never mutating business semantics), bounded metrics/secret-safe
 logs/readiness-liveness probes, read-only query API (`GET /v1/market-data/...`),
 and detached SSE projection streaming with reconnect cursors and drop-oldest
-backpressure are implemented. M1 Live Market Data Foundation is complete.
-Historical OHLCV remains in `market-data/`. Provider payloads must not leak
-outside connector adapters. Client UI caches are never authoritative.
+backpressure are implemented. M1 Mini Validation (US148–US152) passed with
+minor recommendations (`docs/project/rc-16-m1-mini-validation.md`). M1 Live
+Market Data Foundation is complete. Historical OHLCV remains in `market-data/`.
+Provider payloads must not leak outside connector adapters. Client UI caches
+are never authoritative.
 
 ---
 

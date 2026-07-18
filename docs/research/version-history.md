@@ -73,6 +73,8 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
 - US144–US145 complete: M1 Epic E5-A (status/staleness + observability).
 - US146–US147 complete: M1 Epic E5-B (workspace query API + SSE projection
   channel). Epic E5 complete. M1 Live Market Data Foundation complete.
+- US148–US152 complete: M1 Epic E6 Mini Validation (PASS WITH MINOR
+  RECOMMENDATIONS). See `docs/project/rc-16-m1-mini-validation.md`.
 
 This is an architecture/documentation milestone only. Research Engine,
 Validation, Knowledge Schema, and simulation calculation versions remain

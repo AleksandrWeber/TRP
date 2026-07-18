@@ -85,8 +85,13 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
   projections with reconnect cursors, drop-oldest backpressure, and channel
   isolation from ingestion; `authoritative: false` on all envelopes.
   Epic E5 complete. M1 Live Market Data Foundation complete.
+- RC-16 M1 US148–US152 — Epic E6 Mini Validation: contract/fixtures, PostgreSQL
+  Outbox/Inbox/checkpoint integration (Prisma drivers + migration), deterministic
+  replay, failure injection, performance baselines, architecture conformance.
+  Verdict: PASS WITH MINOR RECOMMENDATIONS. Results:
+  `docs/project/rc-16-m1-mini-validation.md`. M1 complete.
 
-RC-15.1 is released. RC-16 M1 Epic E5 complete (US144–US147).
+RC-15.1 is released. RC-16 M1 complete (US126–US152).
 
 ### Added (architecture)
 

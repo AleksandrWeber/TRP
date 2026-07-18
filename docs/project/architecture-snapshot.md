@@ -415,20 +415,20 @@ integration.** A separate Stage-1 manual paper prototype exists under
 
 ### Modules (`apps/api/src/modules/`)
 
-| Module             | Path                    | Role                                                                                                                                                            |
-| ------------------ | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped                                                                                                    |
-| LiveMarketData     | `live-market-data/`     | Contracts through E5: connectors, normalization, integrity, recovery, subscriptions/checkpoints, status/observability, read API + SSE projections (US131–US147) |
-| EventProcessing    | `event-processing/`     | ADR-013 foundation (US128–US130): Outbox, Inbox, checkpoints, at-least-once dispatcher, retry/dead letters                                                      |
-| HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                                                                       |
-| MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                                                                         |
-| Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                                                                               |
-| Portfolio          | `portfolio/`            | `PortfolioEngine` state (cash / equity / PnL)                                                                                                                   |
-| Trade              | `trade/`                | Virtual `TradeEngine` → `PortfolioEngine.applyExecution`                                                                                                        |
-| Performance        | `performance/`          | `PerformanceAnalyzer` → immutable `PerformanceReport`                                                                                                           |
-| WalkForward        | `walk-forward/`         | Rolling windows; reuses `BacktestEngine` sequentially                                                                                                           |
-| StrategyComparison | `strategy-comparison/`  | Rankings + weighted overall winner from completed results                                                                                                       |
-| SimulationReport   | `simulation-report/`    | `SimulationReportBuilder` → immutable consolidated artifact                                                                                                     |
+| Module             | Path                    | Role                                                                                                       |
+| ------------------ | ----------------------- | ---------------------------------------------------------------------------------------------------------- |
+| MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped                                               |
+| LiveMarketData     | `live-market-data/`     | M1 complete (US126–US152): connectors through query/SSE + Mini Validation                                  |
+| EventProcessing    | `event-processing/`     | ADR-013 foundation (US128–US130): Outbox, Inbox, checkpoints, at-least-once dispatcher, retry/dead letters |
+| HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                  |
+| MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                    |
+| Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                          |
+| Portfolio          | `portfolio/`            | `PortfolioEngine` state (cash / equity / PnL)                                                              |
+| Trade              | `trade/`                | Virtual `TradeEngine` → `PortfolioEngine.applyExecution`                                                   |
+| Performance        | `performance/`          | `PerformanceAnalyzer` → immutable `PerformanceReport`                                                      |
+| WalkForward        | `walk-forward/`         | Rolling windows; reuses `BacktestEngine` sequentially                                                      |
+| StrategyComparison | `strategy-comparison/`  | Rankings + weighted overall winner from completed results                                                  |
+| SimulationReport   | `simulation-report/`    | `SimulationReportBuilder` → immutable consolidated artifact                                                |
 
 ### Dependency direction (acyclic)
 
@@ -636,3 +636,10 @@ M1 Epic E5-B progress: US146–US147 complete — workspace-scoped read-only mar
 query API (subscriptions, status, latest state, checkpoints) and SSE projection
 channel with reconnect cursors, drop-oldest backpressure, and detached fan-out
 from ingestion. UI caches are explicitly non-authoritative. Epic E5 complete.
+
+M1 Epic E6 Mini Validation: US148–US152 complete — contract/fixtures, PostgreSQL
+Outbox/Inbox/checkpoint integration (Prisma drivers + migration), deterministic
+replay, failure injection, performance baselines, and architecture conformance.
+Verdict: PASS WITH MINOR RECOMMENDATIONS (Nest still defaults to InMemory
+Outbox/Inbox; TD-035). M1 Live Market Data Foundation complete.
+See [`rc-16-m1-mini-validation.md`](./rc-16-m1-mini-validation.md).

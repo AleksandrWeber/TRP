@@ -1,13 +1,13 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-18 (RC-16 M1 Epic E5 complete — US144–US147)
+2026-07-18 (RC-16 M1 complete — Epic E6 Mini Validation US148–US152)
 
 ---
 
 # Current Phase
 
-M1 — Live Market Data Foundation
+M2 — Durable Paper Order and Accounting Core
 
 ---
 
@@ -36,7 +36,11 @@ projection (rebuildable).
 M1 Epic E5 complete (US144–US147): market status/staleness + observability;
 workspace-scoped read-only query API (subscriptions/status/latest/checkpoints);
 SSE live projection channel with reconnect cursors, drop-oldest backpressure,
-and non-authoritative client caches. Epic E5 complete.
+and non-authoritative client caches.
+M1 Epic E6 Mini Validation complete (US148–US152): contract/fixtures,
+PostgreSQL Outbox/Inbox integration, deterministic replay, failure injection,
+performance baseline, and architecture conformance —
+**PASS WITH MINOR RECOMMENDATIONS**. M1 Live Market Data Foundation complete.
 Next: M2 — Durable Paper Order and Accounting Core.
 
 ---

@@ -269,6 +269,18 @@ Epic E5-A complete. Epic E5-B progress:
 Epic E5 complete (US144–US147). M1 Live Market Data Foundation complete.
 Next: M2 Durable Paper Order and Accounting Core.
 
+Epic E6 Mini Validation:
+
+- ✓ US148 — Contract and Fixture Test Suite
+- ✓ US149 — PostgreSQL Event Integration Tests
+- ✓ US150 — Recorded Stream Determinism Validation
+- ✓ US151 — Connection and Recovery Failure Injection
+- ✓ US152 — M1 Performance Baseline and Mini Validation
+
+Epic E6 complete (US148–US152). Verdict: PASS WITH MINOR RECOMMENDATIONS.
+Results: [`rc-16-m1-mini-validation.md`](./rc-16-m1-mini-validation.md).
+M1 complete. Next: M2 Durable Paper Order and Accounting Core.
+
 ---
 
 ## Definition of Implementation Readiness

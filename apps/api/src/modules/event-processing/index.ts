@@ -33,6 +33,11 @@ export type { ConsumerCheckpointRepository } from './repositories/consumer-check
 export { CONSUMER_CHECKPOINT_REPOSITORY } from './repositories/consumer-checkpoint.repository.token';
 export { InMemoryConsumerCheckpointRepository } from './repositories/in-memory-consumer-checkpoint.repository';
 
+export { PrismaOutboxRepository } from './repositories/prisma-outbox.repository';
+export { PrismaInboxRepository } from './repositories/prisma-inbox.repository';
+export { PrismaConsumerCheckpointRepository } from './repositories/prisma-consumer-checkpoint.repository';
+export { PrismaTransactionalOutboxWriter } from './repositories/prisma-transactional-outbox.writer';
+
 export { IdempotentConsumerProcessor } from './idempotent-consumer.processor';
 
 export type { OutboxRetryPolicy } from './domain/outbox-retry-policy';

@@ -173,7 +173,8 @@ Architecture changes require a new ADR.
 - M6 — Operations Experience
 - M7 — RC-16 Validation and Closeout
 
-Current: M1 Epic E5 complete (US144–US147). Next: M2 Durable Paper Order and
+Current: M1 complete (US126–US152), including Epic E6 Mini Validation
+(PASS WITH MINOR RECOMMENDATIONS). Next: M2 Durable Paper Order and
 Accounting Core within ADR-012…ADR-018.
 Mini Validation follows M2, M4, and M6.
 
