@@ -35,8 +35,17 @@ entry: it re-checks Risk/reservation/checkpoint/Session eligibility, drives ever
 Order transition through the Orders port, and never mutates Orders or accounting
 directly. Fills are append-only facts committed atomically with their Outbox
 event and the lifecycle transition, so a duplicate submit cannot duplicate a
-Fill and cancellation reconciliation is idempotent. Fill accounting (Ledger
-postings, positions, portfolio) remains Epic E10.
+Fill and cancellation reconciliation is idempotent.
+
+RC-16 M2 accounting note (US172–US174): Position is a rebuildable long-only
+projection derived only from immutable Fill facts. Ledger is the only financial
+source of truth and records balanced append-only opening-capital,
+reserve/release, Fill-cost, fee, cash, and realized-PnL movements with durable
+causes. The Fill accounting consumer commits Inbox, Position, Ledger,
+Position/Ledger Outbox events, and checkpoint in one PostgreSQL transaction;
+duplicates are successful no-ops and any failure rolls back every effect.
+Position valuation, Portfolio, rebuild/reconciliation, and accounting query APIs
+remain US175–US178.
 
 ---
 

@@ -32,6 +32,12 @@ submit an Order that is not `executable`. Submission and cancellation are
 idempotent, so a duplicate command cannot duplicate an adapter call or an
 append-only Fill.
 
+US172–US174 preserve workspace isolation through workspace/account Position and
+Ledger identities. Fill accounting accepts only immutable
+`OrderFillRecorded` events, requires an active workspace-owned paper account,
+and uses Inbox uniqueness plus one PostgreSQL transaction, so duplicate or
+failed delivery cannot create partial or repeated financial effects.
+
 ---
 
 # Purpose

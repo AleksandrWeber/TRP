@@ -20,6 +20,7 @@ import {
   type ReleaseCashCommand,
   type ReserveCashCommand,
 } from '../ports/cash-reservation.port';
+import { LedgerService } from '../ledger.service';
 
 @Injectable()
 export class PrismaCashReservationAdapter implements CashReservationPort {
@@ -29,6 +30,8 @@ export class PrismaCashReservationAdapter implements CashReservationPort {
     private readonly transactions: PrismaTransactionService,
     @Inject(TransactionalOutboxAppender)
     private readonly outbox: TransactionalOutboxAppender,
+    @Inject(LedgerService)
+    private readonly ledger: LedgerService,
   ) {}
 
   async reserveCash(command: ReserveCashCommand): Promise<CashReservation> {
@@ -89,6 +92,18 @@ export class PrismaCashReservationAdapter implements CashReservationPort {
           },
         });
         const result = toReservation(created);
+        await this.ledger.recordReservation(context, {
+          workspaceId: result.workspaceId,
+          paperAccountId: result.paperAccountId,
+          reservationId: result.id,
+          idempotencyKey: `reservation:${result.id}:reserve`,
+          currency: result.currency,
+          amount: result.amount,
+          actorId: normalized.actorId,
+          correlationId: normalized.correlationId,
+          occurredAt: normalized.recordedAt,
+          recordedAt: normalized.recordedAt,
+        });
         await this.outbox.append(
           context,
           reservationEnvelope(result, normalized, 1),
@@ -160,6 +175,18 @@ export class PrismaCashReservationAdapter implements CashReservationPort {
         },
       });
       const result = toReservation(released);
+      await this.ledger.recordReservationRelease(context, {
+        workspaceId: result.workspaceId,
+        paperAccountId: result.paperAccountId,
+        reservationId: result.id,
+        idempotencyKey: `reservation:${result.id}:release`,
+        currency: result.currency,
+        amount: result.amount,
+        actorId: normalized.actorId,
+        correlationId: normalized.correlationId,
+        occurredAt: normalized.recordedAt,
+        recordedAt: normalized.recordedAt,
+      });
       await this.outbox.append(
         context,
         reservationEnvelope(result, normalized, 2),

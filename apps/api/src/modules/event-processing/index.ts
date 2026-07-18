@@ -52,6 +52,10 @@ export { OutboxPollingService } from './outbox-polling.service';
 export { OutboxDispatcherMetrics } from './outbox-dispatcher.metrics';
 export type { OutboxDispatcherMetricsSnapshot } from './outbox-dispatcher.metrics';
 export { TransactionalOutboxAppender } from './transactional-outbox-appender';
+export {
+  TransactionalConsumerProgress,
+  type RecordConsumerProgressInput,
+} from './transactional-consumer-progress';
 
 export type {
   AcceptMarketEventCommand,

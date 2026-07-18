@@ -1,6 +1,6 @@
 # TRP — Architecture Snapshot
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E9 complete — US165–US171)
+Last updated: 2026-07-18 (RC-16 M2 Epic E10 US172–US174)
 
 Single snapshot of the **current** architecture (RC-15). Documentation only. No future ideas.
 
@@ -427,7 +427,8 @@ integration.** A separate Stage-1 manual paper prototype exists under
 | Risk               | `risk/`                 | Versioned baseline policy, immutable explainable PostgreSQL decisions + Outbox (US165)                        |
 | ExecutionAdapter   | `execution-adapter/`    | Paper-only port/binding, versioned deterministic config, deterministic market/limit matching (US166–US169)    |
 | ExecutionEngine    | `execution-engine/`     | Sole adapter entry; idempotent submit/cancel/reconcile; append-only PostgreSQL Fill persistence (US170–US171) |
-| Ledger             | `ledger/`               | Public durable cash reservation/release port; Portfolio has no write access (US162)                           |
+| Positions          | `positions/`            | Fill-only long/flat accounting and atomic Inbox/Position/Ledger/Outbox/checkpoint consumer (US172, US174)     |
+| Ledger             | `ledger/`               | Only financial source of truth; balanced append-only transactions and cash projection (US162, US173–US174)    |
 | HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                     |
 | MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                       |
 | Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                             |
@@ -677,9 +678,8 @@ Ledger and complete locally, while submitted requests remain cancel-pending for
 Execution Engine handling. The authenticated REST adapter exposes propose,
 cancel, and workspace-scoped queries only; Trader/Admin RBAC protects commands,
 and no HTTP route can perform Risk or adapter lifecycle transitions. The
-reservation port consumes Ledger-owned cash-balance rows; US173 will create
-those balances from append-only Ledger transactions and paper-account opening
-instructions.
+reservation port consumes Ledger-owned cash-balance rows created from
+append-only opening-capital transactions.
 
 M2 Epic E9 complete (US165–US171). Risk evaluates immutable Order,
 account, Session, market, cash/reservation, Position, Portfolio, duplicate, and
@@ -701,3 +701,16 @@ its Outbox event inside one PostgreSQL transaction. Submission and cancellation
 are idempotent, so a duplicate submit cannot duplicate an adapter call or a Fill,
 and cancellation reconciliation completes the terminal transition and releases the
 reservation through Orders.
+
+M2 Epic E10 first half complete (US172–US174). `positions/` accepts immutable
+`OrderFillRecorded` facts only and derives a workspace/account/instrument
+long-or-flat Position with decimal quantity, average entry, cost basis, realized
+PnL, monotonic version, and last-applied-Fill sequence. `ledger/` is the only
+financial source of truth: opening capital, reserve/release, Fill cost, fees,
+cash, and realized PnL are immutable balanced transactions with durable causes;
+corrections require a new compensation transaction and reason. The US174
+consumer commits Inbox deduplication, Position transition, Ledger transaction
+and entries, Position/Ledger Outbox events, and checkpoint in one PostgreSQL
+transaction. Duplicate Fill delivery is a successful no-op and any failure
+rolls back the complete accounting effect. Cash balances are derived Ledger
+projections; Portfolio remains read-only and is not yet implemented.

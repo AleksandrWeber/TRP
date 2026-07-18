@@ -336,7 +336,20 @@ only adapter entry, re-checks Risk/reservation/checkpoint/Session eligibility,
 never mutates Orders or accounting directly, and commits an append-only Fill
 atomically with its Outbox event and the Orders-owned transition; duplicate
 submits cannot duplicate a Fill and cancellation reconciliation is idempotent.
-Next: Epic E10 — accounting core (Ledger postings, positions, portfolio).
+M2 Epic E10 progress:
+
+- ✓ US172 — Long-Only Position Accounting
+- ✓ US173 — Append-Only Balanced Ledger
+- ✓ US174 — Atomic Fill Accounting Consumer
+
+US172–US174 complete. Position derives only from immutable Fill domain values,
+rejects over-closing, and records monotonic version/Fill progress. Ledger is the
+only financial source of truth; opening capital, reserve/release, Fill cost,
+fees, cash, and realized PnL use balanced append-only decimal entries with
+durable causes. Inbox, Position, Ledger, Outbox, and checkpoint commit in one
+PostgreSQL transaction; duplicate delivery is a successful no-op and failure
+leaves no partial accounting state.
+Next: US175 — Position Valuation Projection.
 
 ---
 

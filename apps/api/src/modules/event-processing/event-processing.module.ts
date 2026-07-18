@@ -18,6 +18,7 @@ import { PrismaInboxRepository } from './repositories/prisma-inbox.repository';
 import { PrismaOutboxRepository } from './repositories/prisma-outbox.repository';
 import { PrismaTransactionalOutboxWriter } from './repositories/prisma-transactional-outbox.writer';
 import { TransactionalOutboxAppender } from './transactional-outbox-appender';
+import { TransactionalConsumerProgress } from './transactional-consumer-progress';
 import { TRANSACTIONAL_OUTBOX_WRITER } from './transactional-outbox-writer.token';
 
 /**
@@ -78,6 +79,7 @@ import { TRANSACTIONAL_OUTBOX_WRITER } from './transactional-outbox-writer.token
       inject: [OUTBOX_REPOSITORY],
     },
     TransactionalOutboxAppender,
+    TransactionalConsumerProgress,
     OutboxPollingService,
   ],
   exports: [
@@ -89,6 +91,7 @@ import { TRANSACTIONAL_OUTBOX_WRITER } from './transactional-outbox-writer.token
     OutboxDispatcher,
     OutboxPollingService,
     TransactionalOutboxAppender,
+    TransactionalConsumerProgress,
   ],
 })
 export class EventProcessingModule {}

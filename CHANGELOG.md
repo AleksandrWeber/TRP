@@ -163,9 +163,20 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
   uniqueness, each Fill referencing exactly one persisted Order, and atomic
   commit of the Fill, its Outbox event, and the Orders-owned lifecycle
   transition inside one transaction.
+- RC-16 M2 US172 — Long-Only Position Accounting (`positions/`): immutable
+  Fill-only quantity, average entry, cost basis, and realized-PnL transitions;
+  over-closing rejection; monotonic Position version and applied-Fill sequence.
+- RC-16 M2 US173 — Append-Only Balanced Ledger (`ledger/`): decimal-only,
+  durable-cause transactions and immutable entries for opening capital,
+  reserve/release, Fill position cost, fees, cash, and realized PnL; cash
+  balances are Ledger-derived projections and compensation requires a reason.
+- RC-16 M2 US174 — Atomic Fill Accounting Consumer: Inbox deduplication,
+  Position transition, balanced Ledger entries, Position/Ledger Outbox events,
+  and checkpoint commit in one PostgreSQL transaction; duplicate delivery is a
+  successful no-op and failure rolls back all accounting effects.
 
 RC-15.1 is released. RC-16 M1, Epic E7, and Epic E8 are complete; Epic E9
-(US165–US171) is complete.
+(US165–US171) is complete; Epic E10 US172–US174 are complete.
 
 ### Added (architecture)
 

@@ -170,8 +170,17 @@ the sole adapter entry that re-checks Risk/reservation/checkpoint/Session
 eligibility and never mutates Orders or accounting directly; and Fills are
 append-only PostgreSQL facts committed atomically with their Outbox event and
 the Orders-owned transition, so a duplicate submit cannot duplicate a Fill and
-cancellation reconciliation is idempotent. Accounting (Ledger postings,
-positions, portfolio) remains Epic E10.
+cancellation reconciliation is idempotent.
+
+Epic E10 progress (2026-07-18): US172–US174 complete — long-only Position
+accounting derives quantity, average entry, cost basis, and realized PnL only
+from immutable Fills; Ledger is the sole financial source of truth and stores
+balanced append-only opening-capital, reserve/release, Fill-cost, fee, cash, and
+realized-PnL transactions; and the Fill accounting consumer commits Inbox,
+Position, Ledger, Position/Ledger Outbox events, and checkpoint atomically.
+Duplicate delivery is a successful no-op and failures remain retryable with no
+partial state. Position valuation, Portfolio, rebuild/reconciliation, and query
+APIs remain US175–US178.
 
 Mini Validation 1: idempotency and accounting invariants.
 

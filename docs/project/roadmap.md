@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E9 complete — US165–US171)
+Last updated: 2026-07-18 (RC-16 M2 Epic E10 US172–US174)
 
 Living roadmap for product direction.
 
@@ -187,7 +187,12 @@ paper-only execution-adapter boundary, versioned deterministic Paper Fill
 configuration, deterministic market and limit matching, a single Execution
 Engine as the sole adapter entry, idempotent submission and cancellation
 reconciliation, and append-only Fill persistence committed atomically with its
-Outbox event. Next: Epic E10 accounting core (Ledger postings and positions).
+Outbox event.
+M2 Epic E10 progress: US172–US174 complete — immutable Fill-derived long-only
+Position accounting, balanced append-only Ledger transactions (including
+opening capital and reservation movements), and atomic Inbox + Position +
+Ledger + Outbox + checkpoint Fill application with duplicate no-op and full
+rollback on failure. Next: US175 Position valuation projection.
 Mini Validation follows M2, M4, and M6.
 
 ---

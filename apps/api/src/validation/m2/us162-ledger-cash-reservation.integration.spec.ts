@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { TransactionalOutboxAppender } from '../../modules/event-processing';
 import { PrismaCashReservationAdapter } from '../../modules/ledger/adapters/prisma-cash-reservation.adapter';
-import { CashReservationStatus } from '../../modules/ledger';
+import { CashReservationStatus, LedgerService, PrismaLedgerRepository } from '../../modules/ledger';
 import { PrismaTransactionService } from '../../storage/prisma/prisma-transaction.service';
 
 const WS = 'ws-us162';
@@ -14,7 +14,13 @@ describe('US162 — Ledger-owned durable cash reservation', () => {
   const prisma = new PrismaClient();
   const transactions = new PrismaTransactionService(prisma);
   const outbox = new TransactionalOutboxAppender();
-  const reservations = new PrismaCashReservationAdapter(prisma, transactions, outbox);
+  const ledger = new LedgerService(
+    new PrismaLedgerRepository(prisma),
+    null as never,
+    transactions,
+    outbox,
+  );
+  const reservations = new PrismaCashReservationAdapter(prisma, transactions, outbox, ledger);
 
   beforeAll(() => prisma.$connect());
   beforeEach(async () => {
@@ -39,6 +45,8 @@ describe('US162 — Ledger-owned durable cash reservation', () => {
   async function cleanup() {
     await prisma.outboxEvent.deleteMany({ where: { workspaceId: WS } });
     await prisma.ledgerCashReservation.deleteMany({ where: { workspaceId: WS } });
+    await prisma.ledgerEntry.deleteMany({ where: { workspaceId: WS } });
+    await prisma.ledgerTransaction.deleteMany({ where: { workspaceId: WS } });
     await prisma.ledgerCashBalance.deleteMany({ where: { workspaceId: WS } });
   }
 

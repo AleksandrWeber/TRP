@@ -22,6 +22,7 @@ import { OrdersModule } from './modules/orders';
 import { RiskModule } from './modules/risk';
 import { ExecutionAdapterModule } from './modules/execution-adapter';
 import { ExecutionEngineModule } from './modules/execution-engine';
+import { PositionsModule } from './modules/positions';
 import { HistoricalImportModule } from './modules/historical-import/historical-import.module';
 import { MarketDataProviderModule } from './modules/market-data-provider/market-data-provider.module';
 import { BacktestingModule } from './modules/backtesting/backtesting.module';
@@ -67,6 +68,7 @@ import { ValidationModule } from './validation/validation.module';
     RiskModule,
     ExecutionAdapterModule,
     ExecutionEngineModule,
+    PositionsModule,
     AuthModule,
     IdentityModule,
     WorkspaceModule,

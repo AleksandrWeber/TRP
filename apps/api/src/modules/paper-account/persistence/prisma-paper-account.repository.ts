@@ -32,6 +32,31 @@ export class PrismaPaperAccountRepository implements PaperAccountRepository {
     return toDomain(row);
   }
 
+  async save(
+    account: PaperAccount,
+    expectedVersion: number,
+    transaction: TransactionContext,
+  ): Promise<PaperAccount> {
+    if (account.version !== expectedVersion + 1) {
+      throw new Error('paper account version must advance exactly once');
+    }
+    const updated = await prismaClientForTransaction(transaction).paperAccount.updateMany({
+      where: {
+        id: account.id,
+        workspaceId: account.workspaceId,
+        version: expectedVersion,
+      },
+      data: {
+        status: account.status,
+        openingLedgerTransactionId: account.openingLedgerTransactionId,
+        version: account.version,
+        recordedAt: new Date(account.recordedAt),
+      },
+    });
+    if (updated.count !== 1) throw new Error('paper account optimistic version conflict');
+    return account;
+  }
+
   async findById(workspaceId: string, accountId: string): Promise<PaperAccount | null> {
     const row = await this.prisma.paperAccount.findFirst({
       where: { id: accountId, workspaceId },

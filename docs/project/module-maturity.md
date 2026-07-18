@@ -1,6 +1,6 @@
 # TRP — Module Maturity Matrix
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E9 complete — US165–US171)
+Last updated: 2026-07-18 (RC-16 M2 Epic E10 US172–US174)
 
 Living matrix of implementation maturity for major Research OS modules. Documentation only (US094 / US125).
 
@@ -273,7 +273,7 @@ Related:
 
 | Field                   | Value                                                                                                                                                                                                                                                                          |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Status**              | In progress (M1 complete; M2 Epic E9 complete)                                                                                                                                                                                                                                 |
+| **Status**              | In progress (M1 complete; M2 Epic E10 first half complete)                                                                                                                                                                                                                     |
 | **Scope**               | Live Market Data; durable Trading Sessions; Strategy Runtime; Orders; mandatory Risk; single Execution Engine; Paper Adapter; Fill → Position → Ledger → Portfolio; Outbox/Inbox; restart recovery; Audit; Dashboard                                                           |
 | **Existing prototype**  | `production/` supports approved deployment, manual tick, basic Risk, immediate paper fill, persisted signal/execution/long-or-flat position. It is not idempotent/transactional/always-on and lacks workspace ownership, durable Orders, Ledger, recovery, and reconciliation. |
 | **Frozen architecture** | ADR-012…ADR-018 and [`rc-16-paper-trading-plan.md`](./rc-16-paper-trading-plan.md)                                                                                                                                                                                             |
@@ -281,7 +281,8 @@ Related:
 | **M2 progress**         | ✓ Epic E7 (US153–US158): decimal contracts, paper account, PostgreSQL event runtime, Trading Session + fencing, trading RBAC/JWT hardening                                                                                                                                     |
 | **E8 progress**         | ✓ US159–US164: deterministic Order Intents, Orders-owned lifecycle/history, transactional persistence, Ledger cash reservations, idempotent cancellation, authorized Order API                                                                                                 |
 | **E9 progress**         | ✓ US165–US171: durable mandatory Risk Decisions, paper-only adapter boundary, versioned deterministic fill configuration, deterministic market/limit matching, single Execution Engine as sole adapter entry, idempotent submission/cancellation, append-only Fill persistence |
-| **Next milestone**      | Epic E10 — accounting core (Ledger postings, positions, portfolio)                                                                                                                                                                                                             |
+| **E10 progress**        | ✓ US172–US174: immutable Fill-derived long-only Position, balanced append-only Ledger, atomic Inbox/Position/Ledger/Outbox/checkpoint Fill consumer                                                                                                                            |
+| **Next milestone**      | US175 — versioned Position valuation projection                                                                                                                                                                                                                                |
 
 ---
 

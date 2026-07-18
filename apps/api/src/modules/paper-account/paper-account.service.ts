@@ -1,10 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
-import { PrismaTransactionService } from '../../storage/prisma/prisma-transaction.service';
+import {
+  PrismaTransactionService,
+  type TransactionContext,
+} from '../../storage/prisma/prisma-transaction.service';
 import { toDurableEventId, type DurableEventEnvelope } from '../event-processing';
 import { TransactionalOutboxAppender } from '../event-processing/transactional-outbox-appender';
-import { createPaperAccount, type PaperAccount } from './domain/paper-account';
+import {
+  activatePaperAccount,
+  createPaperAccount,
+  type PaperAccount,
+} from './domain/paper-account';
 import {
   PAPER_ACCOUNT_REPOSITORY,
   type PaperAccountRepository,
@@ -84,6 +91,22 @@ export class PaperAccountService {
   get(workspaceId: string, accountId: string): Promise<PaperAccount | null> {
     return this.accounts.findById(workspaceId, accountId);
   }
+
+  /**
+   * Transaction-aware activation used only by Ledger after the opening-capital
+   * transaction has been appended (US173). Paper Account remains lifecycle owner.
+   */
+  async activateOpeningLedger(
+    account: PaperAccount,
+    ledgerTransactionId: string,
+    recordedAt: string,
+    transaction: TransactionContext,
+  ): Promise<PaperAccount> {
+    const activated = activatePaperAccount(account, ledgerTransactionId, recordedAt);
+    const saved = await this.accounts.save(activated, account.version, transaction);
+    await this.outbox.append(transaction, accountActivatedEnvelope(saved), recordedAt);
+    return saved;
+  }
 }
 
 function accountCreatedEnvelope(
@@ -111,6 +134,27 @@ function accountCreatedEnvelope(
       status: account.status,
       openingCapital: account.openingCapital,
       idempotencyKey,
+    }),
+  });
+}
+
+function accountActivatedEnvelope(account: PaperAccount): DurableEventEnvelope {
+  return Object.freeze({
+    eventId: toDurableEventId(`paper-account:${account.id}:activated:v${account.version}`),
+    eventType: 'PaperAccountActivated',
+    schemaVersion: 1,
+    aggregateType: 'PaperAccount',
+    aggregateId: account.id,
+    aggregateVersion: account.version,
+    workspaceId: account.workspaceId,
+    occurredAt: account.openedAt,
+    recordedAt: account.recordedAt,
+    actorId: 'ledger',
+    payload: Object.freeze({
+      accountId: account.id,
+      status: account.status,
+      currency: account.currency,
+      openingLedgerTransactionId: account.openingLedgerTransactionId,
     }),
   });
 }

@@ -571,3 +571,63 @@ model PaperFill {
   @@index([workspaceId, tradingSessionId])
   @@map("paper_fills")
 }
+
+/// Rebuildable long-only Position projection derived exclusively from immutable Fills (US172).
+model PaperPosition {
+  id                      String   @id
+  workspaceId             String   @map("workspace_id")
+  paperAccountId          String   @map("paper_account_id")
+  instrument              String
+  side                    String
+  quantity                Decimal  @db.Decimal(38, 18)
+  averageEntryPrice       Decimal  @map("average_entry_price") @db.Decimal(38, 18)
+  costBasis               Decimal  @map("cost_basis") @db.Decimal(38, 18)
+  realizedPnl             Decimal  @map("realized_pnl") @db.Decimal(38, 18)
+  version                 Int
+  lastAppliedFillId       String   @map("last_applied_fill_id")
+  lastAppliedFillSequence Int      @map("last_applied_fill_sequence")
+  occurredAt              DateTime @map("occurred_at")
+  recordedAt              DateTime @map("recorded_at")
+
+  @@unique([workspaceId, paperAccountId, instrument])
+  @@index([workspaceId, paperAccountId])
+  @@map("paper_positions")
+}
+
+/// Append-only balanced financial transaction; Ledger is the financial source of truth (US173).
+model LedgerTransaction {
+  id                 String        @id
+  workspaceId        String        @map("workspace_id")
+  paperAccountId     String        @map("paper_account_id")
+  idempotencyKey     String        @map("idempotency_key")
+  causeType          String        @map("cause_type")
+  causeId            String        @map("cause_id")
+  currency           String
+  occurredAt         DateTime      @map("occurred_at")
+  recordedAt         DateTime      @map("recorded_at")
+  actorId            String        @map("actor_id")
+  correlationId      String?       @map("correlation_id")
+  compensationReason String?       @map("compensation_reason")
+  entries            LedgerEntry[]
+
+  @@unique([workspaceId, idempotencyKey])
+  @@unique([workspaceId, causeType, causeId])
+  @@index([workspaceId, paperAccountId, occurredAt])
+  @@map("ledger_transactions")
+}
+
+/// Immutable Ledger line. Corrections append compensating transactions; rows are never updated.
+model LedgerEntry {
+  id            String            @id
+  transactionId String            @map("transaction_id")
+  workspaceId   String            @map("workspace_id")
+  line          Int
+  account       String
+  direction     String
+  amount        Decimal           @db.Decimal(38, 18)
+  transaction   LedgerTransaction @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+
+  @@unique([transactionId, line])
+  @@index([workspaceId, account])
+  @@map("ledger_entries")
+}

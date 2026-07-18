@@ -10,6 +10,12 @@ export interface PaperAccountRepository {
     transaction: TransactionContext,
   ): Promise<PaperAccount>;
 
+  save(
+    account: PaperAccount,
+    expectedVersion: number,
+    transaction: TransactionContext,
+  ): Promise<PaperAccount>;
+
   findById(workspaceId: string, accountId: string): Promise<PaperAccount | null>;
 
   findByIdempotencyKey(workspaceId: string, idempotencyKey: string): Promise<PaperAccount | null>;
