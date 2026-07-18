@@ -415,20 +415,20 @@ integration.** A separate Stage-1 manual paper prototype exists under
 
 ### Modules (`apps/api/src/modules/`)
 
-| Module             | Path                    | Role                                                                                                       |
-| ------------------ | ----------------------- | ---------------------------------------------------------------------------------------------------------- |
-| MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped                                               |
-| LiveMarketData     | `live-market-data/`     | Live contracts (US126–US127) + connector port (US131); Binance REST (US132) + WebSocket lifecycle (US133)  |
-| EventProcessing    | `event-processing/`     | ADR-013 foundation (US128–US130): Outbox, Inbox, checkpoints, at-least-once dispatcher, retry/dead letters |
-| HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                  |
-| MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                    |
-| Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                          |
-| Portfolio          | `portfolio/`            | `PortfolioEngine` state (cash / equity / PnL)                                                              |
-| Trade              | `trade/`                | Virtual `TradeEngine` → `PortfolioEngine.applyExecution`                                                   |
-| Performance        | `performance/`          | `PerformanceAnalyzer` → immutable `PerformanceReport`                                                      |
-| WalkForward        | `walk-forward/`         | Rolling windows; reuses `BacktestEngine` sequentially                                                      |
-| StrategyComparison | `strategy-comparison/`  | Rankings + weighted overall winner from completed results                                                  |
-| SimulationReport   | `simulation-report/`    | `SimulationReportBuilder` → immutable consolidated artifact                                                |
+| Module             | Path                    | Role                                                                                                          |
+| ------------------ | ----------------------- | ------------------------------------------------------------------------------------------------------------- |
+| MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped                                                  |
+| LiveMarketData     | `live-market-data/`     | Live contracts + connector port; Binance REST/WebSocket; reconnect/backoff/heartbeat/rate-limit (US131–US134) |
+| EventProcessing    | `event-processing/`     | ADR-013 foundation (US128–US130): Outbox, Inbox, checkpoints, at-least-once dispatcher, retry/dead letters    |
+| HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                     |
+| MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                       |
+| Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                             |
+| Portfolio          | `portfolio/`            | `PortfolioEngine` state (cash / equity / PnL)                                                                 |
+| Trade              | `trade/`                | Virtual `TradeEngine` → `PortfolioEngine.applyExecution`                                                      |
+| Performance        | `performance/`          | `PerformanceAnalyzer` → immutable `PerformanceReport`                                                         |
+| WalkForward        | `walk-forward/`         | Rolling windows; reuses `BacktestEngine` sequentially                                                         |
+| StrategyComparison | `strategy-comparison/`  | Rankings + weighted overall winner from completed results                                                     |
+| SimulationReport   | `simulation-report/`    | `SimulationReportBuilder` → immutable consolidated artifact                                                   |
 
 ### Dependency direction (acyclic)
 
@@ -602,3 +602,7 @@ Outbox, Inbox, checkpoints, dispatcher/retry/dead letters). Historical
 M1 Epic E2-A progress: US131–US133 complete — LiveMarketConnector port/registry,
 Binance REST metadata/backfill, Binance WebSocket lifecycle (fake socket tests;
 raw payloads do not escape the adapter).
+
+M1 Epic E2-B progress: US134 complete — reconnect with bounded backoff/jitter,
+heartbeat timeout, REST rate-limit min-delay (no busy-loop), and
+RECOVERING health until gap recovery (not READY on reconnect alone).

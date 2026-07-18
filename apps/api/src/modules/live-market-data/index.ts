@@ -93,3 +93,9 @@ export {
   type SubscriptionAckStatus,
 } from './connectors/binance/binance-websocket.connector';
 export { FakeWebSocket, createFakeWebSocketFactory } from './connectors/binance/fake-websocket';
+export {
+  DEFAULT_CONNECTOR_RESILIENCE_POLICY,
+  computeReconnectDelayMs,
+  computeRateLimitDelayMs,
+  type ConnectorResiliencePolicy,
+} from './connectors/binance/connector-resilience-policy';

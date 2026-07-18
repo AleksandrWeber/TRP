@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-18 (RC-16 M1 Epic E2-A complete — US131–US133)
+2026-07-18 (RC-16 M1 Epic E2-B complete — US134)
 
 ---
 
@@ -23,10 +23,10 @@ RC-16 Planning Session approved the Paper Trading Platform scope. The
 Architecture Freeze accepted ADR-012…ADR-018 before User Story definition.
 
 M1 Epic E1 complete (US126–US130).
-M1 Epic E2-A complete (US131–US133): connector port/registry, Binance REST
-metadata/backfill, Binance WebSocket lifecycle.
-Next: remaining M1 epics (E2-B reconnect/resilience or E3 normalization) —
-not started in this commit.
+M1 Epic E2-A complete (US131–US133).
+M1 Epic E2-B complete (US134): reconnect, backoff, heartbeat, rate-limit
+resilience, and health transitions.
+Next: M1 Epic E3 — Normalization and Data Quality (not started).
 
 ---
 

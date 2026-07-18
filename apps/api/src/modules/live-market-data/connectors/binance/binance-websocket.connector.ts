@@ -12,6 +12,11 @@ import type {
 } from '../../ports/live-market-connector';
 import { BINANCE_SPOT_SOURCE_ID } from './binance-spot.source';
 import { subscriptionKey, toBinanceStreamName } from './binance-stream-name';
+import {
+  computeReconnectDelayMs,
+  DEFAULT_CONNECTOR_RESILIENCE_POLICY,
+  type ConnectorResiliencePolicy,
+} from './connector-resilience-policy';
 import { WS_OPEN, type WebSocketFactory, type WebSocketLike } from './websocket-like';
 
 export type SubscriptionAckStatus = 'pending' | 'acked' | 'unsubscribed';
@@ -29,6 +34,11 @@ export type BinanceWebSocketConnectorOptions = {
   /** Public combined stream endpoint (no credentials). */
   streamUrl?: string;
   now?: () => number;
+  sleep?: (ms: number) => Promise<void>;
+  random?: () => number;
+  policy?: Partial<ConnectorResiliencePolicy>;
+  /** When false, unexpected disconnect does not auto-reconnect (tests). */
+  autoReconnect?: boolean;
   /**
    * Rejected if present — public streams must not accept private credentials.
    */
@@ -40,9 +50,8 @@ export type BinanceWebSocketConnectorOptions = {
 const DEFAULT_STREAM_URL = 'wss://stream.binance.com:9443/ws';
 
 /**
- * Binance Spot public WebSocket connector lifecycle (US133).
- * Raw exchange messages are handled internally and never returned from the public API.
- * No private trading credentials.
+ * Binance Spot public WebSocket connector (US133 / US134).
+ * Lifecycle + reconnect/backoff/heartbeat. Raw frames never escape the adapter.
  */
 export class BinanceWebSocketConnector implements LiveMarketConnector {
   readonly sourceId = BINANCE_SPOT_SOURCE_ID;
@@ -50,11 +59,17 @@ export class BinanceWebSocketConnector implements LiveMarketConnector {
   private readonly webSocketFactory: WebSocketFactory;
   private readonly streamUrl: string;
   private readonly now: () => number;
+  private readonly sleep: (ms: number) => Promise<void>;
+  private readonly random: () => number;
+  private readonly policy: ConnectorResiliencePolicy;
+  private readonly autoReconnect: boolean;
+
   private socket: WebSocketLike | null = null;
   private state: ConnectorConnectionState = ConnectorConnectionState.DISCONNECTED;
   private lastError: string | null = null;
   private updatedAt = '1970-01-01T00:00:00.000Z';
   private nextRequestId = 1;
+  private readonly desiredSubscriptions = new Map<string, LiveMarketSubscribeRequest>();
   private readonly subscriptions = new Map<string, TrackedSubscription>();
   private readonly pendingByRequestId = new Map<number, string>();
   private readonly rawMessageCount = { value: 0 };
@@ -63,11 +78,26 @@ export class BinanceWebSocketConnector implements LiveMarketConnector {
   private closeHandler: ((event: unknown) => void) | null = null;
   private errorHandler: ((event: unknown) => void) | null = null;
 
+  private shuttingDown = false;
+  private reconnectAttempt = 0;
+  private nextReconnectAt: string | null = null;
+  private lastMessageAt: string | null = null;
+  private awaitingGapRecovery = false;
+  private heartbeatTimedOut = false;
+  private reconnectInFlight: Promise<void> | null = null;
+
   constructor(options: BinanceWebSocketConnectorOptions) {
     assertNoCredentials(options);
     this.webSocketFactory = options.webSocketFactory;
     this.streamUrl = options.streamUrl ?? DEFAULT_STREAM_URL;
     this.now = options.now ?? (() => Date.now());
+    this.sleep = options.sleep ?? ((ms) => new Promise((resolve) => setTimeout(resolve, ms)));
+    this.random = options.random ?? Math.random;
+    this.policy = Object.freeze({
+      ...DEFAULT_CONNECTOR_RESILIENCE_POLICY,
+      ...options.policy,
+    });
+    this.autoReconnect = options.autoReconnect ?? true;
   }
 
   capabilities(): LiveMarketConnectorCapabilities {
@@ -80,15 +110,155 @@ export class BinanceWebSocketConnector implements LiveMarketConnector {
   }
 
   async connect(): Promise<void> {
-    if (
-      this.state === ConnectorConnectionState.CONNECTED ||
-      this.state === ConnectorConnectionState.READY ||
-      this.state === ConnectorConnectionState.SUBSCRIBING
-    ) {
+    this.shuttingDown = false;
+    if (this.isLiveState(this.state)) {
       return;
     }
 
     this.setState(ConnectorConnectionState.CONNECTING);
+    await this.openSocketAndAttach();
+    this.reconnectAttempt = 0;
+    this.nextReconnectAt = null;
+    this.awaitingGapRecovery = false;
+    this.heartbeatTimedOut = false;
+    this.setState(ConnectorConnectionState.READY);
+  }
+
+  async disconnect(): Promise<void> {
+    this.shuttingDown = true;
+    this.setState(ConnectorConnectionState.DISCONNECTING);
+    this.nextReconnectAt = null;
+    this.reconnectAttempt = 0;
+    this.awaitingGapRecovery = false;
+    this.heartbeatTimedOut = false;
+    const socket = this.socket;
+    this.socket = null;
+    this.desiredSubscriptions.clear();
+    this.subscriptions.clear();
+    this.pendingByRequestId.clear();
+    if (socket) {
+      this.detach(socket);
+      if (socket.readyState === WS_OPEN || socket.readyState === 0) {
+        socket.close(1000, 'shutdown');
+      }
+    }
+    this.setState(ConnectorConnectionState.DISCONNECTED);
+  }
+
+  async subscribe(request: LiveMarketSubscribeRequest): Promise<void> {
+    this.assertConnected();
+    this.assertSupported(request);
+    const key = subscriptionKey(request);
+    this.desiredSubscriptions.set(key, Object.freeze({ ...request }));
+
+    const existing = this.subscriptions.get(key);
+    if (existing && (existing.status === 'pending' || existing.status === 'acked')) {
+      return; // idempotent — no duplicate wire subscribe
+    }
+
+    await this.armSubscription(request);
+  }
+
+  async unsubscribe(request: LiveMarketSubscribeRequest): Promise<void> {
+    const key = subscriptionKey(request);
+    this.desiredSubscriptions.delete(key);
+    const existing = this.subscriptions.get(key);
+    if (!existing) {
+      return; // idempotent
+    }
+
+    if (this.socket && this.socket.readyState === WS_OPEN) {
+      const requestId = this.nextRequestId++;
+      this.send({
+        method: 'UNSUBSCRIBE',
+        params: [existing.streamName],
+        id: requestId,
+      });
+    }
+
+    this.pendingByRequestId.delete(existing.requestId);
+    this.subscriptions.delete(key);
+  }
+
+  async backfill(_request: LiveMarketBackfillRequest): Promise<ClosedCandleBackfillBar[]> {
+    throw new Error(
+      'BinanceWebSocketConnector does not support backfill; use BinanceRestAdapter (US132)',
+    );
+  }
+
+  health(): LiveMarketConnectorHealth {
+    return Object.freeze({
+      state: this.state,
+      lastError: this.lastError,
+      updatedAt: this.updatedAt,
+      reconnectAttempt: this.reconnectAttempt,
+      nextReconnectAt: this.nextReconnectAt,
+      lastMessageAt: this.lastMessageAt,
+      awaitingGapRecovery: this.awaitingGapRecovery,
+      heartbeatTimedOut: this.heartbeatTimedOut,
+    });
+  }
+
+  supportsInstrument(instrument: Instrument | string): boolean {
+    return String(instrument).trim() !== '';
+  }
+
+  supportsChannel(channel: MarketStreamChannel, timeframe?: Timeframe): boolean {
+    if (channel === MarketStreamChannel.CLOSED_CANDLE) {
+      return timeframe !== undefined;
+    }
+    if (channel === MarketStreamChannel.MARK_PRICE) {
+      return true;
+    }
+    return false;
+  }
+
+  listSubscriptions(): ReadonlyArray<TrackedSubscription> {
+    return Object.freeze([...this.subscriptions.values()].map((row) => Object.freeze({ ...row })));
+  }
+
+  getRawMessageCount(): number {
+    return this.rawMessageCount.value;
+  }
+
+  /**
+   * Gap recovery (US139) clears the post-reconnect recovering gate.
+   * Until then, reconnect must not report READY.
+   */
+  markGapRecoveryComplete(): void {
+    if (!this.awaitingGapRecovery) return;
+    this.awaitingGapRecovery = false;
+    if (this.state === ConnectorConnectionState.RECOVERING && this.pendingByRequestId.size === 0) {
+      this.setState(ConnectorConnectionState.READY);
+    }
+  }
+
+  /**
+   * Heartbeat evaluation (US134). Call from a scheduler or tests.
+   * Timeout forces an immediate unhealthy transition and reconnect.
+   */
+  async evaluateHeartbeat(nowMs = this.now()): Promise<void> {
+    if (this.shuttingDown || !this.isLiveState(this.state)) return;
+    if (this.lastMessageAt === null) {
+      // No frames yet — use connection updatedAt as baseline after connect.
+      this.lastMessageAt = this.updatedAt;
+    }
+    const last = Date.parse(this.lastMessageAt);
+    if (!Number.isFinite(last)) return;
+    if (nowMs - last < this.policy.heartbeatTimeoutMs) return;
+
+    this.heartbeatTimedOut = true;
+    this.lastError = 'heartbeat timeout';
+    this.setState(ConnectorConnectionState.DISCONNECTED);
+    await this.beginReconnect('heartbeat timeout');
+  }
+
+  /** Test helper — drive scheduled reconnect without waiting for close. */
+  async forceReconnectForTest(): Promise<void> {
+    await this.beginReconnect('forced');
+  }
+
+  private async openSocketAndAttach(): Promise<void> {
     const socket = this.webSocketFactory(this.streamUrl);
     this.socket = socket;
 
@@ -96,7 +266,7 @@ export class BinanceWebSocketConnector implements LiveMarketConnector {
       const onOpen = () => {
         cleanup();
         this.setState(ConnectorConnectionState.CONNECTED);
-        this.setState(ConnectorConnectionState.READY);
+        this.lastMessageAt = new Date(this.now()).toISOString();
         resolve();
       };
       const onError = (event: unknown) => {
@@ -115,46 +285,30 @@ export class BinanceWebSocketConnector implements LiveMarketConnector {
       this.openHandler = onOpen;
       this.errorHandler = onError;
       this.messageHandler = (event) => this.onMessage(event);
-      this.closeHandler = () => this.onSocketClosed();
+      this.closeHandler = () => {
+        void this.onSocketClosed();
+      };
       socket.addEventListener('open', onOpen);
       socket.addEventListener('error', onError);
       socket.addEventListener('message', this.messageHandler);
       socket.addEventListener('close', this.closeHandler);
 
-      // If factory returns an already-open socket (tests).
       if (socket.readyState === WS_OPEN) {
         onOpen();
       }
     });
   }
 
-  async disconnect(): Promise<void> {
-    this.setState(ConnectorConnectionState.DISCONNECTING);
-    const socket = this.socket;
-    this.socket = null;
-    this.subscriptions.clear();
-    this.pendingByRequestId.clear();
-    if (socket) {
-      this.detach(socket);
-      if (socket.readyState === WS_OPEN || socket.readyState === 0) {
-        socket.close(1000, 'shutdown');
-      }
-    }
-    this.setState(ConnectorConnectionState.DISCONNECTED);
-  }
-
-  async subscribe(request: LiveMarketSubscribeRequest): Promise<void> {
-    this.assertConnected();
-    this.assertSupported(request);
+  private async armSubscription(request: LiveMarketSubscribeRequest): Promise<void> {
     const key = subscriptionKey(request);
-    const existing = this.subscriptions.get(key);
-    if (existing && (existing.status === 'pending' || existing.status === 'acked')) {
-      return; // idempotent
-    }
-
     const streamName = toBinanceStreamName(request);
     const requestId = this.nextRequestId++;
-    this.setState(ConnectorConnectionState.SUBSCRIBING);
+    if (
+      this.state !== ConnectorConnectionState.RECOVERING &&
+      this.state !== ConnectorConnectionState.RECONNECTING
+    ) {
+      this.setState(ConnectorConnectionState.SUBSCRIBING);
+    }
     this.subscriptions.set(
       key,
       Object.freeze({
@@ -173,73 +327,19 @@ export class BinanceWebSocketConnector implements LiveMarketConnector {
     });
   }
 
-  async unsubscribe(request: LiveMarketSubscribeRequest): Promise<void> {
-    const key = subscriptionKey(request);
-    const existing = this.subscriptions.get(key);
-    if (!existing) {
-      return; // idempotent
+  private async resubscribeDesired(): Promise<void> {
+    this.subscriptions.clear();
+    this.pendingByRequestId.clear();
+    for (const request of this.desiredSubscriptions.values()) {
+      await this.armSubscription(request);
     }
-
-    if (this.socket && this.socket.readyState === WS_OPEN) {
-      const requestId = this.nextRequestId++;
-      this.send({
-        method: 'UNSUBSCRIBE',
-        params: [existing.streamName],
-        id: requestId,
-      });
-    }
-
-    this.pendingByRequestId.delete(existing.requestId);
-    this.subscriptions.set(
-      key,
-      Object.freeze({
-        ...existing,
-        status: 'unsubscribed',
-      }),
-    );
-    this.subscriptions.delete(key);
-  }
-
-  async backfill(_request: LiveMarketBackfillRequest): Promise<ClosedCandleBackfillBar[]> {
-    throw new Error(
-      'BinanceWebSocketConnector does not support backfill; use BinanceRestAdapter (US132)',
-    );
-  }
-
-  health(): LiveMarketConnectorHealth {
-    return Object.freeze({
-      state: this.state,
-      lastError: this.lastError,
-      updatedAt: this.updatedAt,
-    });
-  }
-
-  supportsInstrument(instrument: Instrument | string): boolean {
-    return String(instrument).trim() !== '';
-  }
-
-  supportsChannel(channel: MarketStreamChannel, timeframe?: Timeframe): boolean {
-    if (channel === MarketStreamChannel.CLOSED_CANDLE) {
-      return timeframe !== undefined;
-    }
-    if (channel === MarketStreamChannel.MARK_PRICE) {
-      return true;
-    }
-    return false;
-  }
-
-  /** Observable subscription acknowledgements (US133). */
-  listSubscriptions(): ReadonlyArray<TrackedSubscription> {
-    return Object.freeze([...this.subscriptions.values()].map((row) => Object.freeze({ ...row })));
-  }
-
-  /** Test/observability helper — raw payload count only, never the payload. */
-  getRawMessageCount(): number {
-    return this.rawMessageCount.value;
   }
 
   private onMessage(event: unknown): void {
     this.rawMessageCount.value += 1;
+    this.lastMessageAt = new Date(this.now()).toISOString();
+    this.heartbeatTimedOut = false;
+
     const data =
       event && typeof event === 'object' && 'data' in event
         ? (event as { data: unknown }).data
@@ -249,7 +349,6 @@ export class BinanceWebSocketConnector implements LiveMarketConnector {
     try {
       parsed = typeof data === 'string' ? JSON.parse(data) : data;
     } catch {
-      // Malformed frames are swallowed at the adapter boundary.
       return;
     }
 
@@ -273,22 +372,74 @@ export class BinanceWebSocketConnector implements LiveMarketConnector {
           );
           this.pendingByRequestId.delete(id);
           if (this.pendingByRequestId.size === 0) {
-            this.setState(ConnectorConnectionState.READY);
+            if (this.awaitingGapRecovery) {
+              this.setState(ConnectorConnectionState.RECOVERING);
+            } else {
+              this.setState(ConnectorConnectionState.READY);
+            }
           }
         }
       }
-      return;
     }
-
-    // Stream data stays inside the adapter for US133 (normalization is E3).
   }
 
-  private onSocketClosed(): void {
-    if (this.state === ConnectorConnectionState.DISCONNECTING) {
+  private async onSocketClosed(): Promise<void> {
+    if (this.shuttingDown || this.state === ConnectorConnectionState.DISCONNECTING) {
       return;
     }
+
+    // Immediate health transition on disconnect (US134).
     this.socket = null;
     this.setState(ConnectorConnectionState.DISCONNECTED);
+    this.lastError = this.lastError ?? 'socket closed';
+    await this.beginReconnect('socket closed');
+  }
+
+  private async beginReconnect(reason: string): Promise<void> {
+    if (this.shuttingDown || !this.autoReconnect) {
+      return;
+    }
+    if (this.reconnectInFlight) {
+      return this.reconnectInFlight;
+    }
+
+    this.reconnectInFlight = this.runReconnect(reason).finally(() => {
+      this.reconnectInFlight = null;
+    });
+    return this.reconnectInFlight;
+  }
+
+  private async runReconnect(reason: string): Promise<void> {
+    while (!this.shuttingDown && this.autoReconnect) {
+      if (this.reconnectAttempt >= this.policy.maxReconnectAttempts) {
+        this.fail(`reconnect exhausted after ${this.policy.maxReconnectAttempts} attempts`);
+        this.nextReconnectAt = null;
+        return;
+      }
+
+      this.reconnectAttempt += 1;
+      const delayMs = computeReconnectDelayMs(this.policy, this.reconnectAttempt, this.random);
+      this.nextReconnectAt = new Date(this.now() + delayMs).toISOString();
+      this.lastError = reason;
+      this.setState(ConnectorConnectionState.RECONNECTING);
+
+      await this.sleep(delayMs);
+      if (this.shuttingDown) return;
+
+      try {
+        await this.openSocketAndAttach();
+        // Re-arm desired subscriptions without duplicating keys.
+        await this.resubscribeDesired();
+        this.nextReconnectAt = null;
+        this.awaitingGapRecovery = true;
+        // Reconnect alone must not claim READY/healthy (US134).
+        this.setState(ConnectorConnectionState.RECOVERING);
+        return;
+      } catch (error) {
+        this.lastError = error instanceof Error ? error.message : String(error);
+        // loop for next attempt
+      }
+    }
   }
 
   private send(payload: Record<string, unknown>): void {
@@ -309,12 +460,20 @@ export class BinanceWebSocketConnector implements LiveMarketConnector {
     this.errorHandler = null;
   }
 
+  private isLiveState(state: ConnectorConnectionState): boolean {
+    return (
+      state === ConnectorConnectionState.CONNECTED ||
+      state === ConnectorConnectionState.READY ||
+      state === ConnectorConnectionState.SUBSCRIBING ||
+      state === ConnectorConnectionState.RECOVERING
+    );
+  }
+
   private assertConnected(): void {
-    if (
-      this.state !== ConnectorConnectionState.CONNECTED &&
-      this.state !== ConnectorConnectionState.READY &&
-      this.state !== ConnectorConnectionState.SUBSCRIBING
-    ) {
+    if (!this.isLiveState(this.state) && this.state !== ConnectorConnectionState.RECONNECTING) {
+      throw new Error(`connector is not connected (state=${this.state})`);
+    }
+    if (this.state === ConnectorConnectionState.RECONNECTING) {
       throw new Error(`connector is not connected (state=${this.state})`);
     }
   }
@@ -336,8 +495,20 @@ export class BinanceWebSocketConnector implements LiveMarketConnector {
   private setState(state: ConnectorConnectionState): void {
     this.state = state;
     this.updatedAt = new Date(this.now()).toISOString();
-    if (state !== ConnectorConnectionState.FAILED) {
-      this.lastError = null;
+    if (
+      state !== ConnectorConnectionState.FAILED &&
+      state !== ConnectorConnectionState.RECONNECTING &&
+      state !== ConnectorConnectionState.DISCONNECTED
+    ) {
+      // Keep lastError during reconnect diagnostics; clear on healthy paths.
+      if (
+        state === ConnectorConnectionState.READY ||
+        state === ConnectorConnectionState.RECOVERING
+      ) {
+        if (!this.heartbeatTimedOut) {
+          this.lastError = null;
+        }
+      }
     }
   }
 
@@ -345,6 +516,7 @@ export class BinanceWebSocketConnector implements LiveMarketConnector {
     this.state = ConnectorConnectionState.FAILED;
     this.lastError = message;
     this.updatedAt = new Date(this.now()).toISOString();
+    this.nextReconnectAt = null;
   }
 }
 

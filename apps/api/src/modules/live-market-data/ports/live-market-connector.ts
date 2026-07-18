@@ -19,6 +19,16 @@ export type LiveMarketConnectorHealth = Readonly<{
   state: ConnectorConnectionState;
   lastError: string | null;
   updatedAt: string;
+  /** US134 — current reconnect attempt (0 when idle). */
+  reconnectAttempt?: number;
+  /** US134 — when the next reconnect will fire (ISO-8601), if scheduled. */
+  nextReconnectAt?: string | null;
+  /** US134 — last inbound frame time (ISO-8601). */
+  lastMessageAt?: string | null;
+  /** US134 — true after reconnect until gap recovery completes. */
+  awaitingGapRecovery?: boolean;
+  /** US134 — true when heartbeat timeout forced a reconnect. */
+  heartbeatTimedOut?: boolean;
 }>;
 
 export type LiveMarketSubscribeRequest = Readonly<{

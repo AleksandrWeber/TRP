@@ -35,8 +35,12 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
   states, subscription ack tracking, idempotent subscribe/unsubscribe, clean
   shutdown, raw messages retained inside adapter; no private credentials.
   Epic E2-A complete.
+- RC-16 M1 US134 — Connector Reconnect and Rate-Limit Resilience: immediate
+  disconnect health transition, bounded reconnect backoff/jitter, heartbeat
+  timeout, non-busy-loop rate-limit delays, RECOVERING until gap recovery.
+  Epic E2-B complete.
 
-RC-15.1 is released. RC-16 M1 Epic E2-A complete (US131–US133).
+RC-15.1 is released. RC-16 M1 Epic E2 complete (US131–US134).
 
 ### Added (architecture)
 

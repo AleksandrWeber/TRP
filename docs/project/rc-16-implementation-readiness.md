@@ -231,7 +231,11 @@ Epic E1 complete. Epic E2-A progress:
 - ✓ US132 — Binance REST Metadata and Backfill Adapter
 - ✓ US133 — Binance WebSocket Connection Lifecycle
 
-Epic E2-A complete. Stopped before reconnect/normalization stories.
+Epic E2-A complete. Epic E2-B progress:
+
+- ✓ US134 — Connector Reconnect and Rate-Limit Resilience
+
+Epic E2 complete (US131–US134). Next: Epic E3 normalization (not started).
 
 ---
 

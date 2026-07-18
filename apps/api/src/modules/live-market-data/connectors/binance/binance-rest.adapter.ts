@@ -16,10 +16,14 @@ import type { BinanceExchangeInfoResponse } from './binance-rest.types';
 import { findBinanceSymbol, mapBinanceSymbolToMetadata } from './map-binance-exchange-info';
 import { mapBinanceKlinesToClosedBars } from './map-binance-klines';
 import { timeframeToBinanceInterval } from './binance-timeframe';
+import {
+  computeRateLimitDelayMs,
+  DEFAULT_CONNECTOR_RESILIENCE_POLICY,
+  type ConnectorResiliencePolicy,
+} from './connector-resilience-policy';
 
 const DEFAULT_REST_BASE = 'https://api.binance.com';
 const MAX_KLINES_PER_REQUEST = 1000;
-const MAX_RATE_LIMIT_RETRIES = 3;
 
 export type BinanceRestAdapterOptions = {
   /** Injected for tests — defaults to global fetch. */
@@ -27,7 +31,10 @@ export type BinanceRestAdapterOptions = {
   restBaseUrl?: string;
   /** Clock for closed-candle filtering (tests). */
   now?: () => number;
+  sleep?: (ms: number) => Promise<void>;
+  /** @deprecated Prefer policy.maxRateLimitRetries */
   maxRateLimitRetries?: number;
+  policy?: Partial<ConnectorResiliencePolicy>;
 };
 
 /**
@@ -41,7 +48,8 @@ export class BinanceRestAdapter implements LiveMarketConnector {
   private readonly fetchImpl: typeof fetch;
   private readonly restBaseUrl: string;
   private readonly now: () => number;
-  private readonly maxRateLimitRetries: number;
+  private readonly sleep: (ms: number) => Promise<void>;
+  private readonly policy: ConnectorResiliencePolicy;
   private state: ConnectorConnectionState = ConnectorConnectionState.DISCONNECTED;
   private lastError: string | null = null;
   private updatedAt = '1970-01-01T00:00:00.000Z';
@@ -51,7 +59,14 @@ export class BinanceRestAdapter implements LiveMarketConnector {
     this.fetchImpl = options.fetchImpl ?? fetch.bind(globalThis);
     this.restBaseUrl = (options.restBaseUrl ?? DEFAULT_REST_BASE).replace(/\/$/, '');
     this.now = options.now ?? (() => Date.now());
-    this.maxRateLimitRetries = options.maxRateLimitRetries ?? MAX_RATE_LIMIT_RETRIES;
+    this.sleep = options.sleep ?? ((ms) => new Promise((resolve) => setTimeout(resolve, ms)));
+    this.policy = Object.freeze({
+      ...DEFAULT_CONNECTOR_RESILIENCE_POLICY,
+      ...options.policy,
+      ...(options.maxRateLimitRetries !== undefined
+        ? { maxRateLimitRetries: options.maxRateLimitRetries }
+        : {}),
+    });
   }
 
   capabilities(): LiveMarketConnectorCapabilities {
@@ -199,7 +214,8 @@ export class BinanceRestAdapter implements LiveMarketConnector {
   }
 
   private async fetchWithRateLimitRetry(url: URL): Promise<Response> {
-    for (let attempt = 0; attempt <= this.maxRateLimitRetries; attempt += 1) {
+    const maxRetries = this.policy.maxRateLimitRetries;
+    for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
       const response = await this.fetchImpl(url);
       if (response.status !== 418 && response.status !== 429) {
         if (!response.ok) {
@@ -207,14 +223,15 @@ export class BinanceRestAdapter implements LiveMarketConnector {
         }
         return response;
       }
-      if (attempt === this.maxRateLimitRetries) {
-        throw new Error(`Binance rate limit exceeded after ${this.maxRateLimitRetries} retries`);
+      if (attempt === maxRetries) {
+        throw new Error(`Binance rate limit exceeded after ${maxRetries} retries`);
       }
-      const retryAfterSeconds = Number(response.headers.get('retry-after'));
-      const waitMs = Number.isFinite(retryAfterSeconds)
-        ? retryAfterSeconds * 1000
-        : 250 * (attempt + 1);
-      await sleep(waitMs);
+      const waitMs = computeRateLimitDelayMs(
+        this.policy,
+        attempt + 1,
+        response.headers.get('retry-after'),
+      );
+      await this.sleep(waitMs);
     }
     throw new Error('Binance request retry loop ended unexpectedly');
   }
@@ -244,8 +261,4 @@ function assertBackfillBounds(request: LiveMarketBackfillRequest): void {
   if (request.from > request.to) {
     throw new Error('from must be less than or equal to to');
   }
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }

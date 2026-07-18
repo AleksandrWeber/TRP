@@ -173,8 +173,8 @@ Architecture changes require a new ADR.
 - M6 — Operations Experience
 - M7 — RC-16 Validation and Closeout
 
-Current: M1 Epic E2-A complete (US131–US133). Next M1 work within
-ADR-012…ADR-018 (reconnect/normalization not in this slice).
+Current: M1 Epic E2 complete (US131–US134). Next: Epic E3 normalization within
+ADR-012…ADR-018.
 Mini Validation follows M2, M4, and M6.
 
 ---
