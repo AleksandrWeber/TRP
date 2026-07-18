@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('./auth', () => ({
   getAccessToken: () => 'test-token',
+  getActiveWorkspace: () => ({ id: 'ws-test', name: 'Test' }),
   clearAccessToken: vi.fn(),
 }));
 
@@ -52,6 +53,9 @@ describe('runCampaign', () => {
     expect(String(url)).toContain('/v1/campaigns/run');
     expect(init?.method).toBe('POST');
     expect(init?.body).toBe(JSON.stringify(body));
+    const headers = new Headers(init?.headers);
+    expect(headers.get('Authorization')).toBe('Bearer test-token');
+    expect(headers.get('X-Workspace-Id')).toBe('ws-test');
     expect(result).toEqual(summary);
   });
 });

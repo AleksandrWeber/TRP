@@ -7,7 +7,7 @@ import type { WorkspaceDomainService } from '../../modules/workspace';
  *
  * - Missing / empty header → BadRequestException.
  * - Header set but Workspace does not exist → NotFoundException.
- * Sync — WorkspaceDomainService.getById is sync.
+ * Sync — WorkspaceDomainService serves the startup-rehydrated durable cache.
  */
 export function requireWorkspaceId(
   workspaceIdHeader: string | undefined,

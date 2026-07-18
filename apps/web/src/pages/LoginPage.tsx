@@ -1,12 +1,11 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../shared/api';
-import { setAccessToken } from '../shared/auth';
+import { setAccessToken, setActiveWorkspace } from '../shared/auth';
 
 export function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('admin@trp.local');
-  const [password, setPassword] = useState('trp-admin-change-me');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -15,8 +14,10 @@ export function LoginPage() {
     setLoading(true);
     setError(null);
     try {
-      const result = await api.login(email, password);
+      const result = await api.login(email);
       setAccessToken(result.accessToken);
+      const workspace = await api.bootstrapWorkspace();
+      setActiveWorkspace({ id: workspace.id, name: workspace.name });
       navigate('/');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
@@ -49,17 +50,6 @@ export function LoginPage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 outline-none focus:border-white/30"
-          />
-        </label>
-
-        <label className="block space-y-1 text-sm">
-          <span className="text-slate-400">Password</span>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             required
             className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 outline-none focus:border-white/30"
           />

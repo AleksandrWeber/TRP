@@ -6,8 +6,8 @@ import type { WorkspaceId } from '../workspace-id';
  * Storage operations only — no tenant isolation / membership logic.
  */
 export interface WorkspaceRepository {
-  save(workspace: Workspace): void;
-  findById(id: WorkspaceId | string): Workspace | null;
-  findByOwnerUserId(ownerUserId: string): Workspace[];
-  findAll(): Workspace[];
+  save(workspace: Workspace): Promise<void>;
+  findById(id: WorkspaceId | string): Promise<Workspace | null>;
+  findByOwnerUserId(ownerUserId: string): Promise<Workspace[]>;
+  findAll(): Promise<Workspace[]>;
 }

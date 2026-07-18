@@ -1,4 +1,6 @@
 export { WorkspaceModule } from './workspace.module';
+export { WorkspaceController } from './workspace.controller';
+export type { WorkspaceBootstrapResponse } from './workspace.controller';
 export { WorkspaceDomainService } from './workspace-domain.service';
 export type { CreateWorkspaceInput } from './workspace-domain.service';
 export { WorkspaceAccessService } from './workspace-access.service';

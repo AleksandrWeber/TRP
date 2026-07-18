@@ -23,6 +23,20 @@ model User {
   updatedAt    DateTime @updatedAt
 }
 
+
+/// Durable Workspace aggregate and ownership boundary (RC-16 Foundations / US002).
+model WorkspaceRecord {
+  id          String   @id
+  name        String
+  ownerUserId String   @map("owner_user_id")
+  status      String
+  createdAt   DateTime @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([ownerUserId, status])
+  @@map("workspace_records")
+}
+
 model Dataset {
   id          String       @id @default(cuid())
   symbol      String

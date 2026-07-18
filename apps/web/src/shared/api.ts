@@ -1,4 +1,4 @@
-import { clearAccessToken, getAccessToken } from './auth';
+import { clearAccessToken, getAccessToken, getActiveWorkspace } from './auth';
 
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 /** Nest URI versioning prefix (US114). Health remains unversioned. */
@@ -220,6 +220,13 @@ export type LoginResponse = {
   user: AuthUser;
 };
 
+export type WorkspaceBootstrap = {
+  id: string;
+  name: string;
+  status: string;
+  createdAt: string;
+};
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const headers = new Headers(init?.headers);
   if (!headers.has('Content-Type')) {
@@ -229,6 +236,11 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const token = getAccessToken();
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  const workspace = getActiveWorkspace();
+  if (workspace && !headers.has('X-Workspace-Id')) {
+    headers.set('X-Workspace-Id', workspace.id);
   }
 
   let res: Response;
@@ -285,12 +297,17 @@ export function runWalkForwardCampaign(body: WalkForwardCampaignRequest) {
 }
 
 export const api = {
-  login: (email: string, password: string) =>
+  login: (email: string) =>
     request<LoginResponse>('/auth/login', {
       method: 'POST',
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email }),
     }),
   me: () => request<AuthUser>('/auth/me'),
+  bootstrapWorkspace: () =>
+    request<WorkspaceBootstrap>('/workspaces/bootstrap', {
+      method: 'POST',
+      body: '{}',
+    }),
   importDataset: () =>
     request<{ dataset: Dataset; created: boolean }>('/datasets/import/binance', {
       method: 'POST',

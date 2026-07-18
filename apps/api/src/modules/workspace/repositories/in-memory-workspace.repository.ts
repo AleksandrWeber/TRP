@@ -9,7 +9,7 @@ import type { WorkspaceRepository } from './workspace.repository';
 export class InMemoryWorkspaceRepository implements WorkspaceRepository {
   private readonly byId = new Map<string, Workspace>();
 
-  save(workspace: Workspace): void {
+  async save(workspace: Workspace): Promise<void> {
     const stored: Workspace = {
       id: workspace.id,
       name: workspace.name,
@@ -20,15 +20,15 @@ export class InMemoryWorkspaceRepository implements WorkspaceRepository {
     this.byId.set(workspace.id, stored);
   }
 
-  findById(id: WorkspaceId | string): Workspace | null {
+  async findById(id: WorkspaceId | string): Promise<Workspace | null> {
     return this.byId.get(id) ?? null;
   }
 
-  findByOwnerUserId(ownerUserId: string): Workspace[] {
+  async findByOwnerUserId(ownerUserId: string): Promise<Workspace[]> {
     return Array.from(this.byId.values()).filter((item) => item.ownerUserId === ownerUserId);
   }
 
-  findAll(): Workspace[] {
+  async findAll(): Promise<Workspace[]> {
     return Array.from(this.byId.values());
   }
 }
