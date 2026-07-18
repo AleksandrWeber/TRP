@@ -99,3 +99,31 @@ export {
   computeRateLimitDelayMs,
   type ConnectorResiliencePolicy,
 } from './connectors/binance/connector-resilience-policy';
+
+export type { ClosedCandleDraft } from './normalization/closed-candle-draft';
+export {
+  normalizeClosedCandle,
+  closedCandlesAreSemanticallyEqual,
+  type ClosedCandleNormalizationResult,
+} from './normalization/normalize-closed-candle';
+
+export type { MarkPriceDraft } from './normalization/mark-price-draft';
+export { MarkPriceSourceKind } from './normalization/mark-price-draft';
+export {
+  normalizeMarkPrice,
+  markPricesAreSemanticallyEqual,
+  type MarkPriceNormalizationResult,
+} from './normalization/normalize-mark-price';
+export {
+  DEFAULT_MARK_PRICE_PUBLICATION_POLICY,
+  resolveMarkPricePublicationPolicy,
+  shouldPublishMarkPrice,
+  type MarkPricePublicationPolicy,
+} from './normalization/mark-price-publication-policy';
+
+export type { MarketDataQuarantineRecord } from './normalization/market-data-quarantine';
+export { createMarketDataQuarantine } from './normalization/market-data-quarantine';
+export {
+  MarketDataValidator,
+  type MarketValidationResult,
+} from './normalization/market-data-validator';

@@ -13,15 +13,14 @@ Execution adapters own broker commands; Portfolio consumes Position valuation
 outputs rather than raw Market Data. Multi-exchange and horizontal scaling
 remain future scope.
 
-RC-16 M1 US126–US134 (2026-07-18): canonical provider-neutral domain contracts
-and public connector foundation under `apps/api/src/modules/live-market-data/`.
-Closed-candle and mark-price events are distinct immutable types with
-deterministic stream identity and semantic deduplication that excludes
-operational timestamps. Connector port/registry, Binance REST metadata/backfill,
-WebSocket lifecycle, and reconnect/heartbeat/rate-limit resilience are
-implemented; normalization and gap recovery remain later M1 stories. Historical
-OHLCV remains in `market-data/`. Provider payloads must not leak outside
-connector adapters.
+RC-16 M1 US126–US137 (2026-07-18): canonical provider-neutral domain contracts,
+public connector foundation, and normalization/quarantine under
+`apps/api/src/modules/live-market-data/`. Closed-candle and mark-price events are
+distinct immutable types with deterministic stream identity. Connector
+port/registry, Binance REST/WebSocket, reconnect/resilience, and
+normalization/validation with safe quarantine are implemented; ordering/gap
+recovery remain later M1 stories. Historical OHLCV remains in `market-data/`.
+Provider payloads must not leak outside connector adapters.
 
 ---
 

@@ -235,7 +235,13 @@ Epic E2-A complete. Epic E2-B progress:
 
 - ✓ US134 — Connector Reconnect and Rate-Limit Resilience
 
-Epic E2 complete (US131–US134). Next: Epic E3 normalization (not started).
+Epic E2 complete (US131–US134). Epic E3-A progress:
+
+- ✓ US135 — Closed-Candle Normalization
+- ✓ US136 — Mark-Price Normalization
+- ✓ US137 — Data Validation and Quarantine
+
+Epic E3-A complete. Next: Epic E3-B ordering/gap recovery (not started).
 
 ---
 

@@ -39,8 +39,17 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
   disconnect health transition, bounded reconnect backoff/jitter, heartbeat
   timeout, non-busy-loop rate-limit delays, RECOVERING until gap recovery.
   Epic E2-B complete.
+- RC-16 M1 US135 — Closed-Candle Normalization: reject open candles; OHLC
+  validation; semantic equality independent of operational clocks; Binance
+  kline mapping stays adapter-internal.
+- RC-16 M1 US136 — Mark-Price Normalization: positive finite price; explicit
+  mark source; deterministic identity; configurable publication/retention
+  policy; no Position/Portfolio/fill logic.
+- RC-16 M1 US137 — Data Validation and Quarantine: invalid drafts quarantine
+  with reason + raw fingerprint (secrets stripped); stream-safe per-draft
+  failures. Epic E3-A complete.
 
-RC-15.1 is released. RC-16 M1 Epic E2 complete (US131–US134).
+RC-15.1 is released. RC-16 M1 Epic E3-A complete (US135–US137).
 
 ### Added (architecture)
 

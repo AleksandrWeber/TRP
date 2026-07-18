@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-18 (RC-16 M1 Epic E2-B complete — US134)
+2026-07-18 (RC-16 M1 Epic E3-A complete — US135–US137)
 
 ---
 
@@ -26,7 +26,9 @@ M1 Epic E1 complete (US126–US130).
 M1 Epic E2-A complete (US131–US133).
 M1 Epic E2-B complete (US134): reconnect, backoff, heartbeat, rate-limit
 resilience, and health transitions.
-Next: M1 Epic E3 — Normalization and Data Quality (not started).
+M1 Epic E3-A complete (US135–US137): closed-candle/mark-price normalization,
+validation, and quarantine (provider payloads stay in adapters).
+Next: M1 Epic E3-B — duplicate/ordering control and gap recovery (not started).
 
 ---
 

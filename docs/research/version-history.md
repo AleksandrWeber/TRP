@@ -66,6 +66,7 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
 - Current milestone: M1 — Live Market Data Foundation.
 - US126–US130 complete: M1 Epic E1 (Market Data Contracts and Durable Event Foundation).
 - US131–US134 complete: M1 Epic E2 (Binance public connector + resilience).
+- US135–US137 complete: M1 Epic E3-A (normalization + quarantine).
 
 This is an architecture/documentation milestone only. Research Engine,
 Validation, Knowledge Schema, and simulation calculation versions remain
