@@ -1,6 +1,6 @@
 # TRP — Module Maturity Matrix
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E8 complete)
+Last updated: 2026-07-18 (RC-16 M2 Epic E9 US165–US167)
 
 Living matrix of implementation maturity for major Research OS modules. Documentation only (US094 / US125).
 
@@ -70,8 +70,8 @@ Related:
 | StrategyRuntime    | Planned    | RC-16 M3                                                |
 | Orders             | Foundation | RC-16 M2 (intent/lifecycle/reservation/cancel/API)      |
 | ExecutionEngine    | Planned    | RC-16 M2                                                |
-| PaperAdapter       | Planned    | RC-16 M2                                                |
-| Risk / KillSwitch  | Planned    | RC-16 M4                                                |
+| PaperAdapter       | Foundation | RC-16 M2 (paper-only port + deterministic config)       |
+| Risk / KillSwitch  | Foundation | RC-16 M2 baseline Risk; Kill Switch remains M4          |
 | Ledger / Portfolio | Foundation | RC-16 M2 (cash reservation port; Portfolio read-only)   |
 | EventProcessing    | Foundation | RC-16 M1/M2 (PostgreSQL runtime)                        |
 | Audit / Dashboard  | Planned    | RC-16 M6                                                |
@@ -273,14 +273,15 @@ Related:
 
 | Field                   | Value                                                                                                                                                                                                                                                                          |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Status**              | In progress (M1 complete; M2 Epic E8 complete)                                                                                                                                                                                                                                 |
+| **Status**              | In progress (M1 complete; M2 Epic E9 first half complete)                                                                                                                                                                                                                      |
 | **Scope**               | Live Market Data; durable Trading Sessions; Strategy Runtime; Orders; mandatory Risk; single Execution Engine; Paper Adapter; Fill → Position → Ledger → Portfolio; Outbox/Inbox; restart recovery; Audit; Dashboard                                                           |
 | **Existing prototype**  | `production/` supports approved deployment, manual tick, basic Risk, immediate paper fill, persisted signal/execution/long-or-flat position. It is not idempotent/transactional/always-on and lacks workspace ownership, durable Orders, Ledger, recovery, and reconciliation. |
 | **Frozen architecture** | ADR-012…ADR-018 and [`rc-16-paper-trading-plan.md`](./rc-16-paper-trading-plan.md)                                                                                                                                                                                             |
 | **M1 progress**         | ✓ Epic E1–E6 (US126–US152): Live Market Data Foundation + Mini Validation (PASS WITH MINOR RECOMMENDATIONS)                                                                                                                                                                    |
 | **M2 progress**         | ✓ Epic E7 (US153–US158): decimal contracts, paper account, PostgreSQL event runtime, Trading Session + fencing, trading RBAC/JWT hardening                                                                                                                                     |
 | **E8 progress**         | ✓ US159–US164: deterministic Order Intents, Orders-owned lifecycle/history, transactional persistence, Ledger cash reservations, idempotent cancellation, authorized Order API                                                                                                 |
-| **Next milestone**      | US165 — mandatory pre-trade Risk decision                                                                                                                                                                                                                                      |
+| **E9 progress**         | ✓ US165–US167: durable mandatory Risk Decisions, paper-only adapter boundary, versioned deterministic fill configuration                                                                                                                                                       |
+| **Next milestone**      | US168 — deterministic market Order execution                                                                                                                                                                                                                                   |
 
 ---
 

@@ -22,6 +22,10 @@ Trader/Admin, active workspace membership, `X-Workspace-Id`, and
 `Idempotency-Key`. Authenticated queries are workspace-membership scoped. No
 public route exposes internal Risk or Execution Engine transitions.
 
+US165–US167 fail closed on unknown, stale, duplicate, foreign-workspace, or
+unreconciled Risk inputs. Runtime adapter construction rejects `live` mode and
+all trading credentials; only the internal paper adapter token is registered.
+
 ---
 
 # Purpose

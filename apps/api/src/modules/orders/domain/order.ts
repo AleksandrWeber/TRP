@@ -1,4 +1,8 @@
 import { FinancialDecimal } from '../../financial';
+import {
+  RiskDecisionStatus,
+  type ApprovedRiskDecisionReference,
+} from '../../risk/domain/risk-decision';
 import type { OrderIntent } from './order-intent';
 import { assertOrderTransition, OrderStatus, TERMINAL_ORDER_STATUSES } from './order-status';
 
@@ -24,6 +28,7 @@ export type Order = Readonly<{
   version: number;
   filledQuantity: string;
   riskDecisionId: string | null;
+  riskDecision: ApprovedRiskDecisionReference | null;
   reservationId: string | null;
   adapterOrderId: string | null;
   rejectionReason: string | null;
@@ -38,7 +43,7 @@ export type OrderTransitionInput = Readonly<{
   actorId: string;
   correlationId?: string;
   reason?: string;
-  riskDecisionId?: string;
+  riskDecision?: ApprovedRiskDecisionReference;
   reservationId?: string;
   adapterOrderId?: string;
   occurredAt: string;
@@ -66,6 +71,7 @@ export function createOrder(intent: OrderIntent): Order {
     version: 1,
     filledQuantity: '0',
     riskDecisionId: null,
+    riskDecision: null,
     reservationId: null,
     adapterOrderId: null,
     rejectionReason: null,
@@ -88,10 +94,9 @@ export function transitionOrder(order: Order, input: OrderTransitionInput): Orde
   assertIso(input.recordedAt, 'recordedAt');
   validateTransitionReferences(order, input);
 
-  const riskDecisionId =
-    input.riskDecisionId !== undefined
-      ? required(input.riskDecisionId, 'risk decision id')
-      : order.riskDecisionId;
+  const riskDecision =
+    input.riskDecision !== undefined ? Object.freeze(input.riskDecision) : order.riskDecision;
+  const riskDecisionId = riskDecision?.id ?? null;
   const reservationId =
     input.reservationId !== undefined
       ? required(input.reservationId, 'reservation id')
@@ -121,6 +126,7 @@ export function transitionOrder(order: Order, input: OrderTransitionInput): Orde
     status: input.toStatus,
     version: order.version + 1,
     riskDecisionId,
+    riskDecision,
     reservationId,
     adapterOrderId,
     rejectionReason,
@@ -201,17 +207,36 @@ export function applyOrderFill(
 }
 
 function validateTransitionReferences(order: Order, input: OrderTransitionInput): void {
-  if (input.toStatus === OrderStatus.APPROVED && !input.riskDecisionId) {
-    throw new Error('approved order requires a risk decision id');
+  if (input.toStatus === OrderStatus.APPROVED) {
+    const decision = input.riskDecision;
+    if (
+      !decision ||
+      decision.status !== RiskDecisionStatus.APPROVED ||
+      decision.workspaceId !== order.workspaceId ||
+      decision.orderId !== order.id ||
+      decision.intentHash !== order.intent.intentHash ||
+      !isCanonicalIso(decision.evaluatedAt) ||
+      !isCanonicalIso(decision.expiresAt) ||
+      Date.parse(decision.expiresAt) <= Date.parse(decision.evaluatedAt)
+    ) {
+      throw new Error('approved order requires an exact approved Risk Decision');
+    }
   }
   if (input.toStatus === OrderStatus.RESERVED && !input.reservationId) {
     throw new Error('reserved order requires a reservation id');
   }
   if (
     (input.toStatus === OrderStatus.EXECUTABLE || input.toStatus === OrderStatus.SUBMITTED) &&
-    !order.riskDecisionId
+    !order.riskDecision
   ) {
-    throw new Error('executable order requires a risk decision id');
+    throw new Error('executable order requires a mandatory Risk Decision');
+  }
+  if (
+    (input.toStatus === OrderStatus.EXECUTABLE || input.toStatus === OrderStatus.SUBMITTED) &&
+    order.riskDecision &&
+    Date.parse(input.occurredAt) >= Date.parse(order.riskDecision.expiresAt)
+  ) {
+    throw new Error('executable order Risk Decision is expired');
   }
   if (
     (input.toStatus === OrderStatus.EXECUTABLE || input.toStatus === OrderStatus.SUBMITTED) &&
@@ -265,4 +290,9 @@ function assertIso(value: string, label: string): void {
   if (Number.isNaN(Date.parse(value)) || new Date(value).toISOString() !== value) {
     throw new Error(`${label} must be an ISO-8601 UTC timestamp`);
   }
+}
+
+function isCanonicalIso(value: string): boolean {
+  const parsed = new Date(value);
+  return Number.isFinite(parsed.getTime()) && parsed.toISOString() === value;
 }

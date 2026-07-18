@@ -8,6 +8,7 @@ import { OrderStatus } from '../../modules/orders/domain/order-status';
 import { OrderService } from '../../modules/orders/order.service';
 import { PrismaOrderRepository } from '../../modules/orders/persistence/prisma-order.repository';
 import { PrismaTransactionService } from '../../storage/prisma/prisma-transaction.service';
+import { RiskDecisionStatus } from '../../modules/risk';
 
 const WS = 'ws-us163';
 const t0 = '2026-07-18T18:05:00.000Z';
@@ -105,10 +106,26 @@ describe('US163 — idempotent Orders-owned cancellation lifecycle', () => {
       recordedAt: '2026-07-18T18:05:08.100Z',
     }) as const;
 
+  const approvedRisk = (order: Awaited<ReturnType<typeof seedOrder>>, suffix: string) => ({
+    id: `risk-${suffix}`,
+    status: RiskDecisionStatus.APPROVED,
+    workspaceId: order.workspaceId,
+    orderId: order.id,
+    intentHash: order.intent.intentHash,
+    policyId: 'm2-baseline-paper-risk',
+    policyVersion: 1,
+    policyHash: 'policy-hash',
+    inputHash: `input-${suffix}`,
+    evaluatedAt: '2026-07-18T18:05:01.000Z',
+    expiresAt: '2026-07-18T18:06:00.000Z',
+  });
+
   it('completes pre-submission cancellation, releases Ledger cash once, and is idempotent', async () => {
     const created = await seedOrder('reserved');
     await move(created.id, OrderStatus.RISK_PENDING, 1);
-    await move(created.id, OrderStatus.APPROVED, 2, { riskDecisionId: 'risk-us163' });
+    await move(created.id, OrderStatus.APPROVED, 2, {
+      riskDecision: approvedRisk(created, 'us163'),
+    });
     await move(created.id, OrderStatus.RESERVED, 3, { reservationId: 'cashres-us163' });
 
     const cancelled = await service.cancel(cancelCommand(created.id));
@@ -122,7 +139,9 @@ describe('US163 — idempotent Orders-owned cancellation lifecycle', () => {
   it('leaves submitted Orders cancel-pending for Execution Engine adapter handling', async () => {
     const created = await seedOrder('submitted');
     await move(created.id, OrderStatus.RISK_PENDING, 1);
-    await move(created.id, OrderStatus.APPROVED, 2, { riskDecisionId: 'risk-submitted' });
+    await move(created.id, OrderStatus.APPROVED, 2, {
+      riskDecision: approvedRisk(created, 'submitted'),
+    });
     await move(created.id, OrderStatus.RESERVED, 3, { reservationId: 'cashres-submitted' });
     await move(created.id, OrderStatus.EXECUTABLE, 4);
     await move(created.id, OrderStatus.SUBMITTED, 5, { adapterOrderId: 'adapter-us163' });

@@ -133,8 +133,21 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
   workspace-scoped propose/cancel/read routes, Trader/Admin command RBAC,
   required command idempotency, DTO validation, and no public Risk/Execution
   lifecycle bypass.
+- RC-16 M2 US165 — M2 Baseline Risk Decision: fixed versioned paper policy,
+  deterministic and explainable checkpoint-bound approvals/rejections,
+  immutable PostgreSQL decision persistence with atomic Outbox events, and
+  exact approved/unexpired Risk references required for executable Orders.
+- RC-16 M2 US166 — Execution Adapter Port and Paper-Only Binding:
+  provider-neutral submit/cancel/query/health/capability contracts, structural
+  rejection of live mode and credentials, immutable adapter facts, and no
+  domain persistence dependency.
+- RC-16 M2 US167 — Versioned Paper Fill Configuration: stable configuration
+  ID/version/hash, deterministic semantic execution-context identity, explicit
+  fee/slippage/precision/rounding and market/limit policies, and immutable
+  rounding provenance for future Fill facts.
 
-RC-15.1 is released. RC-16 M1, Epic E7, and Epic E8 are complete.
+RC-15.1 is released. RC-16 M1, Epic E7, and Epic E8 are complete; Epic E9
+US165–US167 are complete.
 
 ### Added (architecture)
 

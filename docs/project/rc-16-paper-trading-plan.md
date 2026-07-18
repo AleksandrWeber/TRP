@@ -157,7 +157,15 @@ Epic E8 complete (2026-07-18): US159–US164 — deterministic manual paper Orde
 Intents, explicit Orders-owned lifecycle/history, transactional PostgreSQL
 Order + Outbox persistence, Ledger-owned cash reservation, idempotent
 cancellation, and authorized workspace-scoped Order REST commands/queries.
-Mandatory Risk and Execution Engine integration remain subsequent M2 epics.
+Execution matching and the single Execution Engine remain subsequent M2 stories.
+
+Epic E9 progress (2026-07-18): US165–US167 complete — mandatory versioned
+baseline Risk Decisions are immutable, durable, explainable, and required by
+every executable Order; the execution-adapter boundary is structurally
+paper-only and cannot mutate domain state; fee, slippage, precision, rounding,
+and market/limit fill policies have deterministic versioned configuration.
+Market/limit matching, the single Execution Engine, and immutable Fills remain
+US168–US171.
 
 Mini Validation 1: idempotency and accounting invariants.
 

@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { applyOrderFill, createOrder, transitionOrder, type Order } from './order';
+import {
+  applyOrderFill,
+  createOrder,
+  transitionOrder,
+  type Order,
+  type OrderTransitionInput,
+} from './order';
+import { RiskDecisionStatus } from '../../risk';
 import { createOrderIntent, OrderSide, OrderType } from './order-intent';
 import { canTransitionOrder, OrderStatus } from './order-status';
 
@@ -28,7 +35,11 @@ function proposed(): Order {
   );
 }
 
-function move(order: Order, toStatus: OrderStatus, extra: Record<string, string> = {}): Order {
+function move(
+  order: Order,
+  toStatus: OrderStatus,
+  extra: Partial<OrderTransitionInput> = {},
+): Order {
   const next = order.version + 1;
   return transitionOrder(order, {
     toStatus,
@@ -40,11 +51,27 @@ function move(order: Order, toStatus: OrderStatus, extra: Record<string, string>
   });
 }
 
+function approvedRisk(order: Order, expiresAt = '2026-07-18T17:11:00.000Z') {
+  return Object.freeze({
+    id: 'risk-1',
+    status: RiskDecisionStatus.APPROVED,
+    workspaceId: order.workspaceId,
+    orderId: order.id,
+    intentHash: order.intent.intentHash,
+    policyId: 'm2-baseline-paper-risk',
+    policyVersion: 1,
+    policyHash: 'policy-hash',
+    inputHash: 'input-hash',
+    evaluatedAt: '2026-07-18T17:10:01.000Z',
+    expiresAt,
+  });
+}
+
 describe('US160 — Order aggregate and state machine', () => {
   it('owns the explicit lifecycle and immutable history', () => {
     let order = proposed();
     order = move(order, OrderStatus.RISK_PENDING);
-    order = move(order, OrderStatus.APPROVED, { riskDecisionId: 'risk-1' });
+    order = move(order, OrderStatus.APPROVED, { riskDecision: approvedRisk(order) });
     order = move(order, OrderStatus.RESERVED, { reservationId: 'reservation-1' });
     order = move(order, OrderStatus.EXECUTABLE);
     order = move(order, OrderStatus.SUBMITTED, { adapterOrderId: 'paper-order-1' });
@@ -68,7 +95,12 @@ describe('US160 — Order aggregate and state machine', () => {
     expect(() => move(proposed(), OrderStatus.SUBMITTED)).toThrow(/invalid order transition/);
 
     const riskPending = move(proposed(), OrderStatus.RISK_PENDING);
-    expect(() => move(riskPending, OrderStatus.APPROVED)).toThrow(/risk decision id/);
+    expect(() => move(riskPending, OrderStatus.APPROVED)).toThrow(/approved Risk Decision/);
+    expect(() =>
+      move(riskPending, OrderStatus.APPROVED, {
+        riskDecision: { ...approvedRisk(riskPending), intentHash: 'other-intent' },
+      }),
+    ).toThrow(/exact approved Risk Decision/);
 
     const rejected = move(riskPending, OrderStatus.REJECTED, { reason: 'risk rejected' });
     expect(() => move(rejected, OrderStatus.CANCEL_PENDING)).toThrow(/terminal/);
@@ -77,7 +109,7 @@ describe('US160 — Order aggregate and state machine', () => {
   it('never permits filled quantity to exceed ordered quantity', () => {
     let order = proposed();
     order = move(order, OrderStatus.RISK_PENDING);
-    order = move(order, OrderStatus.APPROVED, { riskDecisionId: 'risk-1' });
+    order = move(order, OrderStatus.APPROVED, { riskDecision: approvedRisk(order) });
     order = move(order, OrderStatus.RESERVED, { reservationId: 'reservation-1' });
     order = move(order, OrderStatus.EXECUTABLE);
     order = move(order, OrderStatus.SUBMITTED, { adapterOrderId: 'paper-order-1' });
@@ -108,5 +140,14 @@ describe('US160 — Order aggregate and state machine', () => {
     });
     expect(filled.status).toBe(OrderStatus.FILLED);
     expect(filled.filledQuantity).toBe('2');
+  });
+
+  it('fails closed when mandatory Risk approval is missing or expired', () => {
+    let order = move(proposed(), OrderStatus.RISK_PENDING);
+    order = move(order, OrderStatus.APPROVED, {
+      riskDecision: approvedRisk(order, '2026-07-18T17:10:03.000Z'),
+    });
+    order = move(order, OrderStatus.RESERVED, { reservationId: 'reservation-1' });
+    expect(() => move(order, OrderStatus.EXECUTABLE)).toThrow(/expired/);
   });
 });

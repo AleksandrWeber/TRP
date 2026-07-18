@@ -440,6 +440,7 @@ model PaperOrder {
   version          Int                   @default(1)
   intent           Json
   riskDecisionId   String?               @map("risk_decision_id")
+  riskDecision     Json?                 @map("risk_decision")
   reservationId    String?               @map("reservation_id")
   adapterOrderId   String?               @map("adapter_order_id")
   rejectionReason  String?               @map("rejection_reason")
@@ -511,4 +512,30 @@ model LedgerCashReservation {
   @@unique([workspaceId, idempotencyKey])
   @@index([workspaceId, paperAccountId, status])
   @@map("ledger_cash_reservations")
+}
+
+/// Immutable, explainable M2 baseline pre-trade Risk Decision.
+model RiskDecision {
+  id            String   @id
+  workspaceId   String   @map("workspace_id")
+  orderId       String   @map("order_id")
+  intentHash    String   @map("intent_hash")
+  status        String
+  policyId      String   @map("policy_id")
+  policyVersion Int      @map("policy_version")
+  policyHash    String   @map("policy_hash")
+  inputHash     String   @map("input_hash")
+  input         Json
+  ruleResults   Json     @map("rule_results")
+  reasons       Json
+  evaluatedAt   DateTime @map("evaluated_at")
+  expiresAt     DateTime @map("expires_at")
+  recordedAt    DateTime @map("recorded_at")
+  actorId       String   @map("actor_id")
+  correlationId String?  @map("correlation_id")
+
+  @@unique([workspaceId, orderId, policyHash, inputHash])
+  @@index([workspaceId, orderId, status])
+  @@index([workspaceId, expiresAt])
+  @@map("risk_decisions")
 }

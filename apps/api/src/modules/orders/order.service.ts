@@ -7,6 +7,7 @@ import {
   CASH_RESERVATION_PORT,
   type CashReservationPort,
 } from '../ledger/ports/cash-reservation.port';
+import type { ApprovedRiskDecisionReference } from '../risk/domain/risk-decision';
 import {
   PAPER_ACCOUNT_REPOSITORY,
   type PaperAccountRepository,
@@ -43,7 +44,7 @@ export type TransitionOrderCommand = Readonly<{
   actorId: string;
   correlationId?: string;
   reason?: string;
-  riskDecisionId?: string;
+  riskDecision?: ApprovedRiskDecisionReference;
   reservationId?: string;
   adapterOrderId?: string;
   occurredAt: string;
@@ -143,7 +144,7 @@ export class OrderService {
       actorId: command.actorId,
       correlationId: command.correlationId,
       reason: command.reason,
-      riskDecisionId: command.riskDecisionId,
+      riskDecision: command.riskDecision,
       reservationId: command.reservationId,
       adapterOrderId: command.adapterOrderId,
       occurredAt: command.occurredAt,
@@ -257,6 +258,7 @@ function orderEnvelope(order: Order): DurableEventEnvelope {
       quantity: order.intent.quantity,
       filledQuantity: order.filledQuantity,
       riskDecisionId: order.riskDecisionId,
+      riskDecision: order.riskDecision,
       reservationId: order.reservationId,
       adapterOrderId: order.adapterOrderId,
       reason: latest.reason,

@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E8 complete)
+Last updated: 2026-07-18 (RC-16 M2 Epic E9 US165–US167)
 
 Living roadmap for product direction.
 
@@ -180,8 +180,11 @@ command authorization/JWT hardening.
 M2 Epic E8 complete (US159–US164): deterministic paper Order Intents,
 Orders-owned lifecycle/history, transactional PostgreSQL Order + Outbox
 persistence, Ledger-owned durable cash reservation, idempotent cancellation,
-and authorized workspace-scoped Order commands/queries. Next: US165 mandatory
-pre-trade Risk decision.
+and authorized workspace-scoped Order commands/queries.
+M2 Epic E9 progress: US165–US167 complete — mandatory durable baseline Risk
+Decisions, exact unexpired Risk references for executable Orders, a structurally
+paper-only execution-adapter boundary, and versioned deterministic Paper Fill
+configuration. Next: US168 deterministic market Order execution.
 Mini Validation follows M2, M4, and M6.
 
 ---

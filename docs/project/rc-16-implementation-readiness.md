@@ -313,8 +313,20 @@ M2 Epic E8 complete:
 US159–US164 complete. Orders is the sole lifecycle owner; Order/history/Outbox
 writes are atomic and workspace-scoped. Reservation uses only the Ledger public
 port, Portfolio remains read-only, cancellation is idempotent, and the REST
-adapter exposes no Risk/Execution bypass. Next: US165 — mandatory pre-trade
-Risk decision.
+adapter exposes no Risk/Execution bypass.
+
+M2 Epic E9 progress:
+
+- ✓ US165 — M2 Baseline Risk Decision
+- ✓ US166 — Execution Adapter Port and Paper-Only Binding
+- ✓ US167 — Versioned Paper Fill Configuration
+
+US165–US167 complete. Risk Decisions are versioned, immutable, explainable,
+durable, checkpoint-bound, and fail closed; executable Orders require an exact
+approved unexpired reference. The adapter binding is structurally paper-only,
+has no domain mutation dependencies, and deterministic execution configuration
+has stable ID/version/hash plus explicit rounding context. Next: US168 —
+deterministic market Order execution.
 
 ---
 

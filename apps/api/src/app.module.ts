@@ -19,6 +19,8 @@ import { EventProcessingModule } from './modules/event-processing/event-processi
 import { PaperAccountModule } from './modules/paper-account';
 import { TradingSessionModule } from './modules/trading-session';
 import { OrdersModule } from './modules/orders';
+import { RiskModule } from './modules/risk';
+import { ExecutionAdapterModule } from './modules/execution-adapter';
 import { HistoricalImportModule } from './modules/historical-import/historical-import.module';
 import { MarketDataProviderModule } from './modules/market-data-provider/market-data-provider.module';
 import { BacktestingModule } from './modules/backtesting/backtesting.module';
@@ -61,6 +63,8 @@ import { ValidationModule } from './validation/validation.module';
     PaperAccountModule,
     TradingSessionModule,
     OrdersModule,
+    RiskModule,
+    ExecutionAdapterModule,
     AuthModule,
     IdentityModule,
     WorkspaceModule,

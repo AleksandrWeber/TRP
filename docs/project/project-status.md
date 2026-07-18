@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-18 (RC-16 M2 Epic E8 complete — US159–US164)
+2026-07-18 (RC-16 M2 Epic E9 first half — US165–US167)
 
 ---
 
@@ -57,7 +57,12 @@ workspace uniqueness, and atomic Outbox events; Ledger-owned durable cash
 reservation/release through its public port; idempotent pre/post-submission
 cancellation semantics; and authenticated workspace-scoped Order REST commands
 and queries with Trader/Admin command RBAC.
-Next: US165 — mandatory pre-trade Risk decision.
+M2 Epic E9 first half complete (US165–US167): deterministic versioned baseline
+Risk Policy; immutable PostgreSQL Risk Decisions with explainable rule results
+and atomic Outbox events; mandatory exact, approved, unexpired Risk references
+on executable Orders; paper-only provider-neutral execution-adapter port and
+binding; and versioned deterministic fee/slippage/precision/fill configuration.
+Next: US168 — deterministic market Order execution.
 
 ---
 

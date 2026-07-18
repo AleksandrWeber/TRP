@@ -1,6 +1,6 @@
 # TRP — Architecture Snapshot
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E8 complete)
+Last updated: 2026-07-18 (RC-16 M2 Epic E9 US165–US167)
 
 Single snapshot of the **current** architecture (RC-15). Documentation only. No future ideas.
 
@@ -424,6 +424,8 @@ integration.** A separate Stage-1 manual paper prototype exists under
 | PaperAccount       | `paper-account/`        | Durable paper-only account and opening-capital Ledger instruction (US154)                                  |
 | TradingSession     | `trading-session/`      | Manual ADR-014 sessions, fenced leases, execution eligibility (US156–US157)                                |
 | Orders             | `orders/`               | Intents, sole lifecycle owner, persistence, cancellation, authorized REST API (US159–US164)                |
+| Risk               | `risk/`                 | Versioned baseline policy, immutable explainable PostgreSQL decisions + Outbox (US165)                     |
+| ExecutionAdapter   | `execution-adapter/`    | Paper-only port/binding and versioned deterministic execution configuration (US166–US167)                  |
 | Ledger             | `ledger/`               | Public durable cash reservation/release port; Portfolio has no write access (US162)                        |
 | HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                  |
 | MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                    |
@@ -677,3 +679,15 @@ and no HTTP route can perform Risk or adapter lifecycle transitions. The
 reservation port consumes Ledger-owned cash-balance rows; US173 will create
 those balances from append-only Ledger transactions and paper-account opening
 instructions.
+
+M2 Epic E9 progress: US165–US167 complete. Risk evaluates immutable Order,
+account, Session, market, cash/reservation, Position, Portfolio, duplicate, and
+reconciliation references using a fixed versioned baseline policy. Approved and
+rejected decisions are immutable, explainable PostgreSQL facts with atomic
+Outbox events. Orders cannot enter `executable` without an exact approved,
+unexpired decision. The execution-adapter boundary accepts paper commands only,
+rejects credentials/live mode structurally, returns immutable provider-neutral
+facts, and has no domain repositories. Paper fee, slippage, precision, rounding,
+market/limit policy, and semantic execution context are versioned and hashed;
+deterministic matching remains US168–US169 and the sole Execution Engine remains
+US170.

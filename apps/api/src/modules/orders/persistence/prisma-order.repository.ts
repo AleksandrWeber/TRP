@@ -1,4 +1,4 @@
-import type { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, type PrismaClient } from '@prisma/client';
 import {
   prismaClientForTransaction,
   type TransactionContext,
@@ -6,6 +6,10 @@ import {
 import type { Order, OrderLifecycleEntry } from '../domain/order';
 import { createOrderIntent, OrderSide, OrderType, type OrderIntent } from '../domain/order-intent';
 import { isOrderStatus, type OrderStatus } from '../domain/order-status';
+import {
+  RiskDecisionStatus,
+  type ApprovedRiskDecisionReference,
+} from '../../risk/domain/risk-decision';
 import type { OrderRepository } from './order.repository';
 
 type PaperOrderWithLifecycle = Prisma.PaperOrderGetPayload<{
@@ -105,6 +109,10 @@ function toCreateData(order: Order): Prisma.PaperOrderUncheckedCreateInput {
     version: order.version,
     intent: order.intent as unknown as Prisma.InputJsonValue,
     riskDecisionId: order.riskDecisionId,
+    riskDecision:
+      order.riskDecision === null
+        ? Prisma.DbNull
+        : (order.riskDecision as unknown as Prisma.InputJsonValue),
     reservationId: order.reservationId,
     adapterOrderId: order.adapterOrderId,
     rejectionReason: order.rejectionReason,
@@ -119,6 +127,10 @@ function toUpdateData(order: Order): Prisma.PaperOrderUpdateManyMutationInput {
     version: order.version,
     filledQuantity: order.filledQuantity,
     riskDecisionId: order.riskDecisionId,
+    riskDecision:
+      order.riskDecision === null
+        ? Prisma.DbNull
+        : (order.riskDecision as unknown as Prisma.InputJsonValue),
     reservationId: order.reservationId,
     adapterOrderId: order.adapterOrderId,
     rejectionReason: order.rejectionReason,
@@ -185,12 +197,35 @@ function toDomain(row: PaperOrderWithLifecycle): Order {
     version: row.version,
     filledQuantity: row.filledQuantity.toFixed(),
     riskDecisionId: row.riskDecisionId,
+    riskDecision: parseRiskDecision(row.riskDecision),
     reservationId: row.reservationId,
     adapterOrderId: row.adapterOrderId,
     rejectionReason: row.rejectionReason,
     lifecycle,
     createdAt: row.createdAt.toISOString(),
     recordedAt: row.recordedAt.toISOString(),
+  });
+}
+
+function parseRiskDecision(value: Prisma.JsonValue): ApprovedRiskDecisionReference | null {
+  if (value === null) return null;
+  const input = object(value, 'riskDecision');
+  const status = string(input.status, 'riskDecision.status');
+  if (status !== RiskDecisionStatus.APPROVED) {
+    throw new Error('persisted Order Risk Decision must be approved');
+  }
+  return Object.freeze({
+    id: string(input.id, 'riskDecision.id'),
+    status: RiskDecisionStatus.APPROVED,
+    workspaceId: string(input.workspaceId, 'riskDecision.workspaceId'),
+    orderId: string(input.orderId, 'riskDecision.orderId'),
+    intentHash: string(input.intentHash, 'riskDecision.intentHash'),
+    policyId: string(input.policyId, 'riskDecision.policyId'),
+    policyVersion: number(input.policyVersion, 'riskDecision.policyVersion'),
+    policyHash: string(input.policyHash, 'riskDecision.policyHash'),
+    inputHash: string(input.inputHash, 'riskDecision.inputHash'),
+    evaluatedAt: string(input.evaluatedAt, 'riskDecision.evaluatedAt'),
+    expiresAt: string(input.expiresAt, 'riskDecision.expiresAt'),
   });
 }
 

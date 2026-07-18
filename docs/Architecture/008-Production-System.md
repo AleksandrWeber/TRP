@@ -22,6 +22,15 @@ adapter work to Execution Engine. The REST adapter exposes propose/cancel and
 queries, not internal Risk or Execution transitions. Fill accounting remains a
 separate later story.
 
+RC-16 M2 implementation note (US165–US167): baseline Risk evaluation persists
+immutable approved/rejected decisions against exact semantic checkpoint
+references, and Orders rejects executable transitions without an approved,
+unexpired matching decision. The execution-adapter port is provider-neutral but
+runtime binding is paper-only and credential-free; it returns immutable facts
+and has no domain persistence access. Fee, slippage, precision, rounding, and
+market/limit fill rules use stable versioned configuration. Matching and the
+single Execution Engine remain US168–US170.
+
 ---
 
 # Purpose
