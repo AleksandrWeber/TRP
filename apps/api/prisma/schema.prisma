@@ -392,3 +392,31 @@ model PaperAccount {
   @@index([workspaceId, status])
   @@map("paper_accounts")
 }
+
+/// RC-16 M2 US156/US157 durable Trading Session with fenced lease.
+model TradingSession {
+  id               String    @id
+  workspaceId      String    @map("workspace_id")
+  paperAccountId   String    @map("paper_account_id")
+  deploymentId     String    @map("deployment_id")
+  origin           String
+  status           String
+  leaseOwnerId     String?   @map("lease_owner_id")
+  fencingToken     Int?      @map("fencing_token")
+  leaseAcquiredAt  DateTime? @map("lease_acquired_at")
+  leaseExpiresAt   DateTime? @map("lease_expires_at")
+  leaseHeartbeatAt DateTime? @map("lease_heartbeat_at")
+  lastFencingToken Int       @default(0) @map("last_fencing_token")
+  version          Int       @default(1)
+  failureReason    String?   @map("failure_reason")
+  createdAt        DateTime  @map("created_at")
+  recordedAt       DateTime  @map("recorded_at")
+  actorId          String    @map("actor_id")
+  correlationId    String?   @map("correlation_id")
+  idempotencyKey   String    @map("idempotency_key")
+
+  @@unique([workspaceId, idempotencyKey])
+  @@index([workspaceId, status])
+  @@index([workspaceId, paperAccountId])
+  @@map("trading_sessions")
+}

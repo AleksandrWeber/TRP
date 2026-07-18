@@ -1,6 +1,6 @@
 # TRP — Technical Debt Register
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E7-A)
+Last updated: 2026-07-18 (RC-16 M2 Epic E7)
 
 Living register of known technical debt. Reviewed at RC-15.1 closeout after Validation Sprint V1 (VS001–VS004); TD-028…TD-033 added from Validation Sprint findings. TD-035 and TD-038 resolved by M2 US155 PostgreSQL runtime wiring.
 
@@ -32,8 +32,8 @@ Related:
 | TD-002 | InMemory-authoritative Job Queue          | Planned         | BullMQ mirrors enqueue/retry state, but authoritative Job lookup/dequeue remains in-process. RC-16 event durability uses PostgreSQL Outbox/Inbox; scheduler/worker durability must not rely on the current mirror.                                                                         | RC-16 runtime implementation                |
 | TD-003 | PipelineRun not persisted                 | Accepted        | `PipelineRun` is in-memory only (`PipelineDomainService`); lost on process restart                                                                                                                                                                                                         | Possible RC-13+ (Pipeline observability)    |
 | TD-004 | No Scheduler                              | Deferred        | Jobs are processed by `BackgroundJobRunner` when invoked; no cron / background scheduler                                                                                                                                                                                                   | Possible RC-14 (Background scheduling)      |
-| TD-005 | Authentication hardening                  | Planned         | Global JWT exists, but login/identity remain development-grade (in-memory users/passwordless path and fallback-secret risk). Paper-trading commands require durable authenticated identity and strict startup secret validation.                                                           | RC-16 safety foundation                     |
-| TD-006 | Production authorization/workspace scope  | Planned         | RolesGuard and Workspace domain exist, but current production records/endpoints lack workspace ownership and explicit Trader/Administrator role requirements.                                                                                                                              | RC-16 safety foundation                     |
+| TD-005 | Authentication hardening                  | Partial (M2)    | US158 rejects insecure production JWT fallbacks and short secrets at Auth module construction. Login remains passwordless/in-memory Identity for development; durable credential store remains later.                                                                                      | RC-16 safety foundation                     |
+| TD-006 | Production authorization/workspace scope  | Partial (M2)    | US158 adds Trader role, CommandAuthorizationService (Trader/Admin), and WorkspaceAccessService membership checks for trading commands. Stage-1 `production/` endpoints are not yet migrated onto this gate.                                                                                | RC-16 safety foundation                     |
 | TD-007 | No Vector Search                          | Deferred        | Knowledge search is deterministic in-memory text / tag / experimentId filters only                                                                                                                                                                                                         | Possible RC-15+ (Knowledge intelligence)    |
 | TD-008 | Prisma `any` in legacy tests              | Accepted        | RC-15.1: repository lint restored to green. `@typescript-eslint/no-explicit-any` is now scoped **off for test files only** (`**/*.spec.ts`, `**/*.test.ts`, `**/validation/**`); production code remains strict. Underlying loose Prisma mock typing persists — tighten opportunistically. | Planned (test-typing hygiene; non-blocking) |
 | TD-009 | `forwardRef` for Pipeline module wiring   | Accepted        | `KnowledgeModule` uses `forwardRef(() => PipelineModule)` to break Nest cycle `Knowledge → Pipeline → Experiments → Knowledge`                                                                                                                                                             | Planned (optional module-boundary cleanup)  |
@@ -79,6 +79,8 @@ Related:
 
 ### Mitigated / Partial
 
+- TD-005 — Authentication hardening (production JWT secret validation; passwordless Identity remains)
+- TD-006 — Production authorization/workspace scope (trading command gate; Stage-1 production path pending)
 - TD-032 — Operational Metadata Isolation (mitigated for M1 market events; extend in M2+)
 
 ### Resolved
@@ -89,8 +91,6 @@ Related:
 ### Planned
 
 - TD-002 — Durable runtime queue/scheduler ownership
-- TD-005 — Authentication hardening
-- TD-006 — Production authorization/workspace scope
 - TD-008 — Prisma `any` in legacy tests (tighten test mock typing; lint now green via scoped config)
 - TD-009 — `forwardRef` module wiring (optional Nest layering cleanup)
 - TD-010 — Extract `InsightGenerationService` (shared deterministic Insight drafting)

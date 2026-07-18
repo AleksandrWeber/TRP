@@ -1,6 +1,6 @@
 # TRP — Architecture Snapshot
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E7-A US153–US155)
+Last updated: 2026-07-18 (RC-16 M2 Epic E7 US153–US158)
 
 Single snapshot of the **current** architecture (RC-15). Documentation only. No future ideas.
 
@@ -422,6 +422,7 @@ integration.** A separate Stage-1 manual paper prototype exists under
 | EventProcessing    | `event-processing/`     | PostgreSQL Outbox/Inbox/checkpoints runtime, transactional appender, lifecycle poller (US128–US130, US155) |
 | Financial          | `financial/`            | Exact decimal values, explicit scales and rounding; no number conversion (US153)                           |
 | PaperAccount       | `paper-account/`        | Durable paper-only account and opening-capital Ledger instruction (US154)                                  |
+| TradingSession     | `trading-session/`      | Manual ADR-014 sessions, fenced leases, execution eligibility (US156–US157)                                |
 | HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                  |
 | MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                    |
 | Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                          |
@@ -651,3 +652,9 @@ PostgreSQL with `DECIMAL(38,18)` opening-capital instructions and atomic
 `PaperAccountCreated` Outbox events; Event Processing Nest providers now use
 Prisma repositories and a lifecycle-managed polling worker. The worker leaves
 events pending until at least one durable consumer is registered.
+
+M2 Epic E7-B: US156–US158 complete — durable manual Trading Sessions follow the
+ADR-014 state machine; fenced leases and fencing tokens gate execution
+eligibility; Trader/Admin workspace command authorization retains actor,
+correlation, and idempotency identifiers; production rejects insecure JWT
+secret fallbacks. Epic E7 complete.

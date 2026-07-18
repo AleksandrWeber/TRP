@@ -17,6 +17,7 @@ import { MarketDataModule } from './modules/market-data/market-data.module';
 import { LiveMarketDataModule } from './modules/live-market-data/live-market-data.module';
 import { EventProcessingModule } from './modules/event-processing/event-processing.module';
 import { PaperAccountModule } from './modules/paper-account';
+import { TradingSessionModule } from './modules/trading-session';
 import { HistoricalImportModule } from './modules/historical-import/historical-import.module';
 import { MarketDataProviderModule } from './modules/market-data-provider/market-data-provider.module';
 import { BacktestingModule } from './modules/backtesting/backtesting.module';
@@ -57,6 +58,7 @@ import { ValidationModule } from './validation/validation.module';
     EventsModule,
     EventProcessingModule,
     PaperAccountModule,
+    TradingSessionModule,
     AuthModule,
     IdentityModule,
     WorkspaceModule,

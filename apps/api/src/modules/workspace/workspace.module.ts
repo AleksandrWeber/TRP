@@ -4,12 +4,12 @@ import { METRICS } from '../../metrics/metrics.token';
 import { instrumentRepository } from '../../metrics/instrument-repository';
 import { InMemoryWorkspaceRepository } from './repositories/in-memory-workspace.repository';
 import { WORKSPACE_REPOSITORY } from './repositories/workspace.repository.token';
+import { WorkspaceAccessService } from './workspace-access.service';
 import { WorkspaceDomainService } from './workspace-domain.service';
 
 /**
- * Workspace Nest module (US108).
- * Top-level multi-tenant aggregate — no tenant isolation / REST / Prisma yet.
- * WorkspaceRepository bound to InMemory only.
+ * Workspace Nest module (US108 / US158).
+ * Top-level multi-tenant aggregate with membership access checks for trading commands.
  */
 @Module({
   providers: [
@@ -20,7 +20,8 @@ import { WorkspaceDomainService } from './workspace-domain.service';
       inject: [METRICS],
     },
     WorkspaceDomainService,
+    WorkspaceAccessService,
   ],
-  exports: [WorkspaceDomainService],
+  exports: [WorkspaceDomainService, WorkspaceAccessService],
 })
 export class WorkspaceModule {}

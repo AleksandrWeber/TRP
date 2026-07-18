@@ -289,7 +289,17 @@ M2 Epic E7-A:
 
 Epic E7-A complete. Decimal values reject binary floating-point inputs;
 paper-account creation and `PaperAccountCreated` commit atomically; Nest runtime
-Outbox/Inbox/checkpoints and polling are PostgreSQL-backed. Next: M2 Epic E7-B.
+Outbox/Inbox/checkpoints and polling are PostgreSQL-backed.
+
+M2 Epic E7-B:
+
+- ✓ US156 — Trading Session Core
+- ✓ US157 — Fenced Manual Execution Eligibility
+- ✓ US158 — Workspace and Command Authorization
+
+Epic E7 complete. Manual Trading Sessions are durable and fenced; trading
+commands require Trader/Admin plus workspace membership; production JWT secrets
+are hardened. Next: M2 Epic E8 — durable Orders and reservations.
 
 ---
 

@@ -101,8 +101,18 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
   Outbox/Inbox/checkpoints and transactional writer to Prisma; lifecycle polling
   preserves unconsumed rows and performs durable at-least-once delivery.
   TD-035 and TD-038 resolved. Epic E7-A complete.
+- RC-16 M2 US156 — Trading Session Core: durable manual ADR-014 Sessions with
+  workspace/account ownership, immutable deployment references, and rejected
+  transitions recorded via Outbox audit events. No strategy scheduler.
+- RC-16 M2 US157 — Fenced Manual Execution Eligibility: lease generation,
+  fencing tokens, heartbeat, and RUNNING-only execution eligibility. Lease
+  clocks remain operational and never enter financial math.
+- RC-16 M2 US158 — Workspace and Command Authorization: Trader role,
+  Trader/Admin trading command gate, workspace membership checks, retained
+  actor/correlation/idempotency context, and production JWT secret hardening.
+  Epic E7 complete.
 
-RC-15.1 is released. RC-16 M1 complete; M2 Epic E7-A complete (US153–US155).
+RC-15.1 is released. RC-16 M1 complete; M2 Epic E7 complete (US153–US158).
 
 ### Added (architecture)
 

@@ -13,6 +13,10 @@ safe; all trading aggregates are workspace-scoped; operator commands require
 explicit authorization. RC-16 registers no real-capital adapter or private
 trading credentials.
 
+RC-16 M2 implementation note (US158): trading commands require Trader or
+Administrator (`Admin`) plus workspace membership. Production startup rejects
+insecure JWT secret fallbacks (`dev-only-change-me` / missing secret).
+
 ---
 
 # Purpose

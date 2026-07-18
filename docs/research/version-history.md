@@ -78,6 +78,9 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
 - US153–US155 complete: M2 Epic E7-A. Canonical decimal-only financial
   contracts and precision policies; durable paper account with immutable
   opening-capital Ledger instruction; PostgreSQL Event Processing Nest runtime.
+- US156–US158 complete: M2 Epic E7-B. Durable manual Trading Sessions with
+  fenced execution eligibility; Trader/Admin workspace command authorization;
+  production JWT secret hardening. Epic E7 complete.
 
 These changes establish the separate RC-16 paper runtime. Research Engine,
 Validation, Knowledge Schema, and RC-15 simulation calculation versions remain

@@ -4,6 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import type { Role } from '../identity/role';
 import { AuthenticationService } from './authentication.service';
+import { resolveJwtSecret } from './jwt-secret';
 
 export type JwtPayload = {
   sub: string;
@@ -19,8 +20,9 @@ export type AuthUser = {
 };
 
 /**
- * Passport JWT strategy (US106, US107).
+ * Passport JWT strategy (US106, US107, US158).
  * Validates signature/expiry, then resolves Identity user (including role) via AuthenticationService.
+ * Production rejects insecure JWT secret fallbacks at module construction.
  */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -31,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: config.get<string>('JWT_SECRET') ?? 'dev-only-change-me',
+      secretOrKey: resolveJwtSecret(config),
     });
   }
 

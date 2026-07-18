@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E7-A)
+Last updated: 2026-07-18 (RC-16 M2 Epic E7)
 
 Living roadmap for product direction.
 
@@ -173,9 +173,10 @@ Architecture changes require a new ADR.
 - M6 — Operations Experience
 - M7 — RC-16 Validation and Closeout
 
-Current: M1 complete (US126–US152). M2 Epic E7-A complete (US153–US155):
-decimal financial contracts, durable paper-account foundation, and
-PostgreSQL Event Processing runtime wiring. Next: M2 Epic E7-B.
+Current: M1 complete (US126–US152). M2 Epic E7 complete (US153–US158):
+decimal financial contracts, durable paper accounts, PostgreSQL Event
+Processing runtime, Trading Sessions with fenced eligibility, and trading
+command authorization/JWT hardening. Next: M2 Epic E8.
 Mini Validation follows M2, M4, and M6.
 
 ---

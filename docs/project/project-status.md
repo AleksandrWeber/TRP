@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-18 (RC-16 M2 Epic E7-A complete — US153–US155)
+2026-07-18 (RC-16 M2 Epic E7 complete — US153–US158)
 
 ---
 
@@ -46,7 +46,10 @@ and precision policies; durable workspace-owned paper accounts with immutable
 opening-capital instructions; atomic account + Outbox commit; and Prisma-backed
 Nest runtime for Outbox, Inbox, consumer checkpoints, transactional writer, and
 lifecycle polling. TD-035/TD-038 runtime-wiring recommendation is resolved.
-Next: M2 Epic E7-B — durable Orders and execution contracts.
+M2 Epic E7-B complete (US156–US158): durable manual Trading Sessions with
+ADR-014 state machine; fenced lease/fencing-token execution eligibility;
+Trader/Admin workspace command authorization; production JWT secret hardening.
+Epic E7 complete. Next: M2 Epic E8 — durable Orders and reservations.
 
 ---
 
