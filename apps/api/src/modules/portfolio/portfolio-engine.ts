@@ -94,7 +94,8 @@ export class PortfolioEngine {
   }
 
   private recalculateEquity(portfolio: Portfolio): void {
-    portfolio.equity = portfolio.cash + this.unrealizedPnL;
+    // Total PnL = realized + unrealized; equity = initialCapital + Total PnL.
+    portfolio.equity = portfolio.initialCapital + this.realizedPnL + this.unrealizedPnL;
     portfolio.currentCapital = portfolio.equity;
   }
 

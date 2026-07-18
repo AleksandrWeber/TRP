@@ -56,22 +56,27 @@ export class BacktestEngine {
     const startedAt = new Date(startedAtMs).toISOString();
     session.status = BacktestStatus.Running;
 
+    // Equity-curve timestamps must be session/bar-aligned (not wall-clock) so
+    // performance metrics such as CAGR are deterministic across repeated runs.
+    const curveStart = session.from;
+
     const portfolio = options.portfolio ?? new PortfolioEngine();
     if (!portfolio.isInitialized()) {
       portfolio.initialize({
         workspaceId: session.workspaceId,
         initialCapital: options.initialCapital ?? DEFAULT_BACKTEST_INITIAL_CAPITAL,
-        timestamp: startedAt,
+        timestamp: curveStart,
       });
     }
 
     const initialCapital = portfolio.getPortfolio().initialCapital;
     const trades = options.trades ?? new TradeEngine(portfolio, session.instrument);
     const context: StrategyContext = { trades, portfolio };
-    const snapshots: PortfolioSnapshot[] = [portfolio.snapshot(startedAt)];
+    const snapshots: PortfolioSnapshot[] = [portfolio.snapshot(curveStart)];
     mirrorSnapshots(options.snapshotSink, snapshots);
 
     let processedBars = 0;
+    let lastBarTimestamp: string | undefined;
 
     try {
       const { bars } = await this.providers.fetchHistorical(MarketDataSource.Local, {
@@ -93,16 +98,17 @@ export class BacktestEngine {
         const barSnapshot = portfolio.snapshot(bar.timestamp);
         snapshots.push(barSnapshot);
         appendSnapshot(options.snapshotSink, barSnapshot);
+        lastBarTimestamp = bar.timestamp;
         processedBars += 1;
       }
 
       await strategy.finalize(context);
 
-      const finishedAt = new Date().toISOString();
-      const finalSnapshot = portfolio.snapshot(finishedAt);
+      const curveEnd = lastBarTimestamp ?? session.to;
+      const finalSnapshot = portfolio.snapshot(curveEnd);
       snapshots.push(finalSnapshot);
       appendSnapshot(options.snapshotSink, finalSnapshot);
-      portfolio.close(finishedAt);
+      portfolio.close(curveEnd);
       session.status = BacktestStatus.Completed;
       return this.toResult({
         processedBars,
@@ -114,13 +120,13 @@ export class BacktestEngine {
         initialCapital,
       });
     } catch {
-      const finishedAt = new Date().toISOString();
-      const finalSnapshot = portfolio.snapshot(finishedAt);
+      const curveEnd = lastBarTimestamp ?? session.to;
+      const finalSnapshot = portfolio.snapshot(curveEnd);
       snapshots.push(finalSnapshot);
       appendSnapshot(options.snapshotSink, finalSnapshot);
       if (portfolio.isInitialized() && portfolio.getPortfolio().status === PortfolioStatus.Active) {
         try {
-          portfolio.close(finishedAt);
+          portfolio.close(curveEnd);
         } catch {
           // ignore close errors during failure path
         }

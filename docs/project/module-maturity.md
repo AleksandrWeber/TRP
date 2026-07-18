@@ -1,8 +1,10 @@
 # TRP — Module Maturity Matrix
 
-Last updated: 2026-07-17
+Last updated: 2026-07-18 (RC-15.1 Validation Release)
 
 Living matrix of implementation maturity for major Research OS modules. Documentation only (US094 / US125).
+
+> RC-15.1: the Simulation Platform modules below (MarketData, HistoricalImport, MarketDataProvider, Backtesting, Portfolio, Trade, Performance, WalkForward, StrategyComparison, SimulationReport) were validated by Validation Sprint V1 (VS001–VS004). They remain **Foundation** maturity — validation confirmed correctness and determinism, not productization. RC-16 hardening candidates are tracked as TD-028…TD-033.
 
 Related:
 

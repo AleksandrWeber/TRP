@@ -119,7 +119,7 @@ describe('ResearchReportDomainService (US099)', () => {
         workspaceId: WORKSPACE_ID,
         status: CampaignSessionStatus.COMPLETED,
         createdAt: '2026-07-17T10:00:00.000Z',
-        metadata: { datasetId: 'ds-1' },
+        metadata: { engineVersion: '1.0.0', datasetId: 'ds-1' },
         report: {
           campaignId: 'sess-1',
           strategyId: 's',

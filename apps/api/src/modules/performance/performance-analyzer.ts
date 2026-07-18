@@ -56,10 +56,26 @@ export class PerformanceAnalyzer {
 
     const startedAtMs = Date.parse(input.backtest.startedAt);
     const finishedAtMs = Date.parse(input.backtest.finishedAt);
-    const durationMs =
+    const wallClockDurationMs =
       Number.isFinite(startedAtMs) && Number.isFinite(finishedAtMs)
         ? Math.max(0, finishedAtMs - startedAtMs)
         : input.backtest.durationMs;
+
+    // Prefer equity-curve / bar-span duration for CAGR so repeated runs are deterministic.
+    const curveStart =
+      orderedSnapshots.length > 0 ? Date.parse(orderedSnapshots[0]!.timestamp) : NaN;
+    const curveEnd =
+      orderedSnapshots.length > 0
+        ? Date.parse(orderedSnapshots[orderedSnapshots.length - 1]!.timestamp)
+        : NaN;
+    const curveDurationMs =
+      Number.isFinite(curveStart) && Number.isFinite(curveEnd) && curveEnd >= curveStart
+        ? curveEnd - curveStart
+        : NaN;
+    const durationMs =
+      Number.isFinite(curveDurationMs) && curveDurationMs > 0
+        ? curveDurationMs
+        : wallClockDurationMs;
 
     const cagr = computeCagr(initialEquity, finalEquity, durationMs);
     const { maxDrawdown, maxDrawdownPct } = computeMaxDrawdown(orderedSnapshots);

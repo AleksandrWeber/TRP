@@ -100,9 +100,19 @@ Research OS Foundation Release Candidate exists as a local commit; remote push n
 - Recommendation Engine (US098): in-memory domain + deterministic `generateFromInsights`.
 - Research Report Domain (US099): in-memory aggregation via `build()` (id refs only).
 - Research Intelligence API (US100): read-only REST — `GET /insights`, `/recommendations`, `/reports`, `/cross-campaign-analysis` (+ `/:id`); `HistoryPage` envelope; pagination / sorting / filtering; domain services only.
+- RC-14 — Production SaaS foundation (`feat(rc14)` / tag `rc-14`).
+- RC-15 — Research & Simulation Platform (US115–US125): Market Data, Historical Import, Market Data Provider, Backtesting Engine, Walk-Forward Engine, Portfolio Simulation, Trade Execution Simulation, Performance Metrics, Strategy Comparison, Simulation Report + RC-15 Architecture Audit.
+- Validation Sprint V1 harnesses (RC-15.1): VS001 functional-validation suite, VS002 stress runner (`vs002-stress-runner.ts`; synthetic 10k / 100k / 1M-bar workloads with memory / CPU / determinism capture), VS003 consistency & invariant suite; simulation-report large-array regression test.
 
 ### Fixed
 
+- RC-15.1 Validation Release: integrated confirmed Validation Sprint V1 defect fixes and restored repository quality (no new functionality; no architectural changes):
+  - Deterministic CAGR — `PerformanceAnalyzer` derives duration from equity-curve snapshot timestamps instead of wall-clock `startedAt` / `finishedAt`; backtest snapshots anchored to session / bar timestamps (VS001).
+  - Deterministic Strategy Comparison — operational `durationMs` excluded from semantic equality via `stableComparison` (VS001).
+  - Large-workload stability — `SimulationReportBuilder.summarizeSnapshots` computes peak / trough iteratively (previously overflowed the call stack via `Math.max(...)` on 1M+ snapshots); 150k-snapshot regression test added (VS002).
+  - PnL identity restored — `TradeEngine.unrealizedPnL` is now classic unrealized PnL (position market value exposed separately via `computePositionMarketValue`); `equity = initialCapital + realizedPnL + unrealizedPnL`, so `realized + unrealized = total PnL` and `cash + market value = equity` hold per snapshot (VS003).
+  - Repository lint restored to green (40 pre-existing errors): `no-unused-vars` now honors `^_` argsIgnorePattern; `no-explicit-any` scoped off for test files only (production strict; TD-008).
+  - Standalone typecheck (`tsc --noEmit`) restored to green (13 pre-existing spec errors): `engineVersion` added to `CampaignSessionMetadata` fixtures, nullable JSON report access typed in experiments specs, branded `Instrument` in a simulation-report spec.
 - RC-13 completed: Research Intelligence layer (US095–US100) + RC-13 Architecture Audit (US101) PASS WITH RECOMMENDATIONS; Execution vs Analysis pipeline categories; Living Next RC-14; Accepted Legacy dual paths documented (TD-011–TD-013); full monorepo tests green; docs synced (no remote release yet).
 - RC-12 finalized: Research Pipeline Engine is the unified execution runtime for Campaign / Replay / Knowledge (US081–US091) architecture audit PASS (full monorepo tests green; pipeline orchestration lint scope clean; pre-existing experiments/knowledge Prisma-spec `any` debt unchanged); docs synced; committed and pushed.
 - RC-11 finalized: Research Pipeline Engine (US081–US085) architecture audit PASS (full monorepo tests green; pipeline lint scope clean); docs synced; committed and pushed.
@@ -123,6 +133,7 @@ Research OS Foundation Release Candidate exists as a local commit; remote push n
 
 - Knowledge dedup moved from config-only identity to Result Identity
   (`configIdentityKey` + engine + validation versions).
+- Simulation Platform accounting semantics (RC-15.1): `unrealizedPnL` now represents classic unrealized profit/loss on open positions (not raw market value), and `equity = initialCapital + realizedPnL + unrealizedPnL`. Simulation determinism is anchored to bar / session timestamps rather than wall-clock. Distinct from the `@trp/research` `researchEngineVersion` used for Knowledge identity (unchanged at `1.0.3`).
 
 ### Research versions (working tree)
 

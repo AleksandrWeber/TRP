@@ -54,11 +54,11 @@ describe('PortfolioEngine (US120)', () => {
     expect(engine.snapshot()).toEqual({
       timestamp: '2026-07-17T11:00:00.000Z',
       cash: 9_000,
-      equity: 9_100,
+      equity: 10_350, // initialCapital + realized + unrealized
       unrealizedPnL: 100,
       realizedPnL: 250,
     });
-    expect(engine.getPortfolio().currentCapital).toBe(9_100);
+    expect(engine.getPortfolio().currentCapital).toBe(10_350);
   });
 
   it('close marks portfolio Closed and rejects further executions', () => {

@@ -54,7 +54,7 @@ export class TradeEngine {
     this.portfolio.applyExecution({
       timestamp: trade.entryTimestamp,
       cashDelta,
-      unrealizedPnL: this.computePositionMarketValue(input.entryPrice),
+      unrealizedPnL: this.computeUnrealizedPnL(input.entryPrice),
     });
 
     return cloneTrade(trade);
@@ -93,7 +93,7 @@ export class TradeEngine {
       timestamp: exitTimestamp,
       cashDelta,
       realizedPnLDelta,
-      unrealizedPnL: this.computePositionMarketValue(exitPrice),
+      unrealizedPnL: this.computeUnrealizedPnL(exitPrice),
     });
 
     return cloneTrade(closed);
@@ -123,11 +123,24 @@ export class TradeEngine {
     this.portfolio.applyExecution({
       timestamp: timestamp.trim(),
       cashDelta: 0,
-      unrealizedPnL: this.computePositionMarketValue(price),
+      unrealizedPnL: this.computeUnrealizedPnL(price),
     });
   }
 
-  private computePositionMarketValue(markPrice: number): number {
+  /** Classic unrealized PnL of all open positions at `markPrice`. */
+  private computeUnrealizedPnL(markPrice: number): number {
+    let value = 0;
+    for (const trade of this.open.values()) {
+      value +=
+        trade.side === TradeSide.Buy
+          ? (markPrice - trade.entryPrice) * trade.quantity
+          : (trade.entryPrice - markPrice) * trade.quantity;
+    }
+    return value;
+  }
+
+  /** Signed market value of open positions (long +, short −). */
+  computePositionMarketValue(markPrice: number): number {
     let value = 0;
     for (const trade of this.open.values()) {
       value +=

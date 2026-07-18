@@ -4,11 +4,6 @@ import type { Portfolio } from '../portfolio/portfolio';
 import type { PortfolioSnapshot } from '../portfolio/portfolio-snapshot';
 import type { Trade } from '../trade/trade';
 import type { WalkForwardResult } from '../walk-forward/walk-forward-result';
-import type {
-  PortfolioSnapshotsSummary,
-  SimulationReport,
-  TradeSummary,
-} from './simulation-report';
 
 /**
  * Inputs assembled by SimulationReportBuilder (US124).

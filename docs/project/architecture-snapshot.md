@@ -1,8 +1,10 @@
 # TRP — Architecture Snapshot
 
-Last updated: 2026-07-17
+Last updated: 2026-07-18 (RC-15.1 Validation Release)
 
 Single snapshot of the **current** architecture (RC-15). Documentation only. No future ideas.
+
+> RC-15.1 Validation Release: the Research & Simulation Platform was validated end-to-end by Validation Sprint V1 (VS001 functional, VS002 stress / determinism, VS003 invariants, VS004 readiness review). No architectural changes were made — only confirmed defect fixes (deterministic CAGR, iterative snapshot summarization, classic PnL / equity accounting) were integrated. Validated invariants: `cash + market value = equity`, `realized + unrealized = total PnL`, deterministic outputs for identical inputs (operational metadata excluded), workspace isolation, and artifact immutability. New debt from the sprint is tracked as TD-028…TD-033 in [`technical-debt.md`](./technical-debt.md).
 
 ---
 

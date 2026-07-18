@@ -73,6 +73,15 @@ import {
   VALIDATION_VERSION,
 } from '../knowledge/knowledge.version';
 
+type ExperimentReportShape = {
+  researchEngineVersion: string;
+  validationVersion: string;
+};
+
+function reportOf(experiment: { report: unknown }): ExperimentReportShape {
+  return experiment.report as ExperimentReportShape;
+}
+
 describe('ExperimentsService provenance', () => {
   let prisma: any;
   let datasetsService: any;
@@ -116,22 +125,22 @@ describe('ExperimentsService provenance', () => {
     const service = new ExperimentsService(prisma, datasetsService, knowledge, new NoOpLogger());
     const experiment = await service.run('ds-1');
 
-    expect(experiment.report.researchEngineVersion).toBe(RESEARCH_ENGINE_VERSION);
+    expect(reportOf(experiment).researchEngineVersion).toBe(RESEARCH_ENGINE_VERSION);
   });
 
   it('stores validationVersion in report', async () => {
     const service = new ExperimentsService(prisma, datasetsService, knowledge, new NoOpLogger());
     const experiment = await service.run('ds-1');
 
-    expect(experiment.report.validationVersion).toBe(VALIDATION_VERSION);
+    expect(reportOf(experiment).validationVersion).toBe(VALIDATION_VERSION);
   });
 
   it('report versions match the single version source', async () => {
     const service = new ExperimentsService(prisma, datasetsService, knowledge, new NoOpLogger());
     const experiment = await service.run('ds-1');
 
-    expect(experiment.report.researchEngineVersion).toBe(RESEARCH_ENGINE_VERSION);
-    expect(experiment.report.validationVersion).toBe(VALIDATION_VERSION);
+    expect(reportOf(experiment).researchEngineVersion).toBe(RESEARCH_ENGINE_VERSION);
+    expect(reportOf(experiment).validationVersion).toBe(VALIDATION_VERSION);
     expect(KNOWLEDGE_SCHEMA_VERSION).toBe(2);
   });
 });

@@ -33,7 +33,7 @@ function sampleSession(id: string, reportOverrides?: Partial<CampaignReport>): C
     status: CampaignSessionStatus.COMPLETED,
     createdAt: '2026-07-17T10:00:00.000Z',
     completedAt: '2026-07-17T10:05:00.000Z',
-    metadata: { datasetId: 'ds-1' },
+    metadata: { engineVersion: '1.0.0', datasetId: 'ds-1' },
     report: sampleReport({ campaignId: id, ...reportOverrides }),
   };
 }

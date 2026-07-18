@@ -75,7 +75,12 @@ function summarizeSnapshots(snapshots: readonly PortfolioSnapshot[]): PortfolioS
   }
 
   const ordered = [...snapshots].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
-  const equities = ordered.map((item) => item.equity);
+  let peakEquity = ordered[0]!.equity;
+  let troughEquity = ordered[0]!.equity;
+  for (const snapshot of ordered) {
+    peakEquity = Math.max(peakEquity, snapshot.equity);
+    troughEquity = Math.min(troughEquity, snapshot.equity);
+  }
 
   return Object.freeze({
     count: ordered.length,
@@ -83,8 +88,8 @@ function summarizeSnapshots(snapshots: readonly PortfolioSnapshot[]): PortfolioS
     lastTimestamp: ordered[ordered.length - 1]!.timestamp,
     startingEquity: ordered[0]!.equity,
     endingEquity: ordered[ordered.length - 1]!.equity,
-    peakEquity: Math.max(...equities),
-    troughEquity: Math.min(...equities),
+    peakEquity,
+    troughEquity,
   });
 }
 

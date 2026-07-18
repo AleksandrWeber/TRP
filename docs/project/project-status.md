@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-17
+2026-07-18 (RC-15.1 Validation Release)
 
 ---
 
@@ -17,7 +17,44 @@ Research OS Foundation
 
 Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slice US045–US047. Campaign Persistence + History API (US051–US059). RC-06 Architecture Audit complete (US060). Export Foundation + Export API (US061–US062). RC-07 finalized. Import Foundation (US063). JSON Import Validation (US064). Import API (US065). Replay Foundation (US066). Replay Execution (US067). RC-08 finalized. Job Domain Model (US069). Job Queue Abstraction (US070). Background Campaign Runner (US071). Job Status API (US072). Job Cancellation (US073). RC-09 finalized. Knowledge Domain Model (US075). Experiment Entity & Versioning (US076). Knowledge Extraction Pipeline (US077). Experiment Comparison Service (US078). Knowledge Search API (US079). RC-10 finalized. Pipeline Domain Model (US081). Pipeline Step Contract (US082). Pipeline Executor (US083). Pipeline Hooks (US084). Pipeline Templates (US085). RC-11 finalized. Campaign Pipeline Steps (US087). Execute Campaign through PipelineExecutor (US088). Replay Pipeline Integration (US089). Knowledge Extraction Pipeline Integration (US090). RC-12 Architecture Audit (US091) finalized — Pipeline Engine is the unified execution runtime. Architecture Snapshot Synchronization (US092). Technical Debt Register (US093). Module Maturity Matrix (US094). Insight Domain (US095). Insight Extraction Pipeline (US096). Cross-Campaign Analysis (US097). Recommendation Engine (US098). Research Report Domain (US099). Research Intelligence API (US100). RC-13 Architecture Audit (US101) PASS WITH RECOMMENDATIONS — RC-13 finalized. RC-14 production SaaS foundation finalized (`rc-14`). RC-15 Simulation Stack (US115–US124) + Architecture Audit (US125) — MarketData / Import / Provider / Backtesting / Portfolio / Trade / Performance / WalkForward / StrategyComparison / SimulationReport.
 
-Next: RC-15 release commit / tag.
+RC-15.1 Validation Release: Validation Sprint V1 (VS001–VS004) executed against the Research & Simulation Platform; confirmed defects fixed and integrated; documentation synchronized; repository quality restored (lint / typecheck / build / test green).
+
+Next: RC-16 (simulation realism & analytics — see Technical Debt TD-028…TD-033).
+
+---
+
+# Validation Sprint V1 & RC-15.1 Validation Release
+
+Status: ✅ Closed out (no remote release; no commit / tag / push)
+
+Validation Sprint V1 validated the complete Research & Simulation Platform (Historical Import → Market Data → Provider → Backtesting → Trade → Portfolio → Performance → Walk-Forward → Strategy Comparison → Simulation Report).
+
+## Sprint verdicts
+
+| Sprint | Objective                                | Verdict                      |
+| ------ | ---------------------------------------- | ---------------------------- |
+| VS001  | Functional Validation                    | ✅ PASS                      |
+| VS002  | Long-running Simulation & Stress Testing | ✅ PASS                      |
+| VS003  | Consistency & Invariant Validation       | ✅ PASS                      |
+| VS004  | Production Readiness Review              | ✅ PASS WITH RECOMMENDATIONS |
+
+## Confirmed defects fixed during the sprint
+
+1. **Non-deterministic CAGR (VS001).** `PerformanceAnalyzer` derived CAGR duration from wall-clock `startedAt` / `finishedAt`. Now derived from equity-curve snapshot timestamps (wall-clock only as fallback). Files: `performance-analyzer.ts`, `backtest-engine.ts` (snapshots anchored to session / bar timestamps).
+2. **Non-deterministic Strategy Comparison equality (VS001).** Comparison entries carried `durationMs` (operational metadata) into semantic equality. Tests now filter it via `stableComparison`. File: `vs001-functional-validation.spec.ts`.
+3. **Large-workload crash (VS002).** `SimulationReportBuilder.summarizeSnapshots` used `Math.max(...equities)` / `Math.min(...)` and overflowed the call stack on 1M+ snapshots. Replaced with iterative peak / trough. Files: `simulation-report.builder.ts` (+ 150k-snapshot regression test).
+4. **Broken PnL identity (VS003).** `TradeEngine` stored position market value in `unrealizedPnL`, and `equity` only balanced by coincidence, breaking `realized + unrealized = total PnL`. `unrealizedPnL` redefined to classic unrealized PnL; `computePositionMarketValue` exposed separately; `equity = initialCapital + realizedPnL + unrealizedPnL`. Files: `trade-engine.ts`, `portfolio-engine.ts` (+ spec updates).
+
+## Repository quality (RC-15.1)
+
+- Repository lint restored to green (40 pre-existing errors resolved): underscore-prefixed unused-args now honored via `no-unused-vars` `argsIgnorePattern`; `no-explicit-any` scoped off for test files only (production code stays strict — TD-008).
+- Standalone typecheck (`tsc --noEmit`) restored to green (13 pre-existing spec errors fixed): missing `engineVersion` in `CampaignSessionMetadata` fixtures, nullable JSON report access in experiments specs, branded `Instrument` in a simulation-report spec.
+
+## New technical debt (Validation Sprint findings)
+
+TD-028 Execution Model · TD-029 Advanced Performance Metrics · TD-030 Scoring Strategy · TD-031 Report Exporters · TD-032 Operational Metadata Isolation · TD-033 Large Dataset Scalability. See [`technical-debt.md`](./technical-debt.md).
+
+Full readiness review and validated performance baselines: RC-16 Production Readiness Review canvas (VS004).
 
 ---
 
@@ -53,15 +90,22 @@ Campaign History & Export API: [`api.md`](./api.md).
 
 # Release Readiness
 
-Status: NOT READY for remote release / push
+Status: RC-15.1 Validation Release closed out locally (no commit / tag / push performed)
 
-## Release Candidate
+## RC-15.1 Validation Release
 
-Status: Ready for Commit
+Verification (working tree):
 
-Scope: Research OS (US003–US019, US020A–US020B, US026–US035, US037–US043, US045–US050, US051–US073, US075–US079, US081–US085, US087–US091) + documentation (DOC-021–DOC-024, US025–US026, US025A–US025C, US036, US041A, US043A, US044, US050A, US060) + RC-07 (Campaign Session Persistence + History + Export) + RC-08 (Import + Replay) + RC-09 (Background Job Execution) + RC-10 (Knowledge & Experiment Intelligence) + RC-11 (Research Pipeline Engine). Product next: RC-14.
+- `npm run lint` — PASS (repository clean)
+- `pnpm --filter @trp/api exec tsc --noEmit` (standalone typecheck) — PASS
+- `npm run build` — PASS (`@trp/api`, `@trp/web`, `@trp/research`)
+- `npm test` — PASS (84 files, 565 tests)
+- Documentation synchronized (project-status / roadmap / CHANGELOG / version-history / architecture-snapshot / module-maturity / technical-debt)
+- No pending release blockers
 
-Current Research OS implementation exists in working tree.
+Scope: integrate validated Validation Sprint V1 fixes (VS001–VS003), synchronize documentation, register new technical debt (TD-028…TD-033), and prepare the repository for RC-16. No new functionality; no architectural changes.
+
+Current Research OS + Simulation Platform implementation exists in working tree.
 Release will be created only after explicit commit sequence.
 Push only after explicit user command.
 
@@ -1207,6 +1251,8 @@ Knowledge Schema:
 2
 
 Note: ці версії стосуються working-tree Research OS semantics; окремий git release ще не створено.
+
+Simulation Platform (apps/api backtesting / portfolio / trade / performance) semantics were corrected during Validation Sprint V1 (RC-15.1): classic PnL identity `realized + unrealized = total`, `equity = initialCapital + realizedPnL + unrealizedPnL`, and determinism anchored to bar / session timestamps. These are separate from the `@trp/research` `researchEngineVersion` (which governs Knowledge identity and is unchanged). See [`../research/version-history.md`](../research/version-history.md).
 
 ---
 

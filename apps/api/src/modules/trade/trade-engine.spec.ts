@@ -19,7 +19,7 @@ describe('TradeEngine (US121)', () => {
     trades = new TradeEngine(portfolio, 'BTCUSDT');
   });
 
-  it('opens a Buy trade, debits cash, and keeps equity stable via position value', () => {
+  it('opens a Buy trade, debits cash, and keeps equity stable with zero unrealized at entry', () => {
     const trade = trades.openTrade({
       side: TradeSide.Buy,
       quantity: 2,
@@ -40,7 +40,9 @@ describe('TradeEngine (US121)', () => {
     expect(trades.getOpenTrades()).toHaveLength(1);
     expect(portfolio.getPortfolio().cash).toBe(9_800);
     expect(portfolio.getPortfolio().equity).toBe(10_000);
-    expect(portfolio.snapshot().unrealizedPnL).toBe(200);
+    expect(portfolio.snapshot().unrealizedPnL).toBe(0);
+    expect(trades.computePositionMarketValue(100)).toBe(200);
+    expect(portfolio.getPortfolio().cash + trades.computePositionMarketValue(100)).toBe(10_000);
   });
 
   it('closes a Buy trade and realizes PnL through PortfolioEngine.applyExecution', () => {
@@ -77,6 +79,12 @@ describe('TradeEngine (US121)', () => {
 
     expect(portfolio.getPortfolio().cash).toBe(10_100);
     expect(portfolio.getPortfolio().equity).toBe(10_000);
+    expect(portfolio.snapshot().unrealizedPnL).toBe(0);
+
+    trades.markToMarket(90, '2026-07-17T10:30:00.000Z');
+    expect(portfolio.snapshot().unrealizedPnL).toBe(10);
+    expect(portfolio.getPortfolio().equity).toBe(10_010);
+    expect(portfolio.getPortfolio().cash + trades.computePositionMarketValue(90)).toBe(10_010);
 
     trades.closeTrade({
       tradeId: opened.id,
@@ -86,6 +94,8 @@ describe('TradeEngine (US121)', () => {
 
     expect(portfolio.getPortfolio().cash).toBe(10_010);
     expect(portfolio.snapshot().realizedPnL).toBe(10);
+    expect(portfolio.snapshot().unrealizedPnL).toBe(0);
+    expect(portfolio.getPortfolio().equity).toBe(10_010);
   });
 
   it('rejects Buy when cash is insufficient (no leverage)', () => {

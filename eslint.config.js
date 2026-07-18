@@ -16,5 +16,23 @@ export default tseslint.config(
         ...globals.node,
       },
     },
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+    },
+  },
+  {
+    // Test mocks (Prisma clients, event buses) are intentionally loosely typed.
+    // Tracked as TD-008; relaxed only for test scope, production code stays strict.
+    files: ['**/*.spec.ts', '**/*.test.ts', '**/validation/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
   },
 );

@@ -145,7 +145,7 @@ describe('SimulationReportBuilder (US124)', () => {
         session: {
           strategyId: '  ',
           workspaceId: WS,
-          instrument: 'BTCUSDT',
+          instrument: toInstrument('BTCUSDT'),
           timeframe: Timeframe.H1,
           from: '2026-07-17T00:00:00.000Z',
           to: '2026-07-17T23:59:59.000Z',
@@ -169,6 +169,58 @@ describe('SimulationReportBuilder (US124)', () => {
         comparisonScore: Number.NaN,
       }),
     ).toThrow(/comparisonScore/);
+  });
+
+  it('summarizes snapshot sets larger than the JavaScript argument limit', () => {
+    const portfolio = new PortfolioEngine();
+    portfolio.initialize({ workspaceId: WS, initialCapital: 1_000 });
+    const snapshots: PortfolioSnapshot[] = Array.from({ length: 150_000 }, (_, index) => ({
+      timestamp: new Date(Date.UTC(2026, 0, 1) + index * 60_000).toISOString(),
+      cash: 1_000,
+      equity: 1_000 + (index % 3) - 1,
+      unrealizedPnL: 0,
+      realizedPnL: 0,
+    }));
+
+    const report = builder.build({
+      session: createSession(),
+      backtest: {
+        processedBars: snapshots.length,
+        startedAt: '2026-01-01T00:00:00.000Z',
+        finishedAt: '2026-04-15T03:59:00.000Z',
+        durationMs: 0,
+        status: BacktestStatus.Completed,
+        totalTrades: 0,
+        openTrades: 0,
+        closedTrades: 0,
+        performance: Object.freeze({
+          netProfit: 0,
+          totalReturnPct: 0,
+          cagr: 0,
+          maxDrawdown: 0,
+          maxDrawdownPct: 0,
+          volatility: 0,
+          totalTrades: 0,
+          winningTrades: 0,
+          losingTrades: 0,
+          winRate: 0,
+          averageWin: 0,
+          averageLoss: 0,
+          profitFactor: 0,
+          averageTradeDurationMs: 0,
+        }),
+      },
+      portfolio: portfolio.getPortfolio(),
+      snapshots,
+      openTrades: [],
+      closedTrades: [],
+    });
+
+    expect(report.portfolio.snapshotsSummary).toMatchObject({
+      count: 150_000,
+      peakEquity: 1_001,
+      troughEquity: 999,
+    });
   });
 });
 

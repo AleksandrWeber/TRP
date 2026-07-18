@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-07-17
+Last updated: 2026-07-18 (RC-15.1 Validation Release)
 
 Living roadmap for product direction.
 
@@ -140,6 +140,11 @@ Related:
 - US123 — Strategy Comparison
 - US124 — Simulation Report
 - US125 — RC-15 Architecture Audit
+- VS001 — Functional Validation (PASS)
+- VS002 — Long-running Simulation & Stress Testing (PASS)
+- VS003 — Consistency & Invariant Validation (PASS)
+- VS004 — Production Readiness Review (PASS WITH RECOMMENDATIONS)
+- RC-15.1 — Validation Release (validated fixes integrated; docs synced; repository quality green)
 
 ---
 
@@ -147,14 +152,14 @@ Related:
 
 **Research OS Foundation**
 
-**RC-15 complete** (Simulation Stack audited; release commit/tag pending).
+**RC-15.1 Validation Release complete** (Simulation Stack validated across VS001–VS004; fixes integrated; lint / typecheck / build / test green; release commit / tag pending).
 
 ---
 
 ## Next User Stories
 
-- RC-15 release finalize (commit / tag)
-- RC-16+
+- RC-15.1 release finalize (commit / tag)
+- RC-16 — Simulation realism & analytics (TD-028…TD-033: execution model, advanced metrics, scoring, exporters, operational-metadata isolation, large-dataset scalability)
 
 ---
 
