@@ -375,7 +375,7 @@ Domain model: [`campaign-domain-model.md`](./campaign-domain-model.md).
 
 ### ADR
 
-- Index of accepted decisions: `docs/adr/README.md` (ADR-001…ADR-007).
+- Index of accepted decisions: `docs/adr/README.md` (ADR-001…ADR-018).
 
 ### Canonical
 
@@ -601,7 +601,8 @@ RC-16 implementation risks:
 
 ## Next User Story
 
-Define RC-16 User Stories by M1–M7 and epic group within ADR-012…ADR-018.
+Next milestone: M3 — Strategy Trading Sessions. M1 (US126–US152) and M2
+(US153–US183) are complete. Remaining RC-16 work is M3–M7 under ADR-012…ADR-018.
 
 M1 Epic E1 progress: US126–US130 complete — provider-neutral Live Market Data
 contracts (`live-market-data/`) and durable event foundation (`event-processing/`:

@@ -4,7 +4,7 @@ Date: 2026-07-18
 
 Status: Approved; M1/M2 implemented
 
-Overall Verdict: **READY FOR IMPLEMENTATION**
+Overall Verdict: **M2 COMPLETE; M3 NEXT**
 
 ---
 
@@ -32,7 +32,7 @@ Implementation began with M1. M1 and M2 are now complete; M3 is next.
 - Implementation Approved: YES
 - Architecture Frozen: YES
 - Post-Freeze architectural changes: NEW ADR REQUIRED
-- Production implementation completed: NO
+- Production implementation completed: PARTIAL (M1/M2 complete; M3–M7 remain)
 - Current delivery state: M2 complete; M3 — Strategy Trading Sessions is next
 
 TRP remains a NestJS modular monolith with React, PostgreSQL, and Docker
@@ -411,13 +411,13 @@ All ten conditions are satisfied.
   safety/recovery guarantees.
 - Keep lint, standalone typecheck, build, and tests continuously green.
 - Synchronize documentation and Technical Debt with each story.
-- Run Mini Validation after M2, M4, and M6.
+- Run Mini Validation after M4 and M6 (M2 Mini Validation is complete).
 
 ---
 
 ## Overall Verdict
 
-**READY FOR IMPLEMENTATION**
+**M2 COMPLETE; M3 NEXT**
 
-RC-16 may proceed to bounded M1 User Story definition and implementation under
-ADR-012…ADR-018.
+RC-16 M1 and M2 are implemented and validated under ADR-012…ADR-018. Proceed to
+M3 Strategy Trading Sessions; final release remains blocked until M3–M7.

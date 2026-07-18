@@ -150,14 +150,12 @@ Positions, Ledger entries, and Portfolio state.
 Progress (2026-07-18): Epic E7 / US153–US158 complete — decimal financial
 contracts, durable paper-account foundation, PostgreSQL Event Processing
 runtime wiring, manual Trading Sessions with fenced eligibility, and trading
-command authorization/JWT hardening. Orders, execution, Fills, Ledger, and
-projections remain in the subsequent M2 epics.
+command authorization/JWT hardening.
 
 Epic E8 complete (2026-07-18): US159–US164 — deterministic manual paper Order
 Intents, explicit Orders-owned lifecycle/history, transactional PostgreSQL
 Order + Outbox persistence, Ledger-owned cash reservation, idempotent
 cancellation, and authorized workspace-scoped Order REST commands/queries.
-Execution matching and the single Execution Engine remain subsequent M2 stories.
 
 Epic E9 complete (2026-07-18): US165–US171 — mandatory versioned
 baseline Risk Decisions are immutable, durable, explainable, and required by
@@ -244,7 +242,8 @@ architecture, and documentation validation; release only with no blocker.
 11. Observability, Alerts, and Audit
 12. RC-16 Validation and Release
 
-Individual User Stories are defined only after this Architecture Freeze.
+User Stories are defined by milestone after Architecture Freeze. M1–M2
+(US126–US183) are complete; M3–M7 stories remain.
 
 ---
 
@@ -319,8 +318,8 @@ Expected shape:
 
 - 7 implementation/validation milestones after M0;
 - 12 epics;
-- approximately 35–50 bounded User Stories;
-- highest-risk work in idempotency, event durability, accounting, runtime
-  ownership, recovery, reconciliation, and safety.
+- 58 completed User Stories through M2 (US126–US183); M3–M7 remain;
+- highest-risk remaining work in strategy runtime ownership, recovery,
+  reconciliation, continuous safety, and operations.
 
 Architecture changes after this Freeze require a new ADR.

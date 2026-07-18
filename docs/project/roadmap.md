@@ -150,6 +150,8 @@ Related:
 - ✓ RC-16 — Planning Session (Paper Trading Platform scope approved)
 - ✓ RC-16 — Architecture Freeze (ADR-012…ADR-018 accepted)
 - ✓ RC-16 — Frozen Architecture Audit (PASS WITH MINOR RECOMMENDATIONS)
+- ✓ RC-16 — M1 Live Market Data Foundation (US126–US152)
+- ✓ RC-16 — M2 Durable Paper Order and Accounting Core (US153–US183)
 
 ---
 
@@ -201,7 +203,7 @@ atomicity/concurrency/idempotency, deterministic replay and accounting
 identities, failure/restart/reconciliation behavior, performance, architecture,
 and quality gates validated. M2 verdict: **PASS WITH MINOR RECOMMENDATIONS**.
 Next: M3 Strategy Trading Sessions.
-Mini Validation follows M2, M4, and M6.
+Mini Validation follows M4 and M6 (M2 Mini Validation is complete).
 Final-release audit: [`rc-16-release-summary.md`](./rc-16-release-summary.md)
 confirms RC-16 is not complete until M3–M7.
 

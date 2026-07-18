@@ -52,11 +52,11 @@ Limits checked (US152):
 - Outbox/Inbox ports + Prisma drivers present
 - Query API + SSE projection channel present
 
-Minor recommendation:
+Minor recommendation at M1 exit (historical):
 
-- `EventProcessingModule` still wires InMemory Outbox/Inbox by default
-  (TD-035). Prisma drivers and migration are validated by US149; Nest runtime
-  wiring remains M2 follow-up.
+- `EventProcessingModule` still wired InMemory Outbox/Inbox by default
+  (TD-035). Prisma drivers and migration were validated by US149; Nest runtime
+  wiring was completed in M2 US155 (TD-035/TD-038 resolved).
 
 ---
 

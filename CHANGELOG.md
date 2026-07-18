@@ -25,6 +25,9 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 - RC-16 M1 US129 — Consumer Inbox and Checkpoints: unique `consumerId+eventId`,
   duplicate no-op, atomic Inbox+projection+checkpoint, blocked-gap deferral,
   restart-surviving checkpoints, Prisma Inbox/Checkpoint models.
+- RC-16 M1 US130 — Outbox Dispatcher, Retry, and Dead Letters: in-process
+  polling dispatcher, attempt/backoff policy, durable dead-letter state, and
+  shutdown that leaves unpublished events recoverable.
 - RC-16 M1 US131 — Live Market Connector Port and Registry: public-stream
   connector port, duplicate-source registration guard, fake connector tests
   without network access.
@@ -203,9 +206,8 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
   Release Validation are complete. Results:
   `docs/project/rc-16-release-summary.md`.
 
-RC-15.1 is released. RC-16 M1, Epic E7, and Epic E8 are complete; Epic E9
-(US165–US171), Epic E10 (US172–US178), and Epic E11 (US179–US183) are
-complete. M2 verdict: **PASS WITH MINOR RECOMMENDATIONS**.
+RC-15.1 is released. RC-16 M1 (US126–US152) and M2 (US153–US183) are complete.
+M2 verdict: **PASS WITH MINOR RECOMMENDATIONS**. Next milestone: M3.
 
 ### Added (architecture)
 

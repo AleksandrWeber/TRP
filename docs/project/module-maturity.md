@@ -6,10 +6,10 @@ Living matrix of implementation maturity for major Research OS modules. Document
 
 > RC-15.1: the Simulation Platform modules below (MarketData, HistoricalImport, MarketDataProvider, Backtesting, Portfolio, Trade, Performance, WalkForward, StrategyComparison, SimulationReport) were validated by Validation Sprint V1 (VS001–VS004). They remain **Foundation** maturity — validation confirmed correctness and determinism, not productization. RC-16 hardening candidates are tracked as TD-028…TD-033.
 
-> RC-16: Paper Trading architecture is frozen by ADR-012…ADR-018. Planned
-> modules remain **Planned** until implementation stories provide contracts,
-> persistence, tests, and validation. The existing Stage-1 manual production
-> path is a prototype to consolidate, not the frozen target architecture.
+> RC-16: Paper Trading architecture is frozen by ADR-012…ADR-018. M1/M2 modules
+> below are Foundation. Strategy Runtime, Kill Switch, Audit, and Dashboard remain
+> Planned until their milestones. The Stage-1 manual production path is a
+> prototype to consolidate, not the frozen target architecture.
 
 Related:
 
@@ -63,17 +63,17 @@ Related:
 | StrategyComparison | Foundation | RC-16+ (UI / batch research workflows)                  |
 | SimulationReport   | Foundation | RC-16+ (export / persistence)                           |
 | Stage-1 Production | Prototype  | RC-16 (migrate; do not expand as parallel path)         |
-| LiveMarketData     | Foundation | RC-16 M1 complete                                       |
-| Financial          | Foundation | RC-16 M2 (decimal values / precision)                   |
-| PaperAccount       | Foundation | RC-16 M2 (durable paper-only account)                   |
-| TradingSession     | Foundation | RC-16 M2 (manual sessions + fencing)                    |
+| LiveMarketData     | Foundation | RC-16 M1 complete; next M3+                             |
+| Financial          | Foundation | RC-16 M2 complete; next M3+                             |
+| PaperAccount       | Foundation | RC-16 M2 complete; next M3+                             |
+| TradingSession     | Foundation | RC-16 M2 complete; next M3 strategy sessions            |
 | StrategyRuntime    | Planned    | RC-16 M3                                                |
-| Orders             | Foundation | RC-16 M2 (intent/lifecycle/reservation/cancel/API)      |
-| ExecutionEngine    | Foundation | RC-16 M2 (single paper-adapter entry + durable Fills)   |
-| PaperAdapter       | Foundation | RC-16 M2 (paper-only port + deterministic config)       |
+| Orders             | Foundation | RC-16 M2 complete; next M3+                             |
+| ExecutionEngine    | Foundation | RC-16 M2 complete; next M3+                             |
+| PaperAdapter       | Foundation | RC-16 M2 complete; next M3+                             |
 | Risk / KillSwitch  | Foundation | RC-16 M2 baseline Risk; Kill Switch remains M4          |
-| Ledger / Portfolio | Foundation | RC-16 M2 (cash reservation port; Portfolio read-only)   |
-| EventProcessing    | Foundation | RC-16 M1/M2 (PostgreSQL runtime)                        |
+| Ledger / Portfolio | Foundation | RC-16 M2 complete (accounting + projection); next M3+   |
+| EventProcessing    | Foundation | RC-16 M1/M2 complete; next M3 fan-out hardening         |
 | Audit / Dashboard  | Planned    | RC-16 M6                                                |
 
 ---

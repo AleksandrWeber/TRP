@@ -293,8 +293,8 @@ Release commit: `bf46b64d184d004add4f9c0316a3e33da1116718`
 
 Release tag: `rc-15.1`
 
-Current Research OS + Simulation Platform is released. RC-16 remains
-documentation/architecture only until implementation User Stories begin.
+Current Research OS + Simulation Platform is released. RC-16 M1 and M2 are
+implemented and validated; M3–M7 remain before final RC-16 release.
 
 ---
 
