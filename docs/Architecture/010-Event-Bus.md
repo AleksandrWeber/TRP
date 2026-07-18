@@ -6,6 +6,12 @@ Status: Approved
 
 Document Type: Architecture Specification
 
+RC-16 Architecture Freeze note (2026-07-18): ADR-013 is authoritative for
+paper-runtime events. RC-16 uses PostgreSQL Transactional Outbox/Inbox,
+durable consumer checkpoints, per-aggregate/stream ordering, retry/dead-letter,
+and at-least-once delivery with idempotent effects. It does not claim global
+ordering, exactly-once delivery, or require a distributed broker.
+
 ---
 
 # Purpose

@@ -6,6 +6,13 @@ Status: Approved
 
 Document Type: Architecture Specification
 
+RC-16 Architecture Freeze note (2026-07-18): Trading Session lifecycle,
+ownership, checkpoints, and restart recovery are governed by ADR-014.
+Paper-runtime durability uses ADR-013 events and explicit state machines; the
+existing Research Pipeline Engine is not reused as an implicit trading
+workflow engine. Broader workflow/compensation features require separate
+scope.
+
 ---
 
 # Purpose

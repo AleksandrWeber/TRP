@@ -9,9 +9,47 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ## [Unreleased]
 
-Research OS Foundation Release Candidate exists as a local commit; remote push not performed.
-
 ### Added
+
+- RC-16 M1 US126 — Live Market Data Domain Contracts
+  (`apps/api/src/modules/live-market-data/`): immutable provider-neutral
+  closed-candle, mark-price, and market-status events plus subscription and
+  checkpoint contracts.
+- RC-16 M1 US127 — Market Event Identity and Timestamp Semantics: deterministic
+  stream IDs, semantic deduplication identity independent of UUID/operational
+  clocks, distinct exchange/domain vs received/processed/recorded timestamps.
+- RC-16 M1 US128 — Transactional Outbox Persistence (`event-processing/`):
+  ADR-013 durable envelope, atomic accepted-state + Outbox commit, immutable
+  envelopes with mutable delivery metadata, ordered unpublished retrieval,
+  Prisma `OutboxEvent` model.
+- RC-16 M1 US129 — Consumer Inbox and Checkpoints: unique `consumerId+eventId`,
+  duplicate no-op, atomic Inbox+projection+checkpoint, blocked-gap deferral,
+  restart-surviving checkpoints, Prisma Inbox/Checkpoint models.
+- RC-16 M1 US130 — Outbox Dispatcher, Retry, and Dead Letters: in-process
+  at-least-once polling dispatcher, durable consumer acknowledgement,
+  retry/backoff, dead-letter exhaustion, shutdown-safe recoverable pending
+  events. Epic E1 complete.
+
+RC-15.1 is released. RC-16 M1 Epic E1 complete (US126–US130). Next: Epic E2.
+
+### Added (architecture)
+
+- RC-16 Paper Trading Platform planning document:
+  `docs/project/rc-16-paper-trading-plan.md`.
+- RC-16 Architecture Freeze ADRs:
+  - ADR-012 — Execution Architecture.
+  - ADR-013 — Event Processing Model.
+  - ADR-014 — Runtime Lifecycle.
+  - ADR-015 — Accounting Model.
+  - ADR-016 — Risk & Safety Model.
+  - ADR-017 — Module Boundaries.
+  - ADR-018 — Architectural Invariants.
+- RC-15 Retrospective & Development Guide v2, including the official
+  Architecture Freeze lifecycle gate.
+- RC-16 Frozen Architecture Audit: PASS WITH MINOR RECOMMENDATIONS;
+  Architecture Approved and Implementation Approved.
+- RC-16 implementation-readiness handoff:
+  `docs/project/rc-16-implementation-readiness.md`.
 
 - Paginated Binance historical import (startTime/endTime).
 - Multi-Strategy Foundation (Strategy Contract, Registry, Resolver).
@@ -134,6 +172,12 @@ Research OS Foundation Release Candidate exists as a local commit; remote push n
 - Knowledge dedup moved from config-only identity to Result Identity
   (`configIdentityKey` + engine + validation versions).
 - Simulation Platform accounting semantics (RC-15.1): `unrealizedPnL` now represents classic unrealized profit/loss on open positions (not raw market value), and `equity = initialCapital + realizedPnL + unrealizedPnL`. Simulation determinism is anchored to bar / session timestamps rather than wall-clock. Distinct from the `@trp/research` `researchEngineVersion` used for Knowledge identity (unchanged at `1.0.3`).
+- RC-16 phase changed from an ambiguous simulation-realism placeholder to an
+  approved, paper-only Trading Platform plan. The architecture remains a
+  modular monolith and is frozen by ADR-012…ADR-018; future architectural
+  changes require a new ADR.
+- RC-16 current phase advanced to M1 — Live Market Data Foundation after the
+  successful Frozen Architecture Audit.
 
 ### Research versions (working tree)
 

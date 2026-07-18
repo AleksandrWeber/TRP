@@ -1,10 +1,15 @@
 # TRP — Module Maturity Matrix
 
-Last updated: 2026-07-18 (RC-15.1 Validation Release)
+Last updated: 2026-07-18 (RC-16 Architecture Freeze)
 
 Living matrix of implementation maturity for major Research OS modules. Documentation only (US094 / US125).
 
 > RC-15.1: the Simulation Platform modules below (MarketData, HistoricalImport, MarketDataProvider, Backtesting, Portfolio, Trade, Performance, WalkForward, StrategyComparison, SimulationReport) were validated by Validation Sprint V1 (VS001–VS004). They remain **Foundation** maturity — validation confirmed correctness and determinism, not productization. RC-16 hardening candidates are tracked as TD-028…TD-033.
+
+> RC-16: Paper Trading architecture is frozen by ADR-012…ADR-018. Planned
+> modules remain **Planned** until implementation stories provide contracts,
+> persistence, tests, and validation. The existing Stage-1 manual production
+> path is a prototype to consolidate, not the frozen target architecture.
 
 Related:
 
@@ -23,6 +28,8 @@ Related:
 | **Mature**      | Feature-complete for current RC scope; known limitations accepted                     |
 | **Foundation**  | Core behavior ready; intentional gaps (no HTTP, no persist, etc.)                     |
 | **In progress** | Actively evolving within the current phase                                            |
+| **Prototype**   | Existing narrow path; not the frozen target; migrate rather than expand               |
+| **Planned**     | Architecture accepted; implementation has not begun                                   |
 
 ---
 
@@ -55,6 +62,17 @@ Related:
 | WalkForward        | Foundation | RC-16+ (optimization hooks — out of scope today)        |
 | StrategyComparison | Foundation | RC-16+ (UI / batch research workflows)                  |
 | SimulationReport   | Foundation | RC-16+ (export / persistence)                           |
+| Stage-1 Production | Prototype  | RC-16 (migrate; do not expand as parallel path)         |
+| LiveMarketData     | Planned    | RC-16 M1                                                |
+| TradingSession     | Planned    | RC-16 M3/M5                                             |
+| StrategyRuntime    | Planned    | RC-16 M3                                                |
+| Orders             | Planned    | RC-16 M2                                                |
+| ExecutionEngine    | Planned    | RC-16 M2                                                |
+| PaperAdapter       | Planned    | RC-16 M2                                                |
+| Risk / KillSwitch  | Planned    | RC-16 M4                                                |
+| Ledger / Portfolio | Planned    | RC-16 M2                                                |
+| EventProcessing    | Planned    | RC-16 M1/M2                                             |
+| Audit / Dashboard  | Planned    | RC-16 M6                                                |
 
 ---
 
@@ -248,6 +266,17 @@ Related:
 | **Scope**               | WalkForwardEngine (sequential BacktestEngine); comparison rankings + weighted winner; immutable report builder |
 | **Current limitations** | No optimization; no UI/REST                                                                                    |
 | **Next milestone**      | RC-16+ — research workflows / export                                                                           |
+
+### Paper Trading Platform (RC-16)
+
+| Field                   | Value                                                                                                                                                                                                                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Status**              | In progress (M1 Epic E1)                                                                                                                                                                                                                                                       |
+| **Scope**               | Live Market Data; durable Trading Sessions; Strategy Runtime; Orders; mandatory Risk; single Execution Engine; Paper Adapter; Fill → Position → Ledger → Portfolio; Outbox/Inbox; restart recovery; Audit; Dashboard                                                           |
+| **Existing prototype**  | `production/` supports approved deployment, manual tick, basic Risk, immediate paper fill, persisted signal/execution/long-or-flat position. It is not idempotent/transactional/always-on and lacks workspace ownership, durable Orders, Ledger, recovery, and reconciliation. |
+| **Frozen architecture** | ADR-012…ADR-018 and [`rc-16-paper-trading-plan.md`](./rc-16-paper-trading-plan.md)                                                                                                                                                                                             |
+| **M1 progress**         | ✓ Epic E1 US126–US130 — contracts, identity/timestamps, Outbox/Inbox/checkpoints, dispatcher/retry/dead letters                                                                                                                                                                |
+| **Next milestone**      | M1 Epic E2 — Binance Public Connector                                                                                                                                                                                                                                          |
 
 ---
 

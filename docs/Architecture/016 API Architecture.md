@@ -6,6 +6,12 @@ Status: Approved
 
 Document Type: Architecture Specification
 
+RC-16 Architecture Freeze note (2026-07-18): Paper Trading uses REST for
+authorized idempotent commands and historical/read queries, plus WebSocket or
+SSE for live read projections. Dashboard/API layers do not contain trading,
+Risk, execution, or accounting logic and never access persistence directly
+(ADR-017/018).
+
 ---
 
 # Purpose

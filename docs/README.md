@@ -8,11 +8,12 @@
 
 ## Documentation Status
 
-- Architecture: Frozen
+- Research/Simulation Architecture: Frozen (RC-15.1)
+- Paper Trading Architecture: Frozen (RC-16, ADR-012…ADR-018)
 - MVP Scope: Frozen
 - Future Features: [`docs/future/`](./future/)
 - Archive: [`docs/archive/`](./archive/)
-- New architecture documents require a new product requirement.
+- RC-16 architectural changes require a new ADR.
 
 ---
 
@@ -74,30 +75,33 @@ Full list: [`00-architecture-principles.md`](./00-architecture-principles.md)
 
 ## Docs map
 
-| Path                                                               | Role                       |
-| ------------------------------------------------------------------ | -------------------------- |
-| [`CANONICAL.md`](./CANONICAL.md)                                   | Source of truth            |
-| [`00-architecture-principles.md`](./00-architecture-principles.md) | Immutable principles       |
-| [`01-product-bible.md`](./01-product-bible.md)                     | Product intent (slim)      |
-| [`02-architecture.md`](./02-architecture.md)                       | Architecture for Stage 0–1 |
-| [`03-development-roadmap.md`](./03-development-roadmap.md)         | Stages + Sprint 0          |
-| [`04-cursor-master-prompt.md`](./04-cursor-master-prompt.md)       | AI engineering rules       |
-| [`05-uiux-guidelines.md`](./05-uiux-guidelines.md)                 | UI/UX                      |
-| [`Architecture/`](./Architecture/)                                 | Active subsystem specs     |
-| [`Implementation/`](./Implementation/)                             | Sprint guides              |
-| [`future/`](./future/)                                             | Deferred designs           |
-| [`archive/`](./archive/)                                           | Pre-cleanup drafts         |
+| Path                                                                           | Role                            |
+| ------------------------------------------------------------------------------ | ------------------------------- |
+| [`CANONICAL.md`](./CANONICAL.md)                                               | Source of truth                 |
+| [`00-architecture-principles.md`](./00-architecture-principles.md)             | Immutable principles            |
+| [`01-product-bible.md`](./01-product-bible.md)                                 | Product intent (slim)           |
+| [`02-architecture.md`](./02-architecture.md)                                   | Architecture for Stage 0–1      |
+| [`03-development-roadmap.md`](./03-development-roadmap.md)                     | Stages + Sprint 0               |
+| [`04-cursor-master-prompt.md`](./04-cursor-master-prompt.md)                   | AI engineering rules            |
+| [`05-uiux-guidelines.md`](./05-uiux-guidelines.md)                             | UI/UX                           |
+| [`Architecture/`](./Architecture/)                                             | Active subsystem specs          |
+| [`adr/`](./adr/)                                                               | Accepted architecture decisions |
+| [`project/rc-16-paper-trading-plan.md`](./project/rc-16-paper-trading-plan.md) | RC-16 scope and milestones      |
+| [`Implementation/`](./Implementation/)                                         | Sprint guides                   |
+| [`future/`](./future/)                                                         | Deferred designs                |
+| [`archive/`](./archive/)                                                       | Pre-cleanup drafts              |
 
 ---
 
 ## Next
 
-1. Run the manual MVP acceptance path in [`Implementation/019-MVP-Verification.md`](./Implementation/019-MVP-Verification.md)
-2. Promote Future scope only by updating [`CANONICAL.md`](./CANONICAL.md) after a concrete need appears
+1. Define RC-16 User Stories by milestone/epic from the approved plan.
+2. Implement only within ADR-012…ADR-018; architectural changes require a new ADR.
+3. Run Mini Validation after RC-16 milestones M2, M4, and M6.
 
 ---
 
 ## Status
 
-Phase: Architecture closed · MVP implementation complete · Manual acceptance in progress
-Version: 1.0
+Phase: RC-16 Paper Trading Architecture frozen · User Story definition next
+Version: 2.0

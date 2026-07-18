@@ -6,6 +6,13 @@ Status: Approved
 
 Document Type: Architecture Specification
 
+RC-16 Architecture Freeze note (2026-07-18): for the Paper Trading Platform,
+ADR-012…ADR-018 are authoritative. They freeze paper-only execution, the
+single Execution Engine entry point, durable Sessions/events, decimal Ledger
+accounting, mandatory Risk, module boundaries, and invariants. Broader
+real-capital, multi-order-type, reporting, and knowledge-publishing concepts in
+this document remain future target ideas unless included by the RC-16 plan.
+
 ---
 
 # Purpose

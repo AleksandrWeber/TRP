@@ -6,6 +6,13 @@ Status: Approved
 
 Document Type: Architecture Specification
 
+RC-16 Architecture Freeze note (2026-07-18): ADR-016/017/018 are
+authoritative for Paper Trading safety. Every executable Order requires
+mandatory Risk approval; Kill Switch state is durable; uncertain state fails
+safe; all trading aggregates are workspace-scoped; operator commands require
+explicit authorization. RC-16 registers no real-capital adapter or private
+trading credentials.
+
 ---
 
 # Purpose

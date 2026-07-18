@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-07-18 (RC-15.1 Validation Release)
+Last updated: 2026-07-18 (RC-16 Frozen Architecture Audit)
 
 Living roadmap for product direction.
 
@@ -145,21 +145,37 @@ Related:
 - VS003 — Consistency & Invariant Validation (PASS)
 - VS004 — Production Readiness Review (PASS WITH RECOMMENDATIONS)
 - RC-15.1 — Validation Release (validated fixes integrated; docs synced; repository quality green)
+- RC-15.1 — Official release (`bf46b64`, tag `rc-15.1`)
+- RC-15 Retrospective & Development Guide v2
+- ✓ RC-16 — Planning Session (Paper Trading Platform scope approved)
+- ✓ RC-16 — Architecture Freeze (ADR-012…ADR-018 accepted)
+- ✓ RC-16 — Frozen Architecture Audit (PASS WITH MINOR RECOMMENDATIONS)
 
 ---
 
 ## Current Phase
 
-**Research OS Foundation**
+**M1 — Live Market Data Foundation**
 
-**RC-15.1 Validation Release complete** (Simulation Stack validated across VS001–VS004; fixes integrated; lint / typecheck / build / test green; release commit / tag pending).
+RC-16 Planning, Architecture Freeze, and Frozen Architecture Audit are
+complete. Architecture Approved: YES. Implementation Approved: YES.
+Architecture changes require a new ADR.
 
 ---
 
-## Next User Stories
+## RC-16 implementation milestones
 
-- RC-15.1 release finalize (commit / tag)
-- RC-16 — Simulation realism & analytics (TD-028…TD-033: execution model, advanced metrics, scoring, exporters, operational-metadata isolation, large-dataset scalability)
+- M1 — Live Market Data Foundation
+- M2 — Durable Paper Order and Accounting Core
+- M3 — Strategy Trading Sessions
+- M4 — Risk and Safety Controls
+- M5 — Recovery and Reconciliation
+- M6 — Operations Experience
+- M7 — RC-16 Validation and Closeout
+
+Current: M1 Epic E1 complete (US126–US130). Next: Epic E2 — Binance Public
+Connector within ADR-012…ADR-018.
+Mini Validation follows M2, M4, and M6.
 
 ---
 
@@ -168,7 +184,7 @@ Related:
 - Research OS
 - AI Research Assistant
 - Portfolio Research
-- Production Trading
+- Real-capital Trading (requires future ADR; not RC-16)
 - Continuous Learning
 
 ---

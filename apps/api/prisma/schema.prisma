@@ -257,3 +257,75 @@ model ResearchReportAggregate {
 
   @@map("research_report_aggregates")
 }
+
+/// RC-16 ADR-013 durable Outbox (US128). Envelope immutable; delivery metadata mutable.
+enum OutboxDeliveryStatus {
+  pending
+  publishing
+  published
+  dead_letter
+}
+
+model OutboxEvent {
+  eventId          String              @id @map("event_id")
+  eventType        String              @map("event_type")
+  schemaVersion    Int                 @map("schema_version")
+  aggregateType    String              @map("aggregate_type")
+  aggregateId      String              @map("aggregate_id")
+  aggregateVersion Int                 @map("aggregate_version")
+  workspaceId      String              @map("workspace_id")
+  occurredAt       DateTime            @map("occurred_at")
+  recordedAt       DateTime            @map("recorded_at")
+  correlationId    String?             @map("correlation_id")
+  causationId      String?             @map("causation_id")
+  actorId          String?             @map("actor_id")
+  payload          Json
+  status           OutboxDeliveryStatus @default(pending)
+  attempts         Int                 @default(0)
+  lastError        String?             @map("last_error")
+  nextAttemptAt    DateTime?           @map("next_attempt_at")
+  publishedAt      DateTime?           @map("published_at")
+  createdAt        DateTime            @default(now()) @map("created_at")
+  updatedAt        DateTime            @updatedAt @map("updated_at")
+
+  @@unique([aggregateType, aggregateId, aggregateVersion])
+  @@index([workspaceId, status, createdAt])
+  @@index([status, nextAttemptAt, createdAt])
+  @@map("outbox_events")
+}
+
+/// RC-16 ADR-013 consumer Inbox (US129). Unique (consumerId, eventId).
+model InboxRecord {
+  consumerId      String   @map("consumer_id")
+  eventId         String   @map("event_id")
+  consumerVersion String   @map("consumer_version")
+  processedAt     DateTime @map("processed_at")
+
+  @@id([consumerId, eventId])
+  @@index([eventId])
+  @@map("inbox_records")
+}
+
+enum ConsumerCheckpointDeliveryStatus {
+  ready
+  blocked_gap
+  error
+}
+
+/// RC-16 ADR-013 consumer checkpoints (US129).
+model ConsumerCheckpointRecord {
+  consumerId           String                          @map("consumer_id")
+  streamId             String                          @map("stream_id")
+  consumerVersion      String                          @map("consumer_version")
+  workspaceId          String                          @map("workspace_id")
+  lastAppliedSequence  Int                             @map("last_applied_sequence")
+  lastAppliedEventId   String?                         @map("last_applied_event_id")
+  status               ConsumerCheckpointDeliveryStatus @default(ready)
+  blockedSequence      Int?                            @map("blocked_sequence")
+  lastError            String?                         @map("last_error")
+  updatedAt            DateTime                        @updatedAt @map("updated_at")
+
+  @@id([consumerId, streamId])
+  @@index([workspaceId, consumerId])
+  @@map("consumer_checkpoints")
+}

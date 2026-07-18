@@ -1,13 +1,13 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-18 (RC-15.1 Validation Release)
+2026-07-18 (RC-16 M1 Epic E1 complete — US126–US130)
 
 ---
 
 # Current Phase
 
-Research OS Foundation
+M1 — Live Market Data Foundation
 
 ---
 
@@ -19,13 +19,96 @@ Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slic
 
 RC-15.1 Validation Release: Validation Sprint V1 (VS001–VS004) executed against the Research & Simulation Platform; confirmed defects fixed and integrated; documentation synchronized; repository quality restored (lint / typecheck / build / test green).
 
-Next: RC-16 (simulation realism & analytics — see Technical Debt TD-028…TD-033).
+RC-16 Planning Session approved the Paper Trading Platform scope. The
+Architecture Freeze accepted ADR-012…ADR-018 before User Story definition.
+
+M1 Epic E1 complete (US126–US130): Live Market Data contracts + durable
+Outbox/Inbox/checkpoint/dispatcher foundation.
+Next: M1 Epic E2 — Binance Public Connector (not started).
+
+---
+
+# RC-16 Architecture Freeze
+
+Status:
+COMPLETE
+
+Architecture Frozen:
+YES
+
+Implementation Allowed:
+YES
+
+Architecture Changes:
+ADR Required
+
+Frozen decisions:
+
+- ADR-012 — single Execution Engine entry point; paper adapter only.
+- ADR-013 — PostgreSQL Transactional Outbox/Inbox; at-least-once delivery with
+  idempotent effects and per-stream ordering.
+- ADR-014 — durable Trading Session state machine, fenced lease, checkpoints,
+  and reconciliation-before-resume.
+- ADR-015 — Fill → Position → Ledger → Portfolio; decimal arithmetic; Ledger
+  is the financial source of truth.
+- ADR-016 — mandatory Risk approval, durable Kill Switch, fail-safe paper-only
+  operation.
+- ADR-017 — explicit module ownership, inputs, outputs, dependencies, and
+  prohibited responsibilities.
+- ADR-018 — immutable architectural invariants covering execution, events,
+  runtime, accounting, safety, time, and isolation.
+
+Canonical plan:
+[`rc-16-paper-trading-plan.md`](./rc-16-paper-trading-plan.md)
+
+ADR index: [`../adr/README.md`](../adr/README.md)
+
+No production code was changed by the Architecture Freeze.
+
+---
+
+# RC-16 Frozen Architecture Audit
+
+Status:
+PASS WITH MINOR RECOMMENDATIONS
+
+Architecture Approved:
+YES
+
+Implementation Approved:
+YES
+
+The final read-only audit confirmed:
+
+- ADR-012…ADR-018 are internally consistent;
+- every core domain object has one authoritative owner;
+- dependency direction has no circular ownership;
+- Outbox/Inbox, per-stream ordering, idempotency, checkpoints, and replay rules
+  are coherent;
+- Strategy cannot bypass Risk;
+- Orders cannot bypass Execution Engine;
+- Execution cannot modify Position, Ledger, or Portfolio;
+- Ledger remains the financial source of truth;
+- restart recovery reconciles before execution resumes;
+- real-capital execution is structurally outside RC-16.
+
+Minor non-blocking recommendations:
+
+1. Define Orders ↔ Execution strictly through ports/events; Execution must not
+   write Order persistence directly.
+2. Route cash reservation writes through Ledger; Portfolio remains a
+   projection/read model.
+3. Name the authoritative Strategy Deployment owner in M3 stories.
+4. Name the authoritative Incident owner before M4 implementation.
+
+Implementation readiness:
+[`rc-16-implementation-readiness.md`](./rc-16-implementation-readiness.md)
 
 ---
 
 # Validation Sprint V1 & RC-15.1 Validation Release
 
-Status: ✅ Closed out (no remote release; no commit / tag / push)
+Status: ✅ Released (`bf46b64`, tag `rc-15.1`, synchronized with `origin/main`)
 
 Validation Sprint V1 validated the complete Research & Simulation Platform (Historical Import → Market Data → Provider → Backtesting → Trade → Portfolio → Performance → Walk-Forward → Strategy Comparison → Simulation Report).
 
@@ -86,11 +169,17 @@ Module Maturity Matrix: [`module-maturity.md`](./module-maturity.md).
 
 Campaign History & Export API: [`api.md`](./api.md).
 
+RC-15 Retrospective & Development Guide v2:
+[`rc-15-retrospective-development-guide-v2.md`](./rc-15-retrospective-development-guide-v2.md).
+
+RC-16 Paper Trading Plan:
+[`rc-16-paper-trading-plan.md`](./rc-16-paper-trading-plan.md).
+
 ---
 
 # Release Readiness
 
-Status: RC-15.1 Validation Release closed out locally (no commit / tag / push performed)
+Status: RC-15.1 officially released; RC-16 architecture frozen
 
 ## RC-15.1 Validation Release
 
@@ -105,9 +194,12 @@ Verification (working tree):
 
 Scope: integrate validated Validation Sprint V1 fixes (VS001–VS003), synchronize documentation, register new technical debt (TD-028…TD-033), and prepare the repository for RC-16. No new functionality; no architectural changes.
 
-Current Research OS + Simulation Platform implementation exists in working tree.
-Release will be created only after explicit commit sequence.
-Push only after explicit user command.
+Release commit: `bf46b64d184d004add4f9c0316a3e33da1116718`
+
+Release tag: `rc-15.1`
+
+Current Research OS + Simulation Platform is released. RC-16 remains
+documentation/architecture only until implementation User Stories begin.
 
 ---
 

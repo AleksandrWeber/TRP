@@ -6,6 +6,11 @@ Status: Approved
 
 Document Type: Architecture Specification
 
+RC-16 Architecture Freeze note (2026-07-18): TRP remains a modular monolith.
+ADR-017 freezes Paper Trading module ownership and dependency direction; the
+named services later in this document remain potential extraction boundaries,
+not separately deployed RC-16 services. Any extraction requires a new ADR.
+
 ---
 
 # Purpose

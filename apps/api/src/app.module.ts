@@ -14,6 +14,8 @@ import { HealthModule } from './modules/health/health.module';
 import { IdentityModule } from './modules/identity/identity.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 import { MarketDataModule } from './modules/market-data/market-data.module';
+import { LiveMarketDataModule } from './modules/live-market-data/live-market-data.module';
+import { EventProcessingModule } from './modules/event-processing/event-processing.module';
 import { HistoricalImportModule } from './modules/historical-import/historical-import.module';
 import { MarketDataProviderModule } from './modules/market-data-provider/market-data-provider.module';
 import { BacktestingModule } from './modules/backtesting/backtesting.module';
@@ -52,10 +54,12 @@ import { ValidationModule } from './validation/validation.module';
     ValidationModule,
     PrismaModule,
     EventsModule,
+    EventProcessingModule,
     AuthModule,
     IdentityModule,
     WorkspaceModule,
     MarketDataModule,
+    LiveMarketDataModule,
     HistoricalImportModule,
     MarketDataProviderModule,
     PortfolioModule,

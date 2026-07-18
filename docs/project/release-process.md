@@ -8,6 +8,10 @@ Related docs:
 - ADR Index: [`../adr/README.md`](../adr/README.md)
 - Version History: [`../research/version-history.md`](../research/version-history.md)
 - Changelog: [`../../CHANGELOG.md`](../../CHANGELOG.md)
+- Development Guide v2:
+  [`rc-15-retrospective-development-guide-v2.md`](./rc-15-retrospective-development-guide-v2.md)
+- RC-16 Paper Trading Plan:
+  [`rc-16-paper-trading-plan.md`](./rc-16-paper-trading-plan.md)
 
 ---
 
@@ -50,6 +54,39 @@ If implementing a User Story would require changes in **more than three modules*
    - what should become a new User Story.
 
 Resume coding only after the user accepts a revised scope.
+
+## Architecture Freeze
+
+Architecture-significant releases require an explicit Freeze after planning
+and before implementation User Stories.
+
+Freeze requires:
+
+- accepted module ownership and dependency direction;
+- accepted runtime, event, accounting, recovery, and safety models;
+- documented architectural invariants;
+- synchronized canonical status/roadmap/ADR/debt/maturity documents;
+- explicit implementation permission.
+
+After Freeze:
+
+- implementation must remain inside accepted ADR boundaries;
+- any changed owner, reversed dependency, new execution path, new durability
+  guarantee, or changed invariant requires a new ADR;
+- User Stories cite the ADRs/invariants they implement;
+- architecture review verifies conformance rather than redesigning silently.
+
+RC-16 is frozen by ADR-012…ADR-018.
+
+## Validation cadence
+
+- Focused tests, lint, and typecheck during each User Story.
+- Full build/test at logical checkpoints.
+- Mini Validation after approximately 10–15 stories or the milestones defined
+  by the approved release plan.
+- Release Validation before closeout.
+- Final lint, standalone typecheck, build, and test gates before release commit.
+- Abort release on any failed gate.
 
 ## What not to automate
 

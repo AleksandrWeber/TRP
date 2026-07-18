@@ -1,6 +1,6 @@
 # TRP — Architecture Snapshot
 
-Last updated: 2026-07-18 (RC-15.1 Validation Release)
+Last updated: 2026-07-18 (RC-16 M1 US126)
 
 Single snapshot of the **current** architecture (RC-15). Documentation only. No future ideas.
 
@@ -409,22 +409,26 @@ RC-14 finalized — production SaaS foundation (Identity / Auth / RBAC / Workspa
 
 Historical market data → backtest / walk-forward → portfolio & trades → performance → comparison → immutable simulation report.
 
-**No paper trading. No live trading. No broker integration. No Simulation REST / UI.**
+**The RC-15 simulation modules do not perform paper/live trading or broker
+integration.** A separate Stage-1 manual paper prototype exists under
+`production/`; RC-16 freezes its consolidation into one canonical runtime.
 
 ### Modules (`apps/api/src/modules/`)
 
-| Module             | Path                    | Role                                                         |
-| ------------------ | ----------------------- | ------------------------------------------------------------ |
-| MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped |
-| HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`    |
-| MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)      |
-| Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`            |
-| Portfolio          | `portfolio/`            | `PortfolioEngine` state (cash / equity / PnL)                |
-| Trade              | `trade/`                | Virtual `TradeEngine` → `PortfolioEngine.applyExecution`     |
-| Performance        | `performance/`          | `PerformanceAnalyzer` → immutable `PerformanceReport`        |
-| WalkForward        | `walk-forward/`         | Rolling windows; reuses `BacktestEngine` sequentially        |
-| StrategyComparison | `strategy-comparison/`  | Rankings + weighted overall winner from completed results    |
-| SimulationReport   | `simulation-report/`    | `SimulationReportBuilder` → immutable consolidated artifact  |
+| Module             | Path                    | Role                                                                                                       |
+| ------------------ | ----------------------- | ---------------------------------------------------------------------------------------------------------- |
+| MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped                                               |
+| LiveMarketData     | `live-market-data/`     | Provider-neutral live contracts (US126–US127): events, identity, timestamps, subscription, checkpoint      |
+| EventProcessing    | `event-processing/`     | ADR-013 foundation (US128–US130): Outbox, Inbox, checkpoints, at-least-once dispatcher, retry/dead letters |
+| HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                  |
+| MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                    |
+| Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                          |
+| Portfolio          | `portfolio/`            | `PortfolioEngine` state (cash / equity / PnL)                                                              |
+| Trade              | `trade/`                | Virtual `TradeEngine` → `PortfolioEngine.applyExecution`                                                   |
+| Performance        | `performance/`          | `PerformanceAnalyzer` → immutable `PerformanceReport`                                                      |
+| WalkForward        | `walk-forward/`         | Rolling windows; reuses `BacktestEngine` sequentially                                                      |
+| StrategyComparison | `strategy-comparison/`  | Rankings + weighted overall winner from completed results                                                  |
+| SimulationReport   | `simulation-report/`    | `SimulationReportBuilder` → immutable consolidated artifact                                                |
 
 ### Dependency direction (acyclic)
 
@@ -502,6 +506,59 @@ Performance / StrategyComparison operate on already-scoped completed artifacts.
 
 ---
 
+## Paper Trading Platform (RC-16 — Architecture Frozen)
+
+Status: Architecture frozen; implementation not started.
+
+TRP remains a modular monolith. RC-16 advances the Stage-1 manual paper
+prototype into a durable, always-on, paper-only runtime.
+
+### Frozen direction
+
+```text
+Live Market Data → Trading Session → Strategy Runtime
+                                      ↓
+                               Signal Intent
+                                      ↓
+                              Orders → Risk
+                                      ↓ approved
+                              Execution Engine
+                                      ↓
+                           Paper Execution Adapter
+                                      ↓
+                                     Fill
+                                      ↓
+                         Position → Ledger → Portfolio
+```
+
+Cross-cutting foundations:
+
+- PostgreSQL Transactional Outbox/Inbox and durable consumer checkpoints.
+- At-least-once delivery with idempotent business effects.
+- Trading Session fenced leases, checkpoints, and reconciliation-before-resume.
+- Decimal-safe accounting; Ledger is the financial source of truth.
+- Mandatory Risk approval and durable Kill Switch.
+- Workspace ownership, authorized commands, immutable Audit Records.
+- REST commands/queries plus WebSocket/SSE read projections.
+- No real-capital adapter in RC-16.
+
+### Accepted RC-16 ADRs
+
+- ADR-012 — Execution Architecture
+- ADR-013 — Event Processing Model
+- ADR-014 — Runtime Lifecycle
+- ADR-015 — Accounting Model
+- ADR-016 — Risk & Safety Model
+- ADR-017 — Module Boundaries
+- ADR-018 — Architectural Invariants
+
+Canonical plan:
+[`rc-16-paper-trading-plan.md`](./rc-16-paper-trading-plan.md).
+
+Any architectural change after the Freeze requires a new ADR.
+
+---
+
 ## Known Technical Debt
 
 Living register: [`technical-debt.md`](./technical-debt.md) (US093).
@@ -520,8 +577,25 @@ Research/data notes:
 - No separate `accountingVersion` / runtime env metadata / equity curve on Experiment.
 - Research UI still EMA-centric; no strategy filter.
 
+RC-16 implementation risks:
+
+- consolidate Stage-1 production and RC-15 simulation abstractions into one
+  canonical execution/accounting path;
+- replace non-transactional manual tick behavior with durable idempotent
+  Session/Order processing;
+- add workspace ownership, production authorization, restart recovery, and
+  reconciliation;
+- migrate canonical financial state from floating-point prototype fields to
+  ADR-015 decimal Ledger/projections.
+
 ---
 
 ## Next User Story
 
-RC-15 release finalize (commit / tag) after US125 audit.
+Define RC-16 User Stories by M1–M7 and epic group within ADR-012…ADR-018.
+
+M1 Epic E1 progress: US126–US130 complete — provider-neutral Live Market Data
+contracts (`live-market-data/`) and durable event foundation (`event-processing/`:
+Outbox, Inbox, checkpoints, dispatcher/retry/dead letters). Historical
+`market-data/` remains the OHLCV simulation store. Epic E2 (Binance connector)
+not started.

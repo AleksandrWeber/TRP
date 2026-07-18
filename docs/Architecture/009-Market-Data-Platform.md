@@ -6,6 +6,20 @@ Status: Approved
 
 Document Type: Architecture Specification
 
+RC-16 Architecture Freeze note (2026-07-18): ADR-017 freezes Live Market
+Data as owner of public connectivity, normalization, validation, sequence/gap
+handling, checkpoints, and health. It does not own account/order execution.
+Execution adapters own broker commands; Portfolio consumes Position valuation
+outputs rather than raw Market Data. Multi-exchange and horizontal scaling
+remain future scope.
+
+RC-16 M1 US126–US127 (2026-07-18): canonical provider-neutral domain contracts
+live under `apps/api/src/modules/live-market-data/`. Closed-candle and
+mark-price events are distinct immutable types with deterministic stream
+identity and semantic deduplication that excludes operational timestamps.
+Historical OHLCV remains in `market-data/`. Connector adapters (Epic E2) must
+not leak provider payloads into these contracts.
+
 ---
 
 # Purpose

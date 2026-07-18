@@ -35,3 +35,37 @@ The Research & Simulation Platform (Backtesting / Portfolio / Trade / Performanc
 - **PnL identity.** `unrealizedPnL` now represents classic unrealized profit/loss on open positions (`(price − entry) × quantity`), not raw position market value. Raw market value is available separately via `computePositionMarketValue`. This restores `realizedPnL + unrealizedPnL = totalPnL` for every snapshot.
 - **Equity accounting.** `equity = initialCapital + realizedPnL + unrealizedPnL`, keeping `cash + market value of open positions = equity` for every snapshot.
 - **Determinism.** Equity-curve snapshots are anchored to session / bar timestamps, and CAGR duration is derived from the equity-curve span (wall-clock only as fallback), so identical inputs yield identical business results across repeated runs (operational metadata excluded).
+
+## Paper Trading architecture baseline
+
+### RC-16 Architecture Freeze — 2026-07-18
+
+No Research Engine, Validation, Knowledge Schema, simulation calculation, or
+production code version changed.
+
+ADR-012…ADR-018 freeze future paper-runtime semantics:
+
+- business calculations use domain/exchange timestamps, never wall-clock
+  execution duration;
+- operational metadata cannot change business semantics;
+- financial values use decimal-safe arithmetic;
+- Fill → Position → Ledger → Portfolio, with Ledger as financial source of
+  truth;
+- replaying the same ordered semantic event stream and configuration must
+  reproduce Orders, Fills, Positions, Ledger, Portfolio, and Risk outcomes;
+- future changes to these semantics require a new ADR and an explicit paper
+  runtime/versioning decision before release.
+
+### RC-16 Architecture readiness — 2026-07-18
+
+- RC-16 Architecture Planning completed.
+- Architecture Freeze completed through accepted ADR-012…ADR-018.
+- Frozen Architecture Audit passed with minor non-blocking recommendations.
+- Architecture Approved: YES.
+- Implementation Approved: YES.
+- Current milestone: M1 — Live Market Data Foundation.
+- US126–US130 complete: M1 Epic E1 (Market Data Contracts and Durable Event Foundation).
+
+This is an architecture/documentation milestone only. Research Engine,
+Validation, Knowledge Schema, and simulation calculation versions remain
+unchanged.

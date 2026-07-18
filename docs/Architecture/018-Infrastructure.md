@@ -6,6 +6,13 @@ Status: Approved
 
 Document Type: Architecture Specification
 
+RC-16 Architecture Freeze note (2026-07-18): the authoritative business
+durability model is PostgreSQL Outbox/Inbox and durable Trading Session state.
+Redis/BullMQ may support a measured scheduler/worker need but cannot be the
+only source of trading state. Runtime infrastructure must support graceful
+shutdown, fenced ownership, health checks, restart recovery, and
+reconciliation before execution resumes.
+
 ---
 
 # Purpose

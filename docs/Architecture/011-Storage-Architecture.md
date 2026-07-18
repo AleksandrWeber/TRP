@@ -6,6 +6,13 @@ Status: Approved
 
 Document Type: Architecture Specification
 
+RC-16 Architecture Freeze note (2026-07-18): PostgreSQL is authoritative for
+Paper Trading Sessions, Orders, Fills, Ledger, Positions, Portfolio
+projections, Risk, Outbox/Inbox, checkpoints, Incidents, and Audit. ADR-015
+requires decimal-safe financial storage and append-only Ledger entries.
+Additional time-series, object, cache, or graph stores remain deferred until a
+measured requirement justifies them.
+
 ---
 
 # Purpose

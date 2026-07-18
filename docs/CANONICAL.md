@@ -1,6 +1,6 @@
 # TRP — Canonical Source of Truth
 
-**Version:** 1.0  
+**Version:** 2.0  
 **Status:** Approved  
 **Rule:** If any document conflicts with this file, this file wins.
 
@@ -41,6 +41,9 @@ Future — everything else
 ```
 
 No other stage numbering is canonical.
+
+RC-16 advances Stage 1 from the manual paper-execution prototype to the
+always-on Paper Trading Platform. It remains paper-only.
 
 ---
 
@@ -85,7 +88,7 @@ Deferred to `docs/future/`:
 - Market State Engine
 - Strategy Selector / auto rotation
 - Multi-exchange
-- Portfolio management
+- Real-capital / leveraged / multi-currency portfolio allocation
 - Plugin marketplace
 - RAG / vector database
 - Kubernetes
@@ -98,6 +101,21 @@ Deferred to `docs/future/`:
 ## Architecture (summary)
 
 Modular monolith. Research before production. Humans approve production. AI never controls capital. Risk overrides profit.
+
+### RC-16 Paper Trading Architecture
+
+Frozen by ADR-012…ADR-018:
+
+- one canonical execution path and Paper Execution Adapter;
+- PostgreSQL Transactional Outbox/Inbox and durable checkpoints;
+- durable Trading Sessions with fenced runtime leases and restart recovery;
+- Fill → Position → Ledger → Portfolio accounting;
+- decimal-safe financial values and Ledger as financial source of truth;
+- mandatory Risk approval and durable Kill Switch;
+- explicit module ownership and immutable architectural invariants;
+- no real-capital adapter in RC-16.
+
+Architecture changes after the RC-16 Freeze require a new ADR.
 
 Details live in:
 
@@ -140,3 +158,6 @@ If a result cannot be reproduced from these, it is not trusted.
 5. ~~Implementation 009 — Authentication (JWT)~~
 6. ~~010 Workflow · 011 Events · 014 Knowledge · 016 AI · 017 Dashboard~~
 7. ~~018 First Strategy verification · 019 MVP Checklist~~
+8. ~~RC-15.1 — Validated Research & Simulation Platform~~
+9. ~~RC-16 Planning + Architecture Freeze (ADR-012…ADR-018)~~
+10. RC-16 User Story definition and milestone implementation
