@@ -12,14 +12,23 @@ import { buildMarketStatusSemanticIdentity } from './market-event-identity';
 import { buildMarketStreamId } from './market-stream-identity';
 
 /**
- * Market stream health / status values (US126).
+ * Market stream health / status values (US126 / US144).
+ * Operational state only — never alters candle/price business semantics.
+ *
+ * US144 required surface: disconnected, connecting, recovering, healthy,
+ * stale, unavailable, failed. `unknown`/`degraded` remain for bootstrap and
+ * unresolved-gap reporting.
  */
 export enum MarketHealthStatus {
   UNKNOWN = 'unknown',
   CONNECTING = 'connecting',
   HEALTHY = 'healthy',
+  /** Operationally connected but data is older than the staleness threshold. */
+  STALE = 'stale',
   DEGRADED = 'degraded',
   RECOVERING = 'recovering',
+  /** Required stream cannot become healthy (unresolved gap / hard block). */
+  UNAVAILABLE = 'unavailable',
   DISCONNECTED = 'disconnected',
   FAILED = 'failed',
 }

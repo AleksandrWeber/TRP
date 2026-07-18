@@ -195,3 +195,41 @@ export {
   type LatestMarketState,
 } from './projection/latest-market-state';
 export { LatestMarketStateProjection } from './projection/latest-market-state-projection';
+
+export {
+  evaluateMarketHealth,
+  isMarketStreamHealthy,
+  isOperationallyFresh,
+  DEFAULT_MARKET_STALENESS_POLICY,
+  type MarketStalenessPolicy,
+  type MarketHealthEvaluationInput,
+} from './status/market-health-evaluator';
+export {
+  canTransitionMarketHealth,
+  assertMarketHealthTransition,
+} from './status/market-health-transitions';
+export {
+  MarketStatusService,
+  type MarketStatusSnapshot,
+  type ApplyMarketStatusInput,
+} from './status/market-status.service';
+
+export {
+  LiveMarketMetricNames,
+  LIVE_MARKET_ALLOWED_LABEL_KEYS,
+  LiveMarketDataMetrics,
+  assertBoundedLabels,
+  type LiveMarketMetricLabels,
+  type LiveMarketMetricsSnapshot,
+} from './observability/live-market-data.metrics';
+export {
+  buildLiveMarketLog,
+  sanitizeLogFields,
+  type LiveMarketLogFields,
+  type LiveMarketLogRecord,
+} from './observability/live-market-log';
+export {
+  LiveMarketHealthProbes,
+  type RequiredStreamRef,
+  type LiveMarketProbeResult,
+} from './observability/live-market-health-probes';

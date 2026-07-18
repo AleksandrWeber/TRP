@@ -70,6 +70,7 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
 - US138–US139 complete: M1 Epic E3-B (ordering + gap recovery).
 - US140–US141 complete: M1 Epic E4-A (subscription registry + durable checkpoints).
 - US142–US143 complete: M1 Epic E4-B (startup recovery + latest-state projection). Epic E4 complete.
+- US144–US145 complete: M1 Epic E5-A (status/staleness + observability).
 
 This is an architecture/documentation milestone only. Research Engine,
 Validation, Knowledge Schema, and simulation calculation versions remain

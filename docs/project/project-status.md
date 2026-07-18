@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-18 (RC-16 M1 Epic E4 complete — US140–US143)
+2026-07-18 (RC-16 M1 Epic E5-A complete — US144–US145)
 
 ---
 
@@ -33,7 +33,9 @@ gap detection, and REST recovery with overlap elimination.
 M1 Epic E4 complete (US140–US143): durable subscriptions/checkpoints, startup
 recovery with live-event buffering, and Inbox-idempotent latest-market-state
 projection (rebuildable).
-Next: M1 Epic E5 — market status, observability, and API (not started).
+M1 Epic E5-A complete (US144–US145): market status/staleness model (operational
+health only) plus metrics, secret-safe logs, readiness/liveness probes.
+Next: M1 Epic E5-B — market status/query API and live projection channel.
 
 ---
 

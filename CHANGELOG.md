@@ -71,7 +71,15 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
   retained events/checkpoints; no strategy/Position/Portfolio/Risk. Epic E4
   complete.
 
-RC-15.1 is released. RC-16 M1 Epic E4 complete (US140–US143).
+- RC-16 M1 US144 — Market Status and Staleness Model: explicit health
+  transitions; operational-time freshness; STALE/UNAVAILABLE; durable versioned
+  MarketStatusChanged events; health never mutates candle/price semantics.
+- RC-16 M1 US145 — Market Data Logging, Metrics, and Health Checks: bounded-label
+  metrics (rate/lag/dupes/invalids/gaps/reconnects/backfill/outbox/consumer/
+  dead-letters), secret-safe structured logs, readiness vs liveness probes.
+  Epic E5-A complete.
+
+RC-15.1 is released. RC-16 M1 Epic E5-A complete (US144–US145).
 
 ### Added (architecture)
 

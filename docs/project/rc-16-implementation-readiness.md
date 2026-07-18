@@ -256,7 +256,12 @@ Epic E4-A complete. Epic E4-B progress:
 - ✓ US142 — Startup Recovery and Resubscription
 - ✓ US143 — Latest Market State Projection
 
-Epic E4 complete (US140–US143). Next: Epic E5 market status/API (not started).
+Epic E4 complete (US140–US143). Epic E5-A progress:
+
+- ✓ US144 — Market Status and Staleness Model
+- ✓ US145 — Market Data Logging, Metrics, and Health Checks
+
+Epic E5-A complete. Next: Epic E5-B query API / live channel (not started).
 
 ---
 
