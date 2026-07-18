@@ -2,7 +2,7 @@
 
 Date: 2026-07-18
 
-Status: Approved
+Status: Approved; M1/M2 implemented
 
 Overall Verdict: **READY FOR IMPLEMENTATION**
 
@@ -18,7 +18,7 @@ not change module ownership, dependency direction, execution guarantees,
 accounting, safety, recovery, or architectural invariants. They are contract
 clarifications to resolve in the first relevant User Stories.
 
-Implementation may begin with M1 — Live Market Data Foundation.
+Implementation began with M1. M1 and M2 are now complete; M3 is next.
 
 ---
 
@@ -33,7 +33,7 @@ Implementation may begin with M1 — Live Market Data Foundation.
 - Architecture Frozen: YES
 - Post-Freeze architectural changes: NEW ADR REQUIRED
 - Production implementation completed: NO
-- Current milestone: M1 — Live Market Data Foundation
+- Current delivery state: M2 complete; M3 — Strategy Trading Sessions is next
 
 TRP remains a NestJS modular monolith with React, PostgreSQL, and Docker
 Compose. RC-16 is paper-only and cannot submit real-capital Orders.
@@ -373,6 +373,9 @@ ADR-012…ADR-018 conformance has no blockers.
 M2 verdict: **PASS WITH MINOR RECOMMENDATIONS**. Progression to M3 is approved;
 the recommendations are tracked in Technical Debt. Results:
 [`rc-16-m2-mini-validation.md`](./rc-16-m2-mini-validation.md).
+
+This is a milestone-exit verdict, not final RC-16 release approval. Final
+release review: [`rc-16-release-summary.md`](./rc-16-release-summary.md).
 
 ---
 

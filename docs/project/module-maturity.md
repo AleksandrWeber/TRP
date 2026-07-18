@@ -69,7 +69,7 @@ Related:
 | TradingSession     | Foundation | RC-16 M2 (manual sessions + fencing)                    |
 | StrategyRuntime    | Planned    | RC-16 M3                                                |
 | Orders             | Foundation | RC-16 M2 (intent/lifecycle/reservation/cancel/API)      |
-| ExecutionEngine    | Planned    | RC-16 M2                                                |
+| ExecutionEngine    | Foundation | RC-16 M2 (single paper-adapter entry + durable Fills)   |
 | PaperAdapter       | Foundation | RC-16 M2 (paper-only port + deterministic config)       |
 | Risk / KillSwitch  | Foundation | RC-16 M2 baseline Risk; Kill Switch remains M4          |
 | Ledger / Portfolio | Foundation | RC-16 M2 (cash reservation port; Portfolio read-only)   |
@@ -284,6 +284,7 @@ Related:
 | **E10 progress**        | ✓ US172–US178: Fill-derived Position, authoritative balanced Ledger, atomic accounting, versioned valuation, Ledger-driven Portfolio, deterministic reconciliation, workspace-scoped accounting API                                                                            |
 | **E11 validation**      | ✓ US179–US183: contracts/RBAC, PostgreSQL atomicity/concurrency, deterministic replay/invariants, failure/reconciliation, performance/conformance/quality gates                                                                                                                |
 | **Next milestone**      | M3 — Strategy Trading Sessions                                                                                                                                                                                                                                                 |
+| **Release review**      | Final RC-16 release held until M3–M7; see [`rc-16-release-summary.md`](./rc-16-release-summary.md)                                                                                                                                                                             |
 
 ---
 

@@ -305,6 +305,10 @@ RC-16 is complete only when:
 - architecture/documentation are synchronized;
 - no unresolved release blocker remains.
 
+Final-release review status (2026-07-18): M1/M2 are complete, but M3–M7 and
+their release gates remain. RC-16 is not yet complete. See
+[`rc-16-release-summary.md`](./rc-16-release-summary.md).
+
 ---
 
 ## Complexity assessment

@@ -397,7 +397,7 @@ Note: versions describe working-tree Research OS semantics; dedicated git releas
 
 ## Current Phase
 
-Research OS Foundation
+RC-16 M2 complete — M3 Strategy Trading Sessions is next.
 
 RC-13 finalized — Research Intelligence layer (Insight / Cross-Campaign / Recommendation / ResearchReport + read-only REST) on the unified Pipeline Engine.
 
@@ -517,7 +517,7 @@ Performance / StrategyComparison operate on already-scoped completed artifacts.
 
 ## Paper Trading Platform (RC-16 — Architecture Frozen)
 
-Status: Architecture frozen; implementation not started.
+Status: Architecture frozen; M1 and M2 implemented and validated. M3–M7 remain.
 
 TRP remains a modular monolith. RC-16 advances the Stage-1 manual paper
 prototype into a durable, always-on, paper-only runtime.
@@ -740,3 +740,7 @@ RECOMMENDATIONS**; exact-decimal mark origins, explicit per-Position Fill
 application order for M3 concurrency, and bounded Ledger-history pagination are
 tracked hardening work. See
 [`rc-16-m2-mini-validation.md`](./rc-16-m2-mini-validation.md).
+
+The RC-16 final-release audit retains ADR-012…ADR-018 as ACTIVE but does not
+approve release before M3–M7. See
+[`rc-16-release-summary.md`](./rc-16-release-summary.md).

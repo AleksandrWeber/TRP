@@ -198,6 +198,10 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 - RC-16 M2 US183 — small/medium/practical performance baseline, architecture
   conformance, full regression, quality gates, and release-readiness review.
   Results: `docs/project/rc-16-m2-mini-validation.md`.
+- RC-16 final release review — documentation synchronized and final release
+  correctly held until M3–M7, TD-034/TD-039/TD-040/TD-042 entry gates, and M7
+  Release Validation are complete. Results:
+  `docs/project/rc-16-release-summary.md`.
 
 RC-15.1 is released. RC-16 M1, Epic E7, and Epic E8 are complete; Epic E9
 (US165–US171), Epic E10 (US172–US178), and Epic E11 (US179–US183) are

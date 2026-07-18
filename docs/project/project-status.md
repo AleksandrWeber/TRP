@@ -262,7 +262,19 @@ RC-16 Paper Trading Plan:
 
 # Release Readiness
 
-Status: RC-15.1 officially released; RC-16 architecture frozen
+Status: RC-15.1 officially released; RC-16 M2 complete, final release not ready
+
+## RC-16 final release review
+
+M1 and M2 are complete and their validation gates pass. RC-16 final release is
+not ready because the approved plan still requires M3–M7: Strategy Runtime,
+continuous Risk and durable Kill Switch, full runtime recovery, operations
+experience, and final RC-16 validation/closeout. The final review also retains
+the known Stage-1 parallel execution path (TD-034) and pre-M3 prerequisites
+TD-039/TD-040/TD-042 as blockers before automated strategy execution is
+enabled.
+
+Results: [`rc-16-release-summary.md`](./rc-16-release-summary.md).
 
 ## RC-15.1 Validation Release
 

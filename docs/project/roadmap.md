@@ -155,7 +155,7 @@ Related:
 
 ## Current Phase
 
-**M2 — Durable Paper Order and Accounting Core**
+**M2 complete — M3 Strategy Trading Sessions is next (not started)**
 
 RC-16 Planning, Architecture Freeze, and Frozen Architecture Audit are
 complete. Architecture Approved: YES. Implementation Approved: YES.
@@ -202,6 +202,8 @@ identities, failure/restart/reconciliation behavior, performance, architecture,
 and quality gates validated. M2 verdict: **PASS WITH MINOR RECOMMENDATIONS**.
 Next: M3 Strategy Trading Sessions.
 Mini Validation follows M2, M4, and M6.
+Final-release audit: [`rc-16-release-summary.md`](./rc-16-release-summary.md)
+confirms RC-16 is not complete until M3–M7.
 
 ---
 

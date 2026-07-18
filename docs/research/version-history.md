@@ -63,7 +63,7 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
 - Frozen Architecture Audit passed with minor non-blocking recommendations.
 - Architecture Approved: YES.
 - Implementation Approved: YES.
-- Current milestone: M1 — Live Market Data Foundation.
+- M1 and M2 are complete; next milestone: M3 — Strategy Trading Sessions.
 - US126–US130 complete: M1 Epic E1 (Market Data Contracts and Durable Event Foundation).
 - US131–US134 complete: M1 Epic E2 (Binance public connector + resilience).
 - US135–US137 complete: M1 Epic E3-A (normalization + quarantine).
@@ -111,6 +111,9 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
   failure/restart reconciliation, performance, architecture, and quality gates
   pass. M2 exits PASS WITH MINOR RECOMMENDATIONS. See
   `docs/project/rc-16-m2-mini-validation.md`.
+- RC-16 final-release review completed: M1/M2 evidence remains valid, but the
+  release is not ready before M3–M7 and final closeout. See
+  `docs/project/rc-16-release-summary.md`.
 
 These changes establish the separate RC-16 paper runtime. Research Engine,
 Validation, Knowledge Schema, and RC-15 simulation calculation versions remain
