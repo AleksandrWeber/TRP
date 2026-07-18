@@ -65,6 +65,7 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
 - Implementation Approved: YES.
 - Current milestone: M1 — Live Market Data Foundation.
 - US126–US130 complete: M1 Epic E1 (Market Data Contracts and Durable Event Foundation).
+- US131–US133 complete: M1 Epic E2-A (connector port, Binance REST, WebSocket lifecycle).
 
 This is an architecture/documentation milestone only. Research Engine,
 Validation, Knowledge Schema, and simulation calculation versions remain

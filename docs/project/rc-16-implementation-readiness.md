@@ -225,7 +225,13 @@ M1 Epic E1 progress:
 - ✓ US129 — Consumer Inbox and Checkpoints
 - ✓ US130 — Outbox Dispatcher, Retry, and Dead Letters
 
-Epic E1 complete. Next M1 epic: E2 — Binance Public Connector (not started).
+Epic E1 complete. Epic E2-A progress:
+
+- ✓ US131 — Live Market Connector Port and Registry
+- ✓ US132 — Binance REST Metadata and Backfill Adapter
+- ✓ US133 — Binance WebSocket Connection Lifecycle
+
+Epic E2-A complete. Stopped before reconnect/normalization stories.
 
 ---
 

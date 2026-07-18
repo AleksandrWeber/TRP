@@ -418,7 +418,7 @@ integration.** A separate Stage-1 manual paper prototype exists under
 | Module             | Path                    | Role                                                                                                       |
 | ------------------ | ----------------------- | ---------------------------------------------------------------------------------------------------------- |
 | MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped                                               |
-| LiveMarketData     | `live-market-data/`     | Provider-neutral live contracts (US126–US127): events, identity, timestamps, subscription, checkpoint      |
+| LiveMarketData     | `live-market-data/`     | Live contracts (US126–US127) + connector port (US131); Binance REST (US132) + WebSocket lifecycle (US133)  |
 | EventProcessing    | `event-processing/`     | ADR-013 foundation (US128–US130): Outbox, Inbox, checkpoints, at-least-once dispatcher, retry/dead letters |
 | HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                  |
 | MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                    |
@@ -597,5 +597,8 @@ Define RC-16 User Stories by M1–M7 and epic group within ADR-012…ADR-018.
 M1 Epic E1 progress: US126–US130 complete — provider-neutral Live Market Data
 contracts (`live-market-data/`) and durable event foundation (`event-processing/`:
 Outbox, Inbox, checkpoints, dispatcher/retry/dead letters). Historical
-`market-data/` remains the OHLCV simulation store. Epic E2 (Binance connector)
-not started.
+`market-data/` remains the OHLCV simulation store.
+
+M1 Epic E2-A progress: US131–US133 complete — LiveMarketConnector port/registry,
+Binance REST metadata/backfill, Binance WebSocket lifecycle (fake socket tests;
+raw payloads do not escape the adapter).

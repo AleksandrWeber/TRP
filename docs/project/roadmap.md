@@ -173,8 +173,8 @@ Architecture changes require a new ADR.
 - M6 — Operations Experience
 - M7 — RC-16 Validation and Closeout
 
-Current: M1 Epic E1 complete (US126–US130). Next: Epic E2 — Binance Public
-Connector within ADR-012…ADR-018.
+Current: M1 Epic E2-A complete (US131–US133). Next M1 work within
+ADR-012…ADR-018 (reconnect/normalization not in this slice).
 Mini Validation follows M2, M4, and M6.
 
 ---

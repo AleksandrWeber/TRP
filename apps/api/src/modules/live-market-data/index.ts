@@ -60,3 +60,36 @@ export {
 
 export type { MarketCheckpoint, MarketCheckpointInput } from './domain/market-checkpoint';
 export { createMarketCheckpoint } from './domain/market-checkpoint';
+
+export {
+  ConnectorConnectionState,
+  isConnectorConnectionState,
+} from './ports/connector-connection-state';
+export type {
+  LiveMarketConnector,
+  LiveMarketConnectorCapabilities,
+  LiveMarketConnectorHealth,
+  LiveMarketSubscribeRequest,
+  LiveMarketBackfillRequest,
+  InstrumentPrecisionMetadata,
+  ClosedCandleBackfillBar,
+} from './ports/live-market-connector';
+export { LiveMarketConnectorRegistry } from './ports/live-market-connector-registry';
+export { LIVE_MARKET_CONNECTOR_REGISTRY } from './ports/live-market-connector-registry.token';
+export {
+  FakeLiveMarketConnector,
+  type FakeLiveMarketConnectorOptions,
+} from './ports/fake-live-market-connector';
+
+export { BINANCE_SPOT_SOURCE_ID } from './connectors/binance/binance-spot.source';
+export {
+  BinanceRestAdapter,
+  type BinanceRestAdapterOptions,
+} from './connectors/binance/binance-rest.adapter';
+export {
+  BinanceWebSocketConnector,
+  type BinanceWebSocketConnectorOptions,
+  type TrackedSubscription,
+  type SubscriptionAckStatus,
+} from './connectors/binance/binance-websocket.connector';
+export { FakeWebSocket, createFakeWebSocketFactory } from './connectors/binance/fake-websocket';

@@ -25,12 +25,18 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 - RC-16 M1 US129 — Consumer Inbox and Checkpoints: unique `consumerId+eventId`,
   duplicate no-op, atomic Inbox+projection+checkpoint, blocked-gap deferral,
   restart-surviving checkpoints, Prisma Inbox/Checkpoint models.
-- RC-16 M1 US130 — Outbox Dispatcher, Retry, and Dead Letters: in-process
-  at-least-once polling dispatcher, durable consumer acknowledgement,
-  retry/backoff, dead-letter exhaustion, shutdown-safe recoverable pending
-  events. Epic E1 complete.
+- RC-16 M1 US131 — Live Market Connector Port and Registry: public-stream
+  connector port, duplicate-source registration guard, fake connector tests
+  without network access.
+- RC-16 M1 US132 — Binance REST Metadata and Backfill Adapter: exchangeInfo
+  precision mapping, bounded closed-candle backfill, rate-limit retry; Binance
+  payloads remain adapter-internal.
+- RC-16 M1 US133 — Binance WebSocket Connection Lifecycle: explicit connection
+  states, subscription ack tracking, idempotent subscribe/unsubscribe, clean
+  shutdown, raw messages retained inside adapter; no private credentials.
+  Epic E2-A complete.
 
-RC-15.1 is released. RC-16 M1 Epic E1 complete (US126–US130). Next: Epic E2.
+RC-15.1 is released. RC-16 M1 Epic E2-A complete (US131–US133).
 
 ### Added (architecture)
 

@@ -1,8 +1,19 @@
 import { Module } from '@nestjs/common';
+import { LiveMarketConnectorRegistry } from './ports/live-market-connector-registry';
+import { LIVE_MARKET_CONNECTOR_REGISTRY } from './ports/live-market-connector-registry.token';
 
 /**
- * Live Market Data Nest module (US126).
- * Domain contracts only in E1 — no connector, strategy, Orders, or accounting.
+ * Live Market Data Nest module (US126–US131).
+ * Domain contracts + connector port/registry. No strategy / Orders / accounting.
  */
-@Module({})
+@Module({
+  providers: [
+    LiveMarketConnectorRegistry,
+    {
+      provide: LIVE_MARKET_CONNECTOR_REGISTRY,
+      useExisting: LiveMarketConnectorRegistry,
+    },
+  ],
+  exports: [LiveMarketConnectorRegistry, LIVE_MARKET_CONNECTOR_REGISTRY],
+})
 export class LiveMarketDataModule {}
