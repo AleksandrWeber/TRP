@@ -78,8 +78,15 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
   metrics (rate/lag/dupes/invalids/gaps/reconnects/backfill/outbox/consumer/
   dead-letters), secret-safe structured logs, readiness vs liveness probes.
   Epic E5-A complete.
+- RC-16 M1 US146 — Market Status and Query API: workspace-scoped read-only
+  GET endpoints for subscriptions, stream status, latest projections, and
+  checkpoints; provider-neutral DTOs; no Orders/Sessions/strategy.
+- RC-16 M1 US147 — Live Projection Channel: SSE fan-out of canonical
+  projections with reconnect cursors, drop-oldest backpressure, and channel
+  isolation from ingestion; `authoritative: false` on all envelopes.
+  Epic E5 complete. M1 Live Market Data Foundation complete.
 
-RC-15.1 is released. RC-16 M1 Epic E5-A complete (US144–US145).
+RC-15.1 is released. RC-16 M1 Epic E5 complete (US144–US147).
 
 ### Added (architecture)
 

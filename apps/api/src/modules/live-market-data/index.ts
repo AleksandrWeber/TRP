@@ -233,3 +233,20 @@ export {
   type RequiredStreamRef,
   type LiveMarketProbeResult,
 } from './observability/live-market-health-probes';
+
+export { MarketDataQueryService } from './api/market-data-query.service';
+export { MarketDataQueryController } from './api/market-data-query.controller';
+export type {
+  MarketSubscriptionView,
+  MarketStreamStatusView,
+  MarketLatestStateView,
+  MarketCheckpointView,
+  MarketStreamDetailView,
+} from './api/market-data-views';
+export {
+  MarketProjectionBroadcaster,
+  type MarketProjectionEnvelope,
+  type MarketProjectionCursor,
+} from './api/market-projection-broadcaster';
+export { MarketProjectionChannelService } from './api/market-projection-channel.service';
+export { MarketProjectionSseController } from './api/market-projection-sse.controller';

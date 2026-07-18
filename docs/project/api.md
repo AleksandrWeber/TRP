@@ -1,8 +1,8 @@
 # TRP — Campaign History, Export, Import, Jobs, Knowledge & Research Intelligence API
 
-Last updated: 2026-07-17
+Last updated: 2026-07-18
 
-Living HTTP contract for Campaign Session history, export, import, Jobs status, Knowledge search, and Research Intelligence (Insights / Recommendations / Reports / Cross-Campaign Analysis).
+Living HTTP contract for Campaign Session history, export, import, Jobs status, Knowledge search, Research Intelligence (Insights / Recommendations / Reports / Cross-Campaign Analysis), and Live Market Data query/SSE (RC-16 M1).
 Domain context: [`campaign-domain-model.md`](./campaign-domain-model.md).
 
 ---
@@ -294,3 +294,41 @@ Returns `HistoryPage<CrossCampaignAnalysisResult>` (stored analyze results; incl
 
 - `200` — `CrossCampaignAnalysisResult`
 - `404` — not found
+
+---
+
+## Live Market Data (RC-16 M1 US146–US147)
+
+Read-only workspace-scoped market query and projection streaming.
+Requires JWT + `X-Workspace-Id`. Responses are provider-neutral and
+explicitly non-authoritative for trading decisions.
+
+### Query API (US146)
+
+| Method | Path                                           | Notes                               |
+| ------ | ---------------------------------------------- | ----------------------------------- |
+| `GET`  | `/v1/market-data/subscriptions`                | Desired subscriptions for workspace |
+| `GET`  | `/v1/market-data/subscriptions/:id`            | One subscription (`404` if missing) |
+| `GET`  | `/v1/market-data/streams/status`               | Operational health rows             |
+| `GET`  | `/v1/market-data/streams/latest`               | Latest projection rows              |
+| `GET`  | `/v1/market-data/streams/:streamId/status`     | One status                          |
+| `GET`  | `/v1/market-data/streams/:streamId/latest`     | One latest state                    |
+| `GET`  | `/v1/market-data/streams/:streamId/checkpoint` | Durable checkpoint                  |
+| `GET`  | `/v1/market-data/streams/:streamId`            | Combined detail view                |
+
+Guarantees: GET-only; no Orders/Sessions/strategy evaluation; no raw Binance
+payload fields; `authoritative: false` / `operationalOnly: true` on views.
+
+### Projection SSE (US147)
+
+#### `GET /v1/market-data/projections/stream` (`text/event-stream`)
+
+| Query            | Notes                                     |
+| ---------------- | ----------------------------------------- |
+| `streamId`       | Optional stream filter                    |
+| `cursorVersion`  | Resume after this projection version      |
+| `cursorStreamId` | Stream id paired with cursor              |
+| `refresh`        | `1`/`true` — emit current snapshots first |
+
+Envelopes carry canonical `MarketLatestStateView` only. Slow clients use
+bounded drop-oldest buffers; channel failures never block ingestion.

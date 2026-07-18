@@ -13,22 +13,24 @@ Execution adapters own broker commands; Portfolio consumes Position valuation
 outputs rather than raw Market Data. Multi-exchange and horizontal scaling
 remain future scope.
 
-RC-16 M1 US126–US145 (2026-07-18): canonical provider-neutral domain contracts,
+RC-16 M1 US126–US147 (2026-07-18): canonical provider-neutral domain contracts,
 public connector foundation, normalization/quarantine, stream integrity, durable
 desired subscriptions, durable checkpoints, startup recovery, latest-state
-projection, market status/staleness, and observability under
-`apps/api/src/modules/live-market-data/`. Closed-candle and mark-price events are
-distinct immutable types with deterministic stream identity. Connector
-port/registry, Binance REST/WebSocket, reconnect/resilience,
-normalization/validation with safe quarantine, per-stream dedup/ordering, REST
-gap recovery, workspace-scoped subscription registry, Prisma-backed market
-stream checkpoints (heartbeat separate from semantic progress), startup
-recovery with live-event buffering, Inbox-idempotent latest-market-state
-projection (rebuildable), operational market-health/staleness (never mutating
-business semantics), and bounded metrics/secret-safe logs/readiness-liveness
-probes are implemented; workspace query APIs and live projection channels remain
-later M1 stories. Historical OHLCV remains in `market-data/`. Provider payloads
-must not leak outside connector adapters.
+projection, market status/staleness, observability, workspace-scoped read APIs,
+and SSE live projection channel under `apps/api/src/modules/live-market-data/`.
+Closed-candle and mark-price events are distinct immutable types with
+deterministic stream identity. Connector port/registry, Binance REST/WebSocket,
+reconnect/resilience, normalization/validation with safe quarantine, per-stream
+dedup/ordering, REST gap recovery, workspace-scoped subscription registry,
+Prisma-backed market stream checkpoints (heartbeat separate from semantic
+progress), startup recovery with live-event buffering, Inbox-idempotent
+latest-market-state projection (rebuildable), operational market-health/staleness
+(never mutating business semantics), bounded metrics/secret-safe
+logs/readiness-liveness probes, read-only query API (`GET /v1/market-data/...`),
+and detached SSE projection streaming with reconnect cursors and drop-oldest
+backpressure are implemented. M1 Live Market Data Foundation is complete.
+Historical OHLCV remains in `market-data/`. Provider payloads must not leak
+outside connector adapters. Client UI caches are never authoritative.
 
 ---
 

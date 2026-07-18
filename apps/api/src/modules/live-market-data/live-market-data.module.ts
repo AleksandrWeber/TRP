@@ -5,6 +5,12 @@ import type { ConsumerCheckpointRepository } from '../event-processing/repositor
 import { INBOX_REPOSITORY } from '../event-processing/repositories/inbox.repository.token';
 import { CONSUMER_CHECKPOINT_REPOSITORY } from '../event-processing/repositories/consumer-checkpoint.repository.token';
 import { PrismaService } from '../../storage/prisma/prisma.module';
+import { WorkspaceModule } from '../workspace';
+import { MarketDataQueryController } from './api/market-data-query.controller';
+import { MarketDataQueryService } from './api/market-data-query.service';
+import { MarketProjectionBroadcaster } from './api/market-projection-broadcaster';
+import { MarketProjectionChannelService } from './api/market-projection-channel.service';
+import { MarketProjectionSseController } from './api/market-projection-sse.controller';
 import { MARKET_CHECKPOINT_PERSISTENCE } from './checkpoints/market-checkpoint-persistence';
 import { MarketCheckpointStore } from './checkpoints/market-checkpoint-store';
 import { PrismaMarketCheckpointPersistence } from './checkpoints/prisma-market-checkpoint.persistence';
@@ -21,12 +27,13 @@ import { MarketSubscriptionRegistry } from './subscriptions/market-subscription-
 import { PrismaMarketSubscriptionPersistence } from './subscriptions/prisma-market-subscription.persistence';
 
 /**
- * Live Market Data Nest module (US126–US145).
- * Domain contracts through status/staleness and observability probes.
+ * Live Market Data Nest module (US126–US147).
+ * Domain through E5 query API and SSE projection channel.
  * No strategy / Orders / accounting.
  */
 @Module({
-  imports: [EventProcessingModule],
+  imports: [EventProcessingModule, WorkspaceModule],
+  controllers: [MarketDataQueryController, MarketProjectionSseController],
   providers: [
     LiveMarketConnectorRegistry,
     {
@@ -47,14 +54,22 @@ import { PrismaMarketSubscriptionPersistence } from './subscriptions/prisma-mark
       inject: [PrismaService],
     },
     MarketCheckpointStore,
+    MarketProjectionBroadcaster,
     {
       provide: LatestMarketStateProjection,
       useFactory: (
         inbox: InboxRepository,
         consumerCheckpoints: ConsumerCheckpointRepository,
         marketCheckpoints: MarketCheckpointStore,
-      ) => new LatestMarketStateProjection(inbox, consumerCheckpoints, marketCheckpoints),
-      inject: [INBOX_REPOSITORY, CONSUMER_CHECKPOINT_REPOSITORY, MarketCheckpointStore],
+        broadcaster: MarketProjectionBroadcaster,
+      ) =>
+        new LatestMarketStateProjection(inbox, consumerCheckpoints, marketCheckpoints, broadcaster),
+      inject: [
+        INBOX_REPOSITORY,
+        CONSUMER_CHECKPOINT_REPOSITORY,
+        MarketCheckpointStore,
+        MarketProjectionBroadcaster,
+      ],
     },
     MarketStatusService,
     LiveMarketDataMetrics,
@@ -63,6 +78,8 @@ import { PrismaMarketSubscriptionPersistence } from './subscriptions/prisma-mark
       useFactory: (status: MarketStatusService) => new LiveMarketHealthProbes(status),
       inject: [MarketStatusService],
     },
+    MarketDataQueryService,
+    MarketProjectionChannelService,
   ],
   exports: [
     LiveMarketConnectorRegistry,
@@ -75,6 +92,9 @@ import { PrismaMarketSubscriptionPersistence } from './subscriptions/prisma-mark
     MarketStatusService,
     LiveMarketDataMetrics,
     LiveMarketHealthProbes,
+    MarketDataQueryService,
+    MarketProjectionBroadcaster,
+    MarketProjectionChannelService,
   ],
 })
 export class LiveMarketDataModule {}

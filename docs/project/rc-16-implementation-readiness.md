@@ -261,7 +261,13 @@ Epic E4 complete (US140–US143). Epic E5-A progress:
 - ✓ US144 — Market Status and Staleness Model
 - ✓ US145 — Market Data Logging, Metrics, and Health Checks
 
-Epic E5-A complete. Next: Epic E5-B query API / live channel (not started).
+Epic E5-A complete. Epic E5-B progress:
+
+- ✓ US146 — Market Status and Query API
+- ✓ US147 — Live Projection Channel (SSE)
+
+Epic E5 complete (US144–US147). M1 Live Market Data Foundation complete.
+Next: M2 Durable Paper Order and Accounting Core.
 
 ---
 

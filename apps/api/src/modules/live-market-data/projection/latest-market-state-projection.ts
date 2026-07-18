@@ -7,6 +7,7 @@ import { IdempotentConsumerProcessor } from '../../event-processing/idempotent-c
 import type { InboxRepository } from '../../event-processing/repositories/inbox.repository';
 import type { ConsumerCheckpointRepository } from '../../event-processing/repositories/consumer-checkpoint.repository';
 import type { DurableMarketCheckpoint } from '../checkpoints/market-checkpoint-persistence';
+import type { MarketProjectionBroadcaster } from '../api/market-projection-broadcaster';
 import type { MarketCheckpointStore } from '../checkpoints/market-checkpoint-store';
 import { isClosedCandleEvent, isMarkPriceEvent, type MarketEvent } from '../domain/market-event';
 import { toDurableMarketEnvelope } from '../../event-processing/domain/to-durable-market-envelope';
@@ -20,6 +21,7 @@ import {
  * Latest market-state projection (US143 / ADR-013).
  * Applies via Inbox idempotency; rebuildable from retained events + checkpoints.
  * Workspace- and stream-scoped. No strategy / Position / Portfolio / Risk logic.
+ * Optional broadcaster fan-out is detached from apply (US147).
  */
 @Injectable()
 export class LatestMarketStateProjection {
@@ -33,6 +35,7 @@ export class LatestMarketStateProjection {
     inbox: InboxRepository,
     consumerCheckpoints: ConsumerCheckpointRepository,
     private readonly marketCheckpoints: MarketCheckpointStore,
+    private readonly broadcaster: MarketProjectionBroadcaster | null = null,
   ) {
     this.inbox = inbox;
     this.consumerCheckpoints = consumerCheckpoints;
@@ -44,6 +47,7 @@ export class LatestMarketStateProjection {
       getProjection: (workspaceId, streamId) => this.get(workspaceId, streamId),
       saveProjection: (workspaceId, streamId, projection) => {
         this.byStream.set(key(workspaceId, streamId), projection);
+        this.broadcaster?.publish(projection, new Date().toISOString(), 'update');
       },
       clearProjection: (workspaceId, streamId) => {
         this.byStream.delete(key(workspaceId, streamId));

@@ -173,8 +173,8 @@ Architecture changes require a new ADR.
 - M6 — Operations Experience
 - M7 — RC-16 Validation and Closeout
 
-Current: M1 Epic E5-A complete (US144–US145). Next: Epic E5-B market query
-API and live projection channel within ADR-012…ADR-018.
+Current: M1 Epic E5 complete (US144–US147). Next: M2 Durable Paper Order and
+Accounting Core within ADR-012…ADR-018.
 Mini Validation follows M2, M4, and M6.
 
 ---
