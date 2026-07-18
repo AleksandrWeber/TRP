@@ -37,6 +37,29 @@ model WorkspaceRecord {
   @@map("workspace_records")
 }
 
+/// Workspace-owned Strategy definition (US004) with trading configuration (US005).
+model StrategyRecord {
+  id                String   @id
+  workspaceId       String   @map("workspace_id")
+  name              String
+  description       String
+  status            String
+  tradingPair       String   @map("trading_pair")
+  timeframe         String
+  direction         String
+  positionSize      Float    @map("position_size")
+  stopLossPercent   Float    @map("stop_loss_percent")
+  takeProfitPercent Float    @map("take_profit_percent")
+  parameters        Json
+  createdAt         DateTime @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@index([workspaceId, status])
+  @@index([workspaceId, createdAt])
+  @@index([workspaceId, tradingPair, timeframe])
+  @@map("strategy_records")
+}
+
 model Dataset {
   id          String       @id @default(cuid())
   symbol      String

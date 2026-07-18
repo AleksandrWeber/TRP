@@ -6,6 +6,14 @@ export type ActiveWorkspace = {
   name: string;
 };
 
+export type ActiveWorkspaceListener = (workspace: ActiveWorkspace | null) => void;
+
+const activeWorkspaceListeners = new Set<ActiveWorkspaceListener>();
+
+function notifyActiveWorkspaceListeners(workspace: ActiveWorkspace | null) {
+  activeWorkspaceListeners.forEach((listener) => listener(workspace));
+}
+
 export function getAccessToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
 }
@@ -39,8 +47,17 @@ export function getActiveWorkspace(): ActiveWorkspace | null {
 
 export function setActiveWorkspace(workspace: ActiveWorkspace) {
   localStorage.setItem(WORKSPACE_KEY, JSON.stringify(workspace));
+  notifyActiveWorkspaceListeners(workspace);
 }
 
 export function clearActiveWorkspace() {
   localStorage.removeItem(WORKSPACE_KEY);
+  notifyActiveWorkspaceListeners(null);
+}
+
+export function subscribeToActiveWorkspace(listener: ActiveWorkspaceListener) {
+  activeWorkspaceListeners.add(listener);
+  return () => {
+    activeWorkspaceListeners.delete(listener);
+  };
 }

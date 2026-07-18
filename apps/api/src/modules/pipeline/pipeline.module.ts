@@ -1,4 +1,4 @@
-import { Inject, Module, OnModuleInit } from '@nestjs/common';
+import { forwardRef, Inject, Module, OnModuleInit } from '@nestjs/common';
 import { CampaignPersistenceModule } from '../campaign-persistence/campaign-persistence.module';
 import { CampaignPersistenceService } from '../campaign-persistence/campaign-persistence.service';
 import { CampaignSessionFactory } from '../campaign-session/campaign-session.factory';
@@ -18,9 +18,10 @@ import { registerCampaignPipelineSteps } from './steps/campaign/register-campaig
  * Generic Research Pipeline Nest module (US081–US097).
  * Domain + step registry + executor + hooks + templates + Campaign step registration.
  * Campaign / Replay / Knowledge / Insight / Cross-Campaign Analysis orchestrators execute via PipelineExecutor.
+ * forwardRef(ExperimentsModule) — TD-009 (symmetric with KnowledgeModule → PipelineModule).
  */
 @Module({
-  imports: [ExperimentsModule, CampaignPersistenceModule],
+  imports: [forwardRef(() => ExperimentsModule), CampaignPersistenceModule],
   providers: [
     PipelineDomainService,
     PipelineTemplateService,

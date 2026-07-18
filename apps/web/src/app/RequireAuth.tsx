@@ -7,11 +7,12 @@ import {
   isAuthenticated,
   setActiveWorkspace,
 } from '../shared/auth';
+import { WorkspaceProvider } from './WorkspaceContext';
 
 /**
  * Auth gate + workspace bootstrap (US002).
  * Ensures an active workspace is available after login and on page refresh.
- * Does not propagate X-Workspace-Id into API calls yet.
+ * Mounts the Workspace Context only after that existing bootstrap boundary is ready.
  */
 export function RequireAuth() {
   const authenticated = isAuthenticated();
@@ -56,5 +57,9 @@ export function RequireAuth() {
     );
   }
 
-  return <Outlet />;
+  return (
+    <WorkspaceProvider>
+      <Outlet />
+    </WorkspaceProvider>
+  );
 }

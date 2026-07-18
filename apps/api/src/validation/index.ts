@@ -34,3 +34,4 @@ export { ListCrossCampaignAnalysisQueryDto } from './dto/cross-campaign-analysis
 export { ListCampaignHistoryQueryDto } from './dto/campaign-history.dto';
 export { ExportCampaignQueryDto } from './dto/campaign-export.dto';
 export { CreateOrderBodyDto, OrderMarketCheckpointDto } from './dto/orders.dto';
+export { CreateStrategyBodyDto, UpdateStrategyBodyDto } from './dto/strategies.dto';

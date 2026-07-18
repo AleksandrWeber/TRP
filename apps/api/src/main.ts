@@ -22,6 +22,9 @@ async function bootstrap() {
   app.enableCors({
     origin: corsOrigin,
     credentials: true,
+    // Fastify CORS otherwise reflects only GET/HEAD/POST; Strategy CRUD (US004)
+    // is the first browser consumer of PATCH/DELETE.
+    methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   });
 
   const port = Number(process.env.API_PORT ?? 3000);

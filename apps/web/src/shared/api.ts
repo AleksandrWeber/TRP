@@ -208,6 +208,54 @@ export type ResearchAnalysis = {
   nextHypothesis: string;
 };
 
+export type StrategyStatus = 'draft' | 'active' | 'archived';
+export type StrategyTimeframe = '1m' | '5m' | '15m' | '1h' | '4h' | '1d';
+export type StrategyDirection = 'LONG' | 'SHORT' | 'BOTH';
+export type StrategyParameters = Record<string, unknown>;
+
+export type Strategy = {
+  id: string;
+  workspaceId: string;
+  name: string;
+  description: string;
+  status: StrategyStatus;
+  tradingPair: string;
+  timeframe: StrategyTimeframe;
+  direction: StrategyDirection;
+  positionSize: number;
+  stopLossPercent: number;
+  takeProfitPercent: number;
+  parameters: StrategyParameters;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CreateStrategyRequest = {
+  name: string;
+  tradingPair: string;
+  timeframe: StrategyTimeframe;
+  direction: StrategyDirection;
+  description?: string;
+  status?: StrategyStatus;
+  positionSize?: number;
+  stopLossPercent?: number;
+  takeProfitPercent?: number;
+  parameters?: StrategyParameters;
+};
+
+export type UpdateStrategyRequest = {
+  name?: string;
+  tradingPair?: string;
+  timeframe?: StrategyTimeframe;
+  direction?: StrategyDirection;
+  description?: string;
+  status?: StrategyStatus;
+  positionSize?: number;
+  stopLossPercent?: number;
+  takeProfitPercent?: number;
+  parameters?: StrategyParameters;
+};
+
 export type AuthUser = {
   id: string;
   email: string;
@@ -336,6 +384,25 @@ export const api = {
     const qs = query.toString();
     return request<KnowledgeEntry[]>(`/knowledge${qs ? `?${qs}` : ''}`);
   },
+  listStrategies: () => request<Strategy[]>('/strategies'),
+  getStrategy: (id: string) => request<Strategy>(`/strategies/${id}`),
+  createStrategy: (body: CreateStrategyRequest) =>
+    request<Strategy>('/strategies', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  updateStrategy: (id: string, body: UpdateStrategyRequest) =>
+    request<Strategy>(`/strategies/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    }),
+  deleteStrategy: (id: string) =>
+    // Empty JSON body: the shared client always sends Content-Type:
+    // application/json and Fastify rejects an empty body with that type.
+    request<{ id: string; deleted: boolean }>(`/strategies/${id}`, {
+      method: 'DELETE',
+      body: JSON.stringify({}),
+    }),
   runCampaign,
   analyzeCampaign,
   runMultiDatasetCampaign,

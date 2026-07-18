@@ -10,6 +10,7 @@ import { MultiDatasetCampaignPage } from '../pages/MultiDatasetCampaignPage';
 import { WalkForwardCampaignPage } from '../pages/WalkForwardCampaignPage';
 import { ProductionPage } from '../pages/ProductionPage';
 import { ResearchPage } from '../pages/ResearchPage';
+import { StrategiesPage } from '../pages/StrategiesPage';
 import { WorkflowsPage } from '../pages/WorkflowsPage';
 import { RequireAuth } from './RequireAuth';
 
@@ -23,6 +24,7 @@ export function App() {
             <Route index element={<HomePage />} />
             <Route path="workflows" element={<WorkflowsPage />} />
             <Route path="research" element={<ResearchPage />} />
+            <Route path="strategies" element={<StrategiesPage />} />
             <Route path="campaigns/run" element={<CampaignRunPage />} />
             <Route path="campaigns/results" element={<CampaignResultsPage />} />
             <Route path="campaigns/multi" element={<MultiDatasetCampaignPage />} />

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import type { MessageEvent } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import type { LatestMarketStateProjection } from '../projection/latest-market-state-projection';
+import { LatestMarketStateProjection } from '../projection/latest-market-state-projection';
 import {
   MarketProjectionBroadcaster,
   type MarketProjectionCursor,

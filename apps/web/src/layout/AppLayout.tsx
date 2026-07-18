@@ -1,10 +1,12 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useWorkspace } from '../app/WorkspaceContext';
 import { clearAccessToken } from '../shared/auth';
 
 const links = [
   { to: '/', label: 'Dashboard' },
   { to: '/workflows', label: 'Workflows' },
   { to: '/research', label: 'Research' },
+  { to: '/strategies', label: 'Strategies' },
   { to: '/campaigns/run', label: 'Campaign' },
   { to: '/campaigns/multi', label: 'Multi-Dataset' },
   { to: '/campaigns/walk-forward', label: 'Walk-Forward' },
@@ -14,6 +16,7 @@ const links = [
 ];
 
 export function AppLayout() {
+  const { activeWorkspace } = useWorkspace();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -29,6 +32,7 @@ export function AppLayout() {
           <div>
             <p className="text-sm uppercase tracking-[0.2em] text-slate-400">TRP</p>
             <h1 className="text-lg font-semibold">Trading Research Platform</h1>
+            <p className="mt-1 text-xs text-slate-500">{activeWorkspace.name}</p>
           </div>
           <nav className="flex flex-wrap items-center justify-end gap-3">
             {links.map((link) => (

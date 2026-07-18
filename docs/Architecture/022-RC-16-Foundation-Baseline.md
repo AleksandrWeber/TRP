@@ -41,7 +41,9 @@ JWT
   ↓
 Workspace Bootstrap
   ↓
-Protected Routes
+Protected Routes / RequireAuth
+  ↓
+Workspace Context
   ↓
 Dashboard
   ↓
@@ -62,7 +64,11 @@ Knowledge API
 - **Workspace Bootstrap:** returns the earliest active workspace owned by the
   authenticated user or creates the default workspace when none exists.
 - **Protected Routes:** `RequireAuth` blocks unauthenticated navigation and
-  ensures workspace bootstrap runs for restored sessions.
+  ensures workspace bootstrap runs for restored sessions before mounting the
+  Workspace Context.
+- **Workspace Context:** reactive protected-route source for the active
+  workspace. See
+  [`023-US003-Workspace-Context.md`](./023-US003-Workspace-Context.md).
 - **Dashboard:** loads workflows, experiments, Knowledge entries, and
   deployment summaries after authentication and workspace bootstrap.
 - **Knowledge API:** demonstrates the workspace-scoped request boundary by
@@ -184,11 +190,15 @@ RequireAuth
                          ↓
                     restore/update workspace
                          ↓
+                    mount WorkspaceProvider
+                         ↓
                     render protected route
 ```
 
 The browser restores session state from local storage. No cookie or
-session-storage session is used.
+session-storage session is used. Workspace Context reactivity after that
+bootstrap boundary is documented in
+[`023-US003-Workspace-Context.md`](./023-US003-Workspace-Context.md).
 
 ## 6. Request Flow
 
@@ -268,23 +278,34 @@ idempotent bootstrap.
 - clears browser authentication state on `401`;
 - reports unreachable API and non-success responses.
 
-### Auth Context
+### Browser session storage
 
-There is currently no React Context provider. Browser auth/workspace state is
-encapsulated by `apps/web/src/shared/auth.ts`, which reads, writes, and clears
-the two local-storage records. `clearAccessToken()` also clears the active
-workspace.
+Browser auth and durable workspace storage remain encapsulated by
+`apps/web/src/shared/auth.ts`, which reads, writes, and clears the two
+local-storage records. `clearAccessToken()` also clears the active workspace.
+There is still no React Auth Context; JWT presence is derived from that
+storage.
+
+### Workspace Context
+
+After bootstrap readiness, `RequireAuth` mounts `WorkspaceProvider` so
+protected modules consume the active workspace through `useWorkspace()`. The
+Context is reactive application state over the same durable storage used by
+the Shared API Client. Ownership of discovery/bootstrap stays with Login and
+RequireAuth. Details live in
+[`023-US003-Workspace-Context.md`](./023-US003-Workspace-Context.md).
 
 ### RequireAuth
 
-Guards protected routes, redirects missing/invalid sessions to `/login`, and
-re-runs workspace bootstrap when protected routing initializes.
+Guards protected routes, redirects missing/invalid sessions to `/login`,
+re-runs workspace bootstrap when protected routing initializes, and mounts
+Workspace Context only after that gate is ready.
 
 ### Dashboard
 
 Loads workflows, experiments, Knowledge entries, and deployments after the
-protected route is available. Failed aggregate loading is displayed as a
-dashboard error.
+protected route and Workspace Context are available. Failed aggregate loading
+is displayed as a dashboard error.
 
 ### Knowledge API
 
@@ -394,5 +415,8 @@ Start API
   → login successfully again
 ```
 
-This document reflects the verified implementation at the completion of the
-RC-16 Foundations baseline. It does not describe future US003 functionality.
+This document remains the authoritative RC-16 Foundations baseline for
+authentication, JWT lifecycle, Development Identity, workspace bootstrap, and
+Shared API Client header injection. US003 Workspace Context Propagation extends
+that baseline and is documented in
+[`023-US003-Workspace-Context.md`](./023-US003-Workspace-Context.md).

@@ -29,6 +29,7 @@ import { BacktestingModule } from './modules/backtesting/backtesting.module';
 import { PortfolioModule } from './modules/portfolio/portfolio.module';
 import { TradeModule } from './modules/trade/trade.module';
 import { PerformanceModule } from './modules/performance/performance.module';
+import { StrategiesModule } from './modules/strategies';
 import { StrategyComparisonModule } from './modules/strategy-comparison/strategy-comparison.module';
 import { SimulationReportModule } from './modules/simulation-report/simulation-report.module';
 import { WalkForwardModule } from './modules/walk-forward/walk-forward.module';
@@ -72,6 +73,7 @@ import { ValidationModule } from './validation/validation.module';
     AuthModule,
     IdentityModule,
     WorkspaceModule,
+    StrategiesModule,
     MarketDataModule,
     LiveMarketDataModule,
     HistoricalImportModule,
