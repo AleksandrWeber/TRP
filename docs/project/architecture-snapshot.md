@@ -418,7 +418,7 @@ integration.** A separate Stage-1 manual paper prototype exists under
 | Module             | Path                    | Role                                                                                                       |
 | ------------------ | ----------------------- | ---------------------------------------------------------------------------------------------------------- |
 | MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped                                               |
-| LiveMarketData     | `live-market-data/`     | Contracts + connectors (US131–US134); closed-candle/mark-price normalization + quarantine (US135–US137)    |
+| LiveMarketData     | `live-market-data/`     | Contracts + connectors; normalization/quarantine; stream integrity + REST gap recovery (US131–US139)       |
 | EventProcessing    | `event-processing/`     | ADR-013 foundation (US128–US130): Outbox, Inbox, checkpoints, at-least-once dispatcher, retry/dead letters |
 | HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                  |
 | MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                    |
@@ -610,3 +610,8 @@ RECOVERING health until gap recovery (not READY on reconnect alone).
 M1 Epic E3-A progress: US135–US137 complete — provider-neutral closed-candle and
 mark-price normalization, configurable mark publication policy, validation with
 safe quarantine fingerprints (secrets stripped; Binance payloads stay in adapters).
+
+M1 Epic E3-B progress: US138–US139 complete — per-stream semantic deduplication
+and sequence ordering, deterministic closed-candle gap detection, REST recovery
+through the same validate/admit path, overlap elimination, and RECOVERING until
+gap close (unresolved gaps remain visible).

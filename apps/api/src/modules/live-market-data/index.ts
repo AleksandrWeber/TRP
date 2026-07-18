@@ -127,3 +127,31 @@ export {
   MarketDataValidator,
   type MarketValidationResult,
 } from './normalization/market-data-validator';
+
+export {
+  MarketStreamIntegrityStatus,
+  isMarketStreamIntegrityStatus,
+  createInitialIntegrityState,
+  emptyIntegrityMetrics,
+  type MarketStreamIntegrityState,
+  type MarketStreamIntegrityMetrics,
+} from './integrity/market-stream-integrity-state';
+export {
+  MarketStreamIntegrityController,
+  type MarketStreamAdmitResult,
+} from './integrity/market-stream-integrity-controller';
+export {
+  detectClosedCandleGap,
+  enumerateGapOpenTimes,
+  markGapUnresolved,
+  type ClosedCandleGap,
+} from './integrity/closed-candle-gap';
+export { timeframeDurationMs } from './integrity/timeframe-duration';
+export { mapBackfillBarToClosedCandleDraft } from './integrity/map-backfill-bar-to-draft';
+export {
+  ClosedCandleGapRecoveryService,
+  streamHealthAfterRecovery,
+  type GapRecoveryRequest,
+  type GapRecoveryResult,
+  type GapRecoveryBackfill,
+} from './integrity/gap-recovery-service';

@@ -241,7 +241,12 @@ Epic E2 complete (US131–US134). Epic E3-A progress:
 - ✓ US136 — Mark-Price Normalization
 - ✓ US137 — Data Validation and Quarantine
 
-Epic E3-A complete. Next: Epic E3-B ordering/gap recovery (not started).
+Epic E3-A complete. Epic E3-B progress:
+
+- ✓ US138 — Duplicate and Stream-Ordering Control
+- ✓ US139 — Gap Detection and REST Recovery
+
+Epic E3 complete (US135–US139). Next: Epic E4 subscription/checkpoint (not started).
 
 ---
 

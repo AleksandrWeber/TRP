@@ -48,8 +48,14 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 - RC-16 M1 US137 — Data Validation and Quarantine: invalid drafts quarantine
   with reason + raw fingerprint (secrets stripped); stream-safe per-draft
   failures. Epic E3-A complete.
+- RC-16 M1 US138 — Duplicate and Stream-Ordering Control: semantic/event-id
+  dedup, per-stream sequence admit, stale ignore+metrics, deferred gap blocks
+  only the affected stream (no global order).
+- RC-16 M1 US139 — Gap Detection and REST Recovery: deterministic candle gaps,
+  REST backfill via same validate/admit path, overlap elimination, RECOVERING
+  until close, unresolved gaps remain visible. Epic E3-B / Epic E3 complete.
 
-RC-15.1 is released. RC-16 M1 Epic E3-A complete (US135–US137).
+RC-15.1 is released. RC-16 M1 Epic E3 complete (US135–US139).
 
 ### Added (architecture)
 

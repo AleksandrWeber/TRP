@@ -173,8 +173,8 @@ Architecture changes require a new ADR.
 - M6 — Operations Experience
 - M7 — RC-16 Validation and Closeout
 
-Current: M1 Epic E3-A complete (US135–US137). Next: Epic E3-B ordering/gap
-recovery within ADR-012…ADR-018.
+Current: M1 Epic E3 complete (US135–US139). Next: Epic E4 subscription/
+checkpoint/recovery within ADR-012…ADR-018.
 Mini Validation follows M2, M4, and M6.
 
 ---
