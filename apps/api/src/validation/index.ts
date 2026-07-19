@@ -35,3 +35,6 @@ export { ListCampaignHistoryQueryDto } from './dto/campaign-history.dto';
 export { ExportCampaignQueryDto } from './dto/campaign-export.dto';
 export { CreateOrderBodyDto, OrderMarketCheckpointDto } from './dto/orders.dto';
 export { CreateStrategyBodyDto, UpdateStrategyBodyDto } from './dto/strategies.dto';
+export { MarketSymbolParamDto, MarketCandlesQueryDto } from './dto/market-data-domain.dto';
+export { EvaluateSignalBodyDto } from './dto/signal-engine.dto';
+export { ExecutePaperTradeBodyDto } from './dto/paper-trading.dto';
