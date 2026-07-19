@@ -1,8 +1,8 @@
 # TRP — Campaign History, Export, Import, Jobs, Knowledge & Research Intelligence API
 
-Last updated: 2026-07-18 (RC-16 M2 Epic E10 accounting reads)
+Last updated: 2026-07-19 (US183.1 — Orders API documented)
 
-Living HTTP contract for Campaign Session history, export, import, Jobs status, Knowledge search, Research Intelligence (Insights / Recommendations / Reports / Cross-Campaign Analysis), Live Market Data query/SSE (RC-16 M1), and Paper Accounting reads (RC-16 M2 US178).
+Living HTTP contract for Campaign Session history, export, import, Jobs status, Knowledge search, Research Intelligence (Insights / Recommendations / Reports / Cross-Campaign Analysis), Live Market Data query/SSE (RC-16 M1), Paper Orders (RC-16 M2 US164), and Paper Accounting reads (RC-16 M2 US178).
 Domain context: [`campaign-domain-model.md`](./campaign-domain-model.md).
 
 ---
@@ -360,3 +360,27 @@ Guarantees:
 - Ledger responses set `authoritative: true`
 - Portfolio/Position views expose version, freshness, and completeness/source
   metadata where available; reconciliation exposes match/mismatch status
+
+---
+
+## Paper Orders (RC-16 M2 US164)
+
+Authenticated workspace-scoped Order commands and queries.
+Requires JWT + `X-Workspace-Id`. Commands require `Idempotency-Key` and
+Trader/Admin roles. Risk evaluation and Execution Engine lifecycle transitions
+remain internal — HTTP exposes propose and cancel only.
+
+| Method | Path                         | Notes                                                |
+| ------ | ---------------------------- | ---------------------------------------------------- |
+| `POST` | `/v1/orders`                 | Create paper Order Intent (Trader/Admin)             |
+| `POST` | `/v1/orders/:orderId/cancel` | Cancel if eligible (Trader/Admin; `409` on conflict) |
+| `GET`  | `/v1/orders`                 | List Orders for workspace                            |
+| `GET`  | `/v1/orders/:orderId`        | One Order (`404` if missing)                         |
+
+Guarantees:
+
+- Missing `X-Workspace-Id` / `Idempotency-Key` (commands) → `400`
+- Caller not authorized for workspace trading commands → `403`
+- Order absent in the authorized workspace → `404`
+- Cancel conflict (wrong state) → `409`
+- Mode is paper-only; HTTP cannot bypass Risk or Execution Engine

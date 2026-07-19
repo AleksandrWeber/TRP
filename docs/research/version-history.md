@@ -114,6 +114,10 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
 - RC-16 final-release review completed: M1/M2 evidence remains valid, but the
   release is not ready before M3–M7 and final closeout. See
   `docs/project/rc-16-release-summary.md`.
+- US183.1 — RC-15 / M2 Cluster Closure (2026-07-19): stabilization-only
+  validation and documentation sync; no Research Engine, Validation, Knowledge
+  Schema, or paper-runtime semantic change. See
+  `docs/project/rc-15-cluster-closure.md`.
 
 These changes establish the separate RC-16 paper runtime. Research Engine,
 Validation, Knowledge Schema, and RC-15 simulation calculation versions remain

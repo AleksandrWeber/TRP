@@ -1,8 +1,9 @@
 # TRP — Architecture Snapshot
 
-Last updated: 2026-07-18 (RC-16 M2 complete)
+Last updated: 2026-07-19 (US183.1 — RC-15 / M2 Cluster Closure)
 
-Single snapshot of the **current** architecture (RC-15). Documentation only. No future ideas.
+Single snapshot of the **current** architecture (RC-15 complete; RC-16 M2
+complete). Documentation only. No future ideas.
 
 > RC-15.1 Validation Release: the Research & Simulation Platform was validated end-to-end by Validation Sprint V1 (VS001 functional, VS002 stress / determinism, VS003 invariants, VS004 readiness review). No architectural changes were made — only confirmed defect fixes (deterministic CAGR, iterative snapshot summarization, classic PnL / equity accounting) were integrated. Validated invariants: `cash + market value = equity`, `realized + unrealized = total PnL`, deterministic outputs for identical inputs (operational metadata excluded), workspace isolation, and artifact immutability. New debt from the sprint is tracked as TD-028…TD-033 in [`technical-debt.md`](./technical-debt.md).
 
@@ -586,16 +587,13 @@ Research/data notes:
 - No separate `accountingVersion` / runtime env metadata / equity curve on Experiment.
 - Research UI still EMA-centric; no strategy filter.
 
-RC-16 implementation risks:
+RC-16 residual risks (M1/M2 delivered; pre-M3):
 
-- consolidate Stage-1 production and RC-15 simulation abstractions into one
-  canonical execution/accounting path;
-- replace non-transactional manual tick behavior with durable idempotent
-  Session/Order processing;
-- add workspace ownership, production authorization, restart recovery, and
-  reconciliation;
-- migrate canonical financial state from floating-point prototype fields to
-  ADR-015 decimal Ledger/projections.
+- consolidate Stage-1 `production/` parallel path (TD-034) before automated
+  strategy execution;
+- exact-decimal mark sources, Position Fill application order, and durable
+  consumer fan-out progress (TD-039 / TD-040 / TD-042);
+- Kill Switch + continuous Risk (M4); full restart recovery algorithm (M5).
 
 ---
 

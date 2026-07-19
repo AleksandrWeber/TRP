@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-07-18 (RC-16 M2 complete)
+Last updated: 2026-07-19 (US183.1 — RC-15 / M2 Cluster Closure)
 
 Living roadmap for product direction.
 
@@ -152,12 +152,13 @@ Related:
 - ✓ RC-16 — Frozen Architecture Audit (PASS WITH MINOR RECOMMENDATIONS)
 - ✓ RC-16 — M1 Live Market Data Foundation (US126–US152)
 - ✓ RC-16 — M2 Durable Paper Order and Accounting Core (US153–US183)
+- ✓ US183.1 — RC-15 / M2 Cluster Closure (validation + docs sync; READY FOR RC-16)
 
 ---
 
 ## Current Phase
 
-**M2 complete — M3 Strategy Trading Sessions is next (not started)**
+**RC-15 COMPLETE · M2 COMPLETE · READY FOR RC-16 — M3 Strategy Trading Sessions is next (not started)**
 
 RC-16 Planning, Architecture Freeze, and Frozen Architecture Audit are
 complete. Architecture Approved: YES. Implementation Approved: YES.

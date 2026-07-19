@@ -160,4 +160,5 @@ If a result cannot be reproduced from these, it is not trusted.
 7. ~~018 First Strategy verification · 019 MVP Checklist~~
 8. ~~RC-15.1 — Validated Research & Simulation Platform~~
 9. ~~RC-16 Planning + Architecture Freeze (ADR-012…ADR-018)~~
-10. RC-16 User Story definition and milestone implementation
+10. ~~RC-16 M1 + M2 (US126–US183) — Live Market Data + Durable Paper Order/Accounting~~
+11. RC-16 M3 — Strategy Trading Sessions (next)
