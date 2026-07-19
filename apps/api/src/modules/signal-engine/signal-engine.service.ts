@@ -22,8 +22,9 @@ export const SIGNAL_CANDLES_LIMIT = 100;
  * Market data is read exclusively through MarketDataCacheService (US008);
  * the provider registry appears only inside the cache-miss loader — the
  * engine never talks to Binance (or any provider) directly, and a warm cache
- * serves evaluations without any provider call. On-request only: no
- * scheduling, no polling, no persistence, no order execution.
+ * serves evaluations without any provider call. Scheduling is owned by the
+ * Evaluation Scheduler (US015), which calls evaluate() — the engine itself
+ * has no timers, persistence, or order execution.
  */
 @Injectable()
 export class SignalEngineService {

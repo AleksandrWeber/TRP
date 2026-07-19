@@ -4,7 +4,11 @@ import {
   InvalidIndicatorInputError,
   UnknownIndicatorError,
 } from './domain/technical-indicators.error';
-import type { SeriesIndicator } from './indicators/series-indicator';
+import type { Indicator } from './domain/indicator';
+import type { IndicatorResult } from './domain/indicator-result';
+import type { SeriesIndicatorInput } from './indicators/series-indicator';
+
+type RegisteredIndicator = Indicator<never, unknown>;
 
 /**
  * Registry of Indicator implementations (US011).
@@ -15,9 +19,9 @@ import type { SeriesIndicator } from './indicators/series-indicator';
  */
 @Injectable()
 export class IndicatorRegistry {
-  private readonly indicators = new Map<string, SeriesIndicator>();
+  private readonly indicators = new Map<string, RegisteredIndicator>();
 
-  register(indicator: SeriesIndicator): void {
+  register<TInput, TResult>(indicator: Indicator<TInput, TResult>): void {
     const id = indicator.id().trim();
     if (id === '') {
       throw new InvalidIndicatorInputError('Indicator id must not be empty');
@@ -28,12 +32,16 @@ export class IndicatorRegistry {
     this.indicators.set(id, indicator);
   }
 
-  resolve(id: string): SeriesIndicator {
+  resolve<TInput = SeriesIndicatorInput, TResult = IndicatorResult>(
+    id: string,
+  ): Indicator<TInput, TResult> {
     const indicator = this.indicators.get(id);
     if (!indicator) {
       throw new UnknownIndicatorError(id, this.list());
     }
-    return indicator;
+    // Registry ids are the runtime type discriminator. Defaults preserve the
+    // original period-series API; richer indicators request their own types.
+    return indicator as unknown as Indicator<TInput, TResult>;
   }
 
   has(id: string): boolean {

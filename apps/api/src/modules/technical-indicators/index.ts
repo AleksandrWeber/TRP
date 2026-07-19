@@ -8,6 +8,17 @@ export type { IndicatorSeriesInput } from './domain/indicator-input';
 export type { SeriesIndicator, SeriesIndicatorInput } from './indicators/series-indicator';
 export { SmaIndicator, SMA_INDICATOR_ID } from './indicators/sma-indicator';
 export { EmaIndicator, EMA_INDICATOR_ID } from './indicators/ema-indicator';
+export { RsiIndicator, RSI_INDICATOR_ID } from './indicators/rsi-indicator';
+export { MacdIndicator, MACD_INDICATOR_ID } from './indicators/macd-indicator';
+export type { MacdInput, MacdResult } from './indicators/macd-indicator';
+export {
+  BollingerBandsIndicator,
+  BOLLINGER_BANDS_INDICATOR_ID,
+} from './indicators/bollinger-bands-indicator';
+export type {
+  BollingerBandsInput,
+  BollingerBandsResult,
+} from './indicators/bollinger-bands-indicator';
 export {
   TechnicalIndicatorsError,
   InvalidIndicatorInputError,

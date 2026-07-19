@@ -34,7 +34,9 @@ import { MarketDataDomainModule } from './modules/market-data-domain';
 import { SignalEngineModule } from './modules/signal-engine';
 import { TechnicalIndicatorsModule } from './modules/technical-indicators';
 import { StrategyEvaluatorsModule } from './modules/strategy-evaluators';
+import { EvaluationSchedulerModule } from './modules/evaluation-scheduler';
 import { PaperTradingModule } from './modules/paper-trading';
+import { PaperTradingExecutorModule } from './modules/paper-trading-executor';
 import { StrategyComparisonModule } from './modules/strategy-comparison/strategy-comparison.module';
 import { SimulationReportModule } from './modules/simulation-report/simulation-report.module';
 import { WalkForwardModule } from './modules/walk-forward/walk-forward.module';
@@ -83,7 +85,9 @@ import { ValidationModule } from './validation/validation.module';
     SignalEngineModule,
     TechnicalIndicatorsModule,
     StrategyEvaluatorsModule,
+    EvaluationSchedulerModule,
     PaperTradingModule,
+    PaperTradingExecutorModule,
     MarketDataModule,
     LiveMarketDataModule,
     HistoricalImportModule,

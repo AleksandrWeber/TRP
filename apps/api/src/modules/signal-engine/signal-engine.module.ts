@@ -18,7 +18,8 @@ import { StrategyRunner } from './strategy-runner';
  * MarketDataCacheService (US008); providers are reached only through the
  * cache-miss loader, never directly. The evaluator registry ships with the
  * deterministic DummyStrategyEvaluator — indicator/AI evaluators register
- * here in later milestones. No scheduling, no persistence, no execution.
+ * here in later milestones. Scheduling is an external consumer (US015);
+ * this module has no timers, persistence, or execution.
  */
 @Module({
   imports: [StrategiesModule, WorkspaceModule, MarketDataCacheModule, MarketDataDomainModule],

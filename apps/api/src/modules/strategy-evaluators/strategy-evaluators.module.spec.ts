@@ -44,12 +44,12 @@ async function bootModule() {
   return moduleRef;
 }
 
-describe('StrategyEvaluatorsModule (US012)', () => {
-  it('registers sma and ema after the dummy default', async () => {
+describe('StrategyEvaluatorsModule (US012 + US014)', () => {
+  it('registers sma, ema, rsi, macd and bollinger after the dummy default', async () => {
     const moduleRef = await bootModule();
 
     const registry = moduleRef.get(SignalEvaluatorRegistry);
-    expect(registry.list()).toEqual(['dummy', 'sma', 'ema']);
+    expect(registry.list()).toEqual(['dummy', 'sma', 'ema', 'rsi', 'macd', 'bollinger']);
     // The dummy stays the default — US009 behaviour is untouched.
     expect(registry.resolve().id).toBe('dummy');
 
@@ -97,6 +97,89 @@ describe('StrategyEvaluatorsModule (US012)', () => {
     const result = await engine.evaluate('ws-1', strategy.id);
     expect(['BUY', 'SELL']).toContain(result?.signal);
     expect(result?.metadata).toMatchObject({ evaluator: 'ema', indicator: 'ema', period: 10 });
+
+    await moduleRef.close();
+  });
+
+  it('evaluates an RSI strategy end to end through the signal engine', async () => {
+    const moduleRef = await bootModule();
+
+    const strategies = moduleRef.get(StrategyDomainService);
+    const engine = moduleRef.get(SignalEngineService);
+
+    const strategy = await strategies.create({
+      workspaceId: 'ws-1',
+      name: 'RSI mean reversion',
+      tradingPair: 'BTCUSDT',
+      timeframe: '1h',
+      direction: 'BOTH',
+      parameters: { evaluator: 'rsi', period: 14, overbought: 70, oversold: 30 },
+    });
+
+    const result = await engine.evaluate('ws-1', strategy.id);
+    expect(['BUY', 'SELL', 'HOLD']).toContain(result?.signal);
+    expect(result?.metadata).toMatchObject({
+      evaluator: 'rsi',
+      indicator: 'rsi',
+      period: 14,
+      overbought: 70,
+      oversold: 30,
+    });
+
+    await moduleRef.close();
+  });
+
+  it('evaluates a MACD strategy end to end through the signal engine', async () => {
+    const moduleRef = await bootModule();
+
+    const strategies = moduleRef.get(StrategyDomainService);
+    const engine = moduleRef.get(SignalEngineService);
+
+    const strategy = await strategies.create({
+      workspaceId: 'ws-1',
+      name: 'MACD crossover',
+      tradingPair: 'BTCUSDT',
+      timeframe: '1h',
+      direction: 'BOTH',
+      parameters: { evaluator: 'macd', fast: 12, slow: 26, signal: 9 },
+    });
+
+    const result = await engine.evaluate('ws-1', strategy.id);
+    expect(['BUY', 'SELL', 'HOLD']).toContain(result?.signal);
+    expect(result?.metadata).toMatchObject({
+      evaluator: 'macd',
+      indicator: 'macd',
+      fastPeriod: 12,
+      slowPeriod: 26,
+      signalPeriod: 9,
+    });
+
+    await moduleRef.close();
+  });
+
+  it('evaluates a Bollinger strategy end to end through the signal engine', async () => {
+    const moduleRef = await bootModule();
+
+    const strategies = moduleRef.get(StrategyDomainService);
+    const engine = moduleRef.get(SignalEngineService);
+
+    const strategy = await strategies.create({
+      workspaceId: 'ws-1',
+      name: 'Bollinger breakout',
+      tradingPair: 'BTCUSDT',
+      timeframe: '1h',
+      direction: 'BOTH',
+      parameters: { evaluator: 'bollinger', period: 20, multiplier: 2 },
+    });
+
+    const result = await engine.evaluate('ws-1', strategy.id);
+    expect(['BUY', 'SELL', 'HOLD']).toContain(result?.signal);
+    expect(result?.metadata).toMatchObject({
+      evaluator: 'bollinger',
+      indicator: 'bollinger',
+      period: 20,
+      multiplier: 2,
+    });
 
     await moduleRef.close();
   });

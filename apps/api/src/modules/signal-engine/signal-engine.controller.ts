@@ -10,7 +10,7 @@ import { SignalEngineService } from './signal-engine.service';
  * POST /v1/market/signal/evaluate — evaluate one strategy on request and
  * return the SignalResult. Workspace-scoped via `X-Workspace-Id` (strategies
  * are workspace-owned, US004): a strategy of another workspace is a 404,
- * never a leak. No persistence, no scheduling.
+ * never a leak. No persistence — periodic evaluation is owned by US015.
  */
 @Controller({ path: 'market/signal', version: '1' })
 export class SignalEngineController {

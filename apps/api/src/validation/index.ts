@@ -38,3 +38,8 @@ export { CreateStrategyBodyDto, UpdateStrategyBodyDto } from './dto/strategies.d
 export { MarketSymbolParamDto, MarketCandlesQueryDto } from './dto/market-data-domain.dto';
 export { EvaluateSignalBodyDto } from './dto/signal-engine.dto';
 export { ExecutePaperTradeBodyDto } from './dto/paper-trading.dto';
+export {
+  CreateEvaluationScheduleBodyDto,
+  StrategyIdParamDto,
+} from './dto/evaluation-scheduler.dto';
+export { ListExecutorTradesQueryDto } from './dto/paper-trading-executor.dto';
