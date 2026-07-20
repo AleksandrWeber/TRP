@@ -14,6 +14,7 @@ import type { User } from '../identity/user';
 import { UserDomainService } from '../identity/user-domain.service';
 import { UserStatus } from '../identity/user-status';
 import type { AuthUser, JwtPayload } from './jwt.strategy';
+import { PasswordCredentialStore } from './password-credential.store';
 
 export type AuthTokenResponse = {
   accessToken: string;
@@ -27,10 +28,12 @@ export type AuthTokenResponse = {
   };
 };
 
+const MIN_PASSWORD_LENGTH = 8;
+
 /**
  * JWT authentication on top of Identity (US106, US107).
- * register / login / validateToken — no passwords, no Workspace.
- * Role is taken from Identity and embedded in the issued JWT.
+ * Identity remains password-free; passwordHash lives in PasswordCredentialStore.
+ * register / login / validateToken — Role embedded in issued JWT.
  */
 @Injectable()
 export class AuthenticationService {
@@ -40,12 +43,15 @@ export class AuthenticationService {
     @Inject(UserDomainService) private readonly users: UserDomainService,
     @Inject(JwtService) private readonly jwt: JwtService,
     @Inject(ConfigService) private readonly config: ConfigService,
+    @Inject(PasswordCredentialStore) private readonly credentials: PasswordCredentialStore,
     @Inject(LOGGER) logger: Logger,
   ) {
     this.logger = logger.child(AuthenticationService.name);
   }
 
-  async register(email: string, displayName: string): Promise<AuthTokenResponse> {
+  async register(email: string, displayName: string, password: string): Promise<AuthTokenResponse> {
+    this.assertPassword(password);
+
     let user: User;
     try {
       user = this.users.create({ email, displayName });
@@ -53,19 +59,37 @@ export class AuthenticationService {
       throw this.mapIdentityError(error);
     }
 
+    await this.credentials.setPassword(user.id, password);
     this.logger.info(`Registered user ${user.email}`, { userId: user.id });
     return this.issueToken(user);
   }
 
-  async login(email: string): Promise<AuthTokenResponse> {
+  async login(email: string, password: string): Promise<AuthTokenResponse> {
+    this.assertPassword(password);
+
     const user = this.users.getByEmail(email);
     if (!user || user.status === UserStatus.Disabled) {
       this.logger.warn(`Failed login for ${email}`);
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    const passwordOk = await this.credentials.verify(user.id, password);
+    if (!passwordOk) {
+      this.logger.warn(`Failed login for ${email} (password mismatch)`);
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
     this.logger.info(`Successful login for ${user.email}`, { userId: user.id });
     return this.issueToken(user);
+  }
+
+  /**
+   * Sets or replaces the password for an existing Identity user (bootstrap / admin).
+   */
+  async setPassword(userId: string, password: string): Promise<void> {
+    this.assertPassword(password);
+    const user = this.requireActiveUser(userId);
+    await this.credentials.setPassword(user.id, password);
   }
 
   async validateToken(token: string): Promise<AuthUser> {
@@ -112,6 +136,12 @@ export class AuthenticationService {
       throw new UnauthorizedException();
     }
     return user;
+  }
+
+  private assertPassword(password: string): void {
+    if (typeof password !== 'string' || password.trim().length < MIN_PASSWORD_LENGTH) {
+      throw new BadRequestException(`password must be at least ${MIN_PASSWORD_LENGTH} characters`);
+    }
   }
 
   private async issueToken(user: User): Promise<AuthTokenResponse> {

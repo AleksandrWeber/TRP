@@ -6,6 +6,7 @@ import { setAccessToken, setActiveWorkspace } from '../shared/auth';
 export function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('admin@trp.local');
+  const [password, setPassword] = useState('trp-admin-change-me');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -14,7 +15,7 @@ export function LoginPage() {
     setLoading(true);
     setError(null);
     try {
-      const result = await api.login(email);
+      const result = await api.login(email, password);
       setAccessToken(result.accessToken);
       const workspace = await api.bootstrapWorkspace();
       setActiveWorkspace({ id: workspace.id, name: workspace.name });
@@ -35,7 +36,7 @@ export function LoginPage() {
         <div>
           <p className="text-sm uppercase tracking-[0.2em] text-slate-400">TRP</p>
           <h1 className="mt-1 text-2xl font-semibold">Sign in</h1>
-          <p className="mt-2 text-sm text-slate-400">JWT auth — Implementation 009</p>
+          <p className="mt-2 text-sm text-slate-400">JWT + password authentication</p>
         </div>
 
         {error && (
@@ -51,6 +52,18 @@ export function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 outline-none focus:border-white/30"
+          />
+        </label>
+
+        <label className="block space-y-1 text-sm">
+          <span className="text-slate-400">Password</span>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={8}
             className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 outline-none focus:border-white/30"
           />
         </label>

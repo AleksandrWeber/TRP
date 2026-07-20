@@ -102,7 +102,14 @@ Responsibilities:
 - Providers
 - Theme
 - Authentication
+- Workspace Context
 - Global configuration
+
+Workspace Context is an app-level provider mounted after authentication and
+workspace bootstrap. Pages consume the active workspace; they do not own
+workspace discovery or `X-Workspace-Id` injection. Implementation details:
+[`023-US003-Workspace-Context.md`](./023-US003-Workspace-Context.md) and the
+RC-16 baseline [`022-RC-16-Foundation-Baseline.md`](./022-RC-16-Foundation-Baseline.md).
 
 ---
 
@@ -281,6 +288,7 @@ State is divided into categories.
 Global State
 
 - Authentication
+- Workspace Context
 - Theme
 - User
 

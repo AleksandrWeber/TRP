@@ -6,6 +6,7 @@ import {
   getActiveWorkspace,
   setAccessToken,
   setActiveWorkspace,
+  subscribeToActiveWorkspace,
 } from './auth';
 
 function createMemoryStorage(): Storage {
@@ -68,5 +69,22 @@ describe('auth storage (US002)', () => {
 
     expect(getAccessToken()).toBe('token');
     expect(getActiveWorkspace()).toBeNull();
+  });
+
+  it('notifies workspace context subscribers when the active workspace changes', () => {
+    const received: Array<{ id: string; name: string } | null> = [];
+    const unsubscribe = subscribeToActiveWorkspace((workspace) => received.push(workspace));
+
+    setActiveWorkspace({ id: 'ws-1', name: 'First Workspace' });
+    setActiveWorkspace({ id: 'ws-2', name: 'Second Workspace' });
+    clearActiveWorkspace();
+    unsubscribe();
+    setActiveWorkspace({ id: 'ws-3', name: 'Ignored Workspace' });
+
+    expect(received).toEqual([
+      { id: 'ws-1', name: 'First Workspace' },
+      { id: 'ws-2', name: 'Second Workspace' },
+      null,
+    ]);
   });
 });

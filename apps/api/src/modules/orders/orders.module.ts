@@ -5,6 +5,7 @@ import { PaperAccountModule } from '../paper-account';
 import { TradingSessionModule } from '../trading-session';
 import { LedgerModule } from '../ledger';
 import { AuthModule } from '../auth/auth.module';
+import { WorkspaceModule } from '../workspace';
 import { OrderService } from './order.service';
 import { OrdersController } from './orders.controller';
 import { ORDER_REPOSITORY } from './persistence/order.repository';
@@ -17,6 +18,7 @@ import { PrismaOrderRepository } from './persistence/prisma-order.repository';
     TradingSessionModule,
     LedgerModule,
     AuthModule,
+    WorkspaceModule,
   ],
   controllers: [OrdersController],
   providers: [

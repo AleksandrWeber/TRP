@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import type { DurableMarketCheckpoint } from '../checkpoints/market-checkpoint-persistence';
-import type { MarketCheckpointStore } from '../checkpoints/market-checkpoint-store';
+import { MarketCheckpointStore } from '../checkpoints/market-checkpoint-store';
 import type { ClosedCandleEvent } from '../domain/closed-candle-event';
 import type { MarkPriceEvent } from '../domain/mark-price-event';
 import type { MarketSubscription } from '../domain/market-subscription';
 import type { LatestMarketState } from '../projection/latest-market-state';
-import type { LatestMarketStateProjection } from '../projection/latest-market-state-projection';
-import type { MarketStatusSnapshot } from '../status/market-status.service';
-import type { MarketStatusService } from '../status/market-status.service';
-import type { MarketSubscriptionRegistry } from '../subscriptions/market-subscription-registry';
+import { LatestMarketStateProjection } from '../projection/latest-market-state-projection';
+import { MarketStatusService, type MarketStatusSnapshot } from '../status/market-status.service';
+import { MarketSubscriptionRegistry } from '../subscriptions/market-subscription-registry';
 import type {
   MarketCheckpointView,
   MarketClosedCandleView,

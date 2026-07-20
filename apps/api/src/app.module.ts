@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
@@ -27,8 +28,23 @@ import { HistoricalImportModule } from './modules/historical-import/historical-i
 import { MarketDataProviderModule } from './modules/market-data-provider/market-data-provider.module';
 import { BacktestingModule } from './modules/backtesting/backtesting.module';
 import { PortfolioModule } from './modules/portfolio/portfolio.module';
+import { PortfolioEngineModule } from './modules/portfolio-engine';
+import { PositionEngineModule } from './modules/position-engine';
+import { OrderEngineModule } from './modules/order-engine';
+import { RiskEngineModule } from './modules/risk-engine';
+import { PaperTradingEngineModule } from './modules/paper-trading-engine';
+import { ExchangeAdapterModule } from './modules/exchange-adapter';
+import { LiveTradingEngineModule } from './modules/live-trading-engine';
 import { TradeModule } from './modules/trade/trade.module';
 import { PerformanceModule } from './modules/performance/performance.module';
+import { StrategiesModule } from './modules/strategies';
+import { MarketDataDomainModule } from './modules/market-data-domain';
+import { SignalEngineModule } from './modules/signal-engine';
+import { TechnicalIndicatorsModule } from './modules/technical-indicators';
+import { StrategyEvaluatorsModule } from './modules/strategy-evaluators';
+import { EvaluationSchedulerModule } from './modules/evaluation-scheduler';
+import { HistoricalResearchModule } from './modules/historical-research';
+import { ResearchControlCenterModule } from './modules/research-control-center';
 import { StrategyComparisonModule } from './modules/strategy-comparison/strategy-comparison.module';
 import { SimulationReportModule } from './modules/simulation-report/simulation-report.module';
 import { WalkForwardModule } from './modules/walk-forward/walk-forward.module';
@@ -56,6 +72,12 @@ import { ValidationModule } from './validation/validation.module';
       isGlobal: true,
       envFilePath: ['.env', '../../.env'],
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: Number(process.env.API_THROTTLE_TTL_MS ?? 60_000),
+        limit: Number(process.env.API_THROTTLE_LIMIT ?? 200),
+      },
+    ]),
     LoggingModule,
     MetricsModule,
     ValidationModule,
@@ -72,11 +94,26 @@ import { ValidationModule } from './validation/validation.module';
     AuthModule,
     IdentityModule,
     WorkspaceModule,
+    StrategiesModule,
+    MarketDataDomainModule,
+    SignalEngineModule,
+    TechnicalIndicatorsModule,
+    StrategyEvaluatorsModule,
+    EvaluationSchedulerModule,
+    HistoricalResearchModule,
+    ResearchControlCenterModule,
     MarketDataModule,
     LiveMarketDataModule,
     HistoricalImportModule,
     MarketDataProviderModule,
     PortfolioModule,
+    PortfolioEngineModule,
+    PositionEngineModule,
+    OrderEngineModule,
+    RiskEngineModule,
+    PaperTradingEngineModule,
+    ExchangeAdapterModule,
+    LiveTradingEngineModule,
     TradeModule,
     PerformanceModule,
     BacktestingModule,
@@ -106,6 +143,7 @@ import { ValidationModule } from './validation/validation.module';
     AppService,
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
 })
 export class AppModule {}

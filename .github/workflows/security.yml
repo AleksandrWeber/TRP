@@ -1,0 +1,57 @@
+name: Security Scan
+
+on:
+  schedule:
+    - cron: '0 4 * * *'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  security:
+    name: Security
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Dependency audit (critical)
+        run: pnpm audit --audit-level=critical
+
+      - name: Secret scan
+        run: pnpm exec tsx .github/scripts/ci/security-check.ts
+
+      - name: License check (informational)
+        run: |
+          mkdir -p .github/reports/security
+          pnpm licenses list --json > .github/reports/security/licenses.json || true
+          echo "License inventory written (non-blocking)."
+
+      - name: Upload security report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report-${{ github.sha }}
+          path: |
+            docs/releases/rc-1/security.md
+            .github/reports/security/**
+          if-no-files-found: ignore

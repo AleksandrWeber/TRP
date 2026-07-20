@@ -37,21 +37,51 @@ model WorkspaceRecord {
   @@map("workspace_records")
 }
 
+/// Workspace-owned Strategy definition (US004) with trading configuration (US005).
+model StrategyRecord {
+  id                String   @id
+  workspaceId       String   @map("workspace_id")
+  name              String
+  description       String
+  status            String
+  tradingPair       String   @map("trading_pair")
+  timeframe         String
+  direction         String
+  positionSize      Float    @map("position_size")
+  stopLossPercent   Float    @map("stop_loss_percent")
+  takeProfitPercent Float    @map("take_profit_percent")
+  parameters        Json
+  createdAt         DateTime @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@index([workspaceId, status])
+  @@index([workspaceId, createdAt])
+  @@index([workspaceId, tradingPair, timeframe])
+  @@map("strategy_records")
+}
+
 model Dataset {
-  id          String       @id @default(cuid())
-  symbol      String
-  timeframe   String
-  exchange    String       @default("binance")
-  contentHash String       @unique
-  barCount    Int
-  startTime   DateTime
-  endTime     DateTime
-  gitCommit   String?
-  createdAt   DateTime     @default(now())
-  bars        OhlcvBar[]
-  experiments Experiment[]
+  id                String                     @id @default(cuid())
+  displayName       String                     @default("")
+  description       String                     @default("")
+  marketRegime      String                     @default("UNCLASSIFIED")
+  symbol            String
+  symbols           String[]                   @default([])
+  timeframe         String
+  exchange          String                     @default("binance")
+  enabled           Boolean                    @default(true)
+  contentHash       String                     @unique
+  barCount          Int
+  startTime         DateTime
+  endTime           DateTime
+  gitCommit         String?
+  createdAt         DateTime                   @default(now())
+  bars              OhlcvBar[]
+  experiments       Experiment[]
+  historicalResults HistoricalResearchResult[]
 
   @@index([symbol, timeframe])
+  @@index([enabled, marketRegime])
 }
 
 model OhlcvBar {
@@ -89,6 +119,63 @@ model Experiment {
   @@index([datasetId])
   @@index([createdAt])
   @@index([verdict])
+}
+
+/// One immutable Historical Research invocation (US018).
+/// Every invocation receives a new id; completed results are never overwritten.
+model HistoricalResearchRun {
+  id          String                     @id
+  workspaceId String                     @map("workspace_id")
+  status      String
+  datasetIds  Json                       @map("dataset_ids")
+  strategyIds Json                       @map("strategy_ids")
+  report      Json?
+  failure     String?
+  startedAt   DateTime                   @map("started_at")
+  completedAt DateTime?                  @map("completed_at")
+  results     HistoricalResearchResult[]
+
+  @@index([workspaceId, startedAt])
+  @@index([workspaceId, status])
+  @@map("historical_research_runs")
+}
+
+/// Immutable Strategy × Dataset × Market Regime result (US018).
+/// Scalar metrics are queryable for a future regime-performance matrix.
+model HistoricalResearchResult {
+  id                 String                @id
+  researchId         String                @map("research_id")
+  workspaceId        String                @map("workspace_id")
+  datasetId          String                @map("dataset_id")
+  datasetName        String                @map("dataset_name")
+  datasetContentHash String                @map("dataset_content_hash")
+  marketRegime       String                @map("market_regime")
+  strategyId         String                @map("strategy_id")
+  strategyName       String                @map("strategy_name")
+  strategySnapshot   Json                  @map("strategy_snapshot")
+  exchange           String
+  symbol             String
+  timeframe          String
+  status             String
+  failure            String?
+  trades             Json
+  tradeCount         Int                   @map("trade_count")
+  winRate            Float                 @map("win_rate")
+  netProfit          Float                 @map("net_profit")
+  profitFactor       Float                 @map("profit_factor")
+  maxDrawdown        Float                 @map("max_drawdown")
+  executionTimeMs    Int                   @map("execution_time_ms")
+  validation         Json
+  resultHash         String                @map("result_hash")
+  createdAt          DateTime              @map("created_at")
+  research           HistoricalResearchRun @relation(fields: [researchId], references: [id], onDelete: Restrict)
+  dataset            Dataset               @relation(fields: [datasetId], references: [id], onDelete: Restrict)
+
+  @@unique([researchId, datasetId, strategyId, symbol])
+  @@index([workspaceId, strategyId, marketRegime])
+  @@index([workspaceId, datasetId])
+  @@index([workspaceId, createdAt])
+  @@map("historical_research_results")
 }
 
 model StrategyDeployment {
@@ -719,4 +806,447 @@ model AccountingReconciliation {
   @@unique([workspaceId, paperAccountId])
   @@index([workspaceId, status])
   @@map("accounting_reconciliations")
+}
+
+/// Trading Platform portfolio aggregate — single source of financial truth (US204).
+/// No exchange connectivity, order execution, or position management.
+model Portfolio {
+  id           String   @id
+  workspaceId  String   @map("workspace_id")
+  ownerId      String   @map("owner_id")
+  currency     String
+  status       String
+  cash         Decimal  @db.Decimal(38, 18)
+  initialCash  Decimal  @map("initial_cash") @db.Decimal(38, 18)
+  realizedPnl  Decimal  @map("realized_pnl") @db.Decimal(38, 18)
+  unrealizedPnl Decimal @map("unrealized_pnl") @db.Decimal(38, 18)
+  usedMargin   Decimal  @map("used_margin") @db.Decimal(38, 18)
+  createdAt    DateTime @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  snapshots     PortfolioSnapshot[]
+  events        PortfolioEvent[]
+  positions     Position[]
+  orders        Order[]
+  riskDecisions TradingRiskDecision[]
+  riskPolicies  TradingRiskPolicy[]
+  paperSession  PaperSession?
+  liveSession   LiveSession?
+
+  @@unique([workspaceId])
+  @@index([ownerId, status])
+  @@index([workspaceId, status])
+  @@map("portfolios")
+}
+
+/// Trading Platform position aggregate — single source of truth for open/closed positions (US205).
+/// No exchange connectivity, order execution, or strategy concerns.
+model Position {
+  id                String    @id
+  portfolioId       String    @map("portfolio_id")
+  symbol            String
+  side              String
+  status            String
+  quantity          Decimal   @db.Decimal(38, 18)
+  entryPrice        Decimal   @map("entry_price") @db.Decimal(38, 18)
+  markPrice         Decimal   @map("mark_price") @db.Decimal(38, 18)
+  averageEntryPrice Decimal   @map("average_entry_price") @db.Decimal(38, 18)
+  realizedPnl       Decimal   @map("realized_pnl") @db.Decimal(38, 18)
+  unrealizedPnl     Decimal   @map("unrealized_pnl") @db.Decimal(38, 18)
+  createdAt         DateTime  @map("created_at")
+  updatedAt         DateTime  @map("updated_at")
+  closedAt          DateTime? @map("closed_at")
+
+  portfolio Portfolio         @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  history   PositionHistory[]
+  events    PositionEvent[]
+
+  @@index([portfolioId, status])
+  @@index([portfolioId, symbol])
+  @@index([portfolioId, createdAt])
+  @@map("trading_positions")
+}
+
+/// Immutable position lifecycle history entries (US205).
+model PositionHistory {
+  id          String   @id
+  positionId  String   @map("position_id")
+  timestamp   DateTime
+  action      String
+  quantity    Decimal  @db.Decimal(38, 18)
+  price       Decimal  @db.Decimal(38, 18)
+  realizedPnl Decimal  @map("realized_pnl") @db.Decimal(38, 18)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  position Position @relation(fields: [positionId], references: [id], onDelete: Cascade)
+
+  @@index([positionId, timestamp])
+  @@map("position_history")
+}
+
+/// Durable position domain events (US205).
+model PositionEvent {
+  id         String   @id
+  positionId String   @map("position_id")
+  eventType  String   @map("event_type")
+  payload    Json
+  occurredAt DateTime @map("occurred_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  position Position @relation(fields: [positionId], references: [id], onDelete: Cascade)
+
+  @@index([positionId, occurredAt])
+  @@index([eventType, occurredAt])
+  @@map("position_events")
+}
+
+/// Immutable portfolio financial snapshot (US204).
+model PortfolioSnapshot {
+  id            String   @id
+  portfolioId   String   @map("portfolio_id")
+  timestamp     DateTime
+  cash          Decimal  @db.Decimal(38, 18)
+  equity        Decimal  @db.Decimal(38, 18)
+  usedMargin    Decimal  @map("used_margin") @db.Decimal(38, 18)
+  availableMargin Decimal @map("available_margin") @db.Decimal(38, 18)
+  realizedPnl   Decimal  @map("realized_pnl") @db.Decimal(38, 18)
+  unrealizedPnl Decimal  @map("unrealized_pnl") @db.Decimal(38, 18)
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  portfolio Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@index([portfolioId, timestamp])
+  @@map("portfolio_snapshots")
+}
+
+/// Durable portfolio domain events (US204).
+model PortfolioEvent {
+  id          String   @id
+  portfolioId String   @map("portfolio_id")
+  eventType   String   @map("event_type")
+  payload     Json
+  occurredAt  DateTime @map("occurred_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  portfolio Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@index([portfolioId, occurredAt])
+  @@index([eventType, occurredAt])
+  @@map("portfolio_events")
+}
+
+/// Trading Platform order aggregate — single source of truth for order lifecycle (US206).
+/// No exchange connectivity or live execution.
+model Order {
+  id                String    @id
+  portfolioId       String    @map("portfolio_id")
+  positionId        String?   @map("position_id")
+  symbol            String
+  side              String
+  type              String
+  quantity          Decimal   @db.Decimal(38, 18)
+  requestedPrice    Decimal?  @map("requested_price") @db.Decimal(38, 18)
+  executedPrice     Decimal?  @map("executed_price") @db.Decimal(38, 18)
+  filledQuantity    Decimal   @map("filled_quantity") @db.Decimal(38, 18)
+  remainingQuantity Decimal   @map("remaining_quantity") @db.Decimal(38, 18)
+  status            String
+  timeInForce       String    @map("time_in_force")
+  createdAt         DateTime  @map("created_at")
+  updatedAt         DateTime  @map("updated_at")
+  executedAt        DateTime? @map("executed_at")
+  cancelledAt       DateTime? @map("cancelled_at")
+
+  portfolio Portfolio      @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  fills     OrderFill[]
+  history   OrderHistory[]
+  events    OrderEvent[]
+
+  @@index([portfolioId, status])
+  @@index([portfolioId, symbol])
+  @@index([portfolioId, createdAt])
+  @@map("trading_orders")
+}
+
+/// Immutable order fill records (US206).
+model OrderFill {
+  id        String   @id
+  orderId   String   @map("order_id")
+  timestamp DateTime
+  quantity  Decimal  @db.Decimal(38, 18)
+  price     Decimal  @db.Decimal(38, 18)
+  fee       Decimal  @db.Decimal(38, 18)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, timestamp])
+  @@map("order_fills")
+}
+
+/// Immutable order status transition history (US206).
+model OrderHistory {
+  id             String   @id
+  orderId        String   @map("order_id")
+  timestamp      DateTime
+  previousStatus String   @map("previous_status")
+  currentStatus  String   @map("current_status")
+  reason         String
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, timestamp])
+  @@map("order_history")
+}
+
+/// Durable order domain events (US206).
+model OrderEvent {
+  id         String   @id
+  orderId    String   @map("order_id")
+  eventType  String   @map("event_type")
+  payload    Json
+  occurredAt DateTime @map("occurred_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, occurredAt])
+  @@index([eventType, occurredAt])
+  @@map("order_events")
+}
+
+/// Trading Platform risk decision aggregate — immutable gatekeeper result (US207).
+/// Distinct from paper RiskDecision (`risk_decisions`). No exchange / execution.
+model TradingRiskDecision {
+  id          String   @id
+  portfolioId String   @map("portfolio_id")
+  orderId     String   @map("order_id")
+  decision    String
+  reason      String
+  score       String
+  timestamp   DateTime
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  portfolio Portfolio           @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  events    TradingRiskEvent[]
+
+  @@index([portfolioId, timestamp])
+  @@index([orderId])
+  @@index([portfolioId, decision])
+  @@map("trading_risk_decisions")
+}
+
+/// Configurable risk policy (US207).
+model TradingRiskPolicy {
+  id            String   @id
+  portfolioId   String?  @map("portfolio_id")
+  name          String
+  enabled       Boolean  @default(true)
+  priority      Int
+  configuration Json
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  portfolio Portfolio? @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@unique([portfolioId, name])
+  @@index([enabled, priority])
+  @@map("trading_risk_policies")
+}
+
+/// Durable risk domain events (US207).
+model TradingRiskEvent {
+  id         String   @id
+  decisionId String?  @map("decision_id")
+  eventType  String   @map("event_type")
+  payload    Json
+  occurredAt DateTime @map("occurred_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  decision TradingRiskDecision? @relation(fields: [decisionId], references: [id], onDelete: Cascade)
+
+  @@index([decisionId, occurredAt])
+  @@index([eventType, occurredAt])
+  @@map("trading_risk_events")
+}
+
+/// Trading Platform paper trading session — orchestration aggregate (US208).
+/// Owns exactly one Portfolio; does not duplicate Portfolio/Position/Order/Risk logic.
+model PaperSession {
+  id                    String    @id
+  workspaceId           String    @map("workspace_id")
+  ownerId               String    @map("owner_id")
+  portfolioId           String    @unique @map("portfolio_id")
+  portfolioWorkspaceKey String    @unique @map("portfolio_workspace_key")
+  name                  String
+  status                String
+  initialBalance        Decimal   @map("initial_balance") @db.Decimal(38, 18)
+  currentBalance        Decimal   @map("current_balance") @db.Decimal(38, 18)
+  createdAt             DateTime  @map("created_at")
+  startedAt             DateTime? @map("started_at")
+  finishedAt            DateTime? @map("finished_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  portfolio  Portfolio        @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  executions PaperExecution[]
+  events     PaperEvent[]
+
+  @@index([workspaceId, status])
+  @@index([workspaceId, createdAt])
+  @@index([ownerId, status])
+  @@map("paper_trading_sessions")
+}
+
+/// Immutable paper trade execution record (US208).
+model PaperExecution {
+  id             String   @id
+  sessionId      String   @map("session_id")
+  orderId        String   @map("order_id")
+  executionTime  DateTime @map("execution_time")
+  executionPrice Decimal  @map("execution_price") @db.Decimal(38, 18)
+  slippage       Decimal  @db.Decimal(38, 18)
+  commission     Decimal  @db.Decimal(38, 18)
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  session PaperSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, executionTime])
+  @@index([orderId])
+  @@map("paper_trading_executions")
+}
+
+/// Immutable paper trading domain events (US208).
+model PaperEvent {
+  id        String   @id
+  sessionId String   @map("session_id")
+  type      String
+  timestamp DateTime
+  payload   Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  session PaperSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, timestamp])
+  @@index([type, timestamp])
+  @@map("paper_trading_events")
+}
+
+/// Exchange connection state for the Exchange Adapter Layer (US209).
+/// Infrastructure boundary only — never mutates Portfolio / Position / Order / Risk.
+model ExchangeConnection {
+  id                 String    @id
+  workspaceId        String    @map("workspace_id")
+  exchangeId         String    @map("exchange_id")
+  status             String
+  latencyMs          Int?      @map("latency_ms")
+  lastHeartbeatAt    DateTime? @map("last_heartbeat_at")
+  lastSynchronizedAt DateTime? @map("last_synchronized_at")
+  apiPermissions     Json      @map("api_permissions")
+  supportedMarkets   Json      @map("supported_markets")
+  capabilities       Json
+  createdAt          DateTime  @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  events ExchangeEvent[]
+
+  @@unique([workspaceId, exchangeId])
+  @@index([workspaceId, status])
+  @@index([exchangeId, status])
+  @@map("exchange_connections")
+}
+
+/// Durable exchange adapter events (US209). Adapters emit events only.
+model ExchangeEvent {
+  id           String   @id
+  connectionId String   @map("connection_id")
+  eventType    String   @map("event_type")
+  payload      Json
+  occurredAt   DateTime @map("occurred_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  connection ExchangeConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@index([connectionId, occurredAt])
+  @@index([eventType, occurredAt])
+  @@map("exchange_events")
+}
+
+/// Live trading session aggregate — operational orchestration over Trading Core + Exchange Adapter (US210).
+/// No portfolio/position/risk business logic; coordinates existing engines only.
+model LiveSession {
+  id                    String    @id
+  workspaceId           String    @map("workspace_id")
+  ownerId               String    @map("owner_id")
+  portfolioId           String    @unique @map("portfolio_id")
+  portfolioWorkspaceKey String    @unique @map("portfolio_workspace_key")
+  exchange              String
+  accountId             String    @map("account_id")
+  status                String
+  startedAt             DateTime? @map("started_at")
+  stoppedAt             DateTime? @map("stopped_at")
+  lastHeartbeat         DateTime? @map("last_heartbeat")
+  reconnectCount        Int       @default(0) @map("reconnect_count")
+  synchronizationState  String    @map("synchronization_state")
+  tradingFrozen         Boolean   @default(false) @map("trading_frozen")
+  createdAt             DateTime  @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  portfolio            Portfolio             @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  events               LiveEvent[]
+  synchronizationLogs  SynchronizationLog[]
+  processedExecutions  LiveProcessedExecution[]
+
+  @@index([workspaceId, status])
+  @@index([workspaceId, accountId, status])
+  @@index([ownerId, status])
+  @@index([exchange, status])
+  @@map("live_trading_sessions")
+}
+
+/// Immutable live trading domain events (US210).
+model LiveEvent {
+  id        String   @id
+  sessionId String   @map("session_id")
+  type      String
+  timestamp DateTime
+  payload   Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  session LiveSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, timestamp])
+  @@index([type, timestamp])
+  @@map("live_trading_events")
+}
+
+/// Synchronization and recovery operation log (US210).
+model SynchronizationLog {
+  id          String    @id
+  sessionId   String    @map("session_id")
+  kind        String
+  status      String
+  startedAt   DateTime  @map("started_at")
+  completedAt DateTime? @map("completed_at")
+  details     Json
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  session LiveSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, startedAt])
+  @@index([kind, status])
+  @@map("live_trading_synchronization_logs")
+}
+
+/// Deduplication store for exchange execution IDs applied to Trading Core (US210).
+model LiveProcessedExecution {
+  id          String   @id
+  sessionId   String   @map("session_id")
+  executionId String   @map("execution_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  session LiveSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, executionId])
+  @@index([sessionId])
+  @@map("live_trading_processed_executions")
 }

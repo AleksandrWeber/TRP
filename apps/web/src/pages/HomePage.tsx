@@ -8,8 +8,10 @@ import {
   type KnowledgeEntry,
   type Workflow,
 } from '../shared/api';
+import { useWorkspace } from '../app/WorkspaceContext';
 
 export function HomePage() {
+  const { activeWorkspace } = useWorkspace();
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [experiments, setExperiments] = useState<Experiment[]>([]);
   const [knowledge, setKnowledge] = useState<KnowledgeEntry[]>([]);
@@ -17,6 +19,9 @@ export function HomePage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+    setError(null);
+
     Promise.all([
       api.listWorkflows(),
       api.listExperiments(),
@@ -24,13 +29,20 @@ export function HomePage() {
       api.listDeployments(),
     ])
       .then(([w, e, k, d]) => {
+        if (cancelled) return;
         setWorkflows(w);
         setExperiments(e);
         setKnowledge(k);
         setDeployments(d);
       })
-      .catch((err: Error) => setError(err.message));
-  }, []);
+      .catch((err: Error) => {
+        if (!cancelled) setError(err.message);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeWorkspace.id]);
 
   return (
     <section className="space-y-8">
@@ -38,7 +50,10 @@ export function HomePage() {
         <h2 className="text-2xl font-semibold">Dashboard</h2>
         <p className="mt-2 text-slate-400">
           Implementation 017 — operational overview of workflows, research, knowledge, and
-          production.
+          production.{' '}
+          <Link to="/dashboard" className="text-sky-400 hover:text-sky-300">
+            Open Research Control Center
+          </Link>
         </p>
       </div>
 

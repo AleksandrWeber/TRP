@@ -123,12 +123,12 @@ describe('US179 — contracts, state machines, RBAC, and authorization', () => {
     ).toThrow(/exact approved Risk Decision/);
   });
 
-  it('allows Trader/Admin only in their workspace and exposes no lifecycle bypass route', () => {
+  it('allows Trader/Admin only in their workspace and exposes no lifecycle bypass route', async () => {
     const workspaces = new WorkspaceDomainService(new InMemoryWorkspaceRepository());
     const access = new WorkspaceAccessService(workspaces);
     const authorization = new CommandAuthorizationService(access);
-    const workspace = workspaces.create({ name: 'M2', ownerUserId: 'owner-1' });
-    const foreign = workspaces.create({ name: 'Foreign', ownerUserId: 'owner-2' });
+    const workspace = await workspaces.create({ name: 'M2', ownerUserId: 'owner-1' });
+    const foreign = await workspaces.create({ name: 'Foreign', ownerUserId: 'owner-2' });
 
     expect(
       authorization.authorizeTradingCommand({

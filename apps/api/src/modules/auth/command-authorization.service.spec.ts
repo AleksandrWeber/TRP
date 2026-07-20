@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
+import type { Workspace } from '../workspace/workspace';
 import { Role } from '../identity/role';
 import { InMemoryWorkspaceRepository } from '../workspace/repositories/in-memory-workspace.repository';
 import { WorkspaceAccessService } from '../workspace/workspace-access.service';
@@ -11,8 +12,13 @@ describe('US158 — workspace and command authorization', () => {
   const access = new WorkspaceAccessService(workspaces);
   const authz = new CommandAuthorizationService(access);
 
-  const owner = workspaces.create({ name: 'Primary', ownerUserId: 'user-owner' });
-  const other = workspaces.create({ name: 'Other', ownerUserId: 'user-other' });
+  let owner: Workspace;
+  let other: Workspace;
+
+  beforeAll(async () => {
+    owner = await workspaces.create({ name: 'Primary', ownerUserId: 'user-owner' });
+    other = await workspaces.create({ name: 'Other', ownerUserId: 'user-other' });
+  });
 
   function user(role: Role, userId = 'user-owner'): AuthUser {
     return {

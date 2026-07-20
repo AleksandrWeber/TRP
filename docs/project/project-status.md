@@ -1,13 +1,27 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-18 (RC-16 M2 complete — US153–US183)
+2026-07-19 (US183.1 — RC-15 / M2 Cluster Closure)
+
+---
+
+# Repository Status
+
+READY FOR RC-16
+
+RC-15: COMPLETE  
+M2: COMPLETE  
+Next Milestone: M3 — Strategy Trading Sessions
+
+Cluster Closure Report:
+[`rc-15-cluster-closure.md`](./rc-15-cluster-closure.md)
 
 ---
 
 # Current Phase
 
-M2 complete — Durable Paper Order and Accounting Core
+M2 complete — Durable Paper Order and Accounting Core.
+Repository validated and closed for RC-15 / M2 cluster; M3 development may begin.
 
 ---
 
@@ -107,7 +121,7 @@ M2 isolated local performance baseline (PostgreSQL at `localhost`, 2026-07-18):
 - Practical — 5,000 in 150.879 ms (33,139 events/s); 3.436 MB heap delta;
   5.449 ms max lag; 3.839 ms transaction p95 over 30 samples.
 
-Next: M3 — Strategy Trading Sessions.
+Next: M3 — Strategy Trading Sessions (cluster closed under US183.1).
 
 ---
 
@@ -255,6 +269,9 @@ Campaign History & Export API: [`api.md`](./api.md).
 RC-15 Retrospective & Development Guide v2:
 [`rc-15-retrospective-development-guide-v2.md`](./rc-15-retrospective-development-guide-v2.md).
 
+RC-15 / M2 Cluster Closure (US183.1):
+[`rc-15-cluster-closure.md`](./rc-15-cluster-closure.md).
+
 RC-16 Paper Trading Plan:
 [`rc-16-paper-trading-plan.md`](./rc-16-paper-trading-plan.md).
 
@@ -262,7 +279,14 @@ RC-16 Paper Trading Plan:
 
 # Release Readiness
 
-Status: RC-15.1 officially released; RC-16 M2 complete, final release not ready
+Status: READY FOR RC-16 — RC-15 COMPLETE; M2 COMPLETE; RC-16 final release not ready
+
+## US183.1 — RC-15 / M2 Cluster Closure
+
+Formal stabilization closeout (2026-07-19): repository validation green; docs
+synchronized; ADR-007…018 compliance reviewed; intentional technical debt
+retained. Verdict: **PASS — READY FOR RC-16**. Next: M3 Strategy Trading
+Sessions. Report: [`rc-15-cluster-closure.md`](./rc-15-cluster-closure.md).
 
 ## RC-16 final release review
 
@@ -1465,8 +1489,8 @@ Research/data notes still relevant locally:
 
 High Priority
 
-- RC-14.
-- US074.
+- M3 — Strategy Trading Sessions.
+- Pre-M3 gates: TD-034 / TD-039 / TD-040 / TD-042.
 - Наступна research hypothesis після EMA + Donchian FAIL.
 - За потреби: campaign-level Knowledge summary (не лише per-config).
 

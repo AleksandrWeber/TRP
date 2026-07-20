@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Optional } from '@nestjs/common';
 import type { Instrument } from '../../market-data/instrument';
 import type { MarketDataSourceId } from '../domain/market-data-source';
 import {
@@ -15,6 +15,9 @@ import {
   DEFAULT_MARKET_STALENESS_POLICY,
 } from './market-health-evaluator';
 import { assertMarketHealthTransition } from './market-health-transitions';
+
+/** Optional Nest DI token — absent means DEFAULT_MARKET_STALENESS_POLICY. */
+export const MARKET_STALENESS_POLICY = Symbol('MARKET_STALENESS_POLICY');
 
 export type MarketStatusStreamKey = {
   workspaceId: string;
@@ -53,7 +56,11 @@ export class MarketStatusService {
   private readonly policy: MarketStalenessPolicy;
   private readonly emitted: MarketStatusEvent[] = [];
 
-  constructor(policy?: Partial<MarketStalenessPolicy>) {
+  constructor(
+    @Optional()
+    @Inject(MARKET_STALENESS_POLICY)
+    policy?: Partial<MarketStalenessPolicy>,
+  ) {
     this.policy = Object.freeze({
       ...DEFAULT_MARKET_STALENESS_POLICY,
       ...policy,

@@ -5,10 +5,12 @@ import { PassportModule } from '@nestjs/passport';
 import { IdentityModule } from '../identity/identity.module';
 import { WorkspaceModule } from '../workspace';
 import { AuthController } from './auth.controller';
+import { AuthDevelopmentBootstrap } from './auth-development.bootstrap';
 import { AuthenticationService } from './authentication.service';
 import { CommandAuthorizationService } from './command-authorization.service';
 import { resolveJwtSecret } from './jwt-secret';
 import { JwtStrategy } from './jwt.strategy';
+import { PasswordCredentialStore } from './password-credential.store';
 
 /**
  * Authentication module (US106 / US158).
@@ -31,7 +33,13 @@ import { JwtStrategy } from './jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthenticationService, JwtStrategy, CommandAuthorizationService],
-  exports: [AuthenticationService, JwtModule, CommandAuthorizationService],
+  providers: [
+    AuthenticationService,
+    PasswordCredentialStore,
+    JwtStrategy,
+    CommandAuthorizationService,
+    AuthDevelopmentBootstrap,
+  ],
+  exports: [AuthenticationService, PasswordCredentialStore, JwtModule, CommandAuthorizationService],
 })
 export class AuthModule {}

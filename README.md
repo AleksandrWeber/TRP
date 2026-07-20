@@ -8,6 +8,17 @@ Research Operating System for quantitative strategy development.
 
 pnpm · Turborepo · React/Vite · NestJS (Fastify) · Prisma · PostgreSQL · JWT · Docker Compose
 
+## Release certification (RC-2 / RC-3)
+
+The only supported release workflow:
+
+```bash
+pnpm release:rc          # full certification; commit+tag only on PASS
+pnpm release:validate    # same pipeline without git (CI default)
+```
+
+Reports are written to `docs/releases/`. GitHub Actions workflows live under `.github/workflows/` (see `.github/README.md`).
+
 ## Prerequisites
 
 - Node.js 20+ (LTS)

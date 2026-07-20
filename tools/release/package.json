@@ -1,0 +1,9 @@
+{
+  "name": "@trp/release",
+  "private": true,
+  "type": "module",
+  "description": "Trading Platform Engineering Release Pipeline (RC-2)",
+  "bin": {
+    "trp-release-rc": "./src/cli.ts"
+  }
+}

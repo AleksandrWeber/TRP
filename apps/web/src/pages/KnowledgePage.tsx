@@ -1,22 +1,39 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { useWorkspace } from '../app/WorkspaceContext';
 import { api, statusColor, type KnowledgeEntry } from '../shared/api';
 
 export function KnowledgePage() {
+  const { activeWorkspace } = useWorkspace();
   const [entries, setEntries] = useState<KnowledgeEntry[]>([]);
   const [q, setQ] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const requestSequence = useRef(0);
 
-  async function load(query?: string) {
-    try {
-      setEntries(await api.listKnowledge(query ? { q: query } : undefined));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load knowledge');
-    }
-  }
+  const load = useCallback(
+    async (query?: string) => {
+      const requestId = ++requestSequence.current;
+      setError(null);
+
+      try {
+        const nextEntries = await api.listKnowledge(query ? { q: query } : undefined);
+        if (requestId === requestSequence.current) {
+          setEntries(nextEntries);
+        }
+      } catch (err) {
+        if (requestId === requestSequence.current) {
+          setError(err instanceof Error ? err.message : 'Failed to load knowledge');
+        }
+      }
+    },
+    [activeWorkspace.id],
+  );
 
   useEffect(() => {
     void load();
-  }, []);
+    return () => {
+      requestSequence.current += 1;
+    };
+  }, [load]);
 
   function onSearch(event: FormEvent) {
     event.preventDefault();
