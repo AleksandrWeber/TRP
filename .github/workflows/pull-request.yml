@@ -1,0 +1,86 @@
+name: Pull Request Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: pr-${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  pull-request:
+    name: PR Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: trp
+          POSTGRES_PASSWORD: trp
+          POSTGRES_DB: trp
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U trp -d trp"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      CI: true
+      RELEASE_SKIP_GIT: '1'
+      DATABASE_URL: postgresql://trp:trp@localhost:5432/trp?schema=public
+      JWT_SECRET: ci-only-jwt-secret-value-32chars
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Repository validation
+        run: pnpm exec tsx .github/scripts/ci/repository-check.ts
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Tests
+        run: pnpm test
+
+      - name: Architecture validation
+        run: pnpm exec tsx .github/scripts/ci/architecture-check.ts
+
+      - name: Security validation
+        run: pnpm exec tsx .github/scripts/ci/security-check.ts
+
+      - name: Documentation validation
+        run: pnpm exec tsx .github/scripts/ci/documentation-check.ts
+
+      - name: Upload PR reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-reports-${{ github.event.pull_request.number }}
+          path: |
+            docs/releases/**
+            .github/reports/**
+          if-no-files-found: ignore

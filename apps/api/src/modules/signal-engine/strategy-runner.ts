@@ -21,7 +21,11 @@ export class StrategyRunner {
     @Inject(SignalEvaluatorRegistry) private readonly evaluators: SignalEvaluatorRegistry,
   ) {}
 
-  async run(strategy: Strategy, candles: ReadonlyArray<Candle>): Promise<SignalResult> {
+  async run(
+    strategy: Strategy,
+    candles: ReadonlyArray<Candle>,
+    evaluatedAt = new Date().toISOString(),
+  ): Promise<SignalResult> {
     const evaluator = this.evaluators.resolve(requestedEvaluatorId(strategy));
     const evaluation = await evaluator.evaluate({ strategy, candles });
 
@@ -33,7 +37,7 @@ export class StrategyRunner {
       timeframe: strategy.timeframe as Timeframe,
       signal: evaluation.signal,
       confidence: evaluation.confidence,
-      timestamp: new Date().toISOString(),
+      timestamp: evaluatedAt,
       metadata: evaluation.metadata,
     });
   }

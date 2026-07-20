@@ -1,0 +1,113 @@
+name: Nightly Validation
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  nightly:
+    name: Nightly
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: trp
+          POSTGRES_PASSWORD: trp
+          POSTGRES_DB: trp
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U trp -d trp"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      CI: true
+      RELEASE_SKIP_GIT: '1'
+      DATABASE_URL: postgresql://trp:trp@localhost:5432/trp?schema=public
+      JWT_SECRET: ci-only-jwt-secret-value-32chars
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Full test suite
+        id: tests
+        run: pnpm test
+
+      - name: Architecture validation
+        id: architecture
+        run: pnpm exec tsx .github/scripts/ci/architecture-check.ts
+
+      - name: Dependency audit
+        id: audit
+        run: pnpm audit --audit-level=critical
+        continue-on-error: true
+
+      - name: Performance smoke
+        id: performance
+        run: pnpm exec tsx tools/release/src/cli.ts --no-git
+        continue-on-error: true
+        env:
+          RELEASE_RC_VERSION: nightly
+
+      - name: Write nightly report
+        if: always()
+        run: bash .github/scripts/ci/nightly-report.sh
+
+      - name: Upload nightly report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-report-${{ github.run_id }}
+          path: .github/reports/nightly/**
+
+      - name: Open issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `Nightly validation failed (${new Date().toISOString().slice(0, 10)})`;
+            const body = [
+              'Automated nightly validation failed.',
+              '',
+              `Workflow: ${context.workflow}`,
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              'Please inspect artifacts and restore green nightly status.',
+            ].join('\n');
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'nightly-failure',
+            });
+            if (issues.data.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['nightly-failure'],
+              });
+            }

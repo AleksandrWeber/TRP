@@ -1,6 +1,8 @@
 import { VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import helmet from '@fastify/helmet';
+import rateLimit from '@fastify/rate-limit';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -25,6 +27,17 @@ async function bootstrap() {
     // Fastify CORS otherwise reflects only GET/HEAD/POST; Strategy CRUD (US004)
     // is the first browser consumer of PATCH/DELETE.
     methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  });
+
+  await app.register(helmet, {
+    global: true,
+    contentSecurityPolicy: process.env.NODE_ENV === 'production',
+  });
+
+  await app.register(rateLimit, {
+    global: true,
+    max: Number(process.env.API_RATE_LIMIT_MAX ?? 200),
+    timeWindow: process.env.API_RATE_LIMIT_WINDOW ?? '1 minute',
   });
 
   const port = Number(process.env.API_PORT ?? 3000);

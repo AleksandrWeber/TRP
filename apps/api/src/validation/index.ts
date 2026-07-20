@@ -22,7 +22,7 @@ export {
 export { AnalyzeCampaignBodyDto } from './dto/research-analysis.dto';
 export { ImportCampaignBodyDto } from './dto/campaign-import.dto';
 export { RunExperimentBodyDto } from './dto/experiments.dto';
-export { ImportBinanceBodyDto } from './dto/datasets.dto';
+export { ImportBinanceBodyDto, UpdateDatasetBodyDto } from './dto/datasets.dto';
 export { StartWorkflowBodyDto } from './dto/workflow.dto';
 export { ExecuteAiBodyDto, ListAiLogsQueryDto } from './dto/ai.dto';
 export { ListEventsQueryDto } from './dto/events.dto';
@@ -43,3 +43,14 @@ export {
   StrategyIdParamDto,
 } from './dto/evaluation-scheduler.dto';
 export { ListExecutorTradesQueryDto } from './dto/paper-trading-executor.dto';
+export {
+  ListHistoricalResearchResultsQueryDto,
+  RunHistoricalResearchBodyDto,
+} from './dto/historical-research.dto';
+export {
+  StartAnalyticsBodyDto,
+  StartEngineeringBodyDto,
+  StartOptimizationBodyDto,
+  StartResearchExecutionBodyDto,
+  UpdateResearchControlSettingsBodyDto,
+} from './dto/research-control-center.dto';

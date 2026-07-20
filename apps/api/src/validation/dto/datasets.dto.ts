@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsIn, IsInt, IsOptional, IsString } from 'class-validator';
+import { MARKET_REGIMES } from '../../modules/datasets/dataset-metadata';
 
 /**
  * Binance dataset import body DTO (US113).
@@ -31,4 +32,38 @@ export class ImportBinanceBodyDto {
   @Type(() => Number)
   @IsInt()
   limit?: number;
+
+  @IsOptional()
+  @IsString()
+  displayName?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @IsIn(MARKET_REGIMES)
+  marketRegime?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  enabled?: boolean;
+}
+
+export class UpdateDatasetBodyDto {
+  @IsOptional()
+  @IsString()
+  displayName?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @IsIn(MARKET_REGIMES)
+  marketRegime?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  enabled?: boolean;
 }

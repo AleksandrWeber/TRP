@@ -3,6 +3,8 @@ export { PaperTradingExecutorController } from './paper-trading-executor.control
 export { PaperTradingExecutorService } from './paper-trading-executor.service';
 export { PaperTradingExecutorErrorFilter } from './paper-trading-executor-error.filter';
 export { ExecutorPortfolioStore } from './executor-portfolio-store';
+export { executeVirtualSignal } from './virtual-signal-executor';
+export type { VirtualSignalExecutionInput } from './virtual-signal-executor';
 export {
   createExecutedTrade,
   EXECUTED_TRADE_SIDES,

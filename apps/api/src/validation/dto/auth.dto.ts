@@ -7,9 +7,17 @@ export class RegisterBodyDto {
   @IsString()
   @MinLength(1)
   displayName!: string;
+
+  @IsString()
+  @MinLength(8)
+  password!: string;
 }
 
 export class LoginBodyDto {
   @IsEmail()
   email!: string;
+
+  @IsString()
+  @MinLength(8)
+  password!: string;
 }

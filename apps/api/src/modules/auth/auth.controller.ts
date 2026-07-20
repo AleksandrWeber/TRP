@@ -18,13 +18,13 @@ export class AuthController {
   @Public()
   @Post('register')
   register(@Body() body: RegisterBodyDto) {
-    return this.authentication.register(body.email, body.displayName);
+    return this.authentication.register(body.email, body.displayName, body.password);
   }
 
   @Public()
   @Post('login')
   login(@Body() body: LoginBodyDto) {
-    return this.authentication.login(body.email);
+    return this.authentication.login(body.email, body.password);
   }
 
   @Get('me')

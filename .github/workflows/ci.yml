@@ -1,0 +1,92 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+      - 'feat/**'
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: trp
+          POSTGRES_PASSWORD: trp
+          POSTGRES_DB: trp
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U trp -d trp"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      CI: true
+      RELEASE_SKIP_GIT: '1'
+      DATABASE_URL: postgresql://trp:trp@localhost:5432/trp?schema=public
+      JWT_SECRET: ci-only-jwt-secret-value-32chars
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build
+
+      - name: Prisma generate
+        run: pnpm --filter @trp/api exec prisma generate
+
+      - name: Prisma migrate deploy
+        run: pnpm --filter @trp/api exec prisma migrate deploy
+
+      - name: Tests
+        run: pnpm test
+
+      - name: Architecture validation
+        run: pnpm exec tsx .github/scripts/ci/architecture-check.ts
+
+      - name: Smoke tests
+        run: bash .github/scripts/ci/smoke.sh
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-reports-${{ github.sha }}
+          path: |
+            docs/releases/**
+            .github/reports/**
+          if-no-files-found: ignore

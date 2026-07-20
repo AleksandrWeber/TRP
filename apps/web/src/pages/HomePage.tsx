@@ -50,7 +50,10 @@ export function HomePage() {
         <h2 className="text-2xl font-semibold">Dashboard</h2>
         <p className="mt-2 text-slate-400">
           Implementation 017 — operational overview of workflows, research, knowledge, and
-          production.
+          production.{' '}
+          <Link to="/dashboard" className="text-sky-400 hover:text-sky-300">
+            Open Research Control Center
+          </Link>
         </p>
       </div>
 

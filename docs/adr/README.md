@@ -73,3 +73,7 @@ File: [`ADR-017-module-boundaries.md`](./ADR-017-module-boundaries.md)
 ADR-018 — Architectural Invariants (immutable execution, event, runtime, accounting, and safety rules)
 Status: Accepted
 File: [`ADR-018-architectural-invariants.md`](./ADR-018-architectural-invariants.md)
+
+ADR-019 — Event Emission Semantics (application events are infrastructure notifications; Contract B)
+Status: Accepted
+File: [`ADR-019-event-emission-semantics.md`](./ADR-019-event-emission-semantics.md)

@@ -60,6 +60,15 @@ describe('StrategyRunner (US009)', () => {
     expect(Object.isFrozen(result)).toBe(true);
   });
 
+  it('uses an explicit evaluation timestamp for deterministic replay', async () => {
+    const runner = buildRunner();
+    const evaluatedAt = '2026-01-01T01:00:00.000Z';
+
+    const result = await runner.run(STRATEGY, [BULLISH_CANDLE], evaluatedAt);
+
+    expect(result.timestamp).toBe(evaluatedAt);
+  });
+
   it('honors the evaluator requested in strategy parameters', async () => {
     const holder: StrategyEvaluator = {
       id: 'holder',

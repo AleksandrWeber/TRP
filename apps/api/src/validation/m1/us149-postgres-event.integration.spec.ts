@@ -19,8 +19,9 @@ import { PrismaInboxRepository } from '../../modules/event-processing/repositori
 import { PrismaConsumerCheckpointRepository } from '../../modules/event-processing/repositories/prisma-consumer-checkpoint.repository';
 import { PrismaTransactionalOutboxWriter } from '../../modules/event-processing/repositories/prisma-transactional-outbox.writer';
 
-const WS = 'ws-us149';
-const PREFIX = `m1-us149-${Date.now()}`;
+const RUN_ID = `${Date.now()}-${process.pid}`;
+const WS = `ws-us149-${RUN_ID}`;
+const PREFIX = `m1-us149-${RUN_ID}`;
 
 const TIMESTAMPS = {
   exchangeOccurredAt: '2026-07-18T10:00:00.000Z',

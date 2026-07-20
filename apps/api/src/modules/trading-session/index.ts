@@ -37,3 +37,68 @@ export {
   TRADING_SESSION_REPOSITORY,
   type TradingSessionRepository,
 } from './persistence/trading-session.repository';
+export {
+  DEFAULT_RUNTIME_LEASE_DURATION_MS,
+  ExecutionMode,
+  RecoveryStatus,
+  SessionState,
+  TradingSession as TradingSessionAggregate,
+  isExecutionMode,
+  isRecoveryStatus,
+  isSessionState,
+  type AcquireRuntimeLeaseOptions,
+  type CreateTradingSessionProperties,
+  type RecoveryStateProperties,
+  type TradingSessionProperties,
+} from './domain/trading-session-aggregate';
+export {
+  DuplicateRecoveryCompletionError,
+  DuplicateRecoveryFailureError,
+  DuplicateRuntimeLeaseError,
+  DuplicateTradingSessionFailureError,
+  ExpiredRuntimeLeaseError,
+  InvalidRecoveryTimestampError,
+  InvalidRuntimeHeartbeatTimestampError,
+  InvalidLifecycleTimestampError,
+  InvalidTradingSessionTransitionError,
+  MissingRecoveryReasonError,
+  MissingRuntimeLeaseError,
+  MissingFailureReasonError,
+  RecoveryAlreadyCompletedError,
+  RecoveryInProgressError,
+  RecoveryNotEligibleError,
+  RecoveryNotInProgressError,
+  RuntimeLeaseOwnerMismatchError,
+  TradingSessionDomainError,
+  type TradingSessionDomainErrorCode,
+} from './domain/trading-session-errors';
+export type {
+  RuntimeHeartbeatExpired,
+  RuntimeHeartbeatReceived,
+  RuntimeLeaseAcquired,
+  RuntimeLeaseExpired,
+  RuntimeLeaseReleased,
+  TradingSessionCreated,
+  TradingSessionDomainEvent,
+  TradingSessionFailed,
+  TradingSessionPaused,
+  TradingSessionRecoveryCompleted,
+  TradingSessionRecoveryFailed,
+  TradingSessionRecoverySkipped,
+  TradingSessionRecoveryStarted,
+  TradingSessionResumed,
+  TradingSessionStarted,
+  TradingSessionStopped,
+} from './domain/trading-session-events';
+export type { RecoveryStateRepository } from './domain/recovery-state.repository';
+export type {
+  TradingSessionAggregateRepository,
+  TradingSessionRepository as TradingSessionDomainRepository,
+} from './domain/trading-session-aggregate.repository';
+export {
+  DEFAULT_RUNTIME_HEARTBEAT_TIMEOUT_MS,
+  RuntimeLease,
+  type CreateRuntimeLeaseProperties,
+  type RuntimeLeaseProperties,
+} from './domain/runtime-lease';
+export type { RuntimeLeaseRepository } from './domain/runtime-lease.repository';
