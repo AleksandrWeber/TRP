@@ -1,9 +1,10 @@
 # TRP — Architecture Snapshot
 
-Last updated: 2026-07-19 (US183.1 — RC-15 / M2 Cluster Closure)
+Last updated: 2026-07-20 (RC-4 — Version 1 official completion `v1.0.0`)
 
-Single snapshot of the **current** architecture (RC-15 complete; RC-16 M2
-complete). Documentation only. No future ideas.
+Single snapshot of the **current** architecture for Trading Platform Version 1
+(Research/Simulation through RC-15.1; paper foundation through RC-16 M2;
+Trading Core engines certified in RC-1). Documentation only. No future ideas.
 
 > RC-15.1 Validation Release: the Research & Simulation Platform was validated end-to-end by Validation Sprint V1 (VS001 functional, VS002 stress / determinism, VS003 invariants, VS004 readiness review). No architectural changes were made — only confirmed defect fixes (deterministic CAGR, iterative snapshot summarization, classic PnL / equity accounting) were integrated. Validated invariants: `cash + market value = equity`, `realized + unrealized = total PnL`, deterministic outputs for identical inputs (operational metadata excluded), workspace isolation, and artifact immutability. New debt from the sprint is tracked as TD-028…TD-033 in [`technical-debt.md`](./technical-debt.md).
 

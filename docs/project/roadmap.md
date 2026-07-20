@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-07-19 (US183.1 — RC-15 / M2 Cluster Closure)
+Last updated: 2026-07-20 (RC-4 — Version 1 official completion `v1.0.0`)
 
 Living roadmap for product direction.
 
@@ -12,6 +12,7 @@ Related:
 - Technical Debt: [`technical-debt.md`](./technical-debt.md)
 - Module Maturity: [`module-maturity.md`](./module-maturity.md)
 - Changelog: [`../../CHANGELOG.md`](../../CHANGELOG.md)
+- V1 Completion: [`../releases/V1-COMPLETION.md`](../releases/V1-COMPLETION.md)
 
 ---
 
@@ -212,10 +213,14 @@ confirms RC-16 is not complete until M3–M7.
 
 ## Future Milestones
 
+**Version 1 (`v1.0.0`) is complete.** Future work targets Version 2+ maintenance
+and enhancements (new ADR required for architecture changes):
+
+- Strategy Trading Sessions and continuous safety / recovery operations
 - Research OS
 - AI Research Assistant
 - Portfolio Research
-- Real-capital Trading (requires future ADR; not RC-16)
+- Real-capital Trading (requires future ADR; not V1)
 - Continuous Learning
 
 ---

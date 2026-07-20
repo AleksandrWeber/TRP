@@ -36,7 +36,6 @@ PASS
 
 ## Warnings
 
-- [Repository] Working tree has 126 dirty paths (expected pre-release)
 - [Architecture] Kill switch position close via orders (preferred): Emergency manager closes positions without order lifecycle
 - [Smoke] UI routes registered in App.tsx; browser E2E not executed in smoke phase
 

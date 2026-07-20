@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-20
 **Status:** PASS
-**Duration:** 884 ms
+**Duration:** 949 ms
 
 ## Summary
 
@@ -12,18 +12,18 @@ Lightweight performance smoke and benchmark suite completed.
 
 | Metric          | Value  |
 | --------------- | ------ |
-| ordersMs        | 0.029  |
+| ordersMs        | 0.026  |
 | positionsMs     | 0.015  |
 | sessionsMs      | 0.007  |
-| reconnectMs     | 0.526  |
-| killSwitchMs    | 0.005  |
+| reconnectMs     | 0.451  |
+| killSwitchMs    | 0.004  |
 | recoveryMs      | 0.002  |
-| totalScenarioMs | 0.586  |
-| rssMB           | 89.6   |
-| heapUsedMB      | 20.3   |
+| totalScenarioMs | 0.506  |
+| rssMB           | 83.2   |
+| heapUsedMB      | 20     |
 | heapDeltaMB     | 0.05   |
-| cpuUserUs       | 812    |
-| cpuSystemUs     | 47     |
+| cpuUserUs       | 738    |
+| cpuSystemUs     | 31     |
 | errors          | 0      |
 | checksum        | 315545 |
 

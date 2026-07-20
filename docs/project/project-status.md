@@ -1,17 +1,27 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-19 (US183.1 — RC-15 / M2 Cluster Closure)
+2026-07-20 (RC-4 — Trading Platform Version 1 official completion)
 
 ---
 
 # Repository Status
 
-READY FOR RC-16
+**VERSION 1 COMPLETE — PRODUCTION READY**
+
+| Field                  | Value            |
+| ---------------------- | ---------------- |
+| Current Stable Release | `v1.0.0`         |
+| Release Status         | Production Ready |
+| Last Certification     | PASS             |
+| Production branch      | `main`           |
+| Historical RC          | `v1.0.0-rc1`     |
+
+V1 Completion Report: [`../releases/V1-COMPLETION.md`](../releases/V1-COMPLETION.md)
 
 RC-15: COMPLETE  
-M2: COMPLETE  
-Next Milestone: M3 — Strategy Trading Sessions
+RC-16 M1/M2: COMPLETE (foundation retained in V1)  
+Engineering gates RC-1 / RC-2 / RC-3 / RC-4: PASS
 
 Cluster Closure Report:
 [`rc-15-cluster-closure.md`](./rc-15-cluster-closure.md)
@@ -20,8 +30,8 @@ Cluster Closure Report:
 
 # Current Phase
 
-M2 complete — Durable Paper Order and Accounting Core.
-Repository validated and closed for RC-15 / M2 cluster; M3 development may begin.
+Trading Platform **Version 1** is the official production baseline on `main`.
+Repository is ready for V1 maintenance and Version 2 planning/development.
 
 ---
 

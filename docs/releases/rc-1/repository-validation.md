@@ -2,24 +2,20 @@
 
 **Date:** 2026-07-20
 **Status:** PASS
-**Duration:** 336 ms
+**Duration:** 395 ms
 
 ## Summary
 
-Repository integrity checks passed on branch feat/us003-us005-strategy-foundation.
+Repository integrity checks passed on branch main.
 
 ## Metrics
 
-| Metric             | Value                                |
-| ------------------ | ------------------------------------ |
-| branch             | feat/us003-us005-strategy-foundation |
-| dirtyPaths         | 126                                  |
-| todoMarkers        | 0                                    |
-| debuggerStatements | 0                                    |
-
-## Warnings
-
-- Working tree has 126 dirty paths (expected pre-release)
+| Metric             | Value |
+| ------------------ | ----- |
+| branch             | main  |
+| dirtyPaths         | 0     |
+| todoMarkers        | 0     |
+| debuggerStatements | 0     |
 
 ## Checks
 

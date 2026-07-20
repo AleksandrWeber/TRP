@@ -3,6 +3,7 @@
 Index of accepted architectural decisions for TRP Research OS.
 
 Full living project status: [`docs/project/project-status.md`](../project/project-status.md).
+Version 1 completion: [`docs/releases/V1-COMPLETION.md`](../releases/V1-COMPLETION.md) (`v1.0.0`).
 
 Note: ADR-001…ADR-006 currently exist as index-only decisions. ADR-007 onward are standalone ADR documents. Do not create stub files for ADR-001…006.
 

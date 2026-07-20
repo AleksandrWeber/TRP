@@ -8,6 +8,8 @@ Related docs:
 - ADR Index: [`../adr/README.md`](../adr/README.md)
 - Version History: [`../research/version-history.md`](../research/version-history.md)
 - Changelog: [`../../CHANGELOG.md`](../../CHANGELOG.md)
+- V1 Completion: [`../releases/V1-COMPLETION.md`](../releases/V1-COMPLETION.md)
+- Stable release: `v1.0.0` on `main`
 - Development Guide v2:
   [`rc-15-retrospective-development-guide-v2.md`](./rc-15-retrospective-development-guide-v2.md)
 - RC-16 Paper Trading Plan:

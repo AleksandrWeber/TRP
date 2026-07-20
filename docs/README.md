@@ -1,19 +1,31 @@
-# Trading Research Platform (TRP)
+# Trading Research Platform (TRP) — Architecture Index
 
 > A Research Operating System for quantitative strategy development.
 
 **Source of truth:** [`docs/CANONICAL.md`](./CANONICAL.md)
 
+## Release Status
+
+| Field                  | Value                                                      |
+| ---------------------- | ---------------------------------------------------------- |
+| Current Stable Release | `v1.0.0`                                                   |
+| Release Status         | Production Ready                                           |
+| Last Certification     | PASS                                                       |
+| Production branch      | `main`                                                     |
+| V1 Completion Report   | [`releases/V1-COMPLETION.md`](./releases/V1-COMPLETION.md) |
+| Changelog              | [`../CHANGELOG.md`](../CHANGELOG.md)                       |
+
 ---
 
 ## Documentation Status
 
+- **Version 1:** Officially complete (`v1.0.0`)
 - Research/Simulation Architecture: Frozen (RC-15.1)
 - Paper Trading Architecture: Frozen (RC-16, ADR-012…ADR-018)
 - MVP Scope: Frozen
 - Future Features: [`docs/future/`](./future/)
 - Archive: [`docs/archive/`](./archive/)
-- RC-16 architectural changes require a new ADR.
+- Architectural changes require a new ADR.
 
 ---
 
@@ -87,21 +99,37 @@ Full list: [`00-architecture-principles.md`](./00-architecture-principles.md)
 | [`Architecture/`](./Architecture/)                                             | Active subsystem specs          |
 | [`adr/`](./adr/)                                                               | Accepted architecture decisions |
 | [`project/rc-16-paper-trading-plan.md`](./project/rc-16-paper-trading-plan.md) | RC-16 scope and milestones      |
+| [`project/project-status.md`](./project/project-status.md)                     | Living project status           |
+| [`project/roadmap.md`](./project/roadmap.md)                                   | Direction / future roadmap      |
+| [`releases/`](./releases/)                                                     | Certification & release history |
+| [`releases/V1-COMPLETION.md`](./releases/V1-COMPLETION.md)                     | Version 1 completion report     |
 | [`Implementation/`](./Implementation/)                                         | Sprint guides                   |
 | [`future/`](./future/)                                                         | Deferred designs                |
 | [`archive/`](./archive/)                                                       | Pre-cleanup drafts              |
 
 ---
 
+## Release History
+
+| Version      | Date       | Status          | Notes                          |
+| ------------ | ---------- | --------------- | ------------------------------ |
+| `v1.0.0`     | 2026-07-20 | Official Stable | Production baseline on `main`  |
+| `v1.0.0-rc1` | 2026-07-20 | Historical RC   | Engineering certification PASS |
+
+Evidence: [`releases/RC-1-CERTIFICATION.md`](./releases/RC-1-CERTIFICATION.md),
+[`releases/RC-1-RELEASE-NOTES.md`](./releases/RC-1-RELEASE-NOTES.md).
+
+---
+
 ## Next
 
-1. Define RC-16 User Stories by milestone/epic from the approved plan.
-2. Implement only within ADR-012…ADR-018; architectural changes require a new ADR.
-3. Run Mini Validation after RC-16 milestones M2, M4, and M6.
+1. Maintain Version 1 on `main` (bugfixes / docs only unless a new ADR is accepted).
+2. Plan Version 2 against [`project/roadmap.md`](./project/roadmap.md) and [`future/`](./future/).
+3. Keep ADR-012…ADR-018 freeze until a new ADR supersedes it.
 
 ---
 
 ## Status
 
-Phase: RC-16 Paper Trading Architecture frozen · User Story definition next
-Version: 2.0
+Phase: Version 1 complete · Production Ready (`v1.0.0`)  
+Version: 1.0.0

@@ -11,6 +11,92 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ### Added
 
+- (none — Version 1 baseline is `v1.0.0`)
+
+## [1.0.0] — 2026-07-20
+
+### Summary
+
+Official stable release of **Trading Platform Version 1**. Production baseline
+on branch `main`. Release candidate `v1.0.0-rc1` remains historical.
+
+Certification gates: RC-1 PASS · RC-2 PASS · RC-3 PASS · RC-4 PASS.
+
+### Major Components
+
+#### Research Platform
+
+- Historical Research Engine, campaigns, walk-forward, knowledge, pipelines
+- Execution Simulator and Research & Simulation stack (RC-15 / RC-15.1)
+- Research Control Center and runtime health surfaces
+
+#### Trading Platform
+
+- Portfolio Engine (US204)
+- Position Engine (US205)
+- Order Lifecycle (US206)
+- Exchange Adapter (US209)
+- Live Trading Workspace (US210)
+
+#### Paper Trading
+
+- Durable paper accounts, sessions, orders, fills (RC-16 M1–M2 foundation)
+- Paper Trading coordinator over Trading Core (US208)
+
+#### Live Trading
+
+- Live Trading Workspace with emergency Kill Switch controls
+- Exchange Adapter I/O boundary (no business accounting ownership)
+
+#### Risk Engine
+
+- Risk evaluation gate before execution (US207)
+- Risk evaluates; does not execute
+
+#### Optimization
+
+- Strategy optimization surfaces in the Research Platform
+
+#### Analytics
+
+- Performance analytics / benchmark reporting
+- Simulation Performance and Research Report domains
+
+#### Engineering Certification
+
+- RC-1 scorecard: Repository, Dependencies, Static Analysis, Build, Database,
+  Tests, Architecture, Smoke, Performance, Security, Documentation — all PASS
+- Artifacts under `docs/releases/`
+
+#### CI/CD Pipeline
+
+- Local pipeline: `pnpm release:rc` / `pnpm release:validate` (RC-2)
+- GitHub Actions: CI, PR, Release, Nightly, Security (RC-3)
+- Production promotion and stable tag `v1.0.0` (RC-4)
+
+### Known Limitations
+
+- Kill switch position close may bypass the preferred order-lifecycle path
+  (architecture warning; non-blocking)
+- Smoke validation registers UI routes; full browser E2E is not executed in
+  the release smoke phase
+- Coverage report is not attached to the GitHub Release when unavailable
+- Items in [`docs/project/technical-debt.md`](./docs/project/technical-debt.md)
+  remain accepted for V1 maintenance
+
+### Future Roadmap
+
+See [`docs/project/roadmap.md`](./docs/project/roadmap.md) and
+[`docs/future/`](./docs/future/). Version 2 planning may continue from the V1
+baseline without modifying V1 architecture unless a new ADR is accepted.
+
+Completion report: [`docs/releases/V1-COMPLETION.md`](./docs/releases/V1-COMPLETION.md)
+
+### Prior work retained in this baseline
+
+The following historical notes remain part of the V1 codebase lineage
+(previously tracked under `[Unreleased]` during RC-16 delivery):
+
 - RC-16 M1 US126 — Live Market Data Domain Contracts
   (`apps/api/src/modules/live-market-data/`): immutable provider-neutral
   closed-candle, mark-price, and market-status events plus subscription and

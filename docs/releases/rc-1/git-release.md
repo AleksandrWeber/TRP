@@ -1,24 +1,23 @@
 # RC-1 — Git Release
 
 **Date:** 2026-07-20
-**Status:** PASS
-**Duration:** 6687 ms
+**Status:** SKIP
+**Duration:** 0 ms
 
 ## Summary
 
-Release commit/tag prepared locally (v1.0.0-rc1). Push remains manual.
+Git commit/tag skipped (--no-git / CI / RELEASE_SKIP_GIT=1).
 
 ## Metrics
 
-| Metric        | Value                              |
-| ------------- | ---------------------------------- |
-| tag           | v1.0.0-rc1                         |
-| commitMessage | release(rc-1): Trading Platform V1 |
+| Metric  | Value |
+| ------- | ----- |
+| skipped | true  |
 
-## Recommendations
+## Warnings
 
-- Review commit, then push branch and tag: git push && git push origin v1.0.0-rc1
+- Git release steps were skipped by configuration
 
 ## Verdict
 
-**PASS**
+**SKIP**
