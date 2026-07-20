@@ -65,7 +65,16 @@ export class TestRunner {
     const criticalIssues: string[] = [];
     const warnings: string[] = [];
 
-    const test = await runPnpm(['test'], config.rootDir, 900_000);
+    const test = await runPnpm(
+      ['exec', 'turbo', 'run', 'test', '--force'],
+      config.rootDir,
+      900_000,
+      {
+        ...(process.env.DATABASE_URL ? { DATABASE_URL: process.env.DATABASE_URL } : {}),
+        ...(process.env.JWT_SECRET ? { JWT_SECRET: process.env.JWT_SECRET } : {}),
+        TURBO_FORCE: 'true',
+      },
+    );
     const output = `${test.stdout}\n${test.stderr}`;
     const summary = parseVitestSummary(output);
 

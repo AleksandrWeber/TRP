@@ -83,6 +83,7 @@ export async function runPnpm(
   args: readonly string[],
   cwd: string,
   timeoutMs = 600_000,
+  env?: NodeJS.ProcessEnv,
 ): Promise<CommandResult> {
-  return runCommand('pnpm', args, { cwd, timeoutMs });
+  return runCommand('pnpm', args, { cwd, timeoutMs, env });
 }

@@ -1,5 +1,14 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalPassThroughEnv": [
+    "CI",
+    "DATABASE_URL",
+    "JWT_SECRET",
+    "NODE_ENV",
+    "CORS_ORIGIN",
+    "API_PORT",
+    "API_HOST"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -13,7 +22,9 @@
       "dependsOn": ["^lint"]
     },
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "passThroughEnv": ["DATABASE_URL", "JWT_SECRET", "CI"],
+      "env": ["DATABASE_URL", "JWT_SECRET", "CI"]
     }
   }
 }

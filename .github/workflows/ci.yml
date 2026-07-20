@@ -76,7 +76,9 @@ jobs:
         run: pnpm --filter @trp/api exec prisma migrate deploy
 
       - name: Tests
-        run: pnpm test
+        run: pnpm exec turbo run test --force
+        env:
+          TURBO_FORCE: 'true'
 
       - name: Architecture validation
         run: pnpm exec tsx .github/scripts/ci/architecture-check.ts

@@ -56,7 +56,9 @@ jobs:
 
       - name: Full test suite
         id: tests
-        run: pnpm test
+        run: pnpm exec turbo run test --force
+        env:
+          TURBO_FORCE: 'true'
 
       - name: Architecture validation
         id: architecture
