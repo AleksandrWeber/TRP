@@ -11,7 +11,7 @@
     "build": "turbo run build",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "typecheck": "pnpm --filter \"./apps/*\" --filter \"./packages/*\" exec tsc --noEmit",
+    "typecheck": "pnpm --filter @trp/research build && pnpm --filter \"./apps/*\" --filter \"./packages/*\" exec tsc --noEmit",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md}\"",
     "release:rc": "tsx tools/release/src/cli.ts",

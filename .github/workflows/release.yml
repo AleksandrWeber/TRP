@@ -62,6 +62,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build shared packages
+        run: pnpm --filter @trp/research build
+
       - name: Run RC-2 release pipeline
         run: pnpm release:validate
         continue-on-error: false

@@ -10,6 +10,13 @@ export class StaticAnalysisRunner {
     const recommendations: string[] = [];
 
     const lint = await runPnpm(['lint'], config.rootDir, 600_000);
+    // Ensure shared package declarations exist before workspace typecheck (clean CI).
+    const researchBuild = await runPnpm(['--filter', '@trp/research', 'build'], config.rootDir);
+    if (researchBuild.exitCode !== 0) {
+      criticalIssues.push(
+        `@trp/research build failed before typecheck:\n${truncate(researchBuild.stderr || researchBuild.stdout)}`,
+      );
+    }
     const typecheck = await runPnpm(['typecheck'], config.rootDir, 600_000);
     const format = await runPnpm(['format:check'], config.rootDir, 600_000);
 

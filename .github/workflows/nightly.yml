@@ -51,6 +51,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build shared packages
+        run: pnpm --filter @trp/research build
+
       - name: Full test suite
         id: tests
         run: pnpm test

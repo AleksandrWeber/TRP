@@ -54,6 +54,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build shared packages
+        run: pnpm --filter @trp/research build
+
       - name: Repository validation
         run: pnpm exec tsx .github/scripts/ci/repository-check.ts
 
