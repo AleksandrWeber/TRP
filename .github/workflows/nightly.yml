@@ -54,6 +54,12 @@ jobs:
       - name: Build shared packages
         run: pnpm --filter @trp/research build
 
+      - name: Prisma generate
+        run: pnpm --filter @trp/api exec prisma generate
+
+      - name: Prisma migrate deploy
+        run: pnpm --filter @trp/api exec prisma migrate deploy
+
       - name: Full test suite
         id: tests
         run: pnpm exec turbo run test --force
