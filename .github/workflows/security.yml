@@ -34,8 +34,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # pnpm ≤10 still hits retired npm /security/audits endpoints (gzip/410 parse failures).
+      # Run audit via pnpm 11 bulk advisories API without upgrading the repo packageManager yet.
+      # See https://github.com/pnpm/pnpm/issues/11265
       - name: Dependency audit (critical)
-        run: pnpm audit --audit-level=critical
+        run: pnpm dlx pnpm@11 --config.manage-package-manager-versions=false audit --audit-level=critical
 
       - name: Secret scan
         run: pnpm exec tsx .github/scripts/ci/security-check.ts

@@ -10,7 +10,7 @@ Official GitHub Actions workflows for the Trading Platform.
 | `workflows/pull-request.yml` | pull_request                    | Repository, lint, types, tests, architecture, security, docs |
 | `workflows/release.yml`      | tag `v*` / workflow_dispatch    | Full RC-2 pipeline, artifacts, GitHub Release                |
 | `workflows/nightly.yml`      | cron 02:00 UTC                  | Full suite + audit + performance; opens issue on failure     |
-| `workflows/security.yml`     | daily + push main               | `pnpm audit`, secret scan, license inventory                 |
+| `workflows/security.yml`     | daily + push main               | `pnpm dlx pnpm@11 audit`, secret scan, license inventory     |
 
 ## Local ↔ CI mapping
 
