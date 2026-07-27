@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../shared/api';
 import { setAccessToken, setActiveWorkspace } from '../shared/auth';
+import { toUserFacingError } from '../shared/mapApiError';
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export function LoginPage() {
       setActiveWorkspace({ id: workspace.id, name: workspace.name });
       navigate('/');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      setError(toUserFacingError(err, 'Login failed'));
     } finally {
       setLoading(false);
     }

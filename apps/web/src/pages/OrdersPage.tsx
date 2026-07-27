@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api, type OrderView } from '../shared/api';
+import { formatUtc } from '../shared/formatUtc';
 
 function formatMoney(value: string | null): string {
   if (value === null || value === undefined || value === '') return '—';
@@ -135,9 +136,7 @@ export function OrdersPage() {
                     </span>
                   </td>
                   <td className="px-3 py-2 text-slate-200">{order.timeInForce}</td>
-                  <td className="px-3 py-2 text-slate-400">
-                    {new Date(order.createdAt).toLocaleString()}
-                  </td>
+                  <td className="px-3 py-2 text-slate-400">{formatUtc(order.createdAt)}</td>
                 </tr>
               ))}
             </tbody>

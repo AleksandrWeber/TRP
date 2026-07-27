@@ -1,4 +1,6 @@
 import type { CampaignSummary } from '../shared/api';
+import { CopyButton } from '../shared/CopyButton';
+import { formatUtc } from '../shared/formatUtc';
 import { campaignVerdictFromSummary } from './CampaignResultsView';
 import { orderCampaignHistoryNewestFirst } from './campaign-history';
 
@@ -13,7 +15,7 @@ export function CampaignHistoryView({ items }: CampaignHistoryViewProps) {
     return (
       <section className="space-y-3" data-testid="campaign-history">
         <h3 className="text-lg font-semibold">Campaign History</h3>
-        <p className="text-sm text-slate-400">No local campaign runs yet.</p>
+        <p className="text-sm text-slate-400">Run your first campaign.</p>
       </section>
     );
   }
@@ -32,15 +34,28 @@ export function CampaignHistoryView({ items }: CampaignHistoryViewProps) {
             <dl className="grid gap-2 sm:grid-cols-2">
               <div>
                 <dt className="text-slate-500">startedAt</dt>
-                <dd>{summary.createdAt}</dd>
+                <dd>{formatUtc(summary.createdAt)}</dd>
               </div>
               <div>
                 <dt className="text-slate-500">strategyId</dt>
-                <dd>{summary.strategyId}</dd>
+                <dd className="flex flex-wrap items-center gap-2">
+                  <span>{summary.strategyId}</span>
+                  <CopyButton value={summary.strategyId} />
+                </dd>
               </div>
               <div>
                 <dt className="text-slate-500">datasetId</dt>
-                <dd>{summary.datasetId}</dd>
+                <dd className="flex flex-wrap items-center gap-2 break-all">
+                  <span>{summary.datasetId}</span>
+                  <CopyButton value={summary.datasetId} />
+                </dd>
+              </div>
+              <div>
+                <dt className="text-slate-500">campaignId</dt>
+                <dd className="flex flex-wrap items-center gap-2 break-all">
+                  <span>{summary.campaignId}</span>
+                  <CopyButton value={summary.campaignId} />
+                </dd>
               </div>
               <div>
                 <dt className="text-slate-500">totalRuns</dt>
@@ -48,7 +63,12 @@ export function CampaignHistoryView({ items }: CampaignHistoryViewProps) {
               </div>
               <div>
                 <dt className="text-slate-500">bestExperimentId</dt>
-                <dd>{summary.bestExperimentId ?? 'null'}</dd>
+                <dd className="flex flex-wrap items-center gap-2 break-all">
+                  <span>{summary.bestExperimentId ?? 'null'}</span>
+                  {summary.bestExperimentId ? (
+                    <CopyButton value={summary.bestExperimentId} />
+                  ) : null}
+                </dd>
               </div>
               <div>
                 <dt className="text-slate-500">verdict</dt>

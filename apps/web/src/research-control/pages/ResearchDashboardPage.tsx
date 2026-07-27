@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { formatUtc } from '../../shared/formatUtc';
 import {
   EmptyState,
   ErrorPanel,
@@ -9,7 +10,7 @@ import {
 import { useDashboard } from '../hooks';
 
 export function ResearchDashboardPage() {
-  const { data, isLoading, isError, error, refetch, isFetching } = useDashboard();
+  const { data, isLoading, isError, error, refetch } = useDashboard();
 
   return (
     <section className="relative space-y-6">
@@ -30,7 +31,7 @@ export function ResearchDashboardPage() {
             <MetricCard
               label="Platform status"
               value={data.platformStatus}
-              hint={isFetching ? 'Refreshing…' : `Updated ${data.generatedAt}`}
+              hint={`Updated ${formatUtc(data.generatedAt)}`}
             />
             <MetricCard label="Active executions" value={data.activeExecutions} />
             <MetricCard label="Latest research" value={data.latestResearchRuns.length} />
@@ -50,7 +51,7 @@ export function ResearchDashboardPage() {
                       to={`/research/${run.id}`}
                       title={run.kind}
                       status={run.status}
-                      meta={run.createdAt}
+                      meta={formatUtc(run.createdAt)}
                     />
                   ))
               )}
@@ -68,7 +69,7 @@ export function ResearchDashboardPage() {
                       to={`/optimization/${run.id}`}
                       title={run.criterion}
                       status={run.status}
-                      meta={run.createdAt}
+                      meta={formatUtc(run.createdAt)}
                     />
                   ))
               )}
@@ -80,7 +81,7 @@ export function ResearchDashboardPage() {
                   to={`/engineering`}
                   title={data.latestReadinessReport.kind}
                   status={data.latestReadinessReport.status}
-                  meta={data.latestReadinessReport.createdAt}
+                  meta={formatUtc(data.latestReadinessReport.createdAt)}
                 />
               ) : (
                 <EmptyState title="No readiness report yet" />
@@ -93,7 +94,7 @@ export function ResearchDashboardPage() {
                   to={`/engineering`}
                   title={data.recentBenchmarkStatus.kind}
                   status={data.recentBenchmarkStatus.status}
-                  meta={data.recentBenchmarkStatus.createdAt}
+                  meta={formatUtc(data.recentBenchmarkStatus.createdAt)}
                 />
               ) : (
                 <EmptyState title="No benchmark runs yet" />

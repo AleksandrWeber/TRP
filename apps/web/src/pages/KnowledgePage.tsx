@@ -1,6 +1,8 @@
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useWorkspace } from '../app/WorkspaceContext';
 import { api, statusColor, type KnowledgeEntry } from '../shared/api';
+import { CopyButton } from '../shared/CopyButton';
+import { toUserFacingError } from '../shared/mapApiError';
 
 export function KnowledgePage() {
   const { activeWorkspace } = useWorkspace();
@@ -21,7 +23,7 @@ export function KnowledgePage() {
         }
       } catch (err) {
         if (requestId === requestSequence.current) {
-          setError(err instanceof Error ? err.message : 'Failed to load knowledge');
+          setError(toUserFacingError(err, 'Failed to load knowledge'));
         }
       }
     },
@@ -82,13 +84,21 @@ export function KnowledgePage() {
               </span>
             </div>
             <p className="mt-1 text-sm text-slate-400">{entry.description}</p>
+            <p className="mt-2 flex flex-wrap items-center gap-2 font-mono text-xs text-slate-500">
+              <span>ID: {entry.id}</span>
+              <CopyButton value={entry.id} />
+            </p>
             <p className="mt-2 text-xs text-slate-500">
               {entry.category} · {entry.type} · {entry.tags.join(', ')}
             </p>
           </li>
         ))}
         {entries.length === 0 && (
-          <p className="text-sm text-slate-500">No knowledge entries yet.</p>
+          <p className="text-sm text-slate-500">
+            No knowledge available.
+            <br />
+            Run Research to create knowledge entries.
+          </p>
         )}
       </ul>
     </section>

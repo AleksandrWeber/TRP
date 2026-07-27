@@ -9,6 +9,7 @@ import {
   type PortfolioView,
   type PositionView,
 } from '../shared/api';
+import { formatUtc } from '../shared/formatUtc';
 
 function formatMoney(value: string | null | undefined): string {
   if (value === null || value === undefined || value === '') return '—';
@@ -216,7 +217,7 @@ export function PaperTradingPage() {
                   </div>
                   <p className="mt-1 text-xs text-slate-500">
                     Equity {formatMoney(session.currentBalance)} · started{' '}
-                    {session.startedAt ? new Date(session.startedAt).toLocaleString() : '—'}
+                    {session.startedAt ? formatUtc(session.startedAt) : '—'}
                   </p>
                 </button>
               </li>
@@ -471,9 +472,7 @@ export function PaperTradingPage() {
                   <tbody>
                     {executions.map((exec) => (
                       <tr key={exec.id} className="border-b border-white/5">
-                        <td className="px-3 py-2">
-                          {new Date(exec.executionTime).toLocaleString()}
-                        </td>
+                        <td className="px-3 py-2">{formatUtc(exec.executionTime)}</td>
                         <td className="px-3 py-2 font-mono text-xs text-slate-400">
                           {exec.orderId.slice(0, 8)}
                         </td>

@@ -1,3 +1,4 @@
+import { formatUtc } from '../../shared/formatUtc';
 import { EmptyState, ErrorPanel, LoadingOverlay, RecommendationList } from '../components';
 import { useDiagnostics } from '../hooks';
 
@@ -19,7 +20,7 @@ export function DiagnosticsPage() {
 
       {data ? (
         <>
-          <p className="text-xs text-slate-500">Generated {data.generatedAt}</p>
+          <p className="text-xs text-slate-500">Generated {formatUtc(data.generatedAt)}</p>
 
           <DiagSection title="Validation warnings" items={data.warnings} tone="amber" />
           <DiagSection title="Anomalies" items={data.anomalies} tone="red" />

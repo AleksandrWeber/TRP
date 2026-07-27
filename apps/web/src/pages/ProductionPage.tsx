@@ -8,6 +8,8 @@ import {
   statusColor,
   verdictColor,
 } from '../shared/api';
+import { CopyButton } from '../shared/CopyButton';
+import { toUserFacingError } from '../shared/mapApiError';
 
 export function ProductionPage() {
   const [experiments, setExperiments] = useState<Experiment[]>([]);
@@ -29,7 +31,9 @@ export function ProductionPage() {
   }, []);
 
   useEffect(() => {
-    refresh().catch((err: Error) => setError(err.message));
+    refresh().catch((err: unknown) =>
+      setError(toUserFacingError(err, 'Failed to load production')),
+    );
   }, [refresh]);
 
   const deployable = experiments.filter(
@@ -43,7 +47,7 @@ export function ProductionPage() {
       await api.deploy(experiment.id, approve);
       await refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Deploy failed');
+      setError(toUserFacingError(err, 'Deploy failed'));
     } finally {
       setLoading(null);
     }
@@ -57,7 +61,7 @@ export function ProductionPage() {
       setLastTick(result);
       await refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Tick failed');
+      setError(toUserFacingError(err, 'Tick failed'));
     } finally {
       setLoading(null);
     }
@@ -70,7 +74,7 @@ export function ProductionPage() {
       await api.stopDeployment(deploymentId);
       await refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Stop failed');
+      setError(toUserFacingError(err, 'Stop failed'));
     } finally {
       setLoading(null);
     }
@@ -110,6 +114,10 @@ export function ProductionPage() {
                   <p className="font-medium">
                     {ex.strategyId} v{ex.strategyVersion} · {ex.dataset?.symbol}
                   </p>
+                  <p className="mt-1 flex flex-wrap items-center gap-2 font-mono text-xs text-slate-500">
+                    <span>Experiment: {ex.id}</span>
+                    <CopyButton value={ex.id} />
+                  </p>
                   <span
                     className={`mt-1 inline-block rounded-full border px-2 py-0.5 text-xs ${verdictColor(ex.verdict)}`}
                   >
@@ -148,7 +156,11 @@ export function ProductionPage() {
           Active deployments
         </h3>
         {deployments.length === 0 ? (
-          <p className="mt-3 text-sm text-slate-500">Nothing deployed yet.</p>
+          <p className="mt-3 text-sm text-slate-500">
+            No active deployments.
+            <br />
+            Deploy a certified strategy to begin.
+          </p>
         ) : (
           <ul className="mt-4 space-y-3">
             {deployments.map((dep) => (
@@ -157,6 +169,10 @@ export function ProductionPage() {
                   <div>
                     <p className="font-medium">
                       {dep.symbol} · {dep.strategyId} · {dep.mode}
+                    </p>
+                    <p className="mt-1 flex flex-wrap items-center gap-2 font-mono text-xs text-slate-500">
+                      <span>Deployment: {dep.id}</span>
+                      <CopyButton value={dep.id} />
                     </p>
                     <p className="mt-1 text-xs text-slate-500">
                       position: {dep.position?.side ?? 'flat'}{' '}

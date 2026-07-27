@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api, type PortfolioView } from '../shared/api';
+import { formatUtc } from '../shared/formatUtc';
 
 function formatMoney(value: string): string {
   const num = Number(value);
@@ -99,9 +100,7 @@ export function PortfolioPage() {
               {portfolio.status}
             </span>
             <span className="text-slate-500">{portfolio.currency}</span>
-            <span className="text-slate-500">
-              Refreshed {new Date(portfolio.refreshedAt).toLocaleString()}
-            </span>
+            <span className="text-slate-500">Refreshed {formatUtc(portfolio.refreshedAt)}</span>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -9,6 +9,8 @@ import {
   type StrategyTimeframe,
   type UpdateStrategyRequest,
 } from '../shared/api';
+import { CopyButton } from '../shared/CopyButton';
+import { toUserFacingError } from '../shared/mapApiError';
 
 const STATUS_OPTIONS: StrategyStatus[] = ['draft', 'active', 'archived'];
 const TIMEFRAME_OPTIONS: StrategyTimeframe[] = ['1m', '5m', '15m', '1h', '4h', '1d'];
@@ -69,8 +71,8 @@ export function StrategiesPage() {
       .then((list) => {
         if (!cancelled) setStrategies(list);
       })
-      .catch((err: Error) => {
-        if (!cancelled) setError(err.message);
+      .catch((err: unknown) => {
+        if (!cancelled) setError(toUserFacingError(err, 'Failed to load strategies'));
       });
     return () => {
       cancelled = true;
@@ -84,7 +86,7 @@ export function StrategiesPage() {
       await action();
       await refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Strategy operation failed');
+      setError(toUserFacingError(err, 'Strategy operation failed'));
     } finally {
       setBusy(false);
     }
@@ -543,6 +545,10 @@ export function StrategyListView({
                   {strategy.status}
                 </span>
               </div>
+              <p className="mt-1 flex flex-wrap items-center gap-2 font-mono text-xs text-slate-500">
+                <span>ID: {strategy.id}</span>
+                <CopyButton value={strategy.id} />
+              </p>
               {strategy.description && (
                 <p className="mt-1 text-sm text-slate-400">{strategy.description}</p>
               )}

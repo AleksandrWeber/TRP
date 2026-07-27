@@ -6,6 +6,7 @@ import {
   type RiskPolicyView,
   type RiskSummaryView,
 } from '../shared/api';
+import { formatUtc } from '../shared/formatUtc';
 
 function formatMoney(value: string): string {
   const num = Number(value);
@@ -237,9 +238,7 @@ function DecisionSection({
                     </Link>
                   </td>
                   <td className="max-w-md truncate px-3 py-2 text-slate-400">{decision.reason}</td>
-                  <td className="px-3 py-2 text-slate-500">
-                    {new Date(decision.timestamp).toLocaleString()}
-                  </td>
+                  <td className="px-3 py-2 text-slate-500">{formatUtc(decision.timestamp)}</td>
                 </tr>
               ))}
             </tbody>

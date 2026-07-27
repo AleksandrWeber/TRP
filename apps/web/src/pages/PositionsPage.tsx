@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api, type PositionView } from '../shared/api';
+import { formatUtc } from '../shared/formatUtc';
 
 function formatMoney(value: string): string {
   const num = Number(value);
@@ -132,9 +133,7 @@ export function PositionsPage() {
                       {position.status}
                     </span>
                   </td>
-                  <td className="px-3 py-2 text-slate-400">
-                    {new Date(position.createdAt).toLocaleString()}
-                  </td>
+                  <td className="px-3 py-2 text-slate-400">{formatUtc(position.createdAt)}</td>
                 </tr>
               ))}
             </tbody>

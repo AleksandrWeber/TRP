@@ -1,4 +1,5 @@
 import { clearAccessToken, getAccessToken, getActiveWorkspace } from './auth';
+import { mapHttpError } from './mapApiError';
 
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 /** Nest URI versioning prefix (US114). Health remains unversioned. */
@@ -586,7 +587,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(text || `HTTP ${res.status}`);
+    throw new Error(mapHttpError(res.status, text));
   }
 
   return res.json() as Promise<T>;

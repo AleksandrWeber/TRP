@@ -12,6 +12,7 @@ import {
   type PositionView,
 } from '../shared/api';
 import { ConfirmationDialog } from '../shared/ConfirmationDialog';
+import { formatUtc } from '../shared/formatUtc';
 
 type KillSwitchStep = null | 'review' | 'confirm';
 
@@ -34,12 +35,7 @@ function statusClass(status: string): string {
 }
 
 function formatTime(value: string | null | undefined): string {
-  if (!value) return '—';
-  try {
-    return new Date(value).toLocaleString();
-  } catch {
-    return value;
-  }
+  return formatUtc(value);
 }
 
 function formatMoney(value: string | null | undefined): string {

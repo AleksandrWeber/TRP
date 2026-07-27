@@ -1,10 +1,13 @@
 import type { ResearchAnalysis } from '../shared/api';
+import { deduplicate } from '../shared/deduplicate';
 
 type CampaignAnalysisViewProps = {
   analysis: ResearchAnalysis;
 };
 
 export function CampaignAnalysisView({ analysis }: CampaignAnalysisViewProps) {
+  const recommendations = deduplicate(analysis.recommendations);
+
   return (
     <section className="space-y-6" data-testid="campaign-analysis">
       <div>
@@ -36,7 +39,7 @@ export function CampaignAnalysisView({ analysis }: CampaignAnalysisViewProps) {
 
         <h3 className="mt-6 text-sm font-medium text-slate-300">Recommendations</h3>
         <ul className="mt-2 list-disc space-y-1 pl-5" data-testid="analysis-recommendations">
-          {analysis.recommendations.map((item) => (
+          {recommendations.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>

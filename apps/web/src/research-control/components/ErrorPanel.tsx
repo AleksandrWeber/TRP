@@ -1,3 +1,5 @@
+import { toUserFacingError } from '../../shared/mapApiError';
+
 type Props = {
   error: Error | string | null | undefined;
   onRetry?: () => void;
@@ -13,7 +15,7 @@ export function ErrorPanel({ error, onRetry, title = 'Something went wrong' }: P
     raw.toLowerCase().includes('failed to fetch');
   const message = isNetworkFailure
     ? 'Cannot reach the API (Failed to fetch). Ensure the API is running on http://localhost:3000, then retry.'
-    : raw;
+    : toUserFacingError(typeof error === 'string' ? new Error(error) : error, raw);
 
   return (
     <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3" role="alert">

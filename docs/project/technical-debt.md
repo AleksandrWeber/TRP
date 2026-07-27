@@ -1,6 +1,6 @@
 # TRP — Technical Debt Register
 
-Last updated: 2026-07-18 (RC-16 final release review)
+Last updated: 2026-07-27 (RC-17 QA regression UX fixes)
 
 Living register of known technical debt. Reviewed at RC-15.1 closeout after Validation Sprint V1 (VS001–VS004); TD-028…TD-033 added from Validation Sprint findings. TD-035 and TD-038 resolved by M2 US155 PostgreSQL runtime wiring.
 
@@ -60,6 +60,8 @@ Related:
 | TD-040 | Position Fill Application Ordering        | Planned         | M2 immediate manual Fills rebuild deterministically by immutable event timestamps and identity. Before concurrent M3 strategy execution, persist explicit per-Position Fill application order so cross-Order delivery order can always be reproduced exactly.                                                                       | RC-16 M3 prerequisite                       |
 | TD-041 | Ledger History Pagination                 | Planned         | US178 Ledger history is workspace/account scoped and read-only but currently unbounded. Add stable cursor pagination before M3/M6 operational history grows.                                                                                                                                                                        | RC-16 M3/M6                                 |
 | TD-042 | Durable Consumer Fan-out Progress         | Planned         | The Outbox dispatcher stores one publication state per event while multiple runtime consumers fan out in-process. Position valuation has transactional progress, but Portfolio refresh relies on source-hash idempotency without its own Inbox record. Add durable per-consumer acknowledgement/progress before M3 expands fan-out. | RC-16 M3 prerequisite                       |
+| TD-043 | Playwright regression suite               | Deferred        | RC-17 deliberately skipped introducing Playwright. Add browser regression coverage (Login, Lab, Strategies, Campaign, Knowledge, Production, AI) in a later RC once tooling is approved.                                                                                                                                            | Future RC (E2E tooling)                     |
+| TD-044 | Gradual web Error Stack                   | Deferred        | RC-17 mapped API errors in existing `shared/api` / research-control clients (`mapHttpError`). A fuller shared ErrorAlert / useApiError stack remains optional and should not block production readiness.                                                                                                                            | Future RC (UX hardening)                    |
 
 ---
 
@@ -84,6 +86,8 @@ Related:
 - TD-007 — No Vector Search
 - TD-030 — Scoring Strategy (configurable comparison weights)
 - TD-033 — Large Dataset Scalability (streaming / aggregated snapshots)
+- TD-043 — Playwright regression suite (deferred from RC-17)
+- TD-044 — Gradual web Error Stack (mapHttpError shipped; full stack optional)
 
 ### Mitigated / Partial
 

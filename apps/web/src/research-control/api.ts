@@ -4,6 +4,7 @@
  */
 
 import { clearAccessToken, getAccessToken, getActiveWorkspace } from '../shared/auth';
+import { mapHttpError } from '../shared/mapApiError';
 
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 const API_PREFIX = '/v1';
@@ -164,15 +165,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   }
 
   if (!response.ok) {
-    let message = `Request failed (${response.status})`;
-    try {
-      const body = (await response.json()) as { message?: string | string[] };
-      if (typeof body.message === 'string') message = body.message;
-      else if (Array.isArray(body.message)) message = body.message.join(', ');
-    } catch {
-      // ignore parse errors
-    }
-    throw new Error(message);
+    const text = await response.text();
+    throw new Error(mapHttpError(response.status, text));
   }
 
   if (response.status === 204) {

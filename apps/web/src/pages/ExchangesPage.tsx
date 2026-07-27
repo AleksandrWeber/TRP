@@ -6,6 +6,7 @@ import {
   type ExchangeStatusView,
   type ExchangeView,
 } from '../shared/api';
+import { formatUtc } from '../shared/formatUtc';
 
 function statusClass(status: string): string {
   if (status === 'CONNECTED') return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200';
@@ -30,12 +31,7 @@ function capabilityFlags(caps: ExchangeCapabilitiesView): string[] {
 }
 
 function formatTime(value: string | null | undefined): string {
-  if (!value) return '—';
-  try {
-    return new Date(value).toLocaleString();
-  } catch {
-    return value;
-  }
+  return formatUtc(value);
 }
 
 export function ExchangesPage() {

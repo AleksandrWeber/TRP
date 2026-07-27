@@ -40,6 +40,8 @@ export function useDashboard() {
     queryKey: researchControlKeys.dashboard(),
     queryFn: researchControlApi.getDashboard,
     refetchInterval,
+    // Keep previous snapshot visible while polling so status badges do not flash empty.
+    placeholderData: (previous) => previous,
   });
 }
 

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { api, type PositionHistoryEntry, type PositionView } from '../shared/api';
+import { formatUtc } from '../shared/formatUtc';
 
 function formatMoney(value: string): string {
   const num = Number(value);
@@ -84,11 +85,8 @@ export function PositionDetailPage() {
             <Metric label="Return %" value={formatMoney(position.returnPercent)} />
             <Metric label="Unrealized PnL" value={formatMoney(position.unrealizedPnL)} />
             <Metric label="Realized PnL" value={formatMoney(position.realizedPnL)} />
-            <Metric label="Opened" value={new Date(position.createdAt).toLocaleString()} />
-            <Metric
-              label="Closed"
-              value={position.closedAt ? new Date(position.closedAt).toLocaleString() : '—'}
-            />
+            <Metric label="Opened" value={formatUtc(position.createdAt)} />
+            <Metric label="Closed" value={position.closedAt ? formatUtc(position.closedAt) : '—'} />
           </div>
 
           <div>
@@ -105,9 +103,7 @@ export function PositionDetailPage() {
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <span className="text-sm font-medium text-slate-100">{entry.action}</span>
-                      <span className="text-xs text-slate-500">
-                        {new Date(entry.timestamp).toLocaleString()}
-                      </span>
+                      <span className="text-xs text-slate-500">{formatUtc(entry.timestamp)}</span>
                     </div>
                     <div className="mt-2 flex flex-wrap gap-4 text-sm text-slate-400">
                       <span>Qty {formatMoney(entry.quantity)}</span>

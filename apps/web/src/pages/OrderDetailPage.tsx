@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { api, type OrderFillEntry, type OrderHistoryEntry, type OrderView } from '../shared/api';
+import { formatUtc } from '../shared/formatUtc';
 
 function formatMoney(value: string | null): string {
   if (value === null || value === undefined || value === '') return '—';
@@ -90,14 +91,11 @@ export function OrderDetailPage() {
             <Metric label="Remaining" value={formatMoney(order.remainingQuantity)} />
             <Metric label="Requested Price" value={formatMoney(order.requestedPrice)} />
             <Metric label="Executed Price" value={formatMoney(order.executedPrice)} />
-            <Metric label="Created" value={new Date(order.createdAt).toLocaleString()} />
-            <Metric
-              label="Executed"
-              value={order.executedAt ? new Date(order.executedAt).toLocaleString() : '—'}
-            />
+            <Metric label="Created" value={formatUtc(order.createdAt)} />
+            <Metric label="Executed" value={order.executedAt ? formatUtc(order.executedAt) : '—'} />
             <Metric
               label="Cancelled"
-              value={order.cancelledAt ? new Date(order.cancelledAt).toLocaleString() : '—'}
+              value={order.cancelledAt ? formatUtc(order.cancelledAt) : '—'}
             />
           </div>
 
@@ -117,9 +115,7 @@ export function OrderDetailPage() {
                       <span className="text-sm font-medium text-slate-100">
                         {entry.previousStatus} → {entry.currentStatus}
                       </span>
-                      <span className="text-xs text-slate-500">
-                        {new Date(entry.timestamp).toLocaleString()}
-                      </span>
+                      <span className="text-xs text-slate-500">{formatUtc(entry.timestamp)}</span>
                     </div>
                     <p className="mt-2 text-sm text-slate-400">{entry.reason}</p>
                   </li>
@@ -144,7 +140,7 @@ export function OrderDetailPage() {
                       {formatMoney(fill.quantity)} @ {formatMoney(fill.price)}
                     </span>
                     <span className="text-slate-500">
-                      fee {formatMoney(fill.fee)} · {new Date(fill.timestamp).toLocaleString()}
+                      fee {formatMoney(fill.fee)} · {formatUtc(fill.timestamp)}
                     </span>
                   </li>
                 ))}

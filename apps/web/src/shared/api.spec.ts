@@ -6,7 +6,7 @@ vi.mock('./auth', () => ({
   clearAccessToken: vi.fn(),
 }));
 
-import { runCampaign } from './api';
+import { api, runCampaign } from './api';
 
 describe('runCampaign', () => {
   const summary = {
@@ -57,5 +57,47 @@ describe('runCampaign', () => {
     expect(headers.get('Authorization')).toBe('Bearer test-token');
     expect(headers.get('X-Workspace-Id')).toBe('ws-test');
     expect(result).toEqual(summary);
+  });
+});
+
+describe('shared api error mapping', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.clearAllMocks();
+  });
+
+  it('maps 404 experiment JSON to a friendly message', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 404,
+        text: async () =>
+          JSON.stringify({
+            statusCode: 404,
+            error: 'Not Found',
+            message: 'Experiment missing-id not found',
+          }),
+      }),
+    );
+
+    await expect(api.getExperiment('missing-id')).rejects.toThrow('Experiment not found.');
+  });
+
+  it('maps 500 JSON to unexpected server error', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 500,
+        text: async () => JSON.stringify({ statusCode: 500, message: 'boom' }),
+      }),
+    );
+
+    await expect(api.listKnowledge()).rejects.toThrow(
+      'Unexpected server error. Please try again later.',
+    );
   });
 });

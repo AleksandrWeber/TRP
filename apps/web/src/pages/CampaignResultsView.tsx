@@ -1,4 +1,5 @@
 import type { CampaignSummary } from '../shared/api';
+import { deduplicate } from '../shared/deduplicate';
 
 export type CampaignResultVerdict = 'PASS' | 'NEEDS_REVIEW' | 'FAIL';
 
@@ -19,7 +20,7 @@ export function campaignRecommendationsFromSummary(summary: CampaignSummary): st
   if (summary.totalRuns === 0 || noCompletedExperiments) {
     recommendations.push('No configurations were run.');
     recommendations.push('Provide at least one parameter set before starting a campaign.');
-    return recommendations;
+    return deduplicate(recommendations);
   }
 
   if (verdict === 'FAIL') {
@@ -44,7 +45,7 @@ export function campaignRecommendationsFromSummary(summary: CampaignSummary): st
     );
   }
 
-  return recommendations;
+  return deduplicate(recommendations);
 }
 
 type CampaignResultsViewProps = {

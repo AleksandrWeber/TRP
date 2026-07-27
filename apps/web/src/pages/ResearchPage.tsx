@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api, type Dataset, type Experiment, verdictColor } from '../shared/api';
+import { CopyButton } from '../shared/CopyButton';
+import { toUserFacingError } from '../shared/mapApiError';
 
 export function ResearchPage() {
   const [datasets, setDatasets] = useState<Dataset[]>([]);
@@ -15,7 +17,7 @@ export function ResearchPage() {
   }, []);
 
   useEffect(() => {
-    refresh().catch((err: Error) => setError(err.message));
+    refresh().catch((err: unknown) => setError(toUserFacingError(err, 'Failed to load lab data')));
   }, [refresh]);
 
   async function handleImport() {
@@ -25,7 +27,7 @@ export function ResearchPage() {
       await api.importDataset();
       await refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Import failed');
+      setError(toUserFacingError(err, 'Import failed'));
     } finally {
       setLoading(null);
     }
@@ -39,7 +41,7 @@ export function ResearchPage() {
       setSelected(experiment);
       await refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Experiment failed');
+      setError(toUserFacingError(err, 'Experiment failed'));
     } finally {
       setLoading(null);
     }
@@ -82,12 +84,17 @@ export function ResearchPage() {
                 key={ds.id}
                 className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-white/5 bg-black/20 px-4 py-3"
               >
-                <div className="text-sm">
+                <div className="min-w-0 flex-1 text-sm">
                   <p className="font-medium">
                     {ds.symbol} · {ds.timeframe} · {ds.barCount} bars
                   </p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    hash: {ds.contentHash.slice(0, 16)}…
+                  <p className="mt-1 flex flex-wrap items-center gap-2 break-all font-mono text-xs text-slate-400">
+                    <span>ID: {ds.id}</span>
+                    <CopyButton value={ds.id} />
+                  </p>
+                  <p className="mt-1 flex flex-wrap items-center gap-2 font-mono text-xs text-slate-500">
+                    <span title={ds.contentHash}>hash: {ds.contentHash.slice(0, 16)}…</span>
+                    <CopyButton value={ds.contentHash} label="Copy hash" />
                   </p>
                 </div>
                 <button
@@ -106,7 +113,7 @@ export function ResearchPage() {
 
       {selected && (
         <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <h3 className="text-lg font-semibold">Latest report</h3>
             <span
               className={`rounded-full border px-3 py-1 text-xs uppercase ${verdictColor(selected.verdict)}`}
@@ -114,6 +121,11 @@ export function ResearchPage() {
               {selected.verdict.replace('_', ' ')}
             </span>
           </div>
+
+          <p className="mt-3 flex flex-wrap items-center gap-2 font-mono text-xs text-slate-400">
+            <span>Experiment ID: {selected.id}</span>
+            <CopyButton value={selected.id} />
+          </p>
 
           <dl className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <Metric label="Return" value={`${selected.metrics.totalReturnPercent.toFixed(2)}%`} />
@@ -136,9 +148,13 @@ export function ResearchPage() {
             </ul>
           </div>
 
-          <p className="mt-4 text-xs text-slate-500">
-            config hash: {selected.configHash.slice(0, 16)}… · git:{' '}
-            {selected.gitCommit?.slice(0, 8) ?? 'n/a'}
+          <p className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+            <span title={selected.configHash}>
+              config hash: {selected.configHash.slice(0, 16)}…
+            </span>
+            <CopyButton value={selected.configHash} label="Copy hash" />
+            <span>· git: {selected.gitCommit?.slice(0, 8) ?? 'n/a'}</span>
+            {selected.gitCommit ? <CopyButton value={selected.gitCommit} label="Copy git" /> : null}
           </p>
         </div>
       )}
@@ -150,13 +166,13 @@ export function ResearchPage() {
           </h3>
           <ul className="mt-4 space-y-2">
             {experiments.map((ex) => (
-              <li key={ex.id}>
+              <li key={ex.id} className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setSelected(ex)}
-                  className="flex w-full items-center justify-between rounded-lg border border-white/5 px-4 py-2 text-left text-sm hover:bg-white/5"
+                  className="flex min-w-0 flex-1 items-center justify-between rounded-lg border border-white/5 px-4 py-2 text-left text-sm hover:bg-white/5"
                 >
-                  <span>
+                  <span className="truncate">
                     {ex.dataset?.symbol ?? '—'} · {ex.strategyId} v{ex.strategyVersion}
                   </span>
                   <span
@@ -165,6 +181,7 @@ export function ResearchPage() {
                     {ex.verdict.replace('_', ' ')}
                   </span>
                 </button>
+                <CopyButton value={ex.id} />
               </li>
             ))}
           </ul>

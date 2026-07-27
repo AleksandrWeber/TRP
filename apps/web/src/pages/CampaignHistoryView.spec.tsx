@@ -75,4 +75,9 @@ describe('CampaignHistoryView', () => {
     ]);
     expect(ordered.map((item) => item.campaignId)).toEqual(['b', 'a']);
   });
+
+  it('shows improved empty state copy', () => {
+    const html = renderToStaticMarkup(<CampaignHistoryView items={[]} />);
+    expect(html).toContain('Run your first campaign.');
+  });
 });
