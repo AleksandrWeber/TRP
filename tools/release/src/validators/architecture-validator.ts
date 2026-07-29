@@ -25,6 +25,11 @@ export class ArchitectureValidator {
       apiModules,
       'paper-trading-engine/paper-execution-coordinator.ts',
     );
+    const paperController = path.join(
+      apiModules,
+      'paper-trading-engine/paper-trading.controller.ts',
+    );
+    const paperService = path.join(apiModules, 'paper-trading-engine/paper-trading.service.ts');
     const liveCoordinator = path.join(
       apiModules,
       'live-trading-engine/live-execution-coordinator.ts',
@@ -39,7 +44,10 @@ export class ArchitectureValidator {
     const positionControllerText = (await pathExists(positionController))
       ? await readText(positionController)
       : '';
-    const paperText = (await pathExists(paperCoordinator)) ? await readText(paperCoordinator) : '';
+    const paperControllerText = (await pathExists(paperController))
+      ? await readText(paperController)
+      : '';
+    const paperServiceText = (await pathExists(paperService)) ? await readText(paperService) : '';
     const liveText = (await pathExists(liveCoordinator)) ? await readText(liveCoordinator) : '';
     const emergencyText = (await pathExists(emergency)) ? await readText(emergency) : '';
     const appModuleText = (await pathExists(appModule)) ? await readText(appModule) : '';
@@ -99,11 +107,14 @@ export class ArchitectureValidator {
     });
 
     checks.push({
-      name: 'Paper Trading orchestrates Trading Core',
+      name: 'Paper Trading Stage-1 path retired',
       ok:
-        /OrderService|orders\.create|orders\.execute/.test(paperText) &&
-        (await pathExists(paperCoordinator)),
-      detail: 'US208 paper coordinator must call OrderService',
+        !(await pathExists(paperCoordinator)) &&
+        !/executeTrade/.test(paperServiceText) &&
+        !/@Post\(\s*['"]sessions\/:id\/orders['"]\s*\)/.test(paperControllerText) &&
+        !/PaperBinanceAdapter|paper-binance\.adapter/.test(appModuleText),
+      detail:
+        'TD-034: PaperExecutionCoordinator, direct paper order POST, and Stage-1 adapter must remain retired',
       critical: true,
     });
 
