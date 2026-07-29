@@ -182,7 +182,11 @@ export class ExecutionEngineService {
           recordedAt: command.recordedAt,
         });
         const appended = await this.fills.append(fill, transaction);
-        await this.outbox.append(transaction, fillEnvelope(appended), command.recordedAt);
+        await this.outbox.append(
+          transaction,
+          orderFillRecordedEnvelope(appended),
+          command.recordedAt,
+        );
         const filled = await this.orders.applyExecutionFill(
           acknowledged,
           appended.quantity,
@@ -299,6 +303,9 @@ function buildAdapterCommand(
     type: order.intent.type,
     quantity: order.intent.quantity,
     limitPrice: order.intent.limitPrice,
+    origin: order.intent.origin,
+    signalIntentId: order.intent.signalIntentId,
+    signalIntentHash: order.intent.signalIntentHash,
     marketState: Object.freeze({
       streamId: command.marketState.streamId,
       eventId: command.marketState.eventId,
@@ -335,7 +342,11 @@ function assertCheckpoint(order: Order, marketState: ExecutionMarketState): void
   }
 }
 
-function fillEnvelope(fill: PaperFill): DurableEventEnvelope {
+/**
+ * Canonical OrderFillRecorded envelope (US171 / US223).
+ * Shared so accounting consumers and the E2E pipeline reuse one shape.
+ */
+export function orderFillRecordedEnvelope(fill: PaperFill): DurableEventEnvelope {
   return Object.freeze({
     eventId: toDurableEventId(`fill:${fill.id}`),
     eventType: 'OrderFillRecorded',

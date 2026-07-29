@@ -5,7 +5,13 @@ import { TradingSessionStatus, TERMINAL_SESSION_STATUSES } from './trading-sessi
 
 export const TRADING_SESSION_SCHEMA_VERSION = 1;
 
-export type TradingSessionOrigin = 'manual';
+export const TRADING_SESSION_ORIGINS = ['manual', 'strategy'] as const;
+
+export type TradingSessionOrigin = (typeof TRADING_SESSION_ORIGINS)[number];
+
+export function isTradingSessionOrigin(value: string): value is TradingSessionOrigin {
+  return (TRADING_SESSION_ORIGINS as readonly string[]).includes(value);
+}
 
 export type TradingSession = Readonly<{
   id: string;
@@ -41,8 +47,8 @@ export type CreateTradingSessionInput = Readonly<{
 }>;
 
 export function createTradingSession(input: CreateTradingSessionInput): TradingSession {
-  if (input.origin !== 'manual') {
-    throw new Error('trading session origin must be manual for M2');
+  if (!isTradingSessionOrigin(input.origin)) {
+    throw new Error(`unsupported trading session origin: ${String(input.origin)}`);
   }
   assertIso(input.createdAt, 'createdAt');
   assertIso(input.recordedAt, 'recordedAt');
@@ -51,7 +57,7 @@ export function createTradingSession(input: CreateTradingSessionInput): TradingS
     workspaceId: required(input.workspaceId, 'workspace id'),
     paperAccountId: required(input.paperAccountId, 'paper account id'),
     deploymentId: required(input.deploymentId, 'deployment id'),
-    origin: 'manual',
+    origin: input.origin,
     status: TradingSessionStatus.CREATED,
     lease: null,
     lastFencingToken: 0,

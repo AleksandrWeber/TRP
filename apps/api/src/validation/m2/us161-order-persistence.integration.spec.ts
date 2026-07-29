@@ -24,7 +24,18 @@ describe('US161 — transactional PostgreSQL Orders and Outbox', () => {
   const sessions = new PrismaTradingSessionRepository(prisma);
   const orders = new PrismaOrderRepository(prisma);
   const accountService = new PaperAccountService(accounts, transactions, outbox);
-  const sessionService = new TradingSessionService(sessions, accounts, transactions, outbox);
+  const sessionService = new TradingSessionService(
+    sessions,
+    accounts,
+    transactions,
+    outbox,
+    { get: async () => null } as never,
+    {
+      loadContext: async () => {
+        throw new Error('RuntimePort unexpected in US161 manual path');
+      },
+    } as never,
+  );
   const cashReservations: CashReservationPort = {
     reserveCash: async () => {
       throw new Error('not used');

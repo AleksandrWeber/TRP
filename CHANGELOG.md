@@ -11,7 +11,70 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ### Added
 
-- (none — Version 1 baseline is `v1.0.0`)
+- RC-16 M3 US223 — End-to-end strategy candle → Fill → accounting
+  (`strategy-trading-pipeline/`): `run` orchestrates Runtime evaluate →
+  Signal Intent → Order proposal → canonical Risk/Execution → existing
+  `PositionAccountingConsumer`. Replay/duplicate Fill prevented; NO_ACTION
+  produces no Order. DB origin check updated for strategy sessions.
+- RC-16 M3 US222 — Canonical Risk + Execution path (`canonical-order-path/`):
+  `runCanonicalPath` / `advanceToExecutable` wire proposed strategy-origin
+  (and manual) Orders through existing `RiskDecisionService` + cash reservation
+  - `ExecutionEngineService.submit`. Signal Intent identity/origin preserved
+    end-to-end; duplicate submit is idempotent. No new adapters or Runtime
+    coupling.
+- RC-16 M3 US221 — Orders Signal Intent intake (`orders/`):
+  `proposeOrderFromSignalIntent` / `ORDER_PROPOSAL_PORT`, strategy-origin
+  Order Intent with immutable `signalIntentId`/`signalIntentHash`, idempotent
+  Signal Intent → PROPOSED Order mapping, and NO_ACTION → no Order. No Risk,
+  Execution, Fill, Portfolio, Position, or Session lifecycle coupling.
+- RC-16 M3 US220 — Session ↔ Runtime lifecycle drain (`strategy-runtime/` +
+  `trading-session/`): `RuntimeLifecycleCoordinator` (IDLE/ARMED/EVALUATING/
+  DRAINING), `StrategyRuntimePort.arm|pause|resume|stop`, Session notifies
+  Runtime through the port only, in-flight evaluation drained before IDLE.
+  Checkpoint/Intent atomicity and replay guarantees preserved. No Orders/Risk/
+  Execution.
+- RC-16 M3 US219 — Runtime evaluation pipeline (`strategy-runtime/`):
+  `StrategyRuntimePort.evaluate` admits a semantic tick, decides
+  Signal Intent \| NO_ACTION via pure Deployment-parameter evaluation, and
+  commits Intent (when actionable) + Strategy Checkpoint + Outbox in one
+  transaction. Duplicate execution returns `ALREADY_PROCESSED`. No Orders,
+  Risk, or Execution coupling.
+- RC-16 M3 US218 — Semantic closed-candle tick admission (`strategy-runtime/`):
+  `ClosedCandleTickEvent` + `RuntimeLeaseProof` contracts, pure
+  `admitClosedCandleTick` gate (duplicate/stale/out-of-order/lease rejection),
+  and `StrategyRuntimePort.admitTick` entry. Admission only — no evaluation,
+  Signal Intent generation, checkpoint advance, Orders, Risk, or Execution.
+- RC-16 M3 US217 — Trading Session ↔ Strategy Deployment binding:
+  `origin: strategy` sessions require an APPROVED Deployment by id on create,
+  initialize `RuntimeContext` through `StrategyRuntimePort.loadContext` during
+  start, and keep Session free of evaluation/Orders/Risk/Execution. Manual
+  origin remains for M2 compatibility.
+- RC-16 M3 US216 — Strategy Runtime module boundary (`strategy-runtime/`):
+  `StrategyRuntimePort` / `StrategyRuntimeService` shell composing approved
+  Strategy Deployment with Signal Intent and Strategy Checkpoint,
+  `RuntimeContext` / `RuntimeDiagnostics` contracts, Nest DI export of
+  `STRATEGY_RUNTIME_PORT`, and dependency-boundary tests. No evaluation,
+  scheduler, Session binding, Orders, Risk, or Execution coupling.
+- RC-16 M3 US215 — Strategy Checkpoint contracts (`strategy-runtime/`):
+  versioned monotonic Runtime progress aggregate (`deploymentId`, `sessionId`,
+  `lastProcessedCandle`, `lastProcessedEventId`, `runtimeVersion`), PostgreSQL
+  `strategy_checkpoints` persistence, Outbox `StrategyCheckpointAdvanced`, and
+  internal save/load service ports. Resume pointer only — no Orders, Risk,
+  Execution, Fill, Position, or Trading Session lifecycle ownership.
+- RC-16 M3 US214 — Signal Intent bounded context (`strategy-runtime/`):
+  immutable append-only Signal Intent aggregate with stable `intentHash`
+  identity/dedupe, PostgreSQL `signal_intents` persistence, Outbox
+  `SignalIntentCreated` event, internal emit service port, and read-only
+  get/list query APIs. Canonical Strategy Runtime output — not an Order; no
+  Risk evaluation, Execution Engine, Fill, or Trading Session lifecycle
+  coupling.
+- RC-16 M3 US211 — Strategy Deployment bounded context (`strategy-deployment/`):
+  immutable draft→approved Deployment aggregate with provenance hash,
+  PostgreSQL `paper_strategy_deployments` persistence (separate from Stage-1
+  `StrategyDeployment`), Outbox `StrategyDeploymentCreated` /
+  `StrategyDeploymentApproved` events, and authorized create/approve/get/list
+  APIs. Owns configuration only — no Trading Session runtime, signals, Orders,
+  Risk evaluation, or Execution Engine coupling.
 
 ## [1.0.0] — 2026-07-20
 

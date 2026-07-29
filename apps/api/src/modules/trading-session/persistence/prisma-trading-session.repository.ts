@@ -5,6 +5,7 @@ import {
 } from '../../../storage/prisma/prisma-transaction.service';
 import type { SessionLease } from '../domain/session-lease';
 import type { TradingSession } from '../domain/trading-session';
+import { isTradingSessionOrigin } from '../domain/trading-session';
 import {
   isTradingSessionStatus,
   type TradingSessionStatus,
@@ -94,7 +95,7 @@ function toRow(session: TradingSession): Prisma.TradingSessionUncheckedCreateInp
 }
 
 function toDomain(row: TradingSessionRow): TradingSession {
-  if (row.origin !== 'manual') {
+  if (!isTradingSessionOrigin(row.origin)) {
     throw new Error(`unsupported trading session origin persisted: ${row.origin}`);
   }
   if (!isTradingSessionStatus(row.status)) {
@@ -106,7 +107,7 @@ function toDomain(row: TradingSessionRow): TradingSession {
     workspaceId: row.workspaceId,
     paperAccountId: row.paperAccountId,
     deploymentId: row.deploymentId,
-    origin: 'manual',
+    origin: row.origin,
     status: row.status as TradingSessionStatus,
     lease,
     lastFencingToken: row.lastFencingToken,

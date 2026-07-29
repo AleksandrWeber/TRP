@@ -399,7 +399,9 @@ Note: versions describe working-tree Research OS semantics; dedicated git releas
 
 ## Current Phase
 
-RC-16 M2 complete — M3 Strategy Trading Sessions is next.
+RC-16 M2 complete — M3 Strategy Trading Sessions in progress (US211 through
+US223 E2E candle → Fill → accounting landed; E16 complete; E17 recovery/
+validation stories remain).
 
 RC-13 finalized — Research Intelligence layer (Insight / Cross-Campaign / Recommendation / ResearchReport + read-only REST) on the unified Pipeline Engine.
 

@@ -3,6 +3,7 @@ export { FillQueryService } from './fill-query.service';
 export { PAPER_FILL_CONFIGURATION } from './execution-engine.tokens';
 export {
   ExecutionEngineService,
+  orderFillRecordedEnvelope,
   type CancelExecutionCommand,
   type ExecutionMarketState,
   type ExecutionOutcome,

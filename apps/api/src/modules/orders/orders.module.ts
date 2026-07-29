@@ -10,6 +10,7 @@ import { OrderService } from './order.service';
 import { OrdersController } from './orders.controller';
 import { ORDER_REPOSITORY } from './persistence/order.repository';
 import { PrismaOrderRepository } from './persistence/prisma-order.repository';
+import { ORDER_PROPOSAL_PORT } from './ports/order-proposal.port';
 
 @Module({
   imports: [
@@ -28,8 +29,13 @@ import { PrismaOrderRepository } from './persistence/prisma-order.repository';
       inject: [PrismaService],
     },
     OrderService,
+    {
+      provide: ORDER_PROPOSAL_PORT,
+      useExisting: OrderService,
+    },
   ],
   // Repository is deliberately private: Orders is the sole lifecycle owner.
-  exports: [OrderService],
+  // ORDER_PROPOSAL_PORT is the internal Signal Intent intake surface (US221).
+  exports: [OrderService, ORDER_PROPOSAL_PORT],
 })
 export class OrdersModule {}

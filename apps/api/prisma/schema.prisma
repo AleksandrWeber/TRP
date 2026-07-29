@@ -488,6 +488,86 @@ model ConsumerCheckpointRecord {
   @@map("consumer_checkpoints")
 }
 
+/// RC-16 M3 US215 versioned Strategy Runtime checkpoint.
+/// Resume progress only — no Orders/Risk/Execution/Fill/Position/Session lease state.
+model StrategyCheckpoint {
+  id                   String   @id
+  workspaceId          String   @map("workspace_id")
+  deploymentId         String   @map("deployment_id")
+  sessionId            String   @map("session_id")
+  lastProcessedCandle  Json     @map("last_processed_candle")
+  lastProcessedEventId String   @map("last_processed_event_id")
+  runtimeVersion       String   @map("runtime_version")
+  version              Int      @default(1)
+  updatedAt            DateTime @map("updated_at")
+
+  @@unique([workspaceId, sessionId])
+  @@index([workspaceId, deploymentId])
+  @@map("strategy_checkpoints")
+}
+
+/// RC-16 M3 US214 immutable Signal Intent (Strategy Runtime output).
+/// Append-only command fact. Not an Order. Unique semantic identity dedupes retries.
+model SignalIntent {
+  id               String   @id
+  intentVersion    Int      @map("intent_version")
+  intentHash       String   @map("intent_hash")
+  workspaceId      String   @map("workspace_id")
+  deploymentId     String   @map("deployment_id")
+  sessionId        String   @map("session_id")
+  strategyVersion  String   @map("strategy_version")
+  instrument       String
+  timeframe        String
+  direction        String
+  confidence       Float?
+  marketCheckpoint Json     @map("market_checkpoint")
+  generatedAt      DateTime @map("generated_at")
+  recordedAt       DateTime @map("recorded_at")
+  actorId          String   @map("actor_id")
+  correlationId    String?  @map("correlation_id")
+  metadata         Json
+
+  @@unique([workspaceId, intentHash])
+  @@index([workspaceId, sessionId, generatedAt])
+  @@index([workspaceId, deploymentId])
+  @@map("signal_intents")
+}
+
+/// RC-16 M3 US211 immutable Strategy Deployment configuration.
+/// Prisma model name avoids collision with Stage-1 read-only StrategyDeployment.
+/// Owns approved strategy identity/config only — no Trading Session runtime.
+model PaperStrategyDeployment {
+  id                            String    @id
+  workspaceId                   String    @map("workspace_id")
+  strategyId                    String    @map("strategy_id")
+  strategyVersion               String    @map("strategy_version")
+  experimentId                  String?   @map("experiment_id")
+  parameters                    Json
+  instrument                    String
+  timeframe                     String
+  marketDataSourceId            String    @map("market_data_source_id")
+  paperExecutionConfigurationId String    @map("paper_execution_configuration_id")
+  riskPolicyId                  String    @map("risk_policy_id")
+  riskPolicyVersion             Int       @map("risk_policy_version")
+  configurationHash             String    @map("configuration_hash")
+  status                        String
+  version                       Int       @default(1)
+  approvedAt                    DateTime? @map("approved_at")
+  approvedByActorId             String?   @map("approved_by_actor_id")
+  createdAt                     DateTime  @map("created_at")
+  recordedAt                    DateTime  @map("recorded_at")
+  actorId                       String    @map("actor_id")
+  correlationId                 String?   @map("correlation_id")
+  idempotencyKey                String    @map("idempotency_key")
+  metadata                      Json
+
+  @@unique([workspaceId, idempotencyKey])
+  @@index([workspaceId, status])
+  @@index([workspaceId, strategyId])
+  @@index([workspaceId, configurationHash])
+  @@map("paper_strategy_deployments")
+}
+
 /// RC-16 M2 US154 durable paper account.
 /// Cash is not authoritative here; openingCapital is an immutable instruction
 /// consumed by the append-only Ledger foundation.

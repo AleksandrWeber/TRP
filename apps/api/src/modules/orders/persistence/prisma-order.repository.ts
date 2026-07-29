@@ -237,6 +237,10 @@ function parseIntent(value: Prisma.JsonValue): OrderIntent {
   const checkpoint = object(input.marketCheckpoint, 'market checkpoint');
   const side = enumValue(input.side, OrderSide, 'order side');
   const type = enumValue(input.type, OrderType, 'order type');
+  const origin = string(input.origin, 'origin');
+  if (origin !== 'manual' && origin !== 'strategy') {
+    throw new Error('unsupported order origin');
+  }
   return createOrderIntent({
     clientOrderId: string(input.clientOrderId, 'clientOrderId'),
     idempotencyKey: string(input.idempotencyKey, 'idempotencyKey'),
@@ -245,7 +249,15 @@ function parseIntent(value: Prisma.JsonValue): OrderIntent {
     tradingSessionId: string(input.tradingSessionId, 'tradingSessionId'),
     sessionFencingToken: number(input.sessionFencingToken, 'sessionFencingToken'),
     mode: string(input.mode, 'mode') as 'paper',
-    origin: string(input.origin, 'origin') as 'manual',
+    origin,
+    signalIntentId:
+      input.signalIntentId === undefined || input.signalIntentId === null
+        ? null
+        : string(input.signalIntentId, 'signalIntentId'),
+    signalIntentHash:
+      input.signalIntentHash === undefined || input.signalIntentHash === null
+        ? null
+        : string(input.signalIntentHash, 'signalIntentHash'),
     instrument: string(input.instrument, 'instrument'),
     side,
     type,

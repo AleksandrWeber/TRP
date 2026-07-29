@@ -96,4 +96,33 @@ describe('US159 — Order Intent and identity contracts', () => {
     });
     expect(reduce.positionEffect).toBe(OrderPositionEffect.REDUCE_ONLY);
   });
+
+  it('supports strategy origin with immutable Signal Intent reference', () => {
+    const strategy = createOrderIntent({
+      ...base,
+      clientOrderId: 'si_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      idempotencyKey: 'signal-intent:' + 'c'.repeat(64),
+      origin: 'strategy',
+      signalIntentId: 'si_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      signalIntentHash: 'c'.repeat(64),
+    });
+    expect(strategy.origin).toBe('strategy');
+    expect(strategy.signalIntentId).toBe('si_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+    expect(strategy.signalIntentHash).toBe('c'.repeat(64));
+    expect(strategy.signalIntentId).not.toBeNull();
+
+    expect(() =>
+      createOrderIntent({
+        ...base,
+        origin: 'strategy',
+      }),
+    ).toThrow(/requires an immutable Signal Intent reference/);
+    expect(() =>
+      createOrderIntent({
+        ...base,
+        signalIntentId: 'si_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        signalIntentHash: 'c'.repeat(64),
+      }),
+    ).toThrow(/manual order intent cannot reference a Signal Intent/);
+  });
 });

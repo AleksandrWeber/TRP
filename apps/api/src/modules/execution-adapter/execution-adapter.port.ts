@@ -14,6 +14,12 @@ export type PaperExecutionCommand = Readonly<{
   type: 'market' | 'limit';
   quantity: string;
   limitPrice: string | null;
+  /** Pass-through Order origin (US222); excluded from fill matching. */
+  origin?: 'manual' | 'strategy';
+  /** Immutable Signal Intent id when origin is strategy (US222). */
+  signalIntentId?: string | null;
+  /** Immutable Signal Intent hash when origin is strategy (US222). */
+  signalIntentHash?: string | null;
   marketState: Readonly<{
     streamId: string;
     eventId: string;

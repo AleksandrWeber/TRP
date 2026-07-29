@@ -23,7 +23,9 @@ import { OrdersModule } from './modules/orders';
 import { RiskModule } from './modules/risk';
 import { ExecutionAdapterModule } from './modules/execution-adapter';
 import { ExecutionEngineModule } from './modules/execution-engine';
+import { CanonicalOrderPathModule } from './modules/canonical-order-path';
 import { PositionsModule } from './modules/positions';
+import { StrategyTradingPipelineModule } from './modules/strategy-trading-pipeline';
 import { HistoricalImportModule } from './modules/historical-import/historical-import.module';
 import { MarketDataProviderModule } from './modules/market-data-provider/market-data-provider.module';
 import { BacktestingModule } from './modules/backtesting/backtesting.module';
@@ -38,6 +40,8 @@ import { LiveTradingEngineModule } from './modules/live-trading-engine';
 import { TradeModule } from './modules/trade/trade.module';
 import { PerformanceModule } from './modules/performance/performance.module';
 import { StrategiesModule } from './modules/strategies';
+import { StrategyDeploymentModule } from './modules/strategy-deployment';
+import { StrategyRuntimeModule } from './modules/strategy-runtime';
 import { MarketDataDomainModule } from './modules/market-data-domain';
 import { SignalEngineModule } from './modules/signal-engine';
 import { TechnicalIndicatorsModule } from './modules/technical-indicators';
@@ -90,11 +94,15 @@ import { ValidationModule } from './validation/validation.module';
     RiskModule,
     ExecutionAdapterModule,
     ExecutionEngineModule,
+    CanonicalOrderPathModule,
+    StrategyTradingPipelineModule,
     PositionsModule,
     AuthModule,
     IdentityModule,
     WorkspaceModule,
     StrategiesModule,
+    StrategyDeploymentModule,
+    StrategyRuntimeModule,
     MarketDataDomainModule,
     SignalEngineModule,
     TechnicalIndicatorsModule,

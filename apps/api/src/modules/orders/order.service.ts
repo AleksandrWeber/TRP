@@ -30,6 +30,10 @@ import {
   type OrderTransitionInput,
 } from './domain/order';
 import { createOrderIntent, type CreateOrderIntentInput } from './domain/order-intent';
+import {
+  mapProposeOrderFromSignalIntent,
+  type ProposeOrderFromSignalIntentCommand,
+} from './domain/propose-from-signal-intent';
 import { OrderStatus } from './domain/order-status';
 import { ORDER_REPOSITORY, type OrderRepository } from './persistence/order.repository';
 
@@ -38,6 +42,8 @@ export type CreateOrderCommand = CreateOrderIntentInput &
     /** Operational lease check only; excluded from intent identity. */
     eligibilityCheckedAt: string;
   }>;
+
+export type { ProposeOrderFromSignalIntentCommand };
 
 export type TransitionOrderCommand = Readonly<{
   workspaceId: string;
@@ -66,8 +72,9 @@ export type CancelOrderCommand = Readonly<{
 }>;
 
 /**
- * Sole Order lifecycle application boundary (US159-US161 / ADR-018 #3).
+ * Sole Order lifecycle application boundary (US159-US161 / US221 / ADR-018 #3).
  * Every create/transition commits aggregate + lifecycle history + Outbox atomically.
+ * Strategy intake proposes Orders from Signal Intent only — never evaluates Runtime.
  */
 @Injectable()
 export class OrderService {
@@ -86,6 +93,22 @@ export class OrderService {
     private readonly cashReservations: CashReservationPort,
   ) {}
 
+  /**
+   * Internal Signal Intent → Order proposal (US221 / ADR-012).
+   * NO_ACTION returns null without persisting. Duplicate Signal Intent identity
+   * replays the existing proposed Order (idempotent).
+   */
+  async proposeOrderFromSignalIntent(
+    command: ProposeOrderFromSignalIntentCommand,
+  ): Promise<Order | null> {
+    const mapped = mapProposeOrderFromSignalIntent(command);
+    if (mapped.kind === 'NO_ACTION') return null;
+    return this.create({
+      ...mapped.create,
+      eligibilityCheckedAt: mapped.eligibilityCheckedAt,
+    });
+  }
+
   async create(command: CreateOrderCommand): Promise<Order> {
     const intent = createOrderIntent(command);
     const idempotent = await this.orders.findByIdempotencyKey(
@@ -94,6 +117,7 @@ export class OrderService {
     );
     if (idempotent) {
       assertSameIntent(idempotent, intent.intentHash);
+      assertSameSignalIntentReference(idempotent, intent);
       return idempotent;
     }
     const sameClient = await this.orders.findByClientOrderId(
@@ -102,6 +126,7 @@ export class OrderService {
     );
     if (sameClient) {
       assertSameIntent(sameClient, intent.intentHash);
+      assertSameSignalIntentReference(sameClient, intent);
       return sameClient;
     }
 
@@ -129,6 +154,7 @@ export class OrderService {
           (await this.orders.findByClientOrderId(intent.workspaceId, intent.clientOrderId));
         if (raced) {
           assertSameIntent(raced, intent.intentHash);
+          assertSameSignalIntentReference(raced, intent);
           return raced;
         }
       }
@@ -359,6 +385,19 @@ function orderEnvelope(order: Order): DurableEventEnvelope {
 function assertSameIntent(existing: Order, intentHash: string): void {
   if (existing.intent.intentHash !== intentHash) {
     throw new Error('idempotency or client order id reused with a different intent');
+  }
+}
+
+function assertSameSignalIntentReference(
+  existing: Order,
+  intent: ReturnType<typeof createOrderIntent>,
+): void {
+  if (intent.origin !== 'strategy') return;
+  if (
+    existing.intent.signalIntentId !== intent.signalIntentId ||
+    existing.intent.signalIntentHash !== intent.signalIntentHash
+  ) {
+    throw new Error('Signal Intent reference reused with a different Order proposal');
   }
 }
 

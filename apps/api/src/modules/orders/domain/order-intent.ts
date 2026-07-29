@@ -22,6 +22,8 @@ export type OrderMarketCheckpoint = Readonly<{
   eventId: string;
 }>;
 
+export type OrderOrigin = 'manual' | 'strategy';
+
 export type OrderIntent = Readonly<{
   intentVersion: 1;
   orderId: string;
@@ -33,7 +35,11 @@ export type OrderIntent = Readonly<{
   tradingSessionId: string;
   sessionFencingToken: number;
   mode: 'paper';
-  origin: 'manual';
+  origin: OrderOrigin;
+  /** Immutable Signal Intent id when origin is strategy; otherwise null. */
+  signalIntentId: string | null;
+  /** Immutable Signal Intent semantic hash when origin is strategy; otherwise null. */
+  signalIntentHash: string | null;
   instrument: string;
   side: OrderSide;
   type: OrderType;
@@ -55,7 +61,11 @@ export type CreateOrderIntentInput = Readonly<{
   tradingSessionId: string;
   sessionFencingToken: number;
   mode: 'paper';
-  origin: 'manual';
+  origin: OrderOrigin;
+  /** Required when origin is strategy; forbidden for manual. */
+  signalIntentId?: string | null;
+  /** Required when origin is strategy; forbidden for manual. */
+  signalIntentHash?: string | null;
   instrument: string;
   side: OrderSide;
   type: OrderType;
@@ -71,13 +81,16 @@ export type CreateOrderIntentInput = Readonly<{
 }>;
 
 /**
- * Immutable manual paper Order Intent (US159 / ADR-012).
+ * Immutable paper Order Intent (US159 / US221 / ADR-012).
  * Financial values remain canonical decimal strings and semantic identity
  * excludes operational correlation/recorded timestamps.
+ * Strategy-origin intents carry an immutable Signal Intent reference.
  */
 export function createOrderIntent(input: CreateOrderIntentInput): OrderIntent {
   if (input.mode !== 'paper') throw new Error('order mode must be paper');
-  if (input.origin !== 'manual') throw new Error('M2 order origin must be manual');
+  if (input.origin !== 'manual' && input.origin !== 'strategy') {
+    throw new Error('unsupported order origin');
+  }
   if (!Object.values(OrderSide).includes(input.side)) throw new Error('unsupported order side');
   if (!Object.values(OrderType).includes(input.type)) throw new Error('unsupported order type');
 
@@ -93,6 +106,7 @@ export function createOrderIntent(input: CreateOrderIntentInput): OrderIntent {
   );
   const marketCheckpoint = normalizeCheckpoint(input.marketCheckpoint);
   const sessionFencingToken = positiveInteger(input.sessionFencingToken, 'session fencing token');
+  const { signalIntentId, signalIntentHash } = normalizeSignalIntentReference(input);
   assertIso(input.occurredAt, 'occurredAt');
   assertIso(input.recordedAt, 'recordedAt');
 
@@ -108,14 +122,59 @@ export function createOrderIntent(input: CreateOrderIntentInput): OrderIntent {
   }
 
   const limitPrice = normalizeLimitPrice(input.type, input.limitPrice);
-  const semanticIdentity = {
+  // Manual semantic identity stays M2-compatible (no Signal Intent fields).
+  // Strategy identity includes the immutable Signal Intent reference.
+  const semanticIdentity =
+    input.origin === 'strategy'
+      ? {
+          intentVersion: 1 as const,
+          workspaceId,
+          paperAccountId,
+          tradingSessionId,
+          sessionFencingToken,
+          mode: 'paper' as const,
+          origin: 'strategy' as const,
+          signalIntentId: signalIntentId!,
+          signalIntentHash: signalIntentHash!,
+          instrument,
+          side: input.side,
+          type: input.type,
+          positionEffect,
+          quantity: quantity.toString(),
+          limitPrice,
+          marketCheckpoint,
+          occurredAt: input.occurredAt,
+        }
+      : {
+          intentVersion: 1 as const,
+          workspaceId,
+          paperAccountId,
+          tradingSessionId,
+          sessionFencingToken,
+          mode: 'paper' as const,
+          origin: 'manual' as const,
+          instrument,
+          side: input.side,
+          type: input.type,
+          positionEffect,
+          quantity: quantity.toString(),
+          limitPrice,
+          marketCheckpoint,
+          occurredAt: input.occurredAt,
+        };
+  const intentHash = sha256(stableJson(semanticIdentity));
+  const orderId = `ord_${sha256(`${workspaceId}:${clientOrderId}`).slice(0, 32)}`;
+
+  return deepFreeze({
     intentVersion: 1 as const,
     workspaceId,
     paperAccountId,
     tradingSessionId,
     sessionFencingToken,
     mode: 'paper' as const,
-    origin: 'manual' as const,
+    origin: input.origin,
+    signalIntentId,
+    signalIntentHash,
     instrument,
     side: input.side,
     type: input.type,
@@ -123,21 +182,36 @@ export function createOrderIntent(input: CreateOrderIntentInput): OrderIntent {
     quantity: quantity.toString(),
     limitPrice,
     marketCheckpoint,
-    occurredAt: input.occurredAt,
-  };
-  const intentHash = sha256(stableJson(semanticIdentity));
-  const orderId = `ord_${sha256(`${workspaceId}:${clientOrderId}`).slice(0, 32)}`;
-
-  return deepFreeze({
-    ...semanticIdentity,
     orderId,
     clientOrderId,
     intentHash,
     idempotencyKey,
     actorId,
     correlationId: optional(input.correlationId),
+    occurredAt: input.occurredAt,
     recordedAt: input.recordedAt,
   });
+}
+
+function normalizeSignalIntentReference(input: CreateOrderIntentInput): {
+  signalIntentId: string | null;
+  signalIntentHash: string | null;
+} {
+  const id = optional(input.signalIntentId ?? undefined);
+  const hash = optional(input.signalIntentHash ?? undefined);
+  if (input.origin === 'manual') {
+    if (id !== null || hash !== null) {
+      throw new Error('manual order intent cannot reference a Signal Intent');
+    }
+    return { signalIntentId: null, signalIntentHash: null };
+  }
+  if (id === null || hash === null) {
+    throw new Error('strategy order intent requires an immutable Signal Intent reference');
+  }
+  return {
+    signalIntentId: identifier(id, 'signal intent id'),
+    signalIntentHash: identifier(hash, 'signal intent hash'),
+  };
 }
 
 function normalizeLimitPrice(type: OrderType, value: string | null | undefined): string | null {

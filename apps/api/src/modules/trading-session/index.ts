@@ -6,9 +6,11 @@ export type {
 } from './trading-session.service';
 export {
   TRADING_SESSION_SCHEMA_VERSION,
+  TRADING_SESSION_ORIGINS,
   attachLease,
   clearLease,
   createTradingSession,
+  isTradingSessionOrigin,
   transitionSession,
   type CreateTradingSessionInput,
   type TradingSession,

@@ -3,6 +3,7 @@ export {
   OrderService,
   type CancelOrderCommand,
   type CreateOrderCommand,
+  type ProposeOrderFromSignalIntentCommand,
   type TransitionOrderCommand,
 } from './order.service';
 export {
@@ -13,7 +14,16 @@ export {
   type CreateOrderIntentInput,
   type OrderIntent,
   type OrderMarketCheckpoint,
+  type OrderOrigin,
 } from './domain/order-intent';
+export {
+  mapProposeOrderFromSignalIntent,
+  SIGNAL_INTENT_IDEMPOTENCY_PREFIX,
+  type ProposeOrderFromSignalIntentAction,
+  type ProposeOrderFromSignalIntentMapping,
+  type ProposeOrderFromSignalIntentNoAction,
+  type SignalIntentIntake,
+} from './domain/propose-from-signal-intent';
 export {
   ORDER_SCHEMA_VERSION,
   createOrder,
@@ -30,3 +40,4 @@ export {
   canTransitionOrder,
   isOrderStatus,
 } from './domain/order-status';
+export { ORDER_PROPOSAL_PORT, type OrderProposalPort } from './ports/order-proposal.port';

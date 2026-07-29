@@ -9,6 +9,8 @@ import {
   type PaperAccountRepository,
 } from '../paper-account/persistence/paper-account.repository';
 import { PaperAccountStatus } from '../paper-account/domain/paper-account';
+import { StrategyDeploymentService, StrategyDeploymentStatus } from '../strategy-deployment';
+import { STRATEGY_RUNTIME_PORT, type StrategyRuntimePort } from '../strategy-runtime';
 import {
   assertExecutionEligible,
   evaluateExecutionEligibility,
@@ -23,6 +25,7 @@ import {
   replaceLeaseHeartbeat,
   transitionSession,
   type TradingSession,
+  type TradingSessionOrigin,
 } from './domain/trading-session';
 import { TradingSessionStatus } from './domain/trading-session-status';
 import {
@@ -36,7 +39,7 @@ export type CreateTradingSessionCommand = Readonly<{
   workspaceId: string;
   paperAccountId: string;
   deploymentId: string;
-  origin: 'manual';
+  origin: TradingSessionOrigin;
   idempotencyKey: string;
   actorId: string;
   correlationId?: string;
@@ -58,8 +61,10 @@ export type SessionLifecycleCommand = Readonly<{
 }>;
 
 /**
- * Durable Trading Session application boundary (US156 / US157).
- * Manual origin only for M2 — no strategy evaluation or scheduler.
+ * Durable Trading Session application boundary (US156 / US157 / US217 / US220).
+ * Owns lifecycle and Deployment identity binding. Notifies Strategy Runtime
+ * through StrategyRuntimePort for arm/pause/resume/stop drain. No Orders,
+ * Risk, or Execution coupling; no Runtime persistence access.
  */
 @Injectable()
 export class TradingSessionService {
@@ -72,6 +77,10 @@ export class TradingSessionService {
     private readonly transactions: PrismaTransactionService,
     @Inject(TransactionalOutboxAppender)
     private readonly outbox: TransactionalOutboxAppender,
+    @Inject(StrategyDeploymentService)
+    private readonly deployments: StrategyDeploymentService,
+    @Inject(STRATEGY_RUNTIME_PORT)
+    private readonly runtime: StrategyRuntimePort,
   ) {}
 
   async create(command: CreateTradingSessionCommand): Promise<TradingSession> {
@@ -93,6 +102,8 @@ export class TradingSessionService {
     ) {
       throw new Error(`paper account status ${account.status} cannot own a trading session`);
     }
+
+    await this.assertDeploymentBinding(command);
 
     const session = createTradingSession({
       id: randomUUID(),
@@ -137,12 +148,23 @@ export class TradingSessionService {
   }
 
   /**
-   * Manual start: CREATED → STARTING → RUNNING with a fenced lease.
+   * Start: CREATED → STARTING → RUNNING with a fenced lease.
+   * Strategy-origin sessions initialize RuntimeContext via StrategyRuntimePort
+   * during STARTING and arm Runtime after RUNNING (US217 / US220).
    */
   async start(command: SessionLifecycleCommand): Promise<TradingSession> {
     return this.mutate(command, async (session) => {
       let next = session;
       next = transitionSession(next, TradingSessionStatus.STARTING, command.recordedAt);
+
+      if (session.origin === 'strategy') {
+        await this.runtime.loadContext({
+          workspaceId: session.workspaceId,
+          sessionId: session.id,
+          deploymentId: session.deploymentId,
+        });
+      }
+
       const lease = createSessionLease({
         ownerId: command.ownerId,
         acquiredAt: command.nowIso,
@@ -151,6 +173,17 @@ export class TradingSessionService {
       });
       next = attachLease(next, lease);
       next = transitionSession(next, TradingSessionStatus.RUNNING, command.recordedAt);
+
+      if (session.origin === 'strategy') {
+        await this.runtime.arm({
+          workspaceId: session.workspaceId,
+          sessionId: session.id,
+          fencingToken: lease.fencingToken,
+          nowIso: command.nowIso,
+          reason: 'session started',
+        });
+      }
+
       return {
         session: next,
         eventType: 'TradingSessionStarted',
@@ -163,6 +196,15 @@ export class TradingSessionService {
   async pause(command: SessionLifecycleCommand): Promise<TradingSession> {
     return this.mutate(command, async (session) => {
       requireCurrentFence(session, command);
+      if (session.origin === 'strategy') {
+        await this.runtime.pause({
+          workspaceId: session.workspaceId,
+          sessionId: session.id,
+          fencingToken: command.fencingToken!,
+          nowIso: command.nowIso,
+          reason: 'session paused',
+        });
+      }
       const next = transitionSession(session, TradingSessionStatus.PAUSED, command.recordedAt);
       return {
         session: next,
@@ -177,6 +219,15 @@ export class TradingSessionService {
     return this.mutate(command, async (session) => {
       requireCurrentFence(session, command);
       const next = transitionSession(session, TradingSessionStatus.RUNNING, command.recordedAt);
+      if (session.origin === 'strategy') {
+        await this.runtime.resume({
+          workspaceId: session.workspaceId,
+          sessionId: session.id,
+          fencingToken: command.fencingToken!,
+          nowIso: command.nowIso,
+          reason: 'session resumed',
+        });
+      }
       return {
         session: next,
         eventType: 'TradingSessionResumed',
@@ -189,6 +240,15 @@ export class TradingSessionService {
   async stop(command: SessionLifecycleCommand): Promise<TradingSession> {
     return this.mutate(command, async (session) => {
       requireCurrentFence(session, command);
+      if (session.origin === 'strategy') {
+        await this.runtime.stop({
+          workspaceId: session.workspaceId,
+          sessionId: session.id,
+          fencingToken: command.fencingToken!,
+          nowIso: command.nowIso,
+          reason: 'session stopped',
+        });
+      }
       let next = transitionSession(session, TradingSessionStatus.STOPPING, command.recordedAt);
       next = clearLease(next);
       next = transitionSession(next, TradingSessionStatus.STOPPED, command.recordedAt);
@@ -224,9 +284,22 @@ export class TradingSessionService {
 
   /**
    * Mark ownership lost / restart path without performing full M5 recovery.
+   * Strategy-origin sessions drain Runtime before RECOVERING (US220).
    */
   async markRecovering(command: SessionLifecycleCommand): Promise<TradingSession> {
     return this.mutate(command, async (session) => {
+      if (session.origin === 'strategy') {
+        const token = session.lease?.fencingToken ?? session.lastFencingToken;
+        if (token >= 1) {
+          await this.runtime.stop({
+            workspaceId: session.workspaceId,
+            sessionId: session.id,
+            fencingToken: token,
+            nowIso: command.nowIso,
+            reason: 'session recovering',
+          });
+        }
+      }
       const next = clearLease(
         transitionSession(session, TradingSessionStatus.RECOVERING, command.recordedAt),
       );
@@ -241,6 +314,18 @@ export class TradingSessionService {
 
   async fail(command: SessionLifecycleCommand): Promise<TradingSession> {
     return this.mutate(command, async (session) => {
+      if (session.origin === 'strategy') {
+        const token = session.lease?.fencingToken ?? session.lastFencingToken;
+        if (token >= 1) {
+          await this.runtime.stop({
+            workspaceId: session.workspaceId,
+            sessionId: session.id,
+            fencingToken: token,
+            nowIso: command.nowIso,
+            reason: 'session failed',
+          });
+        }
+      }
       const next = clearLease(
         transitionSession(session, TradingSessionStatus.FAILED, command.recordedAt, {
           failureReason: command.failureReason ?? 'unrecoverable failure',
@@ -269,6 +354,24 @@ export class TradingSessionService {
     nowIso: string,
   ): ExecutionEligibility {
     return assertExecutionEligible(session, fencingToken, nowIso);
+  }
+
+  /**
+   * Strategy-origin sessions must reference an APPROVED Deployment by id only.
+   * Manual-origin sessions keep opaque M2 deployment references.
+   */
+  private async assertDeploymentBinding(command: CreateTradingSessionCommand): Promise<void> {
+    if (command.origin !== 'strategy') {
+      return;
+    }
+    const deploymentId = required(command.deploymentId, 'deployment id');
+    const deployment = await this.deployments.get(command.workspaceId, deploymentId);
+    if (!deployment) {
+      throw new Error('strategy deployment not found in workspace');
+    }
+    if (deployment.status !== StrategyDeploymentStatus.APPROVED) {
+      throw new Error('trading session requires an approved strategy deployment');
+    }
   }
 
   private async mutate(

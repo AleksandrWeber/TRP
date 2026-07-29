@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PrismaTransactionService } from '../../storage/prisma/prisma-transaction.service';
 import { TransactionalOutboxAppender } from '../../modules/event-processing/transactional-outbox-appender';
 import { PaperAccountService } from '../../modules/paper-account/paper-account.service';
@@ -19,7 +19,24 @@ describe('US156/US157 — durable Trading Session and fencing', () => {
   const sessions = new PrismaTradingSessionRepository(prisma);
   const outbox = new TransactionalOutboxAppender();
   const paperAccounts = new PaperAccountService(accounts, transactions, outbox);
-  const service = new TradingSessionService(sessions, accounts, transactions, outbox);
+  const deployments = {
+    get: vi.fn(async () => {
+      throw new Error('Deployment lookup unexpected in US156 manual path');
+    }),
+  };
+  const runtime = {
+    loadContext: vi.fn(async () => {
+      throw new Error('RuntimePort unexpected in US156 manual path');
+    }),
+  };
+  const service = new TradingSessionService(
+    sessions,
+    accounts,
+    transactions,
+    outbox,
+    deployments as never,
+    runtime as never,
+  );
 
   beforeAll(() => prisma.$connect());
   beforeEach(cleanup);
