@@ -143,6 +143,14 @@ export function evaluateM2ArchitectureConformance(): readonly M2ConformanceFindi
       : 'Immediate M2 fills replay deterministically by immutable timestamps/identity. Persist an explicit per-Position Fill application order before concurrent M3 strategy execution.',
   });
 
+  findings.push({
+    id: 'M2-durable-consumer-fanout-progress',
+    severity: /model\s+OutboxConsumerDelivery\b/.test(schema) ? 'pass' : 'recommendation',
+    detail: /model\s+OutboxConsumerDelivery\b/.test(schema)
+      ? 'Outbox fan-out stores durable per-consumer delivery acknowledgements.'
+      : 'Outbox publication is per-event; persist per-consumer delivery progress before M3 expands fan-out.',
+  });
+
   const ledgerQuery = source('ledger/persistence/prisma-ledger.repository.ts');
   findings.push({
     id: 'M2-ledger-query-pagination',

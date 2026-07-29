@@ -303,17 +303,17 @@ Execute flow: `OrderExecutionService.execute` (simulated fill; no exchange I/O).
 
 All routes require JWT and `X-Workspace-Id`.
 
-| Method | Endpoint                         | Behavior                                    |
-| ------ | -------------------------------- | ------------------------------------------- |
-| GET    | `/v1/trading-orders`             | List orders                                 |
-| GET    | `/v1/trading-orders/open`        | List open orders                            |
-| GET    | `/v1/trading-orders/history`     | Order status history (`?orderId=` optional) |
-| GET    | `/v1/trading-orders/:id`         | Get order                                   |
-| GET    | `/v1/trading-orders/:id/fills`   | List fills for order                        |
-| POST   | `/v1/trading-orders`             | Create order (runs risk gate)               |
-| POST   | `/v1/trading-orders/:id/cancel`  | Cancel open order                           |
-| POST   | `/v1/trading-orders/:id/execute` | Apply simulated fill                        |
-| PATCH  | `/v1/trading-orders/:id`         | Update quantity/price/TIF while mutable     |
+| Method | Endpoint                         | Behavior                                           |
+| ------ | -------------------------------- | -------------------------------------------------- |
+| GET    | `/v1/trading-orders`             | List orders                                        |
+| GET    | `/v1/trading-orders/open`        | List open orders                                   |
+| GET    | `/v1/trading-orders/history`     | Order status history (`?orderId=` optional)        |
+| GET    | `/v1/trading-orders/:id`         | Get order                                          |
+| GET    | `/v1/trading-orders/:id/fills`   | List fills for order                               |
+| POST   | `/v1/trading-orders`             | Create order (runs risk gate)                      |
+| POST   | `/v1/trading-orders/:id/cancel`  | Cancel open order                                  |
+| POST   | `/v1/trading-orders/:id/execute` | Legacy simulated fill endpoint (retired by TD-034) |
+| PATCH  | `/v1/trading-orders/:id`         | Update quantity/price/TIF while mutable            |
 
 Create body fields: `symbol`, `side`, `type`, `quantity`, optional
 `requestedPrice`, optional `timeInForce`.
@@ -358,8 +358,8 @@ Migration `20260720140000_us206_order_lifecycle` requires US204. The REST path
 ### 7. Deployment notes
 
 - Apply migration `20260720140000` after US204–US205.
-- Direct `POST …/execute` is intended for paper simulation and recovery replay;
-  production live clients should prefer `/v1/live/orders` orchestration.
+- Direct `POST …/execute` is a legacy escape hatch retained only for non-canonical
+  recovery internals; RC-16 TD-034 retired it from the paper execution path.
 
 ---
 
@@ -459,28 +459,27 @@ is Trading Platform V1.
 
 ## US208 — Paper Trading Engine
 
-Status: Implemented (canonical paper path for Trading Platform V1)  
+Status: Read-only session/query surface after TD-034  
 Module: `apps/api/src/modules/paper-trading-engine`
 
 Legacy note: US010 (`/v1/paper-trading`, in-memory) and US016 (Paper Trading
-Executor) are **not** registered in `AppModule`. US208 is the durable,
-orchestrated paper path at `/v1/paper`.
+Executor) are **not** registered in `AppModule`. TD-034 retired the direct
+execution route from `/v1/paper`; canonical paper execution now belongs to the
+M2 Order/Risk/Execution Engine pipeline instead of this legacy module.
 
 ### 1. Architecture
 
 ```text
-POST /v1/paper/sessions/:id/orders
+GET/POST /v1/paper/sessions/*
   ↓
 PaperTradingController
   ↓
 PaperTradingService
-  ↓
-PaperExecutionCoordinator
-  ├─ PaperSessionManager            session lifecycle + isolated portfolio
-  ├─ OrderService.create            → Risk.evaluate inside
-  ├─ execution-simulator            slippage + commission
-  ├─ OrderService.execute           → OrderExecutionService → Position → Portfolio
-  └─ PaperTradingRepository         session executions + events
+  ├─ PaperSessionManager    session lifecycle + isolated portfolio
+  ├─ OrderService           query-only order access for session portfolios
+  ├─ PositionService        query-only position access for session portfolios
+  ├─ PortfolioService       query/statistics access for session portfolios
+  └─ PaperTradingRepository session events + archived execution records
 ```
 
 Session statuses: `CREATED`, `RUNNING`, `PAUSED`, `STOPPED`, `COMPLETED`,
@@ -503,7 +502,6 @@ All routes require JWT and `X-Workspace-Id`.
 | POST   | `/v1/paper/sessions/:id/stop`       | Stop                                               |
 | POST   | `/v1/paper/sessions/:id/complete`   | Complete                                           |
 | DELETE | `/v1/paper/sessions/:id`            | Delete session                                     |
-| POST   | `/v1/paper/sessions/:id/orders`     | Execute paper trade                                |
 | GET    | `/v1/paper/sessions/:id/orders`     | List session orders (via trading core)             |
 | GET    | `/v1/paper/sessions/:id/positions`  | Positions for session portfolio                    |
 | GET    | `/v1/paper/sessions/:id/portfolio`  | Portfolio for session                              |
@@ -511,9 +509,8 @@ All routes require JWT and `X-Workspace-Id`.
 | GET    | `/v1/paper/sessions/:id/events`     | Session events                                     |
 | GET    | `/v1/paper/sessions/:id/statistics` | Session statistics                                 |
 
-Trade body: order fields plus optional `marketPrice` (required for MARKET-style
-fill if no `requestedPrice`). Default execution policy: no partial fill, zero
-slippage, zero commission (overridable in coordinator for tests).
+Direct paper trade execution was retired by TD-034 to eliminate the parallel
+non-canonical path before Strategy Runtime enablement.
 
 ### 3. Database / Persistence
 

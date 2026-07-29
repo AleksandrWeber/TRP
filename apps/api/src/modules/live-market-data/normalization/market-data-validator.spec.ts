@@ -38,7 +38,7 @@ function mark(overrides: Partial<MarkPriceDraft> = {}): MarkPriceDraft {
     workspaceId: 'ws-1',
     sourceId: 'binance_spot',
     instrument: 'ETHUSDT',
-    price: 2000,
+    price: '2000',
     markSource: MarkPriceSourceKind.BOOK_MID,
     sequence: 1,
     ...OPS,
@@ -74,7 +74,7 @@ describe('Market data validation and quarantine (US137)', () => {
 
   it('rejects invalid mark prices into quarantine', () => {
     const result = validator.validateMarkPrice({
-      draft: mark({ price: -5 }),
+      draft: mark({ price: '-5' }),
       rawMessage: { e: 'bookTicker' },
       quarantinedAt: '2026-07-18T10:00:01.000Z',
     });
@@ -110,7 +110,7 @@ describe('Market data validation and quarantine (US137)', () => {
       quarantinedAt: '2026-07-18T10:00:01.000Z',
     });
     const good = validator.validateMarkPrice({
-      draft: mark({ instrument: 'ETHUSDT', price: 2100 }),
+      draft: mark({ instrument: 'ETHUSDT', price: '2100' }),
       rawMessage: { stream: 'eth' },
       quarantinedAt: '2026-07-18T10:00:01.000Z',
     });
@@ -119,7 +119,7 @@ describe('Market data validation and quarantine (US137)', () => {
     expect(good.outcome).toBe('accepted');
     if (good.outcome !== 'accepted') return;
     expect(good.event.instrument).toBe('ETHUSDT');
-    expect(good.event.price).toBe(2100);
+    expect(good.event.price).toBe('2100');
   });
 
   it('accepts valid closed candles as publishable market events', () => {

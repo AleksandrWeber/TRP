@@ -1,10 +1,6 @@
+import { FinancialDecimal } from '../../financial';
 import { toInstrument, type Instrument } from '../../market-data/instrument';
-import {
-  assertNonEmpty,
-  assertNonNegativeInteger,
-  assertPositiveNumber,
-  freezeDeep,
-} from './assert';
+import { assertNonEmpty, assertNonNegativeInteger, freezeDeep } from './assert';
 import type { MarketEventEnvelope } from './market-event-envelope';
 import { MarketEventType } from './market-event-type';
 import { toMarketEventId, type MarketEventId } from './market-event-id';
@@ -17,14 +13,15 @@ import { buildMarkPriceSemanticIdentity } from './market-event-identity';
 import { buildMarketStreamId } from './market-stream-identity';
 
 /**
- * Immutable mark-price market event (US126, US127).
+ * Immutable mark-price market event (US126, US127 / TD-039).
+ * Canonical `price` is exact decimal text — never a JavaScript number.
  * Distinct from closed-candle. No Position / Portfolio / fill calculation.
  */
 export type MarkPriceEvent = MarketEventEnvelope &
   Readonly<{
     eventType: MarketEventType.MARK_PRICE;
     channel: MarketStreamChannel.MARK_PRICE;
-    price: number;
+    price: string;
   }>;
 
 export type MarkPriceEventInput = {
@@ -35,7 +32,8 @@ export type MarkPriceEventInput = {
   instrument: Instrument | string;
   streamId?: MarketStreamId | string;
   sequence: number;
-  price: number;
+  /** Canonical exact decimal text (ADR-015 / TD-039). */
+  price: string;
 } & MarketEventTimestampInput;
 
 export function createMarkPriceEvent(input: MarkPriceEventInput): MarkPriceEvent {
@@ -48,7 +46,7 @@ export function createMarkPriceEvent(input: MarkPriceEventInput): MarkPriceEvent
     throw new Error('schemaVersion must be greater than or equal to 1');
   }
   assertNonNegativeInteger(input.sequence, 'sequence');
-  const price = assertPositiveNumber(input.price, 'price');
+  const price = FinancialDecimal.from(input.price).assertPositive('price').toString();
   const timestamps = resolveMarketEventTimestamps(input);
 
   const streamId =

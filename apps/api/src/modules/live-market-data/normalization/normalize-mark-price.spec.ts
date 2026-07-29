@@ -16,7 +16,7 @@ function draft(overrides: Partial<MarkPriceDraft> = {}): MarkPriceDraft {
     workspaceId: 'ws-1',
     sourceId: 'binance_spot',
     instrument: 'ETHUSDT',
-    price: 3500.25,
+    price: '3500.25',
     markSource: MarkPriceSourceKind.EXCHANGE_MARK,
     sequence: 1,
     ...OPS,
@@ -25,15 +25,17 @@ function draft(overrides: Partial<MarkPriceDraft> = {}): MarkPriceDraft {
 }
 
 describe('Mark-price normalization (US136)', () => {
-  it('requires finite positive price and explicit mark source', () => {
-    expect(normalizeMarkPrice(draft({ price: 0 })).ok).toBe(false);
-    expect(normalizeMarkPrice(draft({ price: Number.NaN })).ok).toBe(false);
+  it('requires exact positive decimal text and explicit mark source', () => {
+    expect(normalizeMarkPrice(draft({ price: '0' })).ok).toBe(false);
+    expect(normalizeMarkPrice(draft({ price: 'NaN' })).ok).toBe(false);
+    expect(normalizeMarkPrice(draft({ price: 3500.25 as unknown as string })).ok).toBe(false);
 
     const ok = normalizeMarkPrice(draft());
     expect(ok.ok).toBe(true);
     if (!ok.ok) return;
     expect(ok.markSource).toBe(MarkPriceSourceKind.EXCHANGE_MARK);
-    expect(ok.event.price).toBe(3500.25);
+    expect(ok.event.price).toBe('3500.25');
+    expect(typeof ok.event.price).toBe('string');
     expect(ok.event.sourceId).toBe('binance_spot');
   });
 
@@ -93,7 +95,7 @@ describe('Mark-price normalization (US136)', () => {
     expect(throttled.ok).toBe(true);
     if (!throttled.ok) return;
     expect(throttled.published).toBe(false);
-    expect(throttled.event.price).toBe(3500.25);
+    expect(throttled.event.price).toBe('3500.25');
   });
 
   it('maps Binance bookTicker inside the adapter to BOOK_MID without leaking raw keys', () => {
@@ -116,7 +118,8 @@ describe('Mark-price normalization (US136)', () => {
     });
 
     expect(mapped.markSource).toBe(MarkPriceSourceKind.BOOK_MID);
-    expect(mapped.price).toBe(3500.25);
+    expect(mapped.price).toBe('3500.25');
+    expect(typeof mapped.price).toBe('string');
     expect('e' in mapped).toBe(false);
     expect('b' in mapped).toBe(false);
     expect('a' in mapped).toBe(false);

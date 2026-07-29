@@ -39,7 +39,7 @@ function candle(sequence: number, openTime = '2026-07-18T10:00:00.000Z', close =
   });
 }
 
-function mark(sequence: number, price = 100 + sequence) {
+function mark(sequence: number, price = String(100 + sequence)) {
   return createMarkPriceEvent({
     workspaceId: 'ws-1',
     sourceId: 'binance-spot',

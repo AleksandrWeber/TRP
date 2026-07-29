@@ -108,5 +108,8 @@ function workspaceScopedOutbox(
       repository.listUnpublished({ ...query, workspaceId }),
     updateDelivery: (eventId, patch) => repository.updateDelivery(eventId, patch),
     listByStatus: (status) => repository.listByStatus(status),
+    recordConsumerDelivery: (eventId, consumerId, deliveredAt) =>
+      repository.recordConsumerDelivery(eventId, consumerId, deliveredAt),
+    listDeliveredConsumerIds: (eventId) => repository.listDeliveredConsumerIds(eventId),
   };
 }

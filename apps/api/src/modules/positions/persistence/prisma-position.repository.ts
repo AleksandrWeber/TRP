@@ -4,7 +4,11 @@ import {
   type TransactionContext,
 } from '../../../storage/prisma/prisma-transaction.service';
 import { PositionSide, type Position } from '../domain/position';
-import type { PositionRepository } from './position.repository';
+import type {
+  PositionFillApplication,
+  PositionRepository,
+  RecordFillApplicationInput,
+} from './position.repository';
 
 type PositionRow = Prisma.PaperPositionGetPayload<Record<string, never>>;
 
@@ -86,6 +90,45 @@ export class PrismaPositionRepository implements PositionRepository {
     });
     if (updated.count !== 1) throw new Error('Position optimistic version conflict');
     return position;
+  }
+
+  async recordFillApplication(
+    input: RecordFillApplicationInput,
+    appliedAt: string,
+    transaction: TransactionContext,
+  ): Promise<void> {
+    if (!Number.isSafeInteger(input.applicationSequence) || input.applicationSequence < 1) {
+      throw new Error('application sequence must be a positive integer');
+    }
+    const client = prismaClientForTransaction(transaction);
+    await client.positionFillApplication.create({
+      data: {
+        positionId: input.positionId,
+        fillId: input.fillId,
+        applicationSequence: input.applicationSequence,
+        appliedAt: new Date(appliedAt),
+      },
+    });
+  }
+
+  async listFillApplications(
+    workspaceId: string,
+    paperAccountId: string,
+  ): Promise<PositionFillApplication[]> {
+    const rows = await this.prisma.positionFillApplication.findMany({
+      where: {
+        position: { workspaceId, paperAccountId },
+      },
+      orderBy: [{ positionId: 'asc' }, { applicationSequence: 'asc' }],
+    });
+    return rows.map((row) =>
+      Object.freeze({
+        positionId: row.positionId,
+        fillId: row.fillId,
+        applicationSequence: row.applicationSequence,
+        appliedAt: row.appliedAt.toISOString(),
+      }),
+    );
   }
 }
 

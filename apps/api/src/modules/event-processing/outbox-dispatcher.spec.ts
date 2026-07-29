@@ -107,8 +107,9 @@ describe('Outbox dispatcher, retry, and dead letters (US130)', () => {
     expect(first.published).toBe(1);
     expect(handleCount).toBe(1);
     expect((await outbox.findByEventId(event.eventId))?.status).toBe(OutboxStatus.PUBLISHED);
+    expect(await outbox.listDeliveredConsumerIds(event.eventId)).toEqual(['proj-1']);
 
-    // Simulate at-least-once redelivery after ack loss: reset to pending and re-dispatch.
+    // Simulate Outbox publication status loss while durable consumer ack survives.
     await outbox.updateDelivery(event.eventId, {
       status: OutboxStatus.PENDING,
       publishedAt: null,
@@ -116,9 +117,43 @@ describe('Outbox dispatcher, retry, and dead letters (US130)', () => {
     });
     const second = await dispatcher.dispatchOnce('2026-07-18T10:00:02.000Z');
     expect(second.published).toBe(1);
-    expect(handleCount).toBe(2);
+    expect(handleCount).toBe(1);
     expect(projections.size).toBe(1);
     expect([...projections.values()][0]).toEqual({ count: 1 });
+  });
+
+  it('TD-042 skips already-acknowledged consumers across fan-out retry', async () => {
+    await accept(writer, 1, 'fanout-1');
+    const seen: string[] = [];
+    let failOnce = true;
+
+    dispatcher.register({
+      consumerId: 'consumer-a',
+      handle: async () => {
+        seen.push('consumer-a');
+      },
+    });
+    dispatcher.register({
+      consumerId: 'consumer-b',
+      handle: async () => {
+        seen.push('consumer-b');
+        if (failOnce) {
+          failOnce = false;
+          throw new Error('injected fan-out failure');
+        }
+      },
+    });
+
+    const first = await dispatcher.dispatchOnce('2026-07-18T10:00:00.000Z');
+    expect(first.retried).toBe(1);
+    expect(seen).toEqual(['consumer-a', 'consumer-b']);
+    expect(await outbox.listDeliveredConsumerIds('fanout-1')).toEqual(['consumer-a']);
+
+    const second = await dispatcher.dispatchOnce('2026-07-18T10:00:01.000Z');
+    expect(second.published).toBe(1);
+    expect(seen).toEqual(['consumer-a', 'consumer-b', 'consumer-b']);
+    expect(await outbox.listDeliveredConsumerIds('fanout-1')).toEqual(['consumer-a', 'consumer-b']);
+    expect((await outbox.findByEventId('fanout-1'))?.status).toBe(OutboxStatus.PUBLISHED);
   });
 
   it('keeps failed delivery pending/retryable and dead-letters after exhaustion', async () => {

@@ -195,39 +195,6 @@ export class PaperTradingController {
     });
   }
 
-  @Post('sessions/:id/orders')
-  async executeTrade(
-    @Req() req: RequestWithUser,
-    @Param('id') id: string,
-    @Body()
-    body: {
-      symbol?: string;
-      side?: string;
-      type?: string;
-      quantity?: string;
-      requestedPrice?: string | null;
-      timeInForce?: string;
-      marketPrice?: string;
-    },
-    @Headers('x-workspace-id') workspaceIdHeader?: string,
-  ) {
-    return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
-      return this.paper.executeTrade(workspaceId, req.user.userId, id, {
-        symbol: String(body.symbol ?? ''),
-        side: String(body.side ?? ''),
-        type: String(body.type ?? ''),
-        quantity: String(body.quantity ?? ''),
-        requestedPrice:
-          body.requestedPrice === undefined || body.requestedPrice === null
-            ? body.requestedPrice
-            : String(body.requestedPrice),
-        timeInForce: body.timeInForce !== undefined ? String(body.timeInForce) : undefined,
-        marketPrice: body.marketPrice !== undefined ? String(body.marketPrice) : undefined,
-      });
-    });
-  }
-
   @Delete('sessions/:id')
   async deleteSession(
     @Req() req: RequestWithUser,

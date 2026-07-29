@@ -104,6 +104,7 @@ describe('US180 — PostgreSQL atomicity, concurrency, and idempotency', () => {
   it('gives concurrent duplicate Fill delivery exactly one financial effect', async () => {
     await reserve('order-concurrent', '250');
     const event = fillEvent('concurrent');
+    await persistFill(event);
     const results = await Promise.all([
       consumer.process(event, '2026-07-18T20:40:02.200Z'),
       consumer.process(event, '2026-07-18T20:40:02.300Z'),
@@ -116,6 +117,9 @@ describe('US180 — PostgreSQL atomicity, concurrency, and idempotency', () => {
       }),
     ).toBe(1);
     expect(await prisma.paperPosition.count({ where: { workspaceId: WS } })).toBe(1);
+    expect(
+      await prisma.positionFillApplication.count({ where: { fill: { workspaceId: WS } } }),
+    ).toBe(1);
     expect(
       await prisma.inboxRecord.count({
         where: {
@@ -133,6 +137,8 @@ describe('US180 — PostgreSQL atomicity, concurrency, and idempotency', () => {
 
   it('rolls back Position, Ledger, Outbox, Inbox, and checkpoint when progress fails', async () => {
     await reserve('order-rollback', '250');
+    const event = fillEvent('rollback');
+    await persistFill(event);
     const baselineOutbox = await prisma.outboxEvent.count({ where: { workspaceId: WS } });
     const failing = new PositionAccountingConsumer(
       positions,
@@ -147,11 +153,14 @@ describe('US180 — PostgreSQL atomicity, concurrency, and idempotency', () => {
       M2_PAPER_FILL_CONFIGURATION,
     );
 
-    await expect(
-      failing.process(fillEvent('rollback'), '2026-07-18T20:40:02.200Z'),
-    ).rejects.toThrow('injected checkpoint failure');
+    await expect(failing.process(event, '2026-07-18T20:40:02.200Z')).rejects.toThrow(
+      'injected checkpoint failure',
+    );
 
     expect(await prisma.paperPosition.count({ where: { workspaceId: WS } })).toBe(0);
+    expect(
+      await prisma.positionFillApplication.count({ where: { fillId: 'fill-us180-rollback' } }),
+    ).toBe(0);
     expect(
       await prisma.ledgerTransaction.count({
         where: { workspaceId: WS, causeType: LedgerCauseType.FILL },
@@ -183,6 +192,34 @@ describe('US180 — PostgreSQL atomicity, concurrency, and idempotency', () => {
       amount,
       actorId: 'orders-us180',
       recordedAt: '2026-07-18T20:40:01.000Z',
+    });
+  }
+
+  async function persistFill(event: DurableEventEnvelope): Promise<void> {
+    const payload = event.payload;
+    await prisma.paperFill.create({
+      data: {
+        id: String(payload.fillId),
+        workspaceId: WS,
+        orderId: String(payload.orderId),
+        paperAccountId: accountId,
+        tradingSessionId: String(payload.tradingSessionId),
+        adapterOrderId: String(payload.adapterOrderId),
+        adapterFillId: String(payload.adapterFillId),
+        sequence: Number(payload.sequence),
+        instrument: String(payload.instrument),
+        side: String(payload.side),
+        price: String(payload.price),
+        quantity: String(payload.quantity),
+        grossNotional: String(payload.grossNotional),
+        fee: String(payload.fee),
+        executionContextHash: String(payload.executionContextHash),
+        configurationId: String(payload.configurationId),
+        configurationVersion: Number(payload.configurationVersion),
+        configurationHash: String(payload.configurationHash),
+        occurredAt: new Date(event.occurredAt),
+        recordedAt: new Date(event.recordedAt),
+      },
     });
   }
 
@@ -232,6 +269,9 @@ describe('US180 — PostgreSQL atomicity, concurrency, and idempotency', () => {
       where: { consumerId: FILL_ACCOUNTING_CONSUMER_ID, workspaceId: WS },
     });
     await prisma.outboxEvent.deleteMany({ where: { workspaceId: WS } });
+    await prisma.positionFillApplication.deleteMany({
+      where: { position: { workspaceId: WS } },
+    });
     await prisma.paperPosition.deleteMany({ where: { workspaceId: WS } });
     await prisma.ledgerEntry.deleteMany({ where: { workspaceId: WS } });
     await prisma.ledgerTransaction.deleteMany({ where: { workspaceId: WS } });

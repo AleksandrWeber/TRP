@@ -6,7 +6,11 @@ import { LedgerService } from '../ledger';
 import { applyFillToPosition, type Position } from './domain/position';
 import { projectPortfolio, type PortfolioProjection } from './domain/portfolio-projection';
 import { PORTFOLIO_REPOSITORY, type PortfolioRepository } from './persistence/portfolio.repository';
-import { POSITION_REPOSITORY, type PositionRepository } from './persistence/position.repository';
+import {
+  POSITION_REPOSITORY,
+  type PositionFillApplication,
+  type PositionRepository,
+} from './persistence/position.repository';
 import {
   POSITION_VALUATION_REPOSITORY,
   type PositionValuationRepository,
@@ -45,14 +49,16 @@ export class AccountingRebuildService {
     paperAccountId: string,
     checkedAt: string,
   ): Promise<AccountingReconciliation> {
-    const [fills, livePositions, valuations, livePortfolio, ledger] = await Promise.all([
-      this.fills.listByAccount(workspaceId, paperAccountId),
-      this.positions.listByAccount(workspaceId, paperAccountId),
-      this.valuations.listByAccount(workspaceId, paperAccountId),
-      this.portfolios.find(workspaceId, paperAccountId),
-      this.ledger.summarizeAccount(workspaceId, paperAccountId),
-    ]);
-    const rebuiltPositions = rebuildPositions(fills, this.configuration, checkedAt);
+    const [fills, livePositions, valuations, livePortfolio, ledger, applications] =
+      await Promise.all([
+        this.fills.listByAccount(workspaceId, paperAccountId),
+        this.positions.listByAccount(workspaceId, paperAccountId),
+        this.valuations.listByAccount(workspaceId, paperAccountId),
+        this.portfolios.find(workspaceId, paperAccountId),
+        this.ledger.summarizeAccount(workspaceId, paperAccountId),
+        this.positions.listFillApplications(workspaceId, paperAccountId),
+      ]);
+    const rebuiltPositions = rebuildPositions(fills, this.configuration, checkedAt, applications);
     const rebuiltPortfolio = projectPortfolio(ledger, valuations, null, checkedAt);
     const sourceHash = accountingHash(livePositions, livePortfolio);
     const rebuiltHash = accountingHash(rebuiltPositions, rebuiltPortfolio);
@@ -78,14 +84,10 @@ export function rebuildPositions(
   fills: readonly PaperFill[],
   configuration: PaperFillConfiguration,
   recordedAt: string,
+  applications: readonly PositionFillApplication[] = [],
 ): Position[] {
   const positions = new Map<string, Position>();
-  const ordered = [...fills].sort(
-    (a, b) =>
-      a.occurredAt.localeCompare(b.occurredAt) ||
-      a.recordedAt.localeCompare(b.recordedAt) ||
-      a.id.localeCompare(b.id),
-  );
+  const ordered = orderFillsForRebuild(fills, applications);
   for (const fill of ordered) {
     const key = `${fill.workspaceId}:${fill.paperAccountId}:${fill.instrument}`;
     const transition = applyFillToPosition(
@@ -97,6 +99,39 @@ export function rebuildPositions(
     positions.set(key, transition.position);
   }
   return [...positions.values()].sort((a, b) => a.instrument.localeCompare(b.instrument));
+}
+
+/**
+ * Persisted application ordinals are authoritative (TD-040 / ADR-015).
+ * Timestamp/identity sort remains the fallback only when no applications exist.
+ */
+function orderFillsForRebuild(
+  fills: readonly PaperFill[],
+  applications: readonly PositionFillApplication[],
+): PaperFill[] {
+  if (applications.length === 0) {
+    return [...fills].sort(
+      (a, b) =>
+        a.occurredAt.localeCompare(b.occurredAt) ||
+        a.recordedAt.localeCompare(b.recordedAt) ||
+        a.id.localeCompare(b.id),
+    );
+  }
+  const byId = new Map(fills.map((fill) => [fill.id, fill]));
+  const ordered: PaperFill[] = [];
+  for (const application of [...applications].sort(
+    (a, b) =>
+      a.positionId.localeCompare(b.positionId) ||
+      a.applicationSequence - b.applicationSequence ||
+      a.fillId.localeCompare(b.fillId),
+  )) {
+    const fill = byId.get(application.fillId);
+    if (!fill) {
+      throw new Error(`missing Fill for persisted application ${application.fillId}`);
+    }
+    ordered.push(fill);
+  }
+  return ordered;
 }
 
 function accountingHash(

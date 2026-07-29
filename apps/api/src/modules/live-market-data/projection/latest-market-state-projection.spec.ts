@@ -36,7 +36,7 @@ function candle(sequence: number, openTime: string) {
   });
 }
 
-function mark(sequence: number, price: number, at: string) {
+function mark(sequence: number, price: string, at: string) {
   return createMarkPriceEvent({
     workspaceId: 'ws-1',
     sourceId: 'binance_spot',
@@ -78,7 +78,7 @@ describe('US143 — LatestMarketStateProjection', () => {
   it('is workspace- and stream-scoped with explicit freshness', async () => {
     const { projection } = createProjection();
     const c1 = candle(1, '2026-07-18T12:00:00.000Z');
-    const m1 = mark(1, 50000, '2026-07-18T12:00:30.000Z');
+    const m1 = mark(1, '50000', '2026-07-18T12:00:30.000Z');
 
     await projection.apply(c1, '2026-07-18T12:01:00.000Z');
     await projection.apply(m1, '2026-07-18T12:01:01.000Z');
@@ -94,7 +94,7 @@ describe('US143 — LatestMarketStateProjection', () => {
 
     const markState = projection.get('ws-1', String(m1.streamId));
     expect(markState?.freshnessAt).toBe('2026-07-18T12:00:30.000Z');
-    expect(markState?.latestMarkPrice?.price).toBe(50000);
+    expect(markState?.latestMarkPrice?.price).toBe('50000');
   });
 
   it('can be rebuilt from retained events and checkpoints', async () => {

@@ -12,7 +12,12 @@ export {
   type Position,
   type PositionAccountingTransition,
 } from './domain/position';
-export { POSITION_REPOSITORY, type PositionRepository } from './persistence/position.repository';
+export {
+  POSITION_REPOSITORY,
+  type PositionRepository,
+  type PositionFillApplication,
+  type RecordFillApplicationInput,
+} from './persistence/position.repository';
 export { PrismaPositionRepository } from './persistence/prisma-position.repository';
 export {
   POSITION_VALUATION_SCHEMA_VERSION,

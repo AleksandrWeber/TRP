@@ -13,14 +13,14 @@ export enum MarkPriceSourceKind {
 }
 
 /**
- * Provider-neutral mark-price draft (US136).
- * No Position / Portfolio / fill fields.
+ * Provider-neutral mark-price draft (US136 / TD-039).
+ * Canonical `price` is exact decimal text. No Position / Portfolio / fill fields.
  */
 export type MarkPriceDraft = Readonly<{
   workspaceId: string;
   sourceId: MarketDataSourceId | string;
   instrument: Instrument | string;
-  price: number;
+  price: string;
   markSource: MarkPriceSourceKind;
   exchangeOccurredAt: string;
   receivedAt: string;

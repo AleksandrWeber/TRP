@@ -201,6 +201,9 @@ describe('US175–US178 — durable accounting projections', () => {
     await prisma.accountingReconciliation.deleteMany({ where: { workspaceId: WS } });
     await prisma.paperPortfolioProjection.deleteMany({ where: { workspaceId: WS } });
     await prisma.positionValuation.deleteMany({ where: { workspaceId: WS } });
+    await prisma.positionFillApplication.deleteMany({
+      where: { position: { workspaceId: WS } },
+    });
     await prisma.paperPosition.deleteMany({ where: { workspaceId: WS } });
     await prisma.ledgerEntry.deleteMany({ where: { workspaceId: WS } });
     await prisma.ledgerTransaction.deleteMany({ where: { workspaceId: WS } });

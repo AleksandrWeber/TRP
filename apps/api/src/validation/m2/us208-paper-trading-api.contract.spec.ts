@@ -37,7 +37,6 @@ import type { PaperExecution } from '../../modules/paper-trading-engine/domain/p
 import type { PaperEventRecord } from '../../modules/paper-trading-engine/domain/paper-event';
 import type { PaperSession } from '../../modules/paper-trading-engine/domain/paper-session';
 import { PaperEventPublisher } from '../../modules/paper-trading-engine/paper-event-publisher';
-import { PaperExecutionCoordinator } from '../../modules/paper-trading-engine/paper-execution-coordinator';
 import { PaperSessionManager } from '../../modules/paper-trading-engine/paper-session-manager';
 import type { PaperTradingDomainEvent } from '../../modules/paper-trading-engine/paper-trading-events';
 import type { PaperTradingRepository } from '../../modules/paper-trading-engine/paper-trading.repository';
@@ -300,22 +299,7 @@ function buildService(): PaperTradingService {
   const paperEvents = new PaperEventPublisher(paperRepo);
   const sessions = new PaperSessionManager(paperRepo, paperEvents, portfolios);
   sessions.setClock({ now: () => new Date(T0), iso: () => T0 });
-  const coordinator = new PaperExecutionCoordinator(
-    paperRepo,
-    sessions,
-    paperEvents,
-    orders,
-    portfolios,
-  );
-  return new PaperTradingService(
-    sessions,
-    coordinator,
-    paperEvents,
-    paperRepo,
-    orders,
-    positions,
-    portfolios,
-  );
+  return new PaperTradingService(sessions, paperEvents, paperRepo, orders, positions, portfolios);
 }
 
 describe('US208 Paper Trading API contract', () => {
@@ -341,36 +325,18 @@ describe('US208 Paper Trading API contract', () => {
     );
   });
 
-  it('returns trade result with order and execution shapes', async () => {
+  it('exposes read-only paper session data after TD-034 disables direct trade execution', async () => {
     const service = buildService();
-    const session = await service.createSession(WS, OWNER, { name: 'Trade Contract' });
+    const session = await service.createSession(WS, OWNER, { name: 'Read Contract' });
     await service.startSession(WS, session.id);
-    const result = await service.executeTrade(WS, OWNER, session.id, {
-      symbol: 'ETH-USD',
-      side: 'BUY',
-      type: 'LIMIT',
-      quantity: '2',
-      requestedPrice: '50',
-    });
 
-    expect(result.order).toEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        symbol: 'ETH-USD',
-        side: 'BUY',
-        status: 'FILLED',
-        executedPrice: '50',
-      }),
-    );
-    expect(result.execution).toEqual(
-      expect.objectContaining({
-        id: expect.any(String),
-        sessionId: session.id,
-        orderId: result.order.id,
-        executionPrice: '50',
-        slippage: '0',
-        commission: '0',
-      }),
+    expect(await service.listOrders(WS, OWNER, session.id)).toEqual([]);
+    expect(await service.listExecutions(WS, session.id)).toEqual([]);
+    expect(await service.listEvents(WS, session.id)).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ type: 'PaperSessionCreated' }),
+        expect.objectContaining({ type: 'PaperSessionStarted' }),
+      ]),
     );
 
     const stats = await service.getStatistics(WS, OWNER, session.id);

@@ -88,19 +88,20 @@ describe('Live Market Data domain contracts (US126)', () => {
       ...BASE,
       eventId: 'evt-mark-1',
       streamId: 'ws-1:binance_spot:BTCUSDT:mark_price',
-      price: 105.25,
+      price: '105.25',
     });
 
     expect(event.eventType).toBe(MarketEventType.MARK_PRICE);
     expect(event.channel).toBe(MarketStreamChannel.MARK_PRICE);
-    expect(event.price).toBe(105.25);
+    expect(event.price).toBe('105.25');
+    expect(typeof event.price).toBe('string');
     expect(isMarkPriceEvent(event)).toBe(true);
     expect(isClosedCandleEvent(event)).toBe(false);
     expect('timeframe' in event).toBe(false);
     expect('open' in event).toBe(false);
 
     expect(() => {
-      (event as { price: number }).price = 1;
+      (event as { price: string }).price = '1';
     }).toThrow();
   });
 
@@ -184,9 +185,17 @@ describe('Live Market Data domain contracts (US126)', () => {
         ...BASE,
         eventId: 'evt-bad-price',
         streamId: 'ws-1:binance_spot:BTCUSDT:mark_price',
-        price: 0,
+        price: '0',
       }),
     ).toThrow(/price must be greater than zero/);
+    expect(() =>
+      createMarkPriceEvent({
+        ...BASE,
+        eventId: 'evt-bad-number',
+        streamId: 'ws-1:binance_spot:BTCUSDT:mark_price',
+        price: 105.25 as unknown as string,
+      }),
+    ).toThrow(/canonical decimal string/);
 
     expect(() =>
       createClosedCandleEvent({
@@ -221,7 +230,7 @@ describe('Live Market Data domain contracts (US126)', () => {
       ...BASE,
       eventId: 'evt-mark-2',
       streamId: 'ws-1:binance_spot:BTCUSDT:mark_price',
-      price: 1.5,
+      price: '1.5',
     });
 
     const forbidden = [

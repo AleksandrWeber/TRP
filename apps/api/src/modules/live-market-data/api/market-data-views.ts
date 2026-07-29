@@ -47,7 +47,8 @@ export type MarketClosedCandleView = Readonly<{
 export type MarketMarkPriceView = Readonly<{
   eventId: string;
   instrument: string;
-  price: number;
+  /** Canonical exact decimal text (TD-039). */
+  price: string;
   exchangeOccurredAt: string;
   sequence: number;
 }>;

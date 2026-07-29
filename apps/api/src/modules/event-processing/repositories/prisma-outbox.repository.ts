@@ -1,4 +1,4 @@
-import type { OutboxDeliveryStatus, Prisma } from '@prisma/client';
+import { Prisma, type OutboxDeliveryStatus } from '@prisma/client';
 import { toDurableEventId } from '../domain/durable-event-id';
 import type { DurableEventEnvelope } from '../domain/durable-event-envelope';
 import type { OutboxDeliveryPatch, OutboxRecord } from '../domain/outbox-record';
@@ -103,6 +103,39 @@ export class PrismaOutboxRepository implements OutboxRepository {
       ],
     });
     return rows.map(toRecord);
+  }
+
+  async recordConsumerDelivery(
+    eventId: string,
+    consumerId: string,
+    deliveredAt: string,
+  ): Promise<void> {
+    if (consumerId.trim() === '') {
+      throw new Error('consumer id must be a non-empty string');
+    }
+    try {
+      await this.prisma.outboxConsumerDelivery.create({
+        data: {
+          eventId: String(eventId),
+          consumerId,
+          deliveredAt: new Date(deliveredAt),
+        },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+        return;
+      }
+      throw error;
+    }
+  }
+
+  async listDeliveredConsumerIds(eventId: string): Promise<string[]> {
+    const rows = await this.prisma.outboxConsumerDelivery.findMany({
+      where: { eventId: String(eventId) },
+      orderBy: { consumerId: 'asc' },
+      select: { consumerId: true },
+    });
+    return rows.map((row) => row.consumerId);
   }
 }
 

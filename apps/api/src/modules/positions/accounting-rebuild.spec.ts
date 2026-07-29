@@ -62,4 +62,60 @@ describe('US177 — deterministic accounting rebuild', () => {
     });
     expect(facts).toEqual([sell, buy]);
   });
+
+  it('TD-040 prefers persisted application order over Fill timestamps', () => {
+    const earlier = fill({
+      id: 'fill-earlier',
+      orderId: 'order-earlier',
+      adapterOrderId: 'adapter-order-earlier',
+      adapterFillId: 'adapter-fill-earlier',
+      price: '120',
+      quantity: '1',
+      grossNotional: '120',
+      fee: '0.12',
+      occurredAt: '2026-07-18T12:00:00.000Z',
+      recordedAt: '2026-07-18T12:00:01.000Z',
+    });
+    const later = fill({
+      id: 'fill-later',
+      orderId: 'order-later',
+      adapterOrderId: 'adapter-order-later',
+      adapterFillId: 'adapter-fill-later',
+      price: '100',
+      quantity: '1',
+      grossNotional: '100',
+      fee: '0.1',
+      occurredAt: '2026-07-18T12:02:00.000Z',
+      recordedAt: '2026-07-18T12:02:01.000Z',
+    });
+    const applications = Object.freeze([
+      {
+        positionId: 'pos-1',
+        fillId: later.id,
+        applicationSequence: 1,
+        appliedAt: '2026-07-18T12:03:00.000Z',
+      },
+      {
+        positionId: 'pos-1',
+        fillId: earlier.id,
+        applicationSequence: 2,
+        appliedAt: '2026-07-18T12:04:00.000Z',
+      },
+    ]);
+
+    const rebuilt = rebuildPositions(
+      [earlier, later],
+      M2_PAPER_FILL_CONFIGURATION,
+      '2026-07-18T12:05:00.000Z',
+      applications,
+    )[0]!;
+
+    expect(rebuilt).toMatchObject({
+      quantity: '2',
+      costBasis: '220',
+      averageEntryPrice: '110',
+      lastAppliedFillId: earlier.id,
+      lastAppliedFillSequence: 2,
+    });
+  });
 });

@@ -173,6 +173,9 @@ describe('US182 — failure injection and reconciliation recovery', () => {
     await prisma.outboxEvent.deleteMany({ where: { workspaceId: WS } });
     await prisma.accountingReconciliation.deleteMany({ where: { workspaceId: WS } });
     await prisma.positionValuation.deleteMany({ where: { workspaceId: WS } });
+    await prisma.positionFillApplication.deleteMany({
+      where: { position: { workspaceId: WS } },
+    });
     await prisma.paperPosition.deleteMany({ where: { workspaceId: WS } });
   }
 });

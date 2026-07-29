@@ -43,8 +43,8 @@ function requiredText(value: unknown, label: string): string {
 }
 
 function decimalText(value: unknown): string {
-  if (typeof value !== 'string' && typeof value !== 'number') {
-    throw new Error('mark price must be a canonical numeric value');
+  if (typeof value !== 'string') {
+    throw new Error('mark price must be a canonical decimal string');
   }
-  return FinancialDecimal.from(String(value)).assertPositive('mark price').toString();
+  return FinancialDecimal.from(value).assertPositive('mark price').toString();
 }

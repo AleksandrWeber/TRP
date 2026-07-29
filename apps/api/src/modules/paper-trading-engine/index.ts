@@ -6,11 +6,6 @@ export {
   type CreateSessionRequest,
   type PaperTradingClock,
 } from './paper-session-manager';
-export {
-  PaperExecutionCoordinator,
-  type PaperTradeRequest,
-  type PaperTradeResult,
-} from './paper-execution-coordinator';
 export { PaperEventPublisher } from './paper-event-publisher';
 export { PAPER_TRADING_REPOSITORY, type PaperTradingRepository } from './paper-trading.repository';
 export { PrismaPaperTradingRepository } from './prisma-paper-trading.repository';

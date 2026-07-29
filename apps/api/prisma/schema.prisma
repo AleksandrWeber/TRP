@@ -388,11 +388,26 @@ model OutboxEvent {
   publishedAt      DateTime?            @map("published_at")
   createdAt        DateTime             @default(now()) @map("created_at")
   updatedAt        DateTime             @updatedAt @map("updated_at")
+  consumerDeliveries OutboxConsumerDelivery[]
 
   @@unique([aggregateType, aggregateId, aggregateVersion])
   @@index([workspaceId, status, createdAt])
   @@index([status, nextAttemptAt, createdAt])
   @@map("outbox_events")
+}
+
+/// Durable per-consumer Outbox delivery acknowledgement (TD-042 / ADR-013).
+/// Independent of the single Outbox publication status so fan-out can resume
+/// after restart without re-invoking already-acknowledged consumers.
+model OutboxConsumerDelivery {
+  eventId     String   @map("event_id")
+  consumerId  String   @map("consumer_id")
+  deliveredAt DateTime @map("delivered_at")
+  event       OutboxEvent @relation(fields: [eventId], references: [eventId], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([eventId, consumerId])
+  @@index([consumerId, deliveredAt])
+  @@map("outbox_consumer_deliveries")
 }
 
 /// RC-16 ADR-013 consumer Inbox (US129). Unique (consumerId, eventId).
@@ -665,6 +680,7 @@ model PaperFill {
   configurationHash    String   @map("configuration_hash")
   occurredAt           DateTime @map("occurred_at")
   recordedAt           DateTime @map("recorded_at")
+  positionApplication  PositionFillApplication?
 
   @@unique([workspaceId, orderId, sequence])
   @@unique([workspaceId, adapterFillId])
@@ -689,10 +705,26 @@ model PaperPosition {
   lastAppliedFillSequence Int      @map("last_applied_fill_sequence")
   occurredAt              DateTime @map("occurred_at")
   recordedAt              DateTime @map("recorded_at")
+  fillApplications        PositionFillApplication[]
 
   @@unique([workspaceId, paperAccountId, instrument])
   @@index([workspaceId, paperAccountId])
   @@map("paper_positions")
+}
+
+/// Authoritative per-Position Fill application order (TD-040 / ADR-015).
+/// Survives restart/replay and does not depend on Outbox delivery timing.
+model PositionFillApplication {
+  positionId          String   @map("position_id")
+  fillId              String   @unique @map("fill_id")
+  applicationSequence Int      @map("application_sequence")
+  appliedAt           DateTime @map("applied_at")
+  position            PaperPosition @relation(fields: [positionId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  fill                PaperFill     @relation(fields: [fillId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@id([positionId, applicationSequence])
+  @@index([positionId, fillId])
+  @@map("position_fill_applications")
 }
 
 /// Append-only balanced financial transaction; Ledger is the financial source of truth (US173).

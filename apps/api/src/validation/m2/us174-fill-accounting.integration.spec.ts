@@ -88,6 +88,9 @@ describe('US174 — atomic idempotent Fill accounting', () => {
       where: { consumerId: FILL_ACCOUNTING_CONSUMER_ID, workspaceId: WS },
     });
     await prisma.outboxEvent.deleteMany({ where: { workspaceId: WS } });
+    await prisma.positionFillApplication.deleteMany({
+      where: { position: { workspaceId: WS } },
+    });
     await prisma.paperPosition.deleteMany({ where: { workspaceId: WS } });
     await prisma.ledgerEntry.deleteMany({ where: { workspaceId: WS } });
     await prisma.ledgerTransaction.deleteMany({ where: { workspaceId: WS } });
@@ -107,6 +110,34 @@ describe('US174 — atomic idempotent Fill accounting', () => {
       amount,
       actorId: 'orders-us174',
       recordedAt: '2026-07-18T19:20:01.000Z',
+    });
+  }
+
+  async function persistFill(event: DurableEventEnvelope): Promise<void> {
+    const payload = event.payload;
+    await prisma.paperFill.create({
+      data: {
+        id: String(payload.fillId),
+        workspaceId: WS,
+        orderId: String(payload.orderId),
+        paperAccountId: accountId,
+        tradingSessionId: String(payload.tradingSessionId),
+        adapterOrderId: String(payload.adapterOrderId),
+        adapterFillId: String(payload.adapterFillId),
+        sequence: Number(payload.sequence),
+        instrument: String(payload.instrument),
+        side: String(payload.side),
+        price: String(payload.price),
+        quantity: String(payload.quantity),
+        grossNotional: String(payload.grossNotional),
+        fee: String(payload.fee),
+        executionContextHash: String(payload.executionContextHash),
+        configurationId: String(payload.configurationId),
+        configurationVersion: Number(payload.configurationVersion),
+        configurationHash: String(payload.configurationHash),
+        occurredAt: new Date(event.occurredAt),
+        recordedAt: new Date(event.recordedAt),
+      },
     });
   }
 
@@ -157,6 +188,7 @@ describe('US174 — atomic idempotent Fill accounting', () => {
   it('commits Inbox, Position, balanced Ledger, Outbox, and checkpoint once', async () => {
     const event = fillEvent('atomic');
     await reserve('order-atomic');
+    await persistFill(event);
 
     const first = await consumer.process(event, '2026-07-18T19:20:02.200Z');
     const duplicate = await consumer.process(event, '2026-07-18T19:20:02.300Z');
@@ -178,6 +210,14 @@ describe('US174 — atomic idempotent Fill accounting', () => {
       position: { version: 1, quantity: '2' },
       ledgerTransaction: null,
     });
+    expect(await positions.listFillApplications(WS, accountId)).toEqual([
+      {
+        positionId: first.position.id,
+        fillId: 'fill-us174-atomic',
+        applicationSequence: 1,
+        appliedAt: '2026-07-18T19:20:02.200Z',
+      },
+    ]);
     expect(
       await prisma.inboxRecord.count({
         where: {
@@ -219,6 +259,7 @@ describe('US174 — atomic idempotent Fill accounting', () => {
 
   it('rolls back every accounting effect on failure and remains retryable', async () => {
     const event = fillEvent('retry');
+    await persistFill(event);
     const baselineOutbox = await prisma.outboxEvent.count({ where: { workspaceId: WS } });
 
     await expect(consumer.process(event, '2026-07-18T19:20:02.200Z')).rejects.toThrow(
@@ -226,6 +267,9 @@ describe('US174 — atomic idempotent Fill accounting', () => {
     );
 
     expect(await prisma.paperPosition.count({ where: { workspaceId: WS } })).toBe(0);
+    expect(
+      await prisma.positionFillApplication.count({ where: { fillId: 'fill-us174-retry' } }),
+    ).toBe(0);
     expect(
       await prisma.inboxRecord.count({
         where: {
@@ -255,6 +299,7 @@ describe('US174 — atomic idempotent Fill accounting', () => {
   it('applies sell proceeds, cost release, fees, and realized PnL as one balanced transaction', async () => {
     const buy = fillEvent('buy-before-sell');
     await reserve('order-buy-before-sell');
+    await persistFill(buy);
     await consumer.process(buy, '2026-07-18T19:20:02.200Z');
 
     const sell = fillEvent('sell', {
@@ -264,6 +309,7 @@ describe('US174 — atomic idempotent Fill accounting', () => {
       grossNotional: '120',
       fee: '0.12',
     });
+    await persistFill(sell);
     const result = await consumer.process(sell, '2026-07-18T19:20:03.000Z');
 
     expect(result).toMatchObject({
@@ -277,6 +323,20 @@ describe('US174 — atomic idempotent Fill accounting', () => {
         lastAppliedFillSequence: 2,
       },
     });
+    expect(await positions.listFillApplications(WS, accountId)).toEqual([
+      {
+        positionId: result.position.id,
+        fillId: 'fill-us174-buy-before-sell',
+        applicationSequence: 1,
+        appliedAt: '2026-07-18T19:20:02.200Z',
+      },
+      {
+        positionId: result.position.id,
+        fillId: 'fill-us174-sell',
+        applicationSequence: 2,
+        appliedAt: '2026-07-18T19:20:03.000Z',
+      },
+    ]);
     expect(result.ledgerTransaction?.entries).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ account: 'available_cash', amount: '119.88' }),

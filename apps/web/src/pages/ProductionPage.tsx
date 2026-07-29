@@ -4,7 +4,6 @@ import {
   type Deployment,
   type Execution,
   type Experiment,
-  type TickResult,
   statusColor,
   verdictColor,
 } from '../shared/api';
@@ -15,8 +14,6 @@ export function ProductionPage() {
   const [experiments, setExperiments] = useState<Experiment[]>([]);
   const [deployments, setDeployments] = useState<Deployment[]>([]);
   const [executions, setExecutions] = useState<Execution[]>([]);
-  const [lastTick, setLastTick] = useState<TickResult | null>(null);
-  const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
@@ -40,52 +37,13 @@ export function ProductionPage() {
     (ex) => !ex.deployment && (ex.verdict === 'pass' || ex.verdict === 'needs_review'),
   );
 
-  async function handleDeploy(experiment: Experiment, approve = false) {
-    setLoading('deploy');
-    setError(null);
-    try {
-      await api.deploy(experiment.id, approve);
-      await refresh();
-    } catch (err) {
-      setError(toUserFacingError(err, 'Deploy failed'));
-    } finally {
-      setLoading(null);
-    }
-  }
-
-  async function handleTick(deploymentId: string) {
-    setLoading('tick');
-    setError(null);
-    try {
-      const result = await api.tick(deploymentId);
-      setLastTick(result);
-      await refresh();
-    } catch (err) {
-      setError(toUserFacingError(err, 'Tick failed'));
-    } finally {
-      setLoading(null);
-    }
-  }
-
-  async function handleStop(deploymentId: string) {
-    setLoading('stop');
-    setError(null);
-    try {
-      await api.stopDeployment(deploymentId);
-      await refresh();
-    } catch (err) {
-      setError(toUserFacingError(err, 'Stop failed'));
-    } finally {
-      setLoading(null);
-    }
-  }
-
   return (
     <section className="space-y-8">
       <div>
         <h2 className="text-2xl font-semibold">Stage 1 — Production</h2>
         <p className="mt-2 text-slate-400">
-          Signal → Risk check → Paper Exchange Adapter → Execution record
+          Legacy deployment data is read-only while paper execution remains consolidated in the
+          canonical M2 pipeline.
         </p>
       </div>
 
@@ -124,27 +82,9 @@ export function ProductionPage() {
                     {ex.verdict.replace('_', ' ')}
                   </span>
                 </div>
-                <div className="flex gap-2">
-                  {ex.verdict === 'needs_review' ? (
-                    <button
-                      type="button"
-                      onClick={() => handleDeploy(ex, true)}
-                      disabled={loading !== null}
-                      className="rounded-lg border border-amber-500/40 px-3 py-1.5 text-sm text-amber-200 hover:bg-amber-500/10 disabled:opacity-50"
-                    >
-                      Approve & deploy
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => handleDeploy(ex, false)}
-                      disabled={loading !== null}
-                      className="rounded-lg bg-white px-3 py-1.5 text-sm font-medium text-black disabled:opacity-50"
-                    >
-                      Deploy (paper)
-                    </button>
-                  )}
-                </div>
+                <p className="text-sm text-slate-500">
+                  Deployment controls were retired with TD-034 pending Strategy Runtime.
+                </p>
               </li>
             ))}
           </ul>
@@ -185,61 +125,15 @@ export function ProductionPage() {
                     {dep.status}
                   </span>
                 </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleTick(dep.id)}
-                    disabled={loading !== null || dep.status !== 'active'}
-                    className="rounded-lg border border-white/20 px-3 py-1.5 text-sm hover:bg-white/5 disabled:opacity-50"
-                  >
-                    {loading === 'tick' ? 'Evaluating…' : 'Evaluate signal (tick)'}
-                  </button>
-                  {dep.status === 'active' && (
-                    <button
-                      type="button"
-                      onClick={() => handleStop(dep.id)}
-                      disabled={loading !== null}
-                      className="rounded-lg border border-red-500/30 px-3 py-1.5 text-sm text-red-200 hover:bg-red-500/10 disabled:opacity-50"
-                    >
-                      Stop
-                    </button>
-                  )}
-                </div>
+                <p className="mt-3 text-sm text-slate-500">
+                  Execution controls were retired with TD-034; legacy deployments remain visible for
+                  audit only.
+                </p>
               </li>
             ))}
           </ul>
         )}
       </div>
-
-      {lastTick && (
-        <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-          <h3 className="text-sm font-medium uppercase tracking-wide text-slate-400">Last tick</h3>
-          <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-            <div>
-              <dt className="text-slate-500">Signal</dt>
-              <dd className="font-medium uppercase">{lastTick.signal.type}</dd>
-            </div>
-            <div>
-              <dt className="text-slate-500">Price</dt>
-              <dd className="font-medium">{lastTick.signal.price.toFixed(2)}</dd>
-            </div>
-            <div>
-              <dt className="text-slate-500">Risk</dt>
-              <dd className="font-medium">
-                {lastTick.risk.approved ? 'approved' : lastTick.risk.reason}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-slate-500">Execution</dt>
-              <dd className="font-medium">
-                {lastTick.execution
-                  ? `${lastTick.execution.side} ${lastTick.execution.status}`
-                  : 'none'}
-              </dd>
-            </div>
-          </dl>
-        </div>
-      )}
 
       <div className="rounded-xl border border-white/10 bg-white/5 p-6">
         <h3 className="text-sm font-medium uppercase tracking-wide text-slate-400">

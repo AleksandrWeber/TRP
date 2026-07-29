@@ -18,8 +18,8 @@ export type DispatchOnceResult = Readonly<{
 }>;
 
 /**
- * In-process Outbox polling dispatcher (US130 / ADR-013).
- * At-least-once delivery. No global ordering or exactly-once claims.
+ * In-process Outbox polling dispatcher (US130 / ADR-013 / TD-042).
+ * At-least-once delivery with durable per-consumer acknowledgement.
  * Shutdown stops further dispatch and leaves unpublished events recoverable.
  */
 export class OutboxDispatcher {
@@ -131,8 +131,17 @@ export class OutboxDispatcher {
     });
 
     try {
+      const delivered = new Set(
+        await this.outbox.listDeliveredConsumerIds(record.envelope.eventId),
+      );
       for (const consumer of this.consumers.values()) {
+        if (delivered.has(consumer.consumerId)) continue;
         await consumer.handle(record.envelope);
+        await this.outbox.recordConsumerDelivery(
+          record.envelope.eventId,
+          consumer.consumerId,
+          nowIso,
+        );
       }
 
       await this.outbox.updateDelivery(record.envelope.eventId, {

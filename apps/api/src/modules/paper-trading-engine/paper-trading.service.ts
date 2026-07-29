@@ -8,11 +8,6 @@ import { PositionService } from '../position-engine';
 import type { PaperExecution } from './domain/paper-execution';
 import type { PaperEventRecord } from './domain/paper-event';
 import type { PaperSession } from './domain/paper-session';
-import {
-  PaperExecutionCoordinator,
-  type PaperTradeRequest,
-  type PaperTradeResult,
-} from './paper-execution-coordinator';
 import { PaperEventPublisher } from './paper-event-publisher';
 import {
   PaperSessionManager,
@@ -39,13 +34,14 @@ export type PaperSessionView = Readonly<{
 
 /**
  * Paper Trading Engine application service (US208).
- * Orchestrates session lifecycle and simulated trading via existing engines.
+ * Retained for session/query access only after TD-034 retired the direct
+ * paper execution bypass. Order submission/execution must now flow through
+ * the canonical M2 trading pipeline.
  */
 @Injectable()
 export class PaperTradingService {
   constructor(
     @Inject(PaperSessionManager) private readonly sessions: PaperSessionManager,
-    @Inject(PaperExecutionCoordinator) private readonly coordinator: PaperExecutionCoordinator,
     @Inject(PaperEventPublisher) private readonly events: PaperEventPublisher,
     @Inject(PAPER_TRADING_REPOSITORY) private readonly repository: PaperTradingRepository,
     @Inject(OrderService) private readonly orders: OrderService,
@@ -151,15 +147,6 @@ export class PaperTradingService {
       executions,
       equityCurve: equityCurve.length > 0 ? equityCurve : undefined,
     });
-  }
-
-  async executeTrade(
-    workspaceId: string,
-    ownerId: string,
-    sessionId: string,
-    request: PaperTradeRequest,
-  ): Promise<PaperTradeResult> {
-    return this.coordinator.executeTrade(workspaceId, ownerId, sessionId, request);
   }
 
   getPublishedEvents() {

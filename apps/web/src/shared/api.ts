@@ -79,13 +79,6 @@ export type Execution = {
   deployment?: { symbol: string; strategyId: string };
 };
 
-export type TickResult = {
-  signal: { id: string; type: string; price: number; timestamp: string; actedOn: boolean };
-  execution: Execution | null;
-  risk: { approved: boolean; reason?: string };
-  position: { side: string; quantity: number; entryPrice: number | null };
-};
-
 export type Workflow = {
   id: string;
   type: string;
@@ -690,17 +683,8 @@ export const api = {
       body: JSON.stringify({ task, context }),
     }),
   listEvents: () => request<Array<{ id: string; type: string; createdAt: string }>>('/events'),
-  deploy: (experimentId: string, approve = false) =>
-    request<Deployment>('/production/deployments', {
-      method: 'POST',
-      body: JSON.stringify({ experimentId, approve }),
-    }),
   listDeployments: () => request<Deployment[]>('/production/deployments'),
   getDeployment: (id: string) => request<Deployment>(`/production/deployments/${id}`),
-  tick: (deploymentId: string) =>
-    request<TickResult>(`/production/deployments/${deploymentId}/tick`, { method: 'POST' }),
-  stopDeployment: (id: string) =>
-    request<Deployment>(`/production/deployments/${id}/stop`, { method: 'POST' }),
   listExecutions: (deploymentId?: string) =>
     request<Execution[]>(
       `/production/executions${deploymentId ? `?deploymentId=${deploymentId}` : ''}`,

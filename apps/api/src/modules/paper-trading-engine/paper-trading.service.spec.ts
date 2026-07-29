@@ -34,11 +34,9 @@ import type { PaperExecution } from './domain/paper-execution';
 import type { PaperEventRecord } from './domain/paper-event';
 import type { PaperSession } from './domain/paper-session';
 import { PaperEventPublisher } from './paper-event-publisher';
-import { PaperExecutionCoordinator } from './paper-execution-coordinator';
 import { PaperSessionManager } from './paper-session-manager';
 import { generatePaperSessionStatistics } from './paper-session-statistics';
 import type { PaperTradingDomainEvent } from './paper-trading-events';
-import { PaperOrderRejectedError, PaperSessionInvalidStateError } from './paper-trading-errors';
 import type { PaperTradingRepository } from './paper-trading.repository';
 import { PaperTradingService } from './paper-trading.service';
 
@@ -323,16 +321,8 @@ function buildHarness() {
   const paperEvents = new PaperEventPublisher(paperRepo);
   const sessionManager = new PaperSessionManager(paperRepo, paperEvents, portfolioService);
   sessionManager.setClock({ now: () => new Date(T0), iso: () => T0 });
-  const coordinator = new PaperExecutionCoordinator(
-    paperRepo,
-    sessionManager,
-    paperEvents,
-    orderService,
-    portfolioService,
-  );
   const service = new PaperTradingService(
     sessionManager,
-    coordinator,
     paperEvents,
     paperRepo,
     orderService,
@@ -354,11 +344,9 @@ function buildHarness() {
 describe('US208 PaperTradingService', () => {
   let service: PaperTradingService;
   let paperEvents: PaperEventPublisher;
-  let portfolioService: PortfolioService;
-  let riskService: RiskService;
 
   beforeEach(() => {
-    ({ service, paperEvents, portfolioService, riskService } = buildHarness());
+    ({ service, paperEvents } = buildHarness());
     paperEvents.clearPublishedEvents();
   });
 
@@ -409,82 +397,6 @@ describe('US208 PaperTradingService', () => {
       'PaperSessionStopped',
       'PaperSessionCompleted',
     ]);
-  });
-
-  it('executes a trade through Order → Risk → Position → Portfolio and records execution', async () => {
-    const session = await service.createSession(WS, OWNER, {
-      name: 'Trade',
-      initialBalance: '100000',
-    });
-    await service.startSession(WS, session.id);
-
-    const result = await service.executeTrade(WS, OWNER, session.id, {
-      symbol: 'BTC-USD',
-      side: 'BUY',
-      type: 'LIMIT',
-      quantity: '1',
-      requestedPrice: '100',
-    });
-
-    expect(result.order.status).toBe('FILLED');
-    expect(result.execution).not.toBeNull();
-    expect(result.execution!.executionPrice).toBe('100');
-
-    const positions = await service.listPositions(WS, OWNER, session.id);
-    expect(positions).toHaveLength(1);
-    expect(positions[0]!.side).toBe('LONG');
-
-    const orders = await service.listOrders(WS, OWNER, session.id);
-    expect(orders).toHaveLength(1);
-
-    const riskDecisions = await riskService.listDecisions(`paper-session:${session.id}`, OWNER);
-    expect(riskDecisions.length).toBeGreaterThanOrEqual(1);
-    expect(riskDecisions[0]!.decision).toBe('APPROVED');
-
-    expect(paperEvents.getPublishedEvents().map((e) => e.eventType)).toContain(
-      'PaperTradeExecuted',
-    );
-
-    const stats = await service.getStatistics(WS, OWNER, session.id);
-    expect(stats.currentEquity).toBeTruthy();
-    expect(stats.tradeCount).toBe(0); // position still open
-  });
-
-  it('rejects trades when session is not RUNNING', async () => {
-    const session = await service.createSession(WS, OWNER, { name: 'Idle' });
-    await expect(
-      service.executeTrade(WS, OWNER, session.id, {
-        symbol: 'BTC-USD',
-        side: 'BUY',
-        type: 'LIMIT',
-        quantity: '1',
-        requestedPrice: '100',
-      }),
-    ).rejects.toBeInstanceOf(PaperSessionInvalidStateError);
-  });
-
-  it('does not bypass risk — rejected orders throw PaperOrderRejectedError', async () => {
-    const session = await service.createSession(WS, OWNER, {
-      name: 'RiskGate',
-      initialBalance: '100000',
-    });
-    await service.startSession(WS, session.id);
-    await portfolioService.applyFinancials(`paper-session:${session.id}`, {
-      cash: '10',
-      realizedPnL: '0',
-      unrealizedPnL: '0',
-      usedMargin: '0',
-    });
-
-    await expect(
-      service.executeTrade(WS, OWNER, session.id, {
-        symbol: 'BTC-USD',
-        side: 'BUY',
-        type: 'LIMIT',
-        quantity: '1',
-        requestedPrice: '100',
-      }),
-    ).rejects.toBeInstanceOf(PaperOrderRejectedError);
   });
 
   it('archives via DELETE and hard-deletes when already archived', async () => {

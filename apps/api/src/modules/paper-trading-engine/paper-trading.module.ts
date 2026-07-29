@@ -6,7 +6,6 @@ import { PositionEngineModule } from '../position-engine';
 import { RiskEngineModule } from '../risk-engine';
 import { WorkspaceModule } from '../workspace';
 import { PaperEventPublisher } from './paper-event-publisher';
-import { PaperExecutionCoordinator } from './paper-execution-coordinator';
 import { PaperSessionManager } from './paper-session-manager';
 import { PaperTradingController } from './paper-trading.controller';
 import { PAPER_TRADING_REPOSITORY } from './paper-trading.repository';
@@ -36,14 +35,8 @@ import { PrismaPaperTradingRepository } from './prisma-paper-trading.repository'
     },
     PaperEventPublisher,
     PaperSessionManager,
-    PaperExecutionCoordinator,
     PaperTradingService,
   ],
-  exports: [
-    PaperTradingService,
-    PaperSessionManager,
-    PaperExecutionCoordinator,
-    PAPER_TRADING_REPOSITORY,
-  ],
+  exports: [PaperTradingService, PaperSessionManager, PAPER_TRADING_REPOSITORY],
 })
 export class PaperTradingEngineModule {}

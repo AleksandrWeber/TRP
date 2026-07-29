@@ -68,7 +68,7 @@ export function buildMarkPriceSemanticIdentity(
       event.instrument,
       event.channel,
       event.exchangeOccurredAt,
-      String(event.price),
+      event.price,
     ].join('|'),
   );
 }

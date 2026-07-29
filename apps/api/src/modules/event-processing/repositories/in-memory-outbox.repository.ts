@@ -10,6 +10,7 @@ import type { OutboxRepository, UnpublishedOutboxQuery } from './outbox.reposito
  */
 export class InMemoryOutboxRepository implements OutboxRepository {
   private readonly byEventId = new Map<string, OutboxRecord>();
+  private readonly deliveries = new Map<string, Map<string, string>>();
 
   async insert(envelope: DurableEventEnvelope, createdAt: string): Promise<OutboxRecord> {
     if (this.byEventId.has(envelope.eventId)) {
@@ -85,14 +86,41 @@ export class InMemoryOutboxRepository implements OutboxRepository {
       .map(cloneRecord);
   }
 
+  async recordConsumerDelivery(
+    eventId: DurableEventId | string,
+    consumerId: string,
+    deliveredAt: string,
+  ): Promise<void> {
+    if (consumerId.trim() === '') {
+      throw new Error('consumer id must be a non-empty string');
+    }
+    if (!this.byEventId.has(String(eventId))) {
+      throw new Error(`outbox event not found: ${eventId}`);
+    }
+    const key = String(eventId);
+    const byConsumer = this.deliveries.get(key) ?? new Map<string, string>();
+    if (!byConsumer.has(consumerId)) {
+      byConsumer.set(consumerId, deliveredAt);
+      this.deliveries.set(key, byConsumer);
+    }
+  }
+
+  async listDeliveredConsumerIds(eventId: DurableEventId | string): Promise<string[]> {
+    const byConsumer = this.deliveries.get(String(eventId));
+    if (!byConsumer) return [];
+    return [...byConsumer.keys()].sort((a, b) => a.localeCompare(b));
+  }
+
   /** Test / rollback helper — removes a row if present. */
   async remove(eventId: DurableEventId | string): Promise<boolean> {
+    this.deliveries.delete(String(eventId));
     return this.byEventId.delete(String(eventId));
   }
 
   /** Test helper — clear all rows. */
   clear(): void {
     this.byEventId.clear();
+    this.deliveries.clear();
   }
 }
 

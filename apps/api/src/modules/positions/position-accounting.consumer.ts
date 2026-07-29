@@ -97,6 +97,15 @@ export class PositionAccountingConsumer {
             current?.version ?? 0,
             transaction,
           );
+          await this.positions.recordFillApplication(
+            {
+              positionId: position.id,
+              fillId: fill.id,
+              applicationSequence: position.lastAppliedFillSequence,
+            },
+            processedAt,
+            transaction,
+          );
           const ledgerTransaction = await this.ledger.recordFill(transaction, {
             fill,
             currency: account.currency,

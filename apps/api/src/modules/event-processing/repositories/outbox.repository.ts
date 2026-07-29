@@ -26,4 +26,17 @@ export interface OutboxRepository {
     patch: OutboxDeliveryPatch,
   ): Promise<OutboxRecord>;
   listByStatus(status: OutboxStatus): Promise<OutboxRecord[]>;
+
+  /**
+   * Persist durable per-consumer acknowledgement (TD-042).
+   * Idempotent on (eventId, consumerId).
+   */
+  recordConsumerDelivery(
+    eventId: DurableEventId | string,
+    consumerId: string,
+    deliveredAt: string,
+  ): Promise<void>;
+
+  /** Sorted consumer ids that have durable delivery acknowledgement for the event. */
+  listDeliveredConsumerIds(eventId: DurableEventId | string): Promise<string[]>;
 }
