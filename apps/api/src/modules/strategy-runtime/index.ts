@@ -50,6 +50,7 @@ export {
 export {
   RuntimeWorkerState,
   acceptsTicks,
+  acceptsEvaluation,
   createLifecycleSnapshot,
   type RuntimeLifecycleResult,
   type RuntimeLifecycleSnapshot,

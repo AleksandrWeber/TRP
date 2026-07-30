@@ -11,6 +11,78 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ### Added
 
+- RC-17 Release Closure — Runtime Recovery **BASELINED**
+  (`docs/project/`): retrospective, release history, project status, roadmap,
+  architecture snapshot, and TD-036 residual ownership synchronized. E17
+  US240–US249 + US244A are the reference implementation; production
+  restart-safety remains subject to RC-18 mandatory residuals. See
+  `docs/project/rc-17-retrospective.md`.
+- RC-17 E17 US249 — Recovery Completion & Session Exit
+  (`trading-session/`): after a terminal Stage 3 outcome (SignalIntent
+  generated, non-actionable evaluation, or controlled termination), verify
+  US240–US246 pipeline consistency, exit Session from `RECOVERING`, release
+  recovery lease ownership, and emit `TradingSessionRecoveryCompleted`. No
+  Orders or Runtime lifecycle mutation. See
+  `docs/project/epics/e17-us249-recovery-completion.md`.
+- RC-17 E17 US248 — Deterministic SignalIntent Generation
+  (`trading-session/`): after a successful US247 evaluation decision, validate
+  ARMED Runtime + Session/identity gates and emit exactly one SignalIntent via
+  `StrategyRuntimePort.emitSignalIntent`. No Orders, Execution Engine,
+  Accounting, or checkpoint writes. See
+  `docs/project/epics/e17-us248-deterministic-signal-intent-generation.md`.
+- RC-17 E17 US247 — First Deterministic Strategy Evaluation
+  (`trading-session/`): after Runtime is `ARMED`, admit a market event and run
+  pure `decideRuntimeEvaluation` against restored checkpoint-bound context.
+  Produces an evaluation decision only — no SignalIntent emission, Orders,
+  checkpoint writes, or `StrategyRuntimePort.evaluate` commit path. See
+  `docs/project/epics/e17-us247-first-deterministic-strategy-evaluation.md`.
+- RC-17 E17 US246 — Deterministic Runtime Arming (`trading-session/`): after
+  `EVENT_ADMISSION_ENABLED`, re-validate lease, kill-switch, lifecycle,
+  acceptsTicks, worker health, and runtime identity before transitioning
+  Runtime to `ARMED`. Evaluation becomes allowed by lifecycle gates, but this
+  slice performs no strategy evaluation, SignalIntent, Orders, or checkpoint
+  writes. See `docs/project/epics/e17-us246-deterministic-runtime-arming.md`.
+- RC-17 E17 US245 — Deterministic Event Admission (`trading-session/` +
+  `strategy-runtime/`): after local recovery `READY`, a dedicated admission gate
+  verifies lease validity, kill-switch policy, idle runtime lifecycle, and
+  duplicate prevention before transitioning Runtime to
+  `EVENT_ADMISSION_ENABLED`. Tick admission becomes externally reachable while
+  evaluation, SignalIntent, Orders, and checkpoint writes remain blocked. See
+  `docs/project/epics/e17-us245-deterministic-event-admission.md`.
+- RC-17 E17 US244 — Deterministic Runtime Resume (`trading-session/`): after
+  successful discovery/lease/checkpoint/reconcile, hydrate Runtime into local
+  recovery `READY` while worker remains `IDLE` and `acceptsTicks=false`. No
+  market processing, evaluation, SignalIntent, or Orders. See
+  `docs/project/epics/e17-us244-runtime-resume.md`.
+- RC-17 E17 US243 — Recovery State Reconciliation (`trading-session/`): after
+  lease + `VALID_CHECKPOINT`, read-only cross-context reconcile via local
+  `RECOVERY_RECONCILIATION_PORTS`. Outcomes `RECONCILED` /
+  `RECONCILIATION_FAILED`. See `docs/project/epics/e17-us243-reconciliation.md`.
+- RC-17 E17 US242 — Recovery Checkpoint Discovery & Validation
+  (`trading-session/`): after `LEASE_ACQUIRED`, load latest strategy checkpoint
+  via `StrategyRuntimePort` and validate integrity/Session consistency.
+  Outcomes `VALID_CHECKPOINT` / `NO_CHECKPOINT` / `INVALID_CHECKPOINT` only.
+  See `docs/project/epics/e17-us242-checkpoint-validation.md`.
+- RC-17 E17 US241 — Recovery Lease Acquisition (`trading-session/`): exclusive
+  fenced lease via optimistic `saveIfVersion` CAS after US240 discovery.
+  Outcomes `LEASE_ACQUIRED` / `LEASE_DENIED` only; no checkpoint, reconcile, or
+  Runtime resume. See `docs/project/epics/e17-us241-startup-recovery-lease.md`.
+- RC-17 E17 US240 — Startup Recovery Discovery (`trading-session/`): deterministic
+  process-bootstrap discovery of recovery-eligible Trading Sessions with exactly
+  one selected candidate (or `no_recovery_required`). No force-`RECOVERING`,
+  lease, checkpoint, reconcile, or Runtime resume in this slice. See
+  `docs/project/epics/e17-us240-startup-recovery-discovery.md`.
+
+### Changed
+
+- Documentation — RC-17 baseline synchronization: RC-16 marked **BASELINE
+  ACCEPTED** (M3 canonical path US211–US223); residual M3 hooks / M4–M7 product
+  intent transferred to RC-17; Epic E17–E21 and story band **US240–US299**
+  governed; ADL cross-linked from ADR index. See
+  `docs/project/release-history.md` and `docs/project/story-id-allocation.md`.
+
+### Added
+
 - RC-16 M3 US223 — End-to-end strategy candle → Fill → accounting
   (`strategy-trading-pipeline/`): `run` orchestrates Runtime evaluate →
   Signal Intent → Order proposal → canonical Risk/Execution → existing

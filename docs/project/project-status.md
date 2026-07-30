@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-20 (RC-4 — Trading Platform Version 1 official completion)
+2026-07-30 (RC-17 BASELINED — Runtime Recovery reference)
 
 ---
 
@@ -20,7 +20,8 @@ Last updated:
 V1 Completion Report: [`../releases/V1-COMPLETION.md`](../releases/V1-COMPLETION.md)
 
 RC-15: COMPLETE  
-RC-16 M1/M2: COMPLETE (foundation retained in V1)  
+RC-16 M1/M2: COMPLETE (foundation retained in V1) · **BASELINE ACCEPTED**  
+RC-17: **BASELINED** (Runtime Recovery reference — E17 US240–US249 + US244A)  
 Engineering gates RC-1 / RC-2 / RC-3 / RC-4: PASS
 
 Cluster Closure Report:
@@ -30,8 +31,16 @@ Cluster Closure Report:
 
 # Current Phase
 
-Trading Platform **Version 1** is the official production baseline on `main`.
-Repository is ready for V1 maintenance and Version 2 planning/development.
+**RC-17 BASELINED · RC-18 NEXT (production recovery residuals)**
+
+RC-17 delivered the Runtime Recovery Stage 3 reference pipeline and Stage 4
+technical review (PASS WITH RECOMMENDATIONS). Retrospective:
+[`rc-17-retrospective.md`](./rc-17-retrospective.md).
+
+Next: RC-18 mandatory TD-036 items (force-`RECOVERING`, real reconcile adapters,
+RecoveryState/Incident, chaos evidence) plus forwarded E18–E21 product epics.
+See [`release-history.md`](./release-history.md) and
+[`rc-17-roadmap.md`](./rc-17-roadmap.md).
 
 ---
 
@@ -289,26 +298,39 @@ RC-16 Paper Trading Plan:
 
 # Release Readiness
 
-Status: READY FOR RC-16 — RC-15 COMPLETE; M2 COMPLETE; RC-16 final release not ready
+Status: **RC-16 BASELINE ACCEPTED · RC-17 E17 US240–US244 STARTED**
+
+Authoritative release table: [`release-history.md`](./release-history.md).  
+Story IDs: [`story-id-allocation.md`](./story-id-allocation.md) (**US240–US299**).  
+Next epic: **E17 Runtime Recovery** — [`rc-17-roadmap.md`](./rc-17-roadmap.md).
 
 ## US183.1 — RC-15 / M2 Cluster Closure
 
 Formal stabilization closeout (2026-07-19): repository validation green; docs
 synchronized; ADR-007…018 compliance reviewed; intentional technical debt
-retained. Verdict: **PASS — READY FOR RC-16**. Next: M3 Strategy Trading
-Sessions. Report: [`rc-15-cluster-closure.md`](./rc-15-cluster-closure.md).
+retained. Verdict: **PASS — READY FOR RC-16**. Historical next step was M3.
+Report: [`rc-15-cluster-closure.md`](./rc-15-cluster-closure.md).
 
-## RC-16 final release review
+## RC-16 baseline (living)
 
-M1 and M2 are complete and their validation gates pass. RC-16 final release is
-not ready because the approved plan still requires M3–M7: Strategy Runtime,
-continuous Risk and durable Kill Switch, full runtime recovery, operations
-experience, and final RC-16 validation/closeout. The final review also retains
-the known Stage-1 parallel execution path (TD-034) and pre-M3 prerequisites
-TD-039/TD-040/TD-042 as blockers before automated strategy execution is
-enabled.
+RC-16 delivered Architecture Freeze, M1, M2, and M3 canonical path
+(US211–US223). Residual originally planned M3 recovery hooks (US224–US227) and
+M4–M7 product intent were **transferred to RC-17** on 2026-07-30.
 
-Results: [`rc-16-release-summary.md`](./rc-16-release-summary.md).
+Historical 2026-07-18 final-release audit (M1/M2 only) remains on file as FAIL
+for audit purposes: [`rc-16-release-summary.md`](./rc-16-release-summary.md).
+Do not treat that FAIL as an open RC-16 M3–M7 backlog.
+
+## RC-17 planning
+
+Planning package accepted. E17 US240–US244 slices started
+([discovery](./epics/e17-us240-startup-recovery-discovery.md),
+[lease](./epics/e17-us241-startup-recovery-lease.md),
+[checkpoint](./epics/e17-us242-checkpoint-validation.md),
+[reconcile](./epics/e17-us243-reconciliation.md),
+[ready](./epics/e17-us244-runtime-resume.md)).
+Process: [`rc-17-development-process.md`](./rc-17-development-process.md). ADL:
+[`../Architecture/ADR/ADL.md`](../Architecture/ADR/ADL.md).
 
 ## RC-15.1 Validation Release
 
@@ -327,8 +349,8 @@ Release commit: `bf46b64d184d004add4f9c0316a3e33da1116718`
 
 Release tag: `rc-15.1`
 
-Current Research OS + Simulation Platform is released. RC-16 M1 and M2 are
-implemented and validated; M3–M7 remain before final RC-16 release.
+Current Research OS + Simulation Platform is released. RC-16 paper-trading
+baseline is accepted; RC-17 owns residual operational runtime work.
 
 ---
 

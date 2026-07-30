@@ -2,9 +2,14 @@
 
 Date: 2026-07-18
 
-Status: Approved; M1/M2 implemented
+Status: Approved; M1/M2 implemented _(historical readiness gate)_
 
-Overall Verdict: **M2 COMPLETE; M3 NEXT**
+Overall Verdict (historical): **M2 COMPLETE; M3 NEXT**
+
+> **Baseline alignment (2026-07-30):** M3 canonical path (US211–US223) since
+> completed. Living status is RC-16 **BASELINE ACCEPTED**; residual work under
+> RC-17 — [`release-history.md`](./release-history.md). This document remains
+> the historical M1/M2 implementation-readiness record.
 
 ---
 
@@ -32,7 +37,9 @@ Implementation began with M1. M1 and M2 are now complete; M3 is next.
 - Implementation Approved: YES
 - Architecture Frozen: YES
 - Post-Freeze architectural changes: NEW ADR REQUIRED
-- Production implementation completed: PARTIAL (M1/M2 complete; M3–M7 remain)
+- Production implementation completed: PARTIAL at audit time (M1/M2 complete;
+  M3–M7 remained). _(Living 2026-07-30: M3 canonical path complete; residual →
+  RC-17 — [`release-history.md`](./release-history.md).)_
 - Current delivery state: M2 complete; M3 — Strategy Trading Sessions is next
 
 TRP remains a NestJS modular monolith with React, PostgreSQL, and Docker
@@ -417,7 +424,11 @@ All ten conditions are satisfied.
 
 ## Overall Verdict
 
-**M2 COMPLETE; M3 NEXT**
+**M2 COMPLETE; M3 NEXT** _(historical, 2026-07-18)_
 
 RC-16 M1 and M2 are implemented and validated under ADR-012…ADR-018. Proceed to
 M3 Strategy Trading Sessions; final release remains blocked until M3–M7.
+
+**Living status (2026-07-30):** M3 canonical path complete; RC-16 baseline
+accepted; residual scope under RC-17 —
+[`release-history.md`](./release-history.md).

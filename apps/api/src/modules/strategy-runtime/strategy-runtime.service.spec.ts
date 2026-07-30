@@ -102,7 +102,7 @@ describe('US216/US219/US220 — StrategyRuntimeService', () => {
 
   it('returns diagnostics with worker lifecycle fields', async () => {
     checkpoints.load.mockResolvedValue(null);
-    await service.arm({
+    await service.enableEventAdmission({
       workspaceId: 'workspace-1',
       sessionId: 'session-1',
       fencingToken: 1,
@@ -110,11 +110,11 @@ describe('US216/US219/US220 — StrategyRuntimeService', () => {
     });
     const diagnostics = await service.getDiagnostics('workspace-1', 'session-1');
     expect(diagnostics.evaluationEnabled).toBe(true);
-    expect(diagnostics.workerState).toBe(RuntimeWorkerState.ARMED);
+    expect(diagnostics.workerState).toBe(RuntimeWorkerState.EVENT_ADMISSION_ENABLED);
     expect(diagnostics.acceptsTicks).toBe(true);
   });
 
-  it('rejects admit/evaluate while IDLE and accepts after arm', async () => {
+  it('rejects admit/evaluate while IDLE, admits after admission enable, and evaluates only after arm', async () => {
     checkpoints.load.mockResolvedValue(null);
     evaluations.evaluate.mockResolvedValue({
       status: 'COMPLETED',
@@ -148,7 +148,7 @@ describe('US216/US219/US220 — StrategyRuntimeService', () => {
     });
     expect(denied.status).toBe('REJECTED_RUNTIME_NOT_ARMED');
 
-    await service.arm({
+    await service.enableEventAdmission({
       workspaceId: 'workspace-1',
       sessionId: 'session-1',
       fencingToken: 1,
@@ -179,6 +179,48 @@ describe('US216/US219/US220 — StrategyRuntimeService', () => {
       nowIso: at,
     });
     expect(admitted.admitted).toBe(true);
+
+    const blockedEvaluation = await service.evaluate({
+      workspaceId: 'workspace-1',
+      sessionId: 'session-1',
+      deploymentId: 'deployment-1',
+      event: {
+        eventType: 'MarketClosedCandle',
+        eventId: 'evt-1',
+        workspaceId: 'workspace-1',
+        streamId: 'binance:btcusdt:1h',
+        sequence: 1,
+        openTime: '2026-07-29T17:00:00.000Z',
+        closeTime: '2026-07-29T17:59:59.999Z',
+        instrument: 'BTCUSDT',
+        timeframe: '1h',
+        open: 1,
+        high: 2,
+        low: 1,
+        close: 2,
+        volume: 1,
+      },
+      lease: {
+        sessionId: 'session-1',
+        fencingToken: 1,
+        ownerId: 'worker-1',
+        expiresAt: '2026-07-29T19:00:00.000Z',
+        sessionStatus: 'RUNNING',
+      },
+      nowIso: at,
+      recordedAt: at,
+      actorId: 'runtime-1',
+    });
+
+    expect(blockedEvaluation.status).toBe('REJECTED_LIFECYCLE');
+    expect(evaluations.evaluate).not.toHaveBeenCalled();
+
+    await service.arm({
+      workspaceId: 'workspace-1',
+      sessionId: 'session-1',
+      fencingToken: 1,
+      nowIso: at,
+    });
 
     const evaluated = await service.evaluate({
       workspaceId: 'workspace-1',
@@ -211,6 +253,7 @@ describe('US216/US219/US220 — StrategyRuntimeService', () => {
       recordedAt: at,
       actorId: 'runtime-1',
     });
+
     expect(evaluated.status).toBe('COMPLETED');
     expect(evaluations.evaluate).toHaveBeenCalledOnce();
   });

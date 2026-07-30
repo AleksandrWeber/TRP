@@ -81,6 +81,10 @@ describe('US170 — single Execution Engine with immutable Fill persistence', ()
     save: async () => {
       throw new Error('not used');
     },
+    saveIfVersion: async () => {
+      throw new Error('not used');
+    },
+    findByStatuses: async () => [],
   } satisfies TradingSessionRepository;
   const adapter = new PaperExecutionAdapter();
   const engine = new ExecutionEngineService(

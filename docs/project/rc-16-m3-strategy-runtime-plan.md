@@ -1,5 +1,15 @@
 # RC-16 M3 — Strategy Runtime Implementation Plan
 
+> **Baseline alignment (2026-07-30):** Epics E13–E16 (US211–US223) are the
+> completed RC-16 M3 canonical path and form part of the RC-16 baseline for
+> RC-17. The section titled “Epic E17 — Recovery Hooks and M3 Validation”
+> (US224–US227) is **historical planning only**. Epic IDs **E17–E21** and
+> recovery/validation implementation are owned by **RC-17**. Do not implement
+> US224–US227 under those IDs — see
+> [`story-id-allocation.md`](./story-id-allocation.md) and
+> [`rc-17-roadmap.md`](./rc-17-roadmap.md).
+> Release status: [`release-history.md`](./release-history.md).
+
 Task: M3-001  
 Date: 2026-07-29  
 Milestone: M3 — Strategy Trading Sessions  
@@ -382,8 +392,13 @@ Forbidden edges:
 | Conformance   | ADR-012…018 checklist update for M3                                                  |
 
 Mini Validation for full strategy→risk→order→fill remains **after M4** per
-plan; M3 exits with its own story gate (Epic E17 below), not final RC-16
-release.
+plan; M3 exits with its own story gate (historically labeled Epic E17 below),
+not final RC-16 release.
+
+> **Ownership update (2026-07-30):** That historical “Epic E17” gate
+> (US224–US227) was **not** executed under RC-16. Recovery and validation
+> ownership moved to **RC-17 Epic E17** with IDs **US240+**. See
+> [`story-id-allocation.md`](./story-id-allocation.md).
 
 ---
 
@@ -391,8 +406,12 @@ release.
 
 ### Story ID policy
 
-RC-16 M3 stories: **US211–US235**.  
+RC-16 M3 stories: **US211–US235** (historical band).  
 Do not reuse US184–US210 (research runner / Trading Platform V1).
+
+**Authoritative allocation (2026-07-30):** [`story-id-allocation.md`](./story-id-allocation.md).
+US211–US223 implemented under RC-16. US224–US235 are not an active RC-16
+backlog — recovery work uses RC-17 **US240–US299**.
 
 ### Epic E13 — Strategy Deployment Foundation
 
@@ -427,17 +446,24 @@ Do not reuse US184–US210 (research runner / Trading Platform V1).
 | US222 | Risk + Execution path for strategy-origin Orders (reuse M2) (**Implemented**) | US221, US165–171 |
 | US223 | End-to-end strategy candle → Fill → accounting (happy path) (**Implemented**) | US219, US222     |
 
-### Epic E17 — Recovery Hooks and M3 Validation
+### Epic E17 — Recovery Hooks and M3 Validation _(historical label — transferred)_
 
-| ID    | Story                                          | Depends on   |
-| ----- | ---------------------------------------------- | ------------ |
-| US224 | Startup RECOVERING + fence + checkpoint resume | US220, US177 |
-| US225 | Duplicate/replay/staleness fail-safe tests     | US223, US224 |
-| US226 | Architecture conformance + dependency guards   | US216–US223  |
-| US227 | M3 performance baseline + exit review          | US225, US226 |
+> **Not active under RC-16.** Epic ID **E17** is owned by RC-17
+> ([`rc-17-roadmap.md`](./rc-17-roadmap.md)). The stories below were never
+> implemented under these IDs; their intent is absorbed by RC-17 E17 (US240+).
+> IDs US224–US227 are **transferred / do not implement** —
+> [`story-id-allocation.md`](./story-id-allocation.md).
+
+| ID    | Story                                          | Depends on   | Living status           |
+| ----- | ---------------------------------------------- | ------------ | ----------------------- |
+| US224 | Startup RECOVERING + fence + checkpoint resume | US220, US177 | Transferred → RC-17 E17 |
+| US225 | Duplicate/replay/staleness fail-safe tests     | US223, US224 | Transferred → RC-17 E17 |
+| US226 | Architecture conformance + dependency guards   | US216–US223  | Transferred → RC-17 E17 |
+| US227 | M3 performance baseline + exit review          | US225, US226 | Transferred → RC-17 E17 |
 
 Optional thin stories if needed during decomposition: US228–US235 reserved for
-split persistence/API/diagnostics without changing architecture.
+split persistence/API/diagnostics without changing architecture — **retired /
+unused** as of 2026-07-30 (see story-id allocation).
 
 ### Implementation order
 
@@ -499,20 +525,30 @@ None of these require an ADR change if mitigations hold.
 
 ### Exit
 
-- [ ] Immutable Strategy Deployment owned and API-accessible
-- [ ] Strategy Sessions start/pause/resume/stop under fenced leases
-- [ ] Continuous evaluation on live closed candles produces durable Signal
+> **Baseline alignment (2026-07-30):** Canonical-path exit items through US223
+> are satisfied and form the RC-16 M3 baseline. Restart/recovery and full M3
+> validation checklist items below that depended on US224–US227 were
+> **transferred to RC-17 Epic E17** rather than kept as an open RC-16 backlog.
+
+- [x] Immutable Strategy Deployment owned and API-accessible
+- [x] Strategy Sessions start/pause/resume/stop under fenced leases
+- [x] Continuous evaluation on live closed candles produces durable Signal
       Intents
-- [ ] Strategy-origin Orders traverse Risk → Execution Engine → Fill →
+- [x] Strategy-origin Orders traverse Risk → Execution Engine → Fill →
       accounting with no bypass
 - [ ] Restart places Sessions in RECOVERING and resumes without duplicate
-      Intents/Orders/Fills
-- [ ] Architecture conformance tests green for Runtime boundaries
-- [ ] US211–US227 complete; CHANGELOG + docs synchronized
-- [ ] No unresolved M3 blocker; residual items filed as TD with M4/M5 owners
+      Intents/Orders/Fills — **transferred to RC-17 E17**
+- [ ] Architecture conformance tests green for Runtime boundaries — **partial
+      under US216+; residual transferred to RC-17 E17**
+- [x] US211–US223 complete; CHANGELOG + docs synchronized for canonical path
+- [ ] US224–US227 — **not executed under RC-16; IDs transferred** (see
+      story-id allocation)
+- [x] No unresolved M3 canonical-path blocker; residual recovery/ops filed
+      under RC-17 / TD-036
 
-M3 exit does **not** require M4 continuous Risk/Kill Switch automation, M5
-full recovery validation sprint, or M6 Dashboard.
+M3 canonical path does **not** require M4 continuous Risk/Kill Switch
+automation, M5 full recovery validation sprint, or M6 Dashboard — those remain
+RC-17 scope after the 2026-07-30 transfer.
 
 ---
 

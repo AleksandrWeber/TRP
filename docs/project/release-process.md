@@ -5,7 +5,10 @@ Rules for committing and releasing TRP Research OS work.
 Related docs:
 
 - Project Status: [`project-status.md`](./project-status.md)
+- Release History: [`release-history.md`](./release-history.md)
+- Story ID Allocation: [`story-id-allocation.md`](./story-id-allocation.md)
 - ADR Index: [`../adr/README.md`](../adr/README.md)
+- Architecture Decision Log (ADL): [`../Architecture/ADR/ADL.md`](../Architecture/ADR/ADL.md)
 - Version History: [`../research/version-history.md`](../research/version-history.md)
 - Changelog: [`../../CHANGELOG.md`](../../CHANGELOG.md)
 - V1 Completion: [`../releases/V1-COMPLETION.md`](../releases/V1-COMPLETION.md)
@@ -14,6 +17,9 @@ Related docs:
   [`rc-15-retrospective-development-guide-v2.md`](./rc-15-retrospective-development-guide-v2.md)
 - RC-16 Paper Trading Plan:
   [`rc-16-paper-trading-plan.md`](./rc-16-paper-trading-plan.md)
+- RC-17 Release Planning:
+  [`rc-17-release-planning.md`](./rc-17-release-planning.md)
+  (Development Process / Roadmap for operational runtime)
 
 ---
 

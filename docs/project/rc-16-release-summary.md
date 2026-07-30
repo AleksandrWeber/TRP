@@ -6,7 +6,27 @@ Review mode: Read-only implementation audit; documentation synchronization only
 
 Implementation baseline: `6bf2b07` (`test(rc16): complete M2 Mini Validation`)
 
-Final verdict: **FAIL — RC-16 FINAL RELEASE IS NOT READY**
+Final verdict (historical, 2026-07-18): **FAIL — RC-16 FINAL RELEASE IS NOT READY**
+
+---
+
+## Post-review baseline note (2026-07-30)
+
+This document is preserved as the **historical audit** of RC-16 as of M1/M2
+(2026-07-18). It is **not** the living project status.
+
+After M3 E13–E16 (US211–US223) landed the canonical strategy path, and after
+RC-17 planning was accepted, remaining originally planned M3 recovery hooks
+(US224–US227) and M4–M7 product intent were **formally transferred to RC-17**.
+
+| Living authority    | Document                                                                     |
+| ------------------- | ---------------------------------------------------------------------------- |
+| Release status      | [`release-history.md`](./release-history.md) — RC-16 = **BASELINE ACCEPTED** |
+| Current phase       | [`roadmap.md`](./roadmap.md), [`project-status.md`](./project-status.md)     |
+| Next implementation | RC-17 Epic E17 — [`rc-17-roadmap.md`](./rc-17-roadmap.md)                    |
+| Story IDs           | [`story-id-allocation.md`](./story-id-allocation.md) — US240–US299           |
+
+Do not treat the 2026-07-18 FAIL verdict as an open RC-16 M3–M7 backlog.
 
 ---
 
@@ -300,8 +320,14 @@ required for the currently approved work.
 
 **FAIL — RC-16 FINAL RELEASE IS NOT READY**
 
+_(Historical verdict as of 2026-07-18 — M1/M2 only. See Post-review baseline
+note above for the 2026-07-30 baseline transfer into RC-17.)_
+
 M1: complete.
 
 M2: complete, **PASS WITH MINOR RECOMMENDATIONS**.
 
 RC-16: incomplete until M3–M7 and final release blockers are resolved.
+
+**Living status (2026-07-30):** RC-16 **BASELINE ACCEPTED**; residual scope
+owned by RC-17 — [`release-history.md`](./release-history.md).

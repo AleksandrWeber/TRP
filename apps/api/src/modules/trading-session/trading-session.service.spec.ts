@@ -15,6 +15,8 @@ describe('US217/US220 — TradingSessionService Deployment binding + Runtime lif
     save: vi.fn(),
     findById: vi.fn(),
     findByIdempotencyKey: vi.fn(),
+    findByStatuses: vi.fn(),
+    saveIfVersion: vi.fn(),
   };
   const accounts: PaperAccountRepository = {
     create: vi.fn(),

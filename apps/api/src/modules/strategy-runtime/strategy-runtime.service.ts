@@ -111,6 +111,10 @@ export class StrategyRuntimeService implements StrategyRuntimePort {
     return this.lifecycle.resume(command);
   }
 
+  enableEventAdmission(command: RuntimeLifecycleCommand): Promise<RuntimeLifecycleResult> {
+    return this.lifecycle.enableEventAdmission(command);
+  }
+
   stop(command: RuntimeLifecycleCommand): Promise<RuntimeLifecycleResult> {
     return this.lifecycle.stop(command);
   }
@@ -120,7 +124,7 @@ export class StrategyRuntimeService implements StrategyRuntimePort {
     const sessionId = required(command.sessionId, 'session id');
     const nowIso = required(command.nowIso, 'nowIso');
 
-    if (!this.lifecycle.canAcceptWork(workspaceId, sessionId)) {
+    if (!this.lifecycle.canAcceptTicks(workspaceId, sessionId)) {
       const snap = this.lifecycle.snapshot(workspaceId, sessionId);
       return Object.freeze({
         status: TickAdmissionStatus.REJECTED_RUNTIME_NOT_ARMED,
@@ -150,7 +154,7 @@ export class StrategyRuntimeService implements StrategyRuntimePort {
     const workspaceId = required(command.workspaceId, 'workspace id');
     const sessionId = required(command.sessionId, 'session id');
 
-    if (!this.lifecycle.canAcceptWork(workspaceId, sessionId)) {
+    if (!this.lifecycle.canEvaluate(workspaceId, sessionId)) {
       const snap = this.lifecycle.snapshot(workspaceId, sessionId);
       const checkpoint = await this.checkpoints.load(workspaceId, sessionId);
       return evaluationRejectedLifecycle({

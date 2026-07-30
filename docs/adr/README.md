@@ -3,9 +3,31 @@
 Index of accepted architectural decisions for TRP Research OS.
 
 Full living project status: [`docs/project/project-status.md`](../project/project-status.md).
+Release history: [`docs/project/release-history.md`](../project/release-history.md).
 Version 1 completion: [`docs/releases/V1-COMPLETION.md`](../releases/V1-COMPLETION.md) (`v1.0.0`).
 
 Note: ADR-001…ADR-006 currently exist as index-only decisions. ADR-007 onward are standalone ADR documents. Do not create stub files for ADR-001…006.
+
+---
+
+## ADR vs ADL
+
+```text
+ADR  →  Permanent architectural decisions (normative; Freeze / supersession)
+         ↓
+ADL  →  Chronological architectural evolution (how ADRs were applied per release)
+```
+
+|           | **ADR**                              | **ADL**                                                      |
+| --------- | ------------------------------------ | ------------------------------------------------------------ |
+| Role      | Permanent decision                   | Chronological engineering log                                |
+| Authority | May freeze or supersede architecture | Must not override an ACTIVE ADR                              |
+| Location  | This directory (`docs/adr/`)         | [`docs/Architecture/ADR/ADL.md`](../Architecture/ADR/ADL.md) |
+
+Architecture Decision Log (ADL):
+[`docs/Architecture/ADR/ADL.md`](../Architecture/ADR/ADL.md).
+
+Do **not** duplicate ADR text into the ADL. Link ADR IDs from ADL entries.
 
 ---
 

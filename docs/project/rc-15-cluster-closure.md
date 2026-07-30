@@ -6,6 +6,12 @@ Status: COMPLETE
 
 Overall verdict: **PASS — READY FOR RC-16**
 
+> **Forward reference (2026-07-30):** RC-16 M3 canonical path (US211–US223)
+> completed after this closeout. Residual M3–M7 product intent from the original
+> RC-16 plan was transferred to **RC-17**. Living status:
+> [`release-history.md`](./release-history.md). The “M3–M7 remain” language
+> below is historical as of this closeout date.
+
 ---
 
 ## Completed scope
@@ -28,6 +34,9 @@ Next milestone: **M3 — Strategy Trading Sessions**.
 
 Repository status: **READY FOR RC-16** (M3 development may begin; RC-16 final
 release still requires M3–M7).
+
+_(Living 2026-07-30: RC-16 baseline accepted; next is RC-17 E17 —
+[`release-history.md`](./release-history.md).)_
 
 ---
 
@@ -129,13 +138,20 @@ Full register: [`technical-debt.md`](./technical-debt.md).
 
 ## Known limitations
 
+> Historical as of 2026-07-19. Items 1–4 were later addressed by M3 canonical
+> path completion and/or **transfer to RC-17** (2026-07-30). TD-034 was
+> resolved as an M3 gate. See [`release-history.md`](./release-history.md).
+
 1. RC-16 final release is **not** ready — M3–M7 remain
    ([`rc-16-release-summary.md`](./rc-16-release-summary.md)).
+   _(Living: residual scope → RC-17; RC-16 baseline accepted.)_
 2. Stage-1 `production/` remains a live parallel paper path beside the M2
    canonical Order → Risk → Execution → accounting chain (TD-034).
+   _(Living: TD-034 resolved.)_
 3. Kill Switch and continuous Risk controls are not implemented (M4 /
-   ADR-016).
+   ADR-016). _(Living: RC-17 E19.)_
 4. Full restart recovery algorithm is not complete (M5 / ADR-014).
+   _(Living: RC-17 E17 / TD-036.)_
 5. Occasional flake possible in M1 PostgreSQL integration under parallel
    shared-DB load (`us149`); suite is green on re-run.
 6. Uncommitted US018 Historical Research Engine work existed during closure

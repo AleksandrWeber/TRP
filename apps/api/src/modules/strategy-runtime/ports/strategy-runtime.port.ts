@@ -55,12 +55,18 @@ export interface StrategyRuntimePort {
   /** Re-arm Runtime after Session resumes RUNNING (US220). */
   resume(command: RuntimeLifecycleCommand): Promise<RuntimeLifecycleResult>;
 
+  /**
+   * Enable external semantic event admission after recovery READY.
+   * Does not enable strategy evaluation.
+   */
+  enableEventAdmission(command: RuntimeLifecycleCommand): Promise<RuntimeLifecycleResult>;
+
   /** Lease-aware shutdown: drain then IDLE (US220). */
   stop(command: RuntimeLifecycleCommand): Promise<RuntimeLifecycleResult>;
 
   /**
    * Admit a semantic closed-candle tick under a valid Session lease.
-   * Rejected when Runtime is not ARMED.
+   * Rejected when Runtime is not admission-enabled.
    */
   admitTick(command: AdmitTickCommand): Promise<TickAdmissionResult>;
 

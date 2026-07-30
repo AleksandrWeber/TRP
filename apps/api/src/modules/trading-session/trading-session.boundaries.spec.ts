@@ -59,6 +59,18 @@ describe('US217/US220 — Trading Session dependency boundaries', () => {
 
     expect(moduleSource).toMatch(/StrategyDeploymentModule/);
     expect(moduleSource).toMatch(/StrategyRuntimeModule/);
+    expect(moduleSource).toMatch(/StartupRecoveryDiscoveryService/);
+    expect(moduleSource).toMatch(/RecoveryLeaseAcquisitionService/);
+    expect(moduleSource).toMatch(/RecoveryCheckpointValidationService/);
+    expect(moduleSource).toMatch(/RecoveryStateReconciliationService/);
+    expect(moduleSource).toMatch(/RecoveryRuntimeResumeService/);
+    expect(moduleSource).toMatch(/RecoveryEventAdmissionService/);
+    expect(moduleSource).toMatch(/RecoveryRuntimeArmingService/);
+    expect(moduleSource).toMatch(/RecoveryStrategyEvaluationService/);
+    expect(moduleSource).toMatch(/RecoverySignalIntentGenerationService/);
+    expect(moduleSource).toMatch(/RecoveryCompletionService/);
+    expect(moduleSource).toMatch(/RECOVERY_EVENT_ADMISSION_POLICY/);
+    expect(moduleSource).toMatch(/RECOVERY_RECONCILIATION_PORTS/);
 
     for (const forbidden of [
       'OrdersModule',
@@ -69,6 +81,8 @@ describe('US217/US220 — Trading Session dependency boundaries', () => {
       'LedgerModule',
       'SignalEngineModule',
       'EvaluationSchedulerModule',
+      'RecoveryCoordinator',
+      'RecoveryOrchestrator',
     ]) {
       expect(moduleSource).not.toContain(forbidden);
     }

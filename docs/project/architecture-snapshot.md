@@ -1,10 +1,13 @@
 # TRP — Architecture Snapshot
 
-Last updated: 2026-07-20 (RC-4 — Version 1 official completion `v1.0.0`)
+Last updated: 2026-07-30 (RC-17 BASELINED — Runtime Recovery reference)
 
 Single snapshot of the **current** architecture for Trading Platform Version 1
-(Research/Simulation through RC-15.1; paper foundation through RC-16 M2;
-Trading Core engines certified in RC-1). Documentation only. No future ideas.
+(Research/Simulation through RC-15.1; paper trading baseline through RC-16 M3
+canonical path US211–US223; RC-17 Runtime Recovery Stage 3 reference pipeline
+US240–US249 + US244A baselined; production restart-safety residuals owned by
+RC-18 under TD-036).
+Documentation only. No future ideas.
 
 > RC-15.1 Validation Release: the Research & Simulation Platform was validated end-to-end by Validation Sprint V1 (VS001 functional, VS002 stress / determinism, VS003 invariants, VS004 readiness review). No architectural changes were made — only confirmed defect fixes (deterministic CAGR, iterative snapshot summarization, classic PnL / equity accounting) were integrated. Validated invariants: `cash + market value = equity`, `realized + unrealized = total PnL`, deterministic outputs for identical inputs (operational metadata excluded), workspace isolation, and artifact immutability. New debt from the sprint is tracked as TD-028…TD-033 in [`technical-debt.md`](./technical-debt.md).
 
@@ -399,9 +402,18 @@ Note: versions describe working-tree Research OS semantics; dedicated git releas
 
 ## Current Phase
 
-RC-16 M2 complete — M3 Strategy Trading Sessions in progress (US211 through
-US223 E2E candle → Fill → accounting landed; E16 complete; E17 recovery/
-validation stories remain).
+**RC-17 BASELINED · Runtime Recovery reference · RC-18 next**
+
+RC-16 delivered M1, M2, and M3 canonical path (US211–US223 / E13–E16). RC-17
+delivered Epic E17 Runtime Recovery Stage 3 reference pipeline (US240–US249 +
+US244A) with Stage 4 PASS WITH RECOMMENDATIONS. Production restart-safety and
+forwarded E18–E21 product epics are **RC-18+**.
+
+Authoritative status: [`release-history.md`](./release-history.md),
+[`roadmap.md`](./roadmap.md),
+[`rc-17-retrospective.md`](./rc-17-retrospective.md),
+[`story-id-allocation.md`](./story-id-allocation.md).
+Architecture Decision Log: [`../Architecture/ADR/ADL.md`](../Architecture/ADR/ADL.md).
 
 RC-13 finalized — Research Intelligence layer (Insight / Cross-Campaign / Recommendation / ResearchReport + read-only REST) on the unified Pipeline Engine.
 
@@ -419,29 +431,29 @@ integration.** A separate Stage-1 manual paper prototype exists under
 
 ### Modules (`apps/api/src/modules/`)
 
-| Module             | Path                    | Role                                                                                                          |
-| ------------------ | ----------------------- | ------------------------------------------------------------------------------------------------------------- |
-| MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped                                                  |
-| LiveMarketData     | `live-market-data/`     | M1 complete (US126–US152): connectors through query/SSE + Mini Validation                                     |
-| EventProcessing    | `event-processing/`     | PostgreSQL Outbox/Inbox/checkpoints runtime, transactional appender, lifecycle poller (US128–US130, US155)    |
-| Financial          | `financial/`            | Exact decimal values, explicit scales and rounding; no number conversion (US153)                              |
-| PaperAccount       | `paper-account/`        | Durable paper-only account and opening-capital Ledger instruction (US154)                                     |
-| TradingSession     | `trading-session/`      | Manual ADR-014 sessions, fenced leases, execution eligibility (US156–US157)                                   |
-| Orders             | `orders/`               | Intents, sole lifecycle owner, persistence, cancellation, authorized REST API (US159–US164)                   |
-| Risk               | `risk/`                 | Versioned baseline policy, immutable explainable PostgreSQL decisions + Outbox (US165)                        |
-| ExecutionAdapter   | `execution-adapter/`    | Paper-only port/binding, versioned deterministic config, deterministic market/limit matching (US166–US169)    |
-| ExecutionEngine    | `execution-engine/`     | Sole adapter entry; idempotent submit/cancel/reconcile; append-only PostgreSQL Fill persistence (US170–US171) |
-| Positions          | `positions/`            | Fill-only long/flat accounting and atomic Inbox/Position/Ledger/Outbox/checkpoint consumer (US172, US174)     |
-| Ledger             | `ledger/`               | Only financial source of truth; balanced append-only transactions and cash projection (US162, US173–US174)    |
-| HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                     |
-| MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                       |
-| Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                             |
-| Portfolio          | `portfolio/`            | `PortfolioEngine` state (cash / equity / PnL)                                                                 |
-| Trade              | `trade/`                | Virtual `TradeEngine` → `PortfolioEngine.applyExecution`                                                      |
-| Performance        | `performance/`          | `PerformanceAnalyzer` → immutable `PerformanceReport`                                                         |
-| WalkForward        | `walk-forward/`         | Rolling windows; reuses `BacktestEngine` sequentially                                                         |
-| StrategyComparison | `strategy-comparison/`  | Rankings + weighted overall winner from completed results                                                     |
-| SimulationReport   | `simulation-report/`    | `SimulationReportBuilder` → immutable consolidated artifact                                                   |
+| Module             | Path                    | Role                                                                                                                                                                                                  |
+| ------------------ | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| MarketData         | `market-data/`          | OHLCV domain (`MarketBar`), in-memory repo, workspace-scoped                                                                                                                                          |
+| LiveMarketData     | `live-market-data/`     | M1 complete (US126–US152): connectors through query/SSE + Mini Validation                                                                                                                             |
+| EventProcessing    | `event-processing/`     | PostgreSQL Outbox/Inbox/checkpoints runtime, transactional appender, lifecycle poller (US128–US130, US155)                                                                                            |
+| Financial          | `financial/`            | Exact decimal values, explicit scales and rounding; no number conversion (US153)                                                                                                                      |
+| PaperAccount       | `paper-account/`        | Durable paper-only account and opening-capital Ledger instruction (US154)                                                                                                                             |
+| TradingSession     | `trading-session/`      | ADR-014 sessions + RC-17 E17 recovery pipeline US240–US249 (discovery→lease→checkpoint→reconcile→READY→admission→arm→evaluate→SignalIntent→exit); force-`RECOVERING` / RecoveryState residual → RC-18 |
+| Orders             | `orders/`               | Intents, sole lifecycle owner, persistence, cancellation, authorized REST API (US159–US164)                                                                                                           |
+| Risk               | `risk/`                 | Versioned baseline policy, immutable explainable PostgreSQL decisions + Outbox (US165)                                                                                                                |
+| ExecutionAdapter   | `execution-adapter/`    | Paper-only port/binding, versioned deterministic config, deterministic market/limit matching (US166–US169)                                                                                            |
+| ExecutionEngine    | `execution-engine/`     | Sole adapter entry; idempotent submit/cancel/reconcile; append-only PostgreSQL Fill persistence (US170–US171)                                                                                         |
+| Positions          | `positions/`            | Fill-only long/flat accounting and atomic Inbox/Position/Ledger/Outbox/checkpoint consumer (US172, US174)                                                                                             |
+| Ledger             | `ledger/`               | Only financial source of truth; balanced append-only transactions and cash projection (US162, US173–US174)                                                                                            |
+| HistoricalImport   | `historical-import/`    | Pluggable CSV import → `MarketDataDomainService.saveBars`                                                                                                                                             |
+| MarketDataProvider | `market-data-provider/` | `MarketDataProvider` + `ProviderRegistry` (local first)                                                                                                                                               |
+| Backtesting        | `backtesting/`          | `BacktestEngine` + `Strategy` / `StrategyContext`                                                                                                                                                     |
+| Portfolio          | `portfolio/`            | `PortfolioEngine` state (cash / equity / PnL)                                                                                                                                                         |
+| Trade              | `trade/`                | Virtual `TradeEngine` → `PortfolioEngine.applyExecution`                                                                                                                                              |
+| Performance        | `performance/`          | `PerformanceAnalyzer` → immutable `PerformanceReport`                                                                                                                                                 |
+| WalkForward        | `walk-forward/`         | Rolling windows; reuses `BacktestEngine` sequentially                                                                                                                                                 |
+| StrategyComparison | `strategy-comparison/`  | Rankings + weighted overall winner from completed results                                                                                                                                             |
+| SimulationReport   | `simulation-report/`    | `SimulationReportBuilder` → immutable consolidated artifact                                                                                                                                           |
 
 ### Dependency direction (acyclic)
 
@@ -521,7 +533,10 @@ Performance / StrategyComparison operate on already-scoped completed artifacts.
 
 ## Paper Trading Platform (RC-16 — Architecture Frozen)
 
-Status: Architecture frozen; M1 and M2 implemented and validated. M3–M7 remain.
+Status: Architecture frozen; **RC-16 baseline accepted** (M1, M2, M3 canonical
+path US211–US223). Residual originally planned M4–M7 / recovery-hook scope
+transferred to **RC-17** (2026-07-30). See
+[`release-history.md`](./release-history.md).
 
 TRP remains a modular monolith. RC-16 advances the Stage-1 manual paper
 prototype into a durable, always-on, paper-only runtime.
@@ -590,20 +605,24 @@ Research/data notes:
 - No separate `accountingVersion` / runtime env metadata / equity curve on Experiment.
 - Research UI still EMA-centric; no strategy filter.
 
-RC-16 residual risks (M1/M2 delivered; pre-M3):
+RC-16 / RC-17 residual risks (baselines accepted; open work under RC-18+):
 
-- consolidate Stage-1 `production/` parallel path (TD-034) before automated
-  strategy execution;
-- exact-decimal mark sources, Position Fill application order, and durable
-  consumer fan-out progress (TD-039 / TD-040 / TD-042);
-- Kill Switch + continuous Risk (M4); full restart recovery algorithm (M5).
+- TD-034 / TD-039 / TD-040 / TD-042 — resolved (pre-M3 gates)
+- Kill Switch + continuous Risk — **RC-18+ / E19**
+- Full restart recovery **production claim** — **RC-18 mandatory** (TD-036;
+  RC-17 baselined Stage 3 reference pipeline)
+- Event-processing Inbox coverage / ops — **RC-18+ / E18**
 
 ---
 
 ## Next User Story
 
-Next milestone: M3 — Strategy Trading Sessions. M1 (US126–US152) and M2
-(US153–US183) are complete. Remaining RC-16 work is M3–M7 under ADR-012…ADR-018.
+Next: **RC-18** — TD-036 mandatory residuals (force-`RECOVERING`, real reconcile
+adapters, RecoveryState/Incident, chaos evidence) and forwarded E18–E21 product
+epics. RC-17 Runtime Recovery reference is BASELINED:
+[`rc-17-retrospective.md`](./rc-17-retrospective.md),
+[`release-history.md`](./release-history.md),
+[`story-id-allocation.md`](./story-id-allocation.md).
 
 M1 Epic E1 progress: US126–US130 complete — provider-neutral Live Market Data
 contracts (`live-market-data/`) and durable event foundation (`event-processing/`:
@@ -743,6 +762,8 @@ application order for M3 concurrency, and bounded Ledger-history pagination are
 tracked hardening work. See
 [`rc-16-m2-mini-validation.md`](./rc-16-m2-mini-validation.md).
 
-The RC-16 final-release audit retains ADR-012…ADR-018 as ACTIVE but does not
-approve release before M3–M7. See
-[`rc-16-release-summary.md`](./rc-16-release-summary.md).
+The RC-16 final-release audit of 2026-07-18 (M1/M2 only) retained
+ADR-012…ADR-018 as ACTIVE and recorded FAIL before M3–M7. That audit is
+historical; living baseline is ACCEPTED with residual scope under RC-17. See
+[`rc-16-release-summary.md`](./rc-16-release-summary.md) and
+[`release-history.md`](./release-history.md).

@@ -44,7 +44,8 @@ export class RuntimeLifecycleCoordinator {
   }
 
   /**
-   * Arm Runtime after Session reaches RUNNING with a valid lease fence.
+   * Arm Runtime after Session reaches RUNNING with a valid lease fence,
+   * or after recovery event admission (EVENT_ADMISSION_ENABLED → ARMED).
    */
   async arm(command: RuntimeLifecycleCommand): Promise<RuntimeLifecycleResult> {
     const slot = this.slot(command.workspaceId, command.sessionId);
@@ -56,6 +57,21 @@ export class RuntimeLifecycleCoordinator {
     slot.drainRequested = false;
     slot.state = RuntimeWorkerState.ARMED;
     return result(slot, fromState, false, command.reason ?? 'runtime armed');
+  }
+
+  /**
+   * Enable external event admission while keeping strategy evaluation blocked.
+   */
+  async enableEventAdmission(command: RuntimeLifecycleCommand): Promise<RuntimeLifecycleResult> {
+    const slot = this.slot(command.workspaceId, command.sessionId);
+    const fromState = slot.state;
+    if (fromState === RuntimeWorkerState.EVALUATING || fromState === RuntimeWorkerState.DRAINING) {
+      throw new Error(`cannot enable event admission while ${fromState}`);
+    }
+    slot.fencingToken = positiveToken(command.fencingToken);
+    slot.drainRequested = false;
+    slot.state = RuntimeWorkerState.EVENT_ADMISSION_ENABLED;
+    return result(slot, fromState, false, command.reason ?? 'runtime event admission enabled');
   }
 
   /**
@@ -86,6 +102,17 @@ export class RuntimeLifecycleCoordinator {
    * True when new ticks may be admitted / evaluated.
    */
   canAcceptWork(workspaceId: string, sessionId: string): boolean {
+    return this.canAcceptTicks(workspaceId, sessionId);
+  }
+
+  canAcceptTicks(workspaceId: string, sessionId: string): boolean {
+    const state = this.slot(workspaceId, sessionId).state;
+    return (
+      state === RuntimeWorkerState.EVENT_ADMISSION_ENABLED || state === RuntimeWorkerState.ARMED
+    );
+  }
+
+  canEvaluate(workspaceId: string, sessionId: string): boolean {
     return this.slot(workspaceId, sessionId).state === RuntimeWorkerState.ARMED;
   }
 

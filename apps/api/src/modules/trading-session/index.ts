@@ -1,9 +1,141 @@
 export { TradingSessionModule } from './trading-session.module';
 export { TradingSessionService } from './trading-session.service';
+export { StartupRecoveryDiscoveryService } from './recovery/startup-recovery-discovery.service';
+export {
+  RecoveryLeaseAcquisitionService,
+  resolveRecoveryRuntimeOwnerId,
+} from './recovery/recovery-lease-acquisition.service';
+export { RecoveryCheckpointValidationService } from './recovery/recovery-checkpoint-validation.service';
+export { RecoveryRuntimeResumeService } from './recovery/recovery-runtime-resume.service';
+export { RecoveryEventAdmissionService } from './recovery/recovery-event-admission.service';
+export { RecoveryRuntimeArmingService } from './recovery/recovery-runtime-arming.service';
+export {
+  RecoveryStrategyEvaluationService,
+  type RecoveryStrategyEvaluateCommand,
+} from './recovery/recovery-strategy-evaluation.service';
+export {
+  RecoverySignalIntentGenerationService,
+  type RecoverySignalIntentGenerateCommand,
+  type RecoverySignalIntentGenerateResult,
+} from './recovery/recovery-signal-intent-generation.service';
+export {
+  RecoveryCompletionService,
+  type RecoveryCompleteCommand,
+  type RecoveryCompleteResult,
+} from './recovery/recovery-completion.service';
+export { RecoveryStateReconciliationService } from './recovery/recovery-state-reconciliation.service';
+export {
+  RECOVERY_EVENT_ADMISSION_POLICY,
+  InactiveRecoveryEventAdmissionPolicy,
+  type RecoveryEventAdmissionPolicy,
+} from './ports/recovery-event-admission-policy.port';
+export {
+  RECOVERY_RECONCILIATION_PORTS,
+  StubRecoveryReconciliationPorts,
+  type RecoveryAccountingSnapshot,
+  type RecoveryExecutionSnapshot,
+  type RecoveryOrderSnapshot,
+  type RecoveryReconciliationPorts,
+  type RecoveryRiskSnapshot,
+  type RecoveryRuntimeIntentSnapshot,
+} from './ports/recovery-reconciliation.ports';
 export type {
   CreateTradingSessionCommand,
   SessionLifecycleCommand,
 } from './trading-session.service';
+export {
+  RECOVERY_ELIGIBLE_SESSION_STATUSES,
+  RECOVERY_INELIGIBLE_TERMINAL_STATUSES,
+  isRecoveryEligibleStatus,
+  recoveryEligibleStatusValues,
+} from './domain/recovery-eligibility';
+export {
+  compareRecoveryCandidates,
+  discoverStartupRecoveryCandidate,
+  toRecoveryCandidate,
+  type RecoveryCandidate,
+  type StartupRecoveryDiscoveryOutcome,
+  type StartupRecoveryDiscoveryResult,
+} from './domain/startup-recovery-discovery';
+export {
+  DEFAULT_RECOVERY_LEASE_TTL_MS,
+  attachRecoveryLease,
+  decideRecoveryLeaseAcquisition,
+  toAcquisitionResult,
+  type RecoveryLeaseAcquireCommand,
+  type RecoveryLeaseAcquireDecision,
+  type RecoveryLeaseAcquireOutcome,
+  type RecoveryLeaseAcquireReason,
+  type RecoveryLeaseAcquisitionResult,
+  type RecoveryLeaseDenyReason,
+} from './domain/recovery-lease-acquisition';
+export {
+  SUPPORTED_CHECKPOINT_SCHEMA_VERSIONS,
+  SUPPORTED_RECOVERY_RUNTIME_VERSIONS,
+  toLeasedRecoverySession,
+  validateRecoveryCheckpoint,
+  type InvalidCheckpointReason,
+  type LeasedRecoverySession,
+  type RecoveryCheckpointValidationOutcome,
+  type RecoveryCheckpointValidationResult,
+  type ValidatedRecoveryCheckpoint,
+} from './domain/recovery-checkpoint-validation';
+export {
+  reconcileRecoveryState,
+  type ReconciliationFailedContext,
+  type RecoveryReconciliationOutcome,
+  type RecoveryRuntimeSnapshot,
+  type RecoverySessionSnapshot,
+  type RecoveryStateReconciliationInput,
+  type RecoveryStateReconciliationResult,
+} from './domain/recovery-state-reconciliation';
+export {
+  RecoveryEventAdmissionOperationalState,
+  decideRecoveryEventAdmission,
+  type EventAdmissionEnabledRuntimeState,
+  type RecoveryEventAdmissionBlockedReason,
+  type RecoveryEventAdmissionOutcome,
+  type RecoveryEventAdmissionResult,
+} from './domain/recovery-event-admission';
+export {
+  RecoveryRuntimeArmingOperationalState,
+  decideRecoveryRuntimeArming,
+  type ArmedRuntimeState,
+  type RecoveryRuntimeArmingBlockedReason,
+  type RecoveryRuntimeArmingOutcome,
+  type RecoveryRuntimeArmingResult,
+} from './domain/recovery-runtime-arming';
+export {
+  decideRecoveryStrategyEvaluation,
+  type RecoveryStrategyEvaluationBlockedReason,
+  type RecoveryStrategyEvaluationOutcome,
+  type RecoveryStrategyEvaluationResult,
+  type RestoredEvaluationContext,
+} from './domain/recovery-strategy-evaluation';
+export {
+  decideRecoverySignalIntentGeneration,
+  type RecoverySignalIntentGenerationBlockedReason,
+  type RecoverySignalIntentGenerationOutcome,
+  type RecoverySignalIntentGenerationResult,
+  type SignalIntentGenerationPlan,
+} from './domain/recovery-signal-intent-generation';
+export {
+  decideRecoveryCompletion,
+  type RecoveryCompletionBlockedReason,
+  type RecoveryCompletionOutcome,
+  type RecoveryCompletionResult,
+  type RecoveryCompletionTerminalCause,
+  type RecoveryPipelineStageSnapshot,
+  type RecoveryResumeIntent,
+} from './domain/recovery-completion';
+export {
+  RecoveryRuntimeOperationalState,
+  decideRecoveryRuntimeResume,
+  type ReadyRuntimeState,
+  type RecoveryRuntimeResumeBlockedReason,
+  type RecoveryRuntimeResumeOutcome,
+  type RecoveryRuntimeResumeResult,
+} from './domain/recovery-runtime-resume';
 export {
   TRADING_SESSION_SCHEMA_VERSION,
   TRADING_SESSION_ORIGINS,

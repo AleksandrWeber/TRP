@@ -30,6 +30,28 @@ export class PrismaTradingSessionRepository implements TradingSessionRepository 
     return toDomain(row);
   }
 
+  async saveIfVersion(
+    session: TradingSession,
+    expectedVersion: number,
+    transaction: TransactionContext,
+  ): Promise<TradingSession | null> {
+    if (session.version !== expectedVersion + 1) {
+      throw new Error('trading session version must advance exactly once');
+    }
+    const updated = await prismaClientForTransaction(transaction).tradingSession.updateMany({
+      where: {
+        id: session.id,
+        workspaceId: session.workspaceId,
+        version: expectedVersion,
+      },
+      data: toUpdateData(session),
+    });
+    if (updated.count !== 1) {
+      return null;
+    }
+    return session;
+  }
+
   async findById(workspaceId: string, sessionId: string): Promise<TradingSession | null> {
     const row = await this.prisma.tradingSession.findFirst({
       where: { id: sessionId, workspaceId },
@@ -45,6 +67,17 @@ export class PrismaTradingSessionRepository implements TradingSessionRepository 
       where: { workspaceId_idempotencyKey: { workspaceId, idempotencyKey } },
     });
     return row ? toDomain(row) : null;
+  }
+
+  async findByStatuses(statuses: readonly TradingSessionStatus[]): Promise<TradingSession[]> {
+    if (statuses.length === 0) {
+      return [];
+    }
+    const rows = await this.prisma.tradingSession.findMany({
+      where: { status: { in: [...statuses] } },
+      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+    });
+    return rows.map((row) => toDomain(row));
   }
 }
 
@@ -92,6 +125,11 @@ function toRow(session: TradingSession): Prisma.TradingSessionUncheckedCreateInp
     correlationId: session.correlationId,
     idempotencyKey: session.idempotencyKey,
   };
+}
+
+function toUpdateData(session: TradingSession): Prisma.TradingSessionUpdateManyMutationInput {
+  const { id: _id, ...data } = toRow(session);
+  return data;
 }
 
 function toDomain(row: TradingSessionRow): TradingSession {

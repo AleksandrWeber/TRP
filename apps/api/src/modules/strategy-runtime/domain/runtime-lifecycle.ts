@@ -4,6 +4,7 @@
  */
 export const RuntimeWorkerState = {
   IDLE: 'IDLE',
+  EVENT_ADMISSION_ENABLED: 'EVENT_ADMISSION_ENABLED',
   ARMED: 'ARMED',
   EVALUATING: 'EVALUATING',
   DRAINING: 'DRAINING',
@@ -30,11 +31,15 @@ export type RuntimeLifecycleResult = Readonly<{
 }>;
 
 export function acceptsTicks(state: RuntimeWorkerState): boolean {
-  return state === RuntimeWorkerState.ARMED;
+  return state === RuntimeWorkerState.EVENT_ADMISSION_ENABLED || state === RuntimeWorkerState.ARMED;
 }
 
 export function isDraining(state: RuntimeWorkerState): boolean {
   return state === RuntimeWorkerState.DRAINING;
+}
+
+export function acceptsEvaluation(state: RuntimeWorkerState): boolean {
+  return state === RuntimeWorkerState.ARMED;
 }
 
 export function createLifecycleSnapshot(input: {

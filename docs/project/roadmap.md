@@ -1,12 +1,18 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-07-20 (RC-4 — Version 1 official completion `v1.0.0`)
+Last updated: 2026-07-30 (RC-17 BASELINED — Runtime Recovery reference)
 
 Living roadmap for product direction.
 
 Related:
 
 - Project Status: [`project-status.md`](./project-status.md)
+- Release History: [`release-history.md`](./release-history.md)
+- Story ID Allocation: [`story-id-allocation.md`](./story-id-allocation.md)
+- RC-17 Release Planning: [`rc-17-release-planning.md`](./rc-17-release-planning.md)
+- RC-17 Roadmap: [`rc-17-roadmap.md`](./rc-17-roadmap.md)
+- RC-17 Retrospective: [`rc-17-retrospective.md`](./rc-17-retrospective.md)
+- Architecture Decision Log: [`../Architecture/ADR/ADL.md`](../Architecture/ADR/ADL.md)
 - ADR Index: [`../adr/README.md`](../adr/README.md)
 - Release Process: [`release-process.md`](./release-process.md)
 - Technical Debt: [`technical-debt.md`](./technical-debt.md)
@@ -154,70 +160,77 @@ Related:
 - ✓ RC-16 — M1 Live Market Data Foundation (US126–US152)
 - ✓ RC-16 — M2 Durable Paper Order and Accounting Core (US153–US183)
 - ✓ US183.1 — RC-15 / M2 Cluster Closure (validation + docs sync; READY FOR RC-16)
+- ✓ RC-16 — M3 canonical path (US211–US223 / E13–E16): Strategy Deployment,
+  Runtime, Signal Intent, CanonicalOrderPath, E2E candle → Fill → accounting
+- ✓ RC-17 — Planning Package accepted (Release Planning, Roadmap E17–E21,
+  Development Process, ADL seed, templates); implementation not started
 
 ---
 
 ## Current Phase
 
-**RC-15 COMPLETE · M2 COMPLETE · READY FOR RC-16 — M3 Strategy Trading Sessions is next (not started)**
+**RC-16 BASELINE ACCEPTED · RC-17 PLANNING COMPLETE · IMPLEMENTATION NOT STARTED**
 
-RC-16 Planning, Architecture Freeze, and Frozen Architecture Audit are
-complete. Architecture Approved: YES. Implementation Approved: YES.
-Architecture changes require a new ADR.
+Next implementation work: **RC-17 Epic E17 — Runtime Recovery** (Stage 1 Epic
+Planning → Stage 2 Architecture Review before code).
+
+Story IDs: **US240–US299** — [`story-id-allocation.md`](./story-id-allocation.md).
+
+Release table: [`release-history.md`](./release-history.md).
+
+Architecture Freeze ADR-012…ADR-018 remains ACTIVE. Architecture changes
+require a new ADR. Chronological evolution:
+[`../Architecture/ADR/ADL.md`](../Architecture/ADR/ADL.md).
 
 ---
 
-## RC-16 implementation milestones
+## RC-16 implementation milestones (historical plan)
 
-- M1 — Live Market Data Foundation
-- M2 — Durable Paper Order and Accounting Core
-- M3 — Strategy Trading Sessions
-- M4 — Risk and Safety Controls
-- M5 — Recovery and Reconciliation
-- M6 — Operations Experience
-- M7 — RC-16 Validation and Closeout
+- M1 — Live Market Data Foundation — **complete** (US126–US152)
+- M2 — Durable Paper Order and Accounting Core — **complete** (US153–US183)
+- M3 — Strategy Trading Sessions — **canonical path complete** (US211–US223);
+  historical recovery-hook stories US224–US227 **transferred to RC-17 E17**
+- M4 — Risk and Safety Controls — **transferred to RC-17 E19**
+- M5 — Recovery and Reconciliation — **transferred to RC-17 E17**
+- M6 — Operations Experience — **transferred to RC-17 E19**
+- M7 — RC-16 Validation and Closeout — **superseded by RC-17 release validation**
 
-Current: M1 complete (US126–US152). M2 Epic E7 complete (US153–US158):
-decimal financial contracts, durable paper accounts, PostgreSQL Event
-Processing runtime, Trading Sessions with fenced eligibility, and trading
-command authorization/JWT hardening.
-M2 Epic E8 complete (US159–US164): deterministic paper Order Intents,
-Orders-owned lifecycle/history, transactional PostgreSQL Order + Outbox
-persistence, Ledger-owned durable cash reservation, idempotent cancellation,
-and authorized workspace-scoped Order commands/queries.
-M2 Epic E9 complete (US165–US171): mandatory durable baseline Risk
-Decisions, exact unexpired Risk references for executable Orders, a structurally
-paper-only execution-adapter boundary, versioned deterministic Paper Fill
-configuration, deterministic market and limit matching, a single Execution
-Engine as the sole adapter entry, idempotent submission and cancellation
-reconciliation, and append-only Fill persistence committed atomically with its
-Outbox event.
-M2 Epic E10 complete (US172–US178): immutable Fill-derived long-only
-Position accounting, balanced append-only Ledger transactions (including
-opening capital and reservation movements), and atomic Inbox + Position +
-Ledger + Outbox + checkpoint Fill application with duplicate no-op and full
-rollback on failure; versioned decimal Position valuation; Ledger-driven
-Portfolio with freshness/completeness; deterministic rebuild/reconciliation
-that never reapplies live effects and blocks execution on mismatch; and
-workspace-scoped accounting reads.
-M2 Epic E11 complete (US179–US183): contracts/state/RBAC, PostgreSQL
-atomicity/concurrency/idempotency, deterministic replay and accounting
-identities, failure/restart/reconciliation behavior, performance, architecture,
-and quality gates validated. M2 verdict: **PASS WITH MINOR RECOMMENDATIONS**.
-Next: M3 Strategy Trading Sessions.
-Mini Validation follows M4 and M6 (M2 Mini Validation is complete).
-Final-release audit: [`rc-16-release-summary.md`](./rc-16-release-summary.md)
-confirms RC-16 is not complete until M3–M7.
+Historical 2026-07-18 final-release audit (M1/M2 only):
+[`rc-16-release-summary.md`](./rc-16-release-summary.md) — FAIL preserved for
+audit; living baseline is ACCEPTED via scope transfer
+([`release-history.md`](./release-history.md)).
+
+M1/M2 detail remains in
+[`rc-16-paper-trading-plan.md`](./rc-16-paper-trading-plan.md) and
+[`rc-16-m2-mini-validation.md`](./rc-16-m2-mini-validation.md).
+
+---
+
+## RC-17 epics (baselined / forwarded)
+
+| Epic | Name                    | Status                                                  |
+| ---- | ----------------------- | ------------------------------------------------------- |
+| E17  | Runtime Recovery        | **BASELINED** (US240–US249 + US244A); residuals → RC-18 |
+| E18  | Event Processing        | Forwarded to RC-18+                                     |
+| E19  | Operations              | Forwarded to RC-18+                                     |
+| E20  | Market Data             | Forwarded to RC-18+                                     |
+| E21  | Multi-Strategy Platform | Forwarded to RC-18+                                     |
+
+Detail: [`rc-17-roadmap.md`](./rc-17-roadmap.md),
+[`rc-17-retrospective.md`](./rc-17-retrospective.md).
 
 ---
 
 ## Future Milestones
 
-**Version 1 (`v1.0.0`) is complete.** Future work targets Version 2+ maintenance
-and enhancements (new ADR required for architecture changes):
+**Version 1 (`v1.0.0`) is complete.** RC-16 paper path and RC-17 Runtime
+Recovery architecture are baselined. Near-term engineering focuses on **RC-18**
+production recovery residuals (TD-036 mandatory) and forwarded ops/event/
+market-data/multi-strategy epics under the Architecture Freeze.
 
-- Strategy Trading Sessions and continuous safety / recovery operations
-- Research OS
+Later themes (new ADR required where architecture changes):
+
+- Research OS enhancements
 - AI Research Assistant
 - Portfolio Research
 - Real-capital Trading (requires future ADR; not V1)

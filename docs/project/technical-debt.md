@@ -1,14 +1,16 @@
 # TRP — Technical Debt Register
 
-Last updated: 2026-07-29 (TD-039 exact decimal mark source)
+Last updated: 2026-07-30 (RC-17 BASELINED — Runtime Recovery reference; residual debt owners)
 
 Living register of known technical debt. Reviewed at RC-15.1 closeout after Validation Sprint V1 (VS001–VS004); TD-028…TD-033 added from Validation Sprint findings. TD-035 and TD-038 resolved by M2 US155 PostgreSQL runtime wiring.
 
 Related:
 
 - Project Status: [`project-status.md`](./project-status.md)
+- Release History: [`release-history.md`](./release-history.md)
 - Architecture Snapshot: [`architecture-snapshot.md`](./architecture-snapshot.md)
 - Roadmap: [`roadmap.md`](./roadmap.md)
+- Story ID Allocation: [`story-id-allocation.md`](./story-id-allocation.md)
 
 ---
 
@@ -45,20 +47,20 @@ Related:
 | TD-011 | Legacy `CampaignReport.recommendations`   | Accepted Legacy    | Pre-RC-13 string[] guidance on Campaign Report; overlaps Recommendation domain. **Do not expand.** Migration planned in RC-14+.                                                                                                                                                                                           | RC-14+                                      |
 | TD-012 | Legacy `KnowledgeEntry.insights` string[] | Accepted Legacy    | Free-text bullets (often copied from campaign recommendations); name collides with Insight domain. **Do not expand.** Migration planned in RC-14+.                                                                                                                                                                        | RC-14+                                      |
 | TD-013 | Legacy `ResearchAnalysis` parallel stack  | Accepted Legacy    | Deterministic `ResearchAnalysis` / `POST /campaigns/analyze` duplicates Insight / Recommendation / ResearchReport concerns. **Do not expand.** Migration planned in RC-14+.                                                                                                                                               | RC-14+                                      |
-| TD-028 | Execution Model                           | In progress        | US159–US178 complete the durable M2 Order/Risk/Execution/Fill/accounting path, including valuation, Portfolio, reconciliation fencing, and reads. Remaining RC-16 work is Strategy runtime, continuous safety, recovery, and operations.                                                                                  | RC-16 (ADR-012)                             |
+| TD-028 | Execution Model                           | In progress        | US159–US178 + M3 US221–US223 complete the durable canonical Order/Risk/Execution/Fill/accounting path including strategy origin. Remaining work is continuous safety, recovery, and operations under **RC-17**.                                                                                                           | RC-17 (ADR-012)                             |
 | TD-029 | Advanced Performance Metrics              | Planned            | `PerformanceReport` covers net profit, total return, CAGR, drawdown, volatility, win rate, profit factor; risk-adjusted metrics (Sharpe, Sortino, Calmar) not yet computed. (VS001/VS004)                                                                                                                                 | RC-16+ (Performance analytics)              |
 | TD-030 | Scoring Strategy                          | Deferred           | Strategy Comparison uses a fixed weighted-score model with hardcoded weights; deterministic but not configurable/pluggable. (VS001/VS003)                                                                                                                                                                                 | RC-16+ (Comparison configurability)         |
 | TD-031 | Report Exporters                          | Future             | `SimulationReport` is an immutable in-memory / JSON artifact; no PDF / CSV / HTML exporters. (VS004)                                                                                                                                                                                                                      | Future (Reporting)                          |
-| TD-032 | Operational Metadata Isolation            | Mitigated (M2)     | ADR-013/014/018 semantic vs operational split is enforced in market events and in M2 Fill, valuation, Portfolio source-hash, and deterministic rebuild inputs. Continue validation across M3+ runtime artifacts.                                                                                                          | RC-16 M3+                                   |
+| TD-032 | Operational Metadata Isolation            | Mitigated (M2)     | ADR-013/014/018 semantic vs operational split is enforced in market events and in M2 Fill, valuation, Portfolio source-hash, and deterministic rebuild inputs. Continue validation across RC-17 runtime artifacts.                                                                                                        | RC-17                                       |
 | TD-033 | Large Dataset Scalability                 | Deferred           | Million-bar workloads retain full per-bar snapshot arrays in memory (~2.7 GB at 1m×10 in VS002) and required an iterative peak/trough fix (spread over large arrays overflowed the call stack). Consider streaming / aggregated snapshots. (VS002)                                                                        | RC-16+ (Scalability)                        |
 | TD-034 | Stage-1 Production Path Consolidation     | Resolved (M3 gate) | RC-16 Phase0 retired the manual `ProductionService.tick` path, removed the Stage-1 paper adapter, and disabled the direct paper session execution bypass so paper execution can only proceed through the canonical Order → Risk → Execution Engine → Paper Execution Adapter → Fill → Position → Ledger → Portfolio path. | Completed 2026-07-29                        |
 | TD-035 | Durable Event Delivery                    | Resolved (M2)      | US155 binds Nest runtime to Prisma Outbox/Inbox/checkpoints and transactional writer, with lifecycle-managed polling. The process-local Event Bus remains activity-only; retries/dead letters remain durable.                                                                                                             | Completed in RC-16 M2                       |
-| TD-036 | Runtime Recovery and Reconciliation       | Planned            | Active deployments persist, but no always-on ownership lease, semantic checkpoint, startup recovery, or reconciliation exists. ADR-014 freezes the required lifecycle.                                                                                                                                                    | RC-16 M3–M5                                 |
+| TD-036 | Runtime Recovery and Reconciliation       | Planned (partial)  | **RC-17 BASELINED (2026-07-30):** Stage 3 reference pipeline US240–US249 + US244A; Stage 4 PASS WITH RECOMMENDATIONS. See residual ownership table below. ADL-008 remains DEFERRED.                                                                                                                                       | RC-18 (mandatory residuals) / E19 / backlog |
 | TD-037 | Decimal Ledger Migration                  | Resolved (M2)      | US153 and US172–US178 provide exact decimal contracts, immutable Fill-derived Position accounting, balanced append-only Ledger entries, atomic idempotent Fill application, decimal valuation/Portfolio, and deterministic reconciliation.                                                                                | Completed in RC-16 M2                       |
 | TD-038 | Live Market Nest Outbox Wiring            | Resolved (M2)      | US155 switched `EventProcessingModule` to Prisma Outbox/Inbox/ConsumerCheckpoint providers and lifecycle polling without changing ADR-013 contracts.                                                                                                                                                                      | Completed in RC-16 M2                       |
 | TD-039 | Exact Decimal Mark Source                 | Resolved (M3 gate) | Canonical `MarkPriceEvent.price` / `MarkPriceDraft.price` are exact decimal text. Binance bookTicker midpoints are computed with `FinancialDecimal` (no `Number` authority). Valuation consumes the decimal string without accepting JavaScript numbers as the mark source.                                               | Completed 2026-07-29                        |
 | TD-040 | Position Fill Application Ordering        | Resolved (M3 gate) | Explicit per-Position Fill application ordinals persist in `position_fill_applications` under the Position lock. Rebuild prefers that durable order over Fill timestamps so interleaved delivery remains reproducible after restart/replay; unique `fill_id` blocks duplicate reordering.                                 | Completed 2026-07-29                        |
-| TD-041 | Ledger History Pagination                 | Planned            | US178 Ledger history is workspace/account scoped and read-only but currently unbounded. Add stable cursor pagination before M3/M6 operational history grows.                                                                                                                                                              | RC-16 M3/M6                                 |
+| TD-041 | Ledger History Pagination                 | Planned            | US178 Ledger history is workspace/account scoped and read-only but currently unbounded. Add stable cursor pagination before RC-17 E19 operational history grows.                                                                                                                                                          | RC-17 E19                                   |
 | TD-042 | Durable Consumer Fan-out Progress         | Resolved (M3 gate) | Outbox stores durable per-consumer delivery acknowledgements in `outbox_consumer_deliveries`. The dispatcher skips already-acked consumers on retry/restart, records ack after successful handle, and only then marks the Outbox row published — preserving at-least-once transport with idempotent fan-out progress.     | Completed 2026-07-29                        |
 | TD-043 | Playwright regression suite               | Deferred           | RC-17 deliberately skipped introducing Playwright. Add browser regression coverage (Login, Lab, Strategies, Campaign, Knowledge, Production, AI) in a later RC once tooling is approved.                                                                                                                                  | Future RC (E2E tooling)                     |
 | TD-044 | Gradual web Error Stack                   | Deferred           | RC-17 mapped API errors in existing `shared/api` / research-control clients (`mapHttpError`). A fuller shared ErrorAlert / useApiError stack remains optional and should not block production readiness.                                                                                                                  | Future RC (UX hardening)                    |
@@ -111,7 +113,7 @@ Related:
 - TD-010 — Extract `InsightGenerationService` (shared deterministic Insight drafting)
 - TD-028 — Execution Model (M2 US159–US178 complete; M3–M6 runtime work remains)
 - TD-029 — Advanced Performance Metrics (Sharpe / Sortino / Calmar)
-- TD-036 — Runtime Recovery and Reconciliation
+- TD-036 — Runtime Recovery and Reconciliation (RC-17 baselined; residuals below)
 - TD-041 — Ledger History Pagination
 
 ### Future
@@ -120,21 +122,50 @@ Related:
 
 ---
 
-## RC-16 final review classification
+## TD-036 residual ownership (RC-17 closure)
+
+Authoritative after RC-17 BASELINED. Every residual has an explicit owner role.
+
+| Residual                                                               | Class                  | Owner                                               | Target                   |
+| ---------------------------------------------------------------------- | ---------------------- | --------------------------------------------------- | ------------------------ |
+| Force/confirm Session `RECOVERING` on discovery                        | **RC-18 mandatory**    | E17 / Runtime Recovery owner                        | RC-18                    |
+| Real `RECOVERY_RECONCILIATION_PORTS` adapters (retire production stub) | **RC-18 mandatory**    | E17 / Runtime Recovery owner                        | RC-18                    |
+| Durable RecoveryState persistence + phase machine                      | **RC-18 mandatory**    | E17 / Runtime Recovery owner                        | RC-18                    |
+| Durable Incident on ambiguity / corruption                             | **RC-18 mandatory**    | E17 / Runtime Recovery owner (+ E19 Incident model) | RC-18                    |
+| Chaos/restart + fail-safe evidence suites                              | **RC-18 mandatory**    | RC-18 Release lead + Runtime Recovery owner         | RC-18                    |
+| ADL-008 promotion to ACCEPTED (or explicit accepted deferral)          | **RC-18 mandatory**    | Architecture owner                                  | RC-18                    |
+| Durable Kill Switch policy for admission/arming                        | **E19 operational**    | E19 Operations owner                                | E19 / RC-18+             |
+| Operator recovery status / phase API                                   | **E19 operational**    | E19 Operations owner                                | E19 / RC-18+             |
+| Auth hardening / authorization leftovers (TD-005 / TD-006)             | **E19 operational**    | Platform / Auth owner                               | E19 / RC-18+             |
+| Order proposal from recovery SignalIntent                              | **Future backlog**     | Orders / Canonical path owner                       | Future epic              |
+| In-process stage cache durability (lastResult/Sets)                    | **Future backlog**     | Runtime Recovery owner (with RecoveryState)         | After RecoveryState      |
+| Local vs original story-title dual scoping notes                       | **Documentation only** | Documentation / Release lead                        | Maintained in epic notes |
+| E18 Event Processing epic delivery                                     | **Future backlog**     | E18 owner                                           | RC-18+                   |
+| E20 Market Data / E21 Multi-Strategy epics                             | **Future backlog**     | E20 / E21 owners                                    | RC-18+                   |
+
+Evidence: [`e17-stage-4-technical-review.md`](./e17-stage-4-technical-review.md),
+[`rc-17-retrospective.md`](./rc-17-retrospective.md).
+
+---
+
+## RC-16 final review classification (historical)
+
+> Pre-M3 gate debts TD-034/039/040/042 are resolved. Remaining items below are
+> owned by **RC-17** as of 2026-07-30 — [`release-history.md`](./release-history.md).
 
 ### Must resolve before M3 execution is enabled
 
-- _(none remaining — TD-040 and TD-042 resolved)_
+- _(none remaining — TD-034, TD-039, TD-040, and TD-042 resolved)_
 
-### May be resolved during M3
+### Open under RC-17 (formerly “during M3–M6”)
 
-- TD-002 — durable runtime queue/scheduler ownership.
+- TD-002 — durable runtime queue/scheduler ownership (E17/E18 clarification).
 - TD-005 — authentication hardening beyond the current development identity.
-- TD-006 — complete authorization migration as Stage-1 is consolidated.
-- TD-028 — continue the canonical execution model through M3–M6.
-- TD-032 — extend semantic/operational metadata validation to M3 artifacts.
-- TD-036 — implement runtime recovery and reconciliation through M3–M5.
-- TD-041 — add stable Ledger-history pagination before operational growth.
+- TD-006 — complete authorization migration on remaining runtime surfaces.
+- TD-028 — continue the canonical execution model through RC-17 ops/safety.
+- TD-032 — extend semantic/operational metadata validation to RC-17 artifacts.
+- TD-036 — implement runtime recovery and reconciliation (**RC-17 E17**).
+- TD-041 — add stable Ledger-history pagination before E19 operational growth.
 
 ### Backlog only
 
@@ -150,17 +181,19 @@ explicit. No additional hidden blocker was found.
 
 ## Future milestones (possible RCs)
 
-| Possible RC   | Theme                              | Candidate debt                                        |
-| ------------- | ---------------------------------- | ----------------------------------------------------- |
-| RC-13+        | Persistence / durability           | TD-001, TD-002, TD-003                                |
-| RC-14+        | Legacy migration                   | TD-004, TD-011, TD-012, TD-013                        |
-| RC-15+        | Knowledge intelligence             | TD-007                                                |
-| RC-16         | Paper runtime, safety & durability | TD-002, TD-005, TD-006, TD-028, TD-032, TD-034…TD-042 |
-| RC-16+        | Simulation analytics & scale       | TD-029, TD-030, TD-033                                |
-| Future        | Reporting                          | TD-031                                                |
-| Opportunistic | Hygiene                            | TD-008, TD-009, TD-010                                |
+| Possible RC   | Theme                              | Candidate debt                                         |
+| ------------- | ---------------------------------- | ------------------------------------------------------ |
+| RC-13+        | Persistence / durability           | TD-001, TD-002, TD-003                                 |
+| RC-14+        | Legacy migration                   | TD-004, TD-011, TD-012, TD-013                         |
+| RC-15+        | Knowledge intelligence             | TD-007                                                 |
+| RC-16         | Paper runtime baseline (delivered) | TD-034…TD-042 (gates resolved where marked)            |
+| RC-17         | Production readiness / ops runtime | TD-002, TD-005, TD-006, TD-028, TD-032, TD-036, TD-041 |
+| RC-16+        | Simulation analytics & scale       | TD-029, TD-030, TD-033                                 |
+| Future        | Reporting                          | TD-031, TD-043, TD-044                                 |
+| Opportunistic | Hygiene                            | TD-008, TD-009, TD-010                                 |
 
-Exact RC numbering is directional only — product roadmap remains authoritative.
+Exact RC numbering follows [`release-history.md`](./release-history.md) and
+[`roadmap.md`](./roadmap.md).
 
 ---
 

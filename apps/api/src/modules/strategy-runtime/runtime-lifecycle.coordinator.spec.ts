@@ -35,6 +35,50 @@ describe('US220 — RuntimeLifecycleCoordinator', () => {
     expect(resumed.toState).toBe(RuntimeWorkerState.ARMED);
   });
 
+  it('enables event admission without enabling evaluation', async () => {
+    const coordinator = new RuntimeLifecycleCoordinator();
+
+    const enabled = await coordinator.enableEventAdmission({
+      workspaceId: 'workspace-1',
+      sessionId: 'session-1',
+      fencingToken: 1,
+      nowIso: now,
+    });
+
+    expect(enabled.toState).toBe(RuntimeWorkerState.EVENT_ADMISSION_ENABLED);
+    expect(coordinator.canAcceptTicks('workspace-1', 'session-1')).toBe(true);
+    expect(coordinator.canEvaluate('workspace-1', 'session-1')).toBe(false);
+    await expect(
+      coordinator.runEvaluation('workspace-1', 'session-1', async () => 'nope'),
+    ).rejects.toThrow(/EVENT_ADMISSION_ENABLED/);
+  });
+
+  it('arms from EVENT_ADMISSION_ENABLED and then accepts evaluation', async () => {
+    const coordinator = new RuntimeLifecycleCoordinator();
+
+    await coordinator.enableEventAdmission({
+      workspaceId: 'workspace-1',
+      sessionId: 'session-1',
+      fencingToken: 1,
+      nowIso: now,
+    });
+    const armed = await coordinator.arm({
+      workspaceId: 'workspace-1',
+      sessionId: 'session-1',
+      fencingToken: 1,
+      nowIso: now,
+      reason: 'recovery runtime armed',
+    });
+
+    expect(armed.fromState).toBe(RuntimeWorkerState.EVENT_ADMISSION_ENABLED);
+    expect(armed.toState).toBe(RuntimeWorkerState.ARMED);
+    expect(coordinator.canAcceptTicks('workspace-1', 'session-1')).toBe(true);
+    expect(coordinator.canEvaluate('workspace-1', 'session-1')).toBe(true);
+    await expect(
+      coordinator.runEvaluation('workspace-1', 'session-1', async () => 'ok'),
+    ).resolves.toBe('ok');
+  });
+
   it('drains in-flight evaluation before pause settles IDLE', async () => {
     const coordinator = new RuntimeLifecycleCoordinator();
     await coordinator.arm({

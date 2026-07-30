@@ -111,13 +111,19 @@ ADR-012…ADR-018 freeze future paper-runtime semantics:
   failure/restart reconciliation, performance, architecture, and quality gates
   pass. M2 exits PASS WITH MINOR RECOMMENDATIONS. See
   `docs/project/rc-16-m2-mini-validation.md`.
-- RC-16 final-release review completed: M1/M2 evidence remains valid, but the
-  release is not ready before M3–M7 and final closeout. See
+- RC-16 final-release review completed (2026-07-18): M1/M2 evidence remains
+  valid; historical verdict FAIL before M3–M7. See
   `docs/project/rc-16-release-summary.md`.
+- RC-16 M3 canonical path complete (US211–US223). Residual recovery/ops scope
+  transferred to RC-17 (2026-07-30). Living status:
+  `docs/project/release-history.md`.
 - US183.1 — RC-15 / M2 Cluster Closure (2026-07-19): stabilization-only
   validation and documentation sync; no Research Engine, Validation, Knowledge
   Schema, or paper-runtime semantic change. See
   `docs/project/rc-15-cluster-closure.md`.
+- RC-17 planning package accepted (2026-07-30): implementation not started;
+  stories US240–US299. See `docs/project/rc-17-release-planning.md` and
+  `docs/project/story-id-allocation.md`.
 
 These changes establish the separate RC-16 paper runtime. Research Engine,
 Validation, Knowledge Schema, and RC-15 simulation calculation versions remain

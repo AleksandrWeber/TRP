@@ -2,9 +2,15 @@
 
 Date: 2026-07-18
 
-Status: Approved
+Status: Approved (historical plan)
 
 Architecture status: Frozen by ADR-012…ADR-018
+
+> **Baseline alignment (2026-07-30):** RC-16 delivered Planning, Freeze, M1, M2,
+> and M3 canonical path (US211–US223). Remaining originally planned M4–M7 (and
+> M3 recovery hooks US224–US227) were **transferred to RC-17**. Living status:
+> [`release-history.md`](./release-history.md). Do not treat M3–M7 sections
+> below as an open RC-16 implementation backlog.
 
 ---
 
@@ -243,7 +249,10 @@ architecture, and documentation validation; release only with no blocker.
 12. RC-16 Validation and Release
 
 User Stories are defined by milestone after Architecture Freeze. M1–M2
-(US126–US183) are complete; M3–M7 stories remain.
+(US126–US183) are complete; M3 canonical path (US211–US223) is complete.
+Originally planned M3 residual + M4–M7 product intent is owned by **RC-17**
+as of 2026-07-30 — [`release-history.md`](./release-history.md),
+[`rc-17-roadmap.md`](./rc-17-roadmap.md).
 
 ---
 
@@ -308,6 +317,12 @@ Final-release review status (2026-07-18): M1/M2 are complete, but M3–M7 and
 their release gates remain. RC-16 is not yet complete. See
 [`rc-16-release-summary.md`](./rc-16-release-summary.md).
 
+**Living baseline (2026-07-30):** RC-16 is **BASELINE ACCEPTED** after M3
+US211–US223. Residual DoD items above that were not delivered under RC-16
+(full restart recovery, Kill Switch productization, Dashboard/ops, etc.) are
+tracked under RC-17 — [`release-history.md`](./release-history.md),
+[`rc-17-release-planning.md`](./rc-17-release-planning.md).
+
 ---
 
 ## Complexity assessment
@@ -318,8 +333,9 @@ Expected shape:
 
 - 7 implementation/validation milestones after M0;
 - 12 epics;
-- 58 completed User Stories through M2 (US126–US183); M3–M7 remain;
-- highest-risk remaining work in strategy runtime ownership, recovery,
-  reconciliation, continuous safety, and operations.
+- 58 completed User Stories through M2 (US126–US183); M3 US211–US223 complete;
+  residual recovery/ops/multi-strategy scope transferred to RC-17 (2026-07-30);
+- highest-risk remaining work (under RC-17): runtime recovery, reconciliation,
+  continuous safety, event-processing hardening, and operations.
 
 Architecture changes after this Freeze require a new ADR.

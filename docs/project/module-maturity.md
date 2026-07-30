@@ -1,22 +1,25 @@
 # TRP — Module Maturity Matrix
 
-Last updated: 2026-07-18 (RC-16 M2 complete)
+Last updated: 2026-07-30 (RC-17 BASELINED — Runtime Recovery reference)
 
 Living matrix of implementation maturity for major Research OS modules. Documentation only (US094 / US125).
 
 > RC-15.1: the Simulation Platform modules below (MarketData, HistoricalImport, MarketDataProvider, Backtesting, Portfolio, Trade, Performance, WalkForward, StrategyComparison, SimulationReport) were validated by Validation Sprint V1 (VS001–VS004). They remain **Foundation** maturity — validation confirmed correctness and determinism, not productization. RC-16 hardening candidates are tracked as TD-028…TD-033.
 
-> RC-16: Paper Trading architecture is frozen by ADR-012…ADR-018. M1/M2 modules
-> below are Foundation. Strategy Runtime, Kill Switch, Audit, and Dashboard remain
-> Planned until their milestones. The Stage-1 manual production path is a
-> prototype to consolidate, not the frozen target architecture.
+> RC-16: Paper Trading architecture is frozen by ADR-012…ADR-018. M1/M2 and M3
+> canonical Runtime path (US211–US223) are Foundation baseline. Kill Switch,
+> full recovery, Audit, and Dashboard remain Planned under **RC-17**. Stage-1
+> parallel production path retired (TD-034).
+> Living status: [`release-history.md`](./release-history.md).
 
 Related:
 
 - Project Status: [`project-status.md`](./project-status.md)
+- Release History: [`release-history.md`](./release-history.md)
 - Architecture Snapshot: [`architecture-snapshot.md`](./architecture-snapshot.md)
 - Technical Debt: [`technical-debt.md`](./technical-debt.md)
 - Roadmap: [`roadmap.md`](./roadmap.md)
+- Architecture Decision Log: [`../Architecture/ADR/ADL.md`](../Architecture/ADR/ADL.md)
 
 ---
 
@@ -35,46 +38,46 @@ Related:
 
 ## Summary table
 
-| Module             | Status     | Next milestone                                          |
-| ------------------ | ---------- | ------------------------------------------------------- |
-| Research Engine    | Stable     | RC-14 (observability / provenance extensions as needed) |
-| Campaign           | Mature     | RC-14 (optional Campaign UI / analytics)                |
-| Pipeline           | Mature     | RC-14+ (PipelineRun persistence / observability)        |
-| Replay             | Foundation | RC-14+ (Replay HTTP API if productized)                 |
-| Knowledge          | Mature     | RC-15+ (vector search / richer intelligence)            |
-| Insight            | Foundation | RC-14 (write / analysis API as productized)             |
-| Cross-Campaign     | Foundation | RC-14 (write / reporting as productized)                |
-| Recommendation     | Foundation | RC-14 (write / Report Builder as productized)           |
-| Research Report    | Foundation | RC-14 (export / write API as productized)               |
-| Experiment         | Mature     | RC-14+ (env metadata / accountingVersion / equity)      |
-| Persistence        | Foundation | RC-14+ (durable Repository)                             |
-| History            | Mature     | RC-14+ (follows Persistence durability)                 |
-| Import             | Mature     | RC-14 (additional formats if needed)                    |
-| Export             | Mature     | RC-14 (additional formats if needed)                    |
-| Jobs               | Foundation | RC-14+ (durable queue); RC-14 (Scheduler)               |
-| MarketData         | Foundation | RC-16+ (Prisma / exchange providers)                    |
-| HistoricalImport   | Foundation | RC-16+ (additional formats / REST if productized)       |
-| MarketDataProvider | Foundation | RC-16+ (Binance / Bybit / Polygon adapters)             |
-| Backtesting        | Foundation | RC-16+ (paper trading / richer strategy tooling)        |
-| Portfolio          | Foundation | RC-16+ (multi-instrument / positions book)              |
-| Trade              | Foundation | RC-16+ (slippage / commission models)                   |
-| Performance        | Foundation | RC-16+ (benchmarks / tear sheets)                       |
-| WalkForward        | Foundation | RC-16+ (optimization hooks — out of scope today)        |
-| StrategyComparison | Foundation | RC-16+ (UI / batch research workflows)                  |
-| SimulationReport   | Foundation | RC-16+ (export / persistence)                           |
-| Stage-1 Production | Prototype  | RC-16 (migrate; do not expand as parallel path)         |
-| LiveMarketData     | Foundation | RC-16 M1 complete; next M3+                             |
-| Financial          | Foundation | RC-16 M2 complete; next M3+                             |
-| PaperAccount       | Foundation | RC-16 M2 complete; next M3+                             |
-| TradingSession     | Foundation | RC-16 M2 complete; next M3 strategy sessions            |
-| StrategyRuntime    | Planned    | RC-16 M3                                                |
-| Orders             | Foundation | RC-16 M2 complete; next M3+                             |
-| ExecutionEngine    | Foundation | RC-16 M2 complete; next M3+                             |
-| PaperAdapter       | Foundation | RC-16 M2 complete; next M3+                             |
-| Risk / KillSwitch  | Foundation | RC-16 M2 baseline Risk; Kill Switch remains M4          |
-| Ledger / Portfolio | Foundation | RC-16 M2 complete (accounting + projection); next M3+   |
-| EventProcessing    | Foundation | RC-16 M1/M2 complete; next M3 fan-out hardening         |
-| Audit / Dashboard  | Planned    | RC-16 M6                                                |
+| Module             | Status     | Next milestone                                                                                  |
+| ------------------ | ---------- | ----------------------------------------------------------------------------------------------- |
+| Research Engine    | Stable     | RC-14 (observability / provenance extensions as needed)                                         |
+| Campaign           | Mature     | RC-14 (optional Campaign UI / analytics)                                                        |
+| Pipeline           | Mature     | RC-14+ (PipelineRun persistence / observability)                                                |
+| Replay             | Foundation | RC-14+ (Replay HTTP API if productized)                                                         |
+| Knowledge          | Mature     | RC-15+ (vector search / richer intelligence)                                                    |
+| Insight            | Foundation | RC-14 (write / analysis API as productized)                                                     |
+| Cross-Campaign     | Foundation | RC-14 (write / reporting as productized)                                                        |
+| Recommendation     | Foundation | RC-14 (write / Report Builder as productized)                                                   |
+| Research Report    | Foundation | RC-14 (export / write API as productized)                                                       |
+| Experiment         | Mature     | RC-14+ (env metadata / accountingVersion / equity)                                              |
+| Persistence        | Foundation | RC-14+ (durable Repository)                                                                     |
+| History            | Mature     | RC-14+ (follows Persistence durability)                                                         |
+| Import             | Mature     | RC-14 (additional formats if needed)                                                            |
+| Export             | Mature     | RC-14 (additional formats if needed)                                                            |
+| Jobs               | Foundation | RC-14+ (durable queue); RC-14 (Scheduler)                                                       |
+| MarketData         | Foundation | RC-16+ (Prisma / exchange providers)                                                            |
+| HistoricalImport   | Foundation | RC-16+ (additional formats / REST if productized)                                               |
+| MarketDataProvider | Foundation | RC-16+ (Binance / Bybit / Polygon adapters)                                                     |
+| Backtesting        | Foundation | RC-16+ (paper trading / richer strategy tooling)                                                |
+| Portfolio          | Foundation | RC-16+ (multi-instrument / positions book)                                                      |
+| Trade              | Foundation | RC-16+ (slippage / commission models)                                                           |
+| Performance        | Foundation | RC-16+ (benchmarks / tear sheets)                                                               |
+| WalkForward        | Foundation | RC-16+ (optimization hooks — out of scope today)                                                |
+| StrategyComparison | Foundation | RC-16+ (UI / batch research workflows)                                                          |
+| SimulationReport   | Foundation | RC-16+ (export / persistence)                                                                   |
+| Stage-1 Production | Prototype  | RC-16 (migrate; do not expand as parallel path)                                                 |
+| LiveMarketData     | Foundation | RC-16 M1 complete; next M3+                                                                     |
+| Financial          | Foundation | RC-16 M2 complete; next M3+                                                                     |
+| PaperAccount       | Foundation | RC-16 M2 complete; next M3+                                                                     |
+| TradingSession     | Foundation | RC-17 E17 recovery pipeline baselined (US240–US249); force-`RECOVERING` / RecoveryState → RC-18 |
+| StrategyRuntime    | Planned    | RC-16 M3                                                                                        |
+| Orders             | Foundation | RC-16 M2 complete; next M3+                                                                     |
+| ExecutionEngine    | Foundation | RC-16 M2 complete; next M3+                                                                     |
+| PaperAdapter       | Foundation | RC-16 M2 complete; next M3+                                                                     |
+| Risk / KillSwitch  | Foundation | RC-16 M2 baseline Risk; Kill Switch remains M4                                                  |
+| Ledger / Portfolio | Foundation | RC-16 M2 complete (accounting + projection); next M3+                                           |
+| EventProcessing    | Foundation | RC-16 M1/M2 complete; next M3 fan-out hardening                                                 |
+| Audit / Dashboard  | Planned    | RC-16 M6                                                                                        |
 
 ---
 
@@ -271,20 +274,17 @@ Related:
 
 ### Paper Trading Platform (RC-16)
 
-| Field                   | Value                                                                                                                                                                                                                                                                          |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Status**              | M2 complete — PASS WITH MINOR RECOMMENDATIONS                                                                                                                                                                                                                                  |
-| **Scope**               | Live Market Data; durable Trading Sessions; Strategy Runtime; Orders; mandatory Risk; single Execution Engine; Paper Adapter; Fill → Position → Ledger → Portfolio; Outbox/Inbox; restart recovery; Audit; Dashboard                                                           |
-| **Existing prototype**  | `production/` supports approved deployment, manual tick, basic Risk, immediate paper fill, persisted signal/execution/long-or-flat position. It is not idempotent/transactional/always-on and lacks workspace ownership, durable Orders, Ledger, recovery, and reconciliation. |
-| **Frozen architecture** | ADR-012…ADR-018 and [`rc-16-paper-trading-plan.md`](./rc-16-paper-trading-plan.md)                                                                                                                                                                                             |
-| **M1 progress**         | ✓ Epic E1–E6 (US126–US152): Live Market Data Foundation + Mini Validation (PASS WITH MINOR RECOMMENDATIONS)                                                                                                                                                                    |
-| **M2 progress**         | ✓ Epic E7 (US153–US158): decimal contracts, paper account, PostgreSQL event runtime, Trading Session + fencing, trading RBAC/JWT hardening                                                                                                                                     |
-| **E8 progress**         | ✓ US159–US164: deterministic Order Intents, Orders-owned lifecycle/history, transactional persistence, Ledger cash reservations, idempotent cancellation, authorized Order API                                                                                                 |
-| **E9 progress**         | ✓ US165–US171: durable mandatory Risk Decisions, paper-only adapter boundary, versioned deterministic fill configuration, deterministic market/limit matching, single Execution Engine as sole adapter entry, idempotent submission/cancellation, append-only Fill persistence |
-| **E10 progress**        | ✓ US172–US178: Fill-derived Position, authoritative balanced Ledger, atomic accounting, versioned valuation, Ledger-driven Portfolio, deterministic reconciliation, workspace-scoped accounting API                                                                            |
-| **E11 validation**      | ✓ US179–US183: contracts/RBAC, PostgreSQL atomicity/concurrency, deterministic replay/invariants, failure/reconciliation, performance/conformance/quality gates                                                                                                                |
-| **Next milestone**      | M3 — Strategy Trading Sessions                                                                                                                                                                                                                                                 |
-| **Release review**      | Final RC-16 release held until M3–M7; see [`rc-16-release-summary.md`](./rc-16-release-summary.md)                                                                                                                                                                             |
+| Field                   | Value                                                                                                                                                                                                             |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Status**              | **BASELINE ACCEPTED** — M1, M2, M3 canonical path (US211–US223)                                                                                                                                                   |
+| **Scope**               | Live Market Data; durable Trading Sessions; Strategy Runtime; Orders; mandatory Risk; single Execution Engine; Paper Adapter; Fill → Position → Ledger → Portfolio; Outbox/Inbox; (recovery/ops residual → RC-17) |
+| **Existing prototype**  | Stage-1 `production/` tick path retired (TD-034). Canonical path only.                                                                                                                                            |
+| **Frozen architecture** | ADR-012…ADR-018 and [`rc-16-paper-trading-plan.md`](./rc-16-paper-trading-plan.md); evolution log [`../Architecture/ADR/ADL.md`](../Architecture/ADR/ADL.md)                                                      |
+| **M1 progress**         | ✓ Epic E1–E6 (US126–US152): Live Market Data Foundation + Mini Validation (PASS WITH MINOR RECOMMENDATIONS)                                                                                                       |
+| **M2 progress**         | ✓ Epic E7–E11 (US153–US183): durable paper Order/Accounting core + Mini Validation                                                                                                                                |
+| **M3 progress**         | ✓ E13–E16 (US211–US223): Deployment, Runtime, Signal Intent, CanonicalOrderPath, E2E candle → Fill → accounting                                                                                                   |
+| **Next milestone**      | **RC-18** — TD-036 mandatory residuals + forwarded E18–E21                                                                                                                                                        |
+| **Release review**      | Historical FAIL (2026-07-18) preserved in [`rc-16-release-summary.md`](./rc-16-release-summary.md); living baseline [`release-history.md`](./release-history.md)                                                  |
 
 ---
 
