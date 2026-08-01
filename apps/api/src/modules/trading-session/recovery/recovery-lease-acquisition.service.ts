@@ -14,6 +14,8 @@ import {
   TRADING_SESSION_REPOSITORY,
   type TradingSessionRepository,
 } from '../persistence/trading-session.repository';
+import { RecoveryIncidentFailClosedService } from './recovery-incident-fail-closed.service';
+import { RecoveryPhaseProgressService } from './recovery-phase-progress.service';
 import { StartupRecoveryDiscoveryService } from './startup-recovery-discovery.service';
 
 /**
@@ -27,13 +29,14 @@ export function resolveRecoveryRuntimeOwnerId(env: NodeJS.ProcessEnv = process.e
 }
 
 /**
- * US241 — Recovery Lease Acquisition.
+ * US241 — Recovery Lease Acquisition (+ US292 fencing token
+ * + US293 fail-closed Incident when lease acquire is impossible).
  *
  * After US240 discovery identifies a candidate, acquire exclusive fenced lease
  * ownership via optimistic CAS. Returns LEASE_ACQUIRED or LEASE_DENIED only.
  *
- * Does not load checkpoints, validate, reconcile, change Session status, or
- * resume Runtime.
+ * Does not load checkpoints, validate, reconcile, change Session status on
+ * success, or resume Runtime. Denial fail-closes via US293.
  */
 @Injectable()
 export class RecoveryLeaseAcquisitionService implements OnApplicationBootstrap {
@@ -47,6 +50,10 @@ export class RecoveryLeaseAcquisitionService implements OnApplicationBootstrap {
     private readonly transactions: PrismaTransactionService,
     @Inject(StartupRecoveryDiscoveryService)
     private readonly discovery: StartupRecoveryDiscoveryService,
+    @Inject(RecoveryPhaseProgressService)
+    private readonly recoveryProgress: RecoveryPhaseProgressService,
+    @Inject(RecoveryIncidentFailClosedService)
+    private readonly failClosed: RecoveryIncidentFailClosedService,
     @Inject(LOGGER) logger: Logger,
   ) {
     this.logger = logger.child(RecoveryLeaseAcquisitionService.name);
@@ -85,17 +92,47 @@ export class RecoveryLeaseAcquisitionService implements OnApplicationBootstrap {
       const result = toAcquisitionResult(decision, command);
       this.lastResult = result;
       this.logAcquisition(result, command.candidate);
+      await this.failClosed.failClosedOnAmbiguity({
+        sessionId: command.candidate.sessionId,
+        workspaceId: command.candidate.workspaceId,
+        reasonClass: 'lease_acquire_impossible',
+        failureReason: `lease_denied:${result.reason}`,
+        recordedAt: command.recordedAt,
+      });
       return result;
     }
 
     const saved = await this.transactions.run(async (transaction) => {
-      return this.sessions.saveIfVersion(decision.next, decision.expectedVersion, transaction);
+      const persisted = await this.sessions.saveIfVersion(
+        decision.next,
+        decision.expectedVersion,
+        transaction,
+      );
+      if (persisted === null) {
+        return null;
+      }
+      if (persisted.lease !== null) {
+        await this.recoveryProgress.recordFencingToken({
+          sessionId: persisted.id,
+          fencingToken: persisted.lease.fencingToken,
+          recordedAt: command.recordedAt,
+          transaction,
+        });
+      }
+      return persisted;
     });
 
     if (saved === null) {
       const result = toAcquisitionResult(decision, command, true);
       this.lastResult = result;
       this.logAcquisition(result, command.candidate);
+      await this.failClosed.failClosedOnAmbiguity({
+        sessionId: command.candidate.sessionId,
+        workspaceId: command.candidate.workspaceId,
+        reasonClass: 'lease_acquire_impossible',
+        failureReason: `lease_denied:${result.reason}`,
+        recordedAt: command.recordedAt,
+      });
       return result;
     }
 

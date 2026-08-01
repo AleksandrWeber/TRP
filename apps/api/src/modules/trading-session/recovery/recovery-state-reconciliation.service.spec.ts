@@ -126,6 +126,19 @@ describe('US243 — RecoveryStateReconciliationService', () => {
   const checkpoints = { getLastResult: vi.fn() };
 
   let info: ReturnType<typeof vi.fn>;
+  const failClosed = {
+    failClosedOnAmbiguity: vi.fn(async () => ({
+      outcome: 'FAILED_CLOSED' as const,
+      reason: 'test',
+      incident: null,
+      sessionId: 'session-1',
+      workspaceId: 'ws-1',
+      sessionStatus: null,
+      recoveryPhase: null,
+      evaluationAdmitted: false as const,
+      signalIntentEmitted: false as const,
+    })),
+  };
   let service: RecoveryStateReconciliationService;
 
   beforeEach(() => {
@@ -146,6 +159,7 @@ describe('US243 — RecoveryStateReconciliationService', () => {
       discovery as unknown as StartupRecoveryDiscoveryService,
       leases as unknown as RecoveryLeaseAcquisitionService,
       checkpoints as unknown as RecoveryCheckpointValidationService,
+      failClosed as never,
       logger as never,
     );
     findById.mockResolvedValue(sessionRow());
@@ -249,6 +263,7 @@ describe('US243 — RecoveryStateReconciliationService', () => {
         createdAt: at,
       },
       eligibleSessionIds: ['session-1'],
+      recoveringOpen: null,
     });
     leases.getLastResult.mockReturnValue(lease());
     checkpoints.getLastResult.mockReturnValue(validCheckpoint());
@@ -269,6 +284,7 @@ describe('US243 — RecoveryStateReconciliationService', () => {
         createdAt: at,
       },
       eligibleSessionIds: ['session-1'],
+      recoveringOpen: null,
     });
     leases.getLastResult.mockReturnValue(lease());
     checkpoints.getLastResult.mockReturnValue({
@@ -294,6 +310,7 @@ describe('US243 — RecoveryStateReconciliationService', () => {
         createdAt: at,
       },
       eligibleSessionIds: ['session-1'],
+      recoveringOpen: null,
     });
     leases.getLastResult.mockReturnValue(lease());
     checkpoints.getLastResult.mockReturnValue(validCheckpoint());

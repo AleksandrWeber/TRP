@@ -1,6 +1,6 @@
 # TRP — Module Maturity Matrix
 
-Last updated: 2026-07-30 (RC-17 BASELINED — Runtime Recovery reference)
+Last updated: 2026-08-01 (RC-18 mid-release — TradingSession US290–US293)
 
 Living matrix of implementation maturity for major Research OS modules. Documentation only (US094 / US125).
 
@@ -38,46 +38,46 @@ Related:
 
 ## Summary table
 
-| Module             | Status     | Next milestone                                                                                  |
-| ------------------ | ---------- | ----------------------------------------------------------------------------------------------- |
-| Research Engine    | Stable     | RC-14 (observability / provenance extensions as needed)                                         |
-| Campaign           | Mature     | RC-14 (optional Campaign UI / analytics)                                                        |
-| Pipeline           | Mature     | RC-14+ (PipelineRun persistence / observability)                                                |
-| Replay             | Foundation | RC-14+ (Replay HTTP API if productized)                                                         |
-| Knowledge          | Mature     | RC-15+ (vector search / richer intelligence)                                                    |
-| Insight            | Foundation | RC-14 (write / analysis API as productized)                                                     |
-| Cross-Campaign     | Foundation | RC-14 (write / reporting as productized)                                                        |
-| Recommendation     | Foundation | RC-14 (write / Report Builder as productized)                                                   |
-| Research Report    | Foundation | RC-14 (export / write API as productized)                                                       |
-| Experiment         | Mature     | RC-14+ (env metadata / accountingVersion / equity)                                              |
-| Persistence        | Foundation | RC-14+ (durable Repository)                                                                     |
-| History            | Mature     | RC-14+ (follows Persistence durability)                                                         |
-| Import             | Mature     | RC-14 (additional formats if needed)                                                            |
-| Export             | Mature     | RC-14 (additional formats if needed)                                                            |
-| Jobs               | Foundation | RC-14+ (durable queue); RC-14 (Scheduler)                                                       |
-| MarketData         | Foundation | RC-16+ (Prisma / exchange providers)                                                            |
-| HistoricalImport   | Foundation | RC-16+ (additional formats / REST if productized)                                               |
-| MarketDataProvider | Foundation | RC-16+ (Binance / Bybit / Polygon adapters)                                                     |
-| Backtesting        | Foundation | RC-16+ (paper trading / richer strategy tooling)                                                |
-| Portfolio          | Foundation | RC-16+ (multi-instrument / positions book)                                                      |
-| Trade              | Foundation | RC-16+ (slippage / commission models)                                                           |
-| Performance        | Foundation | RC-16+ (benchmarks / tear sheets)                                                               |
-| WalkForward        | Foundation | RC-16+ (optimization hooks — out of scope today)                                                |
-| StrategyComparison | Foundation | RC-16+ (UI / batch research workflows)                                                          |
-| SimulationReport   | Foundation | RC-16+ (export / persistence)                                                                   |
-| Stage-1 Production | Prototype  | RC-16 (migrate; do not expand as parallel path)                                                 |
-| LiveMarketData     | Foundation | RC-16 M1 complete; next M3+                                                                     |
-| Financial          | Foundation | RC-16 M2 complete; next M3+                                                                     |
-| PaperAccount       | Foundation | RC-16 M2 complete; next M3+                                                                     |
-| TradingSession     | Foundation | RC-17 E17 recovery pipeline baselined (US240–US249); force-`RECOVERING` / RecoveryState → RC-18 |
-| StrategyRuntime    | Planned    | RC-16 M3                                                                                        |
-| Orders             | Foundation | RC-16 M2 complete; next M3+                                                                     |
-| ExecutionEngine    | Foundation | RC-16 M2 complete; next M3+                                                                     |
-| PaperAdapter       | Foundation | RC-16 M2 complete; next M3+                                                                     |
-| Risk / KillSwitch  | Foundation | RC-16 M2 baseline Risk; Kill Switch remains M4                                                  |
-| Ledger / Portfolio | Foundation | RC-16 M2 complete (accounting + projection); next M3+                                           |
-| EventProcessing    | Foundation | RC-16 M1/M2 complete; next M3 fan-out hardening                                                 |
-| Audit / Dashboard  | Planned    | RC-16 M6                                                                                        |
+| Module             | Status     | Next milestone                                                                                                             |
+| ------------------ | ---------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Research Engine    | Stable     | RC-14 (observability / provenance extensions as needed)                                                                    |
+| Campaign           | Mature     | RC-14 (optional Campaign UI / analytics)                                                                                   |
+| Pipeline           | Mature     | RC-14+ (PipelineRun persistence / observability)                                                                           |
+| Replay             | Foundation | RC-14+ (Replay HTTP API if productized)                                                                                    |
+| Knowledge          | Mature     | RC-15+ (vector search / richer intelligence)                                                                               |
+| Insight            | Foundation | RC-14 (write / analysis API as productized)                                                                                |
+| Cross-Campaign     | Foundation | RC-14 (write / reporting as productized)                                                                                   |
+| Recommendation     | Foundation | RC-14 (write / Report Builder as productized)                                                                              |
+| Research Report    | Foundation | RC-14 (export / write API as productized)                                                                                  |
+| Experiment         | Mature     | RC-14+ (env metadata / accountingVersion / equity)                                                                         |
+| Persistence        | Foundation | RC-14+ (durable Repository)                                                                                                |
+| History            | Mature     | RC-14+ (follows Persistence durability)                                                                                    |
+| Import             | Mature     | RC-14 (additional formats if needed)                                                                                       |
+| Export             | Mature     | RC-14 (additional formats if needed)                                                                                       |
+| Jobs               | Foundation | RC-14+ (durable queue); RC-14 (Scheduler)                                                                                  |
+| MarketData         | Foundation | RC-16+ (Prisma / exchange providers)                                                                                       |
+| HistoricalImport   | Foundation | RC-16+ (additional formats / REST if productized)                                                                          |
+| MarketDataProvider | Foundation | RC-16+ (Binance / Bybit / Polygon adapters)                                                                                |
+| Backtesting        | Foundation | RC-16+ (paper trading / richer strategy tooling)                                                                           |
+| Portfolio          | Foundation | RC-16+ (multi-instrument / positions book)                                                                                 |
+| Trade              | Foundation | RC-16+ (slippage / commission models)                                                                                      |
+| Performance        | Foundation | RC-16+ (benchmarks / tear sheets)                                                                                          |
+| WalkForward        | Foundation | RC-16+ (optimization hooks — out of scope today)                                                                           |
+| StrategyComparison | Foundation | RC-16+ (UI / batch research workflows)                                                                                     |
+| SimulationReport   | Foundation | RC-16+ (export / persistence)                                                                                              |
+| Stage-1 Production | Prototype  | RC-16 (migrate; do not expand as parallel path)                                                                            |
+| LiveMarketData     | Foundation | RC-16 M1 complete; next M3+                                                                                                |
+| Financial          | Foundation | RC-16 M2 complete; next M3+                                                                                                |
+| PaperAccount       | Foundation | RC-16 M2 complete; next M3+                                                                                                |
+| TradingSession     | Foundation | RC-17 E17 pipeline baselined; RC-18 US290–US293 Done (force-`RECOVERING`, real ports, RecoveryState, Incident); US294 next |
+| StrategyRuntime    | Planned    | RC-16 M3                                                                                                                   |
+| Orders             | Foundation | RC-16 M2 complete; next M3+                                                                                                |
+| ExecutionEngine    | Foundation | RC-16 M2 complete; next M3+                                                                                                |
+| PaperAdapter       | Foundation | RC-16 M2 complete; next M3+                                                                                                |
+| Risk / KillSwitch  | Foundation | RC-16 M2 baseline Risk; Kill Switch remains M4                                                                             |
+| Ledger / Portfolio | Foundation | RC-16 M2 complete (accounting + projection); next M3+                                                                      |
+| EventProcessing    | Foundation | RC-16 M1/M2 complete; next M3 fan-out hardening                                                                            |
+| Audit / Dashboard  | Planned    | RC-16 M6                                                                                                                   |
 
 ---
 
@@ -283,7 +283,7 @@ Related:
 | **M1 progress**         | ✓ Epic E1–E6 (US126–US152): Live Market Data Foundation + Mini Validation (PASS WITH MINOR RECOMMENDATIONS)                                                                                                       |
 | **M2 progress**         | ✓ Epic E7–E11 (US153–US183): durable paper Order/Accounting core + Mini Validation                                                                                                                                |
 | **M3 progress**         | ✓ E13–E16 (US211–US223): Deployment, Runtime, Signal Intent, CanonicalOrderPath, E2E candle → Fill → accounting                                                                                                   |
-| **Next milestone**      | **RC-18** — TD-036 mandatory residuals + forwarded E18–E21                                                                                                                                                        |
+| **Next milestone**      | **RC-18** — US294–US295 remaining mandatory residuals, then E18–E21                                                                                                                                               |
 | **Release review**      | Historical FAIL (2026-07-18) preserved in [`rc-16-release-summary.md`](./rc-16-release-summary.md); living baseline [`release-history.md`](./release-history.md)                                                  |
 
 ---

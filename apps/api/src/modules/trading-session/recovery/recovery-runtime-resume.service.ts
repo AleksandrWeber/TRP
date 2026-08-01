@@ -5,21 +5,26 @@ import {
   STRATEGY_RUNTIME_PORT,
   type StrategyRuntimePort,
 } from '../../strategy-runtime/ports/strategy-runtime.port';
+import { RecoveryPhase } from '../domain/durable-recovery-state';
 import {
   decideRecoveryRuntimeResume,
   type RecoveryRuntimeResumeResult,
 } from '../domain/recovery-runtime-resume';
 import type { RecoveryCandidate } from '../domain/startup-recovery-discovery';
+import { TradingSessionStatus } from '../domain/trading-session-status';
 import { RecoveryCheckpointValidationService } from './recovery-checkpoint-validation.service';
+import { RecoveryIncidentFailClosedService } from './recovery-incident-fail-closed.service';
 import {
   RecoveryLeaseAcquisitionService,
   resolveRecoveryRuntimeOwnerId,
 } from './recovery-lease-acquisition.service';
+import { RecoveryPhaseProgressService } from './recovery-phase-progress.service';
 import { RecoveryStateReconciliationService } from './recovery-state-reconciliation.service';
 import { StartupRecoveryDiscoveryService } from './startup-recovery-discovery.service';
 
 /**
- * US244 — Deterministic Runtime Resume.
+ * US244 — Deterministic Runtime Resume (+ US292 RECONCILING → READY
+ * + US293 fail-closed on resume ambiguity).
  *
  * Hydrates Runtime context after successful recovery while keeping the worker
  * idle. READY here is a recovery operational state, not an ARMED worker state.
@@ -42,6 +47,10 @@ export class RecoveryRuntimeResumeService implements OnApplicationBootstrap {
     private readonly checkpoints: RecoveryCheckpointValidationService,
     @Inject(RecoveryStateReconciliationService)
     private readonly reconciliation: RecoveryStateReconciliationService,
+    @Inject(RecoveryPhaseProgressService)
+    private readonly recoveryProgress: RecoveryPhaseProgressService,
+    @Inject(RecoveryIncidentFailClosedService)
+    private readonly failClosed: RecoveryIncidentFailClosedService,
     @Inject(LOGGER) logger: Logger,
   ) {
     this.logger = logger.child(RecoveryRuntimeResumeService.name);
@@ -75,6 +84,14 @@ export class RecoveryRuntimeResumeService implements OnApplicationBootstrap {
     if (precheck) {
       this.lastResult = precheck;
       this.logResult(precheck);
+      await this.failClosed.failClosedOnAmbiguity({
+        sessionId: lease.sessionId,
+        workspaceId: lease.workspaceId,
+        reasonClass: 'resume_blocked_ambiguity',
+        failureReason: `resume_blocked:${precheck.reason}`,
+        recordedAt: new Date().toISOString(),
+        fencingToken: lease.fencingToken,
+      });
       return precheck;
     }
 
@@ -97,8 +114,27 @@ export class RecoveryRuntimeResumeService implements OnApplicationBootstrap {
       alreadyResumed: this.resumedSessions.has(key),
     });
 
+    const recordedAt = new Date().toISOString();
     if (result.outcome === 'READY') {
       this.resumedSessions.add(key);
+      await this.recoveryProgress.advance({
+        sessionId: lease.sessionId,
+        sessionStatus: TradingSessionStatus.RECOVERING,
+        to: RecoveryPhase.READY,
+        recordedAt,
+        fencingToken: lease.fencingToken,
+        lastSemanticEventId: checkpoint.checkpoint?.lastProcessedEventId ?? null,
+      });
+    } else {
+      await this.failClosed.failClosedOnAmbiguity({
+        sessionId: lease.sessionId,
+        workspaceId: lease.workspaceId,
+        reasonClass: 'resume_blocked_ambiguity',
+        failureReason: `resume_blocked:${result.reason}`,
+        recordedAt,
+        fencingToken: lease.fencingToken,
+        lastSemanticEventId: checkpoint.checkpoint?.lastProcessedEventId ?? null,
+      });
     }
 
     this.lastResult = result;

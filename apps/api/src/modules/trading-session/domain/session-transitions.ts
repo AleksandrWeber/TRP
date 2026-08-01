@@ -8,7 +8,11 @@ const ALLOWED: ReadonlyMap<TradingSessionStatus, ReadonlySet<TradingSessionStatu
   [TradingSessionStatus.CREATED, new Set([TradingSessionStatus.STARTING])],
   [
     TradingSessionStatus.STARTING,
-    new Set([TradingSessionStatus.RUNNING, TradingSessionStatus.FAILED]),
+    new Set([
+      TradingSessionStatus.RUNNING,
+      TradingSessionStatus.RECOVERING,
+      TradingSessionStatus.FAILED,
+    ]),
   ],
   [
     TradingSessionStatus.RUNNING,
@@ -33,10 +37,15 @@ const ALLOWED: ReadonlyMap<TradingSessionStatus, ReadonlySet<TradingSessionStatu
     new Set([
       TradingSessionStatus.RUNNING,
       TradingSessionStatus.PAUSED,
+      // E17 P0-2: only when RecoveryState.resumeIntent = STOPPED (US290/US292).
+      TradingSessionStatus.STOPPED,
       TradingSessionStatus.FAILED,
     ]),
   ],
-  [TradingSessionStatus.STOPPING, new Set([TradingSessionStatus.STOPPED])],
+  [
+    TradingSessionStatus.STOPPING,
+    new Set([TradingSessionStatus.STOPPED, TradingSessionStatus.RECOVERING]),
+  ],
   [TradingSessionStatus.STOPPED, new Set()],
   [TradingSessionStatus.FAILED, new Set()],
 ]);

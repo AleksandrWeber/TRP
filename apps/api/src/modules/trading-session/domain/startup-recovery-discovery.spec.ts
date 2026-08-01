@@ -120,6 +120,7 @@ describe('US240 — startup recovery discovery (pure)', () => {
       eligibleCount: 0,
       candidate: null,
       eligibleSessionIds: [],
+      recoveringOpen: null,
     });
   });
 

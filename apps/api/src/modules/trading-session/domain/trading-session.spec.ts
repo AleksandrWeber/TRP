@@ -66,6 +66,12 @@ describe('US156 / US217 — Trading Session domain', () => {
   it('allows only ADR-014 transitions and rejects invalid ones', () => {
     expect(canTransition(TradingSessionStatus.CREATED, TradingSessionStatus.STARTING)).toBe(true);
     expect(canTransition(TradingSessionStatus.RUNNING, TradingSessionStatus.PAUSED)).toBe(true);
+    expect(canTransition(TradingSessionStatus.STARTING, TradingSessionStatus.RECOVERING)).toBe(
+      true,
+    );
+    expect(canTransition(TradingSessionStatus.STOPPING, TradingSessionStatus.RECOVERING)).toBe(
+      true,
+    );
     expect(canTransition(TradingSessionStatus.STOPPED, TradingSessionStatus.RUNNING)).toBe(false);
     expect(() => transitionSession(base(), TradingSessionStatus.RUNNING, ts)).toThrow(
       /invalid trading session transition/,

@@ -5,6 +5,7 @@ import {
   STRATEGY_RUNTIME_PORT,
   type StrategyRuntimePort,
 } from '../../strategy-runtime/ports/strategy-runtime.port';
+import { RecoveryPhase } from '../domain/durable-recovery-state';
 import type { RecoveryLeaseAcquisitionResult } from '../domain/recovery-lease-acquisition';
 import {
   toLeasedRecoverySession,
@@ -12,20 +13,25 @@ import {
   type RecoveryCheckpointValidationResult,
 } from '../domain/recovery-checkpoint-validation';
 import type { RecoveryCandidate } from '../domain/startup-recovery-discovery';
+import { TradingSessionStatus } from '../domain/trading-session-status';
 import {
   RecoveryLeaseAcquisitionService,
   resolveRecoveryRuntimeOwnerId,
 } from './recovery-lease-acquisition.service';
+import { RecoveryIncidentFailClosedService } from './recovery-incident-fail-closed.service';
+import { RecoveryPhaseProgressService } from './recovery-phase-progress.service';
 import { StartupRecoveryDiscoveryService } from './startup-recovery-discovery.service';
 
 /**
- * US242 — Recovery Checkpoint Discovery & Validation.
+ * US242 — Recovery Checkpoint Discovery & Validation (+ US292 phase advances
+ * + US293 fail-closed Incident on corruption / invalid checkpoint).
  *
  * After US241 lease acquisition succeeds, load the latest strategy checkpoint
  * via StrategyRuntimePort and validate integrity + Session consistency.
  *
  * Outcomes: VALID_CHECKPOINT | NO_CHECKPOINT | INVALID_CHECKPOINT.
- * Read-only: does not mutate checkpoints, resume Runtime, or reconcile Orders.
+ * Read-only for checkpoints: does not mutate checkpoints, resume Runtime, or
+ * reconcile Orders. Advances durable RecoveryPhase per E17 §4.5 mapping.
  */
 @Injectable()
 export class RecoveryCheckpointValidationService implements OnApplicationBootstrap {
@@ -39,6 +45,10 @@ export class RecoveryCheckpointValidationService implements OnApplicationBootstr
     private readonly leases: RecoveryLeaseAcquisitionService,
     @Inject(StartupRecoveryDiscoveryService)
     private readonly discovery: StartupRecoveryDiscoveryService,
+    @Inject(RecoveryPhaseProgressService)
+    private readonly recoveryProgress: RecoveryPhaseProgressService,
+    @Inject(RecoveryIncidentFailClosedService)
+    private readonly failClosed: RecoveryIncidentFailClosedService,
     @Inject(LOGGER) logger: Logger,
   ) {
     this.logger = logger.child(RecoveryCheckpointValidationService.name);
@@ -72,6 +82,7 @@ export class RecoveryCheckpointValidationService implements OnApplicationBootstr
       return result;
     }
 
+    const recordedAt = new Date().toISOString();
     let checkpoint;
     try {
       checkpoint = await this.runtime.loadCheckpoint(leased.workspaceId, leased.sessionId);
@@ -87,14 +98,67 @@ export class RecoveryCheckpointValidationService implements OnApplicationBootstr
       });
       this.lastResult = result;
       this.logValidation(result);
+      await this.failPhase(
+        leased.sessionId,
+        leased.workspaceId,
+        leased.fencingToken,
+        recordedAt,
+        'load_failed',
+      );
       return result;
     }
 
     // loadCheckpoint is the sole current row per Session — deterministic "latest".
+    // Lease + assembly load committed → VALIDATING; validation passed → RECONCILING.
+    await this.recoveryProgress.advance({
+      sessionId: leased.sessionId,
+      sessionStatus: TradingSessionStatus.RECOVERING,
+      to: RecoveryPhase.VALIDATING,
+      recordedAt,
+      fencingToken: leased.fencingToken,
+      lastSemanticEventId: checkpoint?.lastProcessedEventId ?? null,
+    });
+
     const result = validateRecoveryCheckpoint(leased, checkpoint);
     this.lastResult = result;
     this.logValidation(result);
+
+    if (result.outcome === 'VALID_CHECKPOINT') {
+      await this.recoveryProgress.advance({
+        sessionId: leased.sessionId,
+        sessionStatus: TradingSessionStatus.RECOVERING,
+        to: RecoveryPhase.RECONCILING,
+        recordedAt,
+        fencingToken: leased.fencingToken,
+        lastSemanticEventId: result.checkpoint?.lastProcessedEventId ?? null,
+      });
+    } else {
+      await this.failPhase(
+        leased.sessionId,
+        leased.workspaceId,
+        leased.fencingToken,
+        recordedAt,
+        result.reason || result.outcome,
+      );
+    }
     return result;
+  }
+
+  private async failPhase(
+    sessionId: string,
+    workspaceId: string,
+    fencingToken: number,
+    recordedAt: string,
+    failureReason: string,
+  ): Promise<void> {
+    await this.failClosed.failClosedOnAmbiguity({
+      sessionId,
+      workspaceId,
+      reasonClass: 'checkpoint_corruption',
+      failureReason: `checkpoint:${failureReason}`,
+      recordedAt,
+      fencingToken,
+    });
   }
 
   private async resolveLease(

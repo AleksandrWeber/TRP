@@ -1,9 +1,9 @@
 /**
- * Read-only recovery reconciliation ports (US243).
+ * Read-only recovery reconciliation ports (US243 / US291).
  *
  * Defined inside Trading Session so Session never imports Orders/Risk/Execution/
- * Accounting persistence. Adapters bind this Symbol at the composition root
- * without violating Session boundary rules.
+ * Accounting persistence. Production adapters bind this Symbol at the composition
+ * root (`RecoveryReconciliationPortsModule`) without violating Session boundaries.
  */
 
 export const RECOVERY_RECONCILIATION_PORTS = Symbol('RECOVERY_RECONCILIATION_PORTS');
@@ -66,8 +66,8 @@ export interface RecoveryReconciliationPorts {
 }
 
 /**
- * Default stub: empty foreign-context views.
- * Safe for unit tests and bootstrap until real adapters are wired.
+ * Test double only: empty foreign-context views.
+ * Must not be the production binding (US291 / TR-N2).
  */
 export class StubRecoveryReconciliationPorts implements RecoveryReconciliationPorts {
   async listOrdersBySession(): Promise<RecoveryOrderSnapshot[]> {

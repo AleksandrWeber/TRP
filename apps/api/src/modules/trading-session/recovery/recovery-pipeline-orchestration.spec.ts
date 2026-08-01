@@ -109,25 +109,14 @@ describe('US244A — recovery pipeline deterministic orchestration', () => {
     logger.child.mockReturnValue(logger);
 
     findByStatuses.mockResolvedValue([sessionRow()]);
-    findById.mockImplementation(async () => {
-      const base = sessionRow();
-      return saveIfVersion.mock.calls.length === 0
-        ? base
-        : Object.freeze({
-            ...base,
-            lease: {
-              ownerId: saveIfVersion.mock.calls[0][0].lease.ownerId,
-              fencingToken: saveIfVersion.mock.calls[0][0].lease.fencingToken,
-              acquiredAt: saveIfVersion.mock.calls[0][0].lease.acquiredAt,
-              expiresAt: saveIfVersion.mock.calls[0][0].lease.expiresAt,
-              heartbeatAt: saveIfVersion.mock.calls[0][0].lease.heartbeatAt,
-            },
-            lastFencingToken: saveIfVersion.mock.calls[0][0].lastFencingToken,
-            version: saveIfVersion.mock.calls[0][0].version,
-            recordedAt: saveIfVersion.mock.calls[0][0].recordedAt,
-          });
+    // Track persisted Session across US290 force + US241 lease CAS writes.
+    let persisted: ReturnType<typeof sessionRow> | (ReturnType<typeof sessionRow> & object) =
+      sessionRow();
+    findById.mockImplementation(async () => persisted);
+    saveIfVersion.mockImplementation(async (session) => {
+      persisted = Object.freeze({ ...session }) as typeof persisted;
+      return persisted;
     });
-    saveIfVersion.mockImplementation(async (session) => session);
 
     (runtime.loadCheckpoint as ReturnType<typeof vi.fn>).mockResolvedValue({
       id: deterministicCheckpointId('ws-1', 'session-1'),
@@ -210,17 +199,48 @@ describe('US244A — recovery pipeline deterministic orchestration', () => {
   });
 
   function buildPipeline() {
-    const discovery = new StartupRecoveryDiscoveryService(sessions, logger as never);
+    const recoveryProgress = {
+      load: vi.fn(async () => null),
+      open: vi.fn(async () => null),
+      recordFencingToken: vi.fn(async () => null),
+      advance: vi.fn(async () => null),
+      finalizeCompleted: vi.fn(async () => null),
+      correlateIncident: vi.fn(async () => null),
+    };
+    const failClosed = {
+      failClosedOnAmbiguity: vi.fn(async () => ({
+        outcome: 'FAILED_CLOSED' as const,
+        reason: 'test',
+        incident: null,
+        sessionId: 'session-1',
+        workspaceId: 'ws-1',
+        sessionStatus: null,
+        recoveryPhase: null,
+        evaluationAdmitted: false as const,
+        signalIntentEmitted: false as const,
+      })),
+    };
+    const discovery = new StartupRecoveryDiscoveryService(
+      sessions,
+      transactions as never,
+      outbox as never,
+      recoveryProgress as never,
+      logger as never,
+    );
     const lease = new RecoveryLeaseAcquisitionService(
       sessions,
       transactions as never,
       discovery,
+      recoveryProgress as never,
+      failClosed as never,
       logger as never,
     );
     const checkpoint = new RecoveryCheckpointValidationService(
       runtime,
       lease,
       discovery,
+      recoveryProgress as never,
+      failClosed as never,
       logger as never,
     );
     const reconciliation = new RecoveryStateReconciliationService(
@@ -230,6 +250,7 @@ describe('US244A — recovery pipeline deterministic orchestration', () => {
       discovery,
       lease,
       checkpoint,
+      failClosed as never,
       logger as never,
     );
     const resume = new RecoveryRuntimeResumeService(
@@ -238,6 +259,8 @@ describe('US244A — recovery pipeline deterministic orchestration', () => {
       discovery,
       checkpoint,
       reconciliation,
+      recoveryProgress as never,
+      failClosed as never,
       logger as never,
     );
     const admission = new RecoveryEventAdmissionService(
@@ -280,6 +303,8 @@ describe('US244A — recovery pipeline deterministic orchestration', () => {
       arming,
       evaluation,
       signalIntent,
+      recoveryProgress as never,
+      failClosed as never,
       logger as never,
     );
     return {
@@ -774,18 +799,13 @@ describe('US244A — recovery pipeline deterministic orchestration', () => {
     expect(duplicate.reason).toBe('decision_already_converted');
     expect(runtime.emitSignalIntent).toHaveBeenCalledOnce();
 
-    // Force RECOVERING is residual for US240; completion requires RECOVERING + matching lease.
-    const leased = saveIfVersion.mock.calls[0]?.[0];
-    findById.mockResolvedValue(
-      Object.freeze({
-        ...sessionRow(),
-        status: TradingSessionStatus.RECOVERING,
-        lease: leased.lease,
-        lastFencingToken: leased.lastFencingToken,
-        version: leased.version,
-        recordedAt: leased.recordedAt,
-      }),
+    // US290 discovery open already forced RECOVERING; completion uses production status.
+    expect(pipeline.discovery.getLastResult()?.recoveringOpen?.action).toBe('forced');
+    expect(pipeline.discovery.getLastResult()?.candidate?.status).toBe(
+      TradingSessionStatus.RECOVERING,
     );
+    const leased = saveIfVersion.mock.calls.find((call) => call[0].lease !== null)?.[0];
+    expect(leased).toBeDefined();
     (runtime.getLifecycle as ReturnType<typeof vi.fn>).mockResolvedValue({
       workspaceId: 'ws-1',
       sessionId: 'session-1',

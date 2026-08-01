@@ -3,7 +3,7 @@
 **Release:** RC-18 — Production Recovery & Operational Readiness  
 **Planning subject:** Mandatory TD-036 residual work (E17 production-recovery completion)  
 **Date:** 2026-07-30  
-**Status:** PLANNING (Stage 1)  
+**Status:** Stage 1 ACCEPTED · Stage 2 PROCEED · Stage 3 mid-release (US290–US293 Done)  
 **Architecture baseline:** ADR-012…ADR-019 ACTIVE; Architecture Freeze in effect  
 **Primary debt:** TD-036 (residual ownership — RC-18 mandatory class only)  
 **Preceding authority:** [RC-18 Release Planning](./rc-18-release-planning.md) (**APPROVED**)  
@@ -229,14 +229,14 @@ DDL, or code structure. Tentative IDs from **US290–US299** (spill/validation)
 are proposed so E18–E21 soft bands stay clear; Stage 1 acceptance may adjust
 assignment inside US240–US299 without changing residual scope.
 
-| Tentative ID | Logical Story                                   | Residual(s) | Boundary                                                                                                                |
-| ------------ | ----------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------- |
-| US290        | Force/confirm `RECOVERING` on discovery         | R1          | Lifecycle precondition only; does not re-open lease/checkpoint/reconcile algorithms beyond discovery→status consistency |
-| US291        | Real recovery reconciliation port adapters      | R2          | Adapter binding + production stub retirement; does not redesign reconcile decide-gates or foreign module ownership      |
-| US292        | Durable RecoveryState + phase machine           | R3          | Persistence and phase durability for Session-owned recovery progress; does not add operator status API (E19)            |
-| US293        | Durable Incident on ambiguity / corruption      | R4          | Incident persistence + block-on-ambiguity path; does not deliver E19 incident productization/dashboard                  |
-| US294        | Chaos/restart + fail-safe evidence              | R5          | Evidence suites and release-claim support; does not expand product epic scope                                           |
-| US295        | ADL-008 closure (ACCEPTED or accepted deferral) | R6          | Architecture Decision Log + docs sync gate; not a runtime feature story                                                 |
+| Tentative ID | Logical Story                                   | Residual(s) | Boundary                                                                                                                           |
+| ------------ | ----------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| US290        | Force/confirm `RECOVERING` on discovery         | R1          | **Done** — Lifecycle precondition only; does not re-open lease/checkpoint/reconcile algorithms beyond discovery→status consistency |
+| US291        | Real recovery reconciliation port adapters      | R2          | **Done** — Adapter binding + production stub retirement; does not redesign reconcile decide-gates or foreign module ownership      |
+| US292        | Durable RecoveryState + phase machine           | R3          | **Done** — Persistence and phase durability for Session-owned recovery progress; does not add operator status API (E19)            |
+| US293        | Durable Incident on ambiguity / corruption      | R4          | **Done** — Incident persistence + block-on-ambiguity path; does not deliver E19 incident productization/dashboard                  |
+| US294        | Chaos/restart + fail-safe evidence              | R5          | **Open** — Evidence suites and release-claim support; does not expand product epic scope                                           |
+| US295        | ADL-008 closure (ACCEPTED or accepted deferral) | R6          | **Open** — Architecture Decision Log + docs sync gate; not a runtime feature story                                                 |
 
 **Decomposition rules**
 

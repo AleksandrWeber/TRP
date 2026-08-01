@@ -208,16 +208,33 @@ M1/M2 detail remains in
 
 ## RC-17 epics (baselined / forwarded)
 
-| Epic | Name                    | Status                                                  |
-| ---- | ----------------------- | ------------------------------------------------------- |
-| E17  | Runtime Recovery        | **BASELINED** (US240–US249 + US244A); residuals → RC-18 |
-| E18  | Event Processing        | Forwarded to RC-18+                                     |
-| E19  | Operations              | Forwarded to RC-18+                                     |
-| E20  | Market Data             | Forwarded to RC-18+                                     |
-| E21  | Multi-Strategy Platform | Forwarded to RC-18+                                     |
+| Epic | Name                    | Status                                                              |
+| ---- | ----------------------- | ------------------------------------------------------------------- |
+| E17  | Runtime Recovery        | **BASELINED** (US240–US249 + US244A); R1–R4 residuals Done in RC-18 |
+| E18  | Event Processing        | Forwarded to RC-18+                                                 |
+| E19  | Operations              | Forwarded to RC-18+                                                 |
+| E20  | Market Data             | Forwarded to RC-18+                                                 |
+| E21  | Multi-Strategy Platform | Forwarded to RC-18+                                                 |
 
 Detail: [`rc-17-roadmap.md`](./rc-17-roadmap.md),
 [`rc-17-retrospective.md`](./rc-17-retrospective.md).
+
+---
+
+## RC-18 progress (mid-release 2026-08-01)
+
+| Workstream                          | Status          |
+| ----------------------------------- | --------------- |
+| US290 Force/confirm `RECOVERING`    | **Done**        |
+| US291 Real reconcile ports          | **Done**        |
+| US292 Durable RecoveryState + phase | **Done**        |
+| US293 Durable Incident fail-closed  | **Done**        |
+| US294 Chaos/restart evidence        | **Open** (next) |
+| US295 ADL-008 closure               | **Open**        |
+| E18–E21 product epics               | Not started     |
+
+Authority: [`rc-18-mid-release-health-review.md`](./rc-18-mid-release-health-review.md),
+[`rc-18-residual-register.md`](./rc-18-residual-register.md).
 
 ---
 
@@ -225,7 +242,7 @@ Detail: [`rc-17-roadmap.md`](./rc-17-roadmap.md),
 
 **Version 1 (`v1.0.0`) is complete.** RC-16 paper path and RC-17 Runtime
 Recovery architecture are baselined. Near-term engineering focuses on **RC-18**
-production recovery residuals (TD-036 mandatory) and forwarded ops/event/
+remaining mandatory residuals (**US294–US295**) and forwarded ops/event/
 market-data/multi-strategy epics under the Architecture Freeze.
 
 Later themes (new ADR required where architecture changes):

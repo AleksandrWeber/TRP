@@ -162,7 +162,8 @@ If a result cannot be reproduced from these, it is not trusted.
 9. ~~RC-16 Planning + Architecture Freeze (ADR-012…ADR-018)~~
 10. ~~RC-16 M1 + M2 (US126–US183) — Live Market Data + Durable Paper Order/Accounting~~
 11. ~~RC-16 M3 canonical path (US211–US223) — Strategy Runtime → SignalIntent → CanonicalOrderPath~~
-12. RC-17 — Production Readiness & Operational Runtime (**BASELINED** Runtime Recovery reference; RC-18 next for production residuals)
+12. RC-17 — Production Readiness & Operational Runtime (**BASELINED** Runtime Recovery reference)
+13. RC-18 — Production Recovery & Operational Readiness (**IN PROGRESS**; US290–US293 Done; US294–US295 open)
 
 Living release status: [`docs/project/release-history.md`](./project/release-history.md).
 Story IDs: [`docs/project/story-id-allocation.md`](./project/story-id-allocation.md).

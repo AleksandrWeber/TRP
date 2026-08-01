@@ -19,6 +19,7 @@ import { LiveMarketDataModule } from './modules/live-market-data/live-market-dat
 import { EventProcessingModule } from './modules/event-processing/event-processing.module';
 import { PaperAccountModule } from './modules/paper-account';
 import { TradingSessionModule } from './modules/trading-session';
+import { RecoveryReconciliationPortsModule } from './composition/recovery-reconciliation-ports.module';
 import { OrdersModule } from './modules/orders';
 import { RiskModule } from './modules/risk';
 import { ExecutionAdapterModule } from './modules/execution-adapter';
@@ -89,6 +90,7 @@ import { ValidationModule } from './validation/validation.module';
     EventsModule,
     EventProcessingModule,
     PaperAccountModule,
+    RecoveryReconciliationPortsModule,
     TradingSessionModule,
     OrdersModule,
     RiskModule,

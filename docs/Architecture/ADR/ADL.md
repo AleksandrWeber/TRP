@@ -108,6 +108,7 @@ Specs, PRs, TD IDs, architecture notes.
 | ADL-010 | 2026-07-30 | RC-17    | _(placeholder)_ Kill Switch scope: workspace vs session   | DEFERRED | ADR-016               |
 | ADL-011 | 2026-07-30 | RC-17    | _(placeholder)_ Multi-strategy tick fairness policy       | DEFERRED | ADR-014, 018          |
 | ADL-012 | 2026-07-30 | RC-17    | _(placeholder)_ Operator projection transport (SSE vs WS) | DEFERRED | ADR-017               |
+| ADL-013 | 2026-08-01 | RC-18    | Minimal Session-owned Recovery Incident (provisional→E19) | PROPOSED | ADR-014, US293        |
 
 ---
 
@@ -348,9 +349,11 @@ _TBD for production algorithm closure under RC-18._ Expected direction confirmed
 by RC-17 baseline: Trading Session owns lifecycle/recovery orchestration;
 modules expose reconcile ports; no second lifecycle model via Job queue
 (TD-002 clarification). RC-17 BASELINED the Stage 3 reference pipeline
-(US240–US249 + US244A); ADL-008 remains DEFERRED until force-`RECOVERING`,
-real reconcile adapters, RecoveryState/Incident, and chaos evidence land
-(or an explicit accepted deferral is recorded). See
+(US240–US249 + US244A). **RC-18 mid-release (2026-08-01):** US290–US293
+Implemented (force-`RECOVERING`, real reconcile adapters, RecoveryState,
+Incident fail-closed). ADL-008 remains **DEFERRED** until US294 chaos evidence
+and US295 promotion (or an explicit accepted deferral) are recorded. See
+[`../../project/rc-18-mid-release-health-review.md`](../../project/rc-18-mid-release-health-review.md),
 [`../../project/rc-17-retrospective.md`](../../project/rc-17-retrospective.md).
 
 ---
@@ -439,6 +442,38 @@ pattern or introduce WS. Transport choice must not make the UI authoritative.
 
 _TBD._ Prefer extending existing projection patterns unless Architecture
 Review proves otherwise.
+
+---
+
+### ADL-013 — Minimal Session-owned Recovery Incident (provisional → E19)
+
+| Field        | Value                           |
+| ------------ | ------------------------------- |
+| Date         | 2026-08-01                      |
+| Release      | RC-18                           |
+| Epic         | TD-036 residual / E17 follow-on |
+| Status       | PROPOSED                        |
+| Related ADRs | ADR-014, ADR-018                |
+| Related      | US293, SIG-001                  |
+
+#### Context
+
+E17 / ADR-014 require fail-closed behaviour on recovery ambiguity. RC-18 US293
+delivers a **minimal** durable Recovery Incident owned by Trading Session,
+correlated to RecoveryState via `incidentId`, without inventing a Safety
+Incident product BC or operator resolve UX (E19).
+
+#### Decision
+
+Until E19 supersedes with richer Safety Incident productization:
+
+1. Persist durable Incident evidence on recovery ambiguity / unrecoverable recovery.
+2. Fail-closed order: Incident → RecoveryState `FAILED` + `incidentId` → Session `FAILED`.
+3. Incident does not own Session lifecycle or RecoveryPhase.
+4. Model is provisional; E19 may migrate/wrap without weakening fail-closed semantics.
+
+Evidence: US293 Implemented; SIG-001 **PASS WITH RESIDUALS**. Formal
+promotion / supersession tracked with US295 / E19.
 
 ---
 

@@ -85,6 +85,13 @@ describe('US249 — RecoveryCompletionService', () => {
   const signalIntent = { getLastResult: vi.fn() };
 
   let info: ReturnType<typeof vi.fn>;
+  const recoveryProgress = {
+    load: vi.fn(async () => null),
+    open: vi.fn(async () => null),
+    recordFencingToken: vi.fn(async () => null),
+    advance: vi.fn(async () => null),
+    finalizeCompleted: vi.fn(async () => null),
+  };
   let service: RecoveryCompletionService;
 
   function stubHappyPath() {
@@ -99,6 +106,7 @@ describe('US249 — RecoveryCompletionService', () => {
         createdAt: earlier,
       },
       eligibleSessionIds: ['session-1'],
+      recoveringOpen: null,
     });
     lease.getLastResult.mockReturnValue({
       outcome: 'LEASE_ACQUIRED',
@@ -209,6 +217,20 @@ describe('US249 — RecoveryCompletionService', () => {
       arming as never,
       evaluation as never,
       signalIntent as never,
+      recoveryProgress as never,
+      {
+        failClosedOnAmbiguity: vi.fn(async () => ({
+          outcome: 'FAILED_CLOSED' as const,
+          reason: 'test',
+          incident: null,
+          sessionId: 'session-1',
+          workspaceId: 'ws-1',
+          sessionStatus: null,
+          recoveryPhase: null,
+          evaluationAdmitted: false as const,
+          signalIntentEmitted: false as const,
+        })),
+      } as never,
       logger as never,
     );
     stubHappyPath();

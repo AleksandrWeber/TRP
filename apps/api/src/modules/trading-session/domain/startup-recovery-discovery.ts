@@ -1,3 +1,4 @@
+import type { RecoveringOpenResult } from './force-confirm-recovering';
 import { isRecoveryEligibleStatus } from './recovery-eligibility';
 import type { TradingSession } from './trading-session';
 import type { TradingSessionStatus } from './trading-session-status';
@@ -17,11 +18,14 @@ export type RecoveryCandidate = Readonly<{
 export type StartupRecoveryDiscoveryOutcome = 'no_recovery_required' | 'recovery_candidate';
 
 /**
- * Deterministic startup discovery result (US240).
+ * Deterministic startup discovery result (US240 + US290 open).
  *
  * Exactly one candidate is selected, or none. When multiple Sessions are
  * eligible, selection is stable: oldest `createdAt`, then `id`, then
  * `workspaceId` (lexicographic ascending).
+ *
+ * Pure selection (`discoverStartupRecoveryCandidate`) leaves `recoveringOpen`
+ * null; the Nest discovery service attaches US290 force/confirm facts after open.
  */
 export type StartupRecoveryDiscoveryResult = Readonly<{
   outcome: StartupRecoveryDiscoveryOutcome;
@@ -29,6 +33,8 @@ export type StartupRecoveryDiscoveryResult = Readonly<{
   candidate: RecoveryCandidate | null;
   /** Eligible Session IDs in selection order (deterministic; for logging/tests). */
   eligibleSessionIds: readonly string[];
+  /** US290 force/confirm open facts; null until discovery service completes open. */
+  recoveringOpen: RecoveringOpenResult | null;
 }>;
 
 export function toRecoveryCandidate(session: TradingSession): RecoveryCandidate {
@@ -57,6 +63,7 @@ export function compareRecoveryCandidates(a: TradingSession, b: TradingSession):
  * Pure startup discovery: filter eligible Sessions and select at most one candidate.
  *
  * Does not transition status, acquire leases, load checkpoints, or resume Runtime.
+ * US290 force/confirm is applied by StartupRecoveryDiscoveryService after selection.
  */
 export function discoverStartupRecoveryCandidate(
   sessions: readonly TradingSession[],
@@ -74,6 +81,7 @@ export function discoverStartupRecoveryCandidate(
       eligibleCount: 0,
       candidate: null,
       eligibleSessionIds,
+      recoveringOpen: null,
     });
   }
 
@@ -83,5 +91,6 @@ export function discoverStartupRecoveryCandidate(
     eligibleCount: eligible.length,
     candidate: toRecoveryCandidate(selected),
     eligibleSessionIds,
+    recoveringOpen: null,
   });
 }

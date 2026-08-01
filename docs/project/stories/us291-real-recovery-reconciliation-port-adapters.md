@@ -4,12 +4,13 @@
 **Release:** RC-18 — Production Recovery & Operational Readiness  
 **Workstream:** Mandatory TD-036 residual (R2)  
 **Date:** 2026-07-30  
-**Status:** SPECIFIED (implementation authority)  
+**Status:** Implemented  
 **Architecture baseline:** ADR-012…ADR-019 ACTIVE; Architecture Freeze in effect  
 **Primary debt:** TD-036 — Real `RECOVERY_RECONCILIATION_PORTS` adapters (retire production stub)  
 **Closes:** E17 Stage 4 TR-N2  
 **Preceding authority:** [RC-18 Stage 2 Architecture Review](../rc-18-td036-stage2-architecture-review.md) (**PROCEED**)  
 **Predecessor Story:** [US290](./us290-force-confirm-recovering-on-discovery.md)  
+**Mid-release:** [RC-18 Mid-Release Health Review](../rc-18-mid-release-health-review.md) · [RIV-001](../rc-18-riv-001-recovery-integration-validation.md)  
 **Does not introduce:** implementation design, API design, database schema, class/interface design, new Epic, new bounded context, or ADR change
 
 Related:
@@ -302,19 +303,19 @@ Story-specific only. Cross-residual risks:
 
 ## 9. Definition of Done
 
-- [ ] This Story Specification accepted as implementation authority for US291
-- [ ] Stage 3 planning cites this document + Stage 2 PROCEED + US243 port
+- [x] This Story Specification accepted as implementation authority for US291
+- [x] Stage 3 planning cites this document + Stage 2 PROCEED + US243 port
       contracts + ADR-012 / ADR-015 / ADR-017
-- [ ] AC-1…AC-7 satisfied with reviewable evidence
-- [ ] TR-N2 closed for production reconcile trust (no production stub
+- [x] AC-1…AC-7 satisfied with reviewable evidence
+- [x] TR-N2 closed for production reconcile trust (no production stub
       false-green path)
-- [ ] TD-036 residual row for real `RECOVERY_RECONCILIATION_PORTS` adapters
+- [x] TD-036 residual row for real `RECOVERY_RECONCILIATION_PORTS` adapters
       updated when evidence lands
-- [ ] Architecture Freeze intact; no Orders / Accounting / Execution redesign;
+- [x] Architecture Freeze intact; no Orders / Accounting / Execution redesign;
       no RecoveryCoordinator
-- [ ] Scope not expanded into US292–US295 / E19 / future backlog
-- [ ] Docs sync as required by residual DoD practice
-- [ ] Quality gates green for the implementing change set
+- [x] Scope not expanded into US292–US295 / E19 / future backlog
+- [x] Docs sync as required by residual DoD practice
+- [x] Quality gates green for the implementing change set
 
 **Not required for US291 DoD alone:** RecoveryState durability; Incident store;
 chaos evidence; ADL-008 closure; full restart-safety PASS language.
@@ -340,6 +341,20 @@ referenced, not duplicated.
 | 10  | Technical Debt (TD-036)              | [`../technical-debt.md`](../technical-debt.md)                                                         |
 | 11  | RC-17 Retrospective                  | [`../rc-17-retrospective.md`](../rc-17-retrospective.md)                                               |
 | 12  | E17 Stage 4 Technical Review (TR-N2) | [`../e17-stage-4-technical-review.md`](../e17-stage-4-technical-review.md)                             |
+
+---
+
+## Document lifecycle
+
+```text
+Implemented
+        ↓
+Stage 3 implementation COMPLETE
+        ↓
+RIV-001 / Mid-Release Health Review
+        ↓
+DoD COMPLETE → next residual US292 (Done)
+```
 
 ---
 

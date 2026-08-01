@@ -69,8 +69,14 @@ describe('US217/US220 — Trading Session dependency boundaries', () => {
     expect(moduleSource).toMatch(/RecoveryStrategyEvaluationService/);
     expect(moduleSource).toMatch(/RecoverySignalIntentGenerationService/);
     expect(moduleSource).toMatch(/RecoveryCompletionService/);
+    expect(moduleSource).toMatch(/RecoveryPhaseProgressService/);
+    expect(moduleSource).toMatch(/RecoveryIncidentFailClosedService/);
+    expect(moduleSource).toMatch(/RECOVERY_STATE_REPOSITORY/);
+    expect(moduleSource).toMatch(/RECOVERY_INCIDENT_REPOSITORY/);
     expect(moduleSource).toMatch(/RECOVERY_EVENT_ADMISSION_POLICY/);
-    expect(moduleSource).toMatch(/RECOVERY_RECONCILIATION_PORTS/);
+    // US291: production RECOVERY_RECONCILIATION_PORTS bind at composition root.
+    expect(moduleSource).not.toMatch(/StubRecoveryReconciliationPorts/);
+    expect(moduleSource).not.toMatch(/useClass:\s*StubRecoveryReconciliationPorts/);
 
     for (const forbidden of [
       'OrdersModule',
@@ -86,6 +92,17 @@ describe('US217/US220 — Trading Session dependency boundaries', () => {
     ]) {
       expect(moduleSource).not.toContain(forbidden);
     }
+  });
+
+  it('does not bind empty-consistent stub as production reconcile authority', () => {
+    const moduleSource = readFileSync(join(SESSION_ROOT, 'trading-session.module.ts'), 'utf8');
+    const portsSource = readFileSync(
+      join(SESSION_ROOT, 'ports/recovery-reconciliation.ports.ts'),
+      'utf8',
+    );
+    expect(moduleSource).not.toMatch(/StubRecoveryReconciliationPorts/);
+    expect(portsSource).toMatch(/Test double only/);
+    expect(portsSource).toMatch(/Must not be the production binding/);
   });
 
   it('service notifies RuntimePort lifecycle without Runtime persistence access', () => {

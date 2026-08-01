@@ -79,6 +79,26 @@ describe('US242 — RecoveryCheckpointValidationService', () => {
   };
 
   let info: ReturnType<typeof vi.fn>;
+  const recoveryProgress = {
+    load: vi.fn(async () => null),
+    open: vi.fn(async () => null),
+    recordFencingToken: vi.fn(async () => null),
+    advance: vi.fn(async () => null),
+    finalizeCompleted: vi.fn(async () => null),
+  };
+  const failClosed = {
+    failClosedOnAmbiguity: vi.fn(async () => ({
+      outcome: 'FAILED_CLOSED' as const,
+      reason: 'test',
+      incident: null,
+      sessionId: 'session-1',
+      workspaceId: 'ws-1',
+      sessionStatus: null,
+      recoveryPhase: null,
+      evaluationAdmitted: false as const,
+      signalIntentEmitted: false as const,
+    })),
+  };
   let service: RecoveryCheckpointValidationService;
 
   beforeEach(() => {
@@ -96,6 +116,8 @@ describe('US242 — RecoveryCheckpointValidationService', () => {
       runtime,
       leases as unknown as RecoveryLeaseAcquisitionService,
       discovery as unknown as StartupRecoveryDiscoveryService,
+      recoveryProgress as never,
+      failClosed as never,
       logger as never,
     );
   });
@@ -165,6 +187,7 @@ describe('US242 — RecoveryCheckpointValidationService', () => {
       eligibleCount: 1,
       candidate: candidate(),
       eligibleSessionIds: ['session-1'],
+      recoveringOpen: null,
     });
     await service.onApplicationBootstrap();
     expect(loadCheckpoint).not.toHaveBeenCalled();
@@ -186,6 +209,7 @@ describe('US242 — RecoveryCheckpointValidationService', () => {
       eligibleCount: 1,
       candidate: candidate(),
       eligibleSessionIds: ['session-1'],
+      recoveringOpen: null,
     });
     loadCheckpoint.mockResolvedValue(null);
     await service.onApplicationBootstrap();

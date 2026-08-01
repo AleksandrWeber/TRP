@@ -52,6 +52,31 @@ export type {
   TradingSessionStopped,
 } from './trading-session-events';
 export type { RecoveryStateRepository } from './recovery-state.repository';
+export { RECOVERY_STATE_REPOSITORY } from './recovery-state.repository';
+export type { RecoveryIncidentRepository } from './recovery-incident.repository';
+export { RECOVERY_INCIDENT_REPOSITORY } from './recovery-incident.repository';
+export {
+  RECOVERY_INCIDENT_SCHEMA_VERSION,
+  RECOVERY_INCIDENT_STATUS_OPEN,
+  createRecoveryIncident,
+  type CreateRecoveryIncidentInput,
+  type RecoveryIncident,
+  type RecoveryIncidentReasonClass,
+  type RecoveryIncidentStatus,
+} from './recovery-incident';
+export {
+  RecoveryPhase,
+  RECOVERY_STATE_SCHEMA_VERSION,
+  advanceDurableRecoveryPhase,
+  canAdvanceRecoveryPhase,
+  correlateIncidentOnFailedRecoveryState,
+  finalizeDurableRecoveryState,
+  isRecoveryPhase,
+  openDurableRecoveryState,
+  withRecoveryFencingToken,
+  type DurableRecoveryState,
+  type RecoveryPhaseTransitionOutcome,
+} from './durable-recovery-state';
 export type {
   TradingSessionAggregateRepository,
   TradingSessionRepository,

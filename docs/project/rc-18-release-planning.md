@@ -2,9 +2,9 @@
 
 **Release Candidate 18 — Production Recovery & Operational Readiness**
 
-Date: 2026-07-30
+Date: 2026-07-30 (living progress: 2026-08-01 mid-release)
 
-Status: **APPROVED** (Architecture Review PASS — Stage 0 complete)
+Status: **APPROVED** · **IN PROGRESS** (US290–US293 Done; US294–US295 open)
 
 Architecture baseline: RC-16 **BASELINE ACCEPTED** (ADR-012…ADR-018 frozen;
 ADR-019 event emission semantics); RC-17 **BASELINED** Runtime Recovery
@@ -30,18 +30,23 @@ Related:
 - [RC-17 Roadmap](./rc-17-roadmap.md)
 - [RC-17 Retrospective](./rc-17-retrospective.md)
 - [RC-17 Development Process](./rc-17-development-process.md)
+- [RC-18 Development Process](./rc-18-development-process.md)
+- [Residual Register](./rc-18-residual-register.md)
+- [Tech Lead Decision Log](./rc-18-tech-lead-decision-log.md)
+- [Mid-Release Health Review](./rc-18-mid-release-health-review.md)
 
 ---
 
 ## 1. Release Overview
 
-| Field            | Value                                            |
-| ---------------- | ------------------------------------------------ |
-| RC name          | RC-18                                            |
-| Release status   | **APPROVED**                                     |
-| Previous release | RC-17 **BASELINED** (Runtime Recovery reference) |
-| Next milestone   | Stage 1 Epic Planning → first RC-18 User Story   |
-| Release theme    | Production Recovery & Operational Readiness      |
+| Field            | Value                                                                        |
+| ---------------- | ---------------------------------------------------------------------------- |
+| RC name          | RC-18                                                                        |
+| Release status   | **APPROVED**                                                                 |
+| Previous release | RC-17 **BASELINED** (Runtime Recovery reference)                             |
+| Next milestone   | US294 chaos/restart evidence → US295 ADL-008                                 |
+| Release theme    | Production Recovery & Operational Readiness                                  |
+| Mid-release      | [`rc-18-mid-release-health-review.md`](./rc-18-mid-release-health-review.md) |
 
 RC-17 established the Runtime Recovery baseline: a Session-owned Stage 3
 recovery pipeline under ADR-014, with Stage 4 PASS WITH RECOMMENDATIONS.
@@ -366,10 +371,25 @@ PLANNING
         ↓
 Architecture Review
         ↓
-APPROVED                    ← current
+APPROVED
         ↓
-RC-18 implementation
+RC-18 implementation          ← current (US290–US293 Done)
+        ↓
+US294 → US295 → E18…E21
+        ↓
+Release Validation / Closure
 ```
+
+### Mid-release progress (2026-08-01)
+
+| Residual Story | Status      |
+| -------------- | ----------- |
+| US290          | **Done**    |
+| US291          | **Done**    |
+| US292          | **Done**    |
+| US293          | **Done**    |
+| US294          | Open (next) |
+| US295          | Open        |
 
 ---
 
@@ -379,9 +399,9 @@ RC-18 implementation
 | ----------------------- | ------------- | ---------- |
 | Release planning (docs) | Auto          | 2026-07-30 |
 | Architecture Review     | **PASS**      | 2026-07-30 |
+| Mid-release health      | Complete      | 2026-08-01 |
 | Engineering owner       | _(assign)_    |            |
 | Architecture owner      | _(assign)_    |            |
 
-**Next step:** Stage 1 Epic Planning for mandatory TD-036 residual stories
-(or first product epic once residuals are scheduled), before any RC-18
-production implementation.
+**Next step:** US294 chaos/restart + fail-safe evidence, then US295 ADL-008
+closure. Do not claim production restart-safety PASS until both land.

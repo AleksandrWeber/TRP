@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-07-30 (RC-17 BASELINED — Runtime Recovery reference)
+2026-08-01 (RC-18 mid-release — US290–US293 Done; US294–US295 open)
 
 ---
 
@@ -22,6 +22,7 @@ V1 Completion Report: [`../releases/V1-COMPLETION.md`](../releases/V1-COMPLETION
 RC-15: COMPLETE  
 RC-16 M1/M2: COMPLETE (foundation retained in V1) · **BASELINE ACCEPTED**  
 RC-17: **BASELINED** (Runtime Recovery reference — E17 US240–US249 + US244A)  
+RC-18: **IN PROGRESS** (US290–US293 Done; US294–US295 open for production claim)  
 Engineering gates RC-1 / RC-2 / RC-3 / RC-4: PASS
 
 Cluster Closure Report:
@@ -31,16 +32,21 @@ Cluster Closure Report:
 
 # Current Phase
 
-**RC-17 BASELINED · RC-18 NEXT (production recovery residuals)**
+**RC-18 IN PROGRESS · Mid-release (US290–US293 Done)**
 
 RC-17 delivered the Runtime Recovery Stage 3 reference pipeline and Stage 4
 technical review (PASS WITH RECOMMENDATIONS). Retrospective:
 [`rc-17-retrospective.md`](./rc-17-retrospective.md).
 
-Next: RC-18 mandatory TD-036 items (force-`RECOVERING`, real reconcile adapters,
-RecoveryState/Incident, chaos evidence) plus forwarded E18–E21 product epics.
-See [`release-history.md`](./release-history.md) and
-[`rc-17-roadmap.md`](./rc-17-roadmap.md).
+RC-18 mandatory TD-036 residuals R1–R4 are **Implemented**: US290 force/confirm
+`RECOVERING`, US291 real reconcile ports, US292 durable RecoveryState + phase,
+US293 durable Incident fail-closed. Mid-release audit:
+[`rc-18-mid-release-health-review.md`](./rc-18-mid-release-health-review.md).
+RIV-001 / SIG-001: coherent recovery + fail-closed PASS WITH RESIDUALS.
+
+Next: **US294** chaos/restart evidence → **US295** ADL-008 closure, then
+forwarded E18–E21 product epics. Residual ownership:
+[`rc-18-residual-register.md`](./rc-18-residual-register.md).
 
 ---
 

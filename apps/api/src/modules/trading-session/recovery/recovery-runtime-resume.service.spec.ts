@@ -92,6 +92,13 @@ describe('US244 — RecoveryRuntimeResumeService', () => {
   const reconciliation = { getLastResult: vi.fn() };
 
   let info: ReturnType<typeof vi.fn>;
+  const recoveryProgress = {
+    load: vi.fn(async () => null),
+    open: vi.fn(async () => null),
+    recordFencingToken: vi.fn(async () => null),
+    advance: vi.fn(async () => null),
+    finalizeCompleted: vi.fn(async () => null),
+  };
   let service: RecoveryRuntimeResumeService;
 
   beforeEach(() => {
@@ -111,6 +118,20 @@ describe('US244 — RecoveryRuntimeResumeService', () => {
       discovery as unknown as StartupRecoveryDiscoveryService,
       checkpoints as unknown as RecoveryCheckpointValidationService,
       reconciliation as unknown as RecoveryStateReconciliationService,
+      recoveryProgress as never,
+      {
+        failClosedOnAmbiguity: vi.fn(async () => ({
+          outcome: 'FAILED_CLOSED' as const,
+          reason: 'test',
+          incident: null,
+          sessionId: 'session-1',
+          workspaceId: 'ws-1',
+          sessionStatus: null,
+          recoveryPhase: null,
+          evaluationAdmitted: false as const,
+          signalIntentEmitted: false as const,
+        })),
+      } as never,
       logger as never,
     );
 
@@ -229,6 +250,7 @@ describe('US244 — RecoveryRuntimeResumeService', () => {
         createdAt: at,
       },
       eligibleSessionIds: ['session-1'],
+      recoveringOpen: null,
     });
     leases.getLastResult.mockReturnValue(lease());
     checkpoints.getLastResult.mockReturnValue(checkpoint());
@@ -251,6 +273,7 @@ describe('US244 — RecoveryRuntimeResumeService', () => {
       eligibleCount: 0,
       candidate: null,
       eligibleSessionIds: [],
+      recoveringOpen: null,
     });
     await service.onApplicationBootstrap();
     expect(loadContext).not.toHaveBeenCalled();
@@ -270,6 +293,7 @@ describe('US244 — RecoveryRuntimeResumeService', () => {
         createdAt: at,
       },
       eligibleSessionIds: ['session-1'],
+      recoveringOpen: null,
     });
     leases.getLastResult.mockReturnValue(lease());
     checkpoints.getLastResult.mockReturnValue(checkpoint());

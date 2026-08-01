@@ -4,19 +4,21 @@ import { EventProcessingModule } from '../event-processing';
 import { PaperAccountModule } from '../paper-account';
 import { StrategyDeploymentModule } from '../strategy-deployment';
 import { StrategyRuntimeModule } from '../strategy-runtime';
+import { RECOVERY_INCIDENT_REPOSITORY } from './domain/recovery-incident.repository';
+import { RECOVERY_STATE_REPOSITORY } from './domain/recovery-state.repository';
 import { TRADING_SESSION_REPOSITORY } from './persistence/trading-session.repository';
 import { PrismaTradingSessionRepository } from './persistence/prisma-trading-session.repository';
+import { PrismaRecoveryStateRepository } from './persistence/prisma-recovery-state.repository';
+import { PrismaRecoveryIncidentRepository } from './persistence/prisma-recovery-incident.repository';
 import {
   InactiveRecoveryEventAdmissionPolicy,
   RECOVERY_EVENT_ADMISSION_POLICY,
 } from './ports/recovery-event-admission-policy.port';
 import { RecoveryEventAdmissionService } from './recovery/recovery-event-admission.service';
-import {
-  RECOVERY_RECONCILIATION_PORTS,
-  StubRecoveryReconciliationPorts,
-} from './ports/recovery-reconciliation.ports';
 import { RecoveryCheckpointValidationService } from './recovery/recovery-checkpoint-validation.service';
 import { RecoveryLeaseAcquisitionService } from './recovery/recovery-lease-acquisition.service';
+import { RecoveryPhaseProgressService } from './recovery/recovery-phase-progress.service';
+import { RecoveryIncidentFailClosedService } from './recovery/recovery-incident-fail-closed.service';
 import { RecoveryRuntimeArmingService } from './recovery/recovery-runtime-arming.service';
 import { RecoveryRuntimeResumeService } from './recovery/recovery-runtime-resume.service';
 import { RecoveryStateReconciliationService } from './recovery/recovery-state-reconciliation.service';
@@ -27,21 +29,17 @@ import { StartupRecoveryDiscoveryService } from './recovery/startup-recovery-dis
 import { TradingSessionService } from './trading-session.service';
 
 /**
- * Trading Session bounded context (US156 / US157 / US217 / US240–US249).
+ * Trading Session bounded context (US156 / US157 / US217 / US240–US249 / US290–US293).
  * Owns lifecycle + Deployment identity binding. Depends on Strategy Deployment
  * and StrategyRuntimePort only among Runtime modules — never Orders/Risk/Execution.
  *
  * US240–US244: discovery → lease → checkpoint validation → reconciliation →
  * deterministic runtime READY hydration.
- * US245: deterministic event admission only; no evaluation / SignalIntent / Orders.
- * US246: deterministic Runtime arming (EVENT_ADMISSION_ENABLED → ARMED); no
- * evaluation / SignalIntent / Orders.
- * US247: first deterministic strategy evaluation after ARMED; decision only —
- * no SignalIntent / Orders / checkpoint writes.
- * US248: deterministic SignalIntent generation from evaluated decisions —
- * no Orders / Execution Engine / Accounting / checkpoint writes.
- * US249: recovery completion + Session exit from RECOVERING; lease release;
- * no Orders / Runtime lifecycle mutation.
+ * US290: force/confirm Session `RECOVERING` on discovery open.
+ * US291: production `RECOVERY_RECONCILIATION_PORTS` bind at composition root.
+ * US292: durable RecoveryState + RecoveryPhase machine (progress within RECOVERING).
+ * US293: minimal durable Recovery Incident + fail-closed Session FAILED.
+ * US245–US249: admission → arm → evaluate → SignalIntent → completion/exit.
  */
 @Module({
   imports: [
@@ -57,14 +55,22 @@ import { TradingSessionService } from './trading-session.service';
       inject: [PrismaService],
     },
     {
+      provide: RECOVERY_STATE_REPOSITORY,
+      useFactory: (prisma: PrismaService) => new PrismaRecoveryStateRepository(prisma),
+      inject: [PrismaService],
+    },
+    {
+      provide: RECOVERY_INCIDENT_REPOSITORY,
+      useFactory: (prisma: PrismaService) => new PrismaRecoveryIncidentRepository(prisma),
+      inject: [PrismaService],
+    },
+    {
       provide: RECOVERY_EVENT_ADMISSION_POLICY,
       useClass: InactiveRecoveryEventAdmissionPolicy,
     },
-    {
-      provide: RECOVERY_RECONCILIATION_PORTS,
-      useClass: StubRecoveryReconciliationPorts,
-    },
     TradingSessionService,
+    RecoveryPhaseProgressService,
+    RecoveryIncidentFailClosedService,
     StartupRecoveryDiscoveryService,
     RecoveryLeaseAcquisitionService,
     RecoveryCheckpointValidationService,
@@ -78,7 +84,11 @@ import { TradingSessionService } from './trading-session.service';
   ],
   exports: [
     TRADING_SESSION_REPOSITORY,
+    RECOVERY_STATE_REPOSITORY,
+    RECOVERY_INCIDENT_REPOSITORY,
     TradingSessionService,
+    RecoveryPhaseProgressService,
+    RecoveryIncidentFailClosedService,
     StartupRecoveryDiscoveryService,
     RecoveryLeaseAcquisitionService,
     RecoveryCheckpointValidationService,
@@ -90,7 +100,6 @@ import { TradingSessionService } from './trading-session.service';
     RecoverySignalIntentGenerationService,
     RecoveryCompletionService,
     RECOVERY_EVENT_ADMISSION_POLICY,
-    RECOVERY_RECONCILIATION_PORTS,
   ],
 })
 export class TradingSessionModule {}

@@ -32,7 +32,9 @@ export type RecoveryCompletionBlockedReason =
   | 'illegal_session_transition'
   | 'runtime_not_armed';
 
-export type RecoveryResumeIntent = TradingSessionStatus.RUNNING | TradingSessionStatus.PAUSED;
+/** Includes STOPPED for E17 P0-2 / durable RecoveryState resumeIntent (US292). */
+export type RecoveryResumeIntent =
+  TradingSessionStatus.RUNNING | TradingSessionStatus.PAUSED | TradingSessionStatus.STOPPED;
 
 export type RecoveryPipelineStageSnapshot = Readonly<{
   discovery: StartupRecoveryDiscoveryResult | null;

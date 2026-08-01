@@ -14,6 +14,7 @@ Related:
 - [Story ID Allocation](./story-id-allocation.md)
 - [Architecture Decision Log](../Architecture/ADR/ADL.md)
 - [Release Process](./release-process.md)
+- [RC-18 Development Process](./rc-18-development-process.md) — RC-18 proven practices (RIV/SIG/Residual Register)
 - Templates: [`templates/`](./templates/)
 
 ---

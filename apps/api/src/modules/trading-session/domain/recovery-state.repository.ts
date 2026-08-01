@@ -1,11 +1,23 @@
-import type { RecoveryStateProperties } from './trading-session-aggregate';
+import type { TransactionContext } from '../../../storage/prisma/prisma-transaction.service';
+import type { DurableRecoveryState } from './durable-recovery-state';
 
 /**
- * Persistence-agnostic recovery state contract.
- * Implementations belong to a later infrastructure story.
+ * Persistence port for durable RecoveryState (US292 / E17 P0-1).
+ * Implementations belong to trading-session infrastructure.
  */
 export interface RecoveryStateRepository {
-  saveRecoveryState(sessionId: string, recoveryState: RecoveryStateProperties): Promise<void>;
-  loadRecoveryState(sessionId: string): Promise<RecoveryStateProperties | null>;
-  clearRecoveryState(sessionId: string): Promise<void>;
+  saveRecoveryState(
+    recoveryState: DurableRecoveryState,
+    transaction?: TransactionContext,
+  ): Promise<void>;
+
+  loadRecoveryState(sessionId: string): Promise<DurableRecoveryState | null>;
+
+  /**
+   * Soft-clear is preferred for audit retention (P0-1). Hard clear is reserved
+   * for test teardown / explicit retention policy — never required on success.
+   */
+  clearRecoveryState(sessionId: string, transaction?: TransactionContext): Promise<void>;
 }
+
+export const RECOVERY_STATE_REPOSITORY = Symbol('RECOVERY_STATE_REPOSITORY');

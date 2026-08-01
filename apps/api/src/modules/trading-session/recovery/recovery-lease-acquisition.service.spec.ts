@@ -67,6 +67,26 @@ describe('US241 — RecoveryLeaseAcquisitionService', () => {
     discover: vi.fn(),
   };
   let info: ReturnType<typeof vi.fn>;
+  const recoveryProgress = {
+    load: vi.fn(async () => null),
+    open: vi.fn(async () => null),
+    recordFencingToken: vi.fn(async () => null),
+    advance: vi.fn(async () => null),
+    finalizeCompleted: vi.fn(async () => null),
+  };
+  const failClosed = {
+    failClosedOnAmbiguity: vi.fn(async () => ({
+      outcome: 'FAILED_CLOSED' as const,
+      reason: 'test',
+      incident: null,
+      sessionId: 'session-1',
+      workspaceId: 'ws-1',
+      sessionStatus: null,
+      recoveryPhase: null,
+      evaluationAdmitted: false as const,
+      signalIntentEmitted: false as const,
+    })),
+  };
   let service: RecoveryLeaseAcquisitionService;
 
   beforeEach(() => {
@@ -84,6 +104,8 @@ describe('US241 — RecoveryLeaseAcquisitionService', () => {
       sessions,
       transactions as never,
       discovery as unknown as StartupRecoveryDiscoveryService,
+      recoveryProgress as never,
+      failClosed as never,
       logger as never,
     );
   });
@@ -189,6 +211,7 @@ describe('US241 — RecoveryLeaseAcquisitionService', () => {
       eligibleCount: 1,
       candidate: candidateFor(runningSession()),
       eligibleSessionIds: ['session-1'],
+      recoveringOpen: null,
     });
     findById.mockResolvedValue(runningSession());
     saveIfVersion.mockImplementation(async (next) => next);
@@ -204,6 +227,7 @@ describe('US241 — RecoveryLeaseAcquisitionService', () => {
       eligibleCount: 0,
       candidate: null,
       eligibleSessionIds: [],
+      recoveringOpen: null,
     });
     await service.onApplicationBootstrap();
     expect(findById).not.toHaveBeenCalled();

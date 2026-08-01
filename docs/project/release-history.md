@@ -1,6 +1,6 @@
 # Release History
 
-Date: 2026-07-30
+Date: 2026-08-01
 
 Status: Authoritative living summary of release outcomes
 
@@ -9,6 +9,7 @@ Related:
 - [Project Status](./project-status.md)
 - [Roadmap](./roadmap.md)
 - [Story ID Allocation](./story-id-allocation.md)
+- [RC-18 Mid-Release Health Review](./rc-18-mid-release-health-review.md)
 - [RC-17 Release Planning](./rc-17-release-planning.md)
 - [Architecture Decision Log](../Architecture/ADR/ADL.md)
 - ADR Index: [`../adr/README.md`](../adr/README.md)
@@ -30,6 +31,7 @@ Related:
 | RC-15.1 | Validation Release                                                     | COMPLETE              | Tag `rc-15.1` (`bf46b64`)          | VS001–VS004 fixes integrated; docs synced; quality gates green                                                                                                                                                                                           |
 | RC-16   | Paper Trading Platform (architecture + foundation + strategy path)     | **BASELINE ACCEPTED** | M0–M2 + M3 through US223 (E13–E16) | ADR-012…ADR-018 freeze; M1/M2 validated; canonical SignalIntent → CanonicalOrderPath path landed. Historical 2026-07-18 final-release audit remains FAIL for audit trail; residual M3 hooks + M4–M7 product intent **transferred to RC-17** (2026-07-30) |
 | RC-17   | Production Readiness & Operational Runtime (Runtime Recovery baseline) | **BASELINED**         | E17 US240–US249 + US244A           | Runtime Recovery reference pipeline Stage 3 + Stage 4 PASS WITH RECOMMENDATIONS. Production restart-safety subject to RC-18 TD-036 mandatory residuals. E18–E21 product epics forwarded to RC-18+                                                        |
+| RC-18   | Production Recovery & Operational Readiness                            | **IN PROGRESS**       | US290–US293 Done (mid-release)     | TD-036 R1–R4 Implemented (force-`RECOVERING`, real reconcile ports, RecoveryState, Incident fail-closed). RIV-001 / SIG-001 PASS WITH RESIDUALS. Remaining: US294 chaos evidence, US295 ADL-008, then E18–E21                                            |
 
 ---
 
@@ -134,20 +136,27 @@ Plans: [`rc-16-paper-trading-plan.md`](./rc-16-paper-trading-plan.md),
 Original RC-17 planning epics beyond the Runtime Recovery baseline remain
 **forward work** (not closed by this baseline):
 
-| Original RC-17 intent                                                                               | Forward owner                |
-| --------------------------------------------------------------------------------------------------- | ---------------------------- |
-| E17 residuals (force-`RECOVERING`, real reconcile adapters, RecoveryState/Incident, chaos evidence) | **RC-18 mandatory** (TD-036) |
-| E18 Event Processing                                                                                | RC-18+                       |
-| E19 Operations (Kill Switch product, operator status, auth leftovers)                               | RC-18+ / E19                 |
-| E20 Market Data operational hardening                                                               | RC-18+                       |
-| E21 Multi-Strategy Platform                                                                         | RC-18+                       |
+| Original RC-17 intent                                                                               | Forward owner                                                    |
+| --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| E17 residuals (force-`RECOVERING`, real reconcile adapters, RecoveryState/Incident, chaos evidence) | **RC-18 mandatory** (TD-036) — R1–R4 Done 2026-08-01; R5–R6 open |
+| E18 Event Processing                                                                                | RC-18+                                                           |
+| E19 Operations (Kill Switch product, operator status, auth leftovers)                               | RC-18+ / E19                                                     |
+| E20 Market Data operational hardening                                                               | RC-18+                                                           |
+| E21 Multi-Strategy Platform                                                                         | RC-18+                                                           |
+
+### RC-18 mid-release note (2026-08-01)
+
+US290–US293 Implemented. See
+[`rc-18-mid-release-health-review.md`](./rc-18-mid-release-health-review.md)
+and [`rc-18-residual-register.md`](./rc-18-residual-register.md). Production
+restart-safety still requires US294 + US295.
 
 ### Production readiness note
 
 RC-17 is the **accepted Runtime Recovery architecture baseline**. Claiming
 operators can safely restart continuous paper sessions still requires RC-18
-mandatory TD-036 items. ADL-008 remains DEFERRED until those land or an
-explicit accepted deferral is recorded.
+mandatory TD-036 items **US294–US295** (R1–R4 closed at mid-release). ADL-008
+remains DEFERRED until those land or an explicit accepted deferral is recorded.
 
 Plans: [`rc-17-release-planning.md`](./rc-17-release-planning.md),
 [`rc-17-roadmap.md`](./rc-17-roadmap.md),

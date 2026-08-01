@@ -1,6 +1,8 @@
 import { Timeframe } from '../../market-data/timeframe';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { RecoveryStateRepository } from './recovery-state.repository';
+import { openDurableRecoveryState, type DurableRecoveryState } from './durable-recovery-state';
+import { TradingSessionStatus } from './trading-session-status';
 import {
   ExecutionMode,
   RecoveryStatus,
@@ -8,7 +10,6 @@ import {
   TradingSession,
   isRecoveryStatus,
   type CreateTradingSessionProperties,
-  type RecoveryStateProperties,
 } from './trading-session-aggregate';
 
 const CREATED_AT = '2026-07-19T18:00:00.000Z';
@@ -325,18 +326,15 @@ describe('US188 TradingSession recovery', () => {
     ).toThrow(/recoveryAttempt must be a non-negative integer/);
   });
 
-  it('provides a recovery repository contract without an implementation', async () => {
+  it('provides a durable RecoveryState repository contract (US292)', async () => {
     class ContractRepository implements RecoveryStateRepository {
-      private states = new Map<string, RecoveryStateProperties>();
+      private states = new Map<string, DurableRecoveryState>();
 
-      async saveRecoveryState(
-        sessionId: string,
-        recoveryState: RecoveryStateProperties,
-      ): Promise<void> {
-        this.states.set(sessionId, recoveryState);
+      async saveRecoveryState(recoveryState: DurableRecoveryState): Promise<void> {
+        this.states.set(recoveryState.sessionId, recoveryState);
       }
 
-      async loadRecoveryState(sessionId: string): Promise<RecoveryStateProperties | null> {
+      async loadRecoveryState(sessionId: string): Promise<DurableRecoveryState | null> {
         return this.states.get(sessionId) ?? null;
       }
 
@@ -346,9 +344,20 @@ describe('US188 TradingSession recovery', () => {
     }
 
     const repository: RecoveryStateRepository = new ContractRepository();
-    const state = runningSession().beginRecovery(HEARTBEAT_EXPIRED_AT).recoveryState();
+    const opened = openDurableRecoveryState({
+      sessionId: 'session-188',
+      workspaceId: 'workspace-1',
+      sessionStatus: TradingSessionStatus.RECOVERING,
+      preRecoveryStatus: TradingSessionStatus.RUNNING,
+      resumeIntent: TradingSessionStatus.RUNNING,
+      recordedAt: HEARTBEAT_EXPIRED_AT,
+      prior: null,
+    });
+    expect(opened.ok).toBe(true);
+    if (!opened.ok) return;
+    const state = opened.state;
 
-    await repository.saveRecoveryState('session-188', state);
+    await repository.saveRecoveryState(state);
     await expect(repository.loadRecoveryState('session-188')).resolves.toBe(state);
     await repository.clearRecoveryState('session-188');
     await expect(repository.loadRecoveryState('session-188')).resolves.toBeNull();

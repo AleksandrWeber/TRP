@@ -1,10 +1,11 @@
 # Story ID Allocation
 
-Date: 2026-07-30
+Date: 2026-08-01
 
 Status: Authoritative for new User Story IDs
 
-Purpose: Prevent collisions across releases and make RC-17 numbering unambiguous.
+Purpose: Prevent collisions across releases and make RC-17/RC-18 numbering
+unambiguous.
 
 Related:
 
@@ -17,9 +18,9 @@ Related:
 
 ## Official RC-17 Story ID allocation
 
-| Release   | Official range  | Status                                     |
-| --------- | --------------- | ------------------------------------------ |
-| **RC-17** | **US240–US299** | **Allocated — implementation not started** |
+| Release   | Official range  | Status                                                            |
+| --------- | --------------- | ----------------------------------------------------------------- |
+| **RC-17** | **US240–US299** | **Allocated — E17 Done; RC-18 residuals US290–US295 in progress** |
 
 All new RC-17 User Stories **MUST** use IDs in **US240–US299**.
 
@@ -58,22 +59,28 @@ guidance; the hard rule is the full **US240–US299** envelope.
 
 ## Current usage
 
-| ID / band   | State                                                                                                                                                  |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| US211–US223 | Done (RC-16 M3 canonical strategy path)                                                                                                                |
-| US224–US227 | Not implemented; superseded by RC-17 ownership (see Transfer note)                                                                                     |
-| US240–US299 | RC-17 band — E17 US240–US249 (+ US244A) Done/baselined; US250–US299 remain for RC-18+ epics                                                            |
-| US240       | **Done (discovery slice)** — startup eligibility + deterministic candidate selection; force `RECOVERING` residual → RC-18                              |
-| US241       | **Done (lease ownership slice)** — CAS recovery lease acquire → `LEASE_ACQUIRED` \| `LEASE_DENIED`                                                     |
-| US242       | **Done (checkpoint validation slice)** — `VALID_CHECKPOINT` \| `NO_CHECKPOINT` \| `INVALID_CHECKPOINT`; full assembly residual                         |
-| US243       | **Done (read-only reconcile slice)** — `RECONCILED` \| `RECONCILIATION_FAILED`; real port adapters + Incident residual → RC-18                         |
-| US244       | **Done (READY hydration slice)** — deterministic Runtime resume to `READY`; worker remains idle/no event admission                                     |
-| US245       | **Done (event admission slice)** — deterministic `EVENT_ADMISSION_ENABLED`; no evaluation / SignalIntent / Orders                                      |
-| US246       | **Done (runtime arming slice)** — deterministic `EVENT_ADMISSION_ENABLED → ARMED`; no evaluation / SignalIntent / Orders                               |
-| US247       | **Done (evaluation-only slice)** — first deterministic strategy evaluation after ARMED; decision only, no SignalIntent / Orders                        |
-| US248       | **Done (SignalIntent-only slice)** — deterministic SignalIntent from evaluated decision; no Orders / Execution / Accounting                            |
-| US249       | **Done (completion / Session-exit slice)** — recovery completion, Session exit from RECOVERING, lease release; RecoveryState/Incident residual → RC-18 |
-| US244A      | **Done (corrective)** — recovery pipeline bootstrap / stage-contract orchestration                                                                     |
+| ID / band   | State                                                                                                                                                       |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| US211–US223 | Done (RC-16 M3 canonical strategy path)                                                                                                                     |
+| US224–US227 | Not implemented; superseded by RC-17 ownership (see Transfer note)                                                                                          |
+| US240–US299 | RC-17 band — E17 US240–US249 (+ US244A) Done/baselined; US290–US293 Done (RC-18); US294–US295 open; US250–US289 soft for E18–E21                            |
+| US240       | **Done (discovery slice)** — startup eligibility + deterministic candidate selection; force `RECOVERING` closed by US290                                    |
+| US241       | **Done (lease ownership slice)** — CAS recovery lease acquire → `LEASE_ACQUIRED` \| `LEASE_DENIED`                                                          |
+| US242       | **Done (checkpoint validation slice)** — `VALID_CHECKPOINT` \| `NO_CHECKPOINT` \| `INVALID_CHECKPOINT`; full assembly residual                              |
+| US243       | **Done (read-only reconcile slice)** — `RECONCILED` \| `RECONCILIATION_FAILED`; real port adapters closed by US291                                          |
+| US244       | **Done (READY hydration slice)** — deterministic Runtime resume to `READY`; worker remains idle/no event admission                                          |
+| US245       | **Done (event admission slice)** — deterministic `EVENT_ADMISSION_ENABLED`; no evaluation / SignalIntent / Orders                                           |
+| US246       | **Done (runtime arming slice)** — deterministic `EVENT_ADMISSION_ENABLED → ARMED`; no evaluation / SignalIntent / Orders                                    |
+| US247       | **Done (evaluation-only slice)** — first deterministic strategy evaluation after ARMED; decision only, no SignalIntent / Orders                             |
+| US248       | **Done (SignalIntent-only slice)** — deterministic SignalIntent from evaluated decision; no Orders / Execution / Accounting                                 |
+| US249       | **Done (completion / Session-exit slice)** — recovery completion, Session exit from RECOVERING, lease release; RecoveryState/Incident closed by US292–US293 |
+| US244A      | **Done (corrective)** — recovery pipeline bootstrap / stage-contract orchestration                                                                          |
+| US290       | **Done (force/confirm RECOVERING)** — Session lifecycle precondition on discovery                                                                           |
+| US291       | **Done (real reconcile ports)** — production stub retired; composition-root adapters                                                                        |
+| US292       | **Done (RecoveryState + phase)** — durable phase machine within RECOVERING                                                                                  |
+| US293       | **Done (Incident fail-closed)** — durable Incident on ambiguity; Session FAILED                                                                             |
+| US294       | **Open (chaos/restart evidence)** — next mandatory residual                                                                                                 |
+| US295       | **Open (ADL-008 closure)** — ACCEPTED or explicit accepted deferral                                                                                         |
 
 ### Transfer note (US224–US227)
 

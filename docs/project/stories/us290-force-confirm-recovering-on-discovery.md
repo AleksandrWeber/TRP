@@ -4,11 +4,12 @@
 **Release:** RC-18 — Production Recovery & Operational Readiness  
 **Workstream:** Mandatory TD-036 residual (R1)  
 **Date:** 2026-07-30  
-**Status:** SPECIFIED (implementation authority)  
+**Status:** Implemented  
 **Architecture baseline:** ADR-012…ADR-019 ACTIVE; Architecture Freeze in effect  
 **Primary debt:** TD-036 — Force/confirm Session `RECOVERING` on discovery  
 **Closes:** E17 Stage 4 TR-N1  
 **Preceding authority:** [RC-18 Stage 2 Architecture Review](../rc-18-td036-stage2-architecture-review.md) (**PROCEED**)  
+**Mid-release:** [RC-18 Mid-Release Health Review](../rc-18-mid-release-health-review.md) · [RIV-001](../rc-18-riv-001-recovery-integration-validation.md)  
 **Does not introduce:** implementation design, API design, database schema, class/interface design, new Epic, new bounded context, or ADR change
 
 Related:
@@ -502,22 +503,22 @@ What must be verified during review. No test implementation here.
 
 Story-level DoD only (not residual workstream exit).
 
-- [ ] This Story Specification accepted as implementation authority for US290
-- [ ] Stage 3 implementation planning cites this document + Stage 2 PROCEED
+- [x] This Story Specification accepted as implementation authority for US290
+- [x] Stage 3 implementation planning cites this document + Stage 2 PROCEED
       constraints + ADR-014 / E17 Spec S1 / P0-2
-- [ ] AC-1…AC-10 satisfied with reviewable evidence
-- [ ] TR-N1 closed for the discovery → `RECOVERING` precondition gap (US249
+- [x] AC-1…AC-10 satisfied with reviewable evidence
+- [x] TR-N1 closed for the discovery → `RECOVERING` precondition gap (US249
       no longer depends on undocumented status force for the production open path)
-- [ ] TD-036 residual row “Force/confirm Session `RECOVERING` on discovery”
+- [x] TD-036 residual row “Force/confirm Session `RECOVERING` on discovery”
       updated when implementation evidence lands
-- [ ] Architecture Freeze intact (ADR-012…ADR-019 unchanged by this Story)
-- [ ] No new bounded context / RecoveryCoordinator introduced
-- [ ] Canonical Order Path and SignalIntent recovery boundary unchanged
-- [ ] Scope not expanded into US291–US295 / E19 / future backlog items
-- [ ] Docs sync for this Story: CHANGELOG / project status / roadmap /
+- [x] Architecture Freeze intact (ADR-012…ADR-019 unchanged by this Story)
+- [x] No new bounded context / RecoveryCoordinator introduced
+- [x] Canonical Order Path and SignalIntent recovery boundary unchanged
+- [x] Scope not expanded into US291–US295 / E19 / future backlog items
+- [x] Docs sync for this Story: CHANGELOG / project status / roadmap /
       architecture snapshot / module maturity / technical debt / story-id
       allocation as required by residual DoD practice
-- [ ] Quality gates green for the change set that implements this Story
+- [x] Quality gates green for the change set that implements this Story
       (format, lint, typecheck, build, tests) — verified at implementation time
 
 **Not required for US290 DoD alone:** full production restart-safety PASS
@@ -554,15 +555,13 @@ does not invent architecture.
 ## Document lifecycle
 
 ```text
-SPECIFIED (implementation authority)   ← current
+Implemented
         ↓
-Stage 3 implementation planning
+Stage 3 implementation COMPLETE
         ↓
-Stage 3 coding under Architecture Freeze
+RIV-001 / SIG-001 / Mid-Release Health Review
         ↓
-Architecture Health / review evidence
-        ↓
-US290 DoD → next residual US291
+DoD COMPLETE → next residual US291 (Done)
 ```
 
 ---

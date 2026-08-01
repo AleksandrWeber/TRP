@@ -5,6 +5,7 @@ import { PrismaTransactionService } from '../../../storage/prisma/prisma-transac
 import { toDurableEventId, type DurableEventEnvelope } from '../../event-processing';
 import { TransactionalOutboxAppender } from '../../event-processing/transactional-outbox-appender';
 import { STRATEGY_RUNTIME_PORT, type StrategyRuntimePort } from '../../strategy-runtime';
+import { RecoveryPhase } from '../domain/durable-recovery-state';
 import {
   decideRecoveryCompletion,
   type RecoveryCompletionResult,
@@ -17,7 +18,9 @@ import {
 } from '../persistence/trading-session.repository';
 import { RecoveryCheckpointValidationService } from './recovery-checkpoint-validation.service';
 import { RecoveryEventAdmissionService } from './recovery-event-admission.service';
+import { RecoveryIncidentFailClosedService } from './recovery-incident-fail-closed.service';
 import { RecoveryLeaseAcquisitionService } from './recovery-lease-acquisition.service';
+import { RecoveryPhaseProgressService } from './recovery-phase-progress.service';
 import { RecoveryRuntimeArmingService } from './recovery-runtime-arming.service';
 import { RecoveryRuntimeResumeService } from './recovery-runtime-resume.service';
 import { RecoverySignalIntentGenerationService } from './recovery-signal-intent-generation.service';
@@ -31,7 +34,7 @@ export type RecoveryCompleteCommand = Readonly<{
   correlationId?: string;
   /** Explicit controlled termination without requiring SignalIntent / NO_ACTION. */
   controlledTermination?: boolean;
-  /** Session exit target after recovery; defaults to RUNNING. */
+  /** Session exit target after recovery; defaults to durable RecoveryState.resumeIntent then RUNNING. */
   resumeIntent?: RecoveryResumeIntent;
 }>;
 
@@ -42,13 +45,14 @@ export type RecoveryCompleteResult = RecoveryCompletionResult &
   }>;
 
 /**
- * US249 — deterministic Recovery completion and Session exit.
+ * US249 — deterministic Recovery completion and Session exit (+ US292 finalize
+ * + US293 fail-closed when READY exit is blocked).
  *
  * After a terminal Stage 3 outcome (SignalIntent generated, non-actionable
  * evaluation, or controlled termination), verifies pipeline consistency,
  * transitions Session out of `RECOVERING`, releases recovery lease ownership,
- * and emits a durable completion event. Does not create Orders or change
- * Runtime lifecycle (Runtime remains ARMED/operational).
+ * finalizes durable RecoveryState, and emits a durable completion event.
+ * Does not create Orders or change Runtime lifecycle.
  */
 @Injectable()
 export class RecoveryCompletionService {
@@ -83,6 +87,10 @@ export class RecoveryCompletionService {
     private readonly evaluation: RecoveryStrategyEvaluationService,
     @Inject(RecoverySignalIntentGenerationService)
     private readonly signalIntent: RecoverySignalIntentGenerationService,
+    @Inject(RecoveryPhaseProgressService)
+    private readonly recoveryProgress: RecoveryPhaseProgressService,
+    @Inject(RecoveryIncidentFailClosedService)
+    private readonly failClosed: RecoveryIncidentFailClosedService,
     @Inject(LOGGER) logger: Logger,
   ) {
     this.logger = logger.child(RecoveryCompletionService.name);
@@ -127,17 +135,33 @@ export class RecoveryCompletionService {
 
     const sessionKey = session === null ? null : `${session.workspaceId}::${session.id}`;
 
+    const durable = session === null ? null : await this.recoveryProgress.load(session.id);
+    const resumeIntent =
+      command.resumeIntent ??
+      durable?.resumeIntent ??
+      stages.discovery?.recoveringOpen?.resumeIntent ??
+      TradingSessionStatus.RUNNING;
+
     const decided = decideRecoveryCompletion({
       session,
       stages,
       lifecycle,
       controlledTermination: command.controlledTermination === true,
-      resumeIntent: command.resumeIntent ?? TradingSessionStatus.RUNNING,
+      resumeIntent,
       recordedAt: command.recordedAt,
       alreadyCompleted: sessionKey === null ? false : this.completedSessions.has(sessionKey),
     });
 
     if (decided.outcome !== 'RECOVERY_COMPLETED' || decided.nextSession === null) {
+      if (session !== null && durable?.phase === RecoveryPhase.READY) {
+        await this.failClosed.failClosedOnAmbiguity({
+          sessionId: session.id,
+          workspaceId: session.workspaceId,
+          reasonClass: 'completion_blocked_ambiguity',
+          failureReason: `completion_blocked:${decided.reason}`,
+          recordedAt: command.recordedAt,
+        });
+      }
       const result = withCompletionFlags(decided, false, false);
       this.lastResult = result;
       this.logResult(result);
@@ -159,6 +183,12 @@ export class RecoveryCompletionService {
         completionEnvelope(persisted, decided, command),
         command.recordedAt,
       );
+      await this.recoveryProgress.finalizeCompleted({
+        sessionId: persisted.id,
+        sessionStatus: persisted.status,
+        recordedAt: command.recordedAt,
+        transaction,
+      });
       return persisted;
     });
 

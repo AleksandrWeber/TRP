@@ -58,6 +58,13 @@ export {
   type StartupRecoveryDiscoveryResult,
 } from './domain/startup-recovery-discovery';
 export {
+  decideForceConfirmRecovering,
+  resolveDiscoveryResumeIntent,
+  type DiscoveryResumeIntent,
+  type ForceConfirmRecoveringAction,
+  type RecoveringOpenResult,
+} from './domain/force-confirm-recovering';
+export {
   DEFAULT_RECOVERY_LEASE_TTL_MS,
   attachRecoveryLease,
   decideRecoveryLeaseAcquisition,
@@ -225,6 +232,28 @@ export type {
   TradingSessionStopped,
 } from './domain/trading-session-events';
 export type { RecoveryStateRepository } from './domain/recovery-state.repository';
+export { RECOVERY_STATE_REPOSITORY } from './domain/recovery-state.repository';
+export type { RecoveryIncidentRepository } from './domain/recovery-incident.repository';
+export { RECOVERY_INCIDENT_REPOSITORY } from './domain/recovery-incident.repository';
+export {
+  createRecoveryIncident,
+  type RecoveryIncident,
+  type RecoveryIncidentReasonClass,
+} from './domain/recovery-incident';
+export {
+  RecoveryPhase,
+  openDurableRecoveryState,
+  advanceDurableRecoveryPhase,
+  correlateIncidentOnFailedRecoveryState,
+  finalizeDurableRecoveryState,
+  isRecoveryPhase,
+  type DurableRecoveryState,
+} from './domain/durable-recovery-state';
+export { RecoveryPhaseProgressService } from './recovery/recovery-phase-progress.service';
+export {
+  RecoveryIncidentFailClosedService,
+  type RecoveryFailClosedResult,
+} from './recovery/recovery-incident-fail-closed.service';
 export type {
   TradingSessionAggregateRepository,
   TradingSessionRepository as TradingSessionDomainRepository,

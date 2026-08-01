@@ -57,6 +57,7 @@ function completeStages(
         createdAt: earlier,
       },
       eligibleSessionIds: ['session-1'],
+      recoveringOpen: null,
     },
     lease: {
       outcome: 'LEASE_ACQUIRED',

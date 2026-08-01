@@ -11,6 +11,14 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ### Added
 
+- RC-18 Mid-Release — US290–US293 production-recovery residuals + docs sync
+  (`trading-session/`, composition ports, Prisma RecoveryState/Incident):
+  force/confirm `RECOVERING` (US290); real reconcile adapters (US291);
+  durable RecoveryState + phase machine (US292); durable Incident fail-closed
+  (US293). RIV-001 / SIG-001 / mid-release health review / Residual Register /
+  Tech Lead Decision Log / RC-18 development process synchronized. Remaining
+  mandatory: US294 chaos evidence, US295 ADL-008. See
+  `docs/project/rc-18-mid-release-health-review.md`.
 - RC-17 Release Closure — Runtime Recovery **BASELINED**
   (`docs/project/`): retrospective, release history, project status, roadmap,
   architecture snapshot, and TD-036 residual ownership synchronized. E17

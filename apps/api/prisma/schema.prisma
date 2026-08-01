@@ -617,6 +617,55 @@ model TradingSession {
   @@map("trading_sessions")
 }
 
+/// RC-18 US292 durable RecoveryState (E17 §4.5 / P0-1).
+/// Source of truth for RecoveryPhase progress within Session RECOVERING.
+/// Distinct from Session lifecycle status and aggregate RecoveryStatus.
+model SessionRecoveryState {
+  sessionId            String    @id @map("session_id")
+  workspaceId          String    @map("workspace_id")
+  recoveryId           String    @map("recovery_id")
+  recoveryAttempt      Int       @map("recovery_attempt")
+  phase                String
+  preRecoveryStatus    String    @map("pre_recovery_status")
+  resumeIntent         String    @map("resume_intent")
+  fencingToken         Int?      @map("fencing_token")
+  lastSemanticEventId  String?   @map("last_semantic_event_id")
+  lastAttemptedPhase   String?   @map("last_attempted_phase")
+  startedAt            DateTime  @map("started_at")
+  updatedAt            DateTime  @map("updated_at")
+  completedAt          DateTime? @map("completed_at")
+  failedAt             DateTime? @map("failed_at")
+  failureReason        String?   @map("failure_reason")
+  /// Nullable correlation slot — RecoveryState may reference Incident (US293).
+  incidentId           String?   @map("incident_id")
+  schemaVersion        Int       @default(1) @map("schema_version")
+
+  @@index([workspaceId, phase])
+  @@index([workspaceId, recoveryId])
+  @@map("session_recovery_states")
+}
+
+/// RC-18 US293 minimal durable Recovery Incident (safety artifact only).
+/// Provisional pending E19 Safety Incident productization.
+/// Incident must not own RecoveryState as lifecycle authority.
+model SessionRecoveryIncident {
+  incidentId       String   @id @map("incident_id")
+  workspaceId      String   @map("workspace_id")
+  sessionId        String   @map("session_id")
+  recoveryId       String?  @map("recovery_id")
+  recoveryAttempt  Int?     @map("recovery_attempt")
+  reasonClass      String   @map("reason_class")
+  failureReason    String   @map("failure_reason")
+  status           String
+  blocking         Boolean  @default(true)
+  createdAt        DateTime @map("created_at")
+  schemaVersion    Int      @default(1) @map("schema_version")
+
+  @@index([workspaceId, sessionId])
+  @@index([sessionId, status])
+  @@map("session_recovery_incidents")
+}
+
 /// RC-16 M2 US159-US161 durable paper Order aggregate.
 model PaperOrder {
   id               String                @id

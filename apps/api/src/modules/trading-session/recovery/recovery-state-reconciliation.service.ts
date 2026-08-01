@@ -22,6 +22,7 @@ import {
   TRADING_SESSION_REPOSITORY,
   type TradingSessionRepository,
 } from '../persistence/trading-session.repository';
+import { RecoveryIncidentFailClosedService } from './recovery-incident-fail-closed.service';
 import { StartupRecoveryDiscoveryService } from './startup-recovery-discovery.service';
 import { RecoveryCheckpointValidationService } from './recovery-checkpoint-validation.service';
 import {
@@ -30,7 +31,8 @@ import {
 } from './recovery-lease-acquisition.service';
 
 /**
- * US243 — Recovery State Reconciliation.
+ * US243 — Recovery State Reconciliation (+ US292 phase context
+ * + US293 durable Incident fail-closed on mismatch).
  *
  * After US241 lease + US242 VALID_CHECKPOINT, collect read-only snapshots from
  * participating contexts and deterministically reconcile the recovery point.
@@ -56,6 +58,8 @@ export class RecoveryStateReconciliationService implements OnApplicationBootstra
     private readonly leases: RecoveryLeaseAcquisitionService,
     @Inject(RecoveryCheckpointValidationService)
     private readonly checkpoints: RecoveryCheckpointValidationService,
+    @Inject(RecoveryIncidentFailClosedService)
+    private readonly failClosed: RecoveryIncidentFailClosedService,
     @Inject(LOGGER) logger: Logger,
   ) {
     this.logger = logger.child(RecoveryStateReconciliationService.name);
@@ -159,6 +163,17 @@ export class RecoveryStateReconciliationService implements OnApplicationBootstra
 
     this.lastResult = result;
     this.logResult(result);
+    if (result.outcome === 'RECONCILIATION_FAILED') {
+      await this.failClosed.failClosedOnAmbiguity({
+        sessionId: result.sessionId,
+        workspaceId: result.workspaceId,
+        reasonClass: 'reconciliation_ambiguity',
+        failureReason: `reconcile:${result.reason}`,
+        recordedAt: new Date().toISOString(),
+        fencingToken: lease.fencingToken,
+        lastSemanticEventId: result.recoveryPointEventId || null,
+      });
+    }
     return result;
   }
 
