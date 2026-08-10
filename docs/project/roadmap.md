@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-08-10 (RC-20 CLOSED — Command Center foundation certified)
+Last updated: 2026-08-10 (RC-22 CLOSED — Strategy Library domain certified)
 
 Living roadmap for product direction.
 
@@ -171,7 +171,7 @@ Related:
 
 ## Current Phase
 
-**RC-21 CLOSED · Next: RC-22 Strategy Library**
+**RC-22 CLOSED · Next: RC-23+ planning only after this closure**
 
 RC-16 paper path and RC-17 Runtime Recovery are baselined. RC-18 mandatory
 residuals R1–R5 (US290–US294) are Done; **US295** (ADL-008) remains Open.
@@ -181,7 +181,11 @@ RC-20 Command Center foundation (Epics 1–6) is **CLOSED** —
 
 **RC-21** Knowledge Lake is **CLOSED** (tag `v1.0.0-rc21`) —
 [`rc-21-closure-report.md`](./rc-21-closure-report.md). IDE shell remains
-**deferred** (Plan §0). Next: **RC-22 Strategy Library** per
+**deferred** (Plan §0).
+
+**RC-22** Strategy Library is **CLOSED** (tag `v1.0.0-rc22`) —
+[`rc-22-closure-report.md`](./rc-22-closure-report.md). Domain certified;
+Nest ports / persistence / Orchestrator remain deferred. Sequencing:
 [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
 
 Story IDs: **US240–US299** — [`story-id-allocation.md`](./story-id-allocation.md).

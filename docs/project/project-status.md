@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-08-10 (RC-20 CLOSED — Command Center foundation certified)
+2026-08-10 (RC-22 CLOSED — Strategy Library domain certified)
 
 **Level-0 authority:**
 
@@ -58,7 +58,7 @@ Cluster Closure Report:
 
 # Current Phase
 
-**RC-21 CLOSED · Next: RC-22 Strategy Library**
+**RC-22 CLOSED · Next: post-RC-22 V2 sequencing (RC-23+ planning only after closure)**
 
 RC-19 delivered the Architecture Spec v2.0 integration skeleton:
 
@@ -74,7 +74,12 @@ Frozen paper path (Orders / Risk / Execution / Ledger / Recovery) unchanged.
 **RC-21** Knowledge Lake is **CLOSED** (validation PASS, tag `v1.0.0-rc21`) —
 [`rc-21-closure-report.md`](./rc-21-closure-report.md).  
 Certification: [`rc-21-knowledge-lake-certification.md`](./rc-21-knowledge-lake-certification.md).  
-IDE shell remains deferred (Plan §0). **Next:** RC-22 Strategy Library.
+IDE shell remains deferred (Plan §0).
+
+**RC-22** Strategy Library is **CLOSED** (validation PASS, tag `v1.0.0-rc22`) —
+[`rc-22-closure-report.md`](./rc-22-closure-report.md).  
+Certification: [`rc-22-strategy-library-certification.md`](./rc-22-strategy-library-certification.md).  
+Domain complete; Nest application ports / persistence / Session bind deferred.
 
 **RC-18 residual (parallel governance):** US295 / ADL-008 remains **Open** — close or record explicit accepted deferral before production restart-safety PASS claims. Residual ownership: [`rc-18-residual-register.md`](./rc-18-residual-register.md).
 
@@ -82,9 +87,9 @@ IDE shell remains deferred (Plan §0). **Next:** RC-22 Strategy Library.
 
 # Current Goal
 
-RC-21 Knowledge Lake is **CLOSED**. Next approved workstream: **RC-22 Strategy
-Library + Tactical Envelope**. IDE shell remains deferred. Do not start RC-22
-implementation until its Implementation Plan is approved.
+RC-22 Strategy Library is **CLOSED** (tag `v1.0.0-rc22`). RC-23+ planning
+begins only after this official closure. IDE shell remains deferred. Do not
+start the next RC implementation until its Implementation Plan is approved.
 
 Historical Research OS goal (unchanged): Evidence-driven Research OS —
 reproducible experiments, immutable Knowledge, clear provenance/versioning.

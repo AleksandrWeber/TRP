@@ -125,6 +125,9 @@ See: [`rc-21-implementation-plan.md`](./rc-21-implementation-plan.md), [`rc-21-c
 
 **Depends on:** Strategy Lab outputs; Spec tactics contract; Session/Deployment.
 
+**Status:** Domain Epics 1–6 complete; **CLOSED** (validation PASS, tag `v1.0.0-rc22`).  
+Library owns certified membership / envelope / eligibility / lifecycle at the domain layer. Nest application ports, durable persistence, and Session/Orchestrator bind enforcement remain deferred (explicit RC-22 non-goals).
+
 ---
 
 ## RC-23 — Knowledge Lake (projection) — **delivered early as RC-21**
@@ -234,7 +237,7 @@ See: [`rc-21-implementation-plan.md`](./rc-21-implementation-plan.md), [`rc-21-c
 | 20             | Command Center foundation        | Large      | UI as false SoT                           | **COMPLETE**               |
 | 21             | Knowledge Lake (projection)      | Large      | Lake as SoT                               | **CLOSED** (`v1.0.0-rc21`) |
 | 21b (deferred) | IDE + Bot UX                     | Large      | Duplicated runtime (Bot ≠ Session)        | Deferred                   |
-| 22             | Library + Envelope               | Large      | Envelope not enforced                     | **Next**                   |
+| 22             | Library + Envelope               | Large      | Envelope not enforced                     | **CLOSED** (`v1.0.0-rc22`) |
 | 23             | Knowledge Lake (historical slot) | Large      | — (delivered as RC-21)                    | Superseded by RC-21        |
 | 24             | Reporting / AI / Telegram        | Medium     | Shadow accounting in reports              | Planned                    |
 | 25             | Qualification / Profile          | Medium     | Profiles force trades                     | Planned                    |

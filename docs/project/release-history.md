@@ -35,6 +35,34 @@ Related:
 | RC-19   | Spec v2.0 + thin integration hooks                                     | **CLOSED**            | Epics 1–3                          | Exchange Scope, Bot Facade, Tactical Envelope stub — [`rc-19-closure-report.md`](./rc-19-closure-report.md)                                                                                                                                              |
 | RC-20   | Command Center foundation                                              | **CLOSED**            | Epics 1–6                          | Ops workspace projections + lifecycle commands — [`rc-20-closure-report.md`](./rc-20-closure-report.md)                                                                                                                                                  |
 | RC-21   | Knowledge Lake (projection warehouse)                                  | **CLOSED**            | Epics 1–6 · tag `v1.0.0-rc21`      | Append-only Lake + query port; IDE deferred — [`rc-21-closure-report.md`](./rc-21-closure-report.md)                                                                                                                                                     |
+| RC-22   | Strategy Library + library Tactical Envelope (domain)                  | **CLOSED**            | Epics 1–6 · tag `v1.0.0-rc22`      | Certified membership domain; Nest ports deferred — [`rc-22-closure-report.md`](./rc-22-closure-report.md)                                                                                                                                                |
+
+---
+
+## RC-22
+
+| Field         | Value                                                                                  |
+| ------------- | -------------------------------------------------------------------------------------- |
+| Theme         | Strategy Library + library Tactical Envelope (domain)                                  |
+| Status        | **CLOSED**                                                                             |
+| Completion    | Epics 1–6 · tag `v1.0.0-rc22`                                                          |
+| Closure       | [`rc-22-closure-report.md`](./rc-22-closure-report.md)                                 |
+| Validation    | [`rc-22-validation-report.md`](./rc-22-validation-report.md)                           |
+| Certification | [`rc-22-strategy-library-certification.md`](./rc-22-strategy-library-certification.md) |
+
+### Delivered
+
+- Strategy Library boundary and ownership invariants
+- Strategy / StrategyVersion immutable domain model
+- Certification + evidence refs + library tactical envelope
+- Static eligibility gate and deprecate/archive lifecycle history
+- Domain certification and Engineering Workflow validation gates green
+
+### Explicitly deferred
+
+- Nest application ports and durable persistence
+- Session / Deployment / Orchestrator consumption
+- REST / UI / Reporting / AI product surfaces
 
 ---
 

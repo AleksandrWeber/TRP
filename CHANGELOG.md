@@ -11,6 +11,13 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ### Added
 
+- RC-22 — Strategy Library domain (Epics 1–6): certified strategy membership
+  (`strategy-library` module) with Strategy/Version model, immutable
+  certification + evidence refs, library tactical envelope, static eligibility,
+  and deprecate/archive lifecycle. Nest application ports and persistence
+  intentionally deferred. Tag `v1.0.0-rc22`. Closure:
+  `docs/project/rc-22-closure-report.md`. Certification:
+  `docs/project/rc-22-strategy-library-certification.md`.
 - RC-21 — Knowledge Lake foundation (Epics 1–6): append-only analytical
   projection warehouse (`knowledge-lake` module) with ingestion port, trading-path
   - Research Lab one-way producers, consumer-safe query port, and authority

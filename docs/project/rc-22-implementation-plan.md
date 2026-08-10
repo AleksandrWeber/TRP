@@ -1,343 +1,237 @@
 # RC-22 Implementation Plan — Strategy Library
 
 **Document:** RC-22 Implementation Plan  
-**Status:** PLANNING — awaiting review approval (no implementation)  
+**Status:** Epic 6 implemented — awaiting review (domain complete; Validation & Release separate)  
 **Date:** 2026-08-10  
-**Nature:** Planning only. No code, no module changes, no architecture redesign.
+**Nature:** Implementation in progress via thin Epics. Planning contracts remain authoritative.
 
 **Authority inputs:**
 
-| Input                                                                     | Role                                                                  |
-| ------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| [Architecture Specification v2.0](./trp-architecture-specification-v2.md) | Canonical constitution (§5.2 Strategy Library, §8 Research Lifecycle) |
-| [Tactics Contract](./v2-tactics-contract.md)                              | Strategy vs tactics; certification artifact shape                     |
-| [Authority Matrix](./v2-authority-matrix.md)                              | SoT for certified strategy versions                                   |
-| [V2 Implementation Roadmap](./v2-implementation-roadmap.md)               | Approved RC sequence (see §0 sequencing note)                         |
-| [RC-19 Closure Report](./rc-19-closure-report.md)                         | Migration complete; envelope stub inactive                            |
-| [Product Vision](./trp-product-vision.md)                                 | Validated Knowledge before production use                             |
+| Input                                                                       | Role                                                                         |
+| --------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| [Architecture Specification v2.0](./trp-architecture-specification-v2.md)   | Constitution (§5.2 Strategy Library, §5.4–5.6, §8 Research Lifecycle)        |
+| [Authority Matrix](./v2-authority-matrix.md)                                | SoT vs Projection vs Policy; certified algorithm ownership                   |
+| [Alias Dictionary](./v2-alias-dictionary.md)                                | Bot ≡ Session; Mission ≡ Deployment; Strategy / Tactical Envelope naming     |
+| [Tactics Contract](./v2-tactics-contract.md)                                | Strategy vs tactics; Option B envelope; Orchestrator limits                  |
+| [Knowledge Lake](./rc-21-closure-report.md) (RC-21 **CLOSED**)              | Certified projection warehouse available; Lake never owns Library membership |
+| [Engineering Workflow Standard v1.0](./engineering-workflow-standard-v1.md) | Plan → Domain/API contracts → thin Epics → review → validation → release     |
+| [V2 Implementation Roadmap](./v2-implementation-roadmap.md)                 | Approved RC-22 theme: Strategy Library + Tactical Envelope                   |
+| [RC-19 Closure](./rc-19-closure-report.md)                                  | Envelope stub inactive; Exchange Scope identity; Bot Facade                  |
 
-**Companion deliverables:**
+**Companion deliverables (this package):**
 
-- [Epic Breakdown](./rc-22-epic-breakdown.md)
-- [Strategy Library Integration Diagram](./rc-22-strategy-library-integration.md)
-
----
-
-## 0. Sequencing note (governance)
-
-Per [RC-20 Roadmap Reconciliation](./rc-20-roadmap-reconciliation.md) (**Recommendation A**):
-
-| RC        | Canonical theme                           |
-| --------- | ----------------------------------------- |
-| **RC-20** | Ops readiness (Command Center foundation) |
-| **RC-22** | Strategy Library + Tactical Envelope      |
-
-This package is the **RC-22** Strategy Library implementation plan. It does **not** reorder the approved V2 Implementation Roadmap. Command Center remains RC-20.
+| Deliverable                     | Document                                                                                 |
+| ------------------------------- | ---------------------------------------------------------------------------------------- |
+| Epic Breakdown                  | [`rc-22-epic-breakdown.md`](./rc-22-epic-breakdown.md)                                   |
+| Domain Model Contract           | [`rc-22-domain-model-contract.md`](./rc-22-domain-model-contract.md)                     |
+| API Contract (ports)            | [`rc-22-api-contract.md`](./rc-22-api-contract.md)                                       |
+| Integration Diagram             | [`rc-22-strategy-library-integration.md`](./rc-22-strategy-library-integration.md)       |
+| Validation Summary              | [`rc-22-validation-summary.md`](./rc-22-validation-summary.md)                           |
+| Architecture Consistency Report | [`rc-22-architecture-consistency-report.md`](./rc-22-architecture-consistency-report.md) |
 
 ---
 
-## 1. Release overview
+## 0. Sequencing (governance)
 
-| Field          | Value                                                                                                                                       |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| RC name        | RC-22                                                                                                                                       |
-| Theme          | Strategy Library (certified strategy repository)                                                                                            |
-| Predecessor    | RC-20 / RC-21 as scheduled on V2 roadmap (Library does not require Command Center to start Lab work; runtime gate needs Session/Deployment) |
-| Nature         | Certified Strategy Library + envelope enforcement (approved RC-22 theme)                                                                    |
-| Implementation | **Not started** — planning only                                                                                                             |
+| RC        | Theme                                       | Status                                   |
+| --------- | ------------------------------------------- | ---------------------------------------- |
+| **RC-19** | Spec skeleton + Exchange Scope + Bot Facade | **CLOSED**                               |
+| **RC-20** | Command Center foundation                   | **CLOSED**                               |
+| **RC-21** | Knowledge Lake (projection)                 | **CLOSED** (`v1.0.0-rc21`)               |
+| **RC-22** | Strategy Library + Tactical Envelope        | **Epic 6 implemented** — awaiting review |
 
-### Mission
-
-Introduce the **Strategy Library** as the canonical repository of **certified** trading strategy versions — the single source of truth for strategies eligible for the production path (Paper today; Live under a future ADR).
-
-RC-22 answers: _Can the platform prove which strategy versions earned trust, bind their tactical envelopes, and refuse uncertified execution on the frozen Session / Deployment path?_
-
-### Non-goals (explicit)
-
-- No Command Center / Kill Switch productization (RC-20 — separate release)
-- No IDE shell / Bot fleet UX (RC-21 theme)
-- No Knowledge Lake warehouse (RC-23)
-- No Trading Orchestrator / Market State classifier (RC-26)
-- No Market Qualification / Profile product (RC-25)
-- No multi-exchange proof (RC-27)
-- No live-capital adapter
-- No redesign of Orders / Risk / Execution / Ledger / Recovery
-- No second strategy runtime or Bot aggregate
-- No Monte Carlo engine build (consume when available; Lab remains owner of research methods)
+IDE shell remains **deferred** (not RC-22). Trading Orchestrator / Market State Engine products remain later roadmap themes; RC-22 only defines **read/consume** contracts toward them.
 
 ---
 
-## 2. Task 1 — Functional scope
+## 1. Purpose
 
-### 2.1 Responsibilities of Strategy Library
+Introduce the **Strategy Library** as the first **business-core** module on top of completed research infrastructure and the certified Knowledge Lake.
 
-Per Spec §5.2, Strategy Library is the **authoritative store of strategies that earned certification**.
+RC-22 answers:
 
-| Responsibility                                          | In Library? | Notes                                                                         |
-| ------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------- |
-| Hold **certified** immutable strategy versions          | **Yes**     | SoT for production-eligible algorithm identity + version                      |
-| Expose **Tactical Envelope** for each certified version | **Yes**     | Envelope is bound at certification; RC-19 stub becomes Library-owned artifact |
-| Gate production use to library members only             | **Yes**     | Eligibility API / rule consumed by Deployment / Session binding               |
-| Store research campaigns, experiments, raw backtests    | **No**      | Research Lab / Campaign / Experiment / Knowledge remain owners                |
-| Execute strategies or submit orders                     | **No**      | Runtime / Risk / Execution unchanged                                          |
-| Invent or mutate strategy logic at runtime              | **No**      | Forbidden by Spec and Tactics Contract                                        |
-| Expand envelopes without re-certification               | **No**      | Expansion returns to Research → Validation → Certification                    |
+> Can the platform prove which strategy versions earned trust, bind their tactical envelopes, decide eligibility for the production path, and refuse uncertified use — without inventing strategy logic at runtime?
 
-### 2.2 Classification distinctions
-
-Existing `strategies` registry statuses (`draft` / `active` / `archived`) are **not** Library certification. RC-22 introduces an explicit product/architecture classification:
-
-| Class                     | Meaning                                                                                                                   | Where it lives                                      | Production path?                                                                                             |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| **Research artifact**     | Hypotheses, campaign outputs, experiment versions, reports, metrics snapshots, knowledge entries                          | Research Lab, Campaign/Experiment stores, Knowledge | **Never** directly                                                                                           |
-| **Experimental strategy** | Strategy definition under test (draft or Lab-bound); may be run in historical simulation only                             | Strategy registry + Lab runners                     | **No**                                                                                                       |
-| **Certified strategy**    | Immutable strategy **version** that passed the validation gate and was admitted to the Library with envelope + provenance | **Strategy Library** (SoT)                          | **Yes** (Paper; Live later)                                                                                  |
-| **Deprecated strategy**   | Previously certified version withdrawn from _new_ eligibility; historical record retained                                 | Strategy Library (status = deprecated)              | **No new** bindings; existing sessions follow Session lifecycle / stop policy (no silent rewrite of history) |
-
-#### Research artifacts
-
-- Campaign sessions, walk-forward aggregates, backtest reports, insight/recommendation records, experiment provenance.
-- Evidence **referenced by** certification; never mistaken for Library membership.
-- Failures remain searchable knowledge; they do not become certified versions.
-
-#### Experimental strategies
-
-- Editable definitions used by Lab (backtest / walk-forward / Monte Carlo when available).
-- May share lineage with a future certified version (same family id) but **different authority**.
-- `active` in the registry ≠ certified.
-
-#### Certified strategies
-
-- Immutable versioned members of the Library.
-- Carry: identity, version, market/universe constraints, supported exchanges (scopes), supported timeframes, certification status, statistical summary, validation evidence references, tactical envelope.
-- Only these may bind to Strategy Deployment → Trading Session on the production path.
-
-#### Deprecated strategies
-
-- Certification revoked for **new** deployments.
-- Record remains for audit, reporting, and session archaeology.
-- Deprecation does not mutate the certified blob; it changes **eligibility status**.
-
-### 2.3 Ownership boundary (anti-duplication)
-
-| Concern                                         | Owner after RC-22                                                                  |
-| ----------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Editable strategy config for research           | Existing Strategy registry (Lab-facing)                                            |
-| Certified immutable version + eligibility       | **Strategy Library**                                                               |
-| Immutable Deployment bound to Session           | Strategy Deployment (unchanged ownership)                                          |
-| Session lifecycle                               | Trading Session (ADR-014)                                                          |
-| Envelope values allowed for a certified version | Strategy Library (SoT); Session may carry a **copy/ref** for runtime, never invent |
-
-RC-22 must not create a second parallel “strategies” table that also claims certification. Library records are the certification SoT; registry remains research/config SoT.
+Mission (Spec §5.2): authoritative store of strategies that earned certification; expose envelopes; gate production use to library members only.
 
 ---
 
-## 3. Task 3 — Certification flow (lifecycle)
+## 2. Scope
 
-### 3.1 Normative lifecycle (Architecture Spec §8)
+### 2.1 In scope (planning contracts → later Epics)
 
-Spec v2.0 is constitution. Normative production eligibility flow:
+| Area                        | RC-22 delivers (after approval)                                    |
+| --------------------------- | ------------------------------------------------------------------ |
+| Library module boundary     | Distinct ownership from registry, Lab, Session, Lake               |
+| Strategy / Version model    | Canonical domain entities (Domain Model Contract)                  |
+| Certification & Evidence    | Admission gate; evidence refs; human authority                     |
+| Tactical Envelope binding   | Library-owned SoT; RC-19 stub becomes non-authoritative            |
+| Eligibility Gate            | Port: only `certified` members eligible for new production binds   |
+| Deprecation / Archive       | Lifecycle transitions without history rewrite                      |
+| Lake projection hooks       | Optional admit of certification/deprecation facts (Library → Lake) |
+| Orchestrator / Market State | **Consume contracts only** — Library lookup + envelope read models |
+
+### 2.2 Explicitly out of scope
+
+| Forbidden in RC-22                          | Owner / later                                     |
+| ------------------------------------------- | ------------------------------------------------- |
+| Strategy execution / Signal Intent rewrite  | Strategy Runtime (unchanged)                      |
+| Paper Trading product changes               | Frozen paper path — consumers of eligibility only |
+| Trading Orchestrator implementation         | RC-26 theme                                       |
+| Market State Engine implementation          | Later (with Orchestrator)                         |
+| Reporting / AI                              | RC-24+                                            |
+| Knowledge Lake redesign                     | RC-21 CLOSED — append consumers only              |
+| IDE shell / Bot fleet UX                    | Deferred                                          |
+| Live capital adapter                        | Future ADR                                        |
+| Monte Carlo engine                          | Lab method when available; nullable evidence ref  |
+| Orders / Risk / Execution / Ledger redesign | Freeze ADR-012…018                                |
+| UI / REST product surface as SoT            | Facades later; ports first                        |
+| Persistence schema in this planning task    | Epics after approval                              |
+
+---
+
+## 3. Responsibilities
+
+Per Spec §5.2 and Domain Model Contract:
+
+| Responsibility                                               | Library?                    |
+| ------------------------------------------------------------ | --------------------------- |
+| Hold certified immutable strategy versions                   | **Yes**                     |
+| Bind and expose Tactical Envelope per certified version      | **Yes**                     |
+| Gate production eligibility (`certified` only for new binds) | **Yes**                     |
+| Record certification, deprecation, archive provenance        | **Yes**                     |
+| Store research campaigns / raw backtests                     | **No**                      |
+| Execute strategies or submit orders                          | **No**                      |
+| Invent or mutate algorithm logic at runtime                  | **No**                      |
+| Expand envelopes without re-certification                    | **No**                      |
+| Own Session lifecycle / Kill Switch                          | **No**                      |
+| Own analytical warehouse                                     | **No** (Lake)               |
+| Select strategies by Market State                            | **No** (Orchestrator later) |
+
+---
+
+## 4. Ownership
+
+| Concern                                        | Owner after RC-22                                      |
+| ---------------------------------------------- | ------------------------------------------------------ |
+| Editable experimental strategy config          | Existing Strategy registry (Lab-facing)                |
+| Certified immutable version + eligibility      | **Strategy Library** (SoT)                             |
+| Tactical Envelope body for a certified version | **Strategy Library** (SoT)                             |
+| Evidence artifact bodies                       | Research Lab / Campaign / Experiment stores            |
+| Immutable Deployment bound to Session          | Strategy Deployment                                    |
+| Session lifecycle                              | Trading Session (ADR-014); Bot = alias                 |
+| Analytical copies of certify/deprecate events  | Knowledge Lake (Projection)                            |
+| Market State classification                    | Market State Engine (future SoT for classifications)   |
+| Strategy / tactic selection                    | Trading Orchestrator (future; **consumer** of Library) |
+| Risk / Orders / Fills / Ledger                 | Unchanged Freeze owners                                |
+
+**Anti-duplication rule:** Registry `active` ≠ certified. Certification is not a registry status rename. Deployment binds Library ids only.
+
+---
+
+## 5. Dependencies
+
+| Dependency                          | Status / note                                                           |
+| ----------------------------------- | ----------------------------------------------------------------------- |
+| Architecture Spec v2.0              | Approved constitution                                                   |
+| Authority Matrix + Alias Dictionary | Approved                                                                |
+| Tactics Contract Option B           | Approved                                                                |
+| RC-19 Exchange Scope + Bot Facade   | CLOSED                                                                  |
+| RC-19 Tactical Envelope stub        | Exists, inactive — RC-22 makes Library SoT                              |
+| RC-21 Knowledge Lake                | **CLOSED** — available for projection admits; never Library SoT         |
+| Research Lab evidence identities    | Backtest + Walk-Forward required refs; Monte Carlo optional             |
+| Strategy Deployment / Session       | Existing binding points for eligibility **queries** (no Paper redesign) |
+| Trading Orchestrator / Market State | **Not built** — ports define future read consumption only               |
+
+---
+
+## 6. Classification vocabulary
+
+| Class                     | Meaning                                                                 | Production path?            |
+| ------------------------- | ----------------------------------------------------------------------- | --------------------------- |
+| **Research artifact**     | Campaigns, experiments, reports, metrics                                | Never directly              |
+| **Experimental strategy** | Editable registry definition under test                                 | **No**                      |
+| **Certified strategy**    | Immutable Library version + envelope + evidence                         | **Yes** (Paper; Live later) |
+| **Deprecated strategy**   | Was certified; withdrawn from **new** eligibility                       | No new binds                |
+| **Archived strategy**     | Terminal Library retention; hidden from default catalog; audit retained | No new binds                |
+
+Normative lifecycle (Spec §8):
 
 ```text
-Idea
-  ↓
-Research
-  ↓
-Validation
-  ↓
-Certification
-  ↓
-Strategy Library
-  ↓
-Paper Trading (certified only)
-  ↓
-Future Runtime Eligibility
-  (Live Validation / Execution — future ADR; not RC-22)
+Idea → Research → Validation → Certification → Strategy Library
+  → Paper Trading (certified only) → Future Live / Execution
 ```
 
-| Stage                          | Meaning in RC-22                                                                                                                 |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| **Idea**                       | Human hypothesis (AI may suggest; humans decide).                                                                                |
-| **Research**                   | Lab experiments: strategy variants under versioned data.                                                                         |
-| **Validation**                 | Evidence gate — backtesting, fees/slippage realism, walk-forward, Monte Carlo **when available**, risk evaluation.               |
-| **Certification**              | Explicit human/system admission decision: this **version** + envelope + evidence refs become Library members.                    |
-| **Strategy Library**           | Immutable certified record published; eligibility = certified (until deprecated).                                                |
-| **Paper Trading**              | Deployment/Session on frozen path may bind **only** Library-certified versions (Spec: Paper must use only certified strategies). |
-| **Future Runtime Eligibility** | Same Library gate applies to future Orchestrator selection and live path; Orchestrator itself is out of RC-22.                   |
-
-### 3.2 Alignment note (Task prompt vs Spec)
-
-The planning task listed Paper Trading **before** Certification. Spec §8 and Spec Paper Trading rules place **Library certification before Paper Trading** on the production path.
-
-RC-22 adopts Spec order:
-
-- Pre-certification “paper-like” work, if any, is **Lab simulation** — not Trading Session Paper Trading.
-- **Paper Trading** (Session + paper adapter) is a consumer of the Library, not a substitute for certification.
-
-Tactics Contract’s research pipeline (`Backtesting → Walk Forward → (Monte Carlo) → … → Certification → Library`) remains the **validation method chain**; Paper on the Session path stays post-Library per Spec.
-
-### 3.3 Certification admission rules (planning)
-
-A version may be certified only when:
-
-1. Strategy version identity is frozen (content hash / version id immutable thereafter).
-2. Required validation evidence references exist (at minimum: backtest + walk-forward refs when those engines are the active Lab gates; Monte Carlo ref optional until engine exists).
-3. Tactical Envelope is supplied and structurally valid (Option B fields).
-4. Market / exchange-scope allowlists and timeframe allowlists are explicit.
-5. Certifying authority (human operator role in V2) records admission — AI never auto-certifies capital eligibility.
-6. Library write creates the certified record; registry experimental copy is not mutated into “certified” by status rename alone.
-
-Deprecation is a Library status transition, not a delete, and not a Runtime hot-edit.
+Pre-cert “paper-like” Lab simulation ≠ Trading Session Paper Trading.
 
 ---
 
-## 4. Task 4 — Data model (architecture only)
+## 7. Definition of Done (RC-22 close)
 
-Minimal canonical model — logical, not Prisma/DDL.
-
-### 4.1 `CertifiedStrategyVersion` (Library aggregate root)
-
-| Field                                                 | Purpose                                                                 |
-| ----------------------------------------------------- | ----------------------------------------------------------------------- |
-| `libraryEntryId`                                      | Stable Library identity for this certified membership                   |
-| `strategyFamilyId`                                    | Logical family linking experimental lineage (registry id or family key) |
-| `version`                                             | Monotonic / semver-like certified version string                        |
-| `contentHash`                                         | Immutable fingerprint of algorithm + certified parameter set            |
-| `name` / `description`                                | Human labels (non-authoritative for execution)                          |
-| `market`                                              | Primary market domain (e.g. crypto spot)                                |
-| `supportedExchangeScopeIds[]`                         | Exchange Scopes this version may bind (RC-19 identity)                  |
-| `supportedTimeframes[]`                               | Certified timeframe allowlist                                           |
-| `supportedSymbols[]` / universe ref                   | Certified instrument allowlist (envelope overlap allowed)               |
-| `certificationStatus`                                 | `certified` \| `deprecated`                                             |
-| `certifiedAt` / `certifiedBy`                         | Admission provenance                                                    |
-| `deprecatedAt` / `deprecatedBy` / `deprecationReason` | Optional; set on deprecation                                            |
-| `statisticalMetrics`                                  | Summary snapshot at certification (see §4.3)                            |
-| `validationEvidenceRefs[]`                            | Pointers to Lab results (see §4.4)                                      |
-| `tacticalEnvelope`                                    | Machine-readable envelope (Tactics Contract)                            |
-| `envelopeVersion`                                     | Envelope revision tied to this certification                            |
-
-**Invariants:**
-
-- No in-place mutation of `contentHash`, envelope body, or evidence refs after certification.
-- Status may move `certified → deprecated` only.
-- New evidence or envelope expansion ⇒ **new** certified version via full pipeline.
-
-### 4.2 Identity
-
-```text
-strategyFamilyId + version  →  unique Library member
-libraryEntryId              →  primary key for references (Deployment binds this)
-contentHash                 →  integrity / replay proof
-```
-
-Deployment / Session bind `libraryEntryId` (or equivalent certified version id), not mutable registry rows.
-
-### 4.3 Statistical metrics (summary snapshot)
-
-Minimal certification-time snapshot (not a second metrics engine):
-
-| Metric group | Examples (illustrative)                             |
-| ------------ | --------------------------------------------------- |
-| Performance  | net return, max drawdown, profit factor, expectancy |
-| Robustness   | walk-forward stability/consistency scores           |
-| Cost realism | fee/slippage assumptions id or values used          |
-| Sample       | period range, bar count, symbol set size            |
-
-Authoritative detailed series remain in Lab/report stores; Library holds the **certified summary** used for eligibility display and audit.
-
-### 4.4 Validation evidence references
-
-| Ref type               | Points to                                      |
-| ---------------------- | ---------------------------------------------- |
-| `backtestRef`          | Backtest / campaign session id(s)              |
-| `walkForwardRef`       | Walk-forward aggregate / session id(s)         |
-| `monteCarloRef`        | Optional until Monte Carlo exists              |
-| `riskEvaluationRef`    | Optional structured risk review artifact id    |
-| `experimentVersionRef` | Experiment version that produced the candidate |
-
-References are foreign identities, not duplicated result blobs.
-
-### 4.5 Relationship to RC-19 Tactical Envelope stub
-
-- RC-19: optional nullable envelope on Session; **Runtime ignores**.
-- RC-22: envelope **SoT on Library certified version**; Session/Deployment may store binding ref/copy for execution context.
-- Runtime reject of out-of-envelope tactics is in RC-22 eligibility/enforcement epic scope (otherwise Library is documentation-only — forbidden by RC-19 lessons).
-
----
-
-## 5. Task 6 — Architectural risks
-
-| Risk                               | How RC-22 avoids it                                                                                                                                                                                                                  |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Duplicate strategy storage**     | Split authority: registry = experimental/config; Library = certified SoT. Deployment binds Library ids only. No second “certified” flag sole-owned by registry.                                                                      |
-| **Uncertified strategy execution** | Eligibility gate on Deployment create / Session arm: reject missing, experimental, or deprecated Library membership. Paper path included. Tests prove reject paths.                                                                  |
-| **Runtime mutation**               | Certified records immutable; envelope expansion requires new version + re-certification. Runtime/Orchestrator (future) may only select inside envelope. No hot-edit APIs on Library content.                                         |
-| **Ownership conflicts**            | Authority Matrix: Library owns certified version + envelope SoT; Deployment owns binding; Session owns lifecycle; Lab owns evidence; Risk/Execution unchanged. Explicit non-goals block Orchestrator/Lake/Command Center absorption. |
-| **Documentation-only envelope**    | Envelope persistence on Library + runtime reject in same RC acceptance (RC-19 lesson #4).                                                                                                                                            |
-| **Silent roadmap drift**           | §0 sequencing approval required; Command Center not “forgotten” — deferred with explicit target.                                                                                                                                     |
-| **AI auto-certification**          | Certification requires human admission; AI remains narrative/suggest-only.                                                                                                                                                           |
-
----
-
-## 6. Task 7 — Acceptance criteria (RC-22 close)
-
-RC-22 may be **officially closed** only when all are true:
+RC-22 may close only when **all** are true:
 
 ### Architecture
 
-1. Spec §5.2 Strategy Library responsibilities are realized as a distinct Library module/boundary (SoT), without redesigning Spec modules.
-2. Research artifacts, experimental strategies, certified strategies, and deprecated strategies are explicitly distinguished in docs + domain model.
-3. No duplicate certification SoT; registry is not the production eligibility authority.
-4. Architecture Spec v2.0 text unchanged (implementation conforms; does not rewrite constitution).
+1. Spec §5.2 Library boundary exists as a distinct module/SoT — no Spec rewrite.
+2. Research / experimental / certified / deprecated / archived are distinguishable.
+3. No duplicate certification SoT; registry is not production eligibility authority.
+4. Authority Matrix + Alias Dictionary honored (Bot ≡ Session; Lake ≠ Library SoT).
 
-### Certification & model
+### Domain & ports
 
-5. Canonical `CertifiedStrategyVersion` model exists with identity, version, market, supported exchanges/scopes, timeframes, certification status, statistical summary, validation evidence refs, tactical envelope.
-6. Certification flow Idea → Research → Validation → Certification → Library → Paper eligibility is documented and enforced at binding points.
-7. Certified records are immutable; deprecation changes eligibility only.
+5. Domain Model Contract entities realized with immutability invariants.
+6. API Contract ports implemented: registration, certification, lookup, eligibility, archive/deprecation.
+7. Certified content + envelope immutable after admit; status transitions only as contracted.
 
 ### Integration & enforcement
 
-8. Research Lab / Backtesting / Walk Forward (and Monte Carlo when present) feed evidence **refs** into certification — they do not write Library membership directly without the certification step.
-9. Strategy Deployment / Trading Session Paper path **rejects** uncertified and deprecated versions.
-10. Tactical Envelope for a certified version is Library-owned; out-of-envelope tactic application is rejected on the production path (RC-19 stub no longer “docs-only”).
-11. Frozen path ownership preserved: Orders / Risk / Execution / Ledger / Recovery algorithms not redesigned.
+8. Lab feeds **evidence refs**; Lab does not mint membership without Certification port.
+9. Eligibility Gate rejects experimental, unknown, deprecated, and archived for **new** binds.
+10. Envelope SoT on Library; out-of-envelope tactic parameters rejected at bind/eligibility check (not docs-only).
+11. Knowledge Lake may receive certification lifecycle projections; Lake never authorizes eligibility.
+12. Frozen path (Orders / Risk / Execution / Ledger / Recovery) algorithms unchanged.
+13. No Trading Orchestrator or Market State Engine product shipped under RC-22.
+14. No Paper Trading product redesign; Session/Deployment only **consume** eligibility ports.
 
-### Delivery hygiene
+### Hygiene
 
-12. All RC-22 epics meet their Definitions of Done ([Epic Breakdown](./rc-22-epic-breakdown.md)).
-13. Integration map and tests cover happy path (certified → deploy → paper session) and reject paths (experimental / deprecated / unknown).
-14. Deferred work (Command Center, IDE, Lake, Orchestrator, Qualification, multi-exchange, live capital) remains explicitly out of scope with target RCs.
-15. Closure report recorded; project status updated only after review approval.
-
-### Explicit non-acceptance
-
-- Shipping Library UI without eligibility enforcement.
-- Renaming `draft/active/archived` to imply certification without Library SoT.
-- Auto-certifying from a single backtest profit metric.
-- Building Orchestrator selection or Knowledge Lake “as part of Library.”
+15. All epic DoDs met; Validation Standard (Workflow §5) PASS.
+16. Closure report + residual/deferred register updated.
+17. Explicit non-acceptance: UI-only Library; registry rename-as-certification; AI auto-certify; Orchestrator/Lake absorption of Library SoT.
 
 ---
 
-## 7. Deliverables checklist
+## 8. Architectural risks
 
-| Deliverable                          | Document                                                                           |
-| ------------------------------------ | ---------------------------------------------------------------------------------- |
-| RC-22 Implementation Plan            | This file                                                                          |
-| Epic Breakdown                       | [`rc-22-epic-breakdown.md`](./rc-22-epic-breakdown.md)                             |
-| Strategy Library Integration Diagram | [`rc-22-strategy-library-integration.md`](./rc-22-strategy-library-integration.md) |
-| Acceptance Criteria                  | §6 of this file (+ epic DoDs)                                                      |
+| Risk                         | Mitigation                                                                     |
+| ---------------------------- | ------------------------------------------------------------------------------ |
+| Duplicate strategy storage   | Split SoT: registry vs Library; Deployment binds Library ids                   |
+| Uncertified execution        | Eligibility port mandatory at bind; reject tests                               |
+| Docs-only envelope           | Envelope required at certification; reject on out-of-envelope (Epic 4–5)       |
+| Lake as second Library       | Lake = Projection only; eligibility never reads Lake as authority              |
+| Orchestrator invents tactics | Ports expose envelope; Orchestrator deferred; rules locked in Tactics Contract |
+| AI auto-certification        | Certification requires human operator admission                                |
+| Paper path redesign creep    | Explicit non-goal; consume ports only                                          |
 
-**STOP:** Planning complete. No implementation in this task.
+---
+
+## 9. Process compliance (Workflow v1.0)
+
+```text
+Vision (Validated Knowledge) → Architecture conformance → Planning (this package)
+  → Domain Model + API Contract → thin Epics → Review → Validation → Git Release
+```
+
+**STOP after planning.** No implementation until Implementation Plan + Domain Model Contract + API Contract are approved.
 
 ---
 
 ## Approval
 
-| Role               | Decision                                                 | Date |
-| ------------------ | -------------------------------------------------------- | ---- |
-| Architecture owner | ☐ Approve plan ☐ Approve RC resequence ☐ Request changes |      |
-| Tech lead          | ☐ Approve plan ☐ Request changes                         |      |
-| Product owner      | ☐ Approve plan ☐ Approve RC resequence ☐ Request changes |      |
+| Role               | Decision                    | Date |
+| ------------------ | --------------------------- | ---- |
+| Architecture owner | ☐ Approve ☐ Request changes |      |
+| Tech lead          | ☐ Approve ☐ Request changes |      |
+| Product owner      | ☐ Approve ☐ Request changes |      |
 
-**After approval:** Begin Epic 1 implementation under a separate task when RC-22 is the active release (after RC-20/RC-21 as scheduled).
+**After approval:** Begin Epic 1 under a separate implementation task. Do not absorb Orchestrator, Reporting, AI, or IDE into RC-22.
