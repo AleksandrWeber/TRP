@@ -11,6 +11,10 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ### Added
 
+- RC-20 — Command Center foundation (Epics 1–6): ops workspace route,
+  BotFacade read + lifecycle adapters, client navigation, in-memory
+  notifications, Emergency Controls interaction model (disabled until
+  durable ports). Closure: `docs/project/rc-20-closure-report.md`.
 - RC-18 Mid-Release — US290–US293 production-recovery residuals + docs sync
   (`trading-session/`, composition ports, Prisma RecoveryState/Incident):
   force/confirm `RECOVERING` (US290); real reconcile adapters (US291);

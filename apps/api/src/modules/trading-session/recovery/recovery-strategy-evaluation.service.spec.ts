@@ -164,6 +164,7 @@ describe('US247 — RecoveryStrategyEvaluationService', () => {
     saveIfVersion: vi.fn(),
     findById: vi.fn(),
     findByIdempotencyKey: vi.fn(),
+    findByWorkspaceId: vi.fn(),
     findByStatuses: vi.fn(),
   };
 

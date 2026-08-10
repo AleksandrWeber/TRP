@@ -10,6 +10,8 @@ Related:
 
 - [RC-17 Development Process](./rc-17-development-process.md) — base lifecycle
 - [RC-18 Release Planning](./rc-18-release-planning.md)
+- [Product Vision](./trp-product-vision.md) — Level-0 product authority
+- [UX Vision](./trp-ux-vision.md) — Level-0 experience authority
 - [Mid-Release Health Review](./rc-18-mid-release-health-review.md)
 - [Residual Register](./rc-18-residual-register.md)
 - [Tech Lead Decision Log](./rc-18-tech-lead-decision-log.md)
@@ -52,6 +54,8 @@ Before coding a residual Story:
 
 - Publish Story Spec as implementation authority (WHAT, not HOW).
 - Cite Stage 2 PROCEED constraints and predecessor Stories.
+- Cite [Product Vision](./trp-product-vision.md) and [UX Vision](./trp-ux-vision.md)
+  (Level-0) where product intent or UX outcomes are material.
 - Explicit out-of-scope table (successors / E19 / Freeze).
 
 **Value:** Prevents absorbing US294 chaos, US295 governance, or E19 UX into

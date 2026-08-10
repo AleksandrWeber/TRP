@@ -27,6 +27,8 @@ Related:
 | TL-006 | 2026-08-01 | RIV-001 Recovery Integration Validation (US290–US292) | **COHERENT — INTEGRATED WITH KNOWN RESIDUALS**   |
 | TL-007 | 2026-08-01 | SIG-001 Safety Integration Validation (US293)         | **PASS WITH RESIDUALS**                          |
 | TL-008 | 2026-08-01 | Mid-Release Health Review (US290–US293)               | **ACCEPT mid-release foundation**; proceed US294 |
+| TL-009 | 2026-08-01 | US294 Story Specification                             | **APPROVED WITH MINOR CORRECTIONS** → applied    |
+| TL-010 | 2026-08-01 | US294 Stage 3 Evidence (M-01…M-12)                    | **Evidence Package COMPLETE**; handoff US295     |
 
 ---
 
@@ -87,6 +89,22 @@ Related:
 | Report  | [`rc-18-mid-release-health-review.md`](./rc-18-mid-release-health-review.md)                                    |
 | Verdict | Accept US290–US293 as residual foundation; Architecture Freeze intact                                           |
 | Process | Recommend Story Spec / Pre-Impl / Tech Lead / RIV / SIG / Residual Register / Decision Log as project standards |
+
+### TL-009 — US294 Story Specification
+
+| Field   | Value                                                                                       |
+| ------- | ------------------------------------------------------------------------------------------- |
+| Verdict | **APPROVED WITH MINOR CORRECTIONS** (normative M-01…M-12 matrix + Evidence Package section) |
+| Gate    | Corrections applied; Story became Stage 3 implementation/evidence authority                 |
+
+### TL-010 — US294 Stage 3 Evidence
+
+| Field            | Value                                                                                     |
+| ---------------- | ----------------------------------------------------------------------------------------- |
+| Evidence Package | [`rc-18-us294-chaos-restart-evidence.md`](./rc-18-us294-chaos-restart-evidence.md)        |
+| Suite            | `apps/api/src/modules/trading-session/recovery/us294-chaos-restart.evidence.spec.ts`      |
+| Verdict          | **M-01…M-12 PASS** — R5/TR-N4 closed; production restart-safety PASS still requires US295 |
+| Next             | US295 ADL-008 closure (consumes Evidence Package)                                         |
 
 ---
 

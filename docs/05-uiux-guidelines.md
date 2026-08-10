@@ -1,12 +1,18 @@
 # 05 — UI/UX Guidelines
 
-Version: 1.1
+Version: 1.2
 
 Status: Approved
 
 Document Type: UI/UX Philosophy & Design System
 
-Source of truth (product/stack limits): [`CANONICAL.md`](./CANONICAL.md)
+**Level-0 UX Vision:** [`project/trp-ux-vision.md`](./project/trp-ux-vision.md)  
+**Level-0 Product Vision:** [`project/trp-product-vision.md`](./project/trp-product-vision.md)  
+**Level-1 engineering source of truth (product/stack limits):** [`CANONICAL.md`](./CANONICAL.md)
+
+This document expands UX patterns and design-system guidance. Where it conflicts
+with the Level-0 UX Vision, the UX Vision wins. Architecture Freeze and
+non-authoritative Dashboard rules remain ADR / CANONICAL authority.
 
 ---
 
@@ -20,9 +26,13 @@ It is a guide for designing a professional research environment.
 
 Every screen, component, workflow, interaction, animation, and visualization should follow these principles.
 
+Normative experience authority: [`project/trp-ux-vision.md`](./project/trp-ux-vision.md).
+
 ---
 
 # Vision
+
+> Normative Level-0 statement: [`project/trp-ux-vision.md`](./project/trp-ux-vision.md).
 
 TRP is not a website.
 

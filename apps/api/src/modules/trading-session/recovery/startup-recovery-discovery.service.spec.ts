@@ -47,6 +47,7 @@ describe('US240/US290 — StartupRecoveryDiscoveryService', () => {
     save: vi.fn(),
     findById,
     findByIdempotencyKey: vi.fn(),
+    findByWorkspaceId: vi.fn(),
     findByStatuses,
     saveIfVersion,
   };

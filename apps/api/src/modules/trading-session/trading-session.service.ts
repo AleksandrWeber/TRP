@@ -109,6 +109,7 @@ export class TradingSessionService {
       id: randomUUID(),
       workspaceId: command.workspaceId,
       paperAccountId: command.paperAccountId,
+      exchangeScopeId: account.exchangeScopeId,
       deploymentId: command.deploymentId,
       origin: command.origin,
       actorId,

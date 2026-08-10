@@ -30,7 +30,9 @@ const runningSession: TradingSession = Object.freeze({
   id: 'session-us170',
   workspaceId: WS,
   paperAccountId: 'account-us170',
+  exchangeScopeId: 'exchange-scope:binance',
   deploymentId: 'deploy-us170',
+  tacticalEnvelope: null,
   origin: 'manual',
   status: TradingSessionStatus.RUNNING,
   lease: Object.freeze({
@@ -85,6 +87,7 @@ describe('US170 — single Execution Engine with immutable Fill persistence', ()
       throw new Error('not used');
     },
     findByStatuses: async () => [],
+    findByWorkspaceId: async () => [],
   } satisfies TradingSessionRepository;
   const adapter = new PaperExecutionAdapter();
   const engine = new ExecutionEngineService(

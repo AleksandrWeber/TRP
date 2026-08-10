@@ -1,4 +1,9 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { CommandCenterPage } from '../command-center';
+import { CommandCenterEpic3ReviewPage } from '../command-center/CommandCenterEpic3ReviewPage';
+import { CommandCenterEpic4ReviewPage } from '../command-center/CommandCenterEpic4ReviewPage';
+import { CommandCenterEpic5ReviewPage } from '../command-center/CommandCenterEpic5ReviewPage';
+import { CommandCenterEpic6ReviewPage } from '../command-center/CommandCenterEpic6ReviewPage';
 import { AppLayout } from '../layout/AppLayout';
 import { AiPage } from '../pages/AiPage';
 import { CampaignResultsPage } from '../pages/CampaignResultsPage';
@@ -41,6 +46,47 @@ export function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        {/* Static Epic 3 screenshot review surface (fixture data; no auth). */}
+        <Route
+          path="/command-center/review-epic3"
+          element={
+            <div className="min-h-screen bg-[#0b0f14] px-6 py-8 text-[#e6edf3]">
+              <div className="mx-auto max-w-6xl">
+                <CommandCenterEpic3ReviewPage />
+              </div>
+            </div>
+          }
+        />
+        <Route
+          path="/command-center/review-epic4"
+          element={
+            <div className="min-h-screen bg-[#0b0f14] px-6 py-8 text-[#e6edf3]">
+              <div className="mx-auto max-w-6xl">
+                <CommandCenterEpic4ReviewPage />
+              </div>
+            </div>
+          }
+        />
+        <Route
+          path="/command-center/review-epic5"
+          element={
+            <div className="min-h-screen bg-[#0b0f14] px-6 py-8 text-[#e6edf3]">
+              <div className="mx-auto max-w-6xl">
+                <CommandCenterEpic5ReviewPage />
+              </div>
+            </div>
+          }
+        />
+        <Route
+          path="/command-center/review-epic6"
+          element={
+            <div className="min-h-screen bg-[#0b0f14] px-6 py-8 text-[#e6edf3]">
+              <div className="mx-auto max-w-6xl">
+                <CommandCenterEpic6ReviewPage />
+              </div>
+            </div>
+          }
+        />
         <Route element={<RequireAuth />}>
           <Route element={<AppLayout />}>
             <Route
@@ -71,6 +117,7 @@ export function App() {
             <Route path="campaigns/walk-forward" element={<WalkForwardCampaignPage />} />
             <Route path="knowledge" element={<KnowledgePage />} />
             <Route path="production" element={<ProductionPage />} />
+            <Route path="command-center" element={<CommandCenterPage />} />
             <Route path="trading/portfolio" element={<PortfolioPage />} />
             <Route path="trading/positions" element={<PositionsPage />} />
             <Route path="trading/positions/:id" element={<PositionDetailPage />} />

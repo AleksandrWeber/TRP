@@ -1,12 +1,18 @@
 # 00 — Architecture Principles
 
-Version: 1.1
+Version: 1.2
 
 Status: Approved
 
 Document Type: Foundational Architecture
 
-Source of truth for stack / stages / MVP: [`CANONICAL.md`](./CANONICAL.md)
+**Level-0 Product Vision:** [`project/trp-product-vision.md`](./project/trp-product-vision.md)  
+**Level-0 UX Vision:** [`project/trp-ux-vision.md`](./project/trp-ux-vision.md)  
+**Level-1 engineering source of truth for stack / stages / MVP:** [`CANONICAL.md`](./CANONICAL.md)
+
+These principles implement Level-0 product intent in architecture. They do not
+replace Product Vision or UX Vision, and they do not override CANONICAL
+engineering constraints or ACTIVE ADRs.
 
 ---
 
@@ -29,6 +35,9 @@ These principles do not.
 ---
 
 # Vision
+
+> Product framing (Level-0): [`project/trp-product-vision.md`](./project/trp-product-vision.md).  
+> Experience framing (Level-0): [`project/trp-ux-vision.md`](./project/trp-ux-vision.md).
 
 TRP is **not** a trading bot.
 

@@ -96,6 +96,7 @@ describe('US246 — RecoveryRuntimeArmingService', () => {
     saveIfVersion: vi.fn(),
     findById: vi.fn(),
     findByIdempotencyKey: vi.fn(),
+    findByWorkspaceId: vi.fn(),
     findByStatuses: vi.fn(),
   };
 

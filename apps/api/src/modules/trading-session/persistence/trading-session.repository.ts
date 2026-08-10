@@ -24,6 +24,12 @@ export interface TradingSessionRepository {
   findByIdempotencyKey(workspaceId: string, idempotencyKey: string): Promise<TradingSession | null>;
 
   /**
+   * Workspace-scoped Session list (RC-19 Epic 2 Bot Facade list projection).
+   * Ordered by createdAt DESC, id ASC. Not a Bot store — Sessions only.
+   */
+  findByWorkspaceId(workspaceId: string): Promise<TradingSession[]>;
+
+  /**
    * Process-wide Session lookup by status set (US240 startup discovery).
    * Results are ordered by createdAt ASC, id ASC for deterministic selection.
    */

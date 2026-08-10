@@ -18,6 +18,7 @@ export class PrismaPaperAccountRepository implements PaperAccountRepository {
       data: {
         id: account.id,
         workspaceId: account.workspaceId,
+        exchangeScopeId: account.exchangeScopeId,
         currency: account.currency,
         mode: account.mode,
         status: account.status,
@@ -78,6 +79,7 @@ export class PrismaPaperAccountRepository implements PaperAccountRepository {
 type PaperAccountRow = {
   id: string;
   workspaceId: string;
+  exchangeScopeId: string;
   currency: string;
   mode: string;
   status: string;
@@ -96,6 +98,7 @@ function toDomain(row: PaperAccountRow): PaperAccount {
   return Object.freeze({
     id: row.id,
     workspaceId: row.workspaceId,
+    exchangeScopeId: row.exchangeScopeId,
     currency: row.currency,
     mode: 'paper',
     status: row.status as PaperAccountStatus,

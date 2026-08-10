@@ -150,9 +150,10 @@ export function LiveTradingPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Trading</p>
-          <h2 className="mt-1 text-2xl font-semibold">Live Trading</h2>
+          <h2 className="mt-1 text-2xl font-semibold">Live Bots</h2>
           <p className="mt-2 text-slate-400">
-            Operational workspace for live sessions via Trading Core and Exchange Adapter.
+            Product term Bot maps to a trading session. Operational workspace via Trading Core and
+            Exchange Adapter.
           </p>
         </div>
         <div className="flex gap-2">
@@ -198,7 +199,7 @@ export function LiveTradingPage() {
       <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
         <div className="space-y-4">
           <div className="rounded-lg border border-white/10 bg-white/[0.02] p-4">
-            <h3 className="text-sm font-medium text-slate-200">Start Session</h3>
+            <h3 className="text-sm font-medium text-slate-200">Start Bot</h3>
             <label className="mt-3 block text-xs text-slate-500">
               Exchange
               <select
@@ -236,7 +237,7 @@ export function LiveTradingPage() {
           </div>
 
           <div className="rounded-lg border border-white/10 bg-white/[0.02] p-4">
-            <h3 className="text-sm font-medium text-slate-200">Active Sessions</h3>
+            <h3 className="text-sm font-medium text-slate-200">Active Bots</h3>
             <ul className="mt-3 space-y-2">
               {sessions.length === 0 ? (
                 <li className="text-sm text-slate-500">No sessions yet.</li>

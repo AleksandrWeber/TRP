@@ -95,6 +95,7 @@ describe('US243 — RecoveryStateReconciliationService', () => {
     save: vi.fn(),
     saveIfVersion: vi.fn(),
     findByIdempotencyKey: vi.fn(),
+    findByWorkspaceId: vi.fn(),
     findByStatuses: vi.fn(),
   } as unknown as TradingSessionRepository;
 

@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useWorkspace } from '../app/WorkspaceContext';
+import { COMMAND_CENTER_PATH } from '../command-center';
 import { clearAccessToken } from '../shared/auth';
 
 const primaryLinks = [
@@ -24,12 +25,13 @@ const legacyLinks = [
 ];
 
 const tradingLinks = [
+  { to: COMMAND_CENTER_PATH, label: 'Command Center' },
   { to: '/trading/portfolio', label: 'Portfolio' },
   { to: '/trading/positions', label: 'Positions' },
   { to: '/trading/orders', label: 'Orders' },
   { to: '/trading/risk', label: 'Risk' },
-  { to: '/trading/paper', label: 'Paper Trading' },
-  { to: '/trading/live', label: 'Live Trading' },
+  { to: '/trading/paper', label: 'Paper Bots' },
+  { to: '/trading/live', label: 'Live Bots' },
   { to: '/trading/exchanges', label: 'Exchanges' },
 ];
 

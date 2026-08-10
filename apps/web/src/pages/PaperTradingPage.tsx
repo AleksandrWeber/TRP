@@ -45,7 +45,7 @@ export function PaperTradingPage() {
   const [stats, setStats] = useState<PaperSessionStatistics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [name, setName] = useState('Paper Session');
+  const [name, setName] = useState('Paper Bot');
   const [initialBalance, setInitialBalance] = useState('100000');
   const [symbol, setSymbol] = useState('BTC-USD');
   const [side, setSide] = useState('BUY');
@@ -86,7 +86,7 @@ export function PaperTradingPage() {
     try {
       await refreshSessions();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load paper sessions');
+      setError(err instanceof Error ? err.message : 'Failed to load paper bots');
     } finally {
       setLoading(false);
     }
@@ -106,7 +106,7 @@ export function PaperTradingPage() {
       return;
     }
     void refreshActive(activeId).catch((err) => {
-      setError(err instanceof Error ? err.message : 'Failed to load session detail');
+      setError(err instanceof Error ? err.message : 'Failed to load bot detail');
     });
   }, [activeId, refreshActive]);
 
@@ -129,9 +129,10 @@ export function PaperTradingPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Trading</p>
-          <h2 className="mt-1 text-2xl font-semibold">Paper Trading</h2>
+          <h2 className="mt-1 text-2xl font-semibold">Paper Bots</h2>
           <p className="mt-2 text-slate-400">
-            Simulated sessions orchestrating orders, risk, positions, and portfolio.
+            Product term Bot maps to a trading session. Simulated bots orchestrating orders, risk,
+            positions, and portfolio.
           </p>
         </div>
         <button
@@ -152,7 +153,7 @@ export function PaperTradingPage() {
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
         <div className="space-y-4">
-          <h3 className="text-sm font-medium uppercase tracking-wide text-slate-500">Sessions</h3>
+          <h3 className="text-sm font-medium uppercase tracking-wide text-slate-500">Bots</h3>
           <form
             className="flex flex-wrap gap-2"
             onSubmit={(e) => {
@@ -170,7 +171,7 @@ export function PaperTradingPage() {
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Session name"
+              placeholder="Bot name"
               className="min-w-[10rem] flex-1 rounded border border-white/15 bg-transparent px-3 py-2 text-sm text-slate-100"
             />
             <input
@@ -189,10 +190,10 @@ export function PaperTradingPage() {
           </form>
 
           {loading && sessions.length === 0 ? (
-            <p className="text-sm text-slate-500">Loading sessions…</p>
+            <p className="text-sm text-slate-500">Loading bots…</p>
           ) : null}
           {!loading && sessions.length === 0 ? (
-            <p className="text-sm text-slate-500">No paper sessions yet.</p>
+            <p className="text-sm text-slate-500">No paper bots yet.</p>
           ) : null}
 
           <ul className="space-y-2">
@@ -227,7 +228,7 @@ export function PaperTradingPage() {
 
         <div className="space-y-6">
           {!active ? (
-            <p className="text-sm text-slate-500">Select or create a session.</p>
+            <p className="text-sm text-slate-500">Select or create a bot.</p>
           ) : (
             <>
               <div className="flex flex-wrap items-center gap-2">
@@ -286,7 +287,7 @@ export function PaperTradingPage() {
               {stats ? (
                 <div>
                   <h4 className="mb-2 text-sm font-medium uppercase tracking-wide text-slate-500">
-                    Session Statistics
+                    Bot Statistics
                   </h4>
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                     {[

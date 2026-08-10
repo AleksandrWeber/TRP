@@ -18,6 +18,8 @@ RC-17 Retrospective already record.
 Related:
 
 - [CANONICAL](../CANONICAL.md)
+- [Product Vision](./trp-product-vision.md) — Level-0 product authority
+- [UX Vision](./trp-ux-vision.md) — Level-0 experience authority
 - [ADR Index](../adr/README.md)
 - [Architecture Decision Log](../Architecture/ADR/ADL.md)
 - [Roadmap](./roadmap.md)

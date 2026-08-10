@@ -20,14 +20,14 @@ Related:
 
 ## Mandatory TD-036 residuals (production recovery claim)
 
-| ID  | Residual                                                               | Class           | Owner                                               | Status                     | Evidence                                         |
-| --- | ---------------------------------------------------------------------- | --------------- | --------------------------------------------------- | -------------------------- | ------------------------------------------------ |
-| R1  | Force/confirm Session `RECOVERING` on discovery                        | RC-18 mandatory | E17 / Runtime Recovery                              | **Closed** (US290)         | Story Spec + discovery wiring; RIV-001           |
-| R2  | Real `RECOVERY_RECONCILIATION_PORTS` adapters (retire production stub) | RC-18 mandatory | E17 / Runtime Recovery                              | **Closed** (US291)         | Composition-root adapters; RIV-001               |
-| R3  | Durable RecoveryState persistence + phase machine                      | RC-18 mandatory | E17 / Runtime Recovery                              | **Closed** (US292)         | `SessionRecoveryState` + phase progress; RIV-001 |
-| R4  | Durable Incident on ambiguity / corruption                             | RC-18 mandatory | E17 / Runtime Recovery (+ E19 Incident model later) | **Closed** (US293 minimal) | Fail-closed Incident; SIG-001                    |
-| R5  | Chaos/restart + fail-safe evidence suites                              | RC-18 mandatory | RC-18 Release lead + Runtime Recovery               | **Open** (US294)           | Planned; not started                             |
-| R6  | ADL-008 ACCEPTED or explicit accepted deferral                         | RC-18 mandatory | Architecture owner                                  | **Open** (US295)           | ADL-008 remains DEFERRED                         |
+| ID  | Residual                                                               | Class           | Owner                                               | Status                     | Evidence                                                                          |
+| --- | ---------------------------------------------------------------------- | --------------- | --------------------------------------------------- | -------------------------- | --------------------------------------------------------------------------------- |
+| R1  | Force/confirm Session `RECOVERING` on discovery                        | RC-18 mandatory | E17 / Runtime Recovery                              | **Closed** (US290)         | Story Spec + discovery wiring; RIV-001                                            |
+| R2  | Real `RECOVERY_RECONCILIATION_PORTS` adapters (retire production stub) | RC-18 mandatory | E17 / Runtime Recovery                              | **Closed** (US291)         | Composition-root adapters; RIV-001                                                |
+| R3  | Durable RecoveryState persistence + phase machine                      | RC-18 mandatory | E17 / Runtime Recovery                              | **Closed** (US292)         | `SessionRecoveryState` + phase progress; RIV-001                                  |
+| R4  | Durable Incident on ambiguity / corruption                             | RC-18 mandatory | E17 / Runtime Recovery (+ E19 Incident model later) | **Closed** (US293 minimal) | Fail-closed Incident; SIG-001                                                     |
+| R5  | Chaos/restart + fail-safe evidence suites                              | RC-18 mandatory | RC-18 Release lead + Runtime Recovery               | **Closed** (US294)         | [Evidence Package](./rc-18-us294-chaos-restart-evidence.md); suite M-01…M-12 PASS |
+| R6  | ADL-008 ACCEPTED or explicit accepted deferral                         | RC-18 mandatory | Architecture owner                                  | **Open** (US295)           | ADL-008 remains DEFERRED; consumes US294 Evidence Package                         |
 
 ---
 
@@ -60,12 +60,12 @@ weakening fail-closed semantics (ADL-013 intent).
 
 ## Integration residuals from RIV-001 / SIG-001
 
-| Item                                                                              | Source               | Owner                                             | Status             |
-| --------------------------------------------------------------------------------- | -------------------- | ------------------------------------------------- | ------------------ |
-| Mid-phase restart fencing restore / cold-start chaos suites                       | RIV-001              | US294                                             | Open               |
-| Dedicated process-crash fail-closed chaos harness                                 | SIG-001              | US294                                             | Open               |
-| Unused Incident `reasonClass` first-class call-sites (`stopping_ambiguity`, etc.) | SIG-001              | Runtime Recovery (opportunistic) / US294 evidence | Open (non-blocker) |
-| ADL-013 formal registration + ADL-008 promotion                                   | SIG-001 / governance | US295                                             | Open               |
+| Item                                                                              | Source               | Owner                            | Status                                       |
+| --------------------------------------------------------------------------------- | -------------------- | -------------------------------- | -------------------------------------------- |
+| Mid-phase restart fencing restore / cold-start chaos suites                       | RIV-001              | US294                            | **Closed** (Evidence Package M-03/M-08/M-12) |
+| Dedicated process-crash fail-closed chaos harness                                 | SIG-001              | US294                            | **Closed** (Evidence Package M-05/M-11/M-12) |
+| Unused Incident `reasonClass` first-class call-sites (`stopping_ambiguity`, etc.) | SIG-001              | Runtime Recovery (opportunistic) | Open (non-blocker)                           |
+| ADL-013 formal registration + ADL-008 promotion                                   | SIG-001 / governance | US295                            | Open                                         |
 
 ---
 
@@ -82,9 +82,9 @@ weakening fail-closed semantics (ADL-013 intent).
 ## Sequencing reminder
 
 ```text
-US290 → US291 → US292 → US293   ← Done (mid-release)
-US294 → US295                   ← Remaining for production claim
-E18 → E19 → E20 → E21           ← Product epics after residuals (or accepted partial)
+US290 → US291 → US292 → US293 → US294   ← Done (evidence package attached)
+US295                                   ← Remaining for production claim (ADL-008)
+E18 → E19 → E20 → E21                   ← Product epics after residuals (or accepted partial)
 ```
 
-Do **not** claim production restart-safety PASS until R5 + R6 close.
+Do **not** claim production restart-safety PASS until R6 (US295) closes. R5 evidence is attached.

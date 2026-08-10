@@ -1,8 +1,24 @@
 # TRP — Canonical Source of Truth
 
-**Version:** 2.0  
+**Version:** 2.1  
 **Status:** Approved  
-**Rule:** If any document conflicts with this file, this file wins.
+**Authority level:** **Level-1** (engineering source of truth for stack, stages, MVP, reproducibility)
+
+**Rule:** For stack, stages, MVP constraints, and reproducibility, if any document
+conflicts with this file, this file wins.
+
+**Level-0 project authority** (product purpose and experience — do not redefine
+architecture):
+
+| Document                                                           | Role           |
+| ------------------------------------------------------------------ | -------------- |
+| [`project/trp-product-vision.md`](./project/trp-product-vision.md) | Product Vision |
+| [`project/trp-ux-vision.md`](./project/trp-ux-vision.md)           | UX Vision      |
+
+Future ADRs, Epics, Release Plans, and Story Specifications must reference the
+Level-0 Visions where product intent or UX outcomes are material. Level-0 does
+**not** override Architecture Freeze (ADR-012…ADR-019) or this file’s engineering
+constraints.
 
 ---
 
@@ -144,8 +160,14 @@ If a result cannot be reproduced from these, it is not trusted.
 ## Documentation rules
 
 1. Do not add new Architecture documents unless a real implementation need appears.
-2. Prefer updating this file over inventing parallel “sources of truth”.
-3. Implementation follows `Implementation/` in order after Sprint 0 (Bootstrap).
+2. Prefer updating this file over inventing parallel engineering “sources of truth”.
+3. Product purpose and UX philosophy are Level-0:
+   [`project/trp-product-vision.md`](./project/trp-product-vision.md) and
+   [`project/trp-ux-vision.md`](./project/trp-ux-vision.md). Do not fork competing
+   vision docs.
+4. Implementation follows `Implementation/` in order after Sprint 0 (Bootstrap).
+5. ADRs, Epics, Release Plans, and Story Specs cite Level-0 Visions where
+   appropriate; they must not silently contradict them.
 
 ---
 

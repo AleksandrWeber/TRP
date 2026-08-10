@@ -1,12 +1,19 @@
 # Trading Research Platform — Product Bible
 
-**Version:** 1.1  
+**Version:** 1.2  
 **Status:** Approved (slim)  
-**Source of truth:** [`CANONICAL.md`](./CANONICAL.md)
+**Level-0 Product Vision:** [`project/trp-product-vision.md`](./project/trp-product-vision.md)  
+**Level-0 UX Vision:** [`project/trp-ux-vision.md`](./project/trp-ux-vision.md)  
+**Level-1 engineering source of truth:** [`CANONICAL.md`](./CANONICAL.md)
+
+This bible expands product intent. Where it conflicts with the Level-0 Product
+Vision, the Product Vision wins. Stack / stages / MVP remain CANONICAL.
 
 ---
 
 ## Vision
+
+> Normative Level-0 statement: [`project/trp-product-vision.md`](./project/trp-product-vision.md).
 
 TRP is an engineering-first research environment for discovering, validating, and (when earned) deploying quantitative trading strategies.
 

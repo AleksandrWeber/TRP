@@ -51,6 +51,7 @@ describe('US244A — recovery pipeline deterministic orchestration', () => {
     saveIfVersion,
     findById,
     findByIdempotencyKey: vi.fn(),
+    findByWorkspaceId: vi.fn(),
     findByStatuses,
   };
 

@@ -2,7 +2,12 @@
 
 > A Research Operating System for quantitative strategy development.
 
-**Source of truth:** [`docs/CANONICAL.md`](./CANONICAL.md)
+**Level-0 (product / UX authority):**
+
+- [`project/trp-product-vision.md`](./project/trp-product-vision.md) — Product Vision
+- [`project/trp-ux-vision.md`](./project/trp-ux-vision.md) — UX Vision
+
+**Level-1 (engineering source of truth):** [`docs/CANONICAL.md`](./CANONICAL.md)
 
 ## Release Status
 
@@ -25,7 +30,27 @@
 - MVP Scope: Frozen
 - Future Features: [`docs/future/`](./future/)
 - Archive: [`docs/archive/`](./archive/)
-- Architectural changes require a new ADR.
+- V2 Freeze Preconditions (**Approved**): [`project/v2-freeze-preconditions.md`](./project/v2-freeze-preconditions.md)
+  - Glossary · Decision Log · C4: [`project/v2-architecture-glossary.md`](./project/v2-architecture-glossary.md), [`project/v2-architecture-decision-log.md`](./project/v2-architecture-decision-log.md), [`project/v2-c4-container-diagram.md`](./project/v2-c4-container-diagram.md)
+  - Engineering Audit: [`project/engineering-audit-report-v2-freeze.md`](./project/engineering-audit-report-v2-freeze.md)
+  - RC-18 Snapshot: [`project/rc-18-current-system-snapshot.md`](./project/rc-18-current-system-snapshot.md)
+  - V2 Roadmap (RC-19…28): [`project/v2-implementation-roadmap.md`](./project/v2-implementation-roadmap.md)
+  - Final Readiness: [`project/v2-final-readiness-assessment.md`](./project/v2-final-readiness-assessment.md)
+  - Architecture Spec v2.0 (**Approved**): [`project/trp-architecture-specification-v2.md`](./project/trp-architecture-specification-v2.md)
+  - RC-19 Migration Plan: [`project/rc-19-migration-plan.md`](./project/rc-19-migration-plan.md)
+  - RC-19 Epic 1 Exchange Scope Identity: [`project/rc-19-epic1-exchange-scope-identity.md`](./project/rc-19-epic1-exchange-scope-identity.md)
+  - RC-19 Epic 2 Bot Facade: [`project/rc-19-epic2-bot-facade.md`](./project/rc-19-epic2-bot-facade.md)
+  - RC-19 Epic 3 Tactical Envelope Foundation: [`project/rc-19-epic3-tactical-envelope.md`](./project/rc-19-epic3-tactical-envelope.md)
+  - RC-19 Closure Report (**CLOSED**): [`project/rc-19-closure-report.md`](./project/rc-19-closure-report.md)
+  - RC-20 Roadmap Reconciliation: [`project/rc-20-roadmap-reconciliation.md`](./project/rc-20-roadmap-reconciliation.md)
+  - RC-20 Implementation Plan (**PLANNING** — Command Center): [`project/rc-20-implementation-plan.md`](./project/rc-20-implementation-plan.md)
+  - RC-20 Epic Breakdown: [`project/rc-20-epic-breakdown.md`](./project/rc-20-epic-breakdown.md)
+  - RC-20 Command Center Layout: [`project/rc-20-command-center-layout.md`](./project/rc-20-command-center-layout.md)
+  - RC-20 Command Center UI Contract: [`project/rc-20-command-center-ui-contract.md`](./project/rc-20-command-center-ui-contract.md)
+  - RC-22 Implementation Plan (**PLANNING** — Strategy Library): [`project/rc-22-implementation-plan.md`](./project/rc-22-implementation-plan.md)
+  - RC-22 Epic Breakdown: [`project/rc-22-epic-breakdown.md`](./project/rc-22-epic-breakdown.md)
+  - RC-22 Strategy Library Integration: [`project/rc-22-strategy-library-integration.md`](./project/rc-22-strategy-library-integration.md)
+  - Architectural changes require a new ADR.
 
 ---
 
@@ -87,25 +112,27 @@ Full list: [`00-architecture-principles.md`](./00-architecture-principles.md)
 
 ## Docs map
 
-| Path                                                                           | Role                            |
-| ------------------------------------------------------------------------------ | ------------------------------- |
-| [`CANONICAL.md`](./CANONICAL.md)                                               | Source of truth                 |
-| [`00-architecture-principles.md`](./00-architecture-principles.md)             | Immutable principles            |
-| [`01-product-bible.md`](./01-product-bible.md)                                 | Product intent (slim)           |
-| [`02-architecture.md`](./02-architecture.md)                                   | Architecture for Stage 0–1      |
-| [`03-development-roadmap.md`](./03-development-roadmap.md)                     | Stages + Sprint 0               |
-| [`04-cursor-master-prompt.md`](./04-cursor-master-prompt.md)                   | AI engineering rules            |
-| [`05-uiux-guidelines.md`](./05-uiux-guidelines.md)                             | UI/UX                           |
-| [`Architecture/`](./Architecture/)                                             | Active subsystem specs          |
-| [`adr/`](./adr/)                                                               | Accepted architecture decisions |
-| [`project/rc-16-paper-trading-plan.md`](./project/rc-16-paper-trading-plan.md) | RC-16 scope and milestones      |
-| [`project/project-status.md`](./project/project-status.md)                     | Living project status           |
-| [`project/roadmap.md`](./project/roadmap.md)                                   | Direction / future roadmap      |
-| [`releases/`](./releases/)                                                     | Certification & release history |
-| [`releases/V1-COMPLETION.md`](./releases/V1-COMPLETION.md)                     | Version 1 completion report     |
-| [`Implementation/`](./Implementation/)                                         | Sprint guides                   |
-| [`future/`](./future/)                                                         | Deferred designs                |
-| [`archive/`](./archive/)                                                       | Pre-cleanup drafts              |
+| Path                                                                           | Role                                     |
+| ------------------------------------------------------------------------------ | ---------------------------------------- |
+| [`project/trp-product-vision.md`](./project/trp-product-vision.md)             | **Level-0** Product Vision               |
+| [`project/trp-ux-vision.md`](./project/trp-ux-vision.md)                       | **Level-0** UX Vision                    |
+| [`CANONICAL.md`](./CANONICAL.md)                                               | **Level-1** engineering source of truth  |
+| [`00-architecture-principles.md`](./00-architecture-principles.md)             | Immutable principles                     |
+| [`01-product-bible.md`](./01-product-bible.md)                                 | Product intent (slim; cites Level-0)     |
+| [`02-architecture.md`](./02-architecture.md)                                   | Architecture for Stage 0–1               |
+| [`03-development-roadmap.md`](./03-development-roadmap.md)                     | Stages + Sprint 0                        |
+| [`04-cursor-master-prompt.md`](./04-cursor-master-prompt.md)                   | AI engineering rules                     |
+| [`05-uiux-guidelines.md`](./05-uiux-guidelines.md)                             | UI/UX patterns (cites Level-0 UX Vision) |
+| [`Architecture/`](./Architecture/)                                             | Active subsystem specs                   |
+| [`adr/`](./adr/)                                                               | Accepted architecture decisions          |
+| [`project/rc-16-paper-trading-plan.md`](./project/rc-16-paper-trading-plan.md) | RC-16 scope and milestones               |
+| [`project/project-status.md`](./project/project-status.md)                     | Living project status                    |
+| [`project/roadmap.md`](./project/roadmap.md)                                   | Direction / future roadmap               |
+| [`releases/`](./releases/)                                                     | Certification & release history          |
+| [`releases/V1-COMPLETION.md`](./releases/V1-COMPLETION.md)                     | Version 1 completion report              |
+| [`Implementation/`](./Implementation/)                                         | Sprint guides                            |
+| [`future/`](./future/)                                                         | Deferred designs                         |
+| [`archive/`](./archive/)                                                       | Pre-cleanup drafts                       |
 
 ---
 

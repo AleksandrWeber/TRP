@@ -1,3 +1,5 @@
+import { resolveExchangeScopeId } from '../../exchange-scope';
+import { createTacticalEnvelope, type TacticalEnvelope } from '../../tactical-envelope';
 import type { SessionLease } from './session-lease';
 import { isLeaseExpired } from './session-lease';
 import { assertTransition } from './session-transitions';
@@ -17,8 +19,15 @@ export type TradingSession = Readonly<{
   id: string;
   workspaceId: string;
   paperAccountId: string;
+  /** RC-19 Epic 1 — Exchange Scope identity (default Binance). */
+  exchangeScopeId: string;
   /** Opaque immutable deployment reference; distinct from Session runtime (ADR-014). */
   deploymentId: string;
+  /**
+   * RC-19 Epic 3 — optional Tactical Envelope stub.
+   * Exists but is not yet active: Runtime ignores this field.
+   */
+  tacticalEnvelope: TacticalEnvelope | null;
   origin: TradingSessionOrigin;
   status: TradingSessionStatus;
   lease: SessionLease | null;
@@ -37,7 +46,11 @@ export type CreateTradingSessionInput = Readonly<{
   id: string;
   workspaceId: string;
   paperAccountId: string;
+  /** Optional; defaults to Binance Exchange Scope (or caller's explicit id). */
+  exchangeScopeId?: string;
   deploymentId: string;
+  /** Optional; defaults to null (no envelope — current behaviour preserved). */
+  tacticalEnvelope?: TacticalEnvelope | null;
   origin: TradingSessionOrigin;
   actorId: string;
   correlationId?: string;
@@ -56,7 +69,12 @@ export function createTradingSession(input: CreateTradingSessionInput): TradingS
     id: required(input.id, 'session id'),
     workspaceId: required(input.workspaceId, 'workspace id'),
     paperAccountId: required(input.paperAccountId, 'paper account id'),
+    exchangeScopeId: resolveExchangeScopeId(input.exchangeScopeId),
     deploymentId: required(input.deploymentId, 'deployment id'),
+    tacticalEnvelope:
+      input.tacticalEnvelope === undefined || input.tacticalEnvelope === null
+        ? null
+        : createTacticalEnvelope(input.tacticalEnvelope),
     origin: input.origin,
     status: TradingSessionStatus.CREATED,
     lease: null,

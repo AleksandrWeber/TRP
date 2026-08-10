@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { DEFAULT_BINANCE_EXCHANGE_SCOPE_ID } from '../../exchange-scope';
+import { createTacticalEnvelope } from '../../tactical-envelope';
 import { canTransition } from './session-transitions';
 import { createTradingSession, transitionSession } from './trading-session';
 import { TradingSessionStatus } from './trading-session-status';
@@ -24,9 +26,53 @@ describe('US156 / US217 — Trading Session domain', () => {
     const session = base();
     expect(session.status).toBe(TradingSessionStatus.CREATED);
     expect(session.origin).toBe('manual');
+    expect(session.exchangeScopeId).toBe(DEFAULT_BINANCE_EXCHANGE_SCOPE_ID);
+    expect(session.tacticalEnvelope).toBeNull();
     expect(session.lease).toBeNull();
     expect(session).not.toHaveProperty('strategyState');
     expect(Object.isFrozen(session)).toBe(true);
+  });
+
+  it('assigns the default Binance Exchange Scope automatically', () => {
+    const session = base();
+    expect(session.exchangeScopeId).toBe(DEFAULT_BINANCE_EXCHANGE_SCOPE_ID);
+  });
+
+  it('defaults to no Tactical Envelope (RC-19 Epic 3)', () => {
+    const session = base();
+    expect(session.tacticalEnvelope).toBeNull();
+  });
+
+  it('may optionally reference a Tactical Envelope without changing lifecycle', () => {
+    const envelope = createTacticalEnvelope({
+      timeframe: '5m',
+      allowedStrategyVersion: 'trend-v1',
+      riskProfileReference: 'risk-profile:paper-default',
+    });
+    const session = createTradingSession({
+      id: 'session-envelope-1',
+      workspaceId: 'ws-1',
+      paperAccountId: 'account-1',
+      deploymentId: 'deployment-manual-1',
+      tacticalEnvelope: envelope,
+      origin: 'manual',
+      actorId: 'actor-1',
+      idempotencyKey: 'create-envelope-1',
+      createdAt: ts,
+      recordedAt: ts,
+    });
+
+    expect(session.tacticalEnvelope).toEqual(envelope);
+    expect(session.status).toBe(TradingSessionStatus.CREATED);
+
+    const running = transitionSession(
+      transitionSession(session, TradingSessionStatus.STARTING, ts),
+      TradingSessionStatus.RUNNING,
+      '2026-07-18T15:00:01.000Z',
+    );
+    expect(running.tacticalEnvelope).toEqual(envelope);
+    expect(running.status).toBe(TradingSessionStatus.RUNNING);
+    expect(running.deploymentId).toBe('deployment-manual-1');
   });
 
   it('creates a strategy-origin session bound only by deploymentId', () => {
@@ -43,6 +89,8 @@ describe('US156 / US217 — Trading Session domain', () => {
     });
     expect(session.origin).toBe('strategy');
     expect(session.deploymentId).toBe('deployment-approved-1');
+    expect(session.exchangeScopeId).toBe(DEFAULT_BINANCE_EXCHANGE_SCOPE_ID);
+    expect(session.tacticalEnvelope).toBeNull();
     expect(session).not.toHaveProperty('parameters');
     expect(session).not.toHaveProperty('configurationHash');
   });
@@ -85,6 +133,8 @@ describe('US156 / US217 — Trading Session domain', () => {
       '2026-07-18T15:00:01.000Z',
     );
     expect(started.deploymentId).toBe('deployment-manual-1');
+    expect(started.exchangeScopeId).toBe(DEFAULT_BINANCE_EXCHANGE_SCOPE_ID);
+    expect(started.tacticalEnvelope).toBeNull();
     expect(started.status).toBe(TradingSessionStatus.RUNNING);
     expect(started.version).toBe(3);
   });

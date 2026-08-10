@@ -48,6 +48,7 @@ describe('US249 — RecoveryCompletionService', () => {
     saveIfVersion,
     findById,
     findByIdempotencyKey: vi.fn(),
+    findByWorkspaceId: vi.fn(),
     findByStatuses: vi.fn(),
   };
 

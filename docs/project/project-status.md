@@ -1,7 +1,31 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-08-01 (RC-18 mid-release — US290–US293 Done; US294–US295 open)
+2026-08-10 (RC-20 CLOSED — Command Center foundation certified)
+
+**Level-0 authority:**
+
+- [Product Vision](./trp-product-vision.md)
+- [UX Vision](./trp-ux-vision.md)
+
+**Level-1 engineering source of truth:** [`../CANONICAL.md`](../CANONICAL.md)
+
+**V2 architectural constitution:** [Architecture Specification v2.0](./trp-architecture-specification-v2.md) (**Approved**)
+
+**V2 companions:**
+
+- [Alias Dictionary](./v2-alias-dictionary.md)
+- [Authority Matrix](./v2-authority-matrix.md)
+- [Tactics Contract](./v2-tactics-contract.md)
+- [Cluster Isolation Invariants](./v2-cluster-isolation-invariants.md)
+- [Freeze Preconditions](./v2-freeze-preconditions.md)
+- [Engineering Audit](./engineering-audit-report-v2-freeze.md)
+- [RC-18 Snapshot](./rc-18-current-system-snapshot.md)
+- [V2 Roadmap RC-19…28](./v2-implementation-roadmap.md)
+- [Final Readiness Assessment](./v2-final-readiness-assessment.md)
+
+**RC-19:** [Migration Plan](./rc-19-migration-plan.md) · [Closure Report](./rc-19-closure-report.md) (**CLOSED**)  
+**RC-20:** [Implementation Plan](./rc-20-implementation-plan.md) · [UI Contract](./rc-20-command-center-ui-contract.md) · [Closure Report](./rc-20-closure-report.md) (**CLOSED**)
 
 ---
 
@@ -22,7 +46,9 @@ V1 Completion Report: [`../releases/V1-COMPLETION.md`](../releases/V1-COMPLETION
 RC-15: COMPLETE  
 RC-16 M1/M2: COMPLETE (foundation retained in V1) · **BASELINE ACCEPTED**  
 RC-17: **BASELINED** (Runtime Recovery reference — E17 US240–US249 + US244A)  
-RC-18: **IN PROGRESS** (US290–US293 Done; US294–US295 open for production claim)  
+RC-18: **IN PROGRESS** (US290–US294 Done; US295 open for production claim)  
+RC-19: **CLOSED** (Exchange Scope Identity + Bot Facade + Tactical Envelope stub; [closure](./rc-19-closure-report.md))  
+RC-20: **CLOSED** (Command Center foundation Epics 1–6; [closure](./rc-20-closure-report.md))
 Engineering gates RC-1 / RC-2 / RC-3 / RC-4: PASS
 
 Cluster Closure Report:
@@ -32,27 +58,32 @@ Cluster Closure Report:
 
 # Current Phase
 
-**RC-18 IN PROGRESS · Mid-release (US290–US293 Done)**
+**RC-20 CLOSED · Next: RC-21+ per V2 roadmap**
 
-RC-17 delivered the Runtime Recovery Stage 3 reference pipeline and Stage 4
-technical review (PASS WITH RECOMMENDATIONS). Retrospective:
-[`rc-17-retrospective.md`](./rc-17-retrospective.md).
+RC-19 delivered the Architecture Spec v2.0 integration skeleton:
 
-RC-18 mandatory TD-036 residuals R1–R4 are **Implemented**: US290 force/confirm
-`RECOVERING`, US291 real reconcile ports, US292 durable RecoveryState + phase,
-US293 durable Incident fail-closed. Mid-release audit:
-[`rc-18-mid-release-health-review.md`](./rc-18-mid-release-health-review.md).
-RIV-001 / SIG-001: coherent recovery + fail-closed PASS WITH RESIDUALS.
+- Epic 1 — Exchange Scope Identity (default Binance `exchangeScopeId` on Session + PaperAccount)
+- Epic 2 — Bot Facade (UI/product alias; Trading Session remains SoT)
+- Epic 3 — Tactical Envelope Foundation (schema stub; **not yet active**)
 
-Next: **US294** chaos/restart evidence → **US295** ADL-008 closure, then
-forwarded E18–E21 product epics. Residual ownership:
-[`rc-18-residual-register.md`](./rc-18-residual-register.md).
+Acceptance record: [`rc-19-closure-report.md`](./rc-19-closure-report.md).  
+Frozen paper path (Orders / Risk / Execution / Ledger / Recovery) unchanged.
+
+**Next (after RC-19 approval):** **RC-20** — Command Center foundation (Kill Switch / status over existing Session/Risk ports). Do not start RC-20 until this closeout is approved.
+
+**RC-18 residual (parallel governance):** US295 / ADL-008 remains **Open** — close or record explicit accepted deferral before production restart-safety PASS claims. Residual ownership: [`rc-18-residual-register.md`](./rc-18-residual-register.md).
 
 ---
 
 # Current Goal
 
-Побудувати Evidence-driven Research OS: reproducible experiments, immutable Knowledge, і чітке provenance/versioning результатів.
+RC-19 integration skeleton is **CLOSED**. Spec v2.0 is the architectural
+constitution. Next approved workstream: **RC-20 Command Center foundation**
+(Kill Switch / status over existing Session/Risk ports) — start only after
+Closure Report approval.
+
+Historical Research OS goal (unchanged): Evidence-driven Research OS —
+reproducible experiments, immutable Knowledge, clear provenance/versioning.
 
 Walk-Forward: Train/Test evaluation + Aggregate v2 (US048–US050); Dataset Slice US045–US047. Campaign Persistence + History API (US051–US059). RC-06 Architecture Audit complete (US060). Export Foundation + Export API (US061–US062). RC-07 finalized. Import Foundation (US063). JSON Import Validation (US064). Import API (US065). Replay Foundation (US066). Replay Execution (US067). RC-08 finalized. Job Domain Model (US069). Job Queue Abstraction (US070). Background Campaign Runner (US071). Job Status API (US072). Job Cancellation (US073). RC-09 finalized. Knowledge Domain Model (US075). Experiment Entity & Versioning (US076). Knowledge Extraction Pipeline (US077). Experiment Comparison Service (US078). Knowledge Search API (US079). RC-10 finalized. Pipeline Domain Model (US081). Pipeline Step Contract (US082). Pipeline Executor (US083). Pipeline Hooks (US084). Pipeline Templates (US085). RC-11 finalized. Campaign Pipeline Steps (US087). Execute Campaign through PipelineExecutor (US088). Replay Pipeline Integration (US089). Knowledge Extraction Pipeline Integration (US090). RC-12 Architecture Audit (US091) finalized — Pipeline Engine is the unified execution runtime. Architecture Snapshot Synchronization (US092). Technical Debt Register (US093). Module Maturity Matrix (US094). Insight Domain (US095). Insight Extraction Pipeline (US096). Cross-Campaign Analysis (US097). Recommendation Engine (US098). Research Report Domain (US099). Research Intelligence API (US100). RC-13 Architecture Audit (US101) PASS WITH RECOMMENDATIONS — RC-13 finalized. RC-14 production SaaS foundation finalized (`rc-14`). RC-15 Simulation Stack (US115–US124) + Architecture Audit (US125) — MarketData / Import / Provider / Backtesting / Portfolio / Trade / Performance / WalkForward / StrategyComparison / SimulationReport.
 

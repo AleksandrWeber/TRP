@@ -1,4 +1,5 @@
 import { FinancialDecimal } from '../../financial';
+import { resolveExchangeScopeId } from '../../exchange-scope';
 
 export const PAPER_ACCOUNT_SCHEMA_VERSION = 1;
 
@@ -12,6 +13,8 @@ export enum PaperAccountStatus {
 export type PaperAccount = Readonly<{
   id: string;
   workspaceId: string;
+  /** RC-19 Epic 1 — Exchange Scope identity (default Binance). */
+  exchangeScopeId: string;
   currency: string;
   mode: 'paper';
   status: PaperAccountStatus;
@@ -26,6 +29,8 @@ export type PaperAccount = Readonly<{
 export type CreatePaperAccountInput = Readonly<{
   id: string;
   workspaceId: string;
+  /** Optional; defaults to Binance Exchange Scope. */
+  exchangeScopeId?: string;
   currency: string;
   mode: 'paper';
   openingCapital: string;
@@ -48,6 +53,7 @@ export function createPaperAccount(input: CreatePaperAccountInput): PaperAccount
   return Object.freeze({
     id,
     workspaceId,
+    exchangeScopeId: resolveExchangeScopeId(input.exchangeScopeId),
     currency,
     mode: 'paper',
     status: PaperAccountStatus.PENDING_OPENING_LEDGER,

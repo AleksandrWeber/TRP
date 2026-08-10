@@ -6,7 +6,8 @@
 **Reviewer:**  
 **Verdict:** PASS | PASS WITH RESIDUAL TD | FAIL
 
-Related: [RC-17 Development Process — Stage 5](../rc-17-development-process.md)
+Related: [RC-17 Development Process — Stage 5](../rc-17-development-process.md) ·
+[Product Vision](../trp-product-vision.md) · [UX Vision](../trp-ux-vision.md)
 
 ---
 

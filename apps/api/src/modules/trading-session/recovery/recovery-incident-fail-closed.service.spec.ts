@@ -75,6 +75,7 @@ describe('US293 — RecoveryIncidentFailClosedService', () => {
       saveIfVersion: vi.fn(),
       findById: vi.fn(async () => sessionRow),
       findByIdempotencyKey: vi.fn(),
+      findByWorkspaceId: vi.fn(),
       findByStatuses: vi.fn(),
     };
 

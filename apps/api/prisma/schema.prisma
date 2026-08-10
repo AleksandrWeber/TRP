@@ -574,6 +574,8 @@ model PaperStrategyDeployment {
 model PaperAccount {
   id                         String   @id
   workspaceId                String   @map("workspace_id")
+  /// RC-19 Epic 1 — Exchange Scope identity (default Binance).
+  exchangeScopeId            String   @default("exchange-scope:binance") @map("exchange_scope_id")
   currency                   String
   mode                       String   @default("paper")
   status                     String
@@ -594,7 +596,11 @@ model TradingSession {
   id               String    @id
   workspaceId      String    @map("workspace_id")
   paperAccountId   String    @map("paper_account_id")
+  /// RC-19 Epic 1 — Exchange Scope identity (default Binance).
+  exchangeScopeId  String    @default("exchange-scope:binance") @map("exchange_scope_id")
   deploymentId     String    @map("deployment_id")
+  /// RC-19 Epic 3 — optional Tactical Envelope stub (not enforced; Runtime ignores).
+  tacticalEnvelope Json?     @map("tactical_envelope")
   origin           String
   status           String
   leaseOwnerId     String?   @map("lease_owner_id")

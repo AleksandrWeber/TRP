@@ -4,6 +4,8 @@ Rules for committing and releasing TRP Research OS work.
 
 Related docs:
 
+- Product Vision (Level-0): [`trp-product-vision.md`](./trp-product-vision.md)
+- UX Vision (Level-0): [`trp-ux-vision.md`](./trp-ux-vision.md)
 - Project Status: [`project-status.md`](./project-status.md)
 - Release History: [`release-history.md`](./release-history.md)
 - Story ID Allocation: [`story-id-allocation.md`](./story-id-allocation.md)

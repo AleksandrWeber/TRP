@@ -1,8 +1,9 @@
-import type { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, type PrismaClient } from '@prisma/client';
 import {
   prismaClientForTransaction,
   type TransactionContext,
 } from '../../../storage/prisma/prisma-transaction.service';
+import { parseTacticalEnvelope, serializeTacticalEnvelope } from '../../tactical-envelope';
 import type { SessionLease } from '../domain/session-lease';
 import type { TradingSession } from '../domain/trading-session';
 import { isTradingSessionOrigin } from '../domain/trading-session';
@@ -69,6 +70,14 @@ export class PrismaTradingSessionRepository implements TradingSessionRepository 
     return row ? toDomain(row) : null;
   }
 
+  async findByWorkspaceId(workspaceId: string): Promise<TradingSession[]> {
+    const rows = await this.prisma.tradingSession.findMany({
+      where: { workspaceId },
+      orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+    });
+    return rows.map((row) => toDomain(row));
+  }
+
   async findByStatuses(statuses: readonly TradingSessionStatus[]): Promise<TradingSession[]> {
     if (statuses.length === 0) {
       return [];
@@ -85,7 +94,9 @@ type TradingSessionRow = {
   id: string;
   workspaceId: string;
   paperAccountId: string;
+  exchangeScopeId: string;
   deploymentId: string;
+  tacticalEnvelope: Prisma.JsonValue | null;
   origin: string;
   status: string;
   leaseOwnerId: string | null;
@@ -104,11 +115,15 @@ type TradingSessionRow = {
 };
 
 function toRow(session: TradingSession): Prisma.TradingSessionUncheckedCreateInput {
+  const envelopeJson = serializeTacticalEnvelope(session.tacticalEnvelope);
   return {
     id: session.id,
     workspaceId: session.workspaceId,
     paperAccountId: session.paperAccountId,
+    exchangeScopeId: session.exchangeScopeId,
     deploymentId: session.deploymentId,
+    tacticalEnvelope:
+      envelopeJson === null ? Prisma.DbNull : (envelopeJson as Prisma.InputJsonValue),
     origin: session.origin,
     status: session.status,
     leaseOwnerId: session.lease?.ownerId ?? null,
@@ -144,7 +159,9 @@ function toDomain(row: TradingSessionRow): TradingSession {
     id: row.id,
     workspaceId: row.workspaceId,
     paperAccountId: row.paperAccountId,
+    exchangeScopeId: row.exchangeScopeId,
     deploymentId: row.deploymentId,
+    tacticalEnvelope: parseTacticalEnvelope(row.tacticalEnvelope),
     origin: row.origin,
     status: row.status as TradingSessionStatus,
     lease,

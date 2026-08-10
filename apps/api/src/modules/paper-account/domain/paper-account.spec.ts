@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { DEFAULT_BINANCE_EXCHANGE_SCOPE_ID } from '../../exchange-scope';
 import {
   activatePaperAccount,
   closePaperAccount,
@@ -22,6 +23,7 @@ describe('US154 — paper account domain', () => {
     });
 
     expect(account).toMatchObject({
+      exchangeScopeId: DEFAULT_BINANCE_EXCHANGE_SCOPE_ID,
       currency: 'USDT',
       mode: 'paper',
       status: PaperAccountStatus.PENDING_OPENING_LEDGER,
@@ -32,6 +34,19 @@ describe('US154 — paper account domain', () => {
     expect(Object.isFrozen(account)).toBe(true);
     expect(account).not.toHaveProperty('cashBalance');
     expect(account).not.toHaveProperty('equity');
+  });
+
+  it('assigns the default Binance Exchange Scope automatically', () => {
+    const account = createPaperAccount({
+      id: 'account-scope',
+      workspaceId: 'workspace-1',
+      currency: 'USDT',
+      mode: 'paper',
+      openingCapital: '100',
+      openedAt,
+      recordedAt: openedAt,
+    });
+    expect(account.exchangeScopeId).toBe(DEFAULT_BINANCE_EXCHANGE_SCOPE_ID);
   });
 
   it('rejects float input, non-positive capital, and non-paper mode', () => {
@@ -75,6 +90,7 @@ describe('US154 — paper account domain', () => {
       '2026-07-18T12:00:01.000Z',
     );
     expect(active.status).toBe(PaperAccountStatus.ACTIVE);
+    expect(active.exchangeScopeId).toBe(DEFAULT_BINANCE_EXCHANGE_SCOPE_ID);
     expect(active.version).toBe(2);
     expect(suspendPaperAccount(active, '2026-07-18T12:00:02.000Z').status).toBe(
       PaperAccountStatus.SUSPENDED,

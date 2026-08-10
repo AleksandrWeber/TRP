@@ -545,6 +545,96 @@ export type ExchangeStatusView = {
   totalCount: number;
 };
 
+/** Unversioned GET /health (RC-01 RuntimeHealthReport). */
+export type RuntimeHealthView = {
+  status: string;
+  version: string;
+  uptime: number;
+  database: string;
+  migrations: string;
+  api: string;
+  timestamp: string;
+  environment: string;
+  details: {
+    api: string;
+    database: string;
+    migrations: string;
+    version: string;
+    controllersRegistered: number;
+    pendingMigrations: readonly string[];
+  };
+};
+
+/** Bot Facade projection over Trading Session (RC-19 / RC-20). */
+export type TradingSessionBotView = {
+  id: string;
+  tradingSessionId: string;
+  workspaceId: string;
+  exchangeScopeId: string;
+  paperAccountId: string;
+  status: string;
+  state: string;
+  mission: { deploymentId: string };
+  origin: string;
+  version: number;
+  failureReason: string | null;
+  createdAt: string;
+  recordedAt: string;
+  actorId: string;
+  correlationId: string | null;
+  leaseOwnerId: string | null;
+  fencingToken: number | null;
+};
+
+export type ExchangeScopeOverviewView = {
+  id: string;
+  exchangeCode: string;
+  label: string;
+  sessionCount: number;
+  totalSessionCount: number;
+};
+
+async function requestAbsolute<T>(url: string, init?: RequestInit): Promise<T> {
+  const headers = new Headers(init?.headers);
+  if (!headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json');
+  }
+
+  const token = getAccessToken();
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  const workspace = getActiveWorkspace();
+  if (workspace && !headers.has('X-Workspace-Id')) {
+    headers.set('X-Workspace-Id', workspace.id);
+  }
+
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      ...init,
+      headers,
+    });
+  } catch {
+    throw new Error(`Cannot reach API at ${apiUrl}. Start it with: pnpm --filter api start`);
+  }
+
+  if (res.status === 401) {
+    clearAccessToken();
+    if (!window.location.pathname.startsWith('/login')) {
+      window.location.assign('/login');
+    }
+  }
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(mapHttpError(res.status, text));
+  }
+
+  return res.json() as Promise<T>;
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const headers = new Headers(init?.headers);
   if (!headers.has('Content-Type')) {
@@ -786,6 +876,25 @@ export const api = {
     request<{ decision: RiskDecisionView; result: unknown }>('/risk/evaluate', {
       method: 'POST',
       body: JSON.stringify(body),
+    }),
+  getRuntimeHealth: () => requestAbsolute<RuntimeHealthView>(`${apiUrl}/health`),
+  listTradingSessions: () => request<TradingSessionBotView[]>('/trading-sessions'),
+  getTradingSession: (id: string) => request<TradingSessionBotView>(`/trading-sessions/${id}`),
+  getDefaultExchangeScope: () => request<ExchangeScopeOverviewView>('/exchange-scopes/default'),
+  pauseTradingSession: (id: string) =>
+    request<TradingSessionBotView>(`/trading-sessions/${id}/pause`, {
+      method: 'POST',
+      body: '{}',
+    }),
+  resumeTradingSession: (id: string) =>
+    request<TradingSessionBotView>(`/trading-sessions/${id}/resume`, {
+      method: 'POST',
+      body: '{}',
+    }),
+  stopTradingSession: (id: string) =>
+    request<TradingSessionBotView>(`/trading-sessions/${id}/stop`, {
+      method: 'POST',
+      body: '{}',
     }),
   listPaperSessions: () => request<PaperSessionView[]>('/paper/sessions'),
   getPaperSession: (id: string) => request<PaperSessionView>(`/paper/sessions/${id}`),

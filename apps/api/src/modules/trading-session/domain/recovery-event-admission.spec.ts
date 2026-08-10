@@ -50,7 +50,9 @@ function session(
     id: 'session-1',
     workspaceId: 'ws-1',
     paperAccountId: 'account-1',
+    exchangeScopeId: 'exchange-scope:binance',
     deploymentId: 'deployment-1',
+    tacticalEnvelope: null,
     origin: 'strategy' as const,
     status: overrides.status ?? TradingSessionStatus.RECOVERING,
     lease: {

@@ -2,7 +2,9 @@
 
 Research Operating System for quantitative strategy development.
 
-**Canonical docs:** [`docs/CANONICAL.md`](./docs/CANONICAL.md)
+**Level-0 Product Vision:** [`docs/project/trp-product-vision.md`](./docs/project/trp-product-vision.md)  
+**Level-0 UX Vision:** [`docs/project/trp-ux-vision.md`](./docs/project/trp-ux-vision.md)  
+**Canonical engineering docs:** [`docs/CANONICAL.md`](./docs/CANONICAL.md)
 
 ## Current Stable Release
 
@@ -16,7 +18,8 @@ Research Operating System for quantitative strategy development.
 
 Completion report: [`docs/releases/V1-COMPLETION.md`](./docs/releases/V1-COMPLETION.md)  
 Changelog: [`CHANGELOG.md`](./CHANGELOG.md)  
-Architecture Index: [`docs/README.md`](./docs/README.md)
+Architecture Index: [`docs/README.md`](./docs/README.md)  
+RC-20 Command Center closure: [`docs/project/rc-20-closure-report.md`](./docs/project/rc-20-closure-report.md)
 
 ## Stack
 

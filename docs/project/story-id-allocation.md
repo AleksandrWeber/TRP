@@ -9,6 +9,8 @@ unambiguous.
 
 Related:
 
+- [Product Vision](./trp-product-vision.md) — Level-0 product authority
+- [UX Vision](./trp-ux-vision.md) — Level-0 experience authority
 - [Release History](./release-history.md)
 - [RC-17 Roadmap](./rc-17-roadmap.md)
 - [RC-17 Release Planning](./rc-17-release-planning.md)

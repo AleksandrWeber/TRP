@@ -96,6 +96,7 @@ describe('US245 — RecoveryEventAdmissionService', () => {
     saveIfVersion: vi.fn(),
     findById: vi.fn(),
     findByIdempotencyKey: vi.fn(),
+    findByWorkspaceId: vi.fn(),
     findByStatuses: vi.fn(),
   };
 

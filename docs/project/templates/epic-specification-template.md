@@ -9,10 +9,15 @@
 
 Related:
 
+- [Product Vision](../trp-product-vision.md) — Level-0 product authority
+- [UX Vision](../trp-ux-vision.md) — Level-0 experience authority
 - [RC-17 Roadmap](../rc-17-roadmap.md)
 - [RC-17 Development Process — Stage 1](../rc-17-development-process.md)
 - [Story ID Allocation](../story-id-allocation.md) — assign IDs from **US240–US299** only
 - [ADL](../../Architecture/ADR/ADL.md)
+
+Cite Level-0 Visions in Objective / Expected business value / Out of scope when
+product intent or UX outcomes are material. Do not contradict them.
 
 ---
 

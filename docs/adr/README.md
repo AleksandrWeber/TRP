@@ -2,11 +2,22 @@
 
 Index of accepted architectural decisions for TRP Research OS.
 
+**Level-0 project authority (cite where product / UX intent is material):**
+
+- Product Vision: [`docs/project/trp-product-vision.md`](../project/trp-product-vision.md)
+- UX Vision: [`docs/project/trp-ux-vision.md`](../project/trp-ux-vision.md)
+
 Full living project status: [`docs/project/project-status.md`](../project/project-status.md).
 Release history: [`docs/project/release-history.md`](../project/release-history.md).
 Version 1 completion: [`docs/releases/V1-COMPLETION.md`](../releases/V1-COMPLETION.md) (`v1.0.0`).
+Engineering source of truth: [`docs/CANONICAL.md`](../CANONICAL.md).
 
 Note: ADR-001…ADR-006 currently exist as index-only decisions. ADR-007 onward are standalone ADR documents. Do not create stub files for ADR-001…006.
+
+Future ADRs must not contradict Level-0 Product / UX Vision. When product intent
+or operator experience is material to a decision, link the Vision documents in
+the ADR Context / Consequences. ADRs remain authoritative for architecture;
+Visions do not redesign Freeze ADRs.
 
 ---
 

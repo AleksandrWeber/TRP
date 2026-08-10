@@ -8,6 +8,8 @@ Status: Approved for RC-17 planning use
 
 Related:
 
+- [Product Vision](./trp-product-vision.md) — Level-0 product authority
+- [UX Vision](./trp-ux-vision.md) — Level-0 experience authority
 - [RC-17 Release Planning](./rc-17-release-planning.md)
 - [RC-17 Roadmap](./rc-17-roadmap.md)
 - [Release History](./release-history.md)
@@ -23,6 +25,10 @@ Related:
 
 RC-17 work proceeds through seven stages. Stages 3–6 repeat **per epic**.
 Stages 0–2 establish release-wide and epic-wide authority before code.
+
+**Level-0:** Release Plans, Epics, and Story Specs must cite
+[Product Vision](./trp-product-vision.md) and [UX Vision](./trp-ux-vision.md)
+where product intent or UX outcomes are material.
 
 ```text
 Stage 0  Release Planning

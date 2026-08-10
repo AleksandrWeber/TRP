@@ -57,6 +57,7 @@ describe('US241 — RecoveryLeaseAcquisitionService', () => {
     saveIfVersion,
     findById,
     findByIdempotencyKey: vi.fn(),
+    findByWorkspaceId: vi.fn(),
     findByStatuses: vi.fn(),
   };
   const transactions = {

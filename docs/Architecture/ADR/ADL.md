@@ -11,6 +11,9 @@ This document is **not** an Architecture Decision Record (ADR).
 
 Related:
 
+- Product Vision (Level-0): [`../../project/trp-product-vision.md`](../../project/trp-product-vision.md)
+- UX Vision (Level-0): [`../../project/trp-ux-vision.md`](../../project/trp-ux-vision.md)
+- V2 Architecture Decision Log (product↔canonical marriage): [`../../project/v2-architecture-decision-log.md`](../../project/v2-architecture-decision-log.md)
 - ADR Index: [`../../adr/README.md`](../../adr/README.md)
 - Release History: [`../../project/release-history.md`](../../project/release-history.md)
 - Story ID Allocation: [`../../project/story-id-allocation.md`](../../project/story-id-allocation.md)

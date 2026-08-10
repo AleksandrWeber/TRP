@@ -1,11 +1,13 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-07-30 (RC-17 BASELINED — Runtime Recovery reference)
+Last updated: 2026-08-10 (RC-20 CLOSED — Command Center foundation certified)
 
 Living roadmap for product direction.
 
 Related:
 
+- Product Vision (Level-0): [`trp-product-vision.md`](./trp-product-vision.md)
+- UX Vision (Level-0): [`trp-ux-vision.md`](./trp-ux-vision.md)
 - Project Status: [`project-status.md`](./project-status.md)
 - Release History: [`release-history.md`](./release-history.md)
 - Story ID Allocation: [`story-id-allocation.md`](./story-id-allocation.md)
@@ -169,17 +171,24 @@ Related:
 
 ## Current Phase
 
-**RC-16 BASELINE ACCEPTED · RC-17 PLANNING COMPLETE · IMPLEMENTATION NOT STARTED**
+**RC-20 CLOSED · Next: RC-21+ (V2 sequence)**
 
-Next implementation work: **RC-17 Epic E17 — Runtime Recovery** (Stage 1 Epic
-Planning → Stage 2 Architecture Review before code).
+RC-16 paper path and RC-17 Runtime Recovery are baselined. RC-18 mandatory
+residuals R1–R5 (US290–US294) are Done; **US295** (ADL-008) remains Open.
+RC-19 integration skeleton is **CLOSED**.
+RC-20 Command Center foundation (Epics 1–6) is **CLOSED** —
+[`rc-20-closure-report.md`](./rc-20-closure-report.md).
+
+Next: **RC-21+** per [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md)
+(durable emergency ports / subsequent V2 product epics as sequenced).
 
 Story IDs: **US240–US299** — [`story-id-allocation.md`](./story-id-allocation.md).
 
 Release table: [`release-history.md`](./release-history.md).
 
-Architecture Freeze ADR-012…ADR-018 remains ACTIVE. Architecture changes
-require a new ADR. Chronological evolution:
+Architecture Spec v2.0 is the V2 constitution:
+[`trp-architecture-specification-v2.md`](./trp-architecture-specification-v2.md).
+Architecture Freeze ADR-012…ADR-018 remains ACTIVE. Chronological evolution:
 [`../Architecture/ADR/ADL.md`](../Architecture/ADR/ADL.md).
 
 ---
@@ -221,29 +230,45 @@ Detail: [`rc-17-roadmap.md`](./rc-17-roadmap.md),
 
 ---
 
-## RC-18 progress (mid-release 2026-08-01)
+## RC-18 progress
 
-| Workstream                          | Status          |
-| ----------------------------------- | --------------- |
-| US290 Force/confirm `RECOVERING`    | **Done**        |
-| US291 Real reconcile ports          | **Done**        |
-| US292 Durable RecoveryState + phase | **Done**        |
-| US293 Durable Incident fail-closed  | **Done**        |
-| US294 Chaos/restart evidence        | **Open** (next) |
-| US295 ADL-008 closure               | **Open**        |
-| E18–E21 product epics               | Not started     |
+| Workstream                          | Status                                    |
+| ----------------------------------- | ----------------------------------------- |
+| US290 Force/confirm `RECOVERING`    | **Done**                                  |
+| US291 Real reconcile ports          | **Done**                                  |
+| US292 Durable RecoveryState + phase | **Done**                                  |
+| US293 Durable Incident fail-closed  | **Done**                                  |
+| US294 Chaos/restart evidence        | **Done**                                  |
+| US295 ADL-008 closure               | **Open**                                  |
+| E18–E21 product epics               | Forwarded into V2 RC-20+ where applicable |
 
 Authority: [`rc-18-mid-release-health-review.md`](./rc-18-mid-release-health-review.md),
 [`rc-18-residual-register.md`](./rc-18-residual-register.md).
 
 ---
 
+## RC-19 progress
+
+| Workstream                          | Status                                |
+| ----------------------------------- | ------------------------------------- |
+| Migration Plan                      | **Closed**                            |
+| Epic 1 Exchange Scope Identity      | **Done**                              |
+| Epic 2 Bot Facade                   | **Done**                              |
+| Epic 3 Tactical Envelope Foundation | **Done**                              |
+| Closure Report                      | **CLOSED** — awaiting review approval |
+
+Authority: [`rc-19-closure-report.md`](./rc-19-closure-report.md),
+[`rc-19-migration-plan.md`](./rc-19-migration-plan.md).
+
+---
+
 ## Future Milestones
 
-**Version 1 (`v1.0.0`) is complete.** RC-16 paper path and RC-17 Runtime
-Recovery architecture are baselined. Near-term engineering focuses on **RC-18**
-remaining mandatory residuals (**US294–US295**) and forwarded ops/event/
-market-data/multi-strategy epics under the Architecture Freeze.
+**Version 1 (`v1.0.0`) is complete.** RC-19 V2 integration skeleton and RC-20
+Command Center foundation are **CLOSED**. Near-term engineering continues with
+**RC-21+** (durable emergency ports and sequenced V2 epics), parallel **US295**
+ADL-008 closeout for production-claim language, then RC-21…RC-28 per
+[`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
 
 Later themes (new ADR required where architecture changes):
 
