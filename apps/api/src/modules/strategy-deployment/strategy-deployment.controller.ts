@@ -10,6 +10,7 @@ import {
   Param,
   Post,
   Req,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import {
   CreateStrategyDeploymentBodyDto,
@@ -19,6 +20,7 @@ import { CommandAuthorizationService } from '../auth/command-authorization.servi
 import { Roles } from '../auth/decorators/roles.decorator';
 import type { AuthUser } from '../auth/jwt.strategy';
 import { Role } from '../identity/role';
+import { isRuntimeEnforcementRejectedError } from '../runtime-enforcement';
 import { WorkspaceAccessService } from '../workspace';
 import type { StrategyDeployment } from './domain/strategy-deployment';
 import { StrategyDeploymentService } from './strategy-deployment.service';
@@ -186,6 +188,7 @@ export type StrategyDeploymentView = {
   actorId: string;
   correlationId: string | null;
   metadata: Readonly<Record<string, unknown>>;
+  enforcementAuthorization: StrategyDeployment['enforcementAuthorization'];
 };
 
 function toView(deployment: StrategyDeployment): StrategyDeploymentView {
@@ -212,6 +215,7 @@ function toView(deployment: StrategyDeployment): StrategyDeploymentView {
     actorId: deployment.actorId,
     correlationId: deployment.correlationId,
     metadata: deployment.metadata,
+    enforcementAuthorization: deployment.enforcementAuthorization,
   };
 }
 
@@ -222,6 +226,17 @@ function requiredHeader(value: string | undefined, name: string): string {
 }
 
 function mapCommandError(error: unknown): Error {
+  if (isRuntimeEnforcementRejectedError(error)) {
+    return new UnprocessableEntityException({
+      message: error.message,
+      validation: error.validation,
+      reasons: error.reasons,
+      libraryEntryId: error.decision.libraryEntryId ?? null,
+      certificationStatus: error.decision.certificationStatus ?? null,
+      eligibilityOutcome: error.decision.eligibilityOutcome ?? null,
+      checkedAt: error.decision.checkedAt,
+    });
+  }
   const text = error instanceof Error ? error.message : 'strategy deployment command failed';
   if (text === 'strategy deployment not found in workspace') return new NotFoundException();
   if (text === 'strategy not found in workspace') return new NotFoundException(text);

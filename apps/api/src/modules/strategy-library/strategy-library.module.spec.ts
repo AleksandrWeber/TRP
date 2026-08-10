@@ -5,7 +5,7 @@ import { StrategyLibraryBoundaryService } from './strategy-library-boundary.serv
 import { StrategyLibraryModule } from './strategy-library.module';
 
 describe('RC-22 StrategyLibraryModule', () => {
-  it('registers boundary with full domain active and application ports inactive', async () => {
+  it('registers boundary with Lookup/Eligibility reads active and write ports inactive', async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [StrategyLibraryModule],
     }).compile();
@@ -22,8 +22,8 @@ describe('RC-22 StrategyLibraryModule', () => {
       tacticalEnvelopeDomain: true,
       eligibilityDomain: true,
       lifecycleDomain: true,
-      lookup: false,
-      eligibility: false,
+      lookup: true,
+      eligibility: true,
       lifecycle: false,
       persistence: false,
       strategyModel: true,

@@ -121,8 +121,8 @@ export type StrategyLibraryBoundary = Readonly<{
   forbiddenCapabilities: typeof STRATEGY_LIBRARY_FORBIDDEN_CAPABILITIES;
   /**
    * Port posture by Epic.
-   * Epic 6: full domain (model + certification + envelope + eligibility + lifecycle);
-   * application ports / Session / Orchestrator wiring remain inactive.
+   * RC-22: full domain; Nest write ports inactive.
+   * RC-23 Epic 2: Lookup + Eligibility Nest read ports active (for Enforcement).
    */
   activePorts: Readonly<{
     registration: false;
@@ -131,8 +131,8 @@ export type StrategyLibraryBoundary = Readonly<{
     tacticalEnvelopeDomain: true;
     eligibilityDomain: true;
     lifecycleDomain: true;
-    lookup: false;
-    eligibility: false;
+    lookup: true;
+    eligibility: true;
     lifecycle: false;
     persistence: false;
     strategyModel: true;
@@ -157,8 +157,8 @@ export const STRATEGY_LIBRARY_BOUNDARY: StrategyLibraryBoundary = Object.freeze(
     tacticalEnvelopeDomain: true,
     eligibilityDomain: true,
     lifecycleDomain: true,
-    lookup: false,
-    eligibility: false,
+    lookup: true,
+    eligibility: true,
     lifecycle: false,
     persistence: false,
     strategyModel: true,

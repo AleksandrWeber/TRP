@@ -1,22 +1,39 @@
 import { Module } from '@nestjs/common';
+import { InMemoryStrategyLibraryReadAdapter } from './adapters/in-memory-strategy-library-read.adapter';
+import { STRATEGY_LIBRARY_ELIGIBILITY_PORT } from './ports/strategy-library-eligibility.port';
+import { STRATEGY_LIBRARY_LOOKUP_PORT } from './ports/strategy-library-lookup.port';
 import { StrategyLibraryBoundaryService } from './strategy-library-boundary.service';
 
 /**
  * RC-22 Strategy Library Nest module.
  *
- * Epic 1: certified-strategy SoT boundary + ownership invariants.
- * Epic 2: Strategy + StrategyVersion domain model.
- * Epic 3: StrategyCertification + CertificationEvidence domain (no app ports).
- * Epic 4: LibraryTacticalEnvelope binding on certification (configuration only).
- * Epic 5: StrategyEligibility domain gate (no runtime / Session wiring).
- * Epic 6: Strategy lifecycle deprecate/archive (immutable records; no runtime).
+ * Domain: Strategy / Version / Certification / Envelope / Eligibility / Lifecycle (RC-22 CLOSED).
+ * RC-23 Epic 2: activates read-only Lookup + Eligibility Nest ports for Runtime Enforcement.
  *
- * Does not expose persistence, REST, UI, or application ports yet.
+ * Write ports (Registration / Certification / Lifecycle Nest) remain inactive.
  * Distinct from {@link StrategiesModule} (experimental registry) and
  * {@link KnowledgeLakeModule} (projection warehouse).
+ *
+ * Never depends on Runtime Enforcement (no reverse dependency).
  */
 @Module({
-  providers: [StrategyLibraryBoundaryService],
-  exports: [StrategyLibraryBoundaryService],
+  providers: [
+    StrategyLibraryBoundaryService,
+    InMemoryStrategyLibraryReadAdapter,
+    {
+      provide: STRATEGY_LIBRARY_LOOKUP_PORT,
+      useExisting: InMemoryStrategyLibraryReadAdapter,
+    },
+    {
+      provide: STRATEGY_LIBRARY_ELIGIBILITY_PORT,
+      useExisting: InMemoryStrategyLibraryReadAdapter,
+    },
+  ],
+  exports: [
+    StrategyLibraryBoundaryService,
+    InMemoryStrategyLibraryReadAdapter,
+    STRATEGY_LIBRARY_LOOKUP_PORT,
+    STRATEGY_LIBRARY_ELIGIBILITY_PORT,
+  ],
 })
 export class StrategyLibraryModule {}

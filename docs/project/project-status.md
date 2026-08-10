@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-08-10 (RC-22 CLOSED — Strategy Library domain certified)
+2026-08-10 (RC-23 CLOSED — Runtime Enforcement certified)
 
 **Level-0 authority:**
 
@@ -58,7 +58,7 @@ Cluster Closure Report:
 
 # Current Phase
 
-**RC-22 CLOSED · Next: post-RC-22 V2 sequencing (RC-23+ planning only after closure)**
+**RC-22 CLOSED · RC-23 CLOSED · Next: RC-24+ planning only after this closure**
 
 RC-19 delivered the Architecture Spec v2.0 integration skeleton:
 
@@ -79,7 +79,12 @@ IDE shell remains deferred (Plan §0).
 **RC-22** Strategy Library is **CLOSED** (validation PASS, tag `v1.0.0-rc22`) —
 [`rc-22-closure-report.md`](./rc-22-closure-report.md).  
 Certification: [`rc-22-strategy-library-certification.md`](./rc-22-strategy-library-certification.md).  
-Domain complete; Nest application ports / persistence / Session bind deferred.
+Domain complete; Nest application ports / persistence deferred.
+
+**RC-23** Runtime Enforcement is **CLOSED** (validation PASS, tag `v1.0.0-rc23`) —
+[`rc-23-closure-report.md`](./rc-23-closure-report.md).  
+Certification: [`rc-23-runtime-enforcement-certification.md`](./rc-23-runtime-enforcement-certification.md).  
+Gate binds Library SoT to Deployment/Session; Orchestrator / Selection remain deferred.
 
 **RC-18 residual (parallel governance):** US295 / ADL-008 remains **Open** — close or record explicit accepted deferral before production restart-safety PASS claims. Residual ownership: [`rc-18-residual-register.md`](./rc-18-residual-register.md).
 
@@ -87,7 +92,7 @@ Domain complete; Nest application ports / persistence / Session bind deferred.
 
 # Current Goal
 
-RC-22 Strategy Library is **CLOSED** (tag `v1.0.0-rc22`). RC-23+ planning
+RC-23 Runtime Enforcement is **CLOSED** (tag `v1.0.0-rc23`). RC-24+ planning
 begins only after this official closure. IDE shell remains deferred. Do not
 start the next RC implementation until its Implementation Plan is approved.
 

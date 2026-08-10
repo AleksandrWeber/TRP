@@ -126,11 +126,32 @@ See: [`rc-21-implementation-plan.md`](./rc-21-implementation-plan.md), [`rc-21-c
 **Depends on:** Strategy Lab outputs; Spec tactics contract; Session/Deployment.
 
 **Status:** Domain Epics 1–6 complete; **CLOSED** (validation PASS, tag `v1.0.0-rc22`).  
-Library owns certified membership / envelope / eligibility / lifecycle at the domain layer. Nest application ports, durable persistence, and Session/Orchestrator bind enforcement remain deferred (explicit RC-22 non-goals).
+Library owns certified membership / envelope / eligibility / lifecycle at the domain layer. Nest application ports, durable persistence, and Orchestrator remain deferred (explicit RC-22 non-goals). Session/Deployment bind enforcement delivered as **RC-23**.
 
 ---
 
-## RC-23 — Knowledge Lake (projection) — **delivered early as RC-21**
+## RC-23 — Runtime Enforcement (vacated Lake integer)
+
+**Goal:** Prove a Trading Session may deploy only Library-permitted strategies — without deciding _which_ strategy to run.  
+**Tasks:** Enforcement boundary; Library read consumption; fail-closed Gate; Deployment bind + authorization stamp; Session start protection; authority conformance.  
+**Result:** Runtime Enforcement is the sole validation Gate between Strategy Library SoT and Deployment/Session.
+
+**User Value:** Operators can refuse uncertified / ineligible / out-of-envelope deployments deterministically before paper/live sessions start.
+
+**Estimated complexity:** **Large**
+
+**Main implementation risk:** Soft-fail / duplicate validation / Session calling Library directly — mitigated by fail-closed Gate + stamp-only Session start.
+
+**Depends on:** RC-22 Strategy Library domain (**CLOSED**); existing Deployment / Session.
+
+**Status:** Epics 1–6 complete; **CLOSED** (validation PASS, tag `v1.0.0-rc23`).  
+Orchestrator / Market State / Selection / Enforcement REST remain deferred.
+
+**Sequencing note:** Baseline roadmap listed Knowledge Lake as RC-23 (delivered early as **RC-21**). The vacated RC-23 integer is assigned to **Runtime Enforcement** per approved Implementation Plan §0.
+
+---
+
+## RC-23b — Knowledge Lake (projection) — **delivered early as RC-21**
 
 **Goal (unchanged):** Append-only warehouse from research + trading events.  
 **Tasks (unchanged):** Event projection pipeline from Outbox/SoT facts; retention/query API; explicitly non-SoT; migrate consumers off ad-hoc dual stacks where touched.  
@@ -142,9 +163,9 @@ Library owns certified membership / envelope / eligibility / lifecycle at the do
 
 **Main implementation risk:** Inconsistent Source of Truth if Lake is treated as financial authority.
 
-**Sequencing note:** Delivered under the **RC-21** label per approved Implementation Plan §0. This RC-23 slot is retained for roadmap history only — do not re-implement Lake here.
+**Sequencing note:** Delivered under the **RC-21** label per approved Implementation Plan §0. Historical Lake slot retained for roadmap history only — do not re-implement Lake here.
 
-**Depends on:** Stable execution/accounting events (have); durability decision for Lake store; prefer after RC-22 if library events matter.
+**Depends on:** Stable execution/accounting events (have); durability decision for Lake store.
 
 ---
 
@@ -238,11 +259,12 @@ Library owns certified membership / envelope / eligibility / lifecycle at the do
 | 21             | Knowledge Lake (projection)      | Large      | Lake as SoT                               | **CLOSED** (`v1.0.0-rc21`) |
 | 21b (deferred) | IDE + Bot UX                     | Large      | Duplicated runtime (Bot ≠ Session)        | Deferred                   |
 | 22             | Library + Envelope               | Large      | Envelope not enforced                     | **CLOSED** (`v1.0.0-rc22`) |
-| 23             | Knowledge Lake (historical slot) | Large      | — (delivered as RC-21)                    | Superseded by RC-21        |
+| 23             | Runtime Enforcement (Gate)       | Large      | Soft-fail / duplicate validation          | **CLOSED** (`v1.0.0-rc23`) |
+| 23b (history)  | Knowledge Lake (historical slot) | Large      | — (delivered as RC-21)                    | Superseded by RC-21        |
 | 24             | Reporting / AI / Telegram        | Medium     | Shadow accounting in reports              | Planned                    |
 | 25             | Qualification / Profile          | Medium     | Profiles force trades                     | Planned                    |
 | 26             | Orchestrator                     | XL         | God-module / bypass                       | Planned                    |
 | 27             | Multi-exchange scope             | XL         | Cloned engines                            | Planned                    |
 | 28             | V2 stabilize                     | Large      | Fake “done” without conformance           | Planned                    |
 
-Sequencing note: RC-21 Implementation Plan §0 advanced Knowledge Lake to RC-21 and deferred IDE. Goals unchanged; numbering override only.
+Sequencing note: RC-21 Implementation Plan §0 advanced Knowledge Lake to RC-21 and deferred IDE. RC-23 Implementation Plan §0 assigned the vacated RC-23 integer to Runtime Enforcement. Goals unchanged; numbering override only.

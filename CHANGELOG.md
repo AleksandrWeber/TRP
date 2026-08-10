@@ -11,6 +11,13 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ### Added
 
+- RC-23 — Runtime Enforcement (Epics 1–6): sole validation Gate between
+  Strategy Library SoT and Strategy Deployment / Trading Session
+  (`runtime-enforcement` module) with Library read ports, fail-closed
+  `validateDeployment`, Deployment authorization stamp, and Session start
+  protection. Orchestrator / Selection deferred. Tag `v1.0.0-rc23`. Closure:
+  `docs/project/rc-23-closure-report.md`. Certification:
+  `docs/project/rc-23-runtime-enforcement-certification.md`.
 - RC-22 — Strategy Library domain (Epics 1–6): certified strategy membership
   (`strategy-library` module) with Strategy/Version model, immutable
   certification + evidence refs, library tactical envelope, static eligibility,

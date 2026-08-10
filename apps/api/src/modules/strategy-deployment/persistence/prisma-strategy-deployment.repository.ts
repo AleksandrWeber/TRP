@@ -1,11 +1,13 @@
-import type { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, type PrismaClient } from '@prisma/client';
 import {
   prismaClientForTransaction,
   type TransactionContext,
 } from '../../../storage/prisma/prisma-transaction.service';
 import {
   isStrategyDeploymentStatus,
+  isValidEnforcementAuthorization,
   StrategyDeploymentStatus,
+  type DeploymentEnforcementAuthorization,
   type StrategyDeployment,
   type StrategyDeploymentMetadata,
   type StrategyDeploymentParameters,
@@ -48,6 +50,10 @@ export class PrismaStrategyDeploymentRepository implements StrategyDeploymentRep
         approvedAt: deployment.approvedAt ? new Date(deployment.approvedAt) : null,
         approvedByActorId: deployment.approvedByActorId,
         recordedAt: new Date(deployment.recordedAt),
+        enforcementAuthorization:
+          deployment.enforcementAuthorization === null
+            ? Prisma.DbNull
+            : (deployment.enforcementAuthorization as Prisma.InputJsonValue),
       },
     });
     if (updated.count !== 1) throw new Error('strategy deployment optimistic version conflict');
@@ -104,6 +110,7 @@ type StrategyDeploymentRow = {
   correlationId: string | null;
   idempotencyKey: string;
   metadata: Prisma.JsonValue;
+  enforcementAuthorization: Prisma.JsonValue | null;
 };
 
 function toRow(deployment: StrategyDeployment): Prisma.PaperStrategyDeploymentUncheckedCreateInput {
@@ -131,6 +138,10 @@ function toRow(deployment: StrategyDeployment): Prisma.PaperStrategyDeploymentUn
     correlationId: deployment.correlationId,
     idempotencyKey: deployment.idempotencyKey,
     metadata: deployment.metadata as Prisma.InputJsonValue,
+    enforcementAuthorization:
+      deployment.enforcementAuthorization === null
+        ? undefined
+        : (deployment.enforcementAuthorization as Prisma.InputJsonValue),
   };
 }
 
@@ -165,6 +176,24 @@ function toDomain(row: StrategyDeploymentRow): StrategyDeployment {
     correlationId: row.correlationId,
     idempotencyKey: row.idempotencyKey,
     metadata: freezeJson(row.metadata, 'metadata') as StrategyDeploymentMetadata,
+    enforcementAuthorization: toAuthorization(row.enforcementAuthorization),
+  });
+}
+
+function toAuthorization(
+  value: Prisma.JsonValue | null,
+): DeploymentEnforcementAuthorization | null {
+  if (value === null || value === undefined) return null;
+  if (typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error('persisted enforcementAuthorization must be a JSON object or null');
+  }
+  const candidate = value as unknown as DeploymentEnforcementAuthorization;
+  if (!isValidEnforcementAuthorization(candidate)) {
+    throw new Error('persisted enforcementAuthorization is not a VALID PASS stamp');
+  }
+  return Object.freeze({
+    ...candidate,
+    reasons: Object.freeze([...(candidate.reasons ?? [])]),
   });
 }
 

@@ -3,6 +3,8 @@ import {
   approveStrategyDeployment,
   assertDeploymentMutable,
   createStrategyDeployment,
+  hasValidEnforcementAuthorization,
+  withEnforcementAuthorization,
   StrategyDeploymentStatus,
   type CreateStrategyDeploymentInput,
 } from './strategy-deployment';
@@ -46,6 +48,7 @@ describe('US211 — Strategy Deployment domain', () => {
       version: 1,
       approvedAt: null,
       approvedByActorId: null,
+      enforcementAuthorization: null,
     });
     expect(deployment.configurationHash).toMatch(/^[a-f0-9]{64}$/);
     expect(Object.isFrozen(deployment)).toBe(true);
@@ -101,5 +104,22 @@ describe('US211 — Strategy Deployment domain', () => {
       }),
     ).toThrow(/already approved/);
     expect(() => assertDeploymentMutable(approved)).toThrow(/immutable/);
+  });
+
+  it('stamps enforcement authorization outside configurationHash (RC-23)', () => {
+    const draft = createStrategyDeployment(baseInput());
+    const stamped = withEnforcementAuthorization(draft, {
+      outcome: 'pass',
+      validation: 'VALID',
+      purpose: 'deployment_bind',
+      libraryEntryId: 'lib-1',
+      certificationStatus: 'active',
+      eligibilityOutcome: 'eligible',
+      checkedAt: '2026-07-29T12:00:00.000Z',
+      reasons: [],
+    });
+    expect(hasValidEnforcementAuthorization(stamped)).toBe(true);
+    expect(stamped.configurationHash).toBe(draft.configurationHash);
+    expect(stamped.enforcementAuthorization?.validation).toBe('VALID');
   });
 });

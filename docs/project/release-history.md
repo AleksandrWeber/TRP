@@ -36,6 +36,35 @@ Related:
 | RC-20   | Command Center foundation                                              | **CLOSED**            | Epics 1–6                          | Ops workspace projections + lifecycle commands — [`rc-20-closure-report.md`](./rc-20-closure-report.md)                                                                                                                                                  |
 | RC-21   | Knowledge Lake (projection warehouse)                                  | **CLOSED**            | Epics 1–6 · tag `v1.0.0-rc21`      | Append-only Lake + query port; IDE deferred — [`rc-21-closure-report.md`](./rc-21-closure-report.md)                                                                                                                                                     |
 | RC-22   | Strategy Library + library Tactical Envelope (domain)                  | **CLOSED**            | Epics 1–6 · tag `v1.0.0-rc22`      | Certified membership domain; Nest ports deferred — [`rc-22-closure-report.md`](./rc-22-closure-report.md)                                                                                                                                                |
+| RC-23   | Runtime Enforcement (Gate)                                             | **CLOSED**            | Epics 1–6 · tag `v1.0.0-rc23`      | Library→Deployment/Session validation Gate — [`rc-23-closure-report.md`](./rc-23-closure-report.md)                                                                                                                                                      |
+
+---
+
+## RC-23
+
+| Field         | Value                                                                                        |
+| ------------- | -------------------------------------------------------------------------------------------- |
+| Theme         | Runtime Enforcement (validation Gate)                                                        |
+| Status        | **CLOSED**                                                                                   |
+| Completion    | Epics 1–6 · tag `v1.0.0-rc23`                                                                |
+| Closure       | [`rc-23-closure-report.md`](./rc-23-closure-report.md)                                       |
+| Validation    | [`rc-23-validation-report.md`](./rc-23-validation-report.md)                                 |
+| Certification | [`rc-23-runtime-enforcement-certification.md`](./rc-23-runtime-enforcement-certification.md) |
+
+### Delivered
+
+- Runtime Enforcement boundary (Gate only; validates ≠ decides)
+- Strategy Library read consumption (lookup / eligibility)
+- Fail-closed `validateDeployment` with full reason catalog
+- Deployment bind enforcement + authorization stamp
+- Trading Session start protection (stamp-only; no Gate re-run)
+- Authority conformance + Engineering Workflow validation gates green
+
+### Explicitly deferred
+
+- Trading Orchestrator / Market State / Strategy Selection
+- Enforcement REST / UI product
+- Reporting / AI / IDE / Multi Exchange
 
 ---
 

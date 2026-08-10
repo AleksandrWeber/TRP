@@ -136,3 +136,19 @@ export {
 } from './domain/value-objects';
 export { StrategyLibraryBoundaryService } from './strategy-library-boundary.service';
 export { StrategyLibraryModule } from './strategy-library.module';
+export { InMemoryStrategyLibraryReadAdapter } from './adapters/in-memory-strategy-library-read.adapter';
+export {
+  STRATEGY_LIBRARY_LOOKUP_PORT,
+  type LibraryListQuery,
+  type LibraryMembershipStatus,
+  type StrategyLibraryLookupPort,
+  type StrategyVersionPage,
+  type StrategyVersionRecord,
+} from './ports/strategy-library-lookup.port';
+export {
+  STRATEGY_LIBRARY_ELIGIBILITY_PORT,
+  type EligibilityDecision,
+  type EligibilityPurpose,
+  type EligibilityQuery,
+  type StrategyLibraryEligibilityPort,
+} from './ports/strategy-library-eligibility.port';

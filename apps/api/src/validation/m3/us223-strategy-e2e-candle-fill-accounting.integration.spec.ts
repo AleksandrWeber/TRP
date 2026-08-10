@@ -29,6 +29,7 @@ import { PrismaRiskDecisionRepository } from '../../modules/risk/persistence/pri
 import {
   approveStrategyDeployment,
   createStrategyDeployment,
+  withEnforcementAuthorization,
 } from '../../modules/strategy-deployment';
 import { PrismaStrategyDeploymentRepository } from '../../modules/strategy-deployment/persistence/prisma-strategy-deployment.repository';
 import { StrategyDeploymentService } from '../../modules/strategy-deployment/strategy-deployment.service';
@@ -186,11 +187,23 @@ describe('US223 — end-to-end closed candle → Fill → accounting', () => {
       actorId: 'trader-1',
       idempotencyKey: 'deployment-us223',
     });
-    const approved = approveStrategyDeployment(draft, {
-      approvedAt: t0,
-      approvedByActorId: 'admin-1',
-      recordedAt: t0,
-    });
+    const approved = withEnforcementAuthorization(
+      approveStrategyDeployment(draft, {
+        approvedAt: t0,
+        approvedByActorId: 'admin-1',
+        recordedAt: t0,
+      }),
+      {
+        outcome: 'pass',
+        validation: 'VALID',
+        purpose: 'deployment_bind',
+        libraryEntryId: 'lib-entry-us223',
+        certificationStatus: 'active',
+        eligibilityOutcome: 'eligible',
+        checkedAt: t0,
+        reasons: Object.freeze([]),
+      },
+    );
     await transactions.run((tx) => deploymentRepo.create(approved, tx));
     return approved;
   }
@@ -410,11 +423,23 @@ describe('US223 — end-to-end closed candle → Fill → accounting', () => {
       actorId: 'trader-1',
       idempotencyKey: 'deployment-us223-hold',
     });
-    const approved = approveStrategyDeployment(draft, {
-      approvedAt: t0,
-      approvedByActorId: 'admin-1',
-      recordedAt: t0,
-    });
+    const approved = withEnforcementAuthorization(
+      approveStrategyDeployment(draft, {
+        approvedAt: t0,
+        approvedByActorId: 'admin-1',
+        recordedAt: t0,
+      }),
+      {
+        outcome: 'pass',
+        validation: 'VALID',
+        purpose: 'deployment_bind',
+        libraryEntryId: 'lib-entry-us223-hold',
+        certificationStatus: 'active',
+        eligibilityOutcome: 'eligible',
+        checkedAt: t0,
+        reasons: Object.freeze([]),
+      },
+    );
     await transactions.run((tx) => deploymentRepo.create(approved, tx));
 
     const account = await accountService.create({

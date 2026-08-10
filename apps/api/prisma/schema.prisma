@@ -560,6 +560,8 @@ model PaperStrategyDeployment {
   correlationId                 String?   @map("correlation_id")
   idempotencyKey                String    @map("idempotency_key")
   metadata                      Json
+  /// RC-23 Epic 4/5 — prior Runtime Enforcement PASS stamp (not configuration).
+  enforcementAuthorization      Json?     @map("enforcement_authorization")
 
   @@unique([workspaceId, idempotencyKey])
   @@index([workspaceId, status])

@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-08-10 (RC-22 CLOSED — Strategy Library domain certified)
+Last updated: 2026-08-10 (RC-23 CLOSED — Runtime Enforcement certified)
 
 Living roadmap for product direction.
 
@@ -171,7 +171,7 @@ Related:
 
 ## Current Phase
 
-**RC-22 CLOSED · Next: RC-23+ planning only after this closure**
+**RC-23 CLOSED · Next: RC-24+ planning only after this closure**
 
 RC-16 paper path and RC-17 Runtime Recovery are baselined. RC-18 mandatory
 residuals R1–R5 (US290–US294) are Done; **US295** (ADL-008) remains Open.
@@ -185,7 +185,11 @@ RC-20 Command Center foundation (Epics 1–6) is **CLOSED** —
 
 **RC-22** Strategy Library is **CLOSED** (tag `v1.0.0-rc22`) —
 [`rc-22-closure-report.md`](./rc-22-closure-report.md). Domain certified;
-Nest ports / persistence / Orchestrator remain deferred. Sequencing:
+Nest ports / persistence / Orchestrator remain deferred.
+
+**RC-23** Runtime Enforcement is **CLOSED** (tag `v1.0.0-rc23`) —
+[`rc-23-closure-report.md`](./rc-23-closure-report.md). Gate certified;
+Orchestrator / Selection remain deferred. Sequencing:
 [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
 
 Story IDs: **US240–US299** — [`story-id-allocation.md`](./story-id-allocation.md).
@@ -270,10 +274,10 @@ Authority: [`rc-19-closure-report.md`](./rc-19-closure-report.md),
 
 ## Future Milestones
 
-**Version 1 (`v1.0.0`) is complete.** RC-19 V2 integration skeleton and RC-20
-Command Center foundation are **CLOSED**. Near-term engineering continues with
-**RC-21+** (durable emergency ports and sequenced V2 epics), parallel **US295**
-ADL-008 closeout for production-claim language, then RC-21…RC-28 per
+**Version 1 (`v1.0.0`) is complete.** RC-19…RC-23 V2 path through Runtime
+Enforcement is **CLOSED**. Near-term engineering continues with **RC-24+**
+(Reporting/AI and sequenced V2 epics), parallel **US295** ADL-008 closeout for
+production-claim language, then RC-24…RC-28 per
 [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
 
 Later themes (new ADR required where architecture changes):

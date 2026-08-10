@@ -109,7 +109,7 @@ describe('RC-22 Epic 1 — Strategy Library boundary', () => {
     expect(isStrategyLibraryForbiddenCapability('lookup-certified-version')).toBe(false);
   });
 
-  it('enables full Strategy Library domains (Epic 6); application ports stay inactive', () => {
+  it('enables full domains + RC-23 Epic 2 Lookup/Eligibility reads; write ports stay inactive', () => {
     expect(STRATEGY_LIBRARY_BOUNDARY.activePorts).toEqual({
       registration: false,
       certification: false,
@@ -117,8 +117,8 @@ describe('RC-22 Epic 1 — Strategy Library boundary', () => {
       tacticalEnvelopeDomain: true,
       eligibilityDomain: true,
       lifecycleDomain: true,
-      lookup: false,
-      eligibility: false,
+      lookup: true,
+      eligibility: true,
       lifecycle: false,
       persistence: false,
       strategyModel: true,

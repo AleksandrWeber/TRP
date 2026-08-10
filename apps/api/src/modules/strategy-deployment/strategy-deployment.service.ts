@@ -4,13 +4,21 @@ import { randomUUID } from 'node:crypto';
 import { PrismaTransactionService } from '../../storage/prisma/prisma-transaction.service';
 import { toDurableEventId, type DurableEventEnvelope } from '../event-processing';
 import { TransactionalOutboxAppender } from '../event-processing/transactional-outbox-appender';
+import {
+  RUNTIME_ENFORCEMENT_PORT,
+  RuntimeEnforcementRejectedError,
+  type EnforcementDecision,
+  type RuntimeEnforcementPort,
+} from '../runtime-enforcement';
 import { StrategyDomainService } from '../strategies';
 import {
   approveStrategyDeployment,
   assertDeploymentMutable,
   createStrategyDeployment,
   StrategyDeploymentStatus,
+  withEnforcementAuthorization,
   type CreateStrategyDeploymentInput,
+  type DeploymentEnforcementAuthorization,
   type StrategyDeployment,
   type StrategyDeploymentMetadata,
   type StrategyDeploymentParameters,
@@ -50,9 +58,13 @@ export type ApproveStrategyDeploymentCommand = Readonly<{
 }>;
 
 /**
- * Strategy Deployment application boundary (US211).
- * Owns immutable approved configuration only — no Session, Runtime, Orders,
+ * Strategy Deployment application boundary (US211 + RC-23 Epic 4).
+ * Owns immutable approved configuration only — no Session lifecycle, Orders,
  * Risk evaluation, or Execution Engine coupling.
+ *
+ * RC-23: bind/create invokes Runtime Enforcement Gate before draft create or
+ * approve succeeds. FAIL ⇒ reject; no Session-startable (APPROVED) deployment.
+ * Validation rules remain owned by Runtime Enforcement / Strategy Library.
  */
 @Injectable()
 export class StrategyDeploymentService {
@@ -65,6 +77,8 @@ export class StrategyDeploymentService {
     private readonly transactions: PrismaTransactionService,
     @Inject(TransactionalOutboxAppender)
     private readonly outbox: TransactionalOutboxAppender,
+    @Inject(RUNTIME_ENFORCEMENT_PORT)
+    private readonly enforcement: RuntimeEnforcementPort,
   ) {}
 
   async create(command: CreateStrategyDeploymentCommand): Promise<StrategyDeployment> {
@@ -87,26 +101,38 @@ export class StrategyDeploymentService {
       throw new Error('strategy must be active to create a deployment');
     }
 
-    const deployment = createStrategyDeployment({
-      id: randomUUID(),
+    const authorization = this.requireRuntimeEnforcementPass({
       workspaceId: command.workspaceId,
-      strategyId: command.strategyId,
+      strategyFamilyId: command.strategyId,
       strategyVersion: command.strategyVersion,
-      experimentId: command.experimentId,
-      parameters: command.parameters,
       instrument: command.instrument,
       timeframe: command.timeframe,
-      marketDataSourceId: command.marketDataSourceId,
-      paperExecutionConfigurationId: command.paperExecutionConfigurationId,
-      riskPolicyId: command.riskPolicyId,
-      riskPolicyVersion: command.riskPolicyVersion,
-      metadata: command.metadata,
-      createdAt: command.createdAt,
-      recordedAt: command.recordedAt,
-      actorId,
-      correlationId: command.correlationId,
-      idempotencyKey,
+      requestedAt: command.recordedAt,
     });
+
+    const deployment = withEnforcementAuthorization(
+      createStrategyDeployment({
+        id: randomUUID(),
+        workspaceId: command.workspaceId,
+        strategyId: command.strategyId,
+        strategyVersion: command.strategyVersion,
+        experimentId: command.experimentId,
+        parameters: command.parameters,
+        instrument: command.instrument,
+        timeframe: command.timeframe,
+        marketDataSourceId: command.marketDataSourceId,
+        paperExecutionConfigurationId: command.paperExecutionConfigurationId,
+        riskPolicyId: command.riskPolicyId,
+        riskPolicyVersion: command.riskPolicyVersion,
+        metadata: command.metadata,
+        createdAt: command.createdAt,
+        recordedAt: command.recordedAt,
+        actorId,
+        correlationId: command.correlationId,
+        idempotencyKey,
+      }),
+      authorization,
+    );
 
     const envelope = createdEnvelope(deployment);
 
@@ -142,11 +168,23 @@ export class StrategyDeploymentService {
     }
     assertDeploymentMutable(existing);
 
-    const approved = approveStrategyDeployment(existing, {
-      approvedAt: command.approvedAt,
-      approvedByActorId: actorId,
-      recordedAt: command.recordedAt,
+    const authorization = this.requireRuntimeEnforcementPass({
+      workspaceId: existing.workspaceId,
+      strategyFamilyId: existing.strategyId,
+      strategyVersion: existing.strategyVersion,
+      instrument: existing.instrument,
+      timeframe: existing.timeframe,
+      requestedAt: command.recordedAt,
     });
+
+    const approved = withEnforcementAuthorization(
+      approveStrategyDeployment(existing, {
+        approvedAt: command.approvedAt,
+        approvedByActorId: actorId,
+        recordedAt: command.recordedAt,
+      }),
+      authorization,
+    );
     const envelope = approvedEnvelope(approved, command.correlationId);
 
     return this.transactions.run(async (transaction) => {
@@ -163,6 +201,53 @@ export class StrategyDeploymentService {
   list(workspaceId: string): Promise<StrategyDeployment[]> {
     return this.deployments.listByWorkspace(workspaceId);
   }
+
+  /**
+   * Fail-closed Gate call. Does not duplicate Library validation.
+   * On INVALID: throws before any persistence / Outbox mutation.
+   * On VALID: returns Deployment authorization stamp for Session start protection.
+   */
+  private requireRuntimeEnforcementPass(input: {
+    workspaceId: string;
+    strategyFamilyId: string;
+    strategyVersion: string;
+    instrument: string;
+    timeframe: string;
+    requestedAt: string;
+  }): DeploymentEnforcementAuthorization {
+    const decision = this.enforcement.validateDeployment({
+      workspaceId: input.workspaceId,
+      strategyFamilyId: input.strategyFamilyId,
+      strategyVersion: input.strategyVersion,
+      purpose: 'deployment_bind',
+      tacticPoint: {
+        symbol: input.instrument,
+        timeframe: input.timeframe,
+      },
+      requestedAt: input.requestedAt,
+    });
+
+    if (decision.outcome === 'fail' || decision.validation === 'INVALID') {
+      throw new RuntimeEnforcementRejectedError(decision);
+    }
+
+    return toDeploymentAuthorization(decision);
+  }
+}
+
+function toDeploymentAuthorization(
+  decision: EnforcementDecision,
+): DeploymentEnforcementAuthorization {
+  return Object.freeze({
+    outcome: 'pass',
+    validation: 'VALID',
+    purpose: 'deployment_bind',
+    libraryEntryId: decision.libraryEntryId ?? null,
+    certificationStatus: decision.certificationStatus ?? null,
+    eligibilityOutcome: decision.eligibilityOutcome ?? null,
+    checkedAt: decision.checkedAt,
+    reasons: Object.freeze([...(decision.reasons ?? [])]),
+  });
 }
 
 function createdEnvelope(deployment: StrategyDeployment): DurableEventEnvelope {

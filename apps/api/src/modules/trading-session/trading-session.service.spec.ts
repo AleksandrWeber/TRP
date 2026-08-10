@@ -9,6 +9,24 @@ import { TradingSessionService } from './trading-session.service';
 
 const at = '2026-07-29T19:00:00.000Z';
 
+function approvedAuthorizedDeployment() {
+  return {
+    id: 'deployment-1',
+    workspaceId: 'workspace-1',
+    status: StrategyDeploymentStatus.APPROVED,
+    enforcementAuthorization: Object.freeze({
+      outcome: 'pass' as const,
+      validation: 'VALID' as const,
+      purpose: 'deployment_bind' as const,
+      libraryEntryId: 'lib-entry-1',
+      certificationStatus: 'active',
+      eligibilityOutcome: 'eligible' as const,
+      checkedAt: at,
+      reasons: Object.freeze([]),
+    }),
+  };
+}
+
 describe('US217/US220 — TradingSessionService Deployment binding + Runtime lifecycle', () => {
   const sessions: TradingSessionRepository = {
     create: vi.fn(),
@@ -151,6 +169,7 @@ describe('US217/US220 — TradingSessionService Deployment binding + Runtime lif
       idempotencyKey: 'idem-1',
     };
     vi.mocked(sessions.findById).mockResolvedValue(session);
+    vi.mocked(deployments.get).mockResolvedValue(approvedAuthorizedDeployment());
     vi.mocked(runtime.loadContext).mockResolvedValue({
       workspaceId: 'workspace-1',
       sessionId: 'session-1',
@@ -337,6 +356,7 @@ describe('US217/US220 — TradingSessionService Deployment binding + Runtime lif
       idempotencyKey: 'idem-1',
     };
     vi.mocked(sessions.findById).mockResolvedValue(session);
+    vi.mocked(deployments.get).mockResolvedValue(approvedAuthorizedDeployment());
     vi.mocked(runtime.loadContext).mockRejectedValue(
       new Error('runtime context requires an approved strategy deployment'),
     );
@@ -371,5 +391,145 @@ describe('US217/US220 — TradingSessionService Deployment binding + Runtime lif
 
     expect(created.origin).toBe('manual');
     expect(deployments.get).not.toHaveBeenCalled();
+  });
+
+  it('RC-23 Epic 5: starts when Deployment carries prior Gate PASS authorization', async () => {
+    const session = {
+      id: 'session-1',
+      workspaceId: 'workspace-1',
+      paperAccountId: 'account-1',
+      exchangeScopeId: 'exchange-scope:binance',
+      tacticalEnvelope: null,
+      deploymentId: 'deployment-1',
+      origin: 'strategy' as const,
+      status: TradingSessionStatus.CREATED,
+      lease: null,
+      lastFencingToken: 0,
+      version: 1,
+      failureReason: null,
+      createdAt: at,
+      recordedAt: at,
+      actorId: 'trader-1',
+      correlationId: null,
+      idempotencyKey: 'idem-1',
+    };
+    vi.mocked(sessions.findById).mockResolvedValue(session);
+    vi.mocked(deployments.get).mockResolvedValue(approvedAuthorizedDeployment());
+    vi.mocked(runtime.loadContext).mockResolvedValue({} as never);
+    vi.mocked(runtime.arm).mockResolvedValue({} as never);
+    vi.mocked(sessions.save).mockImplementation(async (next) => next);
+
+    const started = await service.start({
+      workspaceId: 'workspace-1',
+      sessionId: 'session-1',
+      actorId: 'trader-1',
+      ownerId: 'worker-1',
+      recordedAt: at,
+      nowIso: at,
+    });
+
+    expect(started.status).toBe(TradingSessionStatus.RUNNING);
+    expect(deployments.get).toHaveBeenCalledWith('workspace-1', 'deployment-1');
+    // Session must not re-run Gate — Deployment service has no validateDeployment here.
+    expect(deployments).not.toHaveProperty('validateDeployment');
+  });
+
+  it('RC-23 Epic 5: refuses start when enforcement authorization is missing', async () => {
+    const session = {
+      id: 'session-1',
+      workspaceId: 'workspace-1',
+      paperAccountId: 'account-1',
+      exchangeScopeId: 'exchange-scope:binance',
+      tacticalEnvelope: null,
+      deploymentId: 'deployment-1',
+      origin: 'strategy' as const,
+      status: TradingSessionStatus.CREATED,
+      lease: null,
+      lastFencingToken: 0,
+      version: 1,
+      failureReason: null,
+      createdAt: at,
+      recordedAt: at,
+      actorId: 'trader-1',
+      correlationId: null,
+      idempotencyKey: 'idem-1',
+    };
+    vi.mocked(sessions.findById).mockResolvedValue(session);
+    vi.mocked(deployments.get).mockResolvedValue({
+      id: 'deployment-1',
+      workspaceId: 'workspace-1',
+      status: StrategyDeploymentStatus.APPROVED,
+      enforcementAuthorization: null,
+    });
+
+    await expect(
+      service.start({
+        workspaceId: 'workspace-1',
+        sessionId: 'session-1',
+        actorId: 'trader-1',
+        ownerId: 'worker-1',
+        recordedAt: at,
+        nowIso: at,
+      }),
+    ).rejects.toMatchObject({
+      name: 'DeploymentAuthorizationRefusedError',
+      reasons: ['enforcement_authorization_missing'],
+    });
+    expect(runtime.loadContext).not.toHaveBeenCalled();
+    expect(sessions.save).not.toHaveBeenCalled();
+  });
+
+  it('RC-23 Epic 5: refuses start when enforcement authorization is invalid', async () => {
+    const session = {
+      id: 'session-1',
+      workspaceId: 'workspace-1',
+      paperAccountId: 'account-1',
+      exchangeScopeId: 'exchange-scope:binance',
+      tacticalEnvelope: null,
+      deploymentId: 'deployment-1',
+      origin: 'strategy' as const,
+      status: TradingSessionStatus.CREATED,
+      lease: null,
+      lastFencingToken: 0,
+      version: 1,
+      failureReason: null,
+      createdAt: at,
+      recordedAt: at,
+      actorId: 'trader-1',
+      correlationId: null,
+      idempotencyKey: 'idem-1',
+    };
+    vi.mocked(sessions.findById).mockResolvedValue(session);
+    vi.mocked(deployments.get).mockResolvedValue({
+      id: 'deployment-1',
+      workspaceId: 'workspace-1',
+      status: StrategyDeploymentStatus.APPROVED,
+      enforcementAuthorization: {
+        outcome: 'fail',
+        validation: 'INVALID',
+        purpose: 'deployment_bind',
+        libraryEntryId: null,
+        certificationStatus: null,
+        eligibilityOutcome: null,
+        checkedAt: at,
+        reasons: ['eligibility_missing'],
+      },
+    });
+
+    await expect(
+      service.start({
+        workspaceId: 'workspace-1',
+        sessionId: 'session-1',
+        actorId: 'trader-1',
+        ownerId: 'worker-1',
+        recordedAt: at,
+        nowIso: at,
+      }),
+    ).rejects.toMatchObject({
+      name: 'DeploymentAuthorizationRefusedError',
+      reasons: ['enforcement_authorization_invalid'],
+    });
+    expect(runtime.loadContext).not.toHaveBeenCalled();
+    expect(sessions.save).not.toHaveBeenCalled();
   });
 });

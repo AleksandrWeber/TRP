@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { PrismaService } from '../../storage/prisma/prisma.module';
 import { AuthModule } from '../auth/auth.module';
 import { EventProcessingModule } from '../event-processing';
+import { RuntimeEnforcementModule } from '../runtime-enforcement';
 import { StrategiesModule } from '../strategies';
 import { WorkspaceModule } from '../workspace';
 import { PrismaStrategyDeploymentRepository } from './persistence/prisma-strategy-deployment.repository';
@@ -10,12 +11,21 @@ import { StrategyDeploymentController } from './strategy-deployment.controller';
 import { StrategyDeploymentService } from './strategy-deployment.service';
 
 /**
- * Strategy Deployment bounded context (US211 / ADR-014 / ADR-017).
- * Immutable approved configuration owner. No Runtime, Session, Orders,
- * Risk evaluation, or Execution Engine dependencies.
+ * Strategy Deployment bounded context (US211 / ADR-014 / ADR-017 / RC-23 Epic 4).
+ * Immutable approved configuration owner.
+ *
+ * RC-23: consumes Runtime Enforcement Gate on create/approve (read-only validation).
+ * No Session lifecycle ownership. No Library SoT ownership.
+ * No Orders / Risk evaluation / Execution Engine dependencies.
  */
 @Module({
-  imports: [EventProcessingModule, StrategiesModule, AuthModule, WorkspaceModule],
+  imports: [
+    EventProcessingModule,
+    StrategiesModule,
+    AuthModule,
+    WorkspaceModule,
+    RuntimeEnforcementModule,
+  ],
   controllers: [StrategyDeploymentController],
   providers: [
     {

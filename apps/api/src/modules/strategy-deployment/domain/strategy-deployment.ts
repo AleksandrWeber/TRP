@@ -12,6 +12,23 @@ export type StrategyDeploymentParameters = Readonly<Record<string, unknown>>;
 export type StrategyDeploymentMetadata = Readonly<Record<string, unknown>>;
 
 /**
+ * Prior Runtime Enforcement PASS stamp (RC-23 Epic 4/5).
+ * Owned by Deployment as deployment-authorization evidence.
+ * Not part of configurationHash. Not Library SoT.
+ * Session may only check this stamp — must not re-run Gate or call Library.
+ */
+export type DeploymentEnforcementAuthorization = Readonly<{
+  outcome: 'pass';
+  validation: 'VALID';
+  purpose: 'deployment_bind';
+  libraryEntryId: string | null;
+  certificationStatus: string | null;
+  eligibilityOutcome: 'eligible' | 'ineligible' | 'unknown' | null;
+  checkedAt: string;
+  reasons: readonly string[];
+}>;
+
+/**
  * Immutable approved (or draft) Strategy Deployment configuration (US211 / ADR-014).
  * Owns strategy identity, versioned configuration, approval status, and provenance.
  * Does not own Trading Session runtime state, checkpoints, leases, or signals.
@@ -41,6 +58,8 @@ export type StrategyDeployment = Readonly<{
   correlationId: string | null;
   idempotencyKey: string;
   metadata: StrategyDeploymentMetadata;
+  /** RC-23: Gate PASS evidence from bind. Null when never validated. */
+  enforcementAuthorization: DeploymentEnforcementAuthorization | null;
 }>;
 
 export type CreateStrategyDeploymentInput = Readonly<{
@@ -130,6 +149,7 @@ export function createStrategyDeployment(input: CreateStrategyDeploymentInput): 
     correlationId: optionalId(input.correlationId),
     idempotencyKey,
     metadata,
+    enforcementAuthorization: null,
   });
 }
 
@@ -155,6 +175,55 @@ export function approveStrategyDeployment(
     approvedByActorId,
     recordedAt: input.recordedAt,
   });
+}
+
+/**
+ * Attach / replace Runtime Enforcement PASS stamp (outside configurationHash).
+ * Does not change status or semantic configuration.
+ */
+export function withEnforcementAuthorization(
+  deployment: StrategyDeployment,
+  authorization: DeploymentEnforcementAuthorization,
+): StrategyDeployment {
+  assertValidEnforcementAuthorization(authorization);
+  return Object.freeze({
+    ...deployment,
+    enforcementAuthorization: Object.freeze({
+      ...authorization,
+      reasons: Object.freeze([...authorization.reasons]),
+    }),
+  });
+}
+
+/** True when Deployment carries a usable prior Gate PASS for Session start. */
+export function hasValidEnforcementAuthorization(
+  deployment: StrategyDeployment,
+): deployment is StrategyDeployment & {
+  enforcementAuthorization: DeploymentEnforcementAuthorization;
+} {
+  const auth = deployment.enforcementAuthorization;
+  return auth !== null && isValidEnforcementAuthorization(auth);
+}
+
+export function isValidEnforcementAuthorization(
+  value: DeploymentEnforcementAuthorization | null | undefined,
+): value is DeploymentEnforcementAuthorization {
+  if (!value || typeof value !== 'object') return false;
+  return (
+    value.outcome === 'pass' &&
+    value.validation === 'VALID' &&
+    value.purpose === 'deployment_bind' &&
+    typeof value.checkedAt === 'string' &&
+    value.checkedAt.trim() !== '' &&
+    Array.isArray(value.reasons)
+  );
+}
+
+function assertValidEnforcementAuthorization(value: DeploymentEnforcementAuthorization): void {
+  if (!isValidEnforcementAuthorization(value)) {
+    throw new Error('enforcement authorization must be a VALID deployment_bind PASS stamp');
+  }
+  assertIso(value.checkedAt, 'enforcementAuthorization.checkedAt');
 }
 
 /** Approved deployments reject any configuration mutation attempt. */

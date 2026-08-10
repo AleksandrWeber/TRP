@@ -9,8 +9,13 @@ import {
   type PaperAccountRepository,
 } from '../paper-account/persistence/paper-account.repository';
 import { PaperAccountStatus } from '../paper-account/domain/paper-account';
-import { StrategyDeploymentService, StrategyDeploymentStatus } from '../strategy-deployment';
+import {
+  StrategyDeploymentService,
+  StrategyDeploymentStatus,
+  hasValidEnforcementAuthorization,
+} from '../strategy-deployment';
 import { STRATEGY_RUNTIME_PORT, type StrategyRuntimePort } from '../strategy-runtime';
+import { DeploymentAuthorizationRefusedError } from './domain/deployment-authorization-refused.error';
 import {
   assertExecutionEligible,
   evaluateExecutionEligibility,
@@ -152,9 +157,15 @@ export class TradingSessionService {
    * Start: CREATED → STARTING → RUNNING with a fenced lease.
    * Strategy-origin sessions initialize RuntimeContext via StrategyRuntimePort
    * during STARTING and arm Runtime after RUNNING (US217 / US220).
+   *
+   * RC-23 Epic 5: before STARTING, strategy-origin sessions must present a
+   * prior Runtime Enforcement PASS stamp on the bound Deployment.
+   * Session does not re-run Gate or call Strategy Library.
    */
   async start(command: SessionLifecycleCommand): Promise<TradingSession> {
     return this.mutate(command, async (session) => {
+      await this.assertDeploymentEnforcementAuthorization(session);
+
       let next = session;
       next = transitionSession(next, TradingSessionStatus.STARTING, command.recordedAt);
 
@@ -372,6 +383,38 @@ export class TradingSessionService {
     }
     if (deployment.status !== StrategyDeploymentStatus.APPROVED) {
       throw new Error('trading session requires an approved strategy deployment');
+    }
+  }
+
+  /**
+   * RC-23 Epic 5 — consume Deployment authorization only.
+   * Does not call Runtime Enforcement Gate or Strategy Library.
+   */
+  private async assertDeploymentEnforcementAuthorization(session: TradingSession): Promise<void> {
+    if (session.origin !== 'strategy') {
+      return;
+    }
+
+    const deployment = await this.deployments.get(session.workspaceId, session.deploymentId);
+    if (!deployment) {
+      throw new DeploymentAuthorizationRefusedError(session.deploymentId, [
+        'strategy_deployment_not_found',
+      ]);
+    }
+    if (deployment.status !== StrategyDeploymentStatus.APPROVED) {
+      throw new DeploymentAuthorizationRefusedError(session.deploymentId, [
+        'strategy_deployment_not_approved',
+      ]);
+    }
+    if (deployment.enforcementAuthorization === null) {
+      throw new DeploymentAuthorizationRefusedError(session.deploymentId, [
+        'enforcement_authorization_missing',
+      ]);
+    }
+    if (!hasValidEnforcementAuthorization(deployment)) {
+      throw new DeploymentAuthorizationRefusedError(session.deploymentId, [
+        'enforcement_authorization_invalid',
+      ]);
     }
   }
 
