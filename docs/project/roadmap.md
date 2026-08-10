@@ -195,7 +195,11 @@ Orchestrator / Selection remain deferred. Sequencing:
 **RC-24** Reporting, AI Analytics & Notification Delivery is **CLOSED**
 (tag `v1.0.0-rc24`) —
 [`rc-24-closure-report.md`](./rc-24-closure-report.md).
-Next: RC-25 Planning.
+
+**RC-25** Market Qualification + Market Profile is **CLOSED**
+(tag `v1.0.0-rc25`) —
+[`rc-25-closure-report.md`](./rc-25-closure-report.md).
+Next: RC-26 Planning under a separate task.
 
 Story IDs: **US240–US299** — [`story-id-allocation.md`](./story-id-allocation.md).
 
@@ -279,10 +283,10 @@ Authority: [`rc-19-closure-report.md`](./rc-19-closure-report.md),
 
 ## Future Milestones
 
-**Version 1 (`v1.0.0`) is complete.** RC-19…RC-24 V2 path through Reporting,
-AI Analytics & Notification Delivery is **CLOSED**. Parallel **US295**
-ADL-008 closeout for production-claim language continues, then RC-25…RC-28
-implementation per
+**Version 1 (`v1.0.0`) is complete.** RC-19…RC-25 V2 path through Market
+Qualification + Market Profile is **CLOSED** (tag `v1.0.0-rc25`).
+Parallel **US295** ADL-008 closeout for production-claim language continues,
+then RC-26…RC-28 implementation per
 [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
 
 Later themes (new ADR required where architecture changes):

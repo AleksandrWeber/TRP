@@ -11,6 +11,29 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ### Added
 
+- RC-25 — Market Qualification + Market Profile (Epics 1–6):
+  Qualification lifecycle ports, immutable Market Profile versioning,
+  consumer read projections for future Orchestrator / Reporting / AI.
+  No scoring algorithms, Runtime integration, Orchestrator, REST, or
+  persistence product. Validation PASS. Tag `v1.0.0-rc25`.
+  Closure: `docs/project/rc-25-closure-report.md`.
+  Certification: `docs/project/rc-25-market-qualification-profile-certification.md`.
+- RC-25 Epic 6 — Consumer read ports & authority conformance:
+  read-only façades for future Orchestrator / Reporting / AI; immutable
+  projections; Internal Audit PASS; readiness for Validation & Release
+  (separate). No Orchestrator / Runtime / REST / persistence.
+  Report: `docs/project/rc-25-epic6-consumer-read-authority.md`.
+- RC-25 Epic 5 — Market Profile immutable versioning:
+  `MarketProfileServicePort` / `MarketProfileQueryPort` with append-only
+  publish, latest/by-version/history queries, and completed-run gate.
+  No calculation, REST, or persistence product.
+  Report: `docs/project/rc-25-epic5-market-profile-versioning.md`.
+- RC-25 Epic 4 — Market Qualification lifecycle & application ports:
+  `MarketQualificationServicePort` / `MarketQualificationQueryPort` with
+  request/confirm/cancel/complete/fail runs, immutable lifecycle records,
+  heavy-work confirm gate, and query views. No scoring, profile publish,
+  REST, or persistence product.
+  Report: `docs/project/rc-25-epic4-qualification-lifecycle-ports.md`.
 - RC-24 — Reporting, AI Analytics & Notification Delivery (Epics 1–6):
   Reporting boundary + Lake reads + domain model + deterministic report
   generation; AI analytical narratives over ReportRun; Notification Delivery

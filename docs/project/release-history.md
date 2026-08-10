@@ -38,6 +38,67 @@ Related:
 | RC-22   | Strategy Library + library Tactical Envelope (domain)                  | **CLOSED**            | Epics 1–6 · tag `v1.0.0-rc22`      | Certified membership domain; Nest ports deferred — [`rc-22-closure-report.md`](./rc-22-closure-report.md)                                                                                                                                                |
 | RC-23   | Runtime Enforcement (Gate)                                             | **CLOSED**            | Epics 1–6 · tag `v1.0.0-rc23`      | Library→Deployment/Session validation Gate — [`rc-23-closure-report.md`](./rc-23-closure-report.md)                                                                                                                                                      |
 | RC-24   | Reporting, AI Analytics & Notification Delivery                        | **CLOSED**            | Epics 1–6 · tag `v1.0.0-rc24`      | Projection reports + AI narratives + Telegram delivery — [`rc-24-closure-report.md`](./rc-24-closure-report.md)                                                                                                                                          |
+| RC-25   | Market Qualification + Market Profile                                  | **CLOSED**            | `v1.0.0-rc25`                      | Venue qualification + versioned profiles (confidence only) — [`rc-25-closure-report.md`](./rc-25-closure-report.md)                                                                                                                                      |
+
+---
+
+## RC-25
+
+| Field               | Value                                                                                                                      |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Theme               | Market Qualification + Market Profile                                                                                      |
+| Status              | **CLOSED** — tag `v1.0.0-rc25`                                                                                             |
+| Closure             | [`rc-25-closure-report.md`](./rc-25-closure-report.md)                                                                     |
+| Validation          | [`rc-25-validation-report.md`](./rc-25-validation-report.md)                                                               |
+| Certification       | [`rc-25-market-qualification-profile-certification.md`](./rc-25-market-qualification-profile-certification.md)             |
+| Plan                | [`rc-25-implementation-plan.md`](./rc-25-implementation-plan.md)                                                           |
+| Epic 1              | [`rc-25-epic1-market-qualification-profile-boundary.md`](./rc-25-epic1-market-qualification-profile-boundary.md)           |
+| Epic 2              | [`rc-25-epic2-live-market-data-research-read-integration.md`](./rc-25-epic2-live-market-data-research-read-integration.md) |
+| Epic 3              | [`rc-25-epic3-domain-model.md`](./rc-25-epic3-domain-model.md)                                                             |
+| Epic 4              | [`rc-25-epic4-qualification-lifecycle-ports.md`](./rc-25-epic4-qualification-lifecycle-ports.md)                           |
+| Epic 5              | [`rc-25-epic5-market-profile-versioning.md`](./rc-25-epic5-market-profile-versioning.md)                                   |
+| Epic 6              | [`rc-25-epic6-consumer-read-authority.md`](./rc-25-epic6-consumer-read-authority.md)                                       |
+| Audit               | [`rc-25-epic6-internal-audit-report.md`](./rc-25-epic6-internal-audit-report.md)                                           |
+| Readiness           | [`rc-25-epic6-readiness-report.md`](./rc-25-epic6-readiness-report.md)                                                     |
+| Epics               | [`rc-25-epic-breakdown.md`](./rc-25-epic-breakdown.md)                                                                     |
+| API                 | [`rc-25-api-contract.md`](./rc-25-api-contract.md)                                                                         |
+| Domain              | [`rc-25-domain-model-contract.md`](./rc-25-domain-model-contract.md)                                                       |
+| Integration         | [`rc-25-integration-diagram.md`](./rc-25-integration-diagram.md)                                                           |
+| Planning Validation | [`rc-25-validation-summary.md`](./rc-25-validation-summary.md)                                                             |
+| Consistency         | [`rc-25-architecture-consistency-report.md`](./rc-25-architecture-consistency-report.md)                                   |
+
+### Release delivered
+
+- Market Qualification lifecycle + query + consumer read ports
+- Market Profile immutable versioning + query + consumer read ports
+- Authority conformance + Internal Audit **PASS**; Validation **PASS**
+- Tag `v1.0.0-rc25`
+
+### Epic 5 delivered
+
+- `MarketProfileServicePort` / `MarketProfileQueryPort` active
+- Append-only immutable profile versions; latest / by-version / history queries
+- Publish gated on completed Qualification run; no calculation algorithms
+
+### Epic 4 delivered
+
+- `MarketQualificationServicePort` / `MarketQualificationQueryPort` active
+- Lifecycle: request → confirm → running → complete/fail/cancel
+- Immutable lifecycle records; heavy-work confirm gate; no scoring / profile publish
+
+### Epic 3 delivered
+
+- Immutable QualificationTarget / Run / State / Confidence / Health factories
+- Immutable MarketProfile + volatility / liquidity / trend / structure dimensions
+- Lifecycle transition invariants; version immutability; no evaluation/scoring
+
+### Explicitly deferred / forbidden in RC-25
+
+- Trading Orchestrator / Market State / Strategy Selection
+- Runtime Enforcement / Strategy Library / Reporting / AI redesign
+- Direct Session interaction / Execution / Multi Exchange / REST / UI
+- Scoring / confidence algorithms / profile calculation engines (deferred)
+- Consumer Orchestrator / Reporting / AI profile read façades (Epic 6)
 
 ---
 

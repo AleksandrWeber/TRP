@@ -20,6 +20,8 @@ import { RuntimeEnforcementModule } from './modules/runtime-enforcement';
 import { ReportingModule } from './modules/reporting';
 import { AiAnalyticsModule } from './modules/ai-analytics';
 import { NotificationDeliveryModule } from './modules/notification-delivery';
+import { MarketQualificationModule } from './modules/market-qualification';
+import { MarketProfileModule } from './modules/market-profile';
 import { MarketDataModule } from './modules/market-data/market-data.module';
 import { LiveMarketDataModule } from './modules/live-market-data/live-market-data.module';
 import { EventProcessingModule } from './modules/event-processing/event-processing.module';
@@ -148,6 +150,8 @@ import { ValidationModule } from './validation/validation.module';
     ReportingModule,
     AiAnalyticsModule,
     NotificationDeliveryModule,
+    MarketQualificationModule,
+    MarketProfileModule,
     InsightModule,
     CrossCampaignAnalysisModule,
     RecommendationModule,

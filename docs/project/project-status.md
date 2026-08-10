@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-08-10 (RC-24 CLOSED — Reporting, AI Analytics & Notification Delivery; tag `v1.0.0-rc24`)
+2026-08-10 (RC-25 CLOSED — Market Qualification + Market Profile; tag `v1.0.0-rc25`)
 
 **Level-0 authority:**
 
@@ -58,7 +58,7 @@ Cluster Closure Report:
 
 # Current Phase
 
-**RC-22 CLOSED · RC-23 CLOSED · RC-24 CLOSED**
+**RC-22 CLOSED · RC-23 CLOSED · RC-24 CLOSED · RC-25 CLOSED**
 
 RC-19 delivered the Architecture Spec v2.0 integration skeleton:
 
@@ -91,7 +91,51 @@ Gate binds Library SoT to Deployment/Session; Orchestrator / Selection remain de
 [`rc-24-closure-report.md`](./rc-24-closure-report.md).  
 Validation: [`rc-24-validation-report.md`](./rc-24-validation-report.md).  
 Certification: [`rc-24-reporting-ai-notification-certification.md`](./rc-24-reporting-ai-notification-certification.md).  
-**Next:** RC-25 Planning (Market Qualification + Market Profile).
+**Next:** RC-26 Planning (Trading Orchestrator thin + Market State inputs) under a separate task.
+
+**RC-25 CLOSED (2026-08-10):**
+
+- [Closure Report](./rc-25-closure-report.md)
+- [Validation Report](./rc-25-validation-report.md)
+- [Certification](./rc-25-market-qualification-profile-certification.md)
+- Tag `v1.0.0-rc25`
+
+**RC-25 Epic 6 (approved):**
+
+- [Epic 6 Report](./rc-25-epic6-consumer-read-authority.md)
+- [Internal Audit](./rc-25-epic6-internal-audit-report.md) (**PASS**)
+- [Readiness Report](./rc-25-epic6-readiness-report.md)
+
+**RC-25 Epic 5 (approved):**
+
+- [Epic 5 Report](./rc-25-epic5-market-profile-versioning.md)
+
+**RC-25 Epic 4 (approved):**
+
+- [Epic 4 Report](./rc-25-epic4-qualification-lifecycle-ports.md)
+
+**RC-25 Epic 3 (approved):**
+
+- [Epic 3 Report](./rc-25-epic3-domain-model.md)
+
+**RC-25 Epic 2 (approved):**
+
+- [Epic 2 Report](./rc-25-epic2-live-market-data-research-read-integration.md)
+
+**RC-25 Epic 1 (approved):**
+
+- [Epic 1 Report](./rc-25-epic1-market-qualification-profile-boundary.md)
+- [Boundary Diagram](./rc-25-epic1-boundary-diagram.md)
+
+**RC-25 Planning Package:**
+
+- [Implementation Plan](./rc-25-implementation-plan.md)
+- [Epic Breakdown](./rc-25-epic-breakdown.md)
+- [API Contract](./rc-25-api-contract.md)
+- [Domain Model Contract](./rc-25-domain-model-contract.md)
+- [Integration Diagram](./rc-25-integration-diagram.md)
+- [Validation Summary](./rc-25-validation-summary.md)
+- [Architecture Consistency Report](./rc-25-architecture-consistency-report.md)
 
 **RC-18 residual (parallel governance):** US295 / ADL-008 remains **Open** — close or record explicit accepted deferral before production restart-safety PASS claims. Residual ownership: [`rc-18-residual-register.md`](./rc-18-residual-register.md).
 
@@ -99,8 +143,8 @@ Certification: [`rc-24-reporting-ai-notification-certification.md`](./rc-24-repo
 
 # Current Goal
 
-RC-24 is **CLOSED**. Begin **RC-25 Planning** (Market Qualification + Market
-Profile). IDE shell remains deferred.
+RC-24 is **CLOSED**. RC-25 (Market Qualification + Market Profile) is
+**CLOSED** (tag `v1.0.0-rc25`). Next: RC-26 Planning. IDE shell remains deferred.
 
 Historical Research OS goal (unchanged): Evidence-driven Research OS —
 reproducible experiments, immutable Knowledge, clear provenance/versioning.

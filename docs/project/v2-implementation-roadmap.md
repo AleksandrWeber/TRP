@@ -209,6 +209,32 @@ Orchestrator / Market State / Selection / Enforcement REST remain deferred.
 
 **Depends on:** Strategy Lab + data layer; Library metrics useful.
 
+**Status (2026-08-10):** **CLOSED** — tag `v1.0.0-rc25`. Validation PASS. Next: RC-26 Planning.
+
+| Deliverable                     | Document                                                                                                                   |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Closure Report                  | [`rc-25-closure-report.md`](./rc-25-closure-report.md)                                                                     |
+| Validation Report               | [`rc-25-validation-report.md`](./rc-25-validation-report.md)                                                               |
+| Certification                   | [`rc-25-market-qualification-profile-certification.md`](./rc-25-market-qualification-profile-certification.md)             |
+| Implementation Plan             | [`rc-25-implementation-plan.md`](./rc-25-implementation-plan.md)                                                           |
+| Epic Breakdown                  | [`rc-25-epic-breakdown.md`](./rc-25-epic-breakdown.md)                                                                     |
+| API Contract (ports)            | [`rc-25-api-contract.md`](./rc-25-api-contract.md)                                                                         |
+| Domain Model Contract           | [`rc-25-domain-model-contract.md`](./rc-25-domain-model-contract.md)                                                       |
+| Integration Diagram             | [`rc-25-integration-diagram.md`](./rc-25-integration-diagram.md)                                                           |
+| Planning Validation Summary     | [`rc-25-validation-summary.md`](./rc-25-validation-summary.md)                                                             |
+| Architecture Consistency Report | [`rc-25-architecture-consistency-report.md`](./rc-25-architecture-consistency-report.md)                                   |
+| Epic 1 Report                   | [`rc-25-epic1-market-qualification-profile-boundary.md`](./rc-25-epic1-market-qualification-profile-boundary.md)           |
+| Epic 1 Boundary Diagram         | [`rc-25-epic1-boundary-diagram.md`](./rc-25-epic1-boundary-diagram.md)                                                     |
+| Epic 2 Report                   | [`rc-25-epic2-live-market-data-research-read-integration.md`](./rc-25-epic2-live-market-data-research-read-integration.md) |
+| Epic 3 Report                   | [`rc-25-epic3-domain-model.md`](./rc-25-epic3-domain-model.md)                                                             |
+| Epic 4 Report                   | [`rc-25-epic4-qualification-lifecycle-ports.md`](./rc-25-epic4-qualification-lifecycle-ports.md)                           |
+| Epic 5 Report                   | [`rc-25-epic5-market-profile-versioning.md`](./rc-25-epic5-market-profile-versioning.md)                                   |
+| Epic 6 Report                   | [`rc-25-epic6-consumer-read-authority.md`](./rc-25-epic6-consumer-read-authority.md)                                       |
+| Epic 6 Internal Audit           | [`rc-25-epic6-internal-audit-report.md`](./rc-25-epic6-internal-audit-report.md)                                           |
+| Epic 6 Readiness                | [`rc-25-epic6-readiness-report.md`](./rc-25-epic6-readiness-report.md)                                                     |
+
+**Next:** RC-26 Planning (Trading Orchestrator thin + Market State inputs).
+
 ---
 
 ## RC-26 — Trading Orchestrator (thin) + Market State inputs
