@@ -39,6 +39,50 @@ Related:
 | RC-23   | Runtime Enforcement (Gate)                                             | **CLOSED**            | Epics 1–6 · tag `v1.0.0-rc23`      | Library→Deployment/Session validation Gate — [`rc-23-closure-report.md`](./rc-23-closure-report.md)                                                                                                                                                      |
 | RC-24   | Reporting, AI Analytics & Notification Delivery                        | **CLOSED**            | Epics 1–6 · tag `v1.0.0-rc24`      | Projection reports + AI narratives + Telegram delivery — [`rc-24-closure-report.md`](./rc-24-closure-report.md)                                                                                                                                          |
 | RC-25   | Market Qualification + Market Profile                                  | **CLOSED**            | `v1.0.0-rc25`                      | Venue qualification + versioned profiles (confidence only) — [`rc-25-closure-report.md`](./rc-25-closure-report.md)                                                                                                                                      |
+| RC-26   | Trading Orchestrator + Market State                                    | **CLOSED**            | `v1.0.0-rc26`                      | Coordination + current-condition SoT (ports/domain; no Session/Orders/Risk) — [`rc-26-closure-report.md`](./rc-26-closure-report.md)                                                                                                                     |
+
+---
+
+## RC-26
+
+| Field               | Value                                                                                                                      |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Theme               | Trading Orchestrator + Market State                                                                                        |
+| Status              | **CLOSED** — tag `v1.0.0-rc26`                                                                                             |
+| Closure             | [`rc-26-closure-report.md`](./rc-26-closure-report.md)                                                                     |
+| Validation          | [`rc-26-validation-report.md`](./rc-26-validation-report.md)                                                               |
+| Certification       | [`rc-26-trading-orchestrator-market-state-certification.md`](./rc-26-trading-orchestrator-market-state-certification.md)   |
+| Implementation Plan | [`rc-26-implementation-plan.md`](./rc-26-implementation-plan.md)                                                           |
+| Epics               | [`rc-26-epic-breakdown.md`](./rc-26-epic-breakdown.md)                                                                     |
+| Epic 1              | [`rc-26-epic1-trading-orchestrator-market-state-boundary.md`](./rc-26-epic1-trading-orchestrator-market-state-boundary.md) |
+| Boundary Diagram    | [`rc-26-epic1-boundary-diagram.md`](./rc-26-epic1-boundary-diagram.md)                                                     |
+| Epic 2              | [`rc-26-epic2-market-state-input-integration.md`](./rc-26-epic2-market-state-input-integration.md)                         |
+| Epic 3              | [`rc-26-epic3-domain-model.md`](./rc-26-epic3-domain-model.md)                                                             |
+| Epic 4              | [`rc-26-epic4-trading-orchestrator-domain-model.md`](./rc-26-epic4-trading-orchestrator-domain-model.md)                   |
+| Epic 5              | [`rc-26-epic5-trading-orchestrator-workflow-ports.md`](./rc-26-epic5-trading-orchestrator-workflow-ports.md)               |
+| Epic 6              | [`rc-26-epic6-consumer-read-authority.md`](./rc-26-epic6-consumer-read-authority.md)                                       |
+| Internal Audit      | [`rc-26-epic6-internal-audit-report.md`](./rc-26-epic6-internal-audit-report.md)                                           |
+| Readiness           | [`rc-26-epic6-readiness-report.md`](./rc-26-epic6-readiness-report.md)                                                     |
+| API                 | [`rc-26-api-contract.md`](./rc-26-api-contract.md)                                                                         |
+| Domain              | [`rc-26-domain-model-contract.md`](./rc-26-domain-model-contract.md)                                                       |
+| Integration         | [`rc-26-integration-diagram.md`](./rc-26-integration-diagram.md)                                                           |
+| Planning Validation | [`rc-26-validation-summary.md`](./rc-26-validation-summary.md)                                                             |
+| Consistency         | [`rc-26-architecture-consistency-report.md`](./rc-26-architecture-consistency-report.md)                                   |
+
+### Release delivered
+
+- Market State domain + observational input reads + consumer read ports
+- Trading Orchestrator domain + workflow ports (Library/Gate consume; Session handoff intent)
+- Authority conformance + Internal Audit **PASS**; Validation **PASS**
+- Tag `v1.0.0-rc26`
+
+### Explicitly deferred / forbidden in RC-26
+
+- Execution / Session creation / Orders / Risk Decision production
+- REST / persistence / WebSockets / event streaming / UI
+- Market State classify Nest activation
+- Reporting / AI reverse Nest wiring (ports ready only)
+- Multi-Exchange (RC-27)
 
 ---
 

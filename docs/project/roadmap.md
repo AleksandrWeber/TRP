@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-08-10 (RC-23 CLOSED — Runtime Enforcement certified)
+Last updated: 2026-08-10 (RC-26 CLOSED — Trading Orchestrator + Market State; tag `v1.0.0-rc26`)
 
 Living roadmap for product direction.
 
@@ -199,7 +199,11 @@ Orchestrator / Selection remain deferred. Sequencing:
 **RC-25** Market Qualification + Market Profile is **CLOSED**
 (tag `v1.0.0-rc25`) —
 [`rc-25-closure-report.md`](./rc-25-closure-report.md).
-Next: RC-26 Planning under a separate task.
+
+**RC-26** Trading Orchestrator + Market State is **CLOSED**
+(tag `v1.0.0-rc26`) —
+[`rc-26-closure-report.md`](./rc-26-closure-report.md).
+Next: RC-27 Planning under a separate task.
 
 Story IDs: **US240–US299** — [`story-id-allocation.md`](./story-id-allocation.md).
 
@@ -283,11 +287,11 @@ Authority: [`rc-19-closure-report.md`](./rc-19-closure-report.md),
 
 ## Future Milestones
 
-**Version 1 (`v1.0.0`) is complete.** RC-19…RC-25 V2 path through Market
-Qualification + Market Profile is **CLOSED** (tag `v1.0.0-rc25`).
-Parallel **US295** ADL-008 closeout for production-claim language continues,
-then RC-26…RC-28 implementation per
-[`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
+**Version 1 (`v1.0.0`) is complete.** RC-19…RC-26 V2 path through Trading
+Orchestrator + Market State is **CLOSED** (tag `v1.0.0-rc26`).
+Next: **RC-27 Planning** (Multi Exchange Scope expansion), then RC-28.
+Parallel **US295** ADL-008 closeout for production-claim language continues.
+Sequencing: [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
 
 Later themes (new ADR required where architecture changes):
 

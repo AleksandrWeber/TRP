@@ -11,6 +11,58 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ### Added
 
+- RC-26 — Trading Orchestrator + Market State (Epics 1–6):
+  Market State current-condition domain + observational reads + consumer
+  projections; Trading Orchestrator coordination domain + workflow ports
+  (Library Lookup/Eligibility + Runtime Gate fail-closed + Session handoff
+  intent). No Session/Orders/Risk ownership, REST, or persistence product.
+  Validation PASS. Tag `v1.0.0-rc26`.
+  Closure: `docs/project/rc-26-closure-report.md`.
+  Certification: `docs/project/rc-26-trading-orchestrator-market-state-certification.md`.
+- RC-26 Epic 6 — Consumer read ports + authority conformance + readiness:
+  `MarketStateConsumerReadPort` and `TradingOrchestratorConsumerReadPort`
+  with immutable projections; authority conformance suite; internal audit
+  PASS; consumed by Validation & Closure. No REST/persistence/execution.
+  Gate: 63/63 PASS (market-state + trading-orchestrator).
+  Reports: `docs/project/rc-26-epic6-consumer-read-authority.md`,
+  `rc-26-epic6-internal-audit-report.md`, `rc-26-epic6-readiness-report.md`.
+- RC-26 Epic 5 — Trading Orchestrator workflow ports:
+  `TradingOrchestratorServicePort` / `QueryPort` +
+  `OrchestrationWorkflowCoordinator` sequencing Market State → Library
+  Lookup/Eligibility → Runtime Enforcement Gate → Session handoff intent.
+  Delegation only; fail-closed Gate; no Session/Orders/Risk ownership, REST,
+  or persistence. Gate: 28/28 PASS (trading-orchestrator). Report:
+  `docs/project/rc-26-epic5-trading-orchestrator-workflow-ports.md`.
+- RC-26 Epic 4 — Trading Orchestrator domain model:
+  Immutable `TradingOrchestrator` / `OrchestrationPlan` / Intent /
+  Lifecycle / Metadata factories; Created→Planned→Ready→Cancelled|Archived
+  edges; append-only plan versioning with overwrite protection. No workflow,
+  selection, Runtime/Session, REST, or persistence. Gate: 21/21 PASS
+  (trading-orchestrator); RC-26 regression 46/46. Report:
+  `docs/project/rc-26-epic4-trading-orchestrator-domain-model.md`.
+- RC-26 Epic 3 — Market State domain model & lifecycle:
+  Immutable `MarketState` / Version / Lifecycle / Snapshot / Metadata
+  factories; Created→Active→Superseded→Archived edges; append-only
+  versioning with overwrite protection. No classification algorithms,
+  orchestration, REST, or persistence. Gate: 25/25 PASS (market-state).
+  Report: `docs/project/rc-26-epic3-domain-model.md`.
+- RC-26 Epic 2 — Market State input integration:
+  Read-only adapters for Live Market Data, Market Qualification consumer
+  projections, and Market Profile consumer projections. Immutable input
+  models; no classification, orchestration, REST, or persistence.
+  Gate: 17/17 PASS (market-state).
+  Report: `docs/project/rc-26-epic2-market-state-input-integration.md`.
+- RC-26 Epic 1 — Trading Orchestrator & Market State boundary:
+  Nest modules `market-state` + `trading-orchestrator` with frozen ownership
+  invariants, inactive application ports, and dependency-direction tests.
+  No classification, orchestration, Runtime/Session/Orders/Risk wiring, REST,
+  or persistence. Gate: 24/24 PASS.
+  Report: `docs/project/rc-26-epic1-trading-orchestrator-market-state-boundary.md`.
+- RC-26 Planning Package — Trading Orchestrator + Market State:
+  Implementation Plan, Epic Breakdown, API Contract (ports), Domain Model
+  Contract, Integration Diagram, Validation Summary, Architecture Consistency
+  Report. Planning only — STOP before Epic 1.
+  Plan: `docs/project/rc-26-implementation-plan.md`.
 - RC-25 — Market Qualification + Market Profile (Epics 1–6):
   Qualification lifecycle ports, immutable Market Profile versioning,
   consumer read projections for future Orchestrator / Reporting / AI.

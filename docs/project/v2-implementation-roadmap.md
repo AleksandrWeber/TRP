@@ -209,7 +209,7 @@ Orchestrator / Market State / Selection / Enforcement REST remain deferred.
 
 **Depends on:** Strategy Lab + data layer; Library metrics useful.
 
-**Status (2026-08-10):** **CLOSED** — tag `v1.0.0-rc25`. Validation PASS. Next: RC-26 Planning.
+**Status (2026-08-10):** **CLOSED** — tag `v1.0.0-rc25`. Validation PASS.
 
 | Deliverable                     | Document                                                                                                                   |
 | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
@@ -233,8 +233,6 @@ Orchestrator / Market State / Selection / Enforcement REST remain deferred.
 | Epic 6 Internal Audit           | [`rc-25-epic6-internal-audit-report.md`](./rc-25-epic6-internal-audit-report.md)                                           |
 | Epic 6 Readiness                | [`rc-25-epic6-readiness-report.md`](./rc-25-epic6-readiness-report.md)                                                     |
 
-**Next:** RC-26 Planning (Trading Orchestrator thin + Market State inputs).
-
 ---
 
 ## RC-26 — Trading Orchestrator (thin) + Market State inputs
@@ -250,6 +248,30 @@ Orchestrator / Market State / Selection / Enforcement REST remain deferred.
 **Main implementation risk:** God-module that bypasses Risk/Execution or invents tactics outside envelopes.
 
 **Depends on:** RC-22 Library/Envelope; RC-25 Profiles strongly recommended; Risk/Session.
+
+**Status (2026-08-10):** **CLOSED** — tag `v1.0.0-rc26`. Validation PASS.
+
+| Deliverable                     | Document                                                                                                                   |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Closure Report                  | [`rc-26-closure-report.md`](./rc-26-closure-report.md)                                                                     |
+| Validation Report               | [`rc-26-validation-report.md`](./rc-26-validation-report.md)                                                               |
+| Certification                   | [`rc-26-trading-orchestrator-market-state-certification.md`](./rc-26-trading-orchestrator-market-state-certification.md)   |
+| Implementation Plan             | [`rc-26-implementation-plan.md`](./rc-26-implementation-plan.md)                                                           |
+| Epic Breakdown                  | [`rc-26-epic-breakdown.md`](./rc-26-epic-breakdown.md)                                                                     |
+| API Contract (ports)            | [`rc-26-api-contract.md`](./rc-26-api-contract.md)                                                                         |
+| Domain Model Contract           | [`rc-26-domain-model-contract.md`](./rc-26-domain-model-contract.md)                                                       |
+| Integration Diagram             | [`rc-26-integration-diagram.md`](./rc-26-integration-diagram.md)                                                           |
+| Validation Summary (planning)   | [`rc-26-validation-summary.md`](./rc-26-validation-summary.md)                                                             |
+| Architecture Consistency Report | [`rc-26-architecture-consistency-report.md`](./rc-26-architecture-consistency-report.md)                                   |
+| Epic 1 Report                   | [`rc-26-epic1-trading-orchestrator-market-state-boundary.md`](./rc-26-epic1-trading-orchestrator-market-state-boundary.md) |
+| Epic 1 Boundary Diagram         | [`rc-26-epic1-boundary-diagram.md`](./rc-26-epic1-boundary-diagram.md)                                                     |
+| Epic 2 Report                   | [`rc-26-epic2-market-state-input-integration.md`](./rc-26-epic2-market-state-input-integration.md)                         |
+| Epic 3 Report                   | [`rc-26-epic3-domain-model.md`](./rc-26-epic3-domain-model.md)                                                             |
+| Epic 4 Report                   | [`rc-26-epic4-trading-orchestrator-domain-model.md`](./rc-26-epic4-trading-orchestrator-domain-model.md)                   |
+| Epic 5 Report                   | [`rc-26-epic5-trading-orchestrator-workflow-ports.md`](./rc-26-epic5-trading-orchestrator-workflow-ports.md)               |
+| Epic 6 Report                   | [`rc-26-epic6-consumer-read-authority.md`](./rc-26-epic6-consumer-read-authority.md)                                       |
+| Epic 6 Internal Audit           | [`rc-26-epic6-internal-audit-report.md`](./rc-26-epic6-internal-audit-report.md)                                           |
+| Epic 6 Readiness                | [`rc-26-epic6-readiness-report.md`](./rc-26-epic6-readiness-report.md)                                                     |
 
 ---
 
@@ -298,8 +320,8 @@ Orchestrator / Market State / Selection / Enforcement REST remain deferred.
 | 23             | Runtime Enforcement (Gate)             | Large      | Soft-fail / duplicate validation          | **CLOSED** (`v1.0.0-rc23`) |
 | 23b (history)  | Knowledge Lake (historical slot)       | Large      | — (delivered as RC-21)                    | Superseded by RC-21        |
 | 24             | Reporting / AI / Notification Delivery | Medium     | Shadow accounting in reports              | **CLOSED** (`v1.0.0-rc24`) |
-| 25             | Qualification / Profile                | Medium     | Profiles force trades                     | Planned                    |
-| 26             | Orchestrator                           | XL         | God-module / bypass                       | Planned                    |
+| 25             | Qualification / Profile                | Medium     | Profiles force trades                     | **CLOSED** (`v1.0.0-rc25`) |
+| 26             | Orchestrator + Market State            | XL         | God-module / bypass                       | **CLOSED** (`v1.0.0-rc26`) |
 | 27             | Multi-exchange scope                   | XL         | Cloned engines                            | Planned                    |
 | 28             | V2 stabilize                           | Large      | Fake “done” without conformance           | Planned                    |
 

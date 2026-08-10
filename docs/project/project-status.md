@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-08-10 (RC-25 CLOSED — Market Qualification + Market Profile; tag `v1.0.0-rc25`)
+2026-08-10 (RC-26 CLOSED — Trading Orchestrator + Market State; tag `v1.0.0-rc26`)
 
 **Level-0 authority:**
 
@@ -58,7 +58,7 @@ Cluster Closure Report:
 
 # Current Phase
 
-**RC-22 CLOSED · RC-23 CLOSED · RC-24 CLOSED · RC-25 CLOSED**
+**RC-22 CLOSED · RC-23 CLOSED · RC-24 CLOSED · RC-25 CLOSED · RC-26 CLOSED**
 
 RC-19 delivered the Architecture Spec v2.0 integration skeleton:
 
@@ -90,8 +90,7 @@ Gate binds Library SoT to Deployment/Session; Orchestrator / Selection remain de
 (validation PASS, tag `v1.0.0-rc24`) —
 [`rc-24-closure-report.md`](./rc-24-closure-report.md).  
 Validation: [`rc-24-validation-report.md`](./rc-24-validation-report.md).  
-Certification: [`rc-24-reporting-ai-notification-certification.md`](./rc-24-reporting-ai-notification-certification.md).  
-**Next:** RC-26 Planning (Trading Orchestrator thin + Market State inputs) under a separate task.
+Certification: [`rc-24-reporting-ai-notification-certification.md`](./rc-24-reporting-ai-notification-certification.md).
 
 **RC-25 CLOSED (2026-08-10):**
 
@@ -137,14 +136,59 @@ Certification: [`rc-24-reporting-ai-notification-certification.md`](./rc-24-repo
 - [Validation Summary](./rc-25-validation-summary.md)
 - [Architecture Consistency Report](./rc-25-architecture-consistency-report.md)
 
+**RC-26 CLOSED (2026-08-10):**
+
+- [Closure Report](./rc-26-closure-report.md)
+- [Validation Report](./rc-26-validation-report.md)
+- [Certification](./rc-26-trading-orchestrator-market-state-certification.md)
+- Tag `v1.0.0-rc26`
+
+**RC-26 Epic 6 (approved):**
+
+- [Epic 6 Report](./rc-26-epic6-consumer-read-authority.md)
+- [Internal Audit](./rc-26-epic6-internal-audit-report.md) (**PASS**)
+- [Readiness Report](./rc-26-epic6-readiness-report.md)
+
+**RC-26 Epic 5 (approved):**
+
+- [Epic 5 Report](./rc-26-epic5-trading-orchestrator-workflow-ports.md)
+
+**RC-26 Epic 4 (approved):**
+
+- [Epic 4 Report](./rc-26-epic4-trading-orchestrator-domain-model.md)
+
+**RC-26 Epic 3 (approved):**
+
+- [Epic 3 Report](./rc-26-epic3-domain-model.md)
+
+**RC-26 Epic 2 (approved):**
+
+- [Epic 2 Report](./rc-26-epic2-market-state-input-integration.md)
+
+**RC-26 Epic 1 (approved):**
+
+- [Epic 1 Report](./rc-26-epic1-trading-orchestrator-market-state-boundary.md)
+- [Boundary Diagram](./rc-26-epic1-boundary-diagram.md)
+
+**RC-26 Planning Package:**
+
+- [Implementation Plan](./rc-26-implementation-plan.md)
+- [Epic Breakdown](./rc-26-epic-breakdown.md)
+- [API Contract](./rc-26-api-contract.md)
+- [Domain Model Contract](./rc-26-domain-model-contract.md)
+- [Integration Diagram](./rc-26-integration-diagram.md)
+- [Validation Summary](./rc-26-validation-summary.md)
+- [Architecture Consistency Report](./rc-26-architecture-consistency-report.md)
+
 **RC-18 residual (parallel governance):** US295 / ADL-008 remains **Open** — close or record explicit accepted deferral before production restart-safety PASS claims. Residual ownership: [`rc-18-residual-register.md`](./rc-18-residual-register.md).
 
 ---
 
 # Current Goal
 
-RC-24 is **CLOSED**. RC-25 (Market Qualification + Market Profile) is
-**CLOSED** (tag `v1.0.0-rc25`). Next: RC-26 Planning. IDE shell remains deferred.
+RC-26 (Trading Orchestrator + Market State) is **CLOSED** (tag `v1.0.0-rc26`).
+Next: **RC-27 Planning** (Multi Exchange Scope expansion) under a separate task.
+IDE shell remains deferred.
 
 Historical Research OS goal (unchanged): Evidence-driven Research OS —
 reproducible experiments, immutable Knowledge, clear provenance/versioning.
