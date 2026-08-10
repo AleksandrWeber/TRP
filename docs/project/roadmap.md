@@ -171,7 +171,7 @@ Related:
 
 ## Current Phase
 
-**RC-20 CLOSED · Next: RC-21+ (V2 sequence)**
+**RC-21 CLOSED · Next: RC-22 Strategy Library**
 
 RC-16 paper path and RC-17 Runtime Recovery are baselined. RC-18 mandatory
 residuals R1–R5 (US290–US294) are Done; **US295** (ADL-008) remains Open.
@@ -179,8 +179,10 @@ RC-19 integration skeleton is **CLOSED**.
 RC-20 Command Center foundation (Epics 1–6) is **CLOSED** —
 [`rc-20-closure-report.md`](./rc-20-closure-report.md).
 
-Next: **RC-21+** per [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md)
-(durable emergency ports / subsequent V2 product epics as sequenced).
+**RC-21** Knowledge Lake is **CLOSED** (tag `v1.0.0-rc21`) —
+[`rc-21-closure-report.md`](./rc-21-closure-report.md). IDE shell remains
+**deferred** (Plan §0). Next: **RC-22 Strategy Library** per
+[`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
 
 Story IDs: **US240–US299** — [`story-id-allocation.md`](./story-id-allocation.md).
 

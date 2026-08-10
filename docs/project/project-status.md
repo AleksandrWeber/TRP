@@ -58,7 +58,7 @@ Cluster Closure Report:
 
 # Current Phase
 
-**RC-20 CLOSED · Next: RC-21+ per V2 roadmap**
+**RC-21 CLOSED · Next: RC-22 Strategy Library**
 
 RC-19 delivered the Architecture Spec v2.0 integration skeleton:
 
@@ -69,7 +69,12 @@ RC-19 delivered the Architecture Spec v2.0 integration skeleton:
 Acceptance record: [`rc-19-closure-report.md`](./rc-19-closure-report.md).  
 Frozen paper path (Orders / Risk / Execution / Ledger / Recovery) unchanged.
 
-**Next (after RC-19 approval):** **RC-20** — Command Center foundation (Kill Switch / status over existing Session/Risk ports). Do not start RC-20 until this closeout is approved.
+**RC-20** Command Center foundation is **CLOSED** — [`rc-20-closure-report.md`](./rc-20-closure-report.md).
+
+**RC-21** Knowledge Lake is **CLOSED** (validation PASS, tag `v1.0.0-rc21`) —
+[`rc-21-closure-report.md`](./rc-21-closure-report.md).  
+Certification: [`rc-21-knowledge-lake-certification.md`](./rc-21-knowledge-lake-certification.md).  
+IDE shell remains deferred (Plan §0). **Next:** RC-22 Strategy Library.
 
 **RC-18 residual (parallel governance):** US295 / ADL-008 remains **Open** — close or record explicit accepted deferral before production restart-safety PASS claims. Residual ownership: [`rc-18-residual-register.md`](./rc-18-residual-register.md).
 
@@ -77,10 +82,9 @@ Frozen paper path (Orders / Risk / Execution / Ledger / Recovery) unchanged.
 
 # Current Goal
 
-RC-19 integration skeleton is **CLOSED**. Spec v2.0 is the architectural
-constitution. Next approved workstream: **RC-20 Command Center foundation**
-(Kill Switch / status over existing Session/Risk ports) — start only after
-Closure Report approval.
+RC-21 Knowledge Lake is **CLOSED**. Next approved workstream: **RC-22 Strategy
+Library + Tactical Envelope**. IDE shell remains deferred. Do not start RC-22
+implementation until its Implementation Plan is approved.
 
 Historical Research OS goal (unchanged): Evidence-driven Research OS —
 reproducible experiments, immutable Knowledge, clear provenance/versioning.

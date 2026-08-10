@@ -14,6 +14,7 @@ import { ExperimentsModule } from './modules/experiments/experiments.module';
 import { HealthModule } from './modules/health/health.module';
 import { IdentityModule } from './modules/identity/identity.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
+import { KnowledgeLakeModule } from './modules/knowledge-lake';
 import { MarketDataModule } from './modules/market-data/market-data.module';
 import { LiveMarketDataModule } from './modules/live-market-data/live-market-data.module';
 import { EventProcessingModule } from './modules/event-processing/event-processing.module';
@@ -136,6 +137,7 @@ import { ValidationModule } from './validation/validation.module';
     DatasetsModule,
     ExperimentsModule,
     KnowledgeModule,
+    KnowledgeLakeModule,
     InsightModule,
     CrossCampaignAnalysisModule,
     RecommendationModule,

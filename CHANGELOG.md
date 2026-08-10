@@ -11,6 +11,12 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ### Added
 
+- RC-21 — Knowledge Lake foundation (Epics 1–6): append-only analytical
+  projection warehouse (`knowledge-lake` module) with ingestion port, trading-path
+  - Research Lab one-way producers, consumer-safe query port, and authority
+    conformance. Tag `v1.0.0-rc21`. Closure:
+    `docs/project/rc-21-closure-report.md`. Certification:
+    `docs/project/rc-21-knowledge-lake-certification.md`.
 - RC-20 — Command Center foundation (Epics 1–6): ops workspace route,
   BotFacade read + lifecycle adapters, client navigation, in-memory
   notifications, Emergency Controls interaction model (disabled until

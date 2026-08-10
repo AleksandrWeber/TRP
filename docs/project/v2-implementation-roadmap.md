@@ -79,7 +79,21 @@ Related:
 
 ---
 
-## RC-21 — IDE shell + Bot fleet UX
+## RC-21 — Knowledge Lake (projection) — **sequencing override**
+
+> **Approved sequencing (RC-21 Implementation Plan §0):** Knowledge Lake is delivered as **RC-21**.  
+> Baseline roadmap below listed IDE as RC-21 and Lake as RC-23 — that baseline theme order is **superseded** for numbering only (not an architecture redesign).  
+> **IDE shell + Bot fleet UX** is **deferred** to a later RC after Lake closeout.
+
+**Goal:** Append-only analytical projection warehouse from research + trading events.  
+**Result:** Single analytical feed foundation for later Reporting/AI — without a second ledger.  
+**Status:** Implementation Epics 1–6 complete; **CLOSED** (validation PASS, tag `v1.0.0-rc21`).
+
+See: [`rc-21-implementation-plan.md`](./rc-21-implementation-plan.md), [`rc-21-closure-report.md`](./rc-21-closure-report.md).
+
+---
+
+## RC-21 (baseline theme) — IDE shell + Bot fleet UX — **DEFERRED**
 
 **Goal (unchanged):** Research IDE layout; Bot = Session in UX.  
 **Tasks (unchanged):** Top/left/tabs/bottom/AI side shell; project explorer; jobs/logs bottom panel; Bot list/detail bound to Sessions; Exchange Scope views (even single Binance).  
@@ -92,6 +106,8 @@ Related:
 **Main implementation risk:** Accidental duplicated runtime if UI “Bot” spawns a new backend entity.
 
 **Depends on:** RC-19 naming; RC-20 status APIs helpful but shell can start in parallel after Spec.
+
+**Sequencing:** Deferred out of the RC-21 number; schedule after Knowledge Lake Validation.
 
 ---
 
@@ -111,7 +127,7 @@ Related:
 
 ---
 
-## RC-23 — Knowledge Lake (projection)
+## RC-23 — Knowledge Lake (projection) — **delivered early as RC-21**
 
 **Goal (unchanged):** Append-only warehouse from research + trading events.  
 **Tasks (unchanged):** Event projection pipeline from Outbox/SoT facts; retention/query API; explicitly non-SoT; migrate consumers off ad-hoc dual stacks where touched.  
@@ -122,6 +138,8 @@ Related:
 **Estimated complexity:** **Large**
 
 **Main implementation risk:** Inconsistent Source of Truth if Lake is treated as financial authority.
+
+**Sequencing note:** Delivered under the **RC-21** label per approved Implementation Plan §0. This RC-23 slot is retained for roadmap history only — do not re-implement Lake here.
 
 **Depends on:** Stable execution/accounting events (have); durability decision for Lake store; prefer after RC-22 if library events matter.
 
@@ -209,18 +227,19 @@ Related:
 
 ## Summary table
 
-| RC          | Theme                     | Complexity | Biggest risk (one line)                   | Status       |
-| ----------- | ------------------------- | ---------- | ----------------------------------------- | ------------ |
-| 18 closeout | US295 / docs sync         | Small      | Starting V2 before recovery claim closure | Open (US295) |
-| 19          | Spec v2.0 + thin hooks    | Medium     | Spec invents new architecture             | **COMPLETE** |
-| 20          | Command Center foundation | Large      | UI as false SoT                           | Next         |
-| 21          | IDE + Bot UX              | Large      | Duplicated runtime (Bot ≠ Session)        | Planned      |
-| 22          | Library + Envelope        | Large      | Envelope not enforced                     | Planned      |
-| 23          | Knowledge Lake            | Large      | Lake as SoT                               | Planned      |
-| 24          | Reporting / AI / Telegram | Medium     | Shadow accounting in reports              | Planned      |
-| 25          | Qualification / Profile   | Medium     | Profiles force trades                     | Planned      |
-| 26          | Orchestrator              | XL         | God-module / bypass                       | Planned      |
-| 27          | Multi-exchange scope      | XL         | Cloned engines                            | Planned      |
-| 28          | V2 stabilize              | Large      | Fake “done” without conformance           | Planned      |
+| RC             | Theme                            | Complexity | Biggest risk (one line)                   | Status                     |
+| -------------- | -------------------------------- | ---------- | ----------------------------------------- | -------------------------- |
+| 18 closeout    | US295 / docs sync                | Small      | Starting V2 before recovery claim closure | Open (US295)               |
+| 19             | Spec v2.0 + thin hooks           | Medium     | Spec invents new architecture             | **COMPLETE**               |
+| 20             | Command Center foundation        | Large      | UI as false SoT                           | **COMPLETE**               |
+| 21             | Knowledge Lake (projection)      | Large      | Lake as SoT                               | **CLOSED** (`v1.0.0-rc21`) |
+| 21b (deferred) | IDE + Bot UX                     | Large      | Duplicated runtime (Bot ≠ Session)        | Deferred                   |
+| 22             | Library + Envelope               | Large      | Envelope not enforced                     | **Next**                   |
+| 23             | Knowledge Lake (historical slot) | Large      | — (delivered as RC-21)                    | Superseded by RC-21        |
+| 24             | Reporting / AI / Telegram        | Medium     | Shadow accounting in reports              | Planned                    |
+| 25             | Qualification / Profile          | Medium     | Profiles force trades                     | Planned                    |
+| 26             | Orchestrator                     | XL         | God-module / bypass                       | Planned                    |
+| 27             | Multi-exchange scope             | XL         | Cloned engines                            | Planned                    |
+| 28             | V2 stabilize                     | Large      | Fake “done” without conformance           | Planned                    |
 
-Roadmap order and goals remain identical to the Engineering Audit. No new global modules added.
+Sequencing note: RC-21 Implementation Plan §0 advanced Knowledge Lake to RC-21 and deferred IDE. Goals unchanged; numbering override only.
