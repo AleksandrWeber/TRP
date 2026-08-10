@@ -11,7 +11,7 @@ Related: [Alias Dictionary](./v2-alias-dictionary.md), ADR-015, ADR-018.
 
 ## Purpose
 
-V2 adds Command Center, Knowledge Lake, Reporting, and AI surfaces. Without an authority matrix they will compete with Orders, Execution, and Ledger.
+V2 adds Command Center, Knowledge Lake, Reporting, AI, and Notification Delivery surfaces. Without an authority matrix they will compete with Orders, Execution, and Ledger.
 
 ---
 
@@ -50,6 +50,7 @@ V2 adds Command Center, Knowledge Lake, Reporting, and AI surfaces. Without an a
 | Dashboard / Command Center numbers           | **Projections**                                                                     | Operators                                              | Authoritative recovery/finance decisions from UI cache                            |
 | AI Analyst / Assistant text                  | **Narrative**                                                                       | Humans                                                 | Autonomous capital actions; silent config changes                                 |
 | Telegram messages                            | **Notification projection**                                                         | Humans                                                 | Control plane / trading commands (V2)                                             |
+| Notification Service (RC-24)                 | **Delivery Layer only** — authority **none**                                        | Channel adapters (Telegram first)                      | Source of Truth; business decisions; report generation; trading commands          |
 
 ---
 
@@ -60,20 +61,22 @@ V2 adds Command Center, Knowledge Lake, Reporting, and AI surfaces. Without an a
 3. If AI recommends a tactic outside the validated set — **reject**; require research pipeline.
 4. Command Center may trigger Emergency Stop only through durable Kill Switch / Session commands.
 5. Reporting may aggregate Lake or projections but must label paper vs live and must not recompute authoritative ledger balances with ad-hoc math.
+6. Notification Service may deliver messages through configured channels only; it must never become SoT, never make business decisions, and never act as a Telegram (or other channel) control plane.
 
 ---
 
 ## V2 surfaces — one-line authority
 
-| Surface                        | Authority class                                                |
-| ------------------------------ | -------------------------------------------------------------- |
-| Bot (UI)                       | Command UI + projection over Trading Session                   |
-| Cluster (UI)                   | Projection + policy editor for Exchange Scope                  |
-| Knowledge Lake                 | Projection / warehouse                                         |
-| Reporting & AI Analytics       | Projection + narrative                                         |
-| Command Center                 | Command UI + projection                                        |
-| Market Qualification / Profile | Research SoT for _profile versions_; never execution SoT       |
-| Trading Orchestrator           | Policy/orchestration consumer — **not** SoT for money or fills |
+| Surface                        | Authority class                                                                           |
+| ------------------------------ | ----------------------------------------------------------------------------------------- |
+| Bot (UI)                       | Command UI + projection over Trading Session                                              |
+| Cluster (UI)                   | Projection + policy editor for Exchange Scope                                             |
+| Knowledge Lake                 | Projection / warehouse                                                                    |
+| Reporting & AI Analytics       | Projection + narrative                                                                    |
+| Notification Service           | Delivery Layer only — **authority none**; SoT **never**; business decisions **forbidden** |
+| Command Center                 | Command UI + projection                                                                   |
+| Market Qualification / Profile | Research SoT for _profile versions_; never execution SoT                                  |
+| Trading Orchestrator           | Policy/orchestration consumer — **not** SoT for money or fills                            |
 
 ---
 

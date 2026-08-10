@@ -17,6 +17,9 @@ import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 import { KnowledgeLakeModule } from './modules/knowledge-lake';
 import { StrategyLibraryModule } from './modules/strategy-library';
 import { RuntimeEnforcementModule } from './modules/runtime-enforcement';
+import { ReportingModule } from './modules/reporting';
+import { AiAnalyticsModule } from './modules/ai-analytics';
+import { NotificationDeliveryModule } from './modules/notification-delivery';
 import { MarketDataModule } from './modules/market-data/market-data.module';
 import { LiveMarketDataModule } from './modules/live-market-data/live-market-data.module';
 import { EventProcessingModule } from './modules/event-processing/event-processing.module';
@@ -142,6 +145,9 @@ import { ValidationModule } from './validation/validation.module';
     KnowledgeLakeModule,
     StrategyLibraryModule,
     RuntimeEnforcementModule,
+    ReportingModule,
+    AiAnalyticsModule,
+    NotificationDeliveryModule,
     InsightModule,
     CrossCampaignAnalysisModule,
     RecommendationModule,

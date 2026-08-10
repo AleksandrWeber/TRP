@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-08-10 (RC-23 CLOSED — Runtime Enforcement certified)
+2026-08-10 (RC-24 CLOSED — Reporting, AI Analytics & Notification Delivery; tag `v1.0.0-rc24`)
 
 **Level-0 authority:**
 
@@ -58,7 +58,7 @@ Cluster Closure Report:
 
 # Current Phase
 
-**RC-22 CLOSED · RC-23 CLOSED · Next: RC-24+ planning only after this closure**
+**RC-22 CLOSED · RC-23 CLOSED · RC-24 CLOSED**
 
 RC-19 delivered the Architecture Spec v2.0 integration skeleton:
 
@@ -86,15 +86,21 @@ Domain complete; Nest application ports / persistence deferred.
 Certification: [`rc-23-runtime-enforcement-certification.md`](./rc-23-runtime-enforcement-certification.md).  
 Gate binds Library SoT to Deployment/Session; Orchestrator / Selection remain deferred.
 
+**RC-24** Reporting, AI Analytics & Notification Delivery is **CLOSED**
+(validation PASS, tag `v1.0.0-rc24`) —
+[`rc-24-closure-report.md`](./rc-24-closure-report.md).  
+Validation: [`rc-24-validation-report.md`](./rc-24-validation-report.md).  
+Certification: [`rc-24-reporting-ai-notification-certification.md`](./rc-24-reporting-ai-notification-certification.md).  
+**Next:** RC-25 Planning (Market Qualification + Market Profile).
+
 **RC-18 residual (parallel governance):** US295 / ADL-008 remains **Open** — close or record explicit accepted deferral before production restart-safety PASS claims. Residual ownership: [`rc-18-residual-register.md`](./rc-18-residual-register.md).
 
 ---
 
 # Current Goal
 
-RC-23 Runtime Enforcement is **CLOSED** (tag `v1.0.0-rc23`). RC-24+ planning
-begins only after this official closure. IDE shell remains deferred. Do not
-start the next RC implementation until its Implementation Plan is approved.
+RC-24 is **CLOSED**. Begin **RC-25 Planning** (Market Qualification + Market
+Profile). IDE shell remains deferred.
 
 Historical Research OS goal (unchanged): Evidence-driven Research OS —
 reproducible experiments, immutable Knowledge, clear provenance/versioning.

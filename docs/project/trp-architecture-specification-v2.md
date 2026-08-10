@@ -389,7 +389,7 @@ Terminology definitions: [Architecture Glossary](./v2-architecture-glossary.md).
 
 **Outputs.** Commands into canonical ports; non-authoritative displays.
 
-**Interactions.** Not a financial or lifecycle state machine. Telegram (when used) is notification projection only—not a control plane in V2.
+**Interactions.** Not a financial or lifecycle state machine. Telegram (when used) is notification projection only—not a control plane in V2. **Notification Delivery (RC-24)** owns channel adapters (Telegram first; other channels reserved): delivery layer only — never Source of Truth, never business decisions, never report generation, never trading commands.
 
 ### 5.17 Live Market Data
 

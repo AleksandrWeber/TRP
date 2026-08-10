@@ -11,6 +11,14 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ### Added
 
+- RC-24 — Reporting, AI Analytics & Notification Delivery (Epics 1–6):
+  Reporting boundary + Lake reads + domain model + deterministic report
+  generation; AI analytical narratives over ReportRun; Notification Delivery
+  Layer (`notification-delivery` module) with Telegram channel adapter,
+  preferences, connection workflow, and delivery routing. Telegram remains
+  notification projection only (not a control plane). Validation PASS.
+  Tag `v1.0.0-rc24`. Closure: `docs/project/rc-24-closure-report.md`.
+  Certification: `docs/project/rc-24-reporting-ai-notification-certification.md`.
 - RC-23 — Runtime Enforcement (Epics 1–6): sole validation Gate between
   Strategy Library SoT and Strategy Deployment / Trading Session
   (`runtime-enforcement` module) with Library read ports, fail-closed

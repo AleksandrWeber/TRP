@@ -169,19 +169,29 @@ Orchestrator / Market State / Selection / Enforcement REST remain deferred.
 
 ---
 
-## RC-24 — Reporting & AI Analytics
+## RC-24 — Reporting, AI Analytics & Notification Delivery
 
-**Goal (unchanged):** Daily/weekly narratives + web reports; Telegram alerts later in same or next RC.  
-**Tasks (unchanged):** Report jobs over Lake/projections; AI explain-only; Telegram for reports/alerts only.  
-**Result (unchanged):** Ops/research reporting without control-plane Telegram.
+**Goal (unchanged intent):** Daily/weekly narratives + web reports; Telegram (and reserved channels) for report/alert **delivery** only — never a control plane.  
+**Tasks (delivered in RC-24):** Report generation over Lake/projections; AI explain-only narratives; Notification Delivery Layer (Telegram active).  
+**Result:** Ops/research reporting with channel delivery without control-plane Telegram.
 
-**User Value:** Automatic daily and weekly reports (and later critical alerts) explain what happened — AI clarifies, it does not trade.
+**User Value:** Automatic daily and weekly reports (and critical alerts) explain what happened — AI clarifies, it does not trade; Notification Delivery routes messages, it does not decide.
 
 **Estimated complexity:** **Medium**
 
 **Main implementation risk:** Reports recompute money independently of Ledger (shadow accounting).
 
-**Depends on:** Knowledge Lake (RC-23); Command Center metrics helpful.
+**Depends on:** Knowledge Lake (**RC-21** CLOSED; historical roadmap said RC-23); Command Center metrics helpful.
+
+**Planning package (2026-08-10):** approved.  
+**Epic 1 (2026-08-10):** [`rc-24-epic1-reporting-boundary.md`](./rc-24-epic1-reporting-boundary.md) — **approved**.  
+**Epic 2 (2026-08-10):** [`rc-24-epic2-knowledge-lake-read-integration.md`](./rc-24-epic2-knowledge-lake-read-integration.md) — **approved**.  
+**Epic 3 (2026-08-10):** [`rc-24-epic3-reporting-domain-model.md`](./rc-24-epic3-reporting-domain-model.md) — **approved**.  
+**Epic 4 (2026-08-10):** [`rc-24-epic4-report-generation.md`](./rc-24-epic4-report-generation.md) — deterministic report generation; **approved**.  
+**Epic 5 (2026-08-10):** [`rc-24-epic5-ai-analytical-narratives.md`](./rc-24-epic5-ai-analytical-narratives.md) — analytical narratives over ReportRun; **approved**.  
+**Epic 6 (2026-08-10):** [`rc-24-epic6-notification-delivery.md`](./rc-24-epic6-notification-delivery.md) — Notification Delivery Layer (Telegram); **approved**.  
+**Docs sync (2026-08-10):** [`rc-24-notification-delivery-docs-sync.md`](./rc-24-notification-delivery-docs-sync.md).  
+**Validation / Certification / Closure (2026-08-10):** [`rc-24-validation-report.md`](./rc-24-validation-report.md) · [`rc-24-reporting-ai-notification-certification.md`](./rc-24-reporting-ai-notification-certification.md) · [`rc-24-closure-report.md`](./rc-24-closure-report.md) — **CLOSED** · tag `v1.0.0-rc24`.
 
 ---
 
@@ -251,20 +261,20 @@ Orchestrator / Market State / Selection / Enforcement REST remain deferred.
 
 ## Summary table
 
-| RC             | Theme                            | Complexity | Biggest risk (one line)                   | Status                     |
-| -------------- | -------------------------------- | ---------- | ----------------------------------------- | -------------------------- |
-| 18 closeout    | US295 / docs sync                | Small      | Starting V2 before recovery claim closure | Open (US295)               |
-| 19             | Spec v2.0 + thin hooks           | Medium     | Spec invents new architecture             | **COMPLETE**               |
-| 20             | Command Center foundation        | Large      | UI as false SoT                           | **COMPLETE**               |
-| 21             | Knowledge Lake (projection)      | Large      | Lake as SoT                               | **CLOSED** (`v1.0.0-rc21`) |
-| 21b (deferred) | IDE + Bot UX                     | Large      | Duplicated runtime (Bot ≠ Session)        | Deferred                   |
-| 22             | Library + Envelope               | Large      | Envelope not enforced                     | **CLOSED** (`v1.0.0-rc22`) |
-| 23             | Runtime Enforcement (Gate)       | Large      | Soft-fail / duplicate validation          | **CLOSED** (`v1.0.0-rc23`) |
-| 23b (history)  | Knowledge Lake (historical slot) | Large      | — (delivered as RC-21)                    | Superseded by RC-21        |
-| 24             | Reporting / AI / Telegram        | Medium     | Shadow accounting in reports              | Planned                    |
-| 25             | Qualification / Profile          | Medium     | Profiles force trades                     | Planned                    |
-| 26             | Orchestrator                     | XL         | God-module / bypass                       | Planned                    |
-| 27             | Multi-exchange scope             | XL         | Cloned engines                            | Planned                    |
-| 28             | V2 stabilize                     | Large      | Fake “done” without conformance           | Planned                    |
+| RC             | Theme                                  | Complexity | Biggest risk (one line)                   | Status                     |
+| -------------- | -------------------------------------- | ---------- | ----------------------------------------- | -------------------------- |
+| 18 closeout    | US295 / docs sync                      | Small      | Starting V2 before recovery claim closure | Open (US295)               |
+| 19             | Spec v2.0 + thin hooks                 | Medium     | Spec invents new architecture             | **COMPLETE**               |
+| 20             | Command Center foundation              | Large      | UI as false SoT                           | **COMPLETE**               |
+| 21             | Knowledge Lake (projection)            | Large      | Lake as SoT                               | **CLOSED** (`v1.0.0-rc21`) |
+| 21b (deferred) | IDE + Bot UX                           | Large      | Duplicated runtime (Bot ≠ Session)        | Deferred                   |
+| 22             | Library + Envelope                     | Large      | Envelope not enforced                     | **CLOSED** (`v1.0.0-rc22`) |
+| 23             | Runtime Enforcement (Gate)             | Large      | Soft-fail / duplicate validation          | **CLOSED** (`v1.0.0-rc23`) |
+| 23b (history)  | Knowledge Lake (historical slot)       | Large      | — (delivered as RC-21)                    | Superseded by RC-21        |
+| 24             | Reporting / AI / Notification Delivery | Medium     | Shadow accounting in reports              | **CLOSED** (`v1.0.0-rc24`) |
+| 25             | Qualification / Profile                | Medium     | Profiles force trades                     | Planned                    |
+| 26             | Orchestrator                           | XL         | God-module / bypass                       | Planned                    |
+| 27             | Multi-exchange scope                   | XL         | Cloned engines                            | Planned                    |
+| 28             | V2 stabilize                           | Large      | Fake “done” without conformance           | Planned                    |
 
 Sequencing note: RC-21 Implementation Plan §0 advanced Knowledge Lake to RC-21 and deferred IDE. RC-23 Implementation Plan §0 assigned the vacated RC-23 integer to Runtime Enforcement. Goals unchanged; numbering override only.

@@ -171,7 +171,7 @@ Related:
 
 ## Current Phase
 
-**RC-23 CLOSED · Next: RC-24+ planning only after this closure**
+**RC-23 CLOSED · RC-24 CLOSED**
 
 RC-16 paper path and RC-17 Runtime Recovery are baselined. RC-18 mandatory
 residuals R1–R5 (US290–US294) are Done; **US295** (ADL-008) remains Open.
@@ -191,6 +191,11 @@ Nest ports / persistence / Orchestrator remain deferred.
 [`rc-23-closure-report.md`](./rc-23-closure-report.md). Gate certified;
 Orchestrator / Selection remain deferred. Sequencing:
 [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
+
+**RC-24** Reporting, AI Analytics & Notification Delivery is **CLOSED**
+(tag `v1.0.0-rc24`) —
+[`rc-24-closure-report.md`](./rc-24-closure-report.md).
+Next: RC-25 Planning.
 
 Story IDs: **US240–US299** — [`story-id-allocation.md`](./story-id-allocation.md).
 
@@ -274,10 +279,10 @@ Authority: [`rc-19-closure-report.md`](./rc-19-closure-report.md),
 
 ## Future Milestones
 
-**Version 1 (`v1.0.0`) is complete.** RC-19…RC-23 V2 path through Runtime
-Enforcement is **CLOSED**. Near-term engineering continues with **RC-24+**
-(Reporting/AI and sequenced V2 epics), parallel **US295** ADL-008 closeout for
-production-claim language, then RC-24…RC-28 per
+**Version 1 (`v1.0.0`) is complete.** RC-19…RC-24 V2 path through Reporting,
+AI Analytics & Notification Delivery is **CLOSED**. Parallel **US295**
+ADL-008 closeout for production-claim language continues, then RC-25…RC-28
+implementation per
 [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
 
 Later themes (new ADR required where architecture changes):

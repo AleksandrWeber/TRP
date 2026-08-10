@@ -1,6 +1,6 @@
 # Release History
 
-Date: 2026-08-01
+Date: 2026-08-10
 
 Status: Authoritative living summary of release outcomes
 
@@ -37,6 +37,33 @@ Related:
 | RC-21   | Knowledge Lake (projection warehouse)                                  | **CLOSED**            | Epics 1–6 · tag `v1.0.0-rc21`      | Append-only Lake + query port; IDE deferred — [`rc-21-closure-report.md`](./rc-21-closure-report.md)                                                                                                                                                     |
 | RC-22   | Strategy Library + library Tactical Envelope (domain)                  | **CLOSED**            | Epics 1–6 · tag `v1.0.0-rc22`      | Certified membership domain; Nest ports deferred — [`rc-22-closure-report.md`](./rc-22-closure-report.md)                                                                                                                                                |
 | RC-23   | Runtime Enforcement (Gate)                                             | **CLOSED**            | Epics 1–6 · tag `v1.0.0-rc23`      | Library→Deployment/Session validation Gate — [`rc-23-closure-report.md`](./rc-23-closure-report.md)                                                                                                                                                      |
+| RC-24   | Reporting, AI Analytics & Notification Delivery                        | **CLOSED**            | Epics 1–6 · tag `v1.0.0-rc24`      | Projection reports + AI narratives + Telegram delivery — [`rc-24-closure-report.md`](./rc-24-closure-report.md)                                                                                                                                          |
+
+---
+
+## RC-24
+
+| Field         | Value                                                                                                    |
+| ------------- | -------------------------------------------------------------------------------------------------------- |
+| Theme         | Reporting, AI Analytics & Notification Delivery                                                          |
+| Status        | **CLOSED**                                                                                               |
+| Completion    | Epics 1–6 · tag `v1.0.0-rc24`                                                                            |
+| Closure       | [`rc-24-closure-report.md`](./rc-24-closure-report.md)                                                   |
+| Validation    | [`rc-24-validation-report.md`](./rc-24-validation-report.md)                                             |
+| Certification | [`rc-24-reporting-ai-notification-certification.md`](./rc-24-reporting-ai-notification-certification.md) |
+
+### Delivered
+
+- Reporting boundary + Knowledge Lake read integration + domain model
+- Deterministic report generation + query ports
+- AI analytical narratives over ReportRun (non-authoritative)
+- Notification Delivery Layer — Telegram active; other channels reserved; delivery only
+
+### Explicitly deferred
+
+- Trading Orchestrator / Market State / Strategy Selection
+- Market Qualification / Multi Exchange
+- Reporting UI / REST / durable notification persistence / production Telegram Bot network
 
 ---
 
