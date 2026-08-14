@@ -19,6 +19,7 @@ import {
   type ReportingFactMode,
 } from './reporting-domain-shared';
 import { createReportingSourceRef, type ReportingSourceRef } from './reporting-source-ref';
+import { resolveExchangeScopeId } from '../../exchange-scope';
 
 /** Non-authoritative summary of Lake/history inputs cited by a run. */
 export type ReportRunSourceSummary = Readonly<{
@@ -34,7 +35,8 @@ export type ReportRun = Readonly<{
   definitionSnapshot: ReportDefinition;
   window: HistoricalWindow;
   modes: readonly ReportingFactMode[];
-  exchangeScopeId?: string;
+  /** RC-27 Epic 4 — defaults to Binance when omitted. */
+  exchangeScopeId: string;
   tradingSessionId?: string;
   libraryEntryId?: string;
   status: ReportRunStatus;
@@ -116,10 +118,7 @@ export function createReportRun(input: CreateReportRunInput): ReportRun {
     }
   }
 
-  const exchangeScopeId =
-    input.exchangeScopeId !== undefined && input.exchangeScopeId.trim() !== ''
-      ? input.exchangeScopeId.trim()
-      : undefined;
+  const exchangeScopeId = resolveExchangeScopeId(input.exchangeScopeId);
   const tradingSessionId =
     input.tradingSessionId !== undefined && input.tradingSessionId.trim() !== ''
       ? input.tradingSessionId.trim()
@@ -136,7 +135,7 @@ export function createReportRun(input: CreateReportRunInput): ReportRun {
     definitionSnapshot: snapshotReportDefinition(input.definition),
     window: resolvedWindow,
     modes: Object.freeze([...modes]),
-    ...(exchangeScopeId !== undefined ? { exchangeScopeId } : {}),
+    exchangeScopeId,
     ...(tradingSessionId !== undefined ? { tradingSessionId } : {}),
     ...(libraryEntryId !== undefined ? { libraryEntryId } : {}),
     status,

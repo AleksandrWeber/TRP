@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import type { LedgerAccountSummary } from '../../ledger/domain/ledger-account-summary';
+import { assertSameExchangeScope, resolveExchangeScopeId } from '../../exchange-scope';
 import { FinancialDecimal } from '../../financial';
 import type { PositionValuation } from './position-valuation';
 
@@ -8,6 +9,8 @@ export const PORTFOLIO_PROJECTION_SCHEMA_VERSION = 1;
 export type PortfolioProjection = Readonly<{
   id: string;
   workspaceId: string;
+  /** RC-27 Epic 4 — Exchange Scope identity (from Ledger summary). */
+  exchangeScopeId: string;
   paperAccountId: string;
   currency: string;
   availableCash: string;
@@ -46,6 +49,11 @@ export function projectPortfolio(
     ) {
       throw new Error('Position valuation does not belong to Portfolio identity');
     }
+    assertSameExchangeScope(
+      ledger.exchangeScopeId,
+      valuation.exchangeScopeId,
+      'portfolio/valuation exchange scope',
+    );
   }
 
   const marketValue = sum(ordered.map((value) => value.marketValue));
@@ -78,6 +86,7 @@ export function projectPortfolio(
   return Object.freeze({
     id: `portfolio:${ledger.workspaceId}:${ledger.paperAccountId}`,
     workspaceId: ledger.workspaceId,
+    exchangeScopeId: resolveExchangeScopeId(ledger.exchangeScopeId),
     paperAccountId: ledger.paperAccountId,
     currency: ledger.currency,
     availableCash: FinancialDecimal.from(ledger.availableCash).toString(),

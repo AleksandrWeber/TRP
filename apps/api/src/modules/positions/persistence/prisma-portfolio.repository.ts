@@ -50,6 +50,7 @@ function toCreateData(
   return {
     id: value.id,
     workspaceId: value.workspaceId,
+    exchangeScopeId: value.exchangeScopeId,
     paperAccountId: value.paperAccountId,
     ...toValues(value),
   };
@@ -89,6 +90,7 @@ function toDomain(row: Row): PortfolioProjection {
   return Object.freeze({
     id: row.id,
     workspaceId: row.workspaceId,
+    exchangeScopeId: row.exchangeScopeId,
     paperAccountId: row.paperAccountId,
     currency: row.currency,
     availableCash: row.availableCash.toFixed(),

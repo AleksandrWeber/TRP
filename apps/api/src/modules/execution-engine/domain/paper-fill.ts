@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { resolveExchangeScopeId } from '../../exchange-scope';
 import { FinancialDecimal } from '../../financial';
 import type { PaperFillFact } from '../../execution-adapter';
 
@@ -15,6 +16,8 @@ export type PaperFillSide = 'buy' | 'sell';
 export type PaperFill = Readonly<{
   id: string;
   workspaceId: string;
+  /** RC-27 Epic 4 — Exchange Scope identity (propagated from Order). */
+  exchangeScopeId: string;
   orderId: string;
   paperAccountId: string;
   tradingSessionId: string;
@@ -37,6 +40,8 @@ export type PaperFill = Readonly<{
 
 export type CreatePaperFillInput = Readonly<{
   workspaceId: string;
+  /** Optional; defaults to Binance Exchange Scope (RC-19). Prefer Order scope. */
+  exchangeScopeId?: string;
   orderId: string;
   paperAccountId: string;
   tradingSessionId: string;
@@ -51,6 +56,7 @@ export type CreatePaperFillInput = Readonly<{
 
 export function createPaperFill(input: CreatePaperFillInput): PaperFill {
   const workspaceId = required(input.workspaceId, 'workspace id');
+  const exchangeScopeId = resolveExchangeScopeId(input.exchangeScopeId);
   const orderId = required(input.orderId, 'order id');
   const paperAccountId = required(input.paperAccountId, 'paper account id');
   const tradingSessionId = required(input.tradingSessionId, 'trading session id');
@@ -73,6 +79,7 @@ export function createPaperFill(input: CreatePaperFillInput): PaperFill {
   return Object.freeze({
     id,
     workspaceId,
+    exchangeScopeId,
     orderId,
     paperAccountId,
     tradingSessionId,

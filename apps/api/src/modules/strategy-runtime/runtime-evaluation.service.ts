@@ -160,6 +160,7 @@ export class RuntimeEvaluationService {
         if (decision.kind === EvaluationOutcomeKind.SIGNAL_INTENT) {
           const candidate = createSignalIntent({
             workspaceId,
+            exchangeScopeId: deployment.exchangeScopeId,
             deploymentId: deployment.id,
             sessionId,
             strategyVersion: deployment.strategyVersion,

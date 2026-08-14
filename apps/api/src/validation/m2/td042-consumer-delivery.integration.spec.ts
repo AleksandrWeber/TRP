@@ -232,6 +232,7 @@ describe('TD-042 — durable consumer delivery acknowledgements', () => {
         Object.freeze({
           id: row.id,
           workspaceId: row.workspaceId,
+          exchangeScopeId: row.exchangeScopeId,
           orderId: row.orderId,
           paperAccountId: row.paperAccountId,
           tradingSessionId: row.tradingSessionId,

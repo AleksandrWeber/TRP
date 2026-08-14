@@ -6,6 +6,7 @@ import { valuePosition, type PositionMarkPrice } from './position-valuation';
 const position: Position = Object.freeze({
   id: 'position-1',
   workspaceId: 'workspace-1',
+  exchangeScopeId: 'exchange-scope:binance',
   paperAccountId: 'account-1',
   instrument: 'BTCUSDT',
   side: PositionSide.LONG,

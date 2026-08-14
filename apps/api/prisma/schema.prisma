@@ -513,6 +513,8 @@ model SignalIntent {
   intentVersion    Int      @map("intent_version")
   intentHash       String   @map("intent_hash")
   workspaceId      String   @map("workspace_id")
+  /// RC-27 Epic 4 — Exchange Scope identity (default Binance).
+  exchangeScopeId  String   @default("exchange-scope:binance") @map("exchange_scope_id")
   deploymentId     String   @map("deployment_id")
   sessionId        String   @map("session_id")
   strategyVersion  String   @map("strategy_version")
@@ -539,6 +541,8 @@ model SignalIntent {
 model PaperStrategyDeployment {
   id                            String    @id
   workspaceId                   String    @map("workspace_id")
+  /// RC-27 Epic 4 — Exchange Scope identity (default Binance).
+  exchangeScopeId               String    @default("exchange-scope:binance") @map("exchange_scope_id")
   strategyId                    String    @map("strategy_id")
   strategyVersion               String    @map("strategy_version")
   experimentId                  String?   @map("experiment_id")
@@ -678,6 +682,8 @@ model SessionRecoveryIncident {
 model PaperOrder {
   id               String                @id
   workspaceId      String                @map("workspace_id")
+  /// RC-27 Epic 4 — Exchange Scope identity (default Binance).
+  exchangeScopeId  String                @default("exchange-scope:binance") @map("exchange_scope_id")
   paperAccountId   String                @map("paper_account_id")
   tradingSessionId String                @map("trading_session_id")
   clientOrderId    String                @map("client_order_id")
@@ -799,6 +805,8 @@ model RiskDecision {
 model PaperFill {
   id                   String   @id
   workspaceId          String   @map("workspace_id")
+  /// RC-27 Epic 4 — Exchange Scope identity (default Binance).
+  exchangeScopeId      String   @default("exchange-scope:binance") @map("exchange_scope_id")
   orderId              String   @map("order_id")
   paperAccountId       String   @map("paper_account_id")
   tradingSessionId     String   @map("trading_session_id")
@@ -830,6 +838,8 @@ model PaperFill {
 model PaperPosition {
   id                      String   @id
   workspaceId             String   @map("workspace_id")
+  /// RC-27 Epic 4 — Exchange Scope identity (default Binance).
+  exchangeScopeId         String   @default("exchange-scope:binance") @map("exchange_scope_id")
   paperAccountId          String   @map("paper_account_id")
   instrument              String
   side                    String
@@ -868,6 +878,8 @@ model PositionFillApplication {
 model LedgerTransaction {
   id                 String        @id
   workspaceId        String        @map("workspace_id")
+  /// RC-27 Epic 4 — Exchange Scope identity (default Binance).
+  exchangeScopeId    String        @default("exchange-scope:binance") @map("exchange_scope_id")
   paperAccountId     String        @map("paper_account_id")
   idempotencyKey     String        @map("idempotency_key")
   causeType          String        @map("cause_type")
@@ -906,6 +918,8 @@ model LedgerEntry {
 model PositionValuation {
   id                String   @id
   workspaceId       String   @map("workspace_id")
+  /// RC-27 Epic 4 — Exchange Scope identity (default Binance).
+  exchangeScopeId   String   @default("exchange-scope:binance") @map("exchange_scope_id")
   paperAccountId    String   @map("paper_account_id")
   positionId        String   @map("position_id")
   instrument        String
@@ -933,6 +947,8 @@ model PositionValuation {
 model PaperPortfolioProjection {
   id                  String   @id
   workspaceId         String   @map("workspace_id")
+  /// RC-27 Epic 4 — Exchange Scope identity (default Binance).
+  exchangeScopeId     String   @default("exchange-scope:binance") @map("exchange_scope_id")
   paperAccountId      String   @map("paper_account_id")
   currency            String
   availableCash       Decimal  @map("available_cash") @db.Decimal(38, 18)

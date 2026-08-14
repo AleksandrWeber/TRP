@@ -3,6 +3,7 @@ import {
   prismaClientForTransaction,
   type TransactionContext,
 } from '../../../storage/prisma/prisma-transaction.service';
+import { resolveExchangeScopeId } from '../../exchange-scope';
 import {
   isSignalIntentDirection,
   SignalIntentDirection,
@@ -56,6 +57,7 @@ type SignalIntentRow = {
   intentVersion: number;
   intentHash: string;
   workspaceId: string;
+  exchangeScopeId: string;
   deploymentId: string;
   sessionId: string;
   strategyVersion: string;
@@ -77,6 +79,7 @@ function toRow(intent: SignalIntent): Prisma.SignalIntentUncheckedCreateInput {
     intentVersion: intent.intentVersion,
     intentHash: intent.intentHash,
     workspaceId: intent.workspaceId,
+    exchangeScopeId: intent.exchangeScopeId,
     deploymentId: intent.deploymentId,
     sessionId: intent.sessionId,
     strategyVersion: intent.strategyVersion,
@@ -108,6 +111,7 @@ function toDomain(row: SignalIntentRow): SignalIntent {
     id: row.id,
     intentHash: row.intentHash,
     workspaceId: row.workspaceId,
+    exchangeScopeId: resolveExchangeScopeId(row.exchangeScopeId),
     deploymentId: row.deploymentId,
     sessionId: row.sessionId,
     strategyVersion: row.strategyVersion,

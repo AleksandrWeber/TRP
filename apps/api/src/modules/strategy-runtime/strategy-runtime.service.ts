@@ -73,6 +73,7 @@ export class StrategyRuntimeService implements StrategyRuntimePort {
     return createRuntimeContext({
       workspaceId,
       sessionId,
+      exchangeScopeId: query.exchangeScopeId,
       deployment,
       checkpoint,
     });

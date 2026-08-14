@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { resolveExchangeScopeId } from '../../exchange-scope';
 import { FinancialDecimal } from '../../financial';
 
 export const LEDGER_TRANSACTION_SCHEMA_VERSION = 1;
@@ -38,6 +39,8 @@ export type LedgerEntry = Readonly<{
 export type LedgerTransaction = Readonly<{
   id: string;
   workspaceId: string;
+  /** RC-27 Epic 4 — Exchange Scope identity (propagated from Account / Fill). */
+  exchangeScopeId: string;
   paperAccountId: string;
   idempotencyKey: string;
   causeType: LedgerCauseType;
@@ -53,6 +56,8 @@ export type LedgerTransaction = Readonly<{
 
 export type CreateLedgerTransactionInput = Readonly<{
   workspaceId: string;
+  /** Optional; defaults to Binance Exchange Scope (RC-19). */
+  exchangeScopeId?: string;
   paperAccountId: string;
   idempotencyKey: string;
   causeType: LedgerCauseType;
@@ -79,6 +84,7 @@ export type CreateLedgerTransactionInput = Readonly<{
  */
 export function createLedgerTransaction(input: CreateLedgerTransactionInput): LedgerTransaction {
   const workspaceId = required(input.workspaceId, 'workspace id');
+  const exchangeScopeId = resolveExchangeScopeId(input.exchangeScopeId);
   const paperAccountId = required(input.paperAccountId, 'paper account id');
   const idempotencyKey = required(input.idempotencyKey, 'idempotency key');
   const causeId = required(input.causeId, 'cause id');
@@ -132,6 +138,7 @@ export function createLedgerTransaction(input: CreateLedgerTransactionInput): Le
   return Object.freeze({
     id: transactionId,
     workspaceId,
+    exchangeScopeId,
     paperAccountId,
     idempotencyKey,
     causeType: input.causeType,

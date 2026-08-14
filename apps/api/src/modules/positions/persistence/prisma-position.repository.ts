@@ -136,6 +136,7 @@ function toData(position: Position): Prisma.PaperPositionUncheckedCreateInput {
   return {
     id: position.id,
     workspaceId: position.workspaceId,
+    exchangeScopeId: position.exchangeScopeId,
     paperAccountId: position.paperAccountId,
     instrument: position.instrument,
     side: position.side,
@@ -173,6 +174,7 @@ function toDomain(row: PositionRow): Position {
   return Object.freeze({
     id: row.id,
     workspaceId: row.workspaceId,
+    exchangeScopeId: row.exchangeScopeId,
     paperAccountId: row.paperAccountId,
     instrument: row.instrument,
     side: row.side as PositionSide,

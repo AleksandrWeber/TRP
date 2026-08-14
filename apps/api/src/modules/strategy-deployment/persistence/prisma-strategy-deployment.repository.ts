@@ -89,6 +89,7 @@ export class PrismaStrategyDeploymentRepository implements StrategyDeploymentRep
 type StrategyDeploymentRow = {
   id: string;
   workspaceId: string;
+  exchangeScopeId: string;
   strategyId: string;
   strategyVersion: string;
   experimentId: string | null;
@@ -117,6 +118,7 @@ function toRow(deployment: StrategyDeployment): Prisma.PaperStrategyDeploymentUn
   return {
     id: deployment.id,
     workspaceId: deployment.workspaceId,
+    exchangeScopeId: deployment.exchangeScopeId,
     strategyId: deployment.strategyId,
     strategyVersion: deployment.strategyVersion,
     experimentId: deployment.experimentId,
@@ -155,6 +157,7 @@ function toDomain(row: StrategyDeploymentRow): StrategyDeployment {
   return Object.freeze({
     id: row.id,
     workspaceId: row.workspaceId,
+    exchangeScopeId: row.exchangeScopeId,
     strategyId: row.strategyId,
     strategyVersion: row.strategyVersion,
     experimentId: row.experimentId,

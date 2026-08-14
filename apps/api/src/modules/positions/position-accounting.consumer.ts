@@ -179,6 +179,7 @@ function fillFromEnvelope(event: DurableEventEnvelope): PaperFill {
   return Object.freeze({
     id: fillId,
     workspaceId: event.workspaceId,
+    exchangeScopeId: optionalText(payload.exchangeScopeId) ?? 'exchange-scope:binance',
     orderId: text(payload.orderId, 'orderId'),
     paperAccountId: text(payload.paperAccountId, 'paperAccountId'),
     tradingSessionId: text(payload.tradingSessionId, 'tradingSessionId'),
@@ -243,6 +244,12 @@ function text(value: unknown, label: string): string {
     throw new Error(`Fill event ${label} must be a non-empty string`);
   }
   return value;
+}
+
+function optionalText(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return trimmed === '' ? null : trimmed;
 }
 
 function integer(value: unknown, label: string): number {

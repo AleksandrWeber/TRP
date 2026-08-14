@@ -6,6 +6,7 @@ import {
   roundQuantity,
   type FinancialPrecision,
 } from '../../financial';
+import { assertSameExchangeScope } from '../../exchange-scope';
 import type { PaperFill } from '../../execution-engine';
 
 export const POSITION_SCHEMA_VERSION = 1;
@@ -18,6 +19,8 @@ export enum PositionSide {
 export type Position = Readonly<{
   id: string;
   workspaceId: string;
+  /** RC-27 Epic 4 — Exchange Scope identity (propagated from Fill). */
+  exchangeScopeId: string;
   paperAccountId: string;
   instrument: string;
   side: PositionSide;
@@ -131,6 +134,7 @@ function transition(
   const position = Object.freeze({
     id: current?.id ?? positionId(fill.workspaceId, fill.paperAccountId, fill.instrument),
     workspaceId: fill.workspaceId,
+    exchangeScopeId: fill.exchangeScopeId,
     paperAccountId: fill.paperAccountId,
     instrument: fill.instrument,
     side: values.side,
@@ -160,6 +164,11 @@ function assertCurrentIdentity(current: Position | null, fill: PaperFill): void 
   ) {
     throw new Error('Fill does not belong to the Position identity');
   }
+  assertSameExchangeScope(
+    current.exchangeScopeId,
+    fill.exchangeScopeId,
+    'position/fill exchange scope',
+  );
   if (current.lastAppliedFillId === fill.id) {
     throw new Error('Fill has already been applied to Position');
   }

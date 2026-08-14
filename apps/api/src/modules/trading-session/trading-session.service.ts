@@ -174,6 +174,7 @@ export class TradingSessionService {
           workspaceId: session.workspaceId,
           sessionId: session.id,
           deploymentId: session.deploymentId,
+          exchangeScopeId: session.exchangeScopeId,
         });
       }
 

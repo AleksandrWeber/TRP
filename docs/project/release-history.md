@@ -1,6 +1,6 @@
 # Release History
 
-Date: 2026-08-10
+Date: 2026-08-14
 
 Status: Authoritative living summary of release outcomes
 
@@ -40,6 +40,90 @@ Related:
 | RC-24   | Reporting, AI Analytics & Notification Delivery                        | **CLOSED**            | Epics 1–6 · tag `v1.0.0-rc24`      | Projection reports + AI narratives + Telegram delivery — [`rc-24-closure-report.md`](./rc-24-closure-report.md)                                                                                                                                          |
 | RC-25   | Market Qualification + Market Profile                                  | **CLOSED**            | `v1.0.0-rc25`                      | Venue qualification + versioned profiles (confidence only) — [`rc-25-closure-report.md`](./rc-25-closure-report.md)                                                                                                                                      |
 | RC-26   | Trading Orchestrator + Market State                                    | **CLOSED**            | `v1.0.0-rc26`                      | Coordination + current-condition SoT (ports/domain; no Session/Orders/Risk) — [`rc-26-closure-report.md`](./rc-26-closure-report.md)                                                                                                                     |
+| RC-27   | Multi-Exchange Scope                                                   | **CLOSED**            | `v1.0.0-rc27`                      | Venue isolation without engine clones — [`rc-27-closure-report.md`](./rc-27-closure-report.md)                                                                                                                                                           |
+
+---
+
+## RC-27
+
+| Field               | Value                                                                                              |
+| ------------------- | -------------------------------------------------------------------------------------------------- |
+| Theme               | Multi-Exchange Scope                                                                               |
+| Status              | **CLOSED** — Validation PASS · tag `v1.0.0-rc27`                                                   |
+| Tag                 | `v1.0.0-rc27`                                                                                      |
+| Closure             | [`rc-27-closure-report.md`](./rc-27-closure-report.md)                                             |
+| Validation          | [`rc-27-validation-report.md`](./rc-27-validation-report.md) (**PASS**)                            |
+| Certification       | [`rc-27-exchange-scope-certification.md`](./rc-27-exchange-scope-certification.md) (**Ready=YES**) |
+| Implementation Plan | [`rc-27-implementation-plan.md`](./rc-27-implementation-plan.md)                                   |
+| Epics               | [`rc-27-epic-breakdown.md`](./rc-27-epic-breakdown.md)                                             |
+| Epic 1              | [`rc-27-epic1-exchange-scope-boundary.md`](./rc-27-epic1-exchange-scope-boundary.md)               |
+| Boundary Diagram    | [`rc-27-epic1-boundary-diagram.md`](./rc-27-epic1-boundary-diagram.md)                             |
+| Epic 2              | [`rc-27-epic2-domain-model.md`](./rc-27-epic2-domain-model.md)                                     |
+| Epic 3              | [`rc-27-epic3-application-ports.md`](./rc-27-epic3-application-ports.md)                           |
+| Epic 4              | [`rc-27-epic4-trading-path-scope-integration.md`](./rc-27-epic4-trading-path-scope-integration.md) |
+| Epic 5              | [`rc-27-epic5-consumer-read-ports.md`](./rc-27-epic5-consumer-read-ports.md)                       |
+| Epic 6              | [`rc-27-epic6-authority-conformance.md`](./rc-27-epic6-authority-conformance.md)                   |
+| Epic 6 Audit        | [`rc-27-epic6-internal-audit-report.md`](./rc-27-epic6-internal-audit-report.md) (**PASS**)        |
+| Epic 6 Readiness    | [`rc-27-epic6-readiness-report.md`](./rc-27-epic6-readiness-report.md)                             |
+| API                 | [`rc-27-api-contract.md`](./rc-27-api-contract.md)                                                 |
+| Domain              | [`rc-27-domain-model-contract.md`](./rc-27-domain-model-contract.md)                               |
+| Integration         | [`rc-27-integration-diagram.md`](./rc-27-integration-diagram.md)                                   |
+| Planning Validation | [`rc-27-validation-summary.md`](./rc-27-validation-summary.md)                                     |
+| Consistency         | [`rc-27-architecture-consistency-report.md`](./rc-27-architecture-consistency-report.md)           |
+
+### Epic 6 delivered
+
+- Authority conformance + isolation invariants suites (≥2 concurrent scopes)
+- Internal Audit **PASS**; Readiness = ready for Validation (Validation not run)
+- Gate: exchange-scope **48/48 PASS**
+- No new product behaviour / architecture changes
+
+### Explicitly deferred / forbidden in RC-27 Epic 6
+
+- Validation Standard / Module Certification / Git tag / RC Closure
+- REST / UI / durable persistence / live capital
+- New business features under “conformance”
+
+### Epic 5 delivered
+
+- `ExchangeScopeConsumerReadService` Nest façade + query adapter
+- Immutable projections: identity / lifecycle / config / policy / bindings / metadata / active status
+- Explicit workspace aggregate (never invents balances)
+- Gate: 33/33 PASS (`src/modules/exchange-scope`)
+
+### Explicitly deferred / forbidden in RC-27 Epic 5
+
+- REST / UI / durable persistence
+- Exchange routing / API / Runtime / Session / Orders / Execution commands
+- Consumer mutation of Scope
+
+### Epic 4 delivered
+
+- Trading-path `exchangeScopeId` identity on Order / Fill / Position / Ledger / Deployment / Runtime / Signal / Lake / Reporting
+- Additive Prisma defaults (`exchange-scope:binance`); semantic hashes unchanged
+- Isolation: cross-scope Position / RuntimeContext reject
+- Gate: 75/75 PASS (Epic 4 focus suite)
+
+### Explicitly deferred / forbidden in RC-27 Epic 4
+
+- Multi-runtime / routing engine / exchange adapters
+- REST redesign / persistence redesign
+- Cloned Orders / Execution / Accounting / Risk
+- Validation & Release (post–Epic 6)
+
+### Epic 3 delivered
+
+- `ExchangeScopeServicePort` / `QueryPort` / `ConsumerReadPort` Nest wiring
+- Process-local in-memory store (not persistence product)
+- Gate: 24/24 PASS (`src/modules/exchange-scope`)
+
+### Explicitly deferred / forbidden in RC-27 Epic 3
+
+- Trading-path integration (Epic 4+)
+- Multi-runtime / cloned Risk / Orders / Execution / Accounting / Reporting
+- REST / durable persistence / WebSockets / event streaming / UI
+- Live capital / exchange API / authentication / secrets
+- Session / Runtime / Orders / Execution / Risk ownership
 
 ---
 

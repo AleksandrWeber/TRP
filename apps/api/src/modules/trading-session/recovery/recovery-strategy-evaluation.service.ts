@@ -79,6 +79,7 @@ export class RecoveryStrategyEvaluationService {
             workspaceId: arming.workspaceId,
             sessionId: arming.sessionId,
             deploymentId: arming.armedState.deploymentId,
+            exchangeScopeId: session?.exchangeScopeId,
           });
 
     const eventKey =

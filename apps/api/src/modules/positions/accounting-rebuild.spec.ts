@@ -7,6 +7,7 @@ function fill(overrides: Partial<PaperFill>): PaperFill {
   return Object.freeze({
     id: 'fill-buy',
     workspaceId: 'workspace-1',
+    exchangeScopeId: 'exchange-scope:binance',
     orderId: 'order-buy',
     paperAccountId: 'account-1',
     tradingSessionId: 'session-1',

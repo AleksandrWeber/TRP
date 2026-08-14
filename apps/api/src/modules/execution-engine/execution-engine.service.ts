@@ -170,6 +170,7 @@ export class ExecutionEngineService {
 
         const fill = createPaperFill({
           workspaceId: order.workspaceId,
+          exchangeScopeId: order.intent.exchangeScopeId,
           orderId: order.id,
           paperAccountId: order.intent.paperAccountId,
           tradingSessionId: order.intent.tradingSessionId,
@@ -361,6 +362,7 @@ export function orderFillRecordedEnvelope(fill: PaperFill): DurableEventEnvelope
     payload: Object.freeze({
       fillId: fill.id,
       orderId: fill.orderId,
+      exchangeScopeId: fill.exchangeScopeId,
       paperAccountId: fill.paperAccountId,
       tradingSessionId: fill.tradingSessionId,
       adapterOrderId: fill.adapterOrderId,

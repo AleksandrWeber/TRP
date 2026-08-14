@@ -4,6 +4,7 @@ import {
   PrismaTransactionService,
   type TransactionContext,
 } from '../../storage/prisma/prisma-transaction.service';
+import { assertSameExchangeScope } from '../exchange-scope';
 import { toDurableEventId, type DurableEventEnvelope } from '../event-processing';
 import { TransactionalOutboxAppender } from '../event-processing/transactional-outbox-appender';
 import {
@@ -110,7 +111,38 @@ export class OrderService {
   }
 
   async create(command: CreateOrderCommand): Promise<Order> {
-    const intent = createOrderIntent(command);
+    const account = await this.accounts.findById(command.workspaceId, command.paperAccountId);
+    if (!account || account.mode !== 'paper') {
+      throw new Error('paper account not found in workspace');
+    }
+    const session = await this.sessions.findById(command.workspaceId, command.tradingSessionId);
+    if (!session || session.paperAccountId !== command.paperAccountId) {
+      throw new Error('trading session not found for paper account in workspace');
+    }
+    assertSameExchangeScope(
+      account.exchangeScopeId,
+      session.exchangeScopeId,
+      'account/session exchange scope',
+    );
+    if (command.exchangeScopeId !== undefined) {
+      assertSameExchangeScope(
+        command.exchangeScopeId,
+        session.exchangeScopeId,
+        'order/session exchange scope',
+      );
+    }
+
+    const intent = createOrderIntent({
+      ...command,
+      exchangeScopeId: command.exchangeScopeId ?? session.exchangeScopeId,
+    });
+    assertSameExchangeScope(
+      intent.exchangeScopeId,
+      account.exchangeScopeId,
+      'order/account exchange scope',
+    );
+    assertExecutionEligible(session, intent.sessionFencingToken, command.eligibilityCheckedAt);
+
     const idempotent = await this.orders.findByIdempotencyKey(
       intent.workspaceId,
       intent.idempotencyKey,
@@ -129,16 +161,6 @@ export class OrderService {
       assertSameSignalIntentReference(sameClient, intent);
       return sameClient;
     }
-
-    const account = await this.accounts.findById(intent.workspaceId, intent.paperAccountId);
-    if (!account || account.mode !== 'paper') {
-      throw new Error('paper account not found in workspace');
-    }
-    const session = await this.sessions.findById(intent.workspaceId, intent.tradingSessionId);
-    if (!session || session.paperAccountId !== intent.paperAccountId) {
-      throw new Error('trading session not found for paper account in workspace');
-    }
-    assertExecutionEligible(session, intent.sessionFencingToken, command.eligibilityCheckedAt);
 
     const order = createOrder(intent);
     try {

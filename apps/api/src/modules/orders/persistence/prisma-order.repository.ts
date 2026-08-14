@@ -94,6 +94,7 @@ function toCreateData(order: Order): Prisma.PaperOrderUncheckedCreateInput {
   return {
     id: order.id,
     workspaceId: order.workspaceId,
+    exchangeScopeId: order.intent.exchangeScopeId,
     paperAccountId: order.intent.paperAccountId,
     tradingSessionId: order.intent.tradingSessionId,
     clientOrderId: order.intent.clientOrderId,
@@ -245,6 +246,10 @@ function parseIntent(value: Prisma.JsonValue): OrderIntent {
     clientOrderId: string(input.clientOrderId, 'clientOrderId'),
     idempotencyKey: string(input.idempotencyKey, 'idempotencyKey'),
     workspaceId: string(input.workspaceId, 'workspaceId'),
+    exchangeScopeId:
+      input.exchangeScopeId === undefined || input.exchangeScopeId === null
+        ? undefined
+        : string(input.exchangeScopeId, 'exchangeScopeId'),
     paperAccountId: string(input.paperAccountId, 'paperAccountId'),
     tradingSessionId: string(input.tradingSessionId, 'tradingSessionId'),
     sessionFencingToken: number(input.sessionFencingToken, 'sessionFencingToken'),

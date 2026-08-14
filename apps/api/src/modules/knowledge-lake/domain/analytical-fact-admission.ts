@@ -9,6 +9,7 @@ import {
   isKnowledgeLakeEventCategory,
   type KnowledgeLakeEventCategory,
 } from './knowledge-lake-boundary';
+import { resolveExchangeScopeId } from '../../exchange-scope';
 
 /** Paper / live / research / system mode marker (API Contract §4.2). */
 export const KNOWLEDGE_LAKE_FACT_MODES = Object.freeze([
@@ -59,7 +60,8 @@ export type AnalyticalFact = Readonly<{
   category: KnowledgeLakeEventCategory;
   mode: KnowledgeLakeFactMode;
   workspaceId: string;
-  exchangeScopeId?: string;
+  /** RC-27 Epic 4 — defaults to Binance when omitted on admission. */
+  exchangeScopeId: string;
   tradingSessionId?: string;
   correlationId?: string;
   sourceRef?: AnalyticalFactSourceRef;
@@ -218,7 +220,7 @@ export function toAnalyticalFact(
     category,
     mode,
     workspaceId: fact.workspaceId.trim(),
-    ...(fact.exchangeScopeId !== undefined ? { exchangeScopeId: fact.exchangeScopeId } : {}),
+    exchangeScopeId: resolveExchangeScopeId(fact.exchangeScopeId),
     ...(fact.tradingSessionId !== undefined ? { tradingSessionId: fact.tradingSessionId } : {}),
     ...(fact.correlationId !== undefined ? { correlationId: fact.correlationId } : {}),
     ...(fact.sourceRef !== undefined ? { sourceRef: fact.sourceRef } : {}),

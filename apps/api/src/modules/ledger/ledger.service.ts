@@ -94,6 +94,7 @@ export class LedgerService {
 
     const ledgerTransaction = createLedgerTransaction({
       workspaceId: account.workspaceId,
+      exchangeScopeId: account.exchangeScopeId,
       paperAccountId: account.id,
       idempotencyKey: required(command.idempotencyKey, 'idempotency key'),
       causeType: LedgerCauseType.OPENING_CAPITAL,
@@ -364,6 +365,7 @@ function fillLedgerTransaction(
   const fill = accounting.fill;
   return createLedgerTransaction({
     workspaceId: fill.workspaceId,
+    exchangeScopeId: fill.exchangeScopeId,
     paperAccountId: fill.paperAccountId,
     idempotencyKey: `fill:${fill.id}`,
     causeType: LedgerCauseType.FILL,

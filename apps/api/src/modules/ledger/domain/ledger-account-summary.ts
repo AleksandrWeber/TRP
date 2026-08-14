@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { assertSameExchangeScope, resolveExchangeScopeId } from '../../exchange-scope';
 import { FinancialDecimal } from '../../financial';
 import {
   LedgerAccount,
@@ -9,6 +10,8 @@ import {
 
 export type LedgerAccountSummary = Readonly<{
   workspaceId: string;
+  /** RC-27 Epic 4 — Exchange Scope identity (from Ledger transactions). */
+  exchangeScopeId: string;
   paperAccountId: string;
   currency: string;
   availableCash: string;
@@ -31,6 +34,7 @@ export function summarizeLedger(
 ): LedgerAccountSummary {
   const ordered = [...transactions].sort(compareTransactions);
   const currency = ordered[0]?.currency ?? '';
+  const exchangeScopeId = resolveExchangeScopeId(ordered[0]?.exchangeScopeId);
   const totals = new Map<LedgerAccount, FinancialDecimal>();
   let openingCapital = FinancialDecimal.zero();
   for (const transaction of ordered) {
@@ -41,6 +45,11 @@ export function summarizeLedger(
     ) {
       throw new Error('Ledger transaction does not belong to account summary');
     }
+    assertSameExchangeScope(
+      exchangeScopeId,
+      transaction.exchangeScopeId,
+      'ledger summary exchange scope',
+    );
     for (const entry of transaction.entries) {
       const signed =
         entry.direction === LedgerDirection.DEBIT
@@ -70,6 +79,7 @@ export function summarizeLedger(
     .digest('hex');
   return Object.freeze({
     workspaceId,
+    exchangeScopeId,
     paperAccountId,
     currency,
     availableCash: availableCash.toString(),

@@ -5,6 +5,7 @@ import type { PositionValuation } from './position-valuation';
 
 const ledger: LedgerAccountSummary = Object.freeze({
   workspaceId: 'workspace-1',
+  exchangeScopeId: 'exchange-scope:binance',
   paperAccountId: 'account-1',
   currency: 'USDT',
   availableCash: '799.8',
@@ -22,6 +23,7 @@ const ledger: LedgerAccountSummary = Object.freeze({
 const valuation: PositionValuation = Object.freeze({
   id: 'valuation:position-1',
   workspaceId: 'workspace-1',
+  exchangeScopeId: 'exchange-scope:binance',
   paperAccountId: 'account-1',
   positionId: 'position-1',
   instrument: 'BTCUSDT',

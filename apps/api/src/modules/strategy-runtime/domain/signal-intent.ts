@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { resolveExchangeScopeId } from '../../exchange-scope';
 import { isStrategyTimeframe, type StrategyTimeframe } from '../../strategies/strategy';
 
 export const SIGNAL_INTENT_SCHEMA_VERSION = 1;
@@ -27,6 +28,8 @@ export type SignalIntent = Readonly<{
   /** SHA-256 semantic identity; used as the idempotency / dedupe key. */
   intentHash: string;
   workspaceId: string;
+  /** RC-27 Epic 4 — Exchange Scope identity (operational; excluded from intentHash). */
+  exchangeScopeId: string;
   deploymentId: string;
   sessionId: string;
   strategyVersion: string;
@@ -45,6 +48,8 @@ export type SignalIntent = Readonly<{
 
 export type CreateSignalIntentInput = Readonly<{
   workspaceId: string;
+  /** Optional; defaults to Binance Exchange Scope (RC-19). */
+  exchangeScopeId?: string;
   deploymentId: string;
   sessionId: string;
   strategyVersion: string;
@@ -66,6 +71,7 @@ export type CreateSignalIntentInput = Readonly<{
  */
 export function createSignalIntent(input: CreateSignalIntentInput): SignalIntent {
   const workspaceId = required(input.workspaceId, 'workspace id');
+  const exchangeScopeId = resolveExchangeScopeId(input.exchangeScopeId);
   const deploymentId = required(input.deploymentId, 'deployment id');
   const sessionId = required(input.sessionId, 'session id');
   const strategyVersion = required(input.strategyVersion, 'strategy version');
@@ -99,6 +105,7 @@ export function createSignalIntent(input: CreateSignalIntentInput): SignalIntent
     ...semanticIdentity,
     id,
     intentHash,
+    exchangeScopeId,
     recordedAt: input.recordedAt,
     actorId,
     correlationId: optionalId(input.correlationId),

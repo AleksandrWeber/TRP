@@ -1,3 +1,4 @@
+import { resolveExchangeScopeId, assertSameExchangeScope } from '../../exchange-scope';
 import { StrategyDeploymentStatus, type StrategyDeployment } from '../../strategy-deployment';
 import { STRATEGY_RUNTIME_VERSION, type StrategyCheckpoint } from './strategy-checkpoint';
 import { RuntimeWorkerState, type RuntimeWorkerState as WorkerState } from './runtime-lifecycle';
@@ -11,6 +12,8 @@ export type RuntimeContext = Readonly<{
   workspaceId: string;
   /** Opaque session identity reference — Runtime does not own Session state. */
   sessionId: string;
+  /** RC-27 Epic 4 — Exchange Scope identity (from Session / Deployment). */
+  exchangeScopeId: string;
   deploymentId: string;
   deployment: StrategyDeployment;
   checkpoint: StrategyCheckpoint | null;
@@ -20,6 +23,8 @@ export type RuntimeContext = Readonly<{
 export type CreateRuntimeContextInput = Readonly<{
   workspaceId: string;
   sessionId: string;
+  /** Optional; defaults to Deployment scope, then Binance. */
+  exchangeScopeId?: string;
   deployment: StrategyDeployment;
   checkpoint?: StrategyCheckpoint | null;
   runtimeVersion?: string;
@@ -38,6 +43,14 @@ export function createRuntimeContext(input: CreateRuntimeContextInput): RuntimeC
   if (deployment.status !== StrategyDeploymentStatus.APPROVED) {
     throw new Error('runtime context requires an approved strategy deployment');
   }
+  const exchangeScopeId = resolveExchangeScopeId(
+    input.exchangeScopeId ?? deployment.exchangeScopeId,
+  );
+  assertSameExchangeScope(
+    exchangeScopeId,
+    deployment.exchangeScopeId,
+    'runtime/deployment exchange scope',
+  );
   const checkpoint = input.checkpoint ?? null;
   if (checkpoint !== null) {
     if (checkpoint.workspaceId !== workspaceId) {
@@ -54,6 +67,7 @@ export function createRuntimeContext(input: CreateRuntimeContextInput): RuntimeC
   return Object.freeze({
     workspaceId,
     sessionId,
+    exchangeScopeId,
     deploymentId: deployment.id,
     deployment,
     checkpoint,

@@ -61,6 +61,7 @@ function toCreateData(value: PositionValuation): Prisma.PositionValuationUncheck
   return {
     id: value.id,
     workspaceId: value.workspaceId,
+    exchangeScopeId: value.exchangeScopeId,
     paperAccountId: value.paperAccountId,
     positionId: value.positionId,
     instrument: value.instrument,
@@ -94,6 +95,7 @@ function toDomain(row: Row): PositionValuation {
   return Object.freeze({
     id: row.id,
     workspaceId: row.workspaceId,
+    exchangeScopeId: row.exchangeScopeId,
     paperAccountId: row.paperAccountId,
     positionId: row.positionId,
     instrument: row.instrument,

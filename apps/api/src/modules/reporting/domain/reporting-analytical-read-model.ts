@@ -35,7 +35,7 @@ export type ReportingAnalyticalFact = Readonly<{
   category: KnowledgeLakeEventCategory;
   mode: KnowledgeLakeFactMode;
   workspaceId: string;
-  exchangeScopeId?: string;
+  exchangeScopeId: string;
   tradingSessionId?: string;
   correlationId?: string;
   sourceRef?: AnalyticalFactSourceRef;

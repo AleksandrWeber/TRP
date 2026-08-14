@@ -211,6 +211,7 @@ describe('US217/US220 — TradingSessionService Deployment binding + Runtime lif
       workspaceId: 'workspace-1',
       sessionId: 'session-1',
       deploymentId: 'deployment-1',
+      exchangeScopeId: 'exchange-scope:binance',
     });
     expect(runtime.arm).toHaveBeenCalledOnce();
     expect(runtime.emitSignalIntent).not.toHaveBeenCalled();

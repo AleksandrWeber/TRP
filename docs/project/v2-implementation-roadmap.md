@@ -277,8 +277,8 @@ Orchestrator / Market State / Selection / Enforcement REST remain deferred.
 
 ## RC-27 — Multi Exchange Scope expansion
 
-**Goal (unchanged):** Second exchange scope (e.g. Bybit) as proof of isolation invariants.  
-**Tasks (unchanged):** Adapter + scope policy + accounts; cross-scope isolation tests; qualification for new venue.  
+**Goal (unchanged):** Multiple independent Exchange Scopes (e.g. Binance + Bybit proof; Kraken / OKX model-ready) without cloning engines.  
+**Tasks (unchanged):** Scope lifecycle + policy inputs + account bindings + adapter binding context; trading-path keying; cross-scope isolation tests; consumer reads.  
 **Result (unchanged):** Cluster model proven without engine clones.
 
 **User Value:** The user can run isolated exchange workspaces (separate balances/bots/policies) without mixing funds or risk across venues.
@@ -287,7 +287,32 @@ Orchestrator / Market State / Selection / Enforcement REST remain deferred.
 
 **Main implementation risk:** Cloning Risk/Ledger/Execution per exchange (breaks Freeze).
 
-**Depends on:** Exchange Scope model (RC-19/20); Qualification/Profile (RC-25); isolation tests.
+**Depends on:** Exchange Scope model (RC-19/20); Qualification/Profile (RC-25); Orchestrator/Market State (RC-26); isolation tests.
+
+**Planning status (2026-08-14):** **CLOSED** (`v1.0.0-rc27`). Epics 1–6
+**approved**. Validation **PASS**. Certification Ready=YES.
+
+| Deliverable                     | Document                                                                                           |
+| ------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Implementation Plan             | [`rc-27-implementation-plan.md`](./rc-27-implementation-plan.md)                                   |
+| Epic Breakdown                  | [`rc-27-epic-breakdown.md`](./rc-27-epic-breakdown.md)                                             |
+| API Contract (ports)            | [`rc-27-api-contract.md`](./rc-27-api-contract.md)                                                 |
+| Domain Model Contract           | [`rc-27-domain-model-contract.md`](./rc-27-domain-model-contract.md)                               |
+| Integration Diagram             | [`rc-27-integration-diagram.md`](./rc-27-integration-diagram.md)                                   |
+| Validation Summary              | [`rc-27-validation-summary.md`](./rc-27-validation-summary.md)                                     |
+| Architecture Consistency Report | [`rc-27-architecture-consistency-report.md`](./rc-27-architecture-consistency-report.md)           |
+| Epic 1 Report                   | [`rc-27-epic1-exchange-scope-boundary.md`](./rc-27-epic1-exchange-scope-boundary.md)               |
+| Epic 1 Boundary Diagram         | [`rc-27-epic1-boundary-diagram.md`](./rc-27-epic1-boundary-diagram.md)                             |
+| Epic 2 Report                   | [`rc-27-epic2-domain-model.md`](./rc-27-epic2-domain-model.md)                                     |
+| Epic 3 Report                   | [`rc-27-epic3-application-ports.md`](./rc-27-epic3-application-ports.md)                           |
+| Epic 4 Report                   | [`rc-27-epic4-trading-path-scope-integration.md`](./rc-27-epic4-trading-path-scope-integration.md) |
+| Epic 5 Report                   | [`rc-27-epic5-consumer-read-ports.md`](./rc-27-epic5-consumer-read-ports.md)                       |
+| Epic 6 Report                   | [`rc-27-epic6-authority-conformance.md`](./rc-27-epic6-authority-conformance.md)                   |
+| Epic 6 Internal Audit           | [`rc-27-epic6-internal-audit-report.md`](./rc-27-epic6-internal-audit-report.md)                   |
+| Epic 6 Readiness                | [`rc-27-epic6-readiness-report.md`](./rc-27-epic6-readiness-report.md)                             |
+| Validation Report               | [`rc-27-validation-report.md`](./rc-27-validation-report.md)                                       |
+| Module Certification            | [`rc-27-exchange-scope-certification.md`](./rc-27-exchange-scope-certification.md)                 |
+| Closure Report                  | [`rc-27-closure-report.md`](./rc-27-closure-report.md)                                             |
 
 ---
 
@@ -322,7 +347,7 @@ Orchestrator / Market State / Selection / Enforcement REST remain deferred.
 | 24             | Reporting / AI / Notification Delivery | Medium     | Shadow accounting in reports              | **CLOSED** (`v1.0.0-rc24`) |
 | 25             | Qualification / Profile                | Medium     | Profiles force trades                     | **CLOSED** (`v1.0.0-rc25`) |
 | 26             | Orchestrator + Market State            | XL         | God-module / bypass                       | **CLOSED** (`v1.0.0-rc26`) |
-| 27             | Multi-exchange scope                   | XL         | Cloned engines                            | Planned                    |
+| 27             | Multi-exchange scope                   | XL         | Cloned engines                            | **CLOSED** (`v1.0.0-rc27`) |
 | 28             | V2 stabilize                           | Large      | Fake “done” without conformance           | Planned                    |
 
 Sequencing note: RC-21 Implementation Plan §0 advanced Knowledge Lake to RC-21 and deferred IDE. RC-23 Implementation Plan §0 assigned the vacated RC-23 integer to Runtime Enforcement. Goals unchanged; numbering override only.

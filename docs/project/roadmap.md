@@ -203,7 +203,11 @@ Orchestrator / Selection remain deferred. Sequencing:
 **RC-26** Trading Orchestrator + Market State is **CLOSED**
 (tag `v1.0.0-rc26`) —
 [`rc-26-closure-report.md`](./rc-26-closure-report.md).
-Next: RC-27 Planning under a separate task.
+
+**RC-27** Multi-Exchange Scope — **CLOSED** (`v1.0.0-rc27`)
+implemented, awaiting review —
+[`rc-27-epic5-consumer-read-ports.md`](./rc-27-epic5-consumer-read-ports.md).
+Planning package: [`rc-27-implementation-plan.md`](./rc-27-implementation-plan.md).
 
 Story IDs: **US240–US299** — [`story-id-allocation.md`](./story-id-allocation.md).
 
@@ -289,7 +293,7 @@ Authority: [`rc-19-closure-report.md`](./rc-19-closure-report.md),
 
 **Version 1 (`v1.0.0`) is complete.** RC-19…RC-26 V2 path through Trading
 Orchestrator + Market State is **CLOSED** (tag `v1.0.0-rc26`).
-Next: **RC-27 Planning** (Multi Exchange Scope expansion), then RC-28.
+**RC-27** Multi-Exchange Scope is **CLOSED** (`v1.0.0-rc27`). Next: **RC-28 Planning**.
 Parallel **US295** ADL-008 closeout for production-claim language continues.
 Sequencing: [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
 

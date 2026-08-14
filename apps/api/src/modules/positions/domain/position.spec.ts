@@ -15,6 +15,7 @@ function fill(
   return Object.freeze({
     id,
     workspaceId: 'ws-us172',
+    exchangeScopeId: 'exchange-scope:binance',
     orderId: `order-${id}`,
     paperAccountId: 'account-us172',
     tradingSessionId: 'session-us172',

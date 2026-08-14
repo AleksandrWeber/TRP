@@ -68,6 +68,7 @@ function context(): RuntimeContext {
   return {
     workspaceId: 'ws-1',
     sessionId: 'session-1',
+    exchangeScopeId: 'exchange-scope:binance',
     deploymentId: 'deployment-1',
     deployment: {
       id: 'deployment-1',

@@ -18,6 +18,8 @@ import {
 
 export type EmitSignalIntentCommand = Readonly<{
   workspaceId: string;
+  /** Optional; defaults to Binance Exchange Scope (RC-19). */
+  exchangeScopeId?: string;
   deploymentId: string;
   sessionId: string;
   strategyVersion: string;
@@ -61,6 +63,7 @@ export class SignalIntentService {
   async emit(command: EmitSignalIntentCommand): Promise<EmitSignalIntentResult> {
     const intent = createSignalIntent({
       workspaceId: command.workspaceId,
+      exchangeScopeId: command.exchangeScopeId,
       deploymentId: command.deploymentId,
       sessionId: command.sessionId,
       strategyVersion: command.strategyVersion,

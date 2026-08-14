@@ -1,4 +1,5 @@
 import { FinancialDecimal, roundMoney, roundPrice, type FinancialPrecision } from '../../financial';
+import { assertSameExchangeScope } from '../../exchange-scope';
 import type { Position } from './position';
 
 export const POSITION_VALUATION_SCHEMA_VERSION = 1;
@@ -17,6 +18,8 @@ export type PositionMarkPrice = Readonly<{
 export type PositionValuation = Readonly<{
   id: string;
   workspaceId: string;
+  /** RC-27 Epic 4 — Exchange Scope identity (from Position). */
+  exchangeScopeId: string;
   paperAccountId: string;
   positionId: string;
   instrument: string;
@@ -54,6 +57,7 @@ export function valuePosition(
   return Object.freeze({
     id: `valuation:${position.id}`,
     workspaceId: position.workspaceId,
+    exchangeScopeId: position.exchangeScopeId,
     paperAccountId: position.paperAccountId,
     positionId: position.id,
     instrument: position.instrument,
@@ -91,6 +95,13 @@ function assertMark(
   assertIso(mark.recordedAt, 'recordedAt');
   if (current && current.marketStreamId !== mark.marketStreamId) {
     throw new Error('Position valuation cannot switch mark-price streams');
+  }
+  if (current) {
+    assertSameExchangeScope(
+      current.exchangeScopeId,
+      position.exchangeScopeId,
+      'valuation/position exchange scope',
+    );
   }
   if (current && mark.marketSequence <= current.marketSequence) {
     throw new Error('mark price is duplicate or out of order');

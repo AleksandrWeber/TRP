@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { resolveExchangeScopeId } from '../../exchange-scope';
 import { FinancialDecimal } from '../../financial';
 
 export enum OrderSide {
@@ -31,6 +32,8 @@ export type OrderIntent = Readonly<{
   intentHash: string;
   idempotencyKey: string;
   workspaceId: string;
+  /** RC-27 Epic 4 — Exchange Scope identity (operational; excluded from intentHash). */
+  exchangeScopeId: string;
   paperAccountId: string;
   tradingSessionId: string;
   sessionFencingToken: number;
@@ -57,6 +60,8 @@ export type CreateOrderIntentInput = Readonly<{
   clientOrderId: string;
   idempotencyKey: string;
   workspaceId: string;
+  /** Optional; defaults to Binance Exchange Scope (RC-19). */
+  exchangeScopeId?: string;
   paperAccountId: string;
   tradingSessionId: string;
   sessionFencingToken: number;
@@ -97,6 +102,7 @@ export function createOrderIntent(input: CreateOrderIntentInput): OrderIntent {
   const clientOrderId = identifier(input.clientOrderId, 'client order id');
   const idempotencyKey = identifier(input.idempotencyKey, 'idempotency key');
   const workspaceId = required(input.workspaceId, 'workspace id');
+  const exchangeScopeId = resolveExchangeScopeId(input.exchangeScopeId);
   const paperAccountId = required(input.paperAccountId, 'paper account id');
   const tradingSessionId = required(input.tradingSessionId, 'trading session id');
   const actorId = required(input.actorId, 'actor id');
@@ -168,6 +174,7 @@ export function createOrderIntent(input: CreateOrderIntentInput): OrderIntent {
   return deepFreeze({
     intentVersion: 1 as const,
     workspaceId,
+    exchangeScopeId,
     paperAccountId,
     tradingSessionId,
     sessionFencingToken,

@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { resolveExchangeScopeId } from '../../exchange-scope';
 import { isStrategyTimeframe, type StrategyTimeframe } from '../../strategies/strategy';
 
 export const STRATEGY_DEPLOYMENT_SCHEMA_VERSION = 1;
@@ -36,6 +37,8 @@ export type DeploymentEnforcementAuthorization = Readonly<{
 export type StrategyDeployment = Readonly<{
   id: string;
   workspaceId: string;
+  /** RC-27 Epic 4 — Exchange Scope identity (excluded from configurationHash). */
+  exchangeScopeId: string;
   strategyId: string;
   strategyVersion: string;
   experimentId: string | null;
@@ -65,6 +68,8 @@ export type StrategyDeployment = Readonly<{
 export type CreateStrategyDeploymentInput = Readonly<{
   id: string;
   workspaceId: string;
+  /** Optional; defaults to Binance Exchange Scope (RC-19). */
+  exchangeScopeId?: string;
   strategyId: string;
   strategyVersion: string;
   experimentId?: string | null;
@@ -86,6 +91,7 @@ export type CreateStrategyDeploymentInput = Readonly<{
 export function createStrategyDeployment(input: CreateStrategyDeploymentInput): StrategyDeployment {
   const id = required(input.id, 'deployment id');
   const workspaceId = required(input.workspaceId, 'workspace id');
+  const exchangeScopeId = resolveExchangeScopeId(input.exchangeScopeId);
   const strategyId = required(input.strategyId, 'strategy id');
   const strategyVersion = required(input.strategyVersion, 'strategy version');
   const instrument = normalizeInstrument(input.instrument);
@@ -128,6 +134,7 @@ export function createStrategyDeployment(input: CreateStrategyDeploymentInput): 
   return Object.freeze({
     id,
     workspaceId,
+    exchangeScopeId,
     strategyId,
     strategyVersion,
     experimentId,

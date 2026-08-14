@@ -174,6 +174,7 @@ function paperFill(
   return Object.freeze({
     id: `fill-us181-${suffix}`,
     workspaceId: WS,
+    exchangeScopeId: 'exchange-scope:binance',
     orderId: `order-us181-${suffix}`,
     paperAccountId: ACCOUNT,
     tradingSessionId: 'session-us181',

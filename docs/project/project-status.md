@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-08-10 (RC-26 CLOSED — Trading Orchestrator + Market State; tag `v1.0.0-rc26`)
+2026-08-14 (RC-27 CLOSED — Multi-Exchange Scope; tag `v1.0.0-rc27`)
 
 **Level-0 authority:**
 
@@ -58,7 +58,7 @@ Cluster Closure Report:
 
 # Current Phase
 
-**RC-22 CLOSED · RC-23 CLOSED · RC-24 CLOSED · RC-25 CLOSED · RC-26 CLOSED**
+**RC-22 CLOSED · RC-23 CLOSED · RC-24 CLOSED · RC-25 CLOSED · RC-26 CLOSED · RC-27 CLOSED**
 
 RC-19 delivered the Architecture Spec v2.0 integration skeleton:
 
@@ -180,6 +180,28 @@ Certification: [`rc-24-reporting-ai-notification-certification.md`](./rc-24-repo
 - [Validation Summary](./rc-26-validation-summary.md)
 - [Architecture Consistency Report](./rc-26-architecture-consistency-report.md)
 
+**RC-27 CLOSED (`v1.0.0-rc27`):**
+
+- [Closure Report](./rc-27-closure-report.md)
+- [Validation Report](./rc-27-validation-report.md) (**PASS**)
+- [Module Certification](./rc-27-exchange-scope-certification.md) (**Ready=YES**)
+- [Implementation Plan](./rc-27-implementation-plan.md)
+- [Epic Breakdown](./rc-27-epic-breakdown.md)
+- [API Contract](./rc-27-api-contract.md)
+- [Domain Model Contract](./rc-27-domain-model-contract.md)
+- [Integration Diagram](./rc-27-integration-diagram.md)
+- [Validation Summary](./rc-27-validation-summary.md)
+- [Architecture Consistency Report](./rc-27-architecture-consistency-report.md)
+- [Epic 1 Report](./rc-27-epic1-exchange-scope-boundary.md) (**approved**)
+- [Epic 1 Boundary Diagram](./rc-27-epic1-boundary-diagram.md)
+- [Epic 2 Report](./rc-27-epic2-domain-model.md) (**approved**)
+- [Epic 3 Report](./rc-27-epic3-application-ports.md) (**approved**)
+- [Epic 4 Report](./rc-27-epic4-trading-path-scope-integration.md) (**approved**)
+- [Epic 5 Report](./rc-27-epic5-consumer-read-ports.md) (**approved**)
+- [Epic 6 Report](./rc-27-epic6-authority-conformance.md) (**approved**)
+- [Epic 6 Internal Audit](./rc-27-epic6-internal-audit-report.md) (**PASS**)
+- [Epic 6 Readiness](./rc-27-epic6-readiness-report.md)
+
 **RC-18 residual (parallel governance):** US295 / ADL-008 remains **Open** — close or record explicit accepted deferral before production restart-safety PASS claims. Residual ownership: [`rc-18-residual-register.md`](./rc-18-residual-register.md).
 
 ---
@@ -187,7 +209,8 @@ Certification: [`rc-24-reporting-ai-notification-certification.md`](./rc-24-repo
 # Current Goal
 
 RC-26 (Trading Orchestrator + Market State) is **CLOSED** (tag `v1.0.0-rc26`).
-Next: **RC-27 Planning** (Multi Exchange Scope expansion) under a separate task.
+**RC-27** Multi-Exchange Scope is **CLOSED** (`v1.0.0-rc27`).
+Proceed to **RC-28 Planning** under a separate task.
 IDE shell remains deferred.
 
 Historical Research OS goal (unchanged): Evidence-driven Research OS —

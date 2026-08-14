@@ -20,6 +20,8 @@ export type LoadRuntimeContextQuery = Readonly<{
   workspaceId: string;
   sessionId: string;
   deploymentId: string;
+  /** Optional; defaults to Deployment / Binance Exchange Scope. */
+  exchangeScopeId?: string;
 }>;
 
 /**

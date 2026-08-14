@@ -11,6 +11,51 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ### Added
 
+- RC-27 — Multi-Exchange Scope (Epics 1–6) **CLOSED** (`v1.0.0-rc27`):
+  Exchange Scope isolation boundary (identity / config / lifecycle /
+  bindings / policy inputs / metadata); trading-path `exchangeScopeId`
+  metadata; consumer-read projections; authority + isolation conformance.
+  No engine clones / routing / Multi-Exchange UI. Validation **PASS**.
+  Reports: `docs/project/rc-27-validation-report.md`,
+  `rc-27-exchange-scope-certification.md`, `rc-27-closure-report.md`.
+- RC-27 Epic 6 — Authority conformance, internal audit & readiness:
+  ownership / dependency / isolation suites; Internal Audit **PASS**;
+  Readiness = ready for Validation (Validation not run). No new product
+  behaviour. Gate: exchange-scope **48/48 PASS**.
+  Reports: `docs/project/rc-27-epic6-authority-conformance.md`,
+  `rc-27-epic6-internal-audit-report.md`, `rc-27-epic6-readiness-report.md`.
+- RC-27 Epic 5 — Exchange Scope consumer read ports:
+  `ExchangeScopeConsumerReadService` + query adapter; immutable projections
+  for identity / lifecycle / config / policy / bindings / metadata / active
+  status; explicit workspace aggregate (no invented balances). No REST /
+  commands / trading-path. Gate: 33/33 PASS.
+  Report: `docs/project/rc-27-epic5-consumer-read-ports.md`.
+- RC-27 Epic 4 — Trading Path Scope Integration:
+  Thread `exchangeScopeId` through Order / Fill / Position / Ledger /
+  Deployment / Runtime Context / Signal Intent / Lake / Reporting
+  (default Binance; semantic hashes unchanged). Cross-scope Position /
+  Runtime alignment reject. Additive Prisma defaults. No routing /
+  multi-runtime / engine clones. Gate: 75/75 PASS (Epic 4 focus).
+  Report: `docs/project/rc-27-epic4-trading-path-scope-integration.md`.
+- RC-27 Epic 3 — Exchange Scope application ports:
+  Nest `ExchangeScopeServicePort` / `QueryPort` / `ConsumerReadPort` over
+  process-local store; register/activate/suspend/archive, config/policy
+  publish, account bind, logical adapter context; immutable consumer
+  projections. No trading-path, REST, or durable persistence.
+  Gate: 24/24 PASS. Report: `docs/project/rc-27-epic3-application-ports.md`.
+- RC-27 Epic 2 — Exchange Scope domain model:
+  Immutable `ExchangeScope` / Version / Lifecycle / Config / Metadata /
+  `ExchangeRiskPolicy` / `TradingAccountBinding` / `AdapterBindingContext`
+  factories; Created→Active↔Suspended→Archived; append-only config/policy
+  versioning with overwrite protection. No trading-path, REST, or persistence.
+  Gate: 23/23 PASS. Report: `docs/project/rc-27-epic2-domain-model.md`.
+- RC-27 Epic 1 — Exchange Scope boundary:
+  Nest module `exchange-scope` with frozen ownership invariants
+  (`exchange_scope_artifact`), inactive application ports, and
+  dependency-direction tests. RC-19 Binance identity preserved. No
+  lifecycle behaviour, trading-path integration, REST, persistence, or
+  transport. Gate: 15/15 PASS.
+  Report: `docs/project/rc-27-epic1-exchange-scope-boundary.md`.
 - RC-26 — Trading Orchestrator + Market State (Epics 1–6):
   Market State current-condition domain + observational reads + consumer
   projections; Trading Orchestrator coordination domain + workflow ports

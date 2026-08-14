@@ -26,6 +26,7 @@ export class PrismaLedgerRepository implements LedgerRepository {
       data: {
         id: ledgerTransaction.id,
         workspaceId: ledgerTransaction.workspaceId,
+        exchangeScopeId: ledgerTransaction.exchangeScopeId,
         paperAccountId: ledgerTransaction.paperAccountId,
         idempotencyKey: ledgerTransaction.idempotencyKey,
         causeType: ledgerTransaction.causeType,
@@ -93,6 +94,7 @@ function toDomain(row: LedgerRow): LedgerTransaction {
   return Object.freeze({
     id: row.id,
     workspaceId: row.workspaceId,
+    exchangeScopeId: row.exchangeScopeId,
     paperAccountId: row.paperAccountId,
     idempotencyKey: row.idempotencyKey,
     causeType: row.causeType as LedgerCauseType,

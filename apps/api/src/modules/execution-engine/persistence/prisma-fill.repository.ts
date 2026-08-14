@@ -43,6 +43,7 @@ function toCreateData(fill: PaperFill): Prisma.PaperFillUncheckedCreateInput {
   return {
     id: fill.id,
     workspaceId: fill.workspaceId,
+    exchangeScopeId: fill.exchangeScopeId,
     orderId: fill.orderId,
     paperAccountId: fill.paperAccountId,
     tradingSessionId: fill.tradingSessionId,
@@ -68,6 +69,7 @@ function toDomain(row: PaperFillRow): PaperFill {
   return Object.freeze({
     id: row.id,
     workspaceId: row.workspaceId,
+    exchangeScopeId: row.exchangeScopeId,
     orderId: row.orderId,
     paperAccountId: row.paperAccountId,
     tradingSessionId: row.tradingSessionId,

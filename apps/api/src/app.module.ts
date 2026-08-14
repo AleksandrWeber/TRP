@@ -24,6 +24,7 @@ import { MarketQualificationModule } from './modules/market-qualification';
 import { MarketProfileModule } from './modules/market-profile';
 import { MarketStateModule } from './modules/market-state';
 import { TradingOrchestratorModule } from './modules/trading-orchestrator';
+import { ExchangeScopeModule } from './modules/exchange-scope';
 import { MarketDataModule } from './modules/market-data/market-data.module';
 import { LiveMarketDataModule } from './modules/live-market-data/live-market-data.module';
 import { EventProcessingModule } from './modules/event-processing/event-processing.module';
@@ -156,6 +157,7 @@ import { ValidationModule } from './validation/validation.module';
     MarketProfileModule,
     MarketStateModule,
     TradingOrchestratorModule,
+    ExchangeScopeModule,
     InsightModule,
     CrossCampaignAnalysisModule,
     RecommendationModule,
