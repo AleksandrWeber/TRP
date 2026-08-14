@@ -11,14 +11,15 @@
 
 ## Release Status
 
-| Field                  | Value                                                      |
-| ---------------------- | ---------------------------------------------------------- |
-| Current Stable Release | `v1.0.0`                                                   |
-| Release Status         | Production Ready                                           |
-| Last Certification     | PASS                                                       |
-| Production branch      | `main`                                                     |
-| V1 Completion Report   | [`releases/V1-COMPLETION.md`](./releases/V1-COMPLETION.md) |
-| Changelog              | [`../CHANGELOG.md`](../CHANGELOG.md)                       |
+| Field                   | Value                                                      |
+| ----------------------- | ---------------------------------------------------------- |
+| Current Stable Release  | `v1.0.0`                                                   |
+| Version 2 (paper-first) | `v2.0.0` — RC-28 **CLOSED**                                |
+| Release Status          | Production Ready (V1) · Version 2 certified paper-first    |
+| Last Certification      | PASS (`v2.0.0`)                                            |
+| Production branch       | `main`                                                     |
+| V1 Completion Report    | [`releases/V1-COMPLETION.md`](./releases/V1-COMPLETION.md) |
+| Changelog               | [`../CHANGELOG.md`](../CHANGELOG.md)                       |
 
 ---
 
@@ -194,6 +195,31 @@
   - RC-27 Epic 6 Authority Conformance (**approved**): [`project/rc-27-epic6-authority-conformance.md`](./project/rc-27-epic6-authority-conformance.md)
   - RC-27 Epic 6 Internal Audit (**PASS**): [`project/rc-27-epic6-internal-audit-report.md`](./project/rc-27-epic6-internal-audit-report.md)
   - RC-27 Epic 6 Readiness Report: [`project/rc-27-epic6-readiness-report.md`](./project/rc-27-epic6-readiness-report.md)
+  - RC-28 Implementation Plan (**CLOSED** `v2.0.0` — Version 2 Stabilization & Conformance): [`project/rc-28-implementation-plan.md`](./project/rc-28-implementation-plan.md)
+  - RC-28 Epic Breakdown: [`project/rc-28-epic-breakdown.md`](./project/rc-28-epic-breakdown.md)
+  - RC-28 API Contract (frozen port inventory): [`project/rc-28-api-contract.md`](./project/rc-28-api-contract.md)
+  - RC-28 Integration Diagram: [`project/rc-28-integration-diagram.md`](./project/rc-28-integration-diagram.md)
+  - RC-28 Validation Summary (planning): [`project/rc-28-validation-summary.md`](./project/rc-28-validation-summary.md)
+  - RC-28 Architecture Consistency Report: [`project/rc-28-architecture-consistency-report.md`](./project/rc-28-architecture-consistency-report.md)
+  - RC-28 Epic 1 Platform Integration Boundaries (**approved**): [`project/rc-28-epic1-platform-integration-boundaries.md`](./project/rc-28-epic1-platform-integration-boundaries.md)
+  - RC-28 Epic 1 Integration Boundary Report: [`project/rc-28-epic1-integration-boundary-report.md`](./project/rc-28-epic1-integration-boundary-report.md)
+  - RC-28 Epic 1 Boundary Diagram: [`project/rc-28-epic1-boundary-diagram.md`](./project/rc-28-epic1-boundary-diagram.md)
+  - RC-28 Epic 2 Cross-Domain Workflow Verification (**approved**): [`project/rc-28-epic2-cross-domain-workflow-verification.md`](./project/rc-28-epic2-cross-domain-workflow-verification.md)
+  - RC-28 Epic 2 Workflow Verification Report: [`project/rc-28-epic2-workflow-verification-report.md`](./project/rc-28-epic2-workflow-verification-report.md)
+  - RC-28 Epic 3 Authority & Ownership Verification (**approved**): [`project/rc-28-epic3-authority-ownership-verification.md`](./project/rc-28-epic3-authority-ownership-verification.md)
+  - RC-28 Epic 3 Authority Verification Report: [`project/rc-28-epic3-authority-verification-report.md`](./project/rc-28-epic3-authority-verification-report.md)
+  - RC-28 Epic 3 Ownership Verification Report: [`project/rc-28-epic3-ownership-verification-report.md`](./project/rc-28-epic3-ownership-verification-report.md)
+  - RC-28 Epic 4 End-to-End Scenario Validation (**approved**): [`project/rc-28-epic4-end-to-end-scenario-validation.md`](./project/rc-28-epic4-end-to-end-scenario-validation.md)
+  - RC-28 Epic 4 Scenario Validation Report: [`project/rc-28-epic4-scenario-validation-report.md`](./project/rc-28-epic4-scenario-validation-report.md)
+  - RC-28 Epic 5 Performance, Resilience & Compatibility (**approved**): [`project/rc-28-epic5-performance-resilience-compatibility.md`](./project/rc-28-epic5-performance-resilience-compatibility.md)
+  - RC-28 Epic 5 Compatibility Verification Report: [`project/rc-28-epic5-compatibility-verification-report.md`](./project/rc-28-epic5-compatibility-verification-report.md)
+  - RC-28 Epic 5 Performance & Resilience Report: [`project/rc-28-epic5-performance-resilience-report.md`](./project/rc-28-epic5-performance-resilience-report.md)
+  - RC-28 Epic 6 Version 2 Certification (**approved**): [`project/rc-28-epic6-version-2-certification.md`](./project/rc-28-epic6-version-2-certification.md)
+  - RC-28 Epic 6 Internal Audit (**PASS**): [`project/rc-28-epic6-internal-audit-report.md`](./project/rc-28-epic6-internal-audit-report.md)
+  - RC-28 Epic 6 Readiness (**READY** — consumed): [`project/rc-28-epic6-readiness-report.md`](./project/rc-28-epic6-readiness-report.md)
+  - RC-28 Validation Report (**PASS**): [`project/rc-28-validation-report.md`](./project/rc-28-validation-report.md)
+  - Version 2 Certification (**READY = YES**): [`project/rc-28-version-2-certification.md`](./project/rc-28-version-2-certification.md)
+  - RC-28 Closure Report (**CLOSED** `v2.0.0`): [`project/rc-28-closure-report.md`](./project/rc-28-closure-report.md)
   - Architectural changes require a new ADR.
 
 ---

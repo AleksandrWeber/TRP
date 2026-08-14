@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-08-14 (RC-27 CLOSED — Multi-Exchange Scope; tag `v1.0.0-rc27`)
+2026-08-14 (RC-28 CLOSED — Version 2 certified paper-first at `v2.0.0`)
 
 **Level-0 authority:**
 
@@ -58,7 +58,7 @@ Cluster Closure Report:
 
 # Current Phase
 
-**RC-22 CLOSED · RC-23 CLOSED · RC-24 CLOSED · RC-25 CLOSED · RC-26 CLOSED · RC-27 CLOSED**
+**RC-22 CLOSED · RC-23 CLOSED · RC-24 CLOSED · RC-25 CLOSED · RC-26 CLOSED · RC-27 CLOSED · RC-28 PLANNING**
 
 RC-19 delivered the Architecture Spec v2.0 integration skeleton:
 
@@ -202,16 +202,45 @@ Certification: [`rc-24-reporting-ai-notification-certification.md`](./rc-24-repo
 - [Epic 6 Internal Audit](./rc-27-epic6-internal-audit-report.md) (**PASS**)
 - [Epic 6 Readiness](./rc-27-epic6-readiness-report.md)
 
+**RC-28 CLOSED (2026-08-14) — Version 2 Stabilization & Conformance (`v2.0.0`):**
+
+- [Implementation Plan](./rc-28-implementation-plan.md) (**CLOSED**)
+- [Epic Breakdown](./rc-28-epic-breakdown.md)
+- [API Contract](./rc-28-api-contract.md) (frozen port inventory; no new APIs)
+- [Integration Diagram](./rc-28-integration-diagram.md)
+- [Validation Summary](./rc-28-validation-summary.md) (planning package)
+- [Architecture Consistency Report](./rc-28-architecture-consistency-report.md)
+- [Epic 1 Report](./rc-28-epic1-platform-integration-boundaries.md) (**approved**)
+- [Epic 1 Integration Boundary Report](./rc-28-epic1-integration-boundary-report.md)
+- [Epic 1 Boundary Diagram](./rc-28-epic1-boundary-diagram.md)
+- [Epic 2 Report](./rc-28-epic2-cross-domain-workflow-verification.md) (**approved**)
+- [Epic 2 Workflow Verification Report](./rc-28-epic2-workflow-verification-report.md)
+- [Epic 3 Report](./rc-28-epic3-authority-ownership-verification.md) (**approved**)
+- [Epic 3 Authority Verification Report](./rc-28-epic3-authority-verification-report.md)
+- [Epic 3 Ownership Verification Report](./rc-28-epic3-ownership-verification-report.md)
+- [Epic 4 Report](./rc-28-epic4-end-to-end-scenario-validation.md) (**approved**)
+- [Epic 4 Scenario Validation Report](./rc-28-epic4-scenario-validation-report.md)
+- [Epic 5 Report](./rc-28-epic5-performance-resilience-compatibility.md) (**approved**)
+- [Epic 5 Compatibility Verification Report](./rc-28-epic5-compatibility-verification-report.md)
+- [Epic 5 Performance & Resilience Report](./rc-28-epic5-performance-resilience-report.md)
+- [Epic 6 Report](./rc-28-epic6-version-2-certification.md) (**approved**)
+- [Epic 6 Internal Audit](./rc-28-epic6-internal-audit-report.md) (**PASS**)
+- [Epic 6 Readiness](./rc-28-epic6-readiness-report.md) (**READY** — consumed)
+- [Validation Report](./rc-28-validation-report.md) (**PASS**)
+- [Version 2 Certification](./rc-28-version-2-certification.md) (**READY = YES**)
+- [Closure Report](./rc-28-closure-report.md) (**CLOSED**)
+
+No new modules / APIs / ownership. Paper-first Version 2 is certified.
+
 **RC-18 residual (parallel governance):** US295 / ADL-008 remains **Open** — close or record explicit accepted deferral before production restart-safety PASS claims. Residual ownership: [`rc-18-residual-register.md`](./rc-18-residual-register.md).
 
 ---
 
 # Current Goal
 
-RC-26 (Trading Orchestrator + Market State) is **CLOSED** (tag `v1.0.0-rc26`).
-**RC-27** Multi-Exchange Scope is **CLOSED** (`v1.0.0-rc27`).
-Proceed to **RC-28 Planning** under a separate task.
-IDE shell remains deferred.
+RC-27 (Multi-Exchange Scope) is **CLOSED** (tag `v1.0.0-rc27`).
+**RC-28** (Version 2 Stabilization & Conformance) is **CLOSED** (tag `v2.0.0`).
+Paper-first Version 2 is certified. IDE shell and live capital remain deferred.
 
 Historical Research OS goal (unchanged): Evidence-driven Research OS —
 reproducible experiments, immutable Knowledge, clear provenance/versioning.

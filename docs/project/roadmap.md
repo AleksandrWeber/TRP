@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-08-10 (RC-26 CLOSED — Trading Orchestrator + Market State; tag `v1.0.0-rc26`)
+Last updated: 2026-08-14 (RC-28 CLOSED — Version 2 certified paper-first at `v2.0.0`)
 
 Living roadmap for product direction.
 
@@ -171,7 +171,7 @@ Related:
 
 ## Current Phase
 
-**RC-23 CLOSED · RC-24 CLOSED**
+**RC-27 CLOSED · RC-28 PLANNING**
 
 RC-16 paper path and RC-17 Runtime Recovery are baselined. RC-18 mandatory
 residuals R1–R5 (US290–US294) are Done; **US295** (ADL-008) remains Open.
@@ -204,10 +204,12 @@ Orchestrator / Selection remain deferred. Sequencing:
 (tag `v1.0.0-rc26`) —
 [`rc-26-closure-report.md`](./rc-26-closure-report.md).
 
-**RC-27** Multi-Exchange Scope — **CLOSED** (`v1.0.0-rc27`)
-implemented, awaiting review —
-[`rc-27-epic5-consumer-read-ports.md`](./rc-27-epic5-consumer-read-ports.md).
-Planning package: [`rc-27-implementation-plan.md`](./rc-27-implementation-plan.md).
+**RC-27** Multi-Exchange Scope is **CLOSED** (tag `v1.0.0-rc27`) —
+[`rc-27-closure-report.md`](./rc-27-closure-report.md).
+
+**RC-28** Version 2 Stabilization & Conformance is **CLOSED** (tag `v2.0.0`) —
+[`rc-28-closure-report.md`](./rc-28-closure-report.md).
+Planning package: [`rc-28-implementation-plan.md`](./rc-28-implementation-plan.md).
 
 Story IDs: **US240–US299** — [`story-id-allocation.md`](./story-id-allocation.md).
 
@@ -291,10 +293,10 @@ Authority: [`rc-19-closure-report.md`](./rc-19-closure-report.md),
 
 ## Future Milestones
 
-**Version 1 (`v1.0.0`) is complete.** RC-19…RC-26 V2 path through Trading
-Orchestrator + Market State is **CLOSED** (tag `v1.0.0-rc26`).
-**RC-27** Multi-Exchange Scope is **CLOSED** (`v1.0.0-rc27`). Next: **RC-28 Planning**.
-Parallel **US295** ADL-008 closeout for production-claim language continues.
+**Version 1 (`v1.0.0`) is complete.** RC-19…RC-27 V2 capability path is
+**CLOSED** (tag `v1.0.0-rc27`). **RC-28** Version 2 Stabilization & Conformance
+is **CLOSED** (tag `v2.0.0`). Paper-first Version 2 is certified. Parallel
+**US295** ADL-008 closeout for production-claim language continues.
 Sequencing: [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
 
 Later themes (new ADR required where architecture changes):

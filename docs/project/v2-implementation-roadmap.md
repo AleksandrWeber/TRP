@@ -319,16 +319,48 @@ Orchestrator / Market State / Selection / Enforcement REST remain deferred.
 ## RC-28 — V2 stabilization / Version 2 release candidate
 
 **Goal (unchanged):** Harden, validate, document V2 as stable.  
-**Tasks (unchanged):** Conformance tests for aliases/authority/tactics/isolation; UX polish; residual TD triage; V2 release notes.  
+**Tasks (unchanged intent):** Conformance tests for aliases/authority/tactics/isolation; residual TD triage; V2 release notes. **No new platform capabilities.**  
 **Result (unchanged):** **Stable Version 2** (paper-first; live capital still future ADR unless separately approved).
 
 **User Value:** Version 2 becomes a trustworthy daily platform: research → validated strategies → paper bots/ops/reporting under one consistent product language.
 
 **Estimated complexity:** **Large**
 
-**Main implementation risk:** Declaring V2 “done” while critical-path RCs are only partially enforced.
+**Main implementation risk:** Declaring V2 “done” while critical-path RCs are only partially enforced — mitigated by verification-only epics over frozen RC-19…RC-27 ports.
 
-**Depends on:** RC-20…RC-27 critical path items (see Audit §9).
+**Depends on:** RC-20…RC-27 critical path items (see Audit §9). **CLOSED.**
+
+**Planning status (2026-08-14):** **CLOSED** (`v2.0.0`).
+
+| Deliverable                     | Document                                                                                                                      |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Implementation Plan             | [`rc-28-implementation-plan.md`](./rc-28-implementation-plan.md)                                                              |
+| Epic Breakdown                  | [`rc-28-epic-breakdown.md`](./rc-28-epic-breakdown.md)                                                                        |
+| API Contract (conformance)      | [`rc-28-api-contract.md`](./rc-28-api-contract.md)                                                                            |
+| Integration Diagram             | [`rc-28-integration-diagram.md`](./rc-28-integration-diagram.md)                                                              |
+| Validation Summary              | [`rc-28-validation-summary.md`](./rc-28-validation-summary.md)                                                                |
+| Architecture Consistency Report | [`rc-28-architecture-consistency-report.md`](./rc-28-architecture-consistency-report.md)                                      |
+| Epic 1 Report                   | [`rc-28-epic1-platform-integration-boundaries.md`](./rc-28-epic1-platform-integration-boundaries.md) (**approved**)           |
+| Epic 1 Boundary Catalog         | [`rc-28-epic1-integration-boundary-report.md`](./rc-28-epic1-integration-boundary-report.md)                                  |
+| Epic 1 Boundary Diagram         | [`rc-28-epic1-boundary-diagram.md`](./rc-28-epic1-boundary-diagram.md)                                                        |
+| Epic 2 Report                   | [`rc-28-epic2-cross-domain-workflow-verification.md`](./rc-28-epic2-cross-domain-workflow-verification.md) (**approved**)     |
+| Epic 2 Workflow Catalog         | [`rc-28-epic2-workflow-verification-report.md`](./rc-28-epic2-workflow-verification-report.md)                                |
+| Epic 3 Report                   | [`rc-28-epic3-authority-ownership-verification.md`](./rc-28-epic3-authority-ownership-verification.md) (**approved**)         |
+| Epic 3 Authority Catalog        | [`rc-28-epic3-authority-verification-report.md`](./rc-28-epic3-authority-verification-report.md)                              |
+| Epic 3 Ownership Catalog        | [`rc-28-epic3-ownership-verification-report.md`](./rc-28-epic3-ownership-verification-report.md)                              |
+| Epic 4 Report                   | [`rc-28-epic4-end-to-end-scenario-validation.md`](./rc-28-epic4-end-to-end-scenario-validation.md) (**approved**)             |
+| Epic 4 Scenario Catalog         | [`rc-28-epic4-scenario-validation-report.md`](./rc-28-epic4-scenario-validation-report.md)                                    |
+| Epic 5 Report                   | [`rc-28-epic5-performance-resilience-compatibility.md`](./rc-28-epic5-performance-resilience-compatibility.md) (**approved**) |
+| Epic 5 Compatibility Catalog    | [`rc-28-epic5-compatibility-verification-report.md`](./rc-28-epic5-compatibility-verification-report.md)                      |
+| Epic 5 Performance & Resilience | [`rc-28-epic5-performance-resilience-report.md`](./rc-28-epic5-performance-resilience-report.md)                              |
+| Epic 6 Report                   | [`rc-28-epic6-version-2-certification.md`](./rc-28-epic6-version-2-certification.md) (**approved**)                           |
+| Epic 6 Internal Audit           | [`rc-28-epic6-internal-audit-report.md`](./rc-28-epic6-internal-audit-report.md) (**PASS**)                                   |
+| Epic 6 Readiness                | [`rc-28-epic6-readiness-report.md`](./rc-28-epic6-readiness-report.md) (**READY** — consumed)                                 |
+| Validation Report               | [`rc-28-validation-report.md`](./rc-28-validation-report.md) (**PASS**)                                                       |
+| Version 2 Certification         | [`rc-28-version-2-certification.md`](./rc-28-version-2-certification.md) (**READY = YES**)                                    |
+| Closure Report                  | [`rc-28-closure-report.md`](./rc-28-closure-report.md) (**CLOSED**)                                                           |
+
+RC-28 certifies Version 2. It does not expand it. No new APIs, modules, domains, SoT, or ownership changes.
 
 ---
 
@@ -348,6 +380,6 @@ Orchestrator / Market State / Selection / Enforcement REST remain deferred.
 | 25             | Qualification / Profile                | Medium     | Profiles force trades                     | **CLOSED** (`v1.0.0-rc25`) |
 | 26             | Orchestrator + Market State            | XL         | God-module / bypass                       | **CLOSED** (`v1.0.0-rc26`) |
 | 27             | Multi-exchange scope                   | XL         | Cloned engines                            | **CLOSED** (`v1.0.0-rc27`) |
-| 28             | V2 stabilize                           | Large      | Fake “done” without conformance           | Planned                    |
+| 28             | V2 stabilize                           | Large      | Fake “done” without conformance           | **CLOSED** (`v2.0.0`)      |
 
 Sequencing note: RC-21 Implementation Plan §0 advanced Knowledge Lake to RC-21 and deferred IDE. RC-23 Implementation Plan §0 assigned the vacated RC-23 integer to Runtime Enforcement. Goals unchanged; numbering override only.

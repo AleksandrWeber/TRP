@@ -41,6 +41,148 @@ Related:
 | RC-25   | Market Qualification + Market Profile                                  | **CLOSED**            | `v1.0.0-rc25`                      | Venue qualification + versioned profiles (confidence only) — [`rc-25-closure-report.md`](./rc-25-closure-report.md)                                                                                                                                      |
 | RC-26   | Trading Orchestrator + Market State                                    | **CLOSED**            | `v1.0.0-rc26`                      | Coordination + current-condition SoT (ports/domain; no Session/Orders/Risk) — [`rc-26-closure-report.md`](./rc-26-closure-report.md)                                                                                                                     |
 | RC-27   | Multi-Exchange Scope                                                   | **CLOSED**            | `v1.0.0-rc27`                      | Venue isolation without engine clones — [`rc-27-closure-report.md`](./rc-27-closure-report.md)                                                                                                                                                           |
+| RC-28   | Version 2 Stabilization & Conformance                                  | **CLOSED**            | Tag `v2.0.0`                       | Paper-first Version 2 certified — [`rc-28-closure-report.md`](./rc-28-closure-report.md)                                                                                                                                                                 |
+
+---
+
+## RC-28
+
+| Field                    | Value                                                                                                                         |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| Theme                    | Version 2 Stabilization & Conformance                                                                                         |
+| Status                   | **CLOSED** (`v2.0.0`)                                                                                                         |
+| Implementation Plan      | [`rc-28-implementation-plan.md`](./rc-28-implementation-plan.md)                                                              |
+| Epics                    | [`rc-28-epic-breakdown.md`](./rc-28-epic-breakdown.md)                                                                        |
+| Epic 1                   | [`rc-28-epic1-platform-integration-boundaries.md`](./rc-28-epic1-platform-integration-boundaries.md) (**approved**)           |
+| Boundary Catalog         | [`rc-28-epic1-integration-boundary-report.md`](./rc-28-epic1-integration-boundary-report.md)                                  |
+| Boundary Diagram         | [`rc-28-epic1-boundary-diagram.md`](./rc-28-epic1-boundary-diagram.md)                                                        |
+| Epic 2                   | [`rc-28-epic2-cross-domain-workflow-verification.md`](./rc-28-epic2-cross-domain-workflow-verification.md) (**approved**)     |
+| Workflow Catalog         | [`rc-28-epic2-workflow-verification-report.md`](./rc-28-epic2-workflow-verification-report.md)                                |
+| Epic 3                   | [`rc-28-epic3-authority-ownership-verification.md`](./rc-28-epic3-authority-ownership-verification.md) (**approved**)         |
+| Authority Catalog        | [`rc-28-epic3-authority-verification-report.md`](./rc-28-epic3-authority-verification-report.md)                              |
+| Ownership Catalog        | [`rc-28-epic3-ownership-verification-report.md`](./rc-28-epic3-ownership-verification-report.md)                              |
+| Epic 4                   | [`rc-28-epic4-end-to-end-scenario-validation.md`](./rc-28-epic4-end-to-end-scenario-validation.md) (**approved**)             |
+| Scenario Catalog         | [`rc-28-epic4-scenario-validation-report.md`](./rc-28-epic4-scenario-validation-report.md)                                    |
+| Epic 5                   | [`rc-28-epic5-performance-resilience-compatibility.md`](./rc-28-epic5-performance-resilience-compatibility.md) (**approved**) |
+| Compatibility Catalog    | [`rc-28-epic5-compatibility-verification-report.md`](./rc-28-epic5-compatibility-verification-report.md)                      |
+| Performance & Resilience | [`rc-28-epic5-performance-resilience-report.md`](./rc-28-epic5-performance-resilience-report.md)                              |
+| Epic 6                   | [`rc-28-epic6-version-2-certification.md`](./rc-28-epic6-version-2-certification.md) (**approved**)                           |
+| Internal Audit           | [`rc-28-epic6-internal-audit-report.md`](./rc-28-epic6-internal-audit-report.md) (**PASS**)                                   |
+| Readiness                | [`rc-28-epic6-readiness-report.md`](./rc-28-epic6-readiness-report.md) (**READY** — consumed)                                 |
+| Validation               | [`rc-28-validation-report.md`](./rc-28-validation-report.md) (**PASS**)                                                       |
+| Certification            | [`rc-28-version-2-certification.md`](./rc-28-version-2-certification.md) (**READY = YES**)                                    |
+| Closure                  | [`rc-28-closure-report.md`](./rc-28-closure-report.md) (**CLOSED**)                                                           |
+| API                      | [`rc-28-api-contract.md`](./rc-28-api-contract.md) (frozen inventory; no new APIs)                                            |
+| Integration              | [`rc-28-integration-diagram.md`](./rc-28-integration-diagram.md)                                                              |
+| Planning Validation      | [`rc-28-validation-summary.md`](./rc-28-validation-summary.md)                                                                |
+| Consistency              | [`rc-28-architecture-consistency-report.md`](./rc-28-architecture-consistency-report.md)                                      |
+
+### Validation & Release delivered
+
+- Workflow §5 gates PASS: typecheck, lint, tests (api 2944 / web 96 / research 24), build, smoke (api 832 + Command Center 43), platform conformance **107/107**
+- Version 2 Certification **READY = YES**; tag `v2.0.0`
+- No new Nest module / ports / SoT / ownership / runtime
+
+### Explicitly deferred / forbidden in RC-28 Validation & Release
+
+- Live capital, IDE shell, REST / persistence products
+- Spec / Authority Matrix / Alias Dictionary edits
+- New APIs, modules, SoT, ownership
+
+### Epic 6 delivered
+
+- Certification checklist (architecture / ownership / integration / contracts / graph / compatibility / docs / tests) all **PASS**
+- Internal audit **PASS**; paper-first Version 2 **READY** for Validation & Release (separate task)
+- Residual register: IDE, REST, durable stores, live capital, US295/ADL-008, extra venue adapters — none block certification
+- Gate: **107/107 PASS** (`src/platform-conformance`; Epic 6 suites **12/12**)
+- No new Nest module / ports / SoT / ownership / runtime; Validation not run; git tag not created
+
+### Explicitly deferred / forbidden in RC-28 Epic 6
+
+- Validation Standard / Git tag / RC-28 Closure (separate task)
+- New APIs, modules, SoT, ownership, business rules
+- Live capital, IDE shell, REST / persistence products
+
+### Epic 5 delivered
+
+- Compatibility matrix RC-19…RC-27; resilience matrix for missing Gate / Library / scope / Lake / Reporting / AI / Notification
+- Startup integrity + projection availability + dependency-graph stability (no optimizations)
+- Gate: **95/95 PASS** (`src/platform-conformance`; Epic 5 suites **17/17**)
+- No new Nest module / ports / SoT / ownership / runtime / performance product
+
+### Explicitly deferred / forbidden in RC-28 Epic 5
+
+- Epic 6 Version 2 certification closeout
+- Optimizations, caching SoT, new orchestration, live capital
+- New APIs, modules, SoT, ownership, business rules
+
+### Epic 4 delivered
+
+- Scenario catalog (`V2_E2E_SCENARIOS`) Research Lab → Command Center
+- Successful paper path, fail-closed Gate, isolation, projection/reporting/notification continuity
+- Gate: **78/78 PASS** (`src/platform-conformance`; Epic 4 suites **13/13**)
+- No new Nest module / ports / SoT / ownership / business logic
+
+### Explicitly deferred / forbidden in RC-28 Epic 4
+
+- Epic 5+ performance / certification work
+- New APIs, modules, SoT, ownership, business rules
+- Runtime / Strategy / Reporting / Multi-Exchange redesign
+
+### Epic 3 delivered
+
+- Authority graph + SoT uniqueness map + alias bindings (documents unmodified)
+- Isolation invariants 1–10 reused from RC-27; Tactics Contract Option B at Gate
+- Gate: **65/65 PASS** (`src/platform-conformance`; Epic 3 suites **19/19**)
+- No new Nest module / ports / SoT / ownership / business logic
+
+### Explicitly deferred / forbidden in RC-28 Epic 3
+
+- Epic 4+ E2E / performance / certification work
+- New APIs, modules, SoT, ownership, business rules
+- Authority Matrix / Alias Dictionary edits
+- Runtime / Strategy / Reporting / Multi-Exchange redesign
+
+### Epic 2 delivered
+
+- Workflow-hop catalog (`V2_WORKFLOW_HOPS`) Research Lab → Command Center
+- Contract, ownership, fail-closed, and consumer-isolation suites
+- Gate: **46/46 PASS** (`src/platform-conformance`; Epic 2 suites **25/25**)
+- No new Nest module / ports / SoT / ownership / business logic
+
+### Explicitly deferred / forbidden in RC-28 Epic 2
+
+- Epic 3+ authority / E2E / certification work
+- New APIs, modules, SoT, ownership, business rules
+- Runtime / Strategy / Reporting / Multi-Exchange redesign
+
+### Epic 1 delivered
+
+- Platform integration-boundary audit catalog (`apps/api/src/platform-conformance/`)
+- Frozen consume / forbidden-reverse / ownership graphs
+- Gate: **21/21 PASS** (`src/platform-conformance`) at Epic 1 close
+- No new Nest module / ports / SoT / ownership
+
+### Explicitly deferred / forbidden in RC-28 Epic 1
+
+- Epic 2+ workflow / authority / E2E / certification work (Epic 2 now implemented)
+- New APIs, modules, SoT, ownership, business rules
+- Runtime / Strategy / Reporting / Multi-Exchange redesign
+
+### Planning delivered
+
+- Complete V2 integration / validation / certification plan (no new domains)
+- Six independently reviewable verification epics
+- Frozen port inventory of RC-19…RC-27 contracts
+- End-to-end path map within existing ownership
+
+### Explicitly deferred / forbidden in RC-28 planning
+
+- Implementation / Epic 1 until architectural approval
+- New APIs, modules, SoT, ownership, business rules
+- Runtime / Strategy / Reporting / Multi-Exchange redesign
+- Authority Matrix / Alias Dictionary modifications
+- Live capital / IDE shell
 
 ---
 

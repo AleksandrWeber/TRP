@@ -9,8 +9,59 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ## [Unreleased]
 
+## [2.0.0] — 2026-08-14
+
 ### Added
 
+- RC-28 Validation & Release — paper-first Version 2 certified and closed
+  (`v2.0.0`). Workflow §5 gates PASS (typecheck, lint, tests, build, smoke,
+  platform conformance **107/107**). READY = YES.
+  Reports: `docs/project/rc-28-validation-report.md`,
+  `rc-28-version-2-certification.md`, `rc-28-closure-report.md`.
+- RC-28 Epic 6 — Version 2 certification & release readiness:
+  eight completeness dimensions PASS; internal audit PASS; paper-first
+  Version 2 READY for Validation & Release (separate task). No tag.
+  Gate: **107/107 PASS** (`src/platform-conformance`; Epic 6 **12/12**).
+  Reports: `docs/project/rc-28-epic6-version-2-certification.md`,
+  `rc-28-epic6-internal-audit-report.md`, `rc-28-epic6-readiness-report.md`.
+- RC-28 Epic 5 — Performance, resilience & compatibility verification:
+  RC-19…RC-27 compatibility matrix; fail-closed / empty / unavailable
+  resilience; startup integrity; projection availability; dependency-graph
+  stability. No optimizations / runtime / ports / SoT.
+  Gate: **95/95 PASS** (`src/platform-conformance`; Epic 5 **17/17**).
+  Reports: `docs/project/rc-28-epic5-performance-resilience-compatibility.md`,
+  `rc-28-epic5-compatibility-verification-report.md`,
+  `rc-28-epic5-performance-resilience-report.md`.
+- RC-28 Epic 4 — End-to-end scenario validation:
+  eight representative journeys on frozen ports (certified deploy,
+  paper session, Gate fail, isolation, reporting, AI, notification,
+  Command Center). No new ports / SoT / behaviour.
+  Gate: **78/78 PASS** (`src/platform-conformance`; Epic 4 **13/13**).
+  Reports: `docs/project/rc-28-epic4-end-to-end-scenario-validation.md`,
+  `rc-28-epic4-scenario-validation-report.md`.
+- RC-28 Epic 3 — Authority & ownership verification:
+  sole-owner map, authority graph, SoT uniqueness, alias bindings,
+  isolation invariants 1–10, Tactics Contract Option B at Gate.
+  Authority Matrix / Alias Dictionary unmodified. No new ports / SoT.
+  Gate: **65/65 PASS** (`src/platform-conformance`; Epic 3 **19/19**).
+  Reports: `docs/project/rc-28-epic3-authority-ownership-verification.md`,
+  `rc-28-epic3-authority-verification-report.md`,
+  `rc-28-epic3-ownership-verification-report.md`.
+- RC-28 Epic 2 — Cross-domain workflow verification:
+  frozen hop catalog Research Lab → Command Center; contract usage,
+  ownership continuity, fail-closed Gate, consumer isolation.
+  No new ports / SoT / behaviour.
+  Gate: **46/46 PASS** (`src/platform-conformance`; Epic 2 **25/25**).
+  Reports: `docs/project/rc-28-epic2-cross-domain-workflow-verification.md`,
+  `rc-28-epic2-workflow-verification-report.md`.
+- RC-28 Epic 1 — Platform integration boundaries:
+  verification catalog composing RC-20…RC-27 owners; allowed consume graph,
+  forbidden reverse edges, ownership uniqueness, AppModule compile integrity.
+  Not a Nest module. No new ports / SoT / behaviour.
+  Gate: **21/21 PASS** (`src/platform-conformance`).
+  Reports: `docs/project/rc-28-epic1-platform-integration-boundaries.md`,
+  `rc-28-epic1-integration-boundary-report.md`,
+  `rc-28-epic1-boundary-diagram.md`.
 - RC-27 — Multi-Exchange Scope (Epics 1–6) **CLOSED** (`v1.0.0-rc27`):
   Exchange Scope isolation boundary (identity / config / lifecycle /
   bindings / policy inputs / metadata); trading-path `exchangeScopeId`
