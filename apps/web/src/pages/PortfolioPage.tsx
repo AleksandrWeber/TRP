@@ -15,7 +15,6 @@ export function PortfolioPage() {
   const [portfolio, setPortfolio] = useState<PortfolioView | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [resetting, setResetting] = useState(false);
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -33,19 +32,6 @@ export function PortfolioPage() {
   useEffect(() => {
     void refresh();
   }, [refresh]);
-
-  async function handleReset() {
-    setResetting(true);
-    setError(null);
-    try {
-      const view = await api.resetPortfolio();
-      setPortfolio(view);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Reset failed');
-    } finally {
-      setResetting(false);
-    }
-  }
 
   return (
     <section className="space-y-8">
@@ -65,14 +51,6 @@ export function PortfolioPage() {
             className="rounded border border-white/15 px-3 py-2 text-sm text-slate-200 hover:bg-white/5 disabled:opacity-50 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-sky-400"
           >
             Refresh
-          </button>
-          <button
-            type="button"
-            onClick={() => void handleReset()}
-            disabled={resetting || loading}
-            className="rounded border border-amber-500/40 px-3 py-2 text-sm text-amber-200 hover:bg-amber-500/10 disabled:opacity-50 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-sky-400"
-          >
-            {resetting ? 'Resetting…' : 'Reset (dev)'}
           </button>
         </div>
       </div>

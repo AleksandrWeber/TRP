@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, type OnModuleInit } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { Role } from './role';
 import type { User } from './user';
@@ -21,24 +21,35 @@ export type UpdateUserInput = {
 };
 
 /**
- * Identity User domain service (US105, US107).
+ * Identity User domain service (US105, US107, PC-18).
  * create / getById / getByEmail / update / disable.
- * Storage is delegated to UserRepository (no owned Map).
+ * Storage is delegated to UserRepository (no owned Map as Source of Truth).
+ * Reads are served from a hydrated cache so JWT validation stays synchronous.
  * Source of truth for user profile and role — no JWT / REST / Pipeline coupling.
+ * Password hashes remain in Authentication (password-free Identity).
  */
 @Injectable()
-export class UserDomainService {
+export class UserDomainService implements OnModuleInit {
+  private readonly byId = new Map<string, User>();
+  private readonly byEmail = new Map<string, User>();
+
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly repository: UserRepository,
   ) {}
 
-  create(input: CreateUserInput): User {
+  async onModuleInit(): Promise<void> {
+    for (const user of await this.repository.findAll()) {
+      this.index(user);
+    }
+  }
+
+  async create(input: CreateUserInput): Promise<User> {
     const email = normalizeEmail(input.email);
     assertNonEmpty(email, 'email');
     assertNonEmpty(input.displayName, 'displayName');
 
-    if (this.repository.findByEmail(email)) {
+    if (this.byEmail.has(email)) {
       throw new Error(`User with email already exists: ${email}`);
     }
 
@@ -50,26 +61,29 @@ export class UserDomainService {
       role: input.role ?? Role.Researcher,
     };
 
-    this.repository.save(user);
+    await this.repository.save(user);
+    this.index(user);
     return user;
   }
 
   getById(id: UserId | string): User | null {
-    return this.repository.findById(id);
+    return this.byId.get(String(id)) ?? null;
   }
 
   getByEmail(email: string): User | null {
-    return this.repository.findByEmail(normalizeEmail(email));
+    return this.byEmail.get(normalizeEmail(email)) ?? null;
   }
 
-  update(id: UserId | string, input: UpdateUserInput): User | null {
-    const existing = this.repository.findById(id);
+  async update(id: UserId | string, input: UpdateUserInput): Promise<User | null> {
+    const existing = this.byId.get(String(id));
     if (!existing) return null;
+
+    const previousEmail = existing.email;
 
     if (input.email !== undefined) {
       const email = normalizeEmail(input.email);
       assertNonEmpty(email, 'email');
-      const conflict = this.repository.findByEmail(email);
+      const conflict = this.byEmail.get(email);
       if (conflict && conflict.id !== existing.id) {
         throw new Error(`User with email already exists: ${email}`);
       }
@@ -85,17 +99,27 @@ export class UserDomainService {
       existing.role = input.role;
     }
 
-    this.repository.save(existing);
+    await this.repository.save(existing);
+    if (existing.email !== previousEmail) {
+      this.byEmail.delete(previousEmail);
+    }
+    this.index(existing);
     return existing;
   }
 
-  disable(id: UserId | string): User | null {
-    const existing = this.repository.findById(id);
+  async disable(id: UserId | string): Promise<User | null> {
+    const existing = this.byId.get(String(id));
     if (!existing) return null;
 
     existing.status = UserStatus.Disabled;
-    this.repository.save(existing);
+    await this.repository.save(existing);
+    this.index(existing);
     return existing;
+  }
+
+  private index(user: User): void {
+    this.byId.set(user.id, user);
+    this.byEmail.set(normalizeEmail(user.email), user);
   }
 }
 

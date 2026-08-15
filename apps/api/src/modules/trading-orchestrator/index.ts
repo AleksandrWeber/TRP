@@ -133,6 +133,9 @@ export {
 } from './domain/trading-orchestrator-consumer-read-model';
 export { TradingOrchestratorBoundaryService } from './trading-orchestrator-boundary.service';
 export { TradingOrchestratorModule } from './trading-orchestrator.module';
+export { TradingOrchestratorProductModule } from './trading-orchestrator-product.module';
+export { TradingOrchestratorProductService } from './trading-orchestrator-product.service';
+export { TradingOrchestratorController } from './trading-orchestrator.controller';
 
 export {
   ORCHESTRATOR_MARKET_STATE_CONSUMER,

@@ -328,6 +328,44 @@ describe('US211 / RC-23 Epic 4 — StrategyDeploymentService', () => {
     expect(await service.list('workspace-1')).toBe(listed);
     expect(await service.get('workspace-1', 'missing')).toBeNull();
   });
+
+  it('passes Library identity to the Gate when libraryEntryId is provided', async () => {
+    strategies.getById.mockResolvedValue({
+      id: 'strategy-1',
+      workspaceId: 'workspace-1',
+      status: 'active',
+    });
+    vi.mocked(repository.findByIdempotencyKey).mockResolvedValue(null);
+    vi.mocked(repository.create).mockImplementation(async (deployment) => deployment);
+
+    await service.create({
+      workspaceId: 'workspace-1',
+      strategyId: 'strategy-1',
+      strategyVersion: '1.0.0',
+      libraryEntryId: 'lib-entry-1',
+      parameters: {},
+      instrument: 'BTCUSDT',
+      timeframe: '1h',
+      marketDataSourceId: 'binance-spot',
+      paperExecutionConfigurationId: 'paper-config-us167',
+      riskPolicyId: 'm2-baseline-paper-risk',
+      riskPolicyVersion: 1,
+      idempotencyKey: 'idem-library-1',
+      actorId: 'trader-1',
+      createdAt,
+      recordedAt: createdAt,
+    });
+
+    const gateRequest = vi.mocked(enforcement.validateDeployment).mock.calls[0]?.[0];
+    expect(gateRequest).toEqual(
+      expect.objectContaining({
+        libraryEntryId: 'lib-entry-1',
+        purpose: 'deployment_bind',
+      }),
+    );
+    expect(gateRequest).not.toHaveProperty('strategyFamilyId');
+    expect(strategies.getById).toHaveBeenCalledWith('workspace-1', 'strategy-1');
+  });
 });
 
 function eventTypeFrom(call: unknown): string | undefined {

@@ -1,4 +1,5 @@
 import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useWorkspace } from '../app/WorkspaceContext';
 import {
   api,
@@ -173,9 +174,17 @@ export function StrategiesPage() {
   return (
     <section className="space-y-8" data-testid="strategies-page">
       <div>
-        <h2 className="text-2xl font-semibold">Strategies</h2>
+        <h2 className="text-2xl font-semibold">Research strategies</h2>
         <p className="mt-2 text-slate-400">
-          US005 — complete workspace-owned strategy configuration in {activeWorkspace.name}
+          Experimental registry records (US005) in {activeWorkspace.name}. This is not the certified{' '}
+          <Link to="/strategy-library" className="text-sky-400 hover:text-sky-300">
+            Strategy Library
+          </Link>
+          . To admit a candidate,{' '}
+          <Link to="/strategy-library/certify" className="text-sky-400 hover:text-sky-300">
+            certify
+          </Link>
+          .
         </p>
       </div>
 
@@ -583,6 +592,13 @@ export function StrategyListView({
                 >
                   Edit
                 </button>
+                <Link
+                  to={`/strategy-library/certify?registryRef=${strategy.id}`}
+                  data-testid="certify-strategy-link"
+                  className="rounded-lg border border-white/10 px-3 py-1.5 text-sm text-slate-300"
+                >
+                  Certify
+                </Link>
                 <button
                   type="button"
                   onClick={() => onDelete(strategy.id)}

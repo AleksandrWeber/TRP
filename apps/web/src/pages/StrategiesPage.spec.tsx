@@ -1,4 +1,5 @@
 import { renderToStaticMarkup } from 'react-dom/server';
+import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../shared/api', async (importOriginal) => {
@@ -95,11 +96,15 @@ describe('StrategiesPage (US004/US005)', () => {
 
   it('renders inside WorkspaceContext with the create form and empty state', () => {
     const html = renderToStaticMarkup(
-      <WorkspaceProvider>
-        <StrategiesPage />
-      </WorkspaceProvider>,
+      <MemoryRouter>
+        <WorkspaceProvider>
+          <StrategiesPage />
+        </WorkspaceProvider>
+      </MemoryRouter>,
     );
 
+    expect(html).toContain('Research strategies');
+    expect(html).toContain('Strategy Library');
     expect(html).toContain('data-testid="strategies-page"');
     expect(html).toContain('Default Workspace');
     expect(html).toContain('data-testid="create-strategy-form"');
@@ -117,23 +122,25 @@ describe('StrategiesPage (US004/US005)', () => {
 
   it('renders strategy rows with status badges and actions', () => {
     const html = renderToStaticMarkup(
-      <StrategyListView
-        strategies={strategies}
-        busy={false}
-        editingId={null}
-        editName=""
-        editDescription=""
-        editStatus="draft"
-        editConfiguration={editConfiguration}
-        onEditName={noop}
-        onEditDescription={noop}
-        onEditStatus={noop}
-        onEditConfiguration={noop}
-        onStartEdit={noop}
-        onCancelEdit={noop}
-        onSaveEdit={noop}
-        onDelete={noop}
-      />,
+      <MemoryRouter>
+        <StrategyListView
+          strategies={strategies}
+          busy={false}
+          editingId={null}
+          editName=""
+          editDescription=""
+          editStatus="draft"
+          editConfiguration={editConfiguration}
+          onEditName={noop}
+          onEditDescription={noop}
+          onEditStatus={noop}
+          onEditConfiguration={noop}
+          onStartEdit={noop}
+          onCancelEdit={noop}
+          onSaveEdit={noop}
+          onDelete={noop}
+        />
+      </MemoryRouter>,
     );
 
     expect(html).toContain('Momentum');
@@ -145,29 +152,32 @@ describe('StrategiesPage (US004/US005)', () => {
     expect(html).toContain('ETHUSDT');
     expect(html).toContain('emaFast');
     expect(html).toContain('data-testid="edit-strategy-button"');
+    expect(html).toContain('data-testid="certify-strategy-link"');
     expect(html).toContain('data-testid="delete-strategy-button"');
     expect(html).not.toContain('No strategies yet.');
   });
 
   it('renders the inline edit form for the strategy being edited', () => {
     const html = renderToStaticMarkup(
-      <StrategyListView
-        strategies={strategies}
-        busy={false}
-        editingId="st-1"
-        editName="Momentum v2"
-        editDescription="Updated"
-        editStatus="active"
-        editConfiguration={editConfiguration}
-        onEditName={noop}
-        onEditDescription={noop}
-        onEditStatus={noop}
-        onEditConfiguration={noop}
-        onStartEdit={noop}
-        onCancelEdit={noop}
-        onSaveEdit={noop}
-        onDelete={noop}
-      />,
+      <MemoryRouter>
+        <StrategyListView
+          strategies={strategies}
+          busy={false}
+          editingId="st-1"
+          editName="Momentum v2"
+          editDescription="Updated"
+          editStatus="active"
+          editConfiguration={editConfiguration}
+          onEditName={noop}
+          onEditDescription={noop}
+          onEditStatus={noop}
+          onEditConfiguration={noop}
+          onStartEdit={noop}
+          onCancelEdit={noop}
+          onSaveEdit={noop}
+          onDelete={noop}
+        />
+      </MemoryRouter>,
     );
 
     expect(html).toContain('data-testid="edit-strategy-form"');

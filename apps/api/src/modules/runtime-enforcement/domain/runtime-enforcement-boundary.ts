@@ -112,15 +112,16 @@ export type RuntimeEnforcementBoundary = Readonly<{
   distinctFrom: typeof RUNTIME_ENFORCEMENT_DISTINCT_FROM;
   forbiddenCapabilities: typeof RUNTIME_ENFORCEMENT_FORBIDDEN_CAPABILITIES;
   /**
-   * Port posture by Epic.
+   * Port posture by Epic / Product Completion.
    * Epic 3: Library reads + validateDeployment Gate active.
+   * PC-04: REST transport for the existing Gate (no persistence SoT).
    */
   activePorts: Readonly<{
     validateDeployment: true;
     libraryLookup: true;
     libraryEligibility: true;
     persistence: false;
-    rest: false;
+    rest: true;
   }>;
   /** Strategy Library relationship: read-only consumer (activates Epic 2+). */
   strategyLibraryRole: 'read-only-consumer';
@@ -141,7 +142,7 @@ export const RUNTIME_ENFORCEMENT_BOUNDARY: RuntimeEnforcementBoundary = Object.f
     libraryLookup: true,
     libraryEligibility: true,
     persistence: false,
-    rest: false,
+    rest: true,
   }),
   strategyLibraryRole: 'read-only-consumer',
   knowledgeLakeRole: 'never-authority',

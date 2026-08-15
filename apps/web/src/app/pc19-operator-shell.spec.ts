@@ -1,0 +1,50 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { describe, expect, it } from 'vitest';
+
+function readSrc(relativePath: string) {
+  return readFileSync(resolve(__dirname, relativePath), 'utf8');
+}
+
+describe('PC-19 product path honesty', () => {
+  it('does not mount live, production, exchanges, or epic review pages as product UI', () => {
+    const appSource = readSrc('./App.tsx');
+
+    expect(appSource).not.toContain('LiveTradingPage');
+    expect(appSource).not.toContain('ProductionPage');
+    expect(appSource).not.toContain('ExchangesPage');
+    expect(appSource).not.toContain('CommandCenterEpic3ReviewPage');
+    expect(appSource).not.toContain('CommandCenterEpic4ReviewPage');
+    expect(appSource).not.toContain('CommandCenterEpic5ReviewPage');
+    expect(appSource).not.toContain('CommandCenterEpic6ReviewPage');
+    expect(appSource).toContain('path="trading/paper"');
+    expect(appSource).toContain('path="command-center"');
+    expect(appSource).toContain('Navigate to="/trading/paper"');
+    expect(appSource).toContain('Navigate to="/"');
+  });
+
+  it('keeps portfolio free of developer reset and paper create labeled sandbox', () => {
+    const portfolio = readSrc('../pages/PortfolioPage.tsx');
+    const paper = readSrc('../pages/PaperTradingPage.tsx');
+    const home = readSrc('../pages/HomePage.tsx');
+
+    expect(portfolio).not.toContain('Reset (dev)');
+    expect(portfolio).not.toContain('resetPortfolio');
+    expect(paper).toContain('Sandbox');
+    expect(home).not.toContain('/production');
+    expect(home).toContain('/trading/paper');
+    expect(home).toContain('/command-center');
+    expect(home).toContain('/strategy-library');
+    expect(home).toContain('/runtime-validation');
+    expect(home).toContain('/deployments');
+    expect(home).toContain('/orchestrator');
+    expect(home).toContain('/qualification');
+    expect(home).toContain('/reporting');
+    expect(home).toContain('/notifications');
+    expect(home).toContain('/notifications/channels');
+    expect(home).toContain('listTradingSessions');
+    expect(home).toContain('getRuntimeHealth');
+    expect(home).not.toMatch(/['"`]\/reports(?:\/|['"`?]|$)/);
+    expect(home).not.toContain('Coming Soon');
+  });
+});

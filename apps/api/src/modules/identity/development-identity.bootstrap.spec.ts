@@ -6,10 +6,9 @@ import {
   shouldBootstrapDevelopmentIdentity,
 } from './development-identity';
 import { InMemoryUserRepository } from './repositories/in-memory-user.repository';
-import { Role } from './role';
 import { UserDomainService } from './user-domain.service';
 
-describe('DevelopmentIdentityBootstrap (US002A)', () => {
+describe('DevelopmentIdentityBootstrap (PC-18)', () => {
   let users: UserDomainService;
   let bootstrap: DevelopmentIdentityBootstrap;
 
@@ -18,9 +17,9 @@ describe('DevelopmentIdentityBootstrap (US002A)', () => {
     bootstrap = new DevelopmentIdentityBootstrap(users, new NoOpLogger());
   });
 
-  it('shouldBootstrapDevelopmentIdentity is true only for development', () => {
-    expect(shouldBootstrapDevelopmentIdentity({ NODE_ENV: 'development' })).toBe(true);
-    expect(shouldBootstrapDevelopmentIdentity({})).toBe(true);
+  it('shouldBootstrapDevelopmentIdentity is always false', () => {
+    expect(shouldBootstrapDevelopmentIdentity({ NODE_ENV: 'development' })).toBe(false);
+    expect(shouldBootstrapDevelopmentIdentity({})).toBe(false);
     expect(shouldBootstrapDevelopmentIdentity({ NODE_ENV: 'production' })).toBe(false);
     expect(shouldBootstrapDevelopmentIdentity({ NODE_ENV: 'test' })).toBe(false);
     expect(shouldBootstrapDevelopmentIdentity({ NODE_ENV: 'development', VITEST: 'true' })).toBe(
@@ -28,31 +27,11 @@ describe('DevelopmentIdentityBootstrap (US002A)', () => {
     );
   });
 
-  it('creates the canonical development identity when missing', () => {
-    bootstrap.ensureDevelopmentIdentity({ NODE_ENV: 'development' });
+  it('does not create a development identity in any environment', async () => {
+    await bootstrap.ensureDevelopmentIdentity({ NODE_ENV: 'development' });
+    await bootstrap.ensureDevelopmentIdentity({ NODE_ENV: 'production' });
+    await bootstrap.ensureDevelopmentIdentity({ NODE_ENV: 'test' });
 
-    const user = users.getByEmail(DEVELOPMENT_IDENTITY_EMAIL);
-    expect(user).toMatchObject({
-      email: DEVELOPMENT_IDENTITY_EMAIL,
-      displayName: 'Admin',
-      role: Role.Admin,
-    });
-  });
-
-  it('is idempotent across repeated calls', () => {
-    bootstrap.ensureDevelopmentIdentity({ NODE_ENV: 'development' });
-    const first = users.getByEmail(DEVELOPMENT_IDENTITY_EMAIL);
-    bootstrap.ensureDevelopmentIdentity({ NODE_ENV: 'development' });
-    bootstrap.ensureDevelopmentIdentity({ NODE_ENV: 'development' });
-
-    expect(users.getByEmail(DEVELOPMENT_IDENTITY_EMAIL)?.id).toBe(first?.id);
-  });
-
-  it('does nothing outside development', () => {
-    bootstrap.ensureDevelopmentIdentity({ NODE_ENV: 'production' });
-    expect(users.getByEmail(DEVELOPMENT_IDENTITY_EMAIL)).toBeNull();
-
-    bootstrap.ensureDevelopmentIdentity({ NODE_ENV: 'test' });
     expect(users.getByEmail(DEVELOPMENT_IDENTITY_EMAIL)).toBeNull();
   });
 });

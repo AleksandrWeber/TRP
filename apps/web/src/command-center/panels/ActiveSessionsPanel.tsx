@@ -81,6 +81,12 @@ export function ActiveSessionsPanel({
               </div>
               <div className="flex flex-wrap gap-2 px-7">
                 <ActionButton
+                  label="Start"
+                  testId={`cc-start-${session.id}`}
+                  disabled={commandsDisabled || availability.start !== 'available'}
+                  onClick={() => onRequestAction?.('start', session.id)}
+                />
+                <ActionButton
                   label="Pause"
                   testId={`cc-pause-${session.id}`}
                   disabled={commandsDisabled || availability.pause !== 'available'}

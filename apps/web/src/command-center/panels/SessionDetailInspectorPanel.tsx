@@ -1,10 +1,13 @@
+import { Link } from 'react-router-dom';
 import type { TradingSessionBotView } from '../../shared/api';
 import { OpsPanelFrame } from '../components/OpsPanelFrame';
+import type { OrchestrationReferenceView } from '../orchestration-reference';
 import { sessionActionAvailability, type SessionLifecycleAction } from '../session-commands';
 import type { OpsPanelProps } from '../types';
 
 type Props = OpsPanelProps & {
   session?: TradingSessionBotView | null;
+  orchestration?: OrchestrationReferenceView | null;
   onClearSelection?: () => void;
   onRequestAction?: (action: SessionLifecycleAction, sessionId: string) => void;
   commandsDisabled?: boolean;
@@ -14,11 +17,15 @@ export function SessionDetailInspectorPanel({
   presentation = 'empty',
   errorMessage,
   session = null,
+  orchestration = null,
   onClearSelection,
   onRequestAction,
   commandsDisabled = false,
 }: Props) {
   const availability = session ? sessionActionAvailability(session) : null;
+  const deploymentId = session?.deploymentReference?.deploymentId ?? session?.mission.deploymentId;
+  const health = session?.health;
+  const runtime = session?.runtimeStatus;
 
   return (
     <OpsPanelFrame
@@ -52,16 +59,81 @@ export function SessionDetailInspectorPanel({
             ) : null}
           </div>
           <dl className="grid gap-2 sm:grid-cols-2">
-            <Field label="Lifecycle status" value={session.status} />
+            <Field label="Lifecycle status" value={health?.lifecycleStatus ?? session.status} />
+            <Field label="Health lease" value={health?.leasePresent ? 'present' : 'missing'} />
+            <Field label="Runtime worker" value={runtime?.workerState ?? 'IDLE'} />
+            <Field label="Accepts ticks" value={runtime?.acceptsTicks ? 'yes' : 'no'} />
             <Field label="Exchange Scope" value={session.exchangeScopeId} />
             <Field label="Paper account" value={session.paperAccountId} />
-            <Field label="Mission (deployment)" value={session.mission.deploymentId} />
             <Field label="Origin" value={session.origin} />
-            <Field label="Lease owner" value={session.leaseOwnerId ?? '—'} />
-            <Field label="Failure reason" value={session.failureReason ?? '—'} />
+            <Field
+              label="Failure reason"
+              value={health?.failureReason ?? session.failureReason ?? '—'}
+            />
             <Field label="Recorded at" value={session.recordedAt} />
           </dl>
+          <p className="text-xs text-slate-400" data-testid="cc-p7-deployment">
+            Deployment reference{' '}
+            <Link to={`/deployments/${deploymentId}`} className="text-sky-400 hover:text-sky-300">
+              {deploymentId}
+            </Link>
+          </p>
+          <p className="text-xs text-slate-400" data-testid="cc-p7-orchestration">
+            {orchestration ? (
+              <>
+                Orchestration handoff{' '}
+                <Link
+                  to={`/orchestrator/runs/${orchestration.orchestrationRunId}`}
+                  className="text-sky-400 hover:text-sky-300"
+                >
+                  {orchestration.sessionHandoffIntentId}
+                </Link>
+                <span className="ml-2 text-slate-500">createsSession: false</span>
+              </>
+            ) : (
+              <>
+                No orchestration handoff for this Deployment.{' '}
+                <Link to="/orchestrator" className="text-sky-400 hover:text-sky-300">
+                  Open Orchestrator
+                </Link>
+              </>
+            )}
+          </p>
+          <p className="text-xs text-slate-400" data-testid="cc-p7-report">
+            {session.latestReport ? (
+              <>
+                Latest report{' '}
+                <Link
+                  to={`/reporting/${session.latestReport.reportRunId}`}
+                  className="text-sky-400 hover:text-sky-300"
+                >
+                  {session.latestReport.reportRunId}
+                </Link>
+                {` · ${session.latestReport.status}`}
+                {session.latestReport.narrativeUnavailable
+                  ? ' · narrative unavailable'
+                  : session.latestReport.narrativeAttached
+                    ? ' · narrative attached'
+                    : ''}
+              </>
+            ) : (
+              'No report run for this session yet.'
+            )}
+          </p>
+          <p className="text-xs text-slate-400" data-testid="cc-p7-delivery">
+            {session.delivery
+              ? `Delivery ${session.delivery.outcome}${
+                  session.delivery.telegramAdapterReached ? ' · Telegram adapter reached' : ''
+                }`
+              : 'No delivery recorded for this session yet.'}
+          </p>
           <div className="flex flex-wrap gap-2" data-testid="cc-p7-actions">
+            <ActionButton
+              label="Start"
+              testId="cc-p7-start"
+              disabled={commandsDisabled || availability?.start !== 'available'}
+              onClick={() => onRequestAction?.('start', session.id)}
+            />
             <ActionButton
               label="Pause"
               testId="cc-p7-pause"
@@ -81,12 +153,14 @@ export function SessionDetailInspectorPanel({
               disabled={commandsDisabled || availability?.stop !== 'available'}
               onClick={() => onRequestAction?.('stop', session.id)}
             />
+            <Link
+              to={`/command-center/sessions/${session.id}`}
+              className="rounded border border-white/15 px-3 py-1.5 text-xs text-slate-300 hover:bg-white/5"
+              data-testid="cc-p7-monitor"
+            >
+              Monitor
+            </Link>
           </div>
-          {!session.leaseOwnerId || session.fencingToken === null ? (
-            <p className="text-xs text-amber-200/90" data-testid="cc-p7-unavailable">
-              Commands unavailable — session lease is missing.
-            </p>
-          ) : null}
         </div>
       ) : null}
     </OpsPanelFrame>

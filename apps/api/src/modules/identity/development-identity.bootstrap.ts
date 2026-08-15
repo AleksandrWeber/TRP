@@ -10,8 +10,8 @@ import { Role } from './role';
 import { UserDomainService } from './user-domain.service';
 
 /**
- * Ensures the canonical development identity exists in the in-memory Identity store (US002A).
- * Runs once on module init in development only — never during login, never via Prisma.
+ * Historical US002A helper. PC-18 unwired this from IdentityModule.
+ * The gate is always closed — it must not create a shared admin account.
  */
 @Injectable()
 export class DevelopmentIdentityBootstrap implements OnModuleInit {
@@ -24,22 +24,21 @@ export class DevelopmentIdentityBootstrap implements OnModuleInit {
     this.logger = logger.child(DevelopmentIdentityBootstrap.name);
   }
 
-  onModuleInit(): void {
-    this.ensureDevelopmentIdentity();
+  async onModuleInit(): Promise<void> {
+    await this.ensureDevelopmentIdentity();
   }
 
   /**
-   * Idempotent: create the canonical development user when missing; no-op when present.
-   * Exposed for unit tests without Nest lifecycle.
+   * No-op: development identity is not bootstrapped on the product path (PC-18).
    */
-  ensureDevelopmentIdentity(env: NodeJS.ProcessEnv = process.env): void {
+  async ensureDevelopmentIdentity(env: NodeJS.ProcessEnv = process.env): Promise<void> {
     if (!shouldBootstrapDevelopmentIdentity(env)) return;
 
     if (this.users.getByEmail(DEVELOPMENT_IDENTITY_EMAIL)) {
       return;
     }
 
-    const user = this.users.create({
+    const user = await this.users.create({
       email: DEVELOPMENT_IDENTITY_EMAIL,
       displayName: DEVELOPMENT_IDENTITY_DISPLAY_NAME,
       role: Role.Admin,

@@ -31,6 +31,7 @@ const FORBIDDEN_IMPORT_SEGMENTS = [
   '/ai-analytics',
   '/knowledge-lake',
   '/live-market-data',
+  '/product-flow',
 ] as const;
 
 function listTsFiles(dir: string): string[] {

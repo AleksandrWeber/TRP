@@ -25,3 +25,4 @@ export {
   STRATEGY_DEPLOYMENT_REPOSITORY,
   type StrategyDeploymentRepository,
 } from './persistence/strategy-deployment.repository';
+export { toStrategyDeploymentView, type StrategyDeploymentView } from './strategy-deployment.view';

@@ -78,6 +78,7 @@ export type UpdateExchangeScopeConfig = Readonly<{
   workspaceId: string;
   exchangeScopeId: string;
   updatedBy: string;
+  displayName?: string;
   maxActiveSessions?: number;
   symbolAllowlist?: readonly string[];
   strategyAllowlist?: readonly string[];
@@ -205,6 +206,16 @@ export type GetAdapterBindingContext = Readonly<{
   exchangeScopeId: string;
 }>;
 
+export type ListExchangeScopeHistory = Readonly<{
+  workspaceId: string;
+  exchangeScopeId: string;
+}>;
+
+export type ListExchangeRiskPolicies = Readonly<{
+  workspaceId: string;
+  exchangeScopeId: string;
+}>;
+
 export type ExchangeScopeAuthorityFlags = Readonly<{
   authorityClass: 'exchange_scope_artifact';
   isRiskEngine: false;
@@ -260,6 +271,8 @@ export interface ExchangeScopeQueryPort {
     query: ListTradingAccountBindings,
   ): readonly TradingAccountBindingView[];
   getAdapterBindingContext(query: GetAdapterBindingContext): AdapterBindingContextView | null;
+  listExchangeScopeHistory(query: ListExchangeScopeHistory): readonly ExchangeScopeView[];
+  listExchangeRiskPolicies(query: ListExchangeRiskPolicies): readonly ExchangeRiskPolicyView[];
 }
 
 export type ExchangeScopeConsumerReadQuery = Readonly<{

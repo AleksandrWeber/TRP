@@ -117,6 +117,10 @@ export type GetMarketHealth = Readonly<{
   marketSymbol: string;
 }>;
 
+export type ListQualificationTargets = Readonly<{
+  workspaceId: string;
+}>;
+
 export type ListQualificationRuns = Readonly<{
   workspaceId: string;
   exchangeScopeId?: string;
@@ -176,6 +180,7 @@ export interface MarketQualificationQueryPort {
   getQualificationState(query: GetQualificationState): QualificationStateView | null;
   getMarketConfidence(query: GetMarketConfidence): MarketConfidenceView | null;
   getMarketHealth(query: GetMarketHealth): MarketHealthView | null;
+  listQualificationTargets(query: ListQualificationTargets): readonly QualificationTargetView[];
   listQualificationRuns(query: ListQualificationRuns): readonly QualificationRunSummary[];
   getQualificationRun(query: GetQualificationRun): QualificationRunView | null;
 }

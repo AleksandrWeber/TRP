@@ -17,7 +17,9 @@ enum Role {
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
-  passwordHash String
+  passwordHash String?
+  displayName  String   @default("")
+  status       String   @default("Active")
   role         Role     @default(RESEARCHER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

@@ -152,7 +152,7 @@ export type TradingOrchestratorBoundary = Readonly<{
     sessionHandoff: true;
     consumerRead: true;
     persistence: false;
-    rest: false;
+    rest: true;
   }>;
   /** Upstream module roles (Epic 5). */
   strategyLibraryRole: 'read-only-consumer';
@@ -189,7 +189,7 @@ export const TRADING_ORCHESTRATOR_BOUNDARY: TradingOrchestratorBoundary = Object
     sessionHandoff: true,
     consumerRead: true,
     persistence: false,
-    rest: false,
+    rest: true,
   }),
   strategyLibraryRole: 'read-only-consumer',
   runtimeEnforcementRole: 'gate-consumer',

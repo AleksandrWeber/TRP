@@ -1,5 +1,7 @@
 export { PaperAccountModule } from './paper-account.module';
+export { PaperAccountController } from './paper-account.controller';
 export { PaperAccountService, type CreatePaperAccountCommand } from './paper-account.service';
+export { toPaperAccountView, type PaperAccountView } from './paper-account.view';
 export {
   activatePaperAccount,
   closePaperAccount,

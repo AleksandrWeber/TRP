@@ -262,11 +262,823 @@ export type LoginResponse = {
   user: AuthUser;
 };
 
-export type WorkspaceBootstrap = {
+export type WorkspaceView = {
   id: string;
   name: string;
   status: string;
   createdAt: string;
+};
+
+export type WorkspaceBootstrap = WorkspaceView;
+
+export type LibraryMembershipStatus = 'uncertified' | 'certified' | 'deprecated' | 'archived';
+
+export type StrategyLibraryRecordView = {
+  authorityClass: 'source_of_truth';
+  membershipStatus: LibraryMembershipStatus;
+  strategy: {
+    strategyFamilyId: string;
+    name: string;
+    description: string | null;
+    registryRef: string | null;
+    workspaceId: string;
+    createdAt: string;
+  };
+  version: {
+    libraryEntryId: string;
+    strategyFamilyId: string;
+    version: string;
+    contentHash: string;
+    market: string;
+    supportedExchangeScopeIds: readonly string[];
+    supportedTimeframes: readonly string[];
+    supportedUniverse:
+      | { kind: 'symbols'; symbols: readonly string[] }
+      | { kind: 'universe-ref'; universeRef: string };
+    workspaceId: string;
+    createdAt: string;
+    immutable: true;
+  };
+  certification: {
+    certificationId: string;
+    status: string;
+    decision: string;
+    certifiedAt: string;
+    certifiedBy: string;
+    notes: string | null;
+    contentHash: string;
+    evidence: readonly {
+      evidenceId: string;
+      type: string;
+      sourceRef: { owner: string; id: string };
+    }[];
+  } | null;
+  eligibility: {
+    eligibilityId: string;
+    outcome: string;
+    reasons: readonly string[];
+    rulesVersion: string;
+    evaluatedAt: string;
+  } | null;
+  tacticalEnvelope: {
+    envelopeVersion: string;
+    allowedMarkets: readonly string[];
+    allowedExchangeScopeIds: readonly string[];
+    allowedSymbols: readonly string[];
+    allowedTimeframes: readonly string[];
+    riskPerTrade:
+      { min: number; max: number; step?: number } | { kind: 'set'; values: readonly number[] };
+    maxPositions: { min: number; max: number };
+    parameterLimits: Readonly<Record<string, { min: number; max: number; step?: number }>>;
+    executionConstraints: {
+      maxOrdersPerDay?: number;
+      allowedOrderTypes?: readonly string[];
+    } | null;
+    optionalFilters: readonly string[];
+    provenanceRefs: readonly string[];
+  } | null;
+  envelopeState: 'present' | 'empty';
+};
+
+export type StrategyLibraryPageView = {
+  authorityClass: 'source_of_truth';
+  items: StrategyLibraryRecordView[];
+  nextCursor: string | null;
+};
+
+export type StrategyLibraryEligibilityView = {
+  outcome: 'eligible' | 'ineligible';
+  reasons: readonly string[];
+  status: LibraryMembershipStatus | 'unknown';
+  checkedAt: string;
+  libraryEntryId: string | null;
+  eligibilityId: string | null;
+};
+
+export type CertificationAttemptView = {
+  attemptId: string;
+  workspaceId: string;
+  outcome: 'certified' | 'rejected' | 'conflict';
+  progress: 'complete';
+  reasons: readonly string[];
+  libraryEntryId: string | null;
+  certificationId: string | null;
+  certifiedBy: string;
+  certifiedAt: string | null;
+  createdAt: string;
+  notes: string | null;
+  metadata: {
+    strategyFamilyId: string | null;
+    name: string | null;
+    version: string | null;
+    contentHash: string | null;
+    registryRef: string | null;
+    evidenceTypes: readonly string[];
+    envelopeVersion: string | null;
+  };
+};
+
+export type CertificationHistoryView = {
+  items: CertificationAttemptView[];
+};
+
+export type CertifyStrategyRequest = {
+  family: {
+    strategyFamilyId?: string;
+    name: string;
+    description?: string;
+    registryRef?: string;
+  };
+  version: {
+    version: string;
+    contentHash: string;
+    market: string;
+    supportedExchangeScopeIds: readonly string[];
+    supportedTimeframes: readonly string[];
+    supportedSymbols?: readonly string[];
+    universeRef?: string;
+  };
+  evidence: Array<{
+    evidenceId: string;
+    type: string;
+    sourceRef: { owner: string; id: string };
+    summary?: string;
+  }>;
+  tacticalEnvelope: {
+    envelopeVersion: string;
+    allowedMarkets: readonly string[];
+    allowedExchangeScopeIds: readonly string[];
+    allowedSymbols: readonly string[];
+    allowedTimeframes: readonly string[];
+    riskPerTrade:
+      { min: number; max: number; step?: number } | { kind: 'set'; values: readonly number[] };
+    maxPositions: { min: number; max: number };
+  };
+  notes?: string;
+};
+
+export type RuntimeValidationView = {
+  validationId: string;
+  workspaceId: string;
+  progress: 'complete';
+  outcome: 'pass' | 'fail';
+  validation: 'VALID' | 'INVALID';
+  reasons: readonly string[];
+  libraryEntryId: string | null;
+  strategyFamilyId: string | null;
+  strategyVersion: string | null;
+  strategyName: string | null;
+  purpose: 'deployment_bind' | 'session_start';
+  exchangeScopeId: string | null;
+  certificationStatus: string | null;
+  eligibilityOutcome: 'eligible' | 'ineligible' | 'unknown' | null;
+  checkedAt: string;
+  createdAt: string;
+};
+
+export type RuntimeValidationHistoryView = {
+  items: RuntimeValidationView[];
+};
+
+export type RunRuntimeValidationRequest = {
+  libraryEntryId?: string;
+  strategyFamilyId?: string;
+  strategyVersion?: string;
+  exchangeScopeId?: string;
+  purpose?: 'deployment_bind' | 'session_start';
+};
+
+export type DeploymentEnforcementAuthorizationView = {
+  outcome: 'pass';
+  validation: 'VALID';
+  purpose: 'deployment_bind';
+  libraryEntryId: string | null;
+  certificationStatus: string | null;
+  eligibilityOutcome: 'eligible' | 'ineligible' | 'unknown' | null;
+  checkedAt: string;
+  reasons: readonly string[];
+};
+
+export type StrategyDeploymentView = {
+  id: string;
+  workspaceId: string;
+  exchangeScopeId: string;
+  strategyId: string;
+  strategyVersion: string;
+  libraryEntryId: string | null;
+  experimentId: string | null;
+  parameters: Readonly<Record<string, unknown>>;
+  instrument: string;
+  timeframe: string;
+  marketDataSourceId: string;
+  paperExecutionConfigurationId: string;
+  riskPolicyId: string;
+  riskPolicyVersion: number;
+  configurationHash: string;
+  status: string;
+  version: number;
+  approvedAt: string | null;
+  approvedByActorId: string | null;
+  createdAt: string;
+  recordedAt: string;
+  actorId: string;
+  correlationId: string | null;
+  metadata: Readonly<Record<string, unknown>>;
+  enforcementAuthorization: DeploymentEnforcementAuthorizationView | null;
+};
+
+export type CreateStrategyDeploymentRequest = {
+  strategyId: string;
+  strategyVersion: string;
+  libraryEntryId?: string;
+  experimentId?: string;
+  parameters: Record<string, unknown>;
+  instrument: string;
+  timeframe: string;
+  marketDataSourceId: string;
+  paperExecutionConfigurationId: string;
+  riskPolicyId: string;
+  riskPolicyVersion: number;
+  metadata?: Record<string, unknown>;
+};
+
+export type OrchestrationPlanView = {
+  orchestrationPlanId: string;
+  tradingOrchestratorId: string;
+  workspaceId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  modeContext: 'lab' | 'paper' | 'live';
+  version: number;
+  publishedAt: string;
+  publishedBy: string;
+  lifecycleStatus: string;
+  lifecycleUpdatedAt: string;
+  lifecycleReason: string;
+  objective: string;
+  rationaleSummary: string;
+  inputSummary: string;
+  authorityClass: 'orchestration_artifact';
+  createsSession: false;
+  forcesTrade: false;
+  submitsOrders: false;
+  approvesRisk: false;
+};
+
+export type OrchestrationPlanListView = {
+  items: OrchestrationPlanView[];
+};
+
+export type OrchestrationRunView = {
+  orchestrationRunId: string;
+  workspaceId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  modeContext: 'lab' | 'paper' | 'live';
+  status: string;
+  marketStateId: string;
+  orchestrationPlanId: string | null;
+  selectionDecisionId: string | null;
+  sessionHandoffIntentId: string | null;
+  objective: string | null;
+  rejectionReasons: readonly string[];
+  requiresConfirmation: boolean;
+  createdAt: string;
+  updatedAt: string;
+  authorityClass: 'orchestration_artifact';
+  forcesTrade: false;
+  approvesRisk: false;
+  submitsOrders: false;
+  ownsSessionLifecycle: false;
+};
+
+export type SelectionDecisionView = {
+  selectionDecisionId: string;
+  orchestrationRunId: string;
+  workspaceId: string;
+  libraryEntryId: string;
+  strategyVersionId: string;
+  envelopeVersion: string;
+  tacticPoint: Readonly<Record<string, unknown>>;
+  selectedAt: string;
+  authorityClass: 'orchestration_artifact';
+  forcesTrade: false;
+  inventsStrategy: false;
+};
+
+export type SessionHandoffIntentView = {
+  sessionHandoffIntentId: string;
+  orchestrationRunId: string;
+  selectionDecisionId: string;
+  workspaceId: string;
+  deploymentBindRef: string;
+  enforcementDecisionRef: string;
+  status: string;
+  proposedAt: string;
+  authorityClass: 'orchestration_artifact';
+  isOrder: false;
+  isRiskDecision: false;
+  createsSession: false;
+};
+
+export type OrchestrationRunDetailView = OrchestrationRunView & {
+  selection: SelectionDecisionView | null;
+  handoff: SessionHandoffIntentView | null;
+};
+
+export type OrchestrationHistoryView = {
+  items: OrchestrationRunView[];
+};
+
+export type OrchestrationCommandView = {
+  outcome: string;
+  orchestrationRunId: string;
+  selectionDecisionId?: string;
+  sessionHandoffIntentId?: string;
+  enforcementDecisionRef?: string;
+  rejectionReasons?: readonly string[];
+  authorityClass: 'orchestration_artifact';
+  forcesTrade: false;
+  approvesRisk: false;
+  submitsOrders: false;
+};
+
+export type CreateOrchestrationPlanRequest = {
+  marketSymbol: string;
+  exchangeScopeId?: string;
+  modeContext?: 'lab' | 'paper';
+  objective: string;
+  rationaleSummary?: string;
+};
+
+export type RequestOrchestrationRunRequest = {
+  marketSymbol: string;
+  exchangeScopeId?: string;
+  modeContext?: 'lab' | 'paper';
+  objective?: string;
+  orchestrationPlanId?: string;
+  marketStateId?: string;
+  requiresConfirmation?: boolean;
+};
+
+export type ProposeOrchestrationSelectionRequest = {
+  libraryEntryId: string;
+  strategyVersionId: string;
+  envelopeVersion: string;
+  tacticPoint: Record<string, unknown>;
+};
+
+export type EmitOrchestrationHandoffRequest = {
+  selectionDecisionId: string;
+  deploymentBindRef: string;
+};
+
+export type ReportDefinitionView = {
+  reportDefinitionId: string;
+  workspaceId: string;
+  name: string;
+  description: string | null;
+  kind: string;
+  defaultModes: readonly string[];
+  metricKeys: readonly string[];
+  compareEnabled: boolean;
+  createdAt: string;
+  updatedAt: string | null;
+  authorityClass: 'projection';
+  ledgerSoT: false;
+};
+
+export type ReportDefinitionPageView = {
+  items: ReportDefinitionView[];
+  authorityClass: 'projection';
+  ledgerSoT: false;
+};
+
+export type ReportRunListItemView = {
+  reportRunId: string;
+  workspaceId: string;
+  reportDefinitionId: string;
+  name: string;
+  kind: string;
+  status: string;
+  modes: readonly string[];
+  exchangeScopeId: string;
+  tradingSessionId: string | null;
+  libraryEntryId: string | null;
+  windowFrom: string;
+  windowTo: string;
+  windowPreset: string | null;
+  factCount: number;
+  createdAt: string;
+  deliveryOutcome: string | null;
+  deliveryId: string | null;
+  authorityClass: 'projection';
+  ledgerSoT: false;
+};
+
+export type ReportRunPageView = {
+  items: ReportRunListItemView[];
+  authorityClass: 'projection';
+  ledgerSoT: false;
+};
+
+export type ReportAggregationView = {
+  sliceId: string;
+  reportRunId: string;
+  metricKey: string;
+  mode: string | null;
+  label: string;
+  value: unknown;
+  comparison: unknown;
+  sourceRefs: readonly { ownerType: string; id: string }[];
+  visualizationHint: string | null;
+  authorityClass: 'projection';
+};
+
+export type ReportRunNarrativeView = {
+  reportRunId: string;
+  workspaceId: string;
+  reportStatus: string | null;
+  reportOutcome: string;
+  narrativeId: string;
+  narrativeKind: string;
+  narrativeText: string;
+  narrativeUnavailable: boolean;
+  attached: true;
+  reportMutated: false;
+  forcesTrade: false;
+  authorityClass: 'narrative';
+};
+
+export type ReportRunDeliveryView = {
+  reportRunId: string;
+  workspaceId: string;
+  userId: string;
+  reportStatus: string | null;
+  reportOutcome: string;
+  invoked: boolean;
+  notInvokedReason?: string;
+  notificationType: string | null;
+  deliveryId: string | null;
+  outcome: string;
+  skipReasons: readonly string[];
+  channelsAttempted: readonly string[];
+  telegramAdapterReached: boolean;
+  reservedChannelSkips: readonly string[];
+  attached: true;
+  reportMutated: false;
+  generatesReports: false;
+  channelActivated: false;
+  forcesTrade: false;
+  authorityClass: 'notification-projection';
+};
+
+export type ReportRunDetailView = ReportRunListItemView & {
+  description: string | null;
+  metricKeys: readonly string[];
+  compareEnabled: boolean;
+  rejectionReasons: readonly string[];
+  sourceSummary: {
+    factCount: number;
+    lakeEventIds: readonly string[];
+    sourceRefs: readonly { ownerType: string; id: string }[];
+  };
+  aggregations: readonly ReportAggregationView[];
+  narrative: ReportRunNarrativeView | null;
+  delivery: ReportRunDeliveryView | null;
+  exportAvailable: true;
+  exportKind: 'projection-json';
+};
+
+export type ReportRunListQuery = {
+  reportDefinitionId?: string;
+  kind?: string;
+  status?: string;
+  mode?: string;
+  tradingSessionId?: string;
+  q?: string;
+  limit?: number;
+};
+
+export type NotificationChannelView = {
+  channelId: string;
+  status: 'active' | 'reserved-inactive';
+  label: string;
+  offered: boolean;
+  authorityClass: 'notification-projection';
+};
+
+export type NotificationRoutedChannelView = {
+  channelId: string;
+  skipReason?: string;
+};
+
+export type NotificationTypeRoutingView = {
+  type: string;
+  enabled: boolean;
+  channels: readonly string[];
+  critical: boolean;
+  currentRoutes: readonly NotificationRoutedChannelView[];
+};
+
+export type NotificationScheduleView = {
+  dailyDeliveryTime: string;
+  timezone: string;
+  quietHours: { start: string; end: string } | null;
+  criticalBypassQuietHours: boolean;
+};
+
+export type NotificationPreferencesView = {
+  workspaceId: string;
+  userId: string;
+  enabled: boolean;
+  channels: Readonly<Record<string, boolean>>;
+  typeRouting: readonly NotificationTypeRoutingView[];
+  schedule: NotificationScheduleView;
+  updatedAt: string;
+  authorityClass: 'notification-projection';
+  generatesReports: false;
+  controlPlane: false;
+};
+
+export type TelegramConnectionStatusView = {
+  status: 'not-connected' | 'pending' | 'connected';
+  connected: boolean;
+  chatBound: boolean;
+  connectedAt: string | null;
+  updatedAt: string;
+  connectAvailable: false;
+  testAvailable: false;
+  controlPlane: false;
+  transport: 'in-memory';
+};
+
+export type TelegramConnectionProductView = {
+  status: 'not-connected' | 'pending' | 'connected';
+  connected: boolean;
+  chatBound: boolean;
+  pending: boolean;
+  verified: boolean;
+  connectedAt: string | null;
+  updatedAt: string;
+  deepLink: string | null;
+  connectAvailable: boolean;
+  completeAvailable: boolean;
+  verifyAvailable: boolean;
+  testAvailable: boolean;
+  disconnectAvailable: boolean;
+  controlPlane: false;
+  transport: 'in-memory';
+  botApiUsed: false;
+  userEnteredBind: false;
+  authorityClass: 'notification-projection';
+};
+
+export type TelegramConnectProductView = {
+  connection: TelegramConnectionProductView;
+  deepLink: string;
+  controlPlane: false;
+  botApiUsed: false;
+  userEnteredBind: false;
+  authorityClass: 'notification-projection';
+};
+
+export type PreferenceClockView = {
+  timezone: string;
+  dailyDeliveryTime: string;
+  localTimeHHmm: string;
+  quietHoursActive: boolean;
+  dailyDeliveryReached: boolean;
+  evaluatedAt: string;
+  scheduler: false;
+  clockKind: 'preference-clock';
+};
+
+export type NotificationRoutingView = {
+  workspaceId: string;
+  userId: string;
+  masterEnabled: boolean;
+  typeRouting: readonly NotificationTypeRoutingView[];
+  channels: readonly NotificationChannelView[];
+  telegram: TelegramConnectionStatusView;
+  scheduleClock: PreferenceClockView;
+  deferredChannelsActivated: false;
+  controlPlane: false;
+  authorityClass: 'notification-projection';
+};
+
+export type NotificationSettingsView = {
+  preferences: NotificationPreferencesView;
+  channels: readonly NotificationChannelView[];
+  telegram: TelegramConnectionStatusView;
+  routing: NotificationRoutingView;
+  scheduleClock: PreferenceClockView;
+  deferredChannelsActivated: false;
+  generatesReports: false;
+  controlPlane: false;
+  authorityClass: 'notification-projection';
+};
+
+export type NotificationDeliveryListItemView = {
+  deliveryId: string;
+  workspaceId: string;
+  userId: string;
+  type: string;
+  reportRunId: string | null;
+  outcome: string;
+  skipReasons: readonly string[];
+  createdAt: string;
+  authorityClass: 'notification-projection';
+  generatesReports: false;
+};
+
+export type NotificationDeliveryPageView = {
+  items: NotificationDeliveryListItemView[];
+  authorityClass: 'notification-projection';
+  generatesReports: false;
+};
+
+export type NotificationDeliveryAttemptView = {
+  channelId: string;
+  outcome: string;
+  skipReason: string | null;
+  detail: string | null;
+};
+
+export type NotificationDeliveryDetailView = NotificationDeliveryListItemView & {
+  attempts: readonly NotificationDeliveryAttemptView[];
+  channelDelivery: {
+    outcome: string;
+    telegramOutcome: string;
+    telegramSkipReason?: string;
+    telegramAdapterReached: boolean;
+    botApiUsed: false;
+    controlPlane: false;
+    deferredChannelsActivated: false;
+  };
+  telegram: TelegramConnectionStatusView;
+};
+
+export type TelegramTestProductView = {
+  connection: TelegramConnectionProductView;
+  delivery: NotificationDeliveryDetailView;
+  controlPlane: false;
+  botApiUsed: false;
+  authorityClass: 'notification-projection';
+};
+
+export type TelegramDiagnosticsView = {
+  connection: TelegramConnectionProductView;
+  verification: {
+    status: 'not-connected' | 'pending' | 'connected';
+    verified: boolean;
+    chatBound: boolean;
+    pending: boolean;
+  };
+  lastTelegramDelivery: {
+    deliveryId: string;
+    outcome: string;
+    skipReason: string | null;
+    adapterReached: boolean;
+    createdAt: string;
+  } | null;
+  telegramTransport: 'in-memory';
+  botApiUsed: false;
+  controlPlane: false;
+  deferredChannelsActivated: false;
+  scheduler: false;
+  retries: false;
+  authorityClass: 'notification-projection';
+};
+
+export type NotificationChannelId = 'telegram' | 'email' | 'slack' | 'discord' | 'teams' | 'push';
+
+export type NotificationChannelCardView = {
+  channelId: NotificationChannelId;
+  label: string;
+  status: 'active' | 'reserved-inactive';
+  offered: boolean;
+  enabled: boolean;
+  configurable: boolean;
+  testAvailable: boolean;
+  connectAvailable: boolean;
+  configurationKind: 'telegram-connection' | 'reserved-inactive';
+  transport: 'in-memory' | 'none';
+  connectionStatus: 'not-connected' | 'pending' | 'connected' | 'reserved-inactive';
+  liveTransportActivated: false;
+  botApiUsed: false;
+  authorityClass: 'notification-projection';
+};
+
+export type NotificationChannelConfigurationView = {
+  kind: 'telegram-connection' | 'reserved-inactive';
+  requiredFields: readonly string[];
+  configurable: boolean;
+  testAvailable: boolean;
+  connectAvailable: boolean;
+  liveTransportActivated: false;
+  botApiUsed: false;
+  userEnteredBind: false;
+};
+
+export type NotificationDeliveryTimingView = {
+  producerTiming: 'immediate-on-deliver';
+  dailyDeliveryTime: string;
+  timezone: string;
+  hourlyDigest: false;
+  weeklyDigest: false;
+  weekendSuppression: false;
+  perTypeFrequency: false;
+  perChannelQuietHours: false;
+  scheduler: false;
+  clockKind: 'preference-clock';
+};
+
+export type NotificationRoutingMatrixRowView = {
+  type: string;
+  enabled: boolean;
+  critical: boolean;
+  channels: Readonly<Record<string, boolean>>;
+  currentSkipReasons: readonly string[];
+};
+
+export type NotificationRoutingMatrixView = {
+  rows: NotificationRoutingMatrixRowView[];
+  channelIds: readonly NotificationChannelId[];
+  offeredChannelIds: readonly NotificationChannelId[];
+  deferredChannelsActivated: false;
+  controlPlane: false;
+  authorityClass: 'notification-projection';
+};
+
+export type NotificationChannelsWorkspaceView = {
+  channels: NotificationChannelCardView[];
+  routingMatrix: NotificationRoutingMatrixView;
+  timing: NotificationDeliveryTimingView;
+  scheduleClock: PreferenceClockView;
+  quietHours: { start: string; end: string } | null;
+  criticalBypassQuietHours: boolean;
+  masterEnabled: boolean;
+  deferredChannelsActivated: false;
+  generatesReports: false;
+  controlPlane: false;
+  authorityClass: 'notification-projection';
+};
+
+export type NotificationChannelDiagnosticsView = {
+  channelId: NotificationChannelId;
+  connectionState: 'not-connected' | 'pending' | 'connected' | 'reserved-inactive';
+  enabled: boolean;
+  offered: boolean;
+  configurationHealth: 'ready' | 'not-connected' | 'pending' | 'disabled' | 'reserved-inactive';
+  lastSuccessfulDeliveryId: string | null;
+  lastFailureDeliveryId: string | null;
+  lastSkipReason: string | null;
+  lastDeliveryAt: string | null;
+  latencyAvailable: false;
+  testAvailable: boolean;
+  liveTransportActivated: false;
+  botApiUsed: false;
+  scheduler: false;
+  authorityClass: 'notification-projection';
+};
+
+export type NotificationChannelDetailView = NotificationChannelCardView & {
+  configuration: NotificationChannelConfigurationView;
+  routing: NotificationRoutingMatrixRowView[];
+  diagnostics: NotificationChannelDiagnosticsView;
+};
+
+export type NotificationDeliveryListQuery = {
+  userId?: string;
+  reportRunId?: string;
+  type?: string;
+  outcome?: string;
+  q?: string;
+  limit?: number;
+};
+
+export type UpsertNotificationPreferencesRequest = {
+  enabled?: boolean;
+  channels?: Partial<Record<string, boolean>>;
+  typeRouting?: Partial<
+    Record<string, { enabled?: boolean; channels?: string[]; critical?: boolean }>
+  >;
+  schedule?: {
+    dailyDeliveryTime?: string;
+    timezone?: string;
+    quietHours?: { start: string; end: string } | null;
+    criticalBypassQuietHours?: boolean;
+  };
+};
+
+export type LibraryListQuery = {
+  strategyFamilyId?: string;
+  statuses?: string;
+  exchangeScopeId?: string;
+  includeArchived?: boolean;
+  limit?: number;
+  q?: string;
 };
 
 export type PortfolioView = {
@@ -565,7 +1377,20 @@ export type RuntimeHealthView = {
   };
 };
 
-/** Bot Facade projection over Trading Session (RC-19 / RC-20). */
+/** Bot Facade projection over Trading Session (RC-19 / RC-20 / PC-13). */
+export type SessionHealthView = {
+  lifecycleStatus: string;
+  leasePresent: boolean;
+  failureReason: string | null;
+};
+
+export type SessionRuntimeStatusView = {
+  workerState: string;
+  acceptsTicks: boolean;
+  fencingToken: number | null;
+  evaluationEnabled: boolean;
+};
+
 export type TradingSessionBotView = {
   id: string;
   tradingSessionId: string;
@@ -584,6 +1409,42 @@ export type TradingSessionBotView = {
   correlationId: string | null;
   leaseOwnerId: string | null;
   fencingToken: number | null;
+  health?: SessionHealthView;
+  runtimeStatus?: SessionRuntimeStatusView;
+  deploymentReference?: { deploymentId: string };
+  sessionHandoff?: {
+    sessionHandoffIntentId: string;
+    orchestrationRunId: string | null;
+    consumed: true;
+    createsSession: false;
+  } | null;
+  latestReport?: {
+    reportRunId: string;
+    status: string;
+    tradingSessionId: string | null;
+    narrativeAttached: boolean;
+    narrativeUnavailable: boolean;
+  } | null;
+  delivery?: {
+    deliveryId: string;
+    reportRunId: string | null;
+    outcome: string;
+    telegramAdapterReached: boolean;
+    skipReasons: readonly string[];
+  } | null;
+};
+
+export type PaperAccountView = {
+  id: string;
+  workspaceId: string;
+  exchangeScopeId: string;
+  currency: string;
+  mode: 'paper';
+  status: string;
+  openingCapital: string;
+  version: number;
+  openedAt: string;
+  recordedAt: string;
 };
 
 export type ExchangeScopeOverviewView = {
@@ -592,6 +1453,716 @@ export type ExchangeScopeOverviewView = {
   label: string;
   sessionCount: number;
   totalSessionCount: number;
+};
+
+export type ExchangeScopeProductFlags = {
+  authorityClass: 'exchange_scope_artifact';
+  isRuntime: false;
+  isTradingSession: false;
+  isRiskEngine: false;
+  isExecutionEngine: false;
+  isStrategyLibrary: false;
+  approvesRisk: false;
+  submitsOrders: false;
+  liveVenueAdapter: false;
+  venueApiUsed: false;
+  liveCapital: false;
+  mutable: false;
+};
+
+export type ExchangeVenueCatalogItemView = {
+  venueCode: string;
+  label: string;
+  offered: true;
+  liveAdapter: false;
+  venueApiUsed: false;
+};
+
+export type ExchangeScopeListItemView = ExchangeScopeProductFlags & {
+  exchangeScopeId: string;
+  workspaceId: string;
+  venueCode: string;
+  displayName: string;
+  lifecycleStatus: string;
+  isActive: boolean;
+  version: number;
+  maxActiveSessions: number;
+  modeContext: string;
+  modeContextIsLabelOnly: boolean;
+  blocksNewSessionCapacity: boolean;
+};
+
+export type ExchangeScopeWorkspaceView = ExchangeScopeProductFlags & {
+  workspaceId: string;
+  scopeCount: number;
+  activeCount: number;
+  suspendedCount: number;
+  createdCount: number;
+  archivedCount: number;
+  currentActive: readonly ExchangeScopeListItemView[];
+  scopes: readonly ExchangeScopeListItemView[];
+  venues: readonly ExchangeVenueCatalogItemView[];
+  inventsBalances: false;
+  inventsFills: false;
+  inventsRiskApprovals: false;
+};
+
+export type ExchangeScopeLifecycleActionView = {
+  canActivate: boolean;
+  canSuspend: boolean;
+  canArchive: boolean;
+  canRename: boolean;
+  canUpdateConfig: boolean;
+  canPublishPolicy: boolean;
+  canBind: boolean;
+};
+
+export type ExchangeScopeConfigProductView = ExchangeScopeProductFlags & {
+  exchangeScopeId: string;
+  version: number;
+  maxActiveSessions: number;
+  symbolAllowlist: readonly string[];
+  strategyAllowlist: readonly string[];
+  modeContext: string;
+  modeContextIsLabelOnly: boolean;
+  updatedAt: string;
+  updatedBy: string;
+};
+
+export type ExchangeScopeVersionView = ExchangeScopeProductFlags & {
+  exchangeScopeId: string;
+  version: number;
+  displayName: string;
+  lifecycleStatus: string;
+  publishedAt: string;
+  publishedBy: string;
+  maxActiveSessions: number;
+  modeContext: string;
+  inputSummary: string;
+};
+
+export type ExchangeRiskPolicyProductView = {
+  exchangeRiskPolicyId: string;
+  exchangeScopeId: string;
+  workspaceId: string;
+  policyVersion: number;
+  maxExposureLabel: string;
+  maxOrderNotionalLabel: string;
+  notes: string;
+  publishedAt: string;
+  publishedBy: string;
+  authorityClass: 'exchange_policy_input';
+  isRiskDecision: false;
+  approvesRisk: false;
+  isRiskEngine: false;
+  liveVenueAdapter: false;
+  venueApiUsed: false;
+  mutable: false;
+};
+
+export type TradingAccountBindingProductView = ExchangeScopeProductFlags & {
+  tradingAccountBindingId: string;
+  exchangeScopeId: string;
+  workspaceId: string;
+  tradingAccountId: string;
+  status: string;
+  boundAt: string;
+  boundBy: string;
+  ownsLedger: false;
+  movesBalances: false;
+};
+
+export type AdapterBindingContextProductView = ExchangeScopeProductFlags & {
+  adapterBindingContextId: string;
+  exchangeScopeId: string;
+  workspaceId: string;
+  adapterIdentity: string;
+  modeContext: string;
+  status: string;
+  updatedAt: string;
+  updatedBy: string;
+  isExecutionEngine: false;
+  definesWireProtocol: false;
+};
+
+export type ExchangeScopeLifecycleProductView = ExchangeScopeProductFlags & {
+  exchangeScopeId: string;
+  workspaceId: string;
+  status: string;
+  isActive: boolean;
+  updatedAt: string;
+  updatedBy: string;
+  reason: string;
+  blocksNewSessionCapacity: boolean;
+  authorizesRuntime: false;
+  executesActions: false;
+  actions: ExchangeScopeLifecycleActionView;
+};
+
+export type ExchangeScopeMetadataProductView = ExchangeScopeProductFlags & {
+  exchangeScopeId: string;
+  workspaceId: string;
+  asOf: string;
+  inputSummary: string;
+  adapterContextRef: string | null;
+  policyRef: string | null;
+  ownsStrategyLibrary: false;
+  ownsRuntimeEnforcement: false;
+  ownsTradingSession: false;
+  ownsRiskDecisions: false;
+  ownsOrders: false;
+  ownsExecution: false;
+  ownsAccounting: false;
+};
+
+export type ExchangeScopeHistoryItemView = ExchangeScopeProductFlags & {
+  kind: 'version' | 'lifecycle' | 'policy' | 'binding';
+  at: string;
+  by: string;
+  summary: string;
+  version?: number;
+  lifecycleStatus?: string;
+  policyVersion?: number;
+  bindingStatus?: string;
+};
+
+export type ExchangeScopeDetailView = ExchangeScopeProductFlags & {
+  exchangeScopeId: string;
+  workspaceId: string;
+  venueCode: string;
+  displayName: string;
+  lifecycle: ExchangeScopeLifecycleProductView;
+  current: ExchangeScopeListItemView;
+  config: ExchangeScopeConfigProductView | null;
+  versions: readonly ExchangeScopeVersionView[];
+  policies: readonly ExchangeRiskPolicyProductView[];
+  currentPolicy: ExchangeRiskPolicyProductView | null;
+  bindings: readonly TradingAccountBindingProductView[];
+  adapterContext: AdapterBindingContextProductView | null;
+  metadata: ExchangeScopeMetadataProductView | null;
+  history: readonly ExchangeScopeHistoryItemView[];
+  activeStatus: {
+    isActive: boolean;
+    lifecycleStatus: string;
+    blocksNewSessionCapacity: boolean;
+  };
+};
+
+export type ExchangeScopeCommandView = ExchangeScopeProductFlags & {
+  outcome: string;
+  exchangeScopeId: string;
+  exchangeRiskPolicyId?: string;
+  tradingAccountBindingId?: string;
+  adapterBindingContextId?: string;
+  rejectionReasons: readonly string[];
+  scope: ExchangeScopeDetailView | null;
+};
+
+export type ExchangeScopePageView = ExchangeScopeProductFlags & {
+  items: readonly ExchangeScopeListItemView[];
+};
+
+export type RegisterExchangeScopeRequest = {
+  venueCode: string;
+  displayName: string;
+  notes?: string;
+  maxActiveSessions?: number;
+  modeContext?: 'lab' | 'paper' | 'live';
+};
+
+export type UpdateExchangeScopeConfigRequest = {
+  displayName?: string;
+  maxActiveSessions?: number;
+  symbolAllowlist?: string[];
+  strategyAllowlist?: string[];
+  modeContext?: 'lab' | 'paper' | 'live';
+};
+
+export type QualificationProductFlags = {
+  authorityClass: 'research_artifact';
+  forcesTrade: false;
+  authorizesSession: false;
+  isMarketProfile: false;
+  isMarketState: false;
+  isRiskEngine: false;
+  isExecutionEngine: false;
+  isTradingSession: false;
+  scoresMarket: false;
+  calculatesConfidence: false;
+};
+
+export type QualificationLifecycleActionView = {
+  canRequest: boolean;
+  canConfirm: boolean;
+  canCancel: boolean;
+  canComplete: boolean;
+  canFail: boolean;
+  canRequalify: boolean;
+};
+
+export type QualificationTargetListItemView = QualificationProductFlags & {
+  targetId: string;
+  workspaceId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  displayName: string;
+  lifecycleState: string;
+  latestRunStatus: string | null;
+  confidenceLevel: string | null;
+  healthStatus: string | null;
+  runCount: number;
+  updatedAt: string;
+};
+
+export type QualificationRunListItemView = QualificationProductFlags & {
+  qualificationRunId: string;
+  workspaceId: string;
+  targetId: string;
+  exchangeScopeId: string | null;
+  marketSymbol: string | null;
+  status: string;
+  modeContext: string;
+  createdAt: string;
+  completedAt: string | null;
+};
+
+export type QualificationWorkspaceView = QualificationProductFlags & {
+  workspaceId: string;
+  targetCount: number;
+  qualifiedCount: number;
+  qualifyingCount: number;
+  pendingConfirmCount: number;
+  failedCount: number;
+  runCount: number;
+  targets: readonly QualificationTargetListItemView[];
+  recentRuns: readonly QualificationRunListItemView[];
+};
+
+export type QualificationLifecycleProductView = QualificationProductFlags & {
+  targetId: string;
+  workspaceId: string;
+  state: string;
+  activeRunId: string | null;
+  latestCompletedRunId: string | null;
+  latestProfileId: string | null;
+  updatedAt: string;
+  actions: QualificationLifecycleActionView;
+};
+
+export type QualificationConfidenceProductView = QualificationProductFlags & {
+  targetId: string;
+  workspaceId: string;
+  level: string;
+  score: number | null;
+  rationaleSummary: string;
+  sourceRunId: string;
+  asOf: string;
+  staleLabel: string;
+};
+
+export type QualificationHealthProductView = QualificationProductFlags & {
+  targetId: string;
+  workspaceId: string;
+  status: string;
+  indicators: readonly { key: string; value: string; note: string | null }[];
+  sourceRunId: string;
+  asOf: string;
+};
+
+export type QualificationHistoryItemView = QualificationProductFlags & {
+  kind: 'run' | 'lifecycle' | 'confidence' | 'health';
+  at: string;
+  summary: string;
+  status?: string;
+  qualificationRunId?: string;
+};
+
+export type QualificationRunDetailView = QualificationProductFlags & {
+  qualificationRunId: string;
+  workspaceId: string;
+  targetId: string;
+  exchangeScopeId: string | null;
+  marketSymbol: string | null;
+  displayName: string | null;
+  status: string;
+  modeContext: string;
+  requestedBy: string;
+  confirmedBy: string | null;
+  createdAt: string;
+  completedAt: string | null;
+  rejectionReasons: readonly string[];
+  inputSummary: {
+    observationCount: number;
+    researchRefCount: number;
+    liveMarketDataRefs: readonly string[];
+    researchOutputRefs: readonly string[];
+  };
+  lifecycle: QualificationLifecycleProductView | null;
+  confidence: QualificationConfidenceProductView | null;
+  health: QualificationHealthProductView | null;
+  actions: QualificationLifecycleActionView;
+};
+
+export type QualificationTargetDetailView = QualificationProductFlags & {
+  targetId: string;
+  workspaceId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  displayName: string;
+  current: QualificationTargetListItemView;
+  lifecycle: QualificationLifecycleProductView;
+  confidence: QualificationConfidenceProductView | null;
+  health: QualificationHealthProductView | null;
+  runs: readonly QualificationRunListItemView[];
+  history: readonly QualificationHistoryItemView[];
+  latestRun: QualificationRunDetailView | null;
+};
+
+export type QualificationCommandView = QualificationProductFlags & {
+  outcome: string;
+  qualificationRunId: string;
+  rejectionReasons: readonly string[];
+  publishedProfileId: string | null;
+  target: QualificationTargetDetailView | null;
+  run: QualificationRunDetailView | null;
+};
+
+export type QualificationTargetPageView = QualificationProductFlags & {
+  items: readonly QualificationTargetListItemView[];
+};
+
+export type QualificationRunPageView = QualificationProductFlags & {
+  items: readonly QualificationRunListItemView[];
+};
+
+export type RequestQualificationRunRequest = {
+  exchangeScopeId: string;
+  marketSymbol: string;
+  modeContext: 'lab' | 'paper';
+  notes?: string;
+};
+
+export type MarketProfileProductFlags = {
+  authorityClass: 'research_artifact';
+  forcesTrade: false;
+  authorizesSession: false;
+  isMarketQualification: false;
+  isMarketState: false;
+  isRiskEngine: false;
+  isExecutionEngine: false;
+  isTradingSession: false;
+  calculatesProfile: false;
+  scoresMarket: false;
+};
+
+export type MarketProfileListItemView = MarketProfileProductFlags & {
+  marketProfileId: string;
+  workspaceId: string;
+  targetId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  displayName: string;
+  version: number;
+  versionCount: number;
+  qualificationRunId: string;
+  publishedAt: string;
+  publishedBy: string | null;
+  confidenceLevel: string | null;
+  isLatest: boolean;
+};
+
+export type MarketProfileVersionListItemView = MarketProfileProductFlags & {
+  marketProfileId: string;
+  workspaceId: string;
+  targetId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  version: number;
+  qualificationRunId: string;
+  publishedAt: string;
+  publishedBy: string | null;
+  confidenceLevel: string | null;
+  isLatest: boolean;
+};
+
+export type MarketProfileWorkspaceView = MarketProfileProductFlags & {
+  workspaceId: string;
+  targetCount: number;
+  versionCount: number;
+  latestCount: number;
+  latest: readonly MarketProfileListItemView[];
+  recentVersions: readonly MarketProfileVersionListItemView[];
+};
+
+export type MarketProfilePageView = MarketProfileProductFlags & {
+  items: readonly MarketProfileListItemView[];
+};
+
+export type MarketProfileVersionPageView = MarketProfileProductFlags & {
+  items: readonly MarketProfileVersionListItemView[];
+};
+
+export type MarketProfileMetadataView = MarketProfileProductFlags & {
+  marketProfileId: string;
+  workspaceId: string;
+  targetId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  version: number;
+  publishedAt: string;
+  publishedBy: string;
+  qualificationRunId: string;
+  confidenceLevel: string;
+  confidenceScore: number | null;
+  confidenceSourceRunId: string;
+  rationaleSummary: string;
+};
+
+export type MarketProfilePublishedSourceView = MarketProfileProductFlags & {
+  qualificationRunId: string;
+  sourceRunId: string;
+  publishedAt: string;
+  publishedBy: string;
+  targetId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+};
+
+export type MarketProfileDimensionMetricView = {
+  key: string;
+  value: string;
+};
+
+export type MarketProfileDimensionView = {
+  kind: 'volatility' | 'liquidity' | 'trend' | 'structure';
+  regimeLabel: string | null;
+  windowSummary: string | null;
+  notes: string | null;
+  metrics: readonly MarketProfileDimensionMetricView[];
+};
+
+export type MarketProfileDimensionsView = MarketProfileProductFlags & {
+  marketProfileId: string;
+  version: number;
+  volatility: MarketProfileDimensionView;
+  liquidity: MarketProfileDimensionView;
+  trend: MarketProfileDimensionView;
+  structure: MarketProfileDimensionView;
+};
+
+export type MarketProfileCompareFieldView = {
+  field: string;
+  from: string;
+  to: string;
+  changed: boolean;
+};
+
+export type MarketProfileCompareView = MarketProfileProductFlags & {
+  targetId: string;
+  workspaceId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  fromVersion: number;
+  toVersion: number;
+  from: MarketProfileMetadataView;
+  to: MarketProfileMetadataView;
+  differences: readonly MarketProfileCompareFieldView[];
+};
+
+export type MarketProfileDetailView = MarketProfileProductFlags & {
+  marketProfileId: string;
+  workspaceId: string;
+  targetId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  displayName: string;
+  version: number;
+  isLatest: boolean;
+  isCurrentPublished: boolean;
+  currentPublishedVersion: number;
+  metadata: MarketProfileMetadataView;
+  publishedSource: MarketProfilePublishedSourceView;
+  dimensions: MarketProfileDimensionsView;
+  versions: readonly MarketProfileVersionListItemView[];
+};
+
+export type MarketProfileTargetDetailView = MarketProfileProductFlags & {
+  targetId: string;
+  workspaceId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  displayName: string;
+  currentPublishedVersion: number;
+  latest: MarketProfileDetailView;
+  versions: readonly MarketProfileVersionListItemView[];
+};
+
+export type MarketStateProductFlags = {
+  authorityClass: 'market_state_artifact';
+  forcesTrade: false;
+  isQualification: false;
+  isProfile: false;
+  authorizesRuntime: false;
+  classifiesMarket: false;
+  selectsStrategy: false;
+  orchestrates: false;
+};
+
+export type MarketStateListItemView = MarketStateProductFlags & {
+  marketStateId: string;
+  workspaceId: string;
+  targetId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  displayName: string;
+  version: number;
+  versionCount: number;
+  lifecycleStatus: string;
+  regimeLabel: string;
+  publishedAt: string;
+  publishedBy: string;
+  isCurrent: boolean;
+  isStale: boolean;
+};
+
+export type MarketStateVersionListItemView = MarketStateProductFlags & {
+  marketStateId: string;
+  workspaceId: string;
+  targetId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  version: number;
+  lifecycleStatus: string;
+  regimeLabel: string;
+  publishedAt: string;
+  publishedBy: string;
+  isCurrent: boolean;
+};
+
+export type MarketStateWorkspaceView = MarketStateProductFlags & {
+  workspaceId: string;
+  targetCount: number;
+  versionCount: number;
+  currentCount: number;
+  current: readonly MarketStateListItemView[];
+  recentVersions: readonly MarketStateVersionListItemView[];
+};
+
+export type MarketStatePageView = MarketStateProductFlags & {
+  items: readonly MarketStateListItemView[];
+};
+
+export type MarketStateVersionPageView = MarketStateProductFlags & {
+  items: readonly MarketStateVersionListItemView[];
+};
+
+export type MarketStateLifecycleView = MarketStateProductFlags & {
+  marketStateId: string;
+  targetId: string;
+  status: string;
+  updatedAt: string;
+  updatedBy: string;
+  reason: string;
+  isStale: boolean;
+};
+
+export type MarketStateMetadataView = MarketStateProductFlags & {
+  marketStateId: string;
+  workspaceId: string;
+  targetId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  version: number;
+  observationAsOf: string;
+  confidenceRef: string | null;
+  profileRef: string | null;
+  inputSummary: string;
+  notes: string | null;
+  publishedAt: string;
+  publishedBy: string;
+};
+
+export type MarketStateSnapshotView = {
+  regimeLabel: string;
+  volatilityLabel: string | null;
+  liquidityLabel: string | null;
+  narrativeSummary: string;
+};
+
+export type MarketStateTransitionView = MarketStateProductFlags & {
+  marketStateId: string;
+  workspaceId: string;
+  targetId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  fromVersion: number | null;
+  toVersion: number;
+  fromLifecycle: string | null;
+  toLifecycle: string;
+  transitionedAt: string;
+};
+
+export type MarketStateTransitionPageView = MarketStateProductFlags & {
+  items: readonly MarketStateTransitionView[];
+};
+
+export type MarketStateQualificationReferenceView = MarketStateProductFlags & {
+  present: boolean;
+  qualificationTargetId: string | null;
+  lifecycleState: string | null;
+  confidenceLevel: string | null;
+  healthStatus: string | null;
+  latestRunStatus: string | null;
+  sourceRunId: string | null;
+  asOf: string | null;
+};
+
+export type MarketStateProfileReferenceView = MarketStateProductFlags & {
+  present: boolean;
+  marketProfileId: string | null;
+  profileTargetId: string | null;
+  version: number | null;
+  qualificationRunId: string | null;
+  confidenceLevel: string | null;
+  publishedAt: string | null;
+};
+
+export type MarketStateDetailView = MarketStateProductFlags & {
+  marketStateId: string;
+  workspaceId: string;
+  targetId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  displayName: string;
+  version: number;
+  isCurrent: boolean;
+  currentVersion: number;
+  lifecycle: MarketStateLifecycleView;
+  snapshot: MarketStateSnapshotView;
+  metadata: MarketStateMetadataView;
+  qualification: MarketStateQualificationReferenceView;
+  profile: MarketStateProfileReferenceView;
+  versions: readonly MarketStateVersionListItemView[];
+  transitions: readonly MarketStateTransitionView[];
+};
+
+export type MarketStateTargetDetailView = MarketStateProductFlags & {
+  targetId: string;
+  workspaceId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+  displayName: string;
+  currentVersion: number;
+  current: MarketStateDetailView;
+  versions: readonly MarketStateVersionListItemView[];
+  transitions: readonly MarketStateTransitionView[];
+};
+
+export type MarketStateRefreshView = MarketStateProductFlags & {
+  outcome: 'accepted';
+  marketStateId: string;
+  version: number;
+  current: MarketStateDetailView;
 };
 
 async function requestAbsolute<T>(url: string, init?: RequestInit): Promise<T> {
@@ -710,12 +2281,225 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     }),
+  register: (email: string, displayName: string, password: string) =>
+    request<LoginResponse>('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ email, displayName, password }),
+    }),
   me: () => request<AuthUser>('/auth/me'),
   bootstrapWorkspace: () =>
-    request<WorkspaceBootstrap>('/workspaces/bootstrap', {
+    request<WorkspaceView>('/workspaces/bootstrap', {
       method: 'POST',
       body: '{}',
     }),
+  listWorkspaces: () => request<WorkspaceView[]>('/workspaces'),
+  createWorkspace: (name: string) =>
+    request<WorkspaceView>('/workspaces', {
+      method: 'POST',
+      body: JSON.stringify({ name }),
+    }),
+  getWorkspace: (id: string) => request<WorkspaceView>(`/workspaces/${id}`),
+  renameWorkspace: (id: string, name: string) =>
+    request<WorkspaceView>(`/workspaces/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ name }),
+    }),
+  archiveWorkspace: (id: string) =>
+    request<WorkspaceView>(`/workspaces/${id}/archive`, {
+      method: 'POST',
+      body: '{}',
+    }),
+  listStrategyLibrary: (query: LibraryListQuery = {}) => {
+    const params = new URLSearchParams();
+    if (query.strategyFamilyId) params.set('strategyFamilyId', query.strategyFamilyId);
+    if (query.statuses) params.set('statuses', query.statuses);
+    if (query.exchangeScopeId) params.set('exchangeScopeId', query.exchangeScopeId);
+    if (query.includeArchived) params.set('includeArchived', 'true');
+    if (query.limit) params.set('limit', String(query.limit));
+    if (query.q?.trim()) params.set('q', query.q.trim());
+    const qs = params.toString();
+    return request<StrategyLibraryPageView>(`/strategy-library${qs ? `?${qs}` : ''}`);
+  },
+  getStrategyLibraryEntry: (libraryEntryId: string) =>
+    request<StrategyLibraryRecordView>(`/strategy-library/${libraryEntryId}`),
+  checkStrategyLibraryEligibility: (libraryEntryId: string) =>
+    request<StrategyLibraryEligibilityView>(`/strategy-library/${libraryEntryId}/eligibility`),
+  certifyStrategy: (body: CertifyStrategyRequest) =>
+    request<CertificationAttemptView>('/strategy-library/certifications', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  listCertifications: () => request<CertificationHistoryView>('/strategy-library/certifications'),
+  getCertification: (attemptId: string) =>
+    request<CertificationAttemptView>(`/strategy-library/certifications/${attemptId}`),
+  runRuntimeValidation: (body: RunRuntimeValidationRequest) =>
+    request<RuntimeValidationView>('/runtime-validations', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  listRuntimeValidations: () => request<RuntimeValidationHistoryView>('/runtime-validations'),
+  getRuntimeValidation: (validationId: string) =>
+    request<RuntimeValidationView>(`/runtime-validations/${validationId}`),
+  createStrategyDeployment: (body: CreateStrategyDeploymentRequest, idempotencyKey: string) =>
+    request<StrategyDeploymentView>('/strategy-deployments', {
+      method: 'POST',
+      headers: { 'Idempotency-Key': idempotencyKey },
+      body: JSON.stringify(body),
+    }),
+  approveStrategyDeployment: (deploymentId: string) =>
+    request<StrategyDeploymentView>(`/strategy-deployments/${deploymentId}/approve`, {
+      method: 'POST',
+      body: '{}',
+    }),
+  listStrategyDeployments: () => request<StrategyDeploymentView[]>('/strategy-deployments'),
+  getStrategyDeployment: (deploymentId: string) =>
+    request<StrategyDeploymentView>(`/strategy-deployments/${deploymentId}`),
+  createOrchestrationPlan: (body: CreateOrchestrationPlanRequest) =>
+    request<OrchestrationPlanView>('/orchestrations/plans', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  listOrchestrationPlans: () => request<OrchestrationPlanListView>('/orchestrations/plans'),
+  getOrchestrationPlan: (planId: string) =>
+    request<OrchestrationPlanView>(`/orchestrations/plans/${planId}`),
+  requestOrchestrationRun: (body: RequestOrchestrationRunRequest) =>
+    request<OrchestrationCommandView>('/orchestrations/runs', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  listOrchestrationRuns: () => request<OrchestrationHistoryView>('/orchestrations/runs'),
+  getOrchestrationRun: (runId: string) =>
+    request<OrchestrationRunDetailView>(`/orchestrations/runs/${runId}`),
+  confirmOrchestrationRun: (runId: string) =>
+    request<OrchestrationCommandView>(`/orchestrations/runs/${runId}/confirm`, {
+      method: 'POST',
+      body: '{}',
+    }),
+  cancelOrchestrationRun: (runId: string, reason?: string) =>
+    request<OrchestrationCommandView>(`/orchestrations/runs/${runId}/cancel`, {
+      method: 'POST',
+      body: JSON.stringify({ reason }),
+    }),
+  proposeOrchestrationSelection: (runId: string, body: ProposeOrchestrationSelectionRequest) =>
+    request<OrchestrationCommandView>(`/orchestrations/runs/${runId}/selections`, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  emitOrchestrationHandoff: (runId: string, body: EmitOrchestrationHandoffRequest) =>
+    request<OrchestrationCommandView>(`/orchestrations/runs/${runId}/handoff`, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  getSessionHandoffIntent: (sessionHandoffIntentId: string) =>
+    request<SessionHandoffIntentView>(`/orchestrations/handoffs/${sessionHandoffIntentId}`),
+  listReportRuns: (query: ReportRunListQuery = {}) => {
+    const params = new URLSearchParams();
+    if (query.reportDefinitionId) params.set('reportDefinitionId', query.reportDefinitionId);
+    if (query.kind) params.set('kind', query.kind);
+    if (query.status) params.set('status', query.status);
+    if (query.mode) params.set('mode', query.mode);
+    if (query.tradingSessionId) params.set('tradingSessionId', query.tradingSessionId);
+    if (query.q?.trim()) params.set('q', query.q.trim());
+    if (query.limit) params.set('limit', String(query.limit));
+    const qs = params.toString();
+    return request<ReportRunPageView>(`/report-runs${qs ? `?${qs}` : ''}`);
+  },
+  getReportRun: (reportRunId: string) =>
+    request<ReportRunDetailView>(`/report-runs/${reportRunId}`),
+  listReportDefinitions: (kind?: string) =>
+    request<ReportDefinitionPageView>(
+      `/report-definitions${kind ? `?kind=${encodeURIComponent(kind)}` : ''}`,
+    ),
+  getReportDefinition: (reportDefinitionId: string) =>
+    request<ReportDefinitionView>(`/report-definitions/${reportDefinitionId}`),
+  getNotificationSettings: () => request<NotificationSettingsView>('/notification-settings'),
+  getNotificationPreferences: () =>
+    request<NotificationPreferencesView>('/notification-preferences'),
+  upsertNotificationPreferences: (body: UpsertNotificationPreferencesRequest) =>
+    request<NotificationPreferencesView>('/notification-preferences', {
+      method: 'PUT',
+      body: JSON.stringify(body),
+    }),
+  listNotificationChannels: () =>
+    request<{ items: NotificationChannelView[]; deferredChannelsActivated: false }>(
+      '/notification-channels',
+    ),
+  getNotificationChannelsWorkspace: () =>
+    request<NotificationChannelsWorkspaceView>('/notification-channels/workspace'),
+  getNotificationChannel: (channelId: string) =>
+    request<NotificationChannelDetailView>(`/notification-channels/${channelId}`),
+  getNotificationChannelDiagnostics: (channelId: string) =>
+    request<NotificationChannelDiagnosticsView>(`/notification-channels/${channelId}/diagnostics`),
+  listNotificationChannelDeliveries: (
+    channelId: string,
+    query: NotificationDeliveryListQuery = {},
+  ) => {
+    const params = new URLSearchParams();
+    if (query.userId) params.set('userId', query.userId);
+    if (query.reportRunId) params.set('reportRunId', query.reportRunId);
+    if (query.type) params.set('type', query.type);
+    if (query.outcome) params.set('outcome', query.outcome);
+    if (query.q?.trim()) params.set('q', query.q.trim());
+    if (query.limit) params.set('limit', String(query.limit));
+    const qs = params.toString();
+    return request<NotificationDeliveryPageView>(
+      `/notification-channels/${channelId}/deliveries${qs ? `?${qs}` : ''}`,
+    );
+  },
+  getNotificationRouting: () => request<NotificationRoutingView>('/notification-routing'),
+  listNotificationDeliveries: (query: NotificationDeliveryListQuery = {}) => {
+    const params = new URLSearchParams();
+    if (query.userId) params.set('userId', query.userId);
+    if (query.reportRunId) params.set('reportRunId', query.reportRunId);
+    if (query.type) params.set('type', query.type);
+    if (query.outcome) params.set('outcome', query.outcome);
+    if (query.q?.trim()) params.set('q', query.q.trim());
+    if (query.limit) params.set('limit', String(query.limit));
+    const qs = params.toString();
+    return request<NotificationDeliveryPageView>(`/notification-deliveries${qs ? `?${qs}` : ''}`);
+  },
+  getNotificationDelivery: (deliveryId: string) =>
+    request<NotificationDeliveryDetailView>(`/notification-deliveries/${deliveryId}`),
+  getTelegramConnection: () => request<TelegramConnectionProductView>('/telegram/connection'),
+  connectTelegram: () =>
+    request<TelegramConnectProductView>('/telegram/connect', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  completeTelegramConnect: () =>
+    request<TelegramConnectionProductView>('/telegram/complete', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  verifyTelegramConnection: () =>
+    request<TelegramConnectionProductView>('/telegram/verify', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  disconnectTelegram: () =>
+    request<TelegramConnectionProductView>('/telegram/disconnect', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  sendTelegramTest: () =>
+    request<TelegramTestProductView>('/telegram/test', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  getTelegramDiagnostics: () => request<TelegramDiagnosticsView>('/telegram/diagnostics'),
+  listTelegramDeliveries: (query: NotificationDeliveryListQuery = {}) => {
+    const params = new URLSearchParams();
+    if (query.userId) params.set('userId', query.userId);
+    if (query.reportRunId) params.set('reportRunId', query.reportRunId);
+    if (query.type) params.set('type', query.type);
+    if (query.outcome) params.set('outcome', query.outcome);
+    if (query.q?.trim()) params.set('q', query.q.trim());
+    if (query.limit) params.set('limit', String(query.limit));
+    const qs = params.toString();
+    return request<NotificationDeliveryPageView>(`/telegram/deliveries${qs ? `?${qs}` : ''}`);
+  },
+  getTelegramDelivery: (deliveryId: string) =>
+    request<NotificationDeliveryDetailView>(`/telegram/deliveries/${deliveryId}`),
   importDataset: () =>
     request<{ dataset: Dataset; created: boolean }>('/datasets/import/binance', {
       method: 'POST',
@@ -880,7 +2664,188 @@ export const api = {
   getRuntimeHealth: () => requestAbsolute<RuntimeHealthView>(`${apiUrl}/health`),
   listTradingSessions: () => request<TradingSessionBotView[]>('/trading-sessions'),
   getTradingSession: (id: string) => request<TradingSessionBotView>(`/trading-sessions/${id}`),
+  createPaperAccount: (body: {
+    currency: string;
+    openingCapital: string;
+    mode: 'paper';
+    idempotencyKey?: string;
+  }) =>
+    request<PaperAccountView>('/paper-accounts', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  createTradingSession: (body: {
+    paperAccountId: string;
+    deploymentId: string;
+    origin: 'strategy';
+    sessionHandoffIntentId?: string;
+    idempotencyKey?: string;
+  }) =>
+    request<TradingSessionBotView>('/trading-sessions', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  startTradingSession: (id: string) =>
+    request<TradingSessionBotView>(`/trading-sessions/${id}/start`, {
+      method: 'POST',
+      body: '{}',
+    }),
   getDefaultExchangeScope: () => request<ExchangeScopeOverviewView>('/exchange-scopes/default'),
+  getExchangeScopeWorkspace: () =>
+    request<ExchangeScopeWorkspaceView>('/exchange-scopes/workspace'),
+  listExchangeScopeVenues: () =>
+    request<{ items: ExchangeVenueCatalogItemView[] } & ExchangeScopeProductFlags>(
+      '/exchange-scopes/venues',
+    ),
+  listExchangeScopes: (lifecycleStatus?: string) =>
+    request<ExchangeScopePageView>(
+      `/exchange-scopes${lifecycleStatus ? `?lifecycleStatus=${encodeURIComponent(lifecycleStatus)}` : ''}`,
+    ),
+  getExchangeScope: (exchangeScopeId: string) =>
+    request<ExchangeScopeDetailView>(`/exchange-scopes/${encodeURIComponent(exchangeScopeId)}`),
+  createExchangeScope: (body: RegisterExchangeScopeRequest) =>
+    request<ExchangeScopeCommandView>('/exchange-scopes', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  activateExchangeScope: (exchangeScopeId: string, reason?: string) =>
+    request<ExchangeScopeCommandView>(
+      `/exchange-scopes/${encodeURIComponent(exchangeScopeId)}/activate`,
+      { method: 'POST', body: JSON.stringify(reason ? { reason } : {}) },
+    ),
+  suspendExchangeScope: (exchangeScopeId: string, reason?: string) =>
+    request<ExchangeScopeCommandView>(
+      `/exchange-scopes/${encodeURIComponent(exchangeScopeId)}/suspend`,
+      { method: 'POST', body: JSON.stringify(reason ? { reason } : {}) },
+    ),
+  archiveExchangeScope: (exchangeScopeId: string, reason?: string) =>
+    request<ExchangeScopeCommandView>(
+      `/exchange-scopes/${encodeURIComponent(exchangeScopeId)}/archive`,
+      { method: 'POST', body: JSON.stringify(reason ? { reason } : {}) },
+    ),
+  renameExchangeScope: (exchangeScopeId: string, displayName: string) =>
+    request<ExchangeScopeCommandView>(
+      `/exchange-scopes/${encodeURIComponent(exchangeScopeId)}/rename`,
+      { method: 'POST', body: JSON.stringify({ displayName }) },
+    ),
+  updateExchangeScopeConfig: (exchangeScopeId: string, body: UpdateExchangeScopeConfigRequest) =>
+    request<ExchangeScopeCommandView>(
+      `/exchange-scopes/${encodeURIComponent(exchangeScopeId)}/config`,
+      { method: 'PUT', body: JSON.stringify(body) },
+    ),
+  publishExchangeScopePolicy: (
+    exchangeScopeId: string,
+    limits: { maxExposureLabel: string; maxOrderNotionalLabel: string; notes?: string },
+  ) =>
+    request<ExchangeScopeCommandView>(
+      `/exchange-scopes/${encodeURIComponent(exchangeScopeId)}/policy`,
+      { method: 'POST', body: JSON.stringify({ limits }) },
+    ),
+  bindExchangeScopeAccount: (exchangeScopeId: string, tradingAccountId: string) =>
+    request<ExchangeScopeCommandView>(
+      `/exchange-scopes/${encodeURIComponent(exchangeScopeId)}/bindings`,
+      { method: 'POST', body: JSON.stringify({ tradingAccountId }) },
+    ),
+  unbindExchangeScopeAccount: (exchangeScopeId: string, bindingId: string) =>
+    request<ExchangeScopeCommandView>(
+      `/exchange-scopes/${encodeURIComponent(exchangeScopeId)}/bindings/${encodeURIComponent(bindingId)}/unbind`,
+      { method: 'POST', body: '{}' },
+    ),
+  getQualificationWorkspace: () => request<QualificationWorkspaceView>('/qualification/workspace'),
+  listQualificationTargets: () => request<QualificationTargetPageView>('/qualification/targets'),
+  getQualificationTarget: (targetId: string) =>
+    request<QualificationTargetDetailView>(
+      `/qualification/targets/${encodeURIComponent(targetId)}`,
+    ),
+  listQualificationRuns: (query: { targetId?: string; status?: string } = {}) => {
+    const params = new URLSearchParams();
+    if (query.targetId) params.set('targetId', query.targetId);
+    if (query.status) params.set('status', query.status);
+    const qs = params.toString();
+    return request<QualificationRunPageView>(`/qualification/runs${qs ? `?${qs}` : ''}`);
+  },
+  getQualificationRun: (qualificationRunId: string) =>
+    request<QualificationRunDetailView>(
+      `/qualification/runs/${encodeURIComponent(qualificationRunId)}`,
+    ),
+  requestQualificationRun: (body: RequestQualificationRunRequest) =>
+    request<QualificationCommandView>('/qualification/runs', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  confirmQualificationRun: (qualificationRunId: string) =>
+    request<QualificationCommandView>(
+      `/qualification/runs/${encodeURIComponent(qualificationRunId)}/confirm`,
+      { method: 'POST', body: '{}' },
+    ),
+  cancelQualificationRun: (qualificationRunId: string) =>
+    request<QualificationCommandView>(
+      `/qualification/runs/${encodeURIComponent(qualificationRunId)}/cancel`,
+      { method: 'POST', body: '{}' },
+    ),
+  completeQualificationRun: (qualificationRunId: string) =>
+    request<QualificationCommandView>(
+      `/qualification/runs/${encodeURIComponent(qualificationRunId)}/complete`,
+      { method: 'POST', body: '{}' },
+    ),
+  failQualificationRun: (qualificationRunId: string, reasons: readonly string[]) =>
+    request<QualificationCommandView>(
+      `/qualification/runs/${encodeURIComponent(qualificationRunId)}/fail`,
+      { method: 'POST', body: JSON.stringify({ reasons }) },
+    ),
+  requalifyQualificationTarget: (targetId: string, modeContext: 'lab' | 'paper') =>
+    request<QualificationCommandView>(
+      `/qualification/targets/${encodeURIComponent(targetId)}/requalify`,
+      { method: 'POST', body: JSON.stringify({ modeContext }) },
+    ),
+  getMarketProfileWorkspace: () =>
+    request<MarketProfileWorkspaceView>('/market-profiles/workspace'),
+  listLatestMarketProfiles: () => request<MarketProfilePageView>('/market-profiles'),
+  listMarketProfileHistory: (query: { targetId?: string } = {}) => {
+    const params = new URLSearchParams();
+    if (query.targetId) params.set('targetId', query.targetId);
+    const qs = params.toString();
+    return request<MarketProfileVersionPageView>(`/market-profiles/history${qs ? `?${qs}` : ''}`);
+  },
+  getMarketProfileTarget: (targetId: string) =>
+    request<MarketProfileTargetDetailView>(
+      `/market-profiles/targets/${encodeURIComponent(targetId)}`,
+    ),
+  getLatestMarketProfile: (targetId: string) =>
+    request<MarketProfileDetailView>(
+      `/market-profiles/targets/${encodeURIComponent(targetId)}/latest`,
+    ),
+  getMarketProfileVersion: (targetId: string, version: number) =>
+    request<MarketProfileDetailView>(
+      `/market-profiles/targets/${encodeURIComponent(targetId)}/versions/${version}`,
+    ),
+  compareMarketProfileVersions: (targetId: string, fromVersion: number, toVersion: number) =>
+    request<MarketProfileCompareView>(
+      `/market-profiles/targets/${encodeURIComponent(targetId)}/compare?fromVersion=${fromVersion}&toVersion=${toVersion}`,
+    ),
+  getMarketStateWorkspace: () => request<MarketStateWorkspaceView>('/market-states/workspace'),
+  listCurrentMarketStates: () => request<MarketStatePageView>('/market-states'),
+  listMarketStateHistory: (query: { targetId?: string } = {}) => {
+    const params = new URLSearchParams();
+    if (query.targetId) params.set('targetId', query.targetId);
+    const qs = params.toString();
+    return request<MarketStateVersionPageView>(`/market-states/history${qs ? `?${qs}` : ''}`);
+  },
+  getMarketStateTarget: (targetId: string) =>
+    request<MarketStateTargetDetailView>(`/market-states/targets/${encodeURIComponent(targetId)}`),
+  getCurrentMarketState: (targetId: string) =>
+    request<MarketStateDetailView>(
+      `/market-states/targets/${encodeURIComponent(targetId)}/current`,
+    ),
+  getMarketStateVersion: (targetId: string, version: number) =>
+    request<MarketStateDetailView>(
+      `/market-states/targets/${encodeURIComponent(targetId)}/versions/${version}`,
+    ),
+  refreshMarketState: (targetId: string, notes?: string) =>
+    request<MarketStateRefreshView>(
+      `/market-states/targets/${encodeURIComponent(targetId)}/refresh`,
+      { method: 'POST', body: JSON.stringify({ notes }) },
+    ),
   pauseTradingSession: (id: string) =>
     request<TradingSessionBotView>(`/trading-sessions/${id}/pause`, {
       method: 'POST',

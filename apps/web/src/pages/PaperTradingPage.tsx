@@ -128,11 +128,11 @@ export function PaperTradingPage() {
     <section className="space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Trading</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Paper trading</p>
           <h2 className="mt-1 text-2xl font-semibold">Paper Bots</h2>
           <p className="mt-2 text-slate-400">
-            Product term Bot maps to a trading session. Simulated bots orchestrating orders, risk,
-            positions, and portfolio.
+            Sandbox. Product term Bot maps to a trading session. Manual create is name and balance
+            only — not certified deploy.
           </p>
         </div>
         <button

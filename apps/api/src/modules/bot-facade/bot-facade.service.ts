@@ -1,13 +1,27 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
   TradingSessionService,
+  type CreateTradingSessionCommand,
   type SessionLifecycleCommand,
 } from '../trading-session/trading-session.service';
+import type { TradingSessionOrigin } from '../trading-session/domain/trading-session';
 import {
   TRADING_SESSION_REPOSITORY,
   type TradingSessionRepository,
 } from '../trading-session/persistence/trading-session.repository';
 import { assertBotIsSessionFacade, toBotView, type BotView } from './domain/bot-view';
+
+export type CreateBotCommand = Readonly<{
+  workspaceId: string;
+  paperAccountId: string;
+  deploymentId: string;
+  origin: TradingSessionOrigin;
+  idempotencyKey: string;
+  actorId: string;
+  correlationId?: string;
+  createdAt: string;
+  recordedAt: string;
+}>;
 
 export type BotLifecycleCommand = Readonly<{
   workspaceId: string;
@@ -57,6 +71,17 @@ export class BotFacadeService {
     return bot;
   }
 
+  async createBot(command: CreateBotCommand): Promise<BotView> {
+    const session = await this.sessions.create(toCreateSessionCommand(command));
+    const bot = toBotView(session);
+    assertBotIsSessionFacade(bot);
+    return bot;
+  }
+
+  async startBot(command: BotLifecycleCommand): Promise<BotView> {
+    return this.mapLifecycle(command, (sessionCommand) => this.sessions.start(sessionCommand));
+  }
+
   async pauseBot(command: BotLifecycleCommand): Promise<BotView> {
     return this.mapLifecycle(command, (sessionCommand) => this.sessions.pause(sessionCommand));
   }
@@ -88,6 +113,20 @@ export class BotFacadeService {
     assertBotIsSessionFacade(bot);
     return bot;
   }
+}
+
+function toCreateSessionCommand(command: CreateBotCommand): CreateTradingSessionCommand {
+  return {
+    workspaceId: command.workspaceId,
+    paperAccountId: command.paperAccountId,
+    deploymentId: command.deploymentId,
+    origin: command.origin,
+    idempotencyKey: command.idempotencyKey,
+    actorId: command.actorId,
+    correlationId: command.correlationId,
+    createdAt: command.createdAt,
+    recordedAt: command.recordedAt,
+  };
 }
 
 function toSessionLifecycleCommand(command: BotLifecycleCommand): SessionLifecycleCommand {

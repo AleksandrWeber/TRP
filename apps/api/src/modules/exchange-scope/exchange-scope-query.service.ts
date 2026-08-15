@@ -22,6 +22,8 @@ import type {
   GetExchangeRiskPolicy,
   GetExchangeScope,
   GetExchangeScopeConfig,
+  ListExchangeRiskPolicies,
+  ListExchangeScopeHistory,
   ListExchangeScopes,
   ListTradingAccountBindings,
   TradingAccountBindingView,
@@ -135,6 +137,42 @@ export class ExchangeScopeQueryService implements ExchangeScopeQueryPort {
       isRuntime: false as const,
       approvesRisk: false as const,
     });
+  }
+
+  listExchangeScopeHistory(query: ListExchangeScopeHistory): readonly ExchangeScopeView[] {
+    if (!query.workspaceId?.trim() || !query.exchangeScopeId?.trim()) {
+      return Object.freeze([]);
+    }
+    const scope = this.store.getScope(query.exchangeScopeId);
+    if (!scope || scope.workspaceId !== query.workspaceId) return Object.freeze([]);
+    return Object.freeze(
+      this.store
+        .getHistory(query.exchangeScopeId)
+        .map((row) => Object.freeze({ ...row, ...SCOPE_FLAGS })),
+    );
+  }
+
+  listExchangeRiskPolicies(query: ListExchangeRiskPolicies): readonly ExchangeRiskPolicyView[] {
+    if (!query.workspaceId?.trim() || !query.exchangeScopeId?.trim()) {
+      return Object.freeze([]);
+    }
+    const scope = this.store.getScope(query.exchangeScopeId);
+    if (!scope || scope.workspaceId !== query.workspaceId) return Object.freeze([]);
+    return Object.freeze(
+      this.store.getPolicyHistory(query.exchangeScopeId).map((policy) =>
+        Object.freeze({
+          ...policy,
+          authorityClass: EXCHANGE_POLICY_INPUT_AUTHORITY_CLASS,
+          isRiskDecision: false as const,
+          approvesRisk: false as const,
+          isRuntime: false as const,
+          isExecutionEngine: false as const,
+          isStrategyLibrary: false as const,
+          submitsOrders: false as const,
+          mutable: false as const,
+        }),
+      ),
+    );
   }
 
   private resolveScope(query: GetExchangeScope) {

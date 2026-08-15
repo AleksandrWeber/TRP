@@ -143,12 +143,12 @@ describe('RC-26 Epic 6 — authority conformance', () => {
     );
   });
 
-  it('activates consumer-read ports; keeps REST/persistence off', () => {
+  it('activates consumer-read ports; Market State REST stays off; Orchestrator REST is product transport', () => {
     expect(MARKET_STATE_PORTS_ACTIVE.consumerRead).toBe(true);
     expect(MARKET_STATE_PORTS_ACTIVE.rest).toBe(false);
     expect(MARKET_STATE_PORTS_ACTIVE.persistence).toBe(false);
     expect(TRADING_ORCHESTRATOR_PORTS_ACTIVE.consumerRead).toBe(true);
-    expect(TRADING_ORCHESTRATOR_PORTS_ACTIVE.rest).toBe(false);
+    expect(TRADING_ORCHESTRATOR_PORTS_ACTIVE.rest).toBe(true);
     expect(TRADING_ORCHESTRATOR_PORTS_ACTIVE.persistence).toBe(false);
     expect(MARKET_STATE_CONSUMER_INTENDED).toEqual(
       expect.arrayContaining(['reporting', 'ai-analytics', 'command-center']),

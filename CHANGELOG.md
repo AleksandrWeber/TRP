@@ -9,6 +9,247 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ## [Unreleased]
 
+### Added
+
+- Wave C closed — Exchange Scope (PC-12), Qualification (PC-08), Market
+  Profile (PC-09), and Market State (PC-10) are customer products. Product
+  Readiness Audit v2 recalculates overall readiness 55% → 83%. Remaining
+  packages: PC-16 Knowledge Lake, PC-17 AI Analytics, PC-20 UX Polish.
+  Reports: `docs/project/wave-c-closure-report.md`,
+  `docs/project/product-readiness-audit-v2.md`.
+- PC-10 Market State Product — existing Market State current, lifecycle,
+  transitions, history, metadata, and Qualification / Profile references are
+  one customer product. REST adds workspace, current, history, target,
+  lifecycle, transitions, version details, metadata, Qualification reference,
+  Profile reference, and snapshot-preserving refresh on `/v1/market-states`.
+  UI is Market State Home, Current State, Lifecycle, Transitions, Version,
+  Metadata, Qualification reference, Profile reference, History, and Refresh
+  at `/market-state`. Market State remains owner. Qualification, Profile, and
+  Trading Orchestrator are unchanged. No classification. Domain `rest: false`
+  is unchanged. Wave C **Closed**. Reports:
+  `docs/project/pc-10-implementation-report.md`,
+  `pc-10-validation-report.md`, `pc-10-product-readiness-update.md`,
+  `pc-10-release-notes.md`, `pc-10-market-state-ux-audit.md`,
+  `wave-c-closure-report.md`, `product-readiness-audit-v2.md`.
+- PC-09 Market Profile Product — existing Market Profile latest, versions,
+  history, metadata, dimensions, and published Qualification source are one
+  customer product. REST adds workspace, latest, history, target, version
+  details, metadata, dimensions, published source, and metadata-only compare
+  on `/v1/market-profiles`. UI is Profile Home, Latest, Versions, History,
+  Version Details, Metadata, Dimensions, Published Source, and Compare at
+  `/market-profile`. Market Profile remains owner. Qualification and Market
+  State are unchanged. No new profile calculations. Domain `rest: false` is
+  unchanged. Stop before PC-10. Reports:
+  `docs/project/pc-09-implementation-report.md`,
+  `pc-09-validation-report.md`, `pc-09-product-readiness-update.md`,
+  `pc-09-release-notes.md`, `pc-09-market-profile-ux-audit.md`.
+- PC-08 Qualification Product — existing Market Qualification targets,
+  runs, lifecycle, confidence, health, and history are one customer
+  product. REST adds workspace, target browser, run list/detail, request,
+  confirm, cancel, complete, fail, and requalify on `/v1/qualification`.
+  UI is Qualification Home, Target Browser, Runs, Lifecycle, Confidence,
+  Health, History, and Run Details at `/qualification`. Qualification
+  remains owner. Profile and Market State are unchanged. No scoring.
+  Domain `rest: false` is unchanged. Stop before PC-09. Reports:
+  `docs/project/pc-08-implementation-report.md`,
+  `pc-08-validation-report.md`, `pc-08-product-readiness-update.md`,
+  `pc-08-release-notes.md`, `pc-08-qualification-ux-audit.md`.
+- PC-12 Exchange Scope Product — existing Exchange Scope identity,
+  lifecycle, config versions, policy inputs, bindings, and metadata are
+  one customer product (UI: Cluster). REST adds workspace, venue catalog,
+  list/get, create, rename, activate, suspend, archive, config, policy,
+  and binding operations on `/v1/exchange-scopes`. UI is Cluster home,
+  scope browser, current active, versions, bindings, policies, lifecycle,
+  history, and metadata at `/clusters`. Exchange Scope remains owner.
+  Runtime, Trading Session, and Deployment are unchanged. No venue
+  adapters or exchange APIs. Domain `rest: false` is unchanged. Stop
+  before PC-08. Reports: `docs/project/pc-12-implementation-report.md`,
+  `pc-12-validation-report.md`, `pc-12-product-readiness-update.md`,
+  `pc-12-release-notes.md`, `pc-12-scope-matrix.md`.
+- PC-07 Notification Channels Product — existing RC-24 channel catalog,
+  routing, preferences, and Telegram transport are one customer product.
+  REST adds `GET /v1/notification-channels/workspace`,
+  `GET /v1/notification-channels/:channelId`,
+  `GET /v1/notification-channels/:channelId/diagnostics`, and
+  `GET /v1/notification-channels/:channelId/deliveries`. Telegram
+  connect/verify/test remain `/v1/telegram/*`. UI is channel cards,
+  reserved disclosure, routing matrix, preference-clock frequency,
+  global quiet hours, per-channel history, and diagnostics. Telegram is
+  the only active channel. Reserved Email / Slack / Discord / Teams /
+  Push stay reserved. No Bot API, SMTP, webhooks, or digest scheduler.
+  J-13 Complete. Stop before PC-12. Reports:
+  `docs/project/pc-07-implementation-report.md`,
+  `pc-07-validation-report.md`, `pc-07-product-readiness-update.md`,
+  `pc-07-release-notes.md`, `pc-07-channel-matrix.md`,
+  `pc-07-routing-matrix.md`, `pc-07-delivery-matrix.md`.
+- PC-06 Notification Product — existing RC-24 Notification Delivery
+  preferences, routing, channel status, and recorded deliveries are a
+  customer product. REST is `GET /v1/notification-settings`,
+  `GET/PUT /v1/notification-preferences`, `GET /v1/notification-channels`,
+  `GET /v1/notification-routing`, and `GET /v1/notification-deliveries`
+  over existing queries. UI is Notification Settings, history, and
+  detail. Telegram remains transport only. Reserved channels stay
+  reserved. No scheduler, retries, or Bot API. J-12 Complete. Stop
+  before PC-07. Reports: `docs/project/pc-06-implementation-report.md`,
+  `pc-06-validation-report.md`, `pc-06-product-readiness-update.md`,
+  `pc-06-release-notes.md`.
+- PC-05 Reporting Product — existing RC-24 ReportRuns, narratives, and
+  delivery status are a customer product. REST is `GET /v1/report-runs`
+  and `GET /v1/report-definitions` over existing queries, distinct from
+  research `/v1/reports`. UI is Reporting Home, browser, detail, history,
+  search, filters, and projection JSON export. Reporting remains report
+  owner. AI remains narrative only. Notification remains delivery only.
+  No new report engine, types, or storage. J-10 Complete. Stop before
+  PC-06. Reports: `docs/project/pc-05-implementation-report.md`,
+  `pc-05-validation-report.md`, `pc-05-product-readiness-update.md`,
+  `pc-05-release-notes.md`.
+- PC-15 Product Flow Integration — slice 15-f: existing owner reads
+  compose into Dashboard and Command Center projections. Command Center
+  session GET adds latest report and delivery. Home shows paper session
+  count and runtime from existing APIs. No new REST resource. No owner
+  redesign. Dashboard remains projection only. Command Center remains
+  command UI. PC-15 package **Closed**. Stop before PC-05. Reports:
+  `docs/project/pc-15-f-implementation-report.md`,
+  `pc-15-f-integration-report.md`, `pc-15-f-validation-report.md`,
+  `pc-15-f-product-readiness-update.md`, `pc-15-f-release-notes.md`,
+  `pc-15-f-flow-status.md`.
+- PC-15 Product Flow Integration — slice 15-e: Notification Delivery
+  reaches the existing in-memory Telegram adapter after the existing
+  connect/complete bind. Reserved Email / Slack / Discord / Teams /
+  Push keep the documented skip. No Telegram Bot API. No channel
+  ownership change. Notification remains delivery only. Adapters remain
+  transport only. No REST or UI. PC-15 package remains in progress.
+  Stop before 15-f. Reports:
+  `docs/project/pc-15-e-implementation-report.md`,
+  `pc-15-e-integration-report.md`, `pc-15-e-validation-report.md`,
+  `pc-15-e-product-readiness-update.md`, `pc-15-e-release-notes.md`.
+- PC-15 Product Flow Integration — slice 15-d: completed ReportRun
+  invokes Notification Delivery `deliver()`. Existing routing rules and
+  notification types are applied. Delivery result is recorded.
+  ReportRun stays immutable. Email, Slack, and Telegram Bot stay
+  unactivated. Reporting remains report owner. Notification Delivery
+  remains delivery only. No REST or UI. PC-15 package remains in
+  progress. Stop before 15-e. Reports:
+  `docs/project/pc-15-d-implementation-report.md`,
+  `pc-15-d-integration-report.md`, `pc-15-d-validation-report.md`,
+  `pc-15-d-product-readiness-update.md`, `pc-15-d-release-notes.md`.
+- PC-15 Product Flow Integration — slice 15-c: completed ReportRun
+  invokes AI Analytics `generateNarrative()`. Analytical Narrative is
+  attached as a projection; ReportRun stays immutable. Unavailable
+  Reporting still produces the existing unavailable narrative.
+  Reporting remains report owner. AI remains narrative only. Lake
+  unchanged. No REST or UI. PC-15 package remains in progress. Stop
+  before 15-d. Reports:
+  `docs/project/pc-15-c-implementation-report.md`,
+  `pc-15-c-integration-report.md`, `pc-15-c-validation-report.md`,
+  `pc-15-c-product-readiness-update.md`, `pc-15-c-release-notes.md`.
+- PC-15 Product Flow Integration — slice 15-b: completed Market
+  Qualification publishes a Market Profile version through existing
+  `publishProfileVersion()`. Latest updates; prior versions and
+  Qualification history stay immutable. Qualification remains
+  qualification owner. Profile remains profile-version owner. No
+  scoring, new calculations, REST, or UI. PC-15 package remains in
+  progress. Stop before 15-c. Reports:
+  `docs/project/pc-15-b-implementation-report.md`,
+  `pc-15-b-integration-report.md`, `pc-15-b-validation-report.md`,
+  `pc-15-b-product-readiness-update.md`, `pc-15-b-release-notes.md`.
+- PC-15 Product Flow Integration — paper-first wiring of certified
+  products. Slice 15-a: Trading Session consumes
+  `SessionHandoffIntent` and creates a paper session; Command Center
+  reflects it; orchestration history stays immutable. Orchestrator
+  `createsSession` remains false. Trading Session remains Session
+  owner. No Orders, Execution, Risk approvals, or Live Trading. J-09
+  Complete. PC-15 package remains in progress. Stop before 15-b.
+  Reports: `docs/project/pc-15-a-implementation-report.md`,
+  `pc-15-a-integration-report.md`, `pc-15-a-validation-report.md`,
+  `pc-15-a-product-readiness-update.md`, `pc-15-a-release-notes.md`.
+- PC-13 Command Center Product — Command Center is the paper-first operations
+  console: view sessions, create paper bots through the existing Session
+  workflow, pause / resume / stop, monitor lifecycle, health, runtime status,
+  Deployment reference, and Orchestration reference. REST is existing
+  `/v1/trading-sessions` plus create/start, and `POST /v1/paper-accounts`.
+  Command Center remains command UI only. Trading Session remains Session
+  owner. Orchestrator, Deployment, and Runtime unchanged. No Orders, Kill
+  Switch, or Live Trading. Command Center declared scope 100%. Overall
+  readiness remains 58%. J-14 Complete. Stop before PC-15.
+  Reports: `docs/project/pc-13-implementation-report.md`,
+  `pc-13-command-center-ux-audit.md`, `pc-13-validation-report.md`,
+  `pc-13-product-readiness-update.md`, `pc-13-release-notes.md`.
+- PC-11 Trading Orchestrator Product — certified Trading Orchestrator is a
+  customer product: plans, lifecycle, request, progress, Session Handoff
+  Intent, and history. REST is `/v1/orchestrations` over existing
+  service/query ports. Coordination only. `createsSession` remains false.
+  Not an Orchestrator, Session, Deployment, or Runtime redesign. No Orders
+  or Risk approvals. Orchestrator declared scope 100%. Overall readiness
+  remains 58%. J-08 Complete. Stop before PC-13.
+  Reports: `docs/project/pc-11-implementation-report.md`,
+  `pc-11-orchestrator-ux-audit.md`, `pc-11-validation-report.md`,
+  `pc-11-product-readiness-update.md`, `pc-11-release-notes.md`.
+- PC-03 Deployment Product — certified Strategy Deployment is a customer
+  product: wizard, list, details, history, status, metadata, Library
+  Version, and Runtime Validation result. REST is existing
+  `/v1/strategy-deployments` (optional `libraryEntryId`). Not a
+  Deployment, Runtime, Library, or Session redesign. No Deploy Engine
+  or automatic deploy. Deployment declared scope 100%. Overall
+  readiness remains 58%. J-07 Complete. Stop before PC-11.
+  Reports: `docs/project/pc-03-implementation-report.md`,
+  `pc-03-deployment-ux-audit.md`, `pc-03-validation-report.md`,
+  `pc-03-product-readiness-update.md`, `pc-03-release-notes.md`.
+- PC-04 Runtime Validation Product — certified Runtime Enforcement Gate is a
+  customer product: run validation, progress, PASS / FAIL, deterministic
+  reasons, Strategy Version, timestamp, history, and read-only details.
+  REST is `/v1/runtime-validations` over the existing `validateDeployment`
+  port. Not a Runtime, Library, Deployment, or Session redesign. No
+  override or soft-pass. Runtime Validation declared scope 100%. Overall
+  readiness remains 58%. J-06 Complete. Stop before PC-03.
+  Reports: `docs/project/pc-04-implementation-report.md`,
+  `pc-04-runtime-validation-ux-audit.md`, `pc-04-validation-report.md`,
+  `pc-04-product-readiness-update.md`, `pc-04-release-notes.md`.
+- PC-02 Certification Product — certified Strategy Certification is a
+  customer product: wizard, progress, result, history, reasons, and
+  read-only metadata. REST is `/v1/strategy-library/certifications`
+  over the existing Certification port. Successful admit fills Strategy
+  Library Lookup. Not a certification, Library, Runtime, or Deployment
+  redesign. Certification declared scope 100%. Overall readiness remains
+  58%. J-04 Complete. Stop before PC-04.
+  Reports: `docs/project/pc-02-implementation-report.md`,
+  `pc-02-certification-ux-audit.md`, `pc-02-validation-report.md`,
+  `pc-02-product-readiness-update.md`, `pc-02-release-notes.md`.
+- PC-01 Strategy Library Product — certified Strategy Library is a customer
+  product: browse, search, filter, version history, certification /
+  eligibility / envelope state, and read-only immutable versions.
+  REST is `/v1/strategy-library` over existing Lookup / Eligibility ports.
+  `/strategies` remains research CRUD and is not Library. Not a Library
+  redesign. Library declared scope 100%. Overall readiness remains 58%.
+  J-05 Complete. Stop before PC-02.
+  Reports: `docs/project/pc-01-implementation-report.md`,
+  `pc-01-library-ux-audit.md`, `pc-01-validation-report.md`,
+  `pc-01-product-readiness-update.md`, `pc-01-release-notes.md`.
+- PC-14 Workspace Management — Workspace is a customer product: list,
+  create, rename, archive, and switch inside the paper-first Operator
+  Shell. Selection persists across refresh. Bootstrap remains the
+  fallback. Not a tenancy or Identity redesign. Workspace declared
+  scope 100%. Overall readiness remains 58%. J-02 Complete.
+  Reports: `docs/project/pc-14-implementation-report.md`,
+  `pc-14-workspace-ux-audit.md`, `pc-14-validation-report.md`,
+  `pc-14-product-readiness-update.md`, `pc-14-release-notes.md`.
+- PC-19 Operator Shell Product — paper-first Version 2 chrome. Research,
+  Paper trading, and Administration navigation only. Live Trading, retired
+  Production, epic fixtures, Coming Soon, disabled Emergency Controls, and
+  Portfolio Reset (dev) removed from the product path. Not a UI redesign.
+  Operator Shell declared scope 100%. Overall readiness remains 58%.
+  Reports: `docs/project/pc-19-implementation-report.md`,
+  `pc-19-ui-audit.md`, `pc-19-validation-report.md`,
+  `pc-19-product-readiness-update.md`, `pc-19-release-notes.md`.
+- PC-18 Identity Product — durable customer accounts on the existing Prisma
+  `User` table; professional sign-in / create-account without prefilled
+  developer credentials. JWT and `/auth` unchanged. Paper-first; does not
+  imply Live Trading. Identity readiness 18% → 100%. Overall 55% → 58%.
+  J-01 Complete.
+  Reports: `docs/project/pc-18-implementation-report.md`,
+  `pc-18-validation-report.md`, `pc-18-product-readiness-update.md`,
+  `pc-18-release-notes.md`.
+
 ## [2.0.0] — 2026-08-14
 
 ### Added

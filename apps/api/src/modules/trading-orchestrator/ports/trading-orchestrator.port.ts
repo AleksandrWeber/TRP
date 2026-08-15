@@ -4,7 +4,7 @@
  * Contract: docs/project/rc-26-api-contract.md §§6–9
  *
  * Service / Query + Library / Gate / Market State / Risk-read + consumer-read active.
- * Persistence / REST remain inactive.
+ * Persistence remains process-local. REST is the PC-11 product transport.
  * No execution / Session ownership / Risk approval.
  */
 
@@ -347,7 +347,7 @@ export interface TradingOrchestratorConsumerReadPort {
   }): SessionHandoffIntentProjection | null;
 }
 
-/** Epic 6 posture — service/query + coordination + consumer-read active. */
+/** Epic 6 + PC-11 posture — service/query + coordination + consumer-read + REST. */
 export const TRADING_ORCHESTRATOR_PORTS_ACTIVE = Object.freeze({
   tradingOrchestratorService: true,
   tradingOrchestratorQuery: true,
@@ -360,5 +360,5 @@ export const TRADING_ORCHESTRATOR_PORTS_ACTIVE = Object.freeze({
   sessionHandoff: true,
   consumerRead: true,
   persistence: false,
-  rest: false,
+  rest: true,
 } as const);

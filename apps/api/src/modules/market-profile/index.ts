@@ -96,6 +96,7 @@ export {
   type GetLatestMarketProfile,
   type GetMarketProfileByVersion,
   type ListMarketProfileVersions,
+  type ListWorkspaceMarketProfiles,
   type MarketProfileQueryPort,
   type MarketProfileServicePort,
   type MarketProfileSummary,

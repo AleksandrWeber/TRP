@@ -1,16 +1,51 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-08-14 (RC-28 CLOSED — Version 2 certified paper-first at `v2.0.0`)
+Last updated: 2026-08-15 (PC-10 CLOSED · Wave C CLOSED · Product Readiness Audit v2 83%)
 
-Living roadmap for product direction.
+This file distinguishes **historical architecture delivery** from the **current product completion program**.
+
+### Planning Status
+
+| Track                 | Status                                                                                             |
+| --------------------- | -------------------------------------------------------------------------------------------------- |
+| Architecture Planning | **CLOSED**                                                                                         |
+| Product Planning      | **CLOSED**                                                                                         |
+| Governance            | **ACTIVE**                                                                                         |
+| Implementation        | **IN PROGRESS** (Waves A–C Closed; PC-16 / PC-17 / PC-20 remain. Do not begin PC-16 until review.) |
 
 Related:
 
+- **Product Completion Roadmap (planning CLOSED):** [`v2-product-completion-program.md`](./v2-product-completion-program.md)
+- **Execution tracker:** [`v2-product-completion-backlog.md`](./v2-product-completion-backlog.md)
+- **Canonical journey:** [`product-completion-journey.md`](./product-completion-journey.md)
+- **Definition of Done:** [`product-completion-definition-of-done.md`](./product-completion-definition-of-done.md)
+- **Product UI Policy:** [`product-ui-policy.md`](./product-ui-policy.md)
+- **Planning freeze:** [`product-completion-readiness-report.md`](./product-completion-readiness-report.md)
+- **PC-18 Identity:** [`pc-18-implementation-report.md`](./pc-18-implementation-report.md) (**CLOSED**)
+- **PC-19 Operator Shell:** [`pc-19-implementation-report.md`](./pc-19-implementation-report.md) (**CLOSED**)
+- **PC-14 Workspace:** [`pc-14-implementation-report.md`](./pc-14-implementation-report.md) (**CLOSED**)
+- **PC-01 Strategy Library:** [`pc-01-implementation-report.md`](./pc-01-implementation-report.md) (**CLOSED**)
+- **PC-02 Certification:** [`pc-02-implementation-report.md`](./pc-02-implementation-report.md) (**CLOSED**)
+- **PC-04 Runtime Validation:** [`pc-04-implementation-report.md`](./pc-04-implementation-report.md) (**CLOSED**)
+- **PC-03 Deployment:** [`pc-03-implementation-report.md`](./pc-03-implementation-report.md) (**CLOSED**)
+- **PC-11 Trading Orchestrator:** [`pc-11-implementation-report.md`](./pc-11-implementation-report.md) (**CLOSED** — review)
+- **PC-13 Command Center:** [`pc-13-implementation-report.md`](./pc-13-implementation-report.md) (**CLOSED**)
+- **PC-15 Product Flow Integration:** [`pc-15-f-implementation-report.md`](./pc-15-f-implementation-report.md) (**CLOSED**)
+- **PC-05 Reporting:** [`pc-05-implementation-report.md`](./pc-05-implementation-report.md) (**CLOSED**)
+- **PC-06 Notification:** [`pc-06-implementation-report.md`](./pc-06-implementation-report.md) (**CLOSED**)
+- **PC-07 Notification Channels:** [`pc-07-implementation-report.md`](./pc-07-implementation-report.md) (**CLOSED**)
+- **PC-12 Exchange Scope:** [`pc-12-implementation-report.md`](./pc-12-implementation-report.md) (**CLOSED**)
+- **PC-08 Qualification:** [`pc-08-implementation-report.md`](./pc-08-implementation-report.md) (**CLOSED**)
+- **PC-09 Market Profile:** [`pc-09-implementation-report.md`](./pc-09-implementation-report.md) (**CLOSED**)
+- **PC-10 Market State:** [`pc-10-implementation-report.md`](./pc-10-implementation-report.md) (**CLOSED**)
+- **Wave C Closure:** [`wave-c-closure-report.md`](./wave-c-closure-report.md) (**CLOSED**)
+- **Product Readiness Audit v2:** [`product-readiness-audit-v2.md`](./product-readiness-audit-v2.md) (**83%**)
 - Product Vision (Level-0): [`trp-product-vision.md`](./trp-product-vision.md)
 - UX Vision (Level-0): [`trp-ux-vision.md`](./trp-ux-vision.md)
 - Project Status: [`project-status.md`](./project-status.md)
 - Release History: [`release-history.md`](./release-history.md)
 - Story ID Allocation: [`story-id-allocation.md`](./story-id-allocation.md)
+- Historical V2 architecture sequence (RC-19…RC-28, **CLOSED**): [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md)
 - RC-17 Release Planning: [`rc-17-release-planning.md`](./rc-17-release-planning.md)
 - RC-17 Roadmap: [`rc-17-roadmap.md`](./rc-17-roadmap.md)
 - RC-17 Retrospective: [`rc-17-retrospective.md`](./rc-17-retrospective.md)
@@ -169,28 +204,74 @@ Related:
 
 ---
 
-## Current Phase
+## Current Phase — Product Completion Implementation
 
-**RC-27 CLOSED · RC-28 PLANNING**
+**Product Completion planning is CLOSED. PC-18 Identity, PC-19 Operator Shell, PC-14 Workspace, PC-01 Strategy Library, PC-02 Certification, PC-04 Runtime Validation, PC-03 Deployment, PC-11 Trading Orchestrator, PC-13 Command Center, PC-15 Product Flow Integration, PC-05 Reporting Product, PC-06 Notification Product, PC-07 Notification Channels Product, PC-12 Exchange Scope Product, PC-08 Qualification Product, PC-09 Market Profile Product, and PC-10 Market State Product are Closed. Wave C is Closed. Overall product readiness 83% ([audit v2](./product-readiness-audit-v2.md)). Next after review: PC-17 AI Analytics Product / PC-16 Knowledge Lake Product. Do not begin them now.**
+
+Future Version 2 work follows Product Completion **only**. It does not open a new RC. It does not start Version 3. It does not change Architecture Specification v2.0, the Authority Matrix, or the Alias Dictionary. No additional planning documents. No roadmap or package redesign.
+
+| Artifact                                                              | Role                                                              |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| [Product Completion Roadmap](./v2-product-completion-program.md)      | Governing charter (planning CLOSED)                               |
+| [Product Completion Backlog](./v2-product-completion-backlog.md)      | Execution tracker                                                 |
+| [Canonical Product Journey](./product-completion-journey.md)          | One customer path (J-01…J-14)                                     |
+| [Definition of Done](./product-completion-definition-of-done.md)      | Mandatory package closure                                         |
+| [Product UI Policy](./product-ui-policy.md)                           | Forbids fake or misleading UI                                     |
+| [Readiness Report](./product-completion-readiness-report.md)          | Planning freeze                                                   |
+| [PC-18 Implementation](./pc-18-implementation-report.md)              | Identity Product **CLOSED**                                       |
+| [PC-19 Implementation](./pc-19-implementation-report.md)              | Operator Shell **CLOSED**                                         |
+| [PC-14 Implementation](./pc-14-implementation-report.md)              | Workspace Management **CLOSED**                                   |
+| [PC-01 Implementation](./pc-01-implementation-report.md)              | Strategy Library Product **CLOSED**                               |
+| [PC-02 Implementation](./pc-02-implementation-report.md)              | Certification Product **CLOSED**                                  |
+| [PC-04 Implementation](./pc-04-implementation-report.md)              | Runtime Validation Product **CLOSED**                             |
+| [PC-03 Implementation](./pc-03-implementation-report.md)              | Deployment Product **CLOSED**                                     |
+| [PC-11 Implementation](./pc-11-implementation-report.md)              | Trading Orchestrator Product **CLOSED**                           |
+| [PC-13 Implementation](./pc-13-implementation-report.md)              | Command Center Product **CLOSED**                                 |
+| [PC-15 slice 15-a Implementation](./pc-15-a-implementation-report.md) | Orchestrator → Session **CLOSED**                                 |
+| [PC-15 slice 15-b Implementation](./pc-15-b-implementation-report.md) | Qualification → Profile **CLOSED**                                |
+| [PC-15 slice 15-c Implementation](./pc-15-c-implementation-report.md) | Reporting → AI **CLOSED**                                         |
+| [PC-15 slice 15-d Implementation](./pc-15-d-implementation-report.md) | Reporting → Notification **CLOSED**                               |
+| [PC-15 slice 15-e Implementation](./pc-15-e-implementation-report.md) | Notification → Channels **CLOSED**                                |
+| [PC-15 slice 15-f Implementation](./pc-15-f-implementation-report.md) | Dashboard & Product Projections **CLOSED** (PC-15 package Closed) |
+
+Canonical loop today: J-01 **Complete**. Operator shell **Complete** (PC-19). J-02 **Complete** (PC-14). J-04 **Complete** (PC-02). J-05 **Complete** (PC-01). J-06 **Complete** (PC-04). J-07 **Complete** (PC-03). J-08 **Complete** (PC-11). J-09 **Complete** (PC-15 15-a). J-10 **Complete** (PC-05). J-12 **Complete** (PC-06). J-13 **Complete** (PC-07). J-14 **Complete** (PC-13). Dashboard data wiring **Complete** (PC-15 15-f). Cluster / Qualification / Profile / Market State **Complete** (Wave C). Loop remaining standalone gap: **J-11 AI Narrative** (PC-17). Architecture is certified (`v2.0.0`). Overall Product Readiness **83%** (audit baseline 55%; [audit v2](./product-readiness-audit-v2.md)).
+
+RC history is **complete and preserved** in the section below. Do not reopen RC-19…RC-28. Do not rewrite those closures.
+
+Architecture Spec v2.0 is the V2 constitution:
+[`trp-architecture-specification-v2.md`](./trp-architecture-specification-v2.md).
+Architecture Freeze ADR-012…ADR-018 remains ACTIVE. Chronological evolution:
+[`../Architecture/ADR/ADL.md`](../Architecture/ADR/ADL.md).
+
+Story IDs (historical allocation): **US240–US299** — [`story-id-allocation.md`](./story-id-allocation.md).  
+Release table: [`release-history.md`](./release-history.md).
+
+---
+
+## Historical Architecture Roadmap — RC-19 … RC-28
+
+**COMPLETE AND PRESERVED.**
+
+This was the architecture delivery path that certified paper-first Version 2. It is **not** the active product roadmap. Sequence record: [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
 
 RC-16 paper path and RC-17 Runtime Recovery are baselined. RC-18 mandatory
-residuals R1–R5 (US290–US294) are Done; **US295** (ADL-008) remains Open.
+residuals R1–R5 (US290–US294) are Done; **US295** (ADL-008) remains Open as an
+architecture residual (not a Product Completion package).
 RC-19 integration skeleton is **CLOSED**.
 RC-20 Command Center foundation (Epics 1–6) is **CLOSED** —
 [`rc-20-closure-report.md`](./rc-20-closure-report.md).
 
 **RC-21** Knowledge Lake is **CLOSED** (tag `v1.0.0-rc21`) —
 [`rc-21-closure-report.md`](./rc-21-closure-report.md). IDE shell remains
-**deferred** (Plan §0).
+**deferred** (Plan §0) — out of Product Completion except paper-first chrome (PC-19).
 
 **RC-22** Strategy Library is **CLOSED** (tag `v1.0.0-rc22`) —
 [`rc-22-closure-report.md`](./rc-22-closure-report.md). Domain certified;
-Nest ports / persistence / Orchestrator remain deferred.
+product REST/UI is Product Completion (PC-01, PC-02), not a new RC.
 
 **RC-23** Runtime Enforcement is **CLOSED** (tag `v1.0.0-rc23`) —
 [`rc-23-closure-report.md`](./rc-23-closure-report.md). Gate certified;
-Orchestrator / Selection remain deferred. Sequencing:
-[`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
+user-visible Gate is Product Completion (PC-04).
 
 **RC-24** Reporting, AI Analytics & Notification Delivery is **CLOSED**
 (tag `v1.0.0-rc24`) —
@@ -210,15 +291,6 @@ Orchestrator / Selection remain deferred. Sequencing:
 **RC-28** Version 2 Stabilization & Conformance is **CLOSED** (tag `v2.0.0`) —
 [`rc-28-closure-report.md`](./rc-28-closure-report.md).
 Planning package: [`rc-28-implementation-plan.md`](./rc-28-implementation-plan.md).
-
-Story IDs: **US240–US299** — [`story-id-allocation.md`](./story-id-allocation.md).
-
-Release table: [`release-history.md`](./release-history.md).
-
-Architecture Spec v2.0 is the V2 constitution:
-[`trp-architecture-specification-v2.md`](./trp-architecture-specification-v2.md).
-Architecture Freeze ADR-012…ADR-018 remains ACTIVE. Chronological evolution:
-[`../Architecture/ADR/ADL.md`](../Architecture/ADR/ADL.md).
 
 ---
 
@@ -293,18 +365,27 @@ Authority: [`rc-19-closure-report.md`](./rc-19-closure-report.md),
 
 ## Future Milestones
 
-**Version 1 (`v1.0.0`) is complete.** RC-19…RC-27 V2 capability path is
-**CLOSED** (tag `v1.0.0-rc27`). **RC-28** Version 2 Stabilization & Conformance
-is **CLOSED** (tag `v2.0.0`). Paper-first Version 2 is certified. Parallel
-**US295** ADL-008 closeout for production-claim language continues.
-Sequencing: [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
+**Version 1 (`v1.0.0`) is complete.**
 
-Later themes (new ADR required where architecture changes):
+**Architecture delivery (RC-19…RC-28) is complete and preserved** (tag `v2.0.0`).
+Paper-first Version 2 architecture is certified.
+
+**Active Version 2 work is Product Completion implementation only. Waves A–C and certified paper / evidence product UIs (except Lake and AI product) are Closed. Do not begin PC-17 / PC-16 until this closeout is reviewed.**
+Do not sequence new V2 product work from [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
+That document is the historical architecture roadmap. Do not add planning documents.
+
+Parallel **US295** ADL-008 closeout for production-claim language remains an
+architecture residual. It is not a Product Completion package.
+
+After Product Completion success criteria are met, Version 2 as a customer
+product is complete. **Version 3 is not started.**
+
+Later themes (new ADR required where architecture changes; not Product Completion):
 
 - Research OS enhancements
 - AI Research Assistant
 - Portfolio Research
-- Real-capital Trading (requires future ADR; not V1)
+- Real-capital Trading (requires future ADR; not V1; not this program)
 - Continuous Learning
 
 ---

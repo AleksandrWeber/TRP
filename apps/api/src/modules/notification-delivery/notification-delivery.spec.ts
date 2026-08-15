@@ -122,6 +122,11 @@ describe('RC-24 Epic 6 — Notification Delivery behaviour', () => {
     );
     expect(telegram.listSent()).toHaveLength(1);
 
+    const listed = service.listDeliveries({ workspaceId, reportRunId: 'rr-1' });
+    expect(listed).toHaveLength(1);
+    expect(listed[0]?.deliveryId).toBe(delivered.deliveryId);
+    expect(listed[0]?.outcome).toBe('delivered');
+
     const skippedOrders = service.deliver({
       workspaceId,
       userId,
@@ -178,6 +183,48 @@ describe('RC-24 Epic 6 — Notification Delivery behaviour', () => {
     );
     expect(criticalPass[0]?.skipReason).toBeUndefined();
     expect(criticalPass[0]?.channelId).toBe('telegram');
+  });
+
+  it('applies the stored timezone when evaluating quiet hours', () => {
+    const prefs = createUserNotificationPreferences({
+      workspaceId: 'ws',
+      userId: 'u',
+      schedule: {
+        dailyDeliveryTime: '09:00',
+        timezone: 'America/New_York',
+        quietHours: { start: '18:00', end: '07:00' },
+        criticalBypassQuietHours: true,
+      },
+      updatedAt: '2026-08-10T00:00:00.000Z',
+    });
+
+    const skipped = resolveDeliveryRoutes(
+      {
+        workspaceId: 'ws',
+        userId: 'u',
+        type: 'daily-report',
+        subject: 'x',
+        body: 'y',
+        requestedAt: '2026-08-10T23:30:00.000Z',
+      },
+      prefs,
+      { telegramConnected: true },
+    );
+    expect(skipped[0]?.skipReason).toBe('quiet-hours');
+
+    const outside = resolveDeliveryRoutes(
+      {
+        workspaceId: 'ws',
+        userId: 'u',
+        type: 'daily-report',
+        subject: 'x',
+        body: 'y',
+        requestedAt: '2026-08-10T16:00:00.000Z',
+      },
+      prefs,
+      { telegramConnected: true },
+    );
+    expect(outside[0]?.skipReason).toBeUndefined();
   });
 
   it('does not mutate preferences objects after upsert', async () => {

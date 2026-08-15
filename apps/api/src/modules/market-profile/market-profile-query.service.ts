@@ -8,10 +8,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { deriveQualificationTargetId } from '../market-qualification';
 import { InMemoryMarketProfileStore } from './adapters/in-memory-market-profile-store';
+import type { MarketProfile } from './domain/market-profile';
 import type {
   GetLatestMarketProfile,
   GetMarketProfileByVersion,
   ListMarketProfileVersions,
+  ListWorkspaceMarketProfiles,
   MarketProfileQueryPort,
   MarketProfileSummary,
   MarketProfileView,
@@ -63,22 +65,28 @@ export class MarketProfileQueryService implements MarketProfileQueryPort {
       .listByTarget(targetId)
       .filter((p) => p.workspaceId === query.workspaceId);
 
+    return Object.freeze(profiles.map((profile) => toSummary(profile)));
+  }
+
+  listWorkspaceProfiles(query: ListWorkspaceMarketProfiles): readonly MarketProfileSummary[] {
     return Object.freeze(
-      profiles.map((profile) =>
-        Object.freeze({
-          marketProfileId: profile.marketProfileId,
-          workspaceId: profile.workspaceId,
-          targetId: profile.targetId,
-          exchangeScopeId: profile.exchangeScopeId,
-          marketSymbol: profile.marketSymbol,
-          version: profile.version,
-          qualificationRunId: profile.qualificationRunId,
-          publishedAt: profile.publishedAt,
-          authorityClass: 'research_artifact' as const,
-          forcesTrade: false as const,
-          authorizesSession: false as const,
-        }),
-      ),
+      this.store.listByWorkspace(query.workspaceId).map((profile) => toSummary(profile)),
     );
   }
+}
+
+function toSummary(profile: MarketProfile): MarketProfileSummary {
+  return Object.freeze({
+    marketProfileId: profile.marketProfileId,
+    workspaceId: profile.workspaceId,
+    targetId: profile.targetId,
+    exchangeScopeId: profile.exchangeScopeId,
+    marketSymbol: profile.marketSymbol,
+    version: profile.version,
+    qualificationRunId: profile.qualificationRunId,
+    publishedAt: profile.publishedAt,
+    authorityClass: 'research_artifact' as const,
+    forcesTrade: false as const,
+    authorizesSession: false as const,
+  });
 }

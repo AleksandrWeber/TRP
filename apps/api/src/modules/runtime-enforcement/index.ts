@@ -38,7 +38,16 @@ export { RuntimeEnforcementBoundaryService } from './runtime-enforcement-boundar
 export { RuntimeEnforcementGateService } from './runtime-enforcement-gate.service';
 export { RuntimeEnforcementLibraryReadService } from './runtime-enforcement-library-read.service';
 export { RuntimeEnforcementModule } from './runtime-enforcement.module';
+export { RuntimeValidationProductModule } from './runtime-validation-product.module';
+export { RuntimeValidationService } from './runtime-validation.service';
+export { InMemoryRuntimeValidationStore } from './in-memory-runtime-validation.store';
 export { validateDeployment } from './domain/validate-deployment';
+export { runtimeValidationReasonLabel } from './runtime-validation-reason';
+export type {
+  RuntimeValidationHistoryPage,
+  RuntimeValidationHistoryQuery,
+  RuntimeValidationRecord,
+} from './runtime-validation.record';
 export {
   RuntimeEnforcementRejectedError,
   isRuntimeEnforcementRejectedError,

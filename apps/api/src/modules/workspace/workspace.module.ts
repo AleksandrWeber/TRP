@@ -12,7 +12,7 @@ import { WorkspaceDomainService } from './workspace-domain.service';
 /**
  * Workspace Nest module (US108 / US158 / US002).
  * Top-level multi-tenant aggregate with membership access checks for trading commands.
- * Exposes authenticated bootstrap for active-workspace discovery/creation.
+ * Exposes authenticated bootstrap plus list / create / get / rename / archive transports (PC-14).
  */
 @Module({
   imports: [PrismaModule],

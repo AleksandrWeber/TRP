@@ -224,4 +224,22 @@ export class NotificationDeliveryService implements NotificationServicePort {
     this.store.recordDelivery(delivery);
     return delivery;
   }
+
+  listDeliveries(query: {
+    workspaceId: string;
+    userId?: string;
+    reportRunId?: string;
+  }): readonly DeliveryResult[] {
+    const workspaceId = query.workspaceId.trim();
+    const userId = query.userId?.trim();
+    const reportRunId = query.reportRunId?.trim();
+    return Object.freeze(
+      this.store.listDeliveries().filter((item) => {
+        if (item.workspaceId !== workspaceId) return false;
+        if (userId && item.userId !== userId) return false;
+        if (reportRunId && item.reportRunId !== reportRunId) return false;
+        return true;
+      }),
+    );
+  }
 }

@@ -29,7 +29,7 @@ describe('RC-23 RuntimeEnforcementModule', () => {
       libraryLookup: true,
       libraryEligibility: true,
       persistence: false,
-      rest: false,
+      rest: true,
     });
 
     expect(moduleRef.get(RuntimeEnforcementLibraryReadService)).toBeDefined();

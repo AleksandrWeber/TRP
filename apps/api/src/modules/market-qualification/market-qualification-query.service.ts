@@ -15,6 +15,7 @@ import type {
   GetQualificationState,
   GetQualificationTarget,
   ListQualificationRuns,
+  ListQualificationTargets,
   MarketConfidenceView,
   MarketHealthView,
   MarketQualificationQueryPort,
@@ -81,6 +82,14 @@ export class MarketQualificationQueryService implements MarketQualificationQuery
       forcesTrade: false as const,
       authorizesSession: false as const,
     });
+  }
+
+  listQualificationTargets(query: ListQualificationTargets): readonly QualificationTargetView[] {
+    return Object.freeze(
+      this.store
+        .listTargets(query.workspaceId)
+        .map((target) => Object.freeze({ ...target, ...FLAGS })),
+    );
   }
 
   listQualificationRuns(query: ListQualificationRuns): readonly QualificationRunSummary[] {

@@ -57,6 +57,8 @@ describe('RC-19 Epic 2 — BotFacadeService', () => {
 
   const sessions = {
     get: vi.fn(),
+    create: vi.fn(),
+    start: vi.fn(),
     pause: vi.fn(),
     resume: vi.fn(),
     stop: vi.fn(),
@@ -100,6 +102,54 @@ describe('RC-19 Epic 2 — BotFacadeService', () => {
   it('returns null when Trading Session is missing', async () => {
     vi.mocked(sessions.get).mockResolvedValue(null);
     await expect(facade.getBot('workspace-1', 'missing')).resolves.toBeNull();
+  });
+
+  it('delegates createBot to TradingSessionService.create', async () => {
+    const created = sessionFixture({ origin: 'strategy' });
+    vi.mocked(sessions.create).mockResolvedValue(created);
+
+    const bot = await facade.createBot({
+      workspaceId: 'workspace-1',
+      paperAccountId: 'account-1',
+      deploymentId: 'deployment-1',
+      origin: 'strategy',
+      idempotencyKey: 'idem-create-1',
+      actorId: 'actor-1',
+      createdAt: at,
+      recordedAt: at,
+    });
+
+    expect(sessions.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        workspaceId: 'workspace-1',
+        paperAccountId: 'account-1',
+        deploymentId: 'deployment-1',
+        origin: 'strategy',
+        idempotencyKey: 'idem-create-1',
+      }),
+    );
+    expect(bot.id).toBe(created.id);
+    expect(bot.tradingSessionId).toBe(created.id);
+    expect(bot.origin).toBe('strategy');
+  });
+
+  it('delegates startBot to TradingSessionService.start', async () => {
+    const running = runningSession();
+    vi.mocked(sessions.start).mockResolvedValue(running);
+
+    const bot = await facade.startBot({
+      workspaceId: 'workspace-1',
+      botId: running.id,
+      actorId: 'actor-1',
+      ownerId: 'actor-1',
+      recordedAt: at,
+      nowIso: at,
+    });
+
+    expect(sessions.start).toHaveBeenCalledWith(
+      expect.objectContaining({ sessionId: running.id, ownerId: 'actor-1' }),
+    );
+    expect(bot.status).toBe(TradingSessionStatus.RUNNING);
   });
 
   it('delegates pause to TradingSessionService with sessionId = botId', async () => {

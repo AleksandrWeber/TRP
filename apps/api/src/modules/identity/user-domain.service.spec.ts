@@ -11,8 +11,8 @@ describe('UserDomainService (US105, US107)', () => {
     service = new UserDomainService(new InMemoryUserRepository());
   });
 
-  it('creates an active Researcher by default', () => {
-    const user = service.create({
+  it('creates an active Researcher by default', async () => {
+    const user = await service.create({
       email: 'Ada@Example.com',
       displayName: ' Ada Lovelace ',
     });
@@ -25,8 +25,8 @@ describe('UserDomainService (US105, US107)', () => {
     expect(Object.keys(user).sort()).toEqual(['displayName', 'email', 'id', 'role', 'status']);
   });
 
-  it('creates with an explicit role', () => {
-    const user = service.create({
+  it('creates with an explicit role', async () => {
+    const user = await service.create({
       email: 'admin@example.com',
       displayName: 'Admin',
       role: Role.Admin,
@@ -35,16 +35,16 @@ describe('UserDomainService (US105, US107)', () => {
     expect(user.role).toBe(Role.Admin);
   });
 
-  it('rejects duplicate emails on create', () => {
-    service.create({ email: 'a@example.com', displayName: 'A' });
+  it('rejects duplicate emails on create', async () => {
+    await service.create({ email: 'a@example.com', displayName: 'A' });
 
-    expect(() => service.create({ email: 'A@Example.com', displayName: 'B' })).toThrow(
+    await expect(service.create({ email: 'A@Example.com', displayName: 'B' })).rejects.toThrow(
       /already exists/i,
     );
   });
 
-  it('getById and getByEmail return the same user', () => {
-    const created = service.create({ email: 'b@example.com', displayName: 'B' });
+  it('getById and getByEmail return the same user', async () => {
+    const created = await service.create({ email: 'b@example.com', displayName: 'B' });
 
     expect(service.getById(created.id)).toEqual(created);
     expect(service.getByEmail('B@Example.com')).toEqual(created);
@@ -52,10 +52,10 @@ describe('UserDomainService (US105, US107)', () => {
     expect(service.getByEmail('missing@example.com')).toBeNull();
   });
 
-  it('updates displayName, email, and role', () => {
-    const created = service.create({ email: 'c@example.com', displayName: 'C' });
+  it('updates displayName, email, and role', async () => {
+    const created = await service.create({ email: 'c@example.com', displayName: 'C' });
 
-    const updated = service.update(created.id, {
+    const updated = await service.update(created.id, {
       email: 'c2@example.com',
       displayName: 'C Two',
       role: Role.Reader,
@@ -72,27 +72,29 @@ describe('UserDomainService (US105, US107)', () => {
     expect(service.getByEmail('c2@example.com')?.displayName).toBe('C Two');
   });
 
-  it('update returns null when user is missing', () => {
-    expect(service.update('missing', { displayName: 'X' })).toBeNull();
+  it('update returns null when user is missing', async () => {
+    expect(await service.update('missing', { displayName: 'X' })).toBeNull();
   });
 
-  it('rejects email conflict on update', () => {
-    service.create({ email: 'one@example.com', displayName: 'One' });
-    const two = service.create({ email: 'two@example.com', displayName: 'Two' });
+  it('rejects email conflict on update', async () => {
+    await service.create({ email: 'one@example.com', displayName: 'One' });
+    const two = await service.create({ email: 'two@example.com', displayName: 'Two' });
 
-    expect(() => service.update(two.id, { email: 'one@example.com' })).toThrow(/already exists/i);
+    await expect(service.update(two.id, { email: 'one@example.com' })).rejects.toThrow(
+      /already exists/i,
+    );
   });
 
-  it('disable sets status to Disabled', () => {
-    const created = service.create({ email: 'd@example.com', displayName: 'D' });
+  it('disable sets status to Disabled', async () => {
+    const created = await service.create({ email: 'd@example.com', displayName: 'D' });
 
-    const disabled = service.disable(created.id);
+    const disabled = await service.disable(created.id);
 
     expect(disabled?.status).toBe(UserStatus.Disabled);
     expect(service.getById(created.id)?.status).toBe(UserStatus.Disabled);
   });
 
-  it('disable returns null when user is missing', () => {
-    expect(service.disable('missing')).toBeNull();
+  it('disable returns null when user is missing', async () => {
+    expect(await service.disable('missing')).toBeNull();
   });
 });

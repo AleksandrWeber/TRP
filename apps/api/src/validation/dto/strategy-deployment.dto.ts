@@ -25,6 +25,12 @@ export class CreateStrategyDeploymentBodyDto {
   @MinLength(1)
   experimentId?: string;
 
+  /** Optional Library identity. Gate consumes Lookup; Deployment does not own Library. */
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  libraryEntryId?: string;
+
   @IsObject()
   parameters!: Record<string, unknown>;
 

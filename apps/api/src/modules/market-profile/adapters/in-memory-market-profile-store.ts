@@ -70,6 +70,21 @@ export class InMemoryMarketProfileStore {
       .filter(Boolean);
   }
 
+  /**
+   * Additive read of profiles already in this process-local store.
+   * Not a persistence product. Not a second Source of Truth.
+   */
+  listByWorkspace(workspaceId: string): MarketProfileVersion[] {
+    return [...this.byId.values()]
+      .filter((profile) => profile.workspaceId === workspaceId)
+      .sort(
+        (left, right) =>
+          left.publishedAt.localeCompare(right.publishedAt) ||
+          left.targetId.localeCompare(right.targetId) ||
+          left.version - right.version,
+      );
+  }
+
   nextVersion(targetId: string): number {
     const latest = this.getLatest(targetId);
     return (latest?.version ?? 0) + 1;

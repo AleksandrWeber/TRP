@@ -180,6 +180,8 @@ export {
   type ExchangeScopeServicePort,
   type ExchangeScopeSummary,
   type ExchangeScopeView,
+  type ListExchangeRiskPolicies,
+  type ListExchangeScopeHistory,
   type PublishExchangeRiskPolicy,
   type RegisterExchangeScope,
   type SetAdapterBindingContext,

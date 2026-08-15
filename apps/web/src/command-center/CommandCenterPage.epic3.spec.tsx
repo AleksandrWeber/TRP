@@ -1,4 +1,5 @@
 import { renderToStaticMarkup } from 'react-dom/server';
+import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { TradingSessionBotView } from '../shared/api';
 import { ConfirmationDialog } from '../shared/ConfirmationDialog';
@@ -45,11 +46,13 @@ describe('Command Center operational commands (RC-20 Epic 3)', () => {
 
   it('exposes pause/resume/stop availability from SoT status + lease', () => {
     expect(sessionActionAvailability(running)).toEqual({
+      start: 'unavailable',
       pause: 'available',
       resume: 'unavailable',
       stop: 'available',
     });
     expect(sessionActionAvailability(paused)).toEqual({
+      start: 'unavailable',
       pause: 'unavailable',
       resume: 'available',
       stop: 'available',
@@ -57,6 +60,7 @@ describe('Command Center operational commands (RC-20 Epic 3)', () => {
     expect(
       sessionActionAvailability({ ...running, leaseOwnerId: null, fencingToken: null }),
     ).toEqual({
+      start: 'unavailable',
       pause: 'unavailable',
       resume: 'unavailable',
       stop: 'unavailable',
@@ -65,6 +69,7 @@ describe('Command Center operational commands (RC-20 Epic 3)', () => {
 
   it('pause delegates to pauseTradingSession only', async () => {
     const api = {
+      startTradingSession: vi.fn(),
       pauseTradingSession: vi.fn(async () => paused),
       resumeTradingSession: vi.fn(),
       stopTradingSession: vi.fn(),
@@ -78,6 +83,7 @@ describe('Command Center operational commands (RC-20 Epic 3)', () => {
 
   it('resume delegates to resumeTradingSession only', async () => {
     const api = {
+      startTradingSession: vi.fn(),
       pauseTradingSession: vi.fn(),
       resumeTradingSession: vi.fn(async () => running),
       stopTradingSession: vi.fn(),
@@ -90,6 +96,7 @@ describe('Command Center operational commands (RC-20 Epic 3)', () => {
 
   it('stop delegates to stopTradingSession only', async () => {
     const api = {
+      startTradingSession: vi.fn(),
       pauseTradingSession: vi.fn(),
       resumeTradingSession: vi.fn(),
       stopTradingSession: vi.fn(async () => ({ ...running, status: 'stopped' })),
@@ -102,6 +109,7 @@ describe('Command Center operational commands (RC-20 Epic 3)', () => {
 
   it('surfaces failed commands to the caller', async () => {
     const api = {
+      startTradingSession: vi.fn(),
       pauseTradingSession: vi.fn(async () => {
         throw new Error('You do not have permission to perform this action.');
       }),
@@ -148,6 +156,7 @@ describe('Command Center operational commands (RC-20 Epic 3)', () => {
   it('renders action controls and refreshes projections after successful command', async () => {
     const refresh = vi.fn(async () => undefined);
     const api = {
+      startTradingSession: vi.fn(),
       pauseTradingSession: vi.fn(async () => paused),
       resumeTradingSession: vi.fn(),
       stopTradingSession: vi.fn(),
@@ -165,8 +174,11 @@ describe('Command Center operational commands (RC-20 Epic 3)', () => {
     expect(p4).toContain('data-testid="cc-stop-session-1"');
 
     const p7 = renderToStaticMarkup(
-      <SessionDetailInspectorPanel presentation="ready" session={running} />,
+      <MemoryRouter>
+        <SessionDetailInspectorPanel presentation="ready" session={running} />
+      </MemoryRouter>,
     );
+    expect(p7).toContain('data-testid="cc-p7-start"');
     expect(p7).toContain('data-testid="cc-p7-pause"');
     expect(p7).toContain('data-testid="cc-p7-resume"');
     expect(p7).toContain('data-testid="cc-p7-stop"');

@@ -33,6 +33,7 @@ export class MarketStateProjectionStore {
   }
 
   seed(state: MarketState, prior?: MarketState | null): MarketState {
+    if (prior) this.byId.set(prior.marketStateId, prior);
     this.byId.set(state.marketStateId, state);
     const key = targetKey(state);
     const previousId = this.currentByTarget.get(key);
@@ -52,6 +53,71 @@ export class MarketStateProjectionStore {
       }),
     );
     return state;
+  }
+
+  /** Additive read of versions already in the process-local store. */
+  listWorkspace(workspaceId: string): readonly MarketState[] {
+    return Object.freeze(
+      [...this.byId.values()]
+        .filter((row) => row.workspaceId === workspaceId)
+        .sort(byVersionThenPublished),
+    );
+  }
+
+  /** Additive read of current states already in the process-local store. */
+  listCurrent(workspaceId: string): readonly MarketState[] {
+    const rows: MarketState[] = [];
+    for (const [key, id] of this.currentByTarget.entries()) {
+      if (!key.startsWith(`${workspaceId}|`)) continue;
+      const parsed = parseTargetKey(key);
+      if (parsed.workspaceId !== workspaceId) continue;
+      const state = this.byId.get(id);
+      if (state) rows.push(state);
+    }
+    return Object.freeze(rows.sort(byPublishedDesc));
+  }
+
+  /** Additive read of version history already in the process-local store. */
+  listHistory(query: {
+    workspaceId: string;
+    exchangeScopeId?: string;
+    marketSymbol?: string;
+  }): readonly MarketState[] {
+    return Object.freeze(
+      [...this.byId.values()]
+        .filter((row) => matchesTarget(row, query))
+        .sort(byVersionThenPublished),
+    );
+  }
+
+  getByVersion(query: {
+    workspaceId: string;
+    exchangeScopeId: string;
+    marketSymbol: string;
+    version: number;
+  }): MarketState | null {
+    return (
+      [...this.byId.values()].find(
+        (row) => matchesTarget(row, query) && row.version.version === query.version,
+      ) ?? null
+    );
+  }
+
+  getTransition(query: {
+    workspaceId: string;
+    exchangeScopeId: string;
+    marketSymbol: string;
+    marketStateId?: string;
+    toVersion?: number;
+  }): MarketStateTransitionRecord | null {
+    const rows = this.listTransitions(query);
+    if (query.marketStateId !== undefined && query.marketStateId.trim() !== '') {
+      return rows.find((row) => row.marketStateId === query.marketStateId.trim()) ?? null;
+    }
+    if (query.toVersion !== undefined) {
+      return rows.find((row) => row.toVersion === query.toVersion) ?? null;
+    }
+    return rows.at(-1) ?? null;
   }
 
   getCurrent(query: {
@@ -97,4 +163,46 @@ export class MarketStateProjectionStore {
 
 function targetKey(state: MarketState): string {
   return `${state.workspaceId}|${state.exchangeScopeId}|${state.marketSymbol}`;
+}
+
+function parseTargetKey(key: string): {
+  workspaceId: string;
+  exchangeScopeId: string;
+  marketSymbol: string;
+} {
+  const [workspaceId = '', exchangeScopeId = '', ...symbolParts] = key.split('|');
+  return {
+    workspaceId,
+    exchangeScopeId,
+    marketSymbol: symbolParts.join('|'),
+  };
+}
+
+function matchesTarget(
+  row: MarketState,
+  query: {
+    workspaceId: string;
+    exchangeScopeId?: string;
+    marketSymbol?: string;
+  },
+): boolean {
+  if (row.workspaceId !== query.workspaceId) return false;
+  if (query.exchangeScopeId !== undefined && row.exchangeScopeId !== query.exchangeScopeId) {
+    return false;
+  }
+  if (query.marketSymbol !== undefined && row.marketSymbol !== query.marketSymbol) {
+    return false;
+  }
+  return true;
+}
+
+function byVersionThenPublished(left: MarketState, right: MarketState): number {
+  if (left.version.version !== right.version.version) {
+    return left.version.version - right.version.version;
+  }
+  return left.version.publishedAt.localeCompare(right.version.publishedAt);
+}
+
+function byPublishedDesc(left: MarketState, right: MarketState): number {
+  return right.version.publishedAt.localeCompare(left.version.publishedAt);
 }

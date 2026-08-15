@@ -161,6 +161,10 @@ export class ExchangeScopeLifecycleService implements ExchangeScopeServicePort {
     const asOf = cmd.asOf?.trim() || DEFAULT_TS;
     const history = this.store.getHistory(current.exchangeScopeId);
     const nextVersion = (history.at(-1)?.version.version ?? 0) + 1;
+    const displayName = cmd.displayName?.trim() || current.displayName;
+    if (!displayName) {
+      return rejectedScope(current.exchangeScopeId, current, ['display_name_required']);
+    }
 
     try {
       const published = publishNextExchangeScopeConfig({
@@ -169,7 +173,7 @@ export class ExchangeScopeLifecycleService implements ExchangeScopeServicePort {
           exchangeScopeId: current.exchangeScopeId,
           workspaceId: current.workspaceId,
           venueCode: String(current.venueCode),
-          displayName: current.displayName,
+          displayName,
           versionNumber: nextVersion,
           publishedAt: asOf,
           publishedBy: cmd.updatedBy,

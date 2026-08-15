@@ -22,6 +22,7 @@ const FORBIDDEN_IMPORT_SEGMENTS = [
   '/reporting',
   '/ai-analytics',
   '/modules/ai/',
+  '/product-flow',
 ] as const;
 
 function listTsFiles(dir: string): string[] {

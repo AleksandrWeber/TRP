@@ -22,13 +22,16 @@
 | --------------------------------------------- | ---------- |
 | 1 / 4 / 5 Boundary / domain / workflow ports  | Done       |
 | 6 Consumer read ports + authority conformance | **Active** |
+| PC-11 REST product transport                  | **Active** |
 
 ## Epic 6 surfaces
 
 - `TradingOrchestratorConsumerReadPort` — summary / selection / handoff projections
 - Immutable flags: `forcesTrade`, `approvesRisk`, `submitsOrders`, `ownsSessionLifecycle` always false
 - Intended audiences: Reporting, AI Analytics, Command Center, Monitoring
-- REST / persistence remain inactive
+- REST is the PC-11 product transport over existing service/query ports
+- Persistence remains process-local (existing coordination store; not a new SoT)
+- PC-15 15-a: Trading Session consumes `SessionHandoffIntent`. `createsSession` remains false.
 
 ## Workflow sequence (unchanged)
 

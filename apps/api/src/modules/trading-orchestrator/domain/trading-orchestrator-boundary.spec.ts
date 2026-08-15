@@ -47,7 +47,7 @@ describe('RC-26 Epic 5 — Trading Orchestrator boundary', () => {
       sessionHandoff: true,
       consumerRead: true,
       persistence: false,
-      rest: false,
+      rest: true,
     });
   });
 

@@ -22,8 +22,8 @@ import type { AuthUser } from '../auth/jwt.strategy';
 import { Role } from '../identity/role';
 import { isRuntimeEnforcementRejectedError } from '../runtime-enforcement';
 import { WorkspaceAccessService } from '../workspace';
-import type { StrategyDeployment } from './domain/strategy-deployment';
 import { StrategyDeploymentService } from './strategy-deployment.service';
+import { toStrategyDeploymentView, type StrategyDeploymentView } from './strategy-deployment.view';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -57,11 +57,12 @@ export class StrategyDeploymentController {
     );
     const now = new Date().toISOString();
     try {
-      return toView(
+      return toStrategyDeploymentView(
         await this.deployments.create({
           workspaceId: context.workspaceId,
           strategyId: body.strategyId,
           strategyVersion: body.strategyVersion,
+          libraryEntryId: body.libraryEntryId,
           experimentId: body.experimentId,
           parameters: body.parameters,
           instrument: body.instrument,
@@ -99,7 +100,7 @@ export class StrategyDeploymentController {
     );
     const now = new Date().toISOString();
     try {
-      return toView(
+      return toStrategyDeploymentView(
         await this.deployments.approve({
           workspaceId: context.workspaceId,
           deploymentId: params.id,
@@ -122,7 +123,7 @@ export class StrategyDeploymentController {
     const workspaceId = requiredHeader(workspaceHeader, 'X-Workspace-Id');
     this.authorizeQuery(request.user, workspaceId);
     const deployments = await this.deployments.list(workspaceId);
-    return deployments.map(toView);
+    return deployments.map(toStrategyDeploymentView);
   }
 
   @Get(':id')
@@ -135,7 +136,7 @@ export class StrategyDeploymentController {
     this.authorizeQuery(request.user, workspaceId);
     const deployment = await this.deployments.get(workspaceId, params.id);
     if (!deployment) throw new NotFoundException();
-    return toView(deployment);
+    return toStrategyDeploymentView(deployment);
   }
 
   private authorizeCommand(
@@ -165,59 +166,7 @@ export class StrategyDeploymentController {
   }
 }
 
-export type StrategyDeploymentView = {
-  id: string;
-  workspaceId: string;
-  strategyId: string;
-  strategyVersion: string;
-  experimentId: string | null;
-  parameters: Readonly<Record<string, unknown>>;
-  instrument: string;
-  timeframe: string;
-  marketDataSourceId: string;
-  paperExecutionConfigurationId: string;
-  riskPolicyId: string;
-  riskPolicyVersion: number;
-  configurationHash: string;
-  status: string;
-  version: number;
-  approvedAt: string | null;
-  approvedByActorId: string | null;
-  createdAt: string;
-  recordedAt: string;
-  actorId: string;
-  correlationId: string | null;
-  metadata: Readonly<Record<string, unknown>>;
-  enforcementAuthorization: StrategyDeployment['enforcementAuthorization'];
-};
-
-function toView(deployment: StrategyDeployment): StrategyDeploymentView {
-  return {
-    id: deployment.id,
-    workspaceId: deployment.workspaceId,
-    strategyId: deployment.strategyId,
-    strategyVersion: deployment.strategyVersion,
-    experimentId: deployment.experimentId,
-    parameters: deployment.parameters,
-    instrument: deployment.instrument,
-    timeframe: deployment.timeframe,
-    marketDataSourceId: deployment.marketDataSourceId,
-    paperExecutionConfigurationId: deployment.paperExecutionConfigurationId,
-    riskPolicyId: deployment.riskPolicyId,
-    riskPolicyVersion: deployment.riskPolicyVersion,
-    configurationHash: deployment.configurationHash,
-    status: deployment.status,
-    version: deployment.version,
-    approvedAt: deployment.approvedAt,
-    approvedByActorId: deployment.approvedByActorId,
-    createdAt: deployment.createdAt,
-    recordedAt: deployment.recordedAt,
-    actorId: deployment.actorId,
-    correlationId: deployment.correlationId,
-    metadata: deployment.metadata,
-    enforcementAuthorization: deployment.enforcementAuthorization,
-  };
-}
+export type { StrategyDeploymentView };
 
 function requiredHeader(value: string | undefined, name: string): string {
   const normalized = value?.trim();

@@ -16,15 +16,25 @@ import { IdentityModule } from './modules/identity/identity.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 import { KnowledgeLakeModule } from './modules/knowledge-lake';
 import { StrategyLibraryModule } from './modules/strategy-library';
+import { StrategyLibraryProductModule } from './modules/strategy-library/strategy-library-product.module';
 import { RuntimeEnforcementModule } from './modules/runtime-enforcement';
+import { RuntimeValidationProductModule } from './modules/runtime-enforcement/runtime-validation-product.module';
 import { ReportingModule } from './modules/reporting';
+import { ReportingProductModule } from './modules/reporting-product';
+import { NotificationProductModule } from './modules/notification-product';
+import { TelegramProductModule } from './modules/telegram-product';
 import { AiAnalyticsModule } from './modules/ai-analytics';
 import { NotificationDeliveryModule } from './modules/notification-delivery';
 import { MarketQualificationModule } from './modules/market-qualification';
 import { MarketProfileModule } from './modules/market-profile';
 import { MarketStateModule } from './modules/market-state';
 import { TradingOrchestratorModule } from './modules/trading-orchestrator';
+import { TradingOrchestratorProductModule } from './modules/trading-orchestrator/trading-orchestrator-product.module';
 import { ExchangeScopeModule } from './modules/exchange-scope';
+import { ExchangeScopeProductModule } from './modules/exchange-scope-product';
+import { QualificationProductModule } from './modules/qualification-product';
+import { MarketProfileProductModule } from './modules/market-profile-product';
+import { MarketStateProductModule } from './modules/market-state-product';
 import { MarketDataModule } from './modules/market-data/market-data.module';
 import { LiveMarketDataModule } from './modules/live-market-data/live-market-data.module';
 import { EventProcessingModule } from './modules/event-processing/event-processing.module';
@@ -149,15 +159,25 @@ import { ValidationModule } from './validation/validation.module';
     KnowledgeModule,
     KnowledgeLakeModule,
     StrategyLibraryModule,
+    StrategyLibraryProductModule,
     RuntimeEnforcementModule,
+    RuntimeValidationProductModule,
     ReportingModule,
+    ReportingProductModule,
+    NotificationProductModule,
+    TelegramProductModule,
     AiAnalyticsModule,
     NotificationDeliveryModule,
     MarketQualificationModule,
     MarketProfileModule,
     MarketStateModule,
     TradingOrchestratorModule,
+    TradingOrchestratorProductModule,
     ExchangeScopeModule,
+    ExchangeScopeProductModule,
+    QualificationProductModule,
+    MarketProfileProductModule,
+    MarketStateProductModule,
     InsightModule,
     CrossCampaignAnalysisModule,
     RecommendationModule,

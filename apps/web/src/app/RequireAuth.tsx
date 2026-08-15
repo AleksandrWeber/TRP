@@ -7,33 +7,20 @@ import {
   isAuthenticated,
   setActiveWorkspace,
 } from '../shared/auth';
+import {
+  isNetworkError,
+  isUnauthorizedError,
+  resolveActiveWorkspace,
+} from '../workspace/resolve-active-workspace';
 import { WorkspaceProvider } from './WorkspaceContext';
 
 type GateStatus = 'loading' | 'ready' | 'auth-error' | 'offline';
 
-function isNetworkError(error: unknown): boolean {
-  const message = error instanceof Error ? error.message : String(error ?? '');
-  return (
-    message.includes('Cannot reach API') ||
-    message.toLowerCase().includes('failed to fetch') ||
-    message.toLowerCase().includes('networkerror')
-  );
-}
-
-function isUnauthorizedError(error: unknown): boolean {
-  const message = error instanceof Error ? error.message : String(error ?? '');
-  return (
-    message.includes('Unauthorized') ||
-    message.includes('HTTP 401') ||
-    message.includes('"statusCode":401') ||
-    message.includes('statusCode":401')
-  );
-}
-
 /**
- * Auth gate + workspace bootstrap (US002).
- * Ensures an active workspace is available after login and on page refresh.
- * Mounts the Workspace Context only after that existing bootstrap boundary is ready.
+ * Auth gate + workspace context (US002 / PC-14).
+ * Restores the persisted active workspace when it is still owned and Active.
+ * Falls back to bootstrap when none is stored or the stored workspace is gone.
+ * Mounts the Workspace Context only after that boundary is ready.
  *
  * Network outages must NOT clear the JWT — only real auth failures do.
  */
@@ -51,8 +38,12 @@ export function RequireAuth() {
     setOfflineMessage(null);
 
     try {
-      const workspace = await api.bootstrapWorkspace();
-      setActiveWorkspace({ id: workspace.id, name: workspace.name });
+      const workspace = await resolveActiveWorkspace({
+        stored: getActiveWorkspace(),
+        getWorkspace: (id) => api.getWorkspace(id),
+        bootstrap: () => api.bootstrapWorkspace(),
+      });
+      setActiveWorkspace(workspace);
       setStatus('ready');
     } catch (error) {
       if (isUnauthorizedError(error)) {

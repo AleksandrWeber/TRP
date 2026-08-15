@@ -14,6 +14,7 @@ import type {
   TradingSessionBotView,
 } from '../shared/api';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { MemoryRouter } from 'react-router-dom';
 import { GlobalSystemStatusPanel } from './panels/GlobalSystemStatusPanel';
 import { ExchangeOverviewPanel } from './panels/ExchangeOverviewPanel';
 import { BotOverviewPanel } from './panels/BotOverviewPanel';
@@ -270,7 +271,9 @@ describe('Command Center read models (RC-20 Epic 2)', () => {
     expect(p5).not.toContain('Paper Bot B');
 
     const p7 = renderToStaticMarkup(
-      <SessionDetailInspectorPanel presentation="ready" session={bots[0]!} />,
+      <MemoryRouter>
+        <SessionDetailInspectorPanel presentation="ready" session={bots[0]!} />
+      </MemoryRouter>,
     );
     expect(p7).toContain('session-1');
     expect(p7).toContain('dep-1');

@@ -1,10 +1,11 @@
 import type { TradingSessionBotView } from '../shared/api';
 
-export type SessionLifecycleAction = 'pause' | 'resume' | 'stop';
+export type SessionLifecycleAction = 'start' | 'pause' | 'resume' | 'stop';
 
 export type ActionAvailability = 'available' | 'unavailable';
 
 export type SessionCommandApi = {
+  startTradingSession: (id: string) => Promise<TradingSessionBotView>;
   pauseTradingSession: (id: string) => Promise<TradingSessionBotView>;
   resumeTradingSession: (id: string) => Promise<TradingSessionBotView>;
   stopTradingSession: (id: string) => Promise<TradingSessionBotView>;
@@ -20,6 +21,7 @@ export function sessionActionAvailability(
   const leaseOk = hasUsableLease(session);
   const status = session.status.toLowerCase();
   return {
+    start: status === 'created' ? 'available' : 'unavailable',
     pause: leaseOk && status === 'running' ? 'available' : 'unavailable',
     resume: leaseOk && status === 'paused' ? 'available' : 'unavailable',
     stop: leaseOk && (status === 'running' || status === 'paused') ? 'available' : 'unavailable',
@@ -27,6 +29,14 @@ export function sessionActionAvailability(
 }
 
 export function dialogCopy(action: SessionLifecycleAction, sessionId: string) {
+  if (action === 'start') {
+    return {
+      title: 'Start session?',
+      message: `Start ${sessionId}. Trading Session will arm paper runtime if the bound Deployment is approved. This does not place orders.`,
+      confirmLabel: 'Start',
+      variant: 'default' as const,
+    };
+  }
   if (action === 'pause') {
     return {
       title: 'Pause session?',
@@ -60,6 +70,7 @@ export async function executeSessionLifecycleCommand(
   action: SessionLifecycleAction,
   sessionId: string,
 ): Promise<TradingSessionBotView> {
+  if (action === 'start') return api.startTradingSession(sessionId);
   if (action === 'pause') return api.pauseTradingSession(sessionId);
   if (action === 'resume') return api.resumeTradingSession(sessionId);
   return api.stopTradingSession(sessionId);

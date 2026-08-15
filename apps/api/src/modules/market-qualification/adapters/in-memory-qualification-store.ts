@@ -52,6 +52,17 @@ export class InMemoryQualificationStore {
     return null;
   }
 
+  listTargets(workspaceId: string): QualificationTarget[] {
+    return [...this.targets.values()]
+      .filter((target) => target.workspaceId === workspaceId)
+      .sort((left, right) => {
+        if (left.createdAt !== right.createdAt) {
+          return left.createdAt < right.createdAt ? -1 : 1;
+        }
+        return left.targetId < right.targetId ? -1 : left.targetId > right.targetId ? 1 : 0;
+      });
+  }
+
   putState(state: QualificationState): void {
     this.states.set(state.targetId, state);
   }

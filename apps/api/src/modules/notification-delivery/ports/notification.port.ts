@@ -55,6 +55,12 @@ export type SendTestNotificationRequest = Readonly<{
   requestedAt?: string;
 }>;
 
+export type ListDeliveriesQuery = Readonly<{
+  workspaceId: string;
+  userId?: string;
+  reportRunId?: string;
+}>;
+
 /**
  * Notification Service port — delivery routing + preferences + Telegram workflow.
  */
@@ -77,6 +83,11 @@ export interface NotificationServicePort {
   disconnectTelegram(cmd: TelegramDisconnectRequest): TelegramConnection;
   sendTestNotification(cmd: SendTestNotificationRequest): DeliveryResult;
   deliver(cmd: DeliverNotificationCommand): DeliveryResult;
+  /**
+   * Read-only list of already-recorded deliveries. Not a new SoT.
+   * Does not send, retry, or generate reports.
+   */
+  listDeliveries(query: ListDeliveriesQuery): readonly DeliveryResult[];
 }
 
 /** Channel send surface (Telegram active; reserved channels inactive). */

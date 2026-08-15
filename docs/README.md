@@ -9,6 +9,27 @@
 
 **Level-1 (engineering source of truth):** [`docs/CANONICAL.md`](./CANONICAL.md)
 
+## Where Version 2 is
+
+```text
+Architecture delivery          RC-19 … RC-28 CLOSED — certified paper-first platform (v2.0.0)
+        ↓
+Product Completion             PLANNING CLOSED — Wave C CLOSED (PC-10 Closed; next PC-17 / PC-16 after review)
+        ↓
+Version 2 Complete             when Product Completion success criteria are met
+        ↓
+Version 3                      NOT STARTED — out of scope until Version 2 product is complete
+```
+
+| Stage                 | Status                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Governing document                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Architecture delivery | **Complete.** History preserved. Do not reopen RCs.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | [`project/v2-implementation-roadmap.md`](./project/v2-implementation-roadmap.md) · Spec [`project/trp-architecture-specification-v2.md`](./project/trp-architecture-specification-v2.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Product Completion    | **Planning CLOSED. Waves A–C CLOSED. PC-18 Identity CLOSED. PC-19 Operator Shell CLOSED. PC-14 Workspace CLOSED. PC-01 Strategy Library CLOSED. PC-02 Certification CLOSED. PC-04 Runtime Validation CLOSED. PC-03 Deployment CLOSED. PC-11 Orchestrator CLOSED. PC-13 Command Center CLOSED. PC-15 Product Flow Integration CLOSED. PC-05 Reporting CLOSED. PC-06 Notification CLOSED. PC-07 Notification Channels CLOSED. PC-12 Exchange Scope CLOSED. PC-08 Qualification CLOSED. PC-09 Market Profile CLOSED. PC-10 Market State CLOSED.** | [`project/v2-product-completion-program.md`](./project/v2-product-completion-program.md) · tracker [`project/v2-product-completion-backlog.md`](./project/v2-product-completion-backlog.md) · journey [`project/product-completion-journey.md`](./project/product-completion-journey.md) · DoD [`project/product-completion-definition-of-done.md`](./project/product-completion-definition-of-done.md) · UI policy [`project/product-ui-policy.md`](./project/product-ui-policy.md) · freeze [`project/product-completion-readiness-report.md`](./project/product-completion-readiness-report.md) · Wave C [`project/wave-c-closure-report.md`](./project/wave-c-closure-report.md) · Audit v2 [`project/product-readiness-audit-v2.md`](./project/product-readiness-audit-v2.md) · PC-10 [`project/pc-10-implementation-report.md`](./project/pc-10-implementation-report.md) |
+| Version 2 Complete    | Not yet. Architecture is certified; product readiness **83%** (audit baseline 55%; [audit v2](./project/product-readiness-audit-v2.md)). Remaining packages: PC-16 Knowledge Lake, PC-17 AI Analytics, PC-20 UX Polish.                                                                                                                                                                                                                                                                                                                        | Roadmap success criteria                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Version 3             | **Not started.**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+
+Product Completion is not an architecture program. It does not change Spec v2.0, the Authority Matrix, or the Alias Dictionary.
+
 ## Release Status
 
 | Field                   | Value                                                      |
@@ -35,7 +56,9 @@
   - Glossary · Decision Log · C4: [`project/v2-architecture-glossary.md`](./project/v2-architecture-glossary.md), [`project/v2-architecture-decision-log.md`](./project/v2-architecture-decision-log.md), [`project/v2-c4-container-diagram.md`](./project/v2-c4-container-diagram.md)
   - Engineering Audit: [`project/engineering-audit-report-v2-freeze.md`](./project/engineering-audit-report-v2-freeze.md)
   - RC-18 Snapshot: [`project/rc-18-current-system-snapshot.md`](./project/rc-18-current-system-snapshot.md)
-  - V2 Roadmap (RC-19…28): [`project/v2-implementation-roadmap.md`](./project/v2-implementation-roadmap.md)
+  - V2 Roadmap (RC-19…28, **historical architecture**, CLOSED): [`project/v2-implementation-roadmap.md`](./project/v2-implementation-roadmap.md)
+  - Version 2 Product Completion (**planning CLOSED — PC-18, PC-19, PC-14, PC-01, PC-02, PC-04, PC-03, PC-11, PC-13, PC-15, PC-05, PC-06, PC-07 Closed**): [`project/v2-product-completion-program.md`](./project/v2-product-completion-program.md)
+  - Product Completion Readiness Report: [`project/product-completion-readiness-report.md`](./project/product-completion-readiness-report.md)
   - Final Readiness: [`project/v2-final-readiness-assessment.md`](./project/v2-final-readiness-assessment.md)
   - Architecture Spec v2.0 (**Approved**): [`project/trp-architecture-specification-v2.md`](./project/trp-architecture-specification-v2.md)
   - RC-19 Migration Plan: [`project/rc-19-migration-plan.md`](./project/rc-19-migration-plan.md)
@@ -220,7 +243,19 @@
   - RC-28 Validation Report (**PASS**): [`project/rc-28-validation-report.md`](./project/rc-28-validation-report.md)
   - Version 2 Certification (**READY = YES**): [`project/rc-28-version-2-certification.md`](./project/rc-28-version-2-certification.md)
   - RC-28 Closure Report (**CLOSED** `v2.0.0`): [`project/rc-28-closure-report.md`](./project/rc-28-closure-report.md)
-  - Architectural changes require a new ADR.
+  - Version 2 Product Completion Roadmap (**planning CLOSED** — not an RC): [`project/v2-product-completion-program.md`](./project/v2-product-completion-program.md)
+  - Version 2 Product Completion Backlog (execution tracker): [`project/v2-product-completion-backlog.md`](./project/v2-product-completion-backlog.md)
+  - Canonical Product Journey: [`project/product-completion-journey.md`](./project/product-completion-journey.md)
+  - Product Completion Definition of Done: [`project/product-completion-definition-of-done.md`](./project/product-completion-definition-of-done.md)
+  - Product UI Policy: [`project/product-ui-policy.md`](./project/product-ui-policy.md)
+  - Product Completion Readiness Report (planning freeze): [`project/product-completion-readiness-report.md`](./project/product-completion-readiness-report.md)
+  - PC-18 Identity Product (**CLOSED**): [`project/pc-18-implementation-report.md`](./project/pc-18-implementation-report.md)
+  - PC-19 Operator Shell Product (**CLOSED**): [`project/pc-19-implementation-report.md`](./project/pc-19-implementation-report.md)
+  - PC-14 Workspace Management (**CLOSED**): [`project/pc-14-implementation-report.md`](./project/pc-14-implementation-report.md)
+  - PC-01 Strategy Library Product (**CLOSED**): [`project/pc-01-implementation-report.md`](./project/pc-01-implementation-report.md)
+  - PC-02 Certification Product (**CLOSED** — review): [`project/pc-02-implementation-report.md`](./project/pc-02-implementation-report.md)
+  - PC-13 Command Center Product (**CLOSED** — review): [`project/pc-13-implementation-report.md`](./project/pc-13-implementation-report.md)
+  - Architectural changes require a new ADR. Version 3 is not started. No additional Product Completion planning documents.
 
 ---
 
@@ -282,27 +317,33 @@ Full list: [`00-architecture-principles.md`](./00-architecture-principles.md)
 
 ## Docs map
 
-| Path                                                                           | Role                                     |
-| ------------------------------------------------------------------------------ | ---------------------------------------- |
-| [`project/trp-product-vision.md`](./project/trp-product-vision.md)             | **Level-0** Product Vision               |
-| [`project/trp-ux-vision.md`](./project/trp-ux-vision.md)                       | **Level-0** UX Vision                    |
-| [`CANONICAL.md`](./CANONICAL.md)                                               | **Level-1** engineering source of truth  |
-| [`00-architecture-principles.md`](./00-architecture-principles.md)             | Immutable principles                     |
-| [`01-product-bible.md`](./01-product-bible.md)                                 | Product intent (slim; cites Level-0)     |
-| [`02-architecture.md`](./02-architecture.md)                                   | Architecture for Stage 0–1               |
-| [`03-development-roadmap.md`](./03-development-roadmap.md)                     | Stages + Sprint 0                        |
-| [`04-cursor-master-prompt.md`](./04-cursor-master-prompt.md)                   | AI engineering rules                     |
-| [`05-uiux-guidelines.md`](./05-uiux-guidelines.md)                             | UI/UX patterns (cites Level-0 UX Vision) |
-| [`Architecture/`](./Architecture/)                                             | Active subsystem specs                   |
-| [`adr/`](./adr/)                                                               | Accepted architecture decisions          |
-| [`project/rc-16-paper-trading-plan.md`](./project/rc-16-paper-trading-plan.md) | RC-16 scope and milestones               |
-| [`project/project-status.md`](./project/project-status.md)                     | Living project status                    |
-| [`project/roadmap.md`](./project/roadmap.md)                                   | Direction / future roadmap               |
-| [`releases/`](./releases/)                                                     | Certification & release history          |
-| [`releases/V1-COMPLETION.md`](./releases/V1-COMPLETION.md)                     | Version 1 completion report              |
-| [`Implementation/`](./Implementation/)                                         | Sprint guides                            |
-| [`future/`](./future/)                                                         | Deferred designs                         |
-| [`archive/`](./archive/)                                                       | Pre-cleanup drafts                       |
+| Path                                                                                                 | Role                                          |
+| ---------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| [`project/trp-product-vision.md`](./project/trp-product-vision.md)                                   | **Level-0** Product Vision                    |
+| [`project/trp-ux-vision.md`](./project/trp-ux-vision.md)                                             | **Level-0** UX Vision                         |
+| [`CANONICAL.md`](./CANONICAL.md)                                                                     | **Level-1** engineering source of truth       |
+| [`00-architecture-principles.md`](./00-architecture-principles.md)                                   | Immutable principles                          |
+| [`01-product-bible.md`](./01-product-bible.md)                                                       | Product intent (slim; cites Level-0)          |
+| [`02-architecture.md`](./02-architecture.md)                                                         | Architecture for Stage 0–1                    |
+| [`03-development-roadmap.md`](./03-development-roadmap.md)                                           | Stages + Sprint 0                             |
+| [`04-cursor-master-prompt.md`](./04-cursor-master-prompt.md)                                         | AI engineering rules                          |
+| [`05-uiux-guidelines.md`](./05-uiux-guidelines.md)                                                   | UI/UX patterns (cites Level-0 UX Vision)      |
+| [`Architecture/`](./Architecture/)                                                                   | Active subsystem specs                        |
+| [`adr/`](./adr/)                                                                                     | Accepted architecture decisions               |
+| [`project/rc-16-paper-trading-plan.md`](./project/rc-16-paper-trading-plan.md)                       | RC-16 scope and milestones                    |
+| [`project/project-status.md`](./project/project-status.md)                                           | Living project status                         |
+| [`project/roadmap.md`](./project/roadmap.md)                                                         | Direction / future roadmap                    |
+| [`project/product-completion-readiness-report.md`](./project/product-completion-readiness-report.md) | Product Completion planning freeze            |
+| [`project/pc-18-implementation-report.md`](./project/pc-18-implementation-report.md)                 | PC-18 Identity Product (Closed)               |
+| [`project/pc-19-implementation-report.md`](./project/pc-19-implementation-report.md)                 | PC-19 Operator Shell Product (Closed)         |
+| [`project/pc-14-implementation-report.md`](./project/pc-14-implementation-report.md)                 | PC-14 Workspace Management (Closed)           |
+| [`project/pc-01-implementation-report.md`](./project/pc-01-implementation-report.md)                 | PC-01 Strategy Library Product (Closed)       |
+| [`project/pc-02-implementation-report.md`](./project/pc-02-implementation-report.md)                 | PC-02 Certification Product (Closed — review) |
+| [`releases/`](./releases/)                                                                           | Certification & release history               |
+| [`releases/V1-COMPLETION.md`](./releases/V1-COMPLETION.md)                                           | Version 1 completion report                   |
+| [`Implementation/`](./Implementation/)                                                               | Sprint guides                                 |
+| [`future/`](./future/)                                                                               | Deferred designs                              |
+| [`archive/`](./archive/)                                                                             | Pre-cleanup drafts                            |
 
 ---
 
@@ -320,13 +361,13 @@ Evidence: [`releases/RC-1-CERTIFICATION.md`](./releases/RC-1-CERTIFICATION.md),
 
 ## Next
 
-1. Maintain Version 1 on `main` (bugfixes / docs only unless a new ADR is accepted).
-2. Plan Version 2 against [`project/roadmap.md`](./project/roadmap.md) and [`future/`](./future/).
-3. Keep ADR-012…ADR-018 freeze until a new ADR supersedes it.
+1. Review Wave C closeout and Product Readiness Audit v2, then execute **PC-17 AI Analytics Product** / **PC-16 Knowledge Lake Product**. Do not begin them until review ([wave closure](./project/wave-c-closure-report.md), [audit v2](./project/product-readiness-audit-v2.md)).
+2. Maintain Version 1 on `main` (bugfixes / docs only unless a new ADR is accepted).
+3. Keep ADR-012…ADR-018 freeze until a new ADR supersedes it. Do not reopen RC-19…RC-28.
 
 ---
 
 ## Status
 
-Phase: Version 1 complete · Production Ready (`v1.0.0`)  
-Version: 1.0.0
+Phase: Version 1 complete · Version 2 architecture certified (`v2.0.0`) · Product Completion planning **CLOSED** · Waves A–C **CLOSED** · PC-10 Market State **CLOSED** · Product readiness **83%** (Wave C review before PC-17 / PC-16)  
+Version: 1.0.0 (stable) · 2.0.0 (certified paper-first architecture)

@@ -1,4 +1,5 @@
 import { renderToStaticMarkup } from 'react-dom/server';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import type { TradingSessionBotView } from '../shared/api';
 import { FleetNavigationBar } from './components/FleetNavigationBar';
@@ -139,7 +140,9 @@ describe('Command Center operational navigation (RC-20 Epic 4)', () => {
   it('updates inspector from focused selection', () => {
     const focused = bots[1]!;
     const html = renderToStaticMarkup(
-      <SessionDetailInspectorPanel presentation="ready" session={focused} />,
+      <MemoryRouter>
+        <SessionDetailInspectorPanel presentation="ready" session={focused} />
+      </MemoryRouter>,
     );
     expect(html).toContain('bot-beta');
     expect(html).toContain('paused');

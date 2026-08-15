@@ -9,6 +9,7 @@ import { UserStatus } from '../identity/user-status';
 import { NoOpLogger } from '../../logging/noop.logger';
 import { AuthenticationService } from './authentication.service';
 import type { JwtPayload } from './jwt.strategy';
+import { InMemoryPasswordCredentialRepository } from './in-memory-password-credential.repository';
 import { PasswordCredentialStore } from './password-credential.store';
 
 const TEST_PASSWORD = 'password-123';
@@ -21,7 +22,7 @@ describe('AuthenticationService (US106, US107)', () => {
 
   beforeEach(() => {
     users = new UserDomainService(new InMemoryUserRepository());
-    credentials = new PasswordCredentialStore();
+    credentials = new PasswordCredentialStore(new InMemoryPasswordCredentialRepository());
     jwt = new JwtService({
       secret: 'test-secret',
       signOptions: { expiresIn: '1h' },
@@ -95,7 +96,7 @@ describe('AuthenticationService (US106, US107)', () => {
     );
 
     const created = await authentication.register('c@example.com', 'C', TEST_PASSWORD);
-    users.disable(created.user.id);
+    await users.disable(created.user.id);
 
     await expect(authentication.login('c@example.com', TEST_PASSWORD)).rejects.toBeInstanceOf(
       UnauthorizedException,
@@ -121,7 +122,7 @@ describe('AuthenticationService (US106, US107)', () => {
     );
 
     const issued = await authentication.register('e@example.com', 'E', TEST_PASSWORD);
-    users.disable(issued.user.id);
+    await users.disable(issued.user.id);
 
     await expect(authentication.validateToken(issued.accessToken)).rejects.toBeInstanceOf(
       UnauthorizedException,
@@ -141,7 +142,7 @@ describe('AuthenticationService (US106, US107)', () => {
   });
 
   it('issued JWT role follows Identity role changes', async () => {
-    const admin = users.create({
+    const admin = await users.create({
       email: 'admin@example.com',
       displayName: 'Admin',
       role: Role.Admin,

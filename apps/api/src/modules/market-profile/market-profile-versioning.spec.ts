@@ -93,6 +93,7 @@ function createFakeQualQuery(
     getQualificationState: () => null,
     getMarketConfidence: () => null,
     getMarketHealth: () => null,
+    listQualificationTargets: () => Object.freeze([]),
     listQualificationRuns: () => Object.freeze([]),
     getQualificationRun: (query) => {
       if (query.workspaceId !== TARGET.workspaceId) return null;
@@ -186,6 +187,10 @@ describe('RC-25 Epic 5 — Market Profile versioning', () => {
     expect(history).toHaveLength(2);
     expect(history.map((h) => h.version)).toEqual([1, 2]);
     expect(history.every((h) => h.forcesTrade === false)).toBe(true);
+
+    const workspace = query.listWorkspaceProfiles({ workspaceId: TARGET.workspaceId });
+    expect(workspace).toHaveLength(2);
+    expect(query.listWorkspaceProfiles({ workspaceId: 'other-ws' })).toEqual([]);
 
     // Prior version remains unchanged after later publish.
     expect(store.getByVersion(v1!.targetId, 1)).toEqual(first.marketProfile);

@@ -29,7 +29,11 @@ function createMemoryStorage(): Storage {
 }
 
 function renderPage() {
-  return renderToStaticMarkup(<CommandCenterPage />);
+  return renderToStaticMarkup(
+    <MemoryRouter>
+      <CommandCenterPage />
+    </MemoryRouter>,
+  );
 }
 
 describe('Command Center foundation (RC-20 Epic 1)', () => {
@@ -57,7 +61,7 @@ describe('Command Center foundation (RC-20 Epic 1)', () => {
     expect(html).toContain(`href="${COMMAND_CENTER_PATH}"`);
     expect(html).toContain('Command Center');
     expect(html).toContain('href="/trading/paper"');
-    expect(html).toContain('href="/trading/live"');
+    expect(html).not.toContain('href="/trading/live"');
     expect(html).toContain('href="/dashboard"');
   });
 
@@ -75,13 +79,15 @@ describe('Command Center foundation (RC-20 Epic 1)', () => {
     expect(html).toContain('data-testid="cc-operations-area"');
     expect(html).toContain('data-testid="cc-inspector-area"');
     expect(html).toContain('data-testid="cc-footer"');
-    expect(html).toContain('data-testid="cc-manual-refresh"');
+    expect(html).toContain('data-testid="cc-create-bot"');
+    expect(html).toContain('Create paper bot');
     expect(html).toContain('non-authoritative projections');
   });
 
-  it('renders all required panels P1–P7', () => {
+  it('renders product panels P1–P5 and P7 without Emergency Controls', () => {
     const html = renderPage();
-    for (const panelId of COMMAND_CENTER_PANELS) {
+    const productPanels = COMMAND_CENTER_PANELS.filter((panelId) => panelId !== 'P6');
+    for (const panelId of productPanels) {
       expect(html).toContain(`data-testid="cc-panel-${panelId.toLowerCase()}"`);
       expect(html).toContain(`data-panel-id="${panelId}"`);
     }
@@ -91,20 +97,19 @@ describe('Command Center foundation (RC-20 Epic 1)', () => {
     expect(html).toContain('Bot Overview');
     expect(html).toContain('Active Sessions');
     expect(html).toContain('Running Paper Trading');
-    expect(html).toContain('Emergency Controls');
     expect(html).toContain('Session / Bot Detail');
+    expect(html).not.toContain('Emergency Controls');
+    expect(html).not.toContain('data-testid="cc-panel-p6"');
   });
 
-  it('shows loading / empty foundation states without executable emergency mutations on first paint', () => {
+  it('shows loading / empty foundation states without a disabled emergency danger zone', () => {
     const html = renderPage();
     expect(html).toContain('data-testid="panel-skeleton"');
     expect(html).toContain('data-testid="panel-empty-state"');
     expect(html).toContain('Select a bot/session');
-    expect(html).toContain('Emergency Controls');
-    expect(html).toContain('data-availability="unavailable"');
+    expect(html).not.toContain('Emergency Controls');
+    expect(html).not.toContain('data-availability="unavailable"');
     expect(html).not.toContain('Kill Switch armed');
-    expect(html).not.toContain('>Pause<');
-    expect(html).not.toContain('>Resume<');
   });
 
   it('supports loading skeletons and empty states on panels', () => {

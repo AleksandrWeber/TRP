@@ -1,16 +1,14 @@
 /**
- * Canonical development identity (US002A).
- * Matches the browser login default — not a Prisma-backed user.
+ * PC-18: development identity is not a product path.
+ * Engineer seed (`prisma db seed`) may still create an operator account.
+ * Runtime modules must not auto-provision shared admin credentials.
  */
 export const DEVELOPMENT_IDENTITY_EMAIL = 'admin@trp.local';
 export const DEVELOPMENT_IDENTITY_DISPLAY_NAME = 'Admin';
 
 /**
- * Development-only gate for identity bootstrap.
- * Skips production, test, and Vitest runs.
+ * Always false. PC-18 removed automatic development identity bootstrap.
  */
-export function shouldBootstrapDevelopmentIdentity(env: NodeJS.ProcessEnv = process.env): boolean {
-  if (env.VITEST) return false;
-  const nodeEnv = (env.NODE_ENV ?? 'development').trim();
-  return nodeEnv === 'development';
+export function shouldBootstrapDevelopmentIdentity(_env: NodeJS.ProcessEnv = process.env): boolean {
+  return false;
 }

@@ -50,6 +50,19 @@ export class InMemoryStrategyLibraryReadAdapter
   private readonly entryIdByFamilyVersion = new Map<string, string>();
 
   /**
+   * PC-02 — Library SoT admit used only by StrategyLibraryCertificationPort.
+   * Not a second store. Not Registration / Lifecycle.
+   */
+  admitCertifiedVersion(input: {
+    strategy: Strategy;
+    version: StrategyVersion;
+    certification?: StrategyCertification | null;
+    eligibility?: StrategyEligibility | null;
+  }): StrategyVersionRecord {
+    return this.seedEntry(input);
+  }
+
+  /**
    * Seed / replace a Library entry for tests and epic wiring.
    * Not a RegistrationPort — consumers must not treat this as production write API.
    * Freezes the assembled record views; stored refs remain domain-immutable objects.

@@ -32,6 +32,8 @@ export type CreateStrategyDeploymentCommand = Readonly<{
   workspaceId: string;
   strategyId: string;
   strategyVersion: string;
+  /** Optional Library identity for Gate consumption. Not a second SoT. */
+  libraryEntryId?: string;
   experimentId?: string | null;
   parameters: StrategyDeploymentParameters;
   instrument: string;
@@ -105,6 +107,7 @@ export class StrategyDeploymentService {
       workspaceId: command.workspaceId,
       strategyFamilyId: command.strategyId,
       strategyVersion: command.strategyVersion,
+      libraryEntryId: command.libraryEntryId,
       instrument: command.instrument,
       timeframe: command.timeframe,
       requestedAt: command.recordedAt,
@@ -172,6 +175,7 @@ export class StrategyDeploymentService {
       workspaceId: existing.workspaceId,
       strategyFamilyId: existing.strategyId,
       strategyVersion: existing.strategyVersion,
+      libraryEntryId: existing.enforcementAuthorization?.libraryEntryId ?? undefined,
       instrument: existing.instrument,
       timeframe: existing.timeframe,
       requestedAt: command.recordedAt,
@@ -206,25 +210,34 @@ export class StrategyDeploymentService {
    * Fail-closed Gate call. Does not duplicate Library validation.
    * On INVALID: throws before any persistence / Outbox mutation.
    * On VALID: returns Deployment authorization stamp for Session start protection.
+   *
+   * When libraryEntryId is present, the Gate resolves Library identity itself.
+   * Deployment does not import Strategy Library.
    */
   private requireRuntimeEnforcementPass(input: {
     workspaceId: string;
     strategyFamilyId: string;
     strategyVersion: string;
+    libraryEntryId?: string;
     instrument: string;
     timeframe: string;
     requestedAt: string;
   }): DeploymentEnforcementAuthorization {
+    const libraryEntryId = input.libraryEntryId?.trim() || undefined;
     const decision = this.enforcement.validateDeployment({
       workspaceId: input.workspaceId,
-      strategyFamilyId: input.strategyFamilyId,
-      strategyVersion: input.strategyVersion,
       purpose: 'deployment_bind',
       tacticPoint: {
         symbol: input.instrument,
         timeframe: input.timeframe,
       },
       requestedAt: input.requestedAt,
+      ...(libraryEntryId
+        ? { libraryEntryId }
+        : {
+            strategyFamilyId: input.strategyFamilyId,
+            strategyVersion: input.strategyVersion,
+          }),
     });
 
     if (decision.outcome === 'fail' || decision.validation === 'INVALID') {

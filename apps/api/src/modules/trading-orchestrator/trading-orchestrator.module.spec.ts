@@ -19,7 +19,7 @@ import { TradingOrchestratorBoundaryService } from './trading-orchestrator-bound
 import { TradingOrchestratorModule } from './trading-orchestrator.module';
 
 describe('RC-26 Epic 6 — Trading Orchestrator Nest wiring', () => {
-  it('wires Service/Query + consumer-read; keeps REST/persistence inactive', async () => {
+  it('wires Service/Query + consumer-read; REST is the product transport; persistence stays off', async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [TradingOrchestratorModule],
     }).compile();
@@ -31,7 +31,7 @@ describe('RC-26 Epic 6 — Trading Orchestrator Nest wiring', () => {
     expect(boundary.getBoundary().activePorts.tradingOrchestratorQuery).toBe(true);
     expect(boundary.getBoundary().activePorts.consumerRead).toBe(true);
     expect(boundary.getBoundary().activePorts.persistence).toBe(false);
-    expect(boundary.getBoundary().activePorts.rest).toBe(false);
+    expect(boundary.getBoundary().activePorts.rest).toBe(true);
     expect(boundary.approvesRisk()).toBe(false);
     expect(boundary.submitsOrders()).toBe(false);
     expect(boundary.isExecutionEngine()).toBe(false);

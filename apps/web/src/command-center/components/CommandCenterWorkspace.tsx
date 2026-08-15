@@ -10,7 +10,6 @@ import {
 import { ConfirmationDialog } from '../../shared/ConfirmationDialog';
 import { ActiveSessionsPanel } from '../panels/ActiveSessionsPanel';
 import { BotOverviewPanel } from '../panels/BotOverviewPanel';
-import { EmergencyControlsPanel } from '../panels/EmergencyControlsPanel';
 import { ExchangeOverviewPanel } from '../panels/ExchangeOverviewPanel';
 import { GlobalSystemStatusPanel } from '../panels/GlobalSystemStatusPanel';
 import { RunningPaperTradingPanel } from '../panels/RunningPaperTradingPanel';
@@ -42,6 +41,10 @@ import {
   projectionFailureLabels,
   sessionUnavailableWarningNotification,
 } from '../notifications';
+import {
+  loadOrchestrationReference,
+  type OrchestrationReferenceView,
+} from '../orchestration-reference';
 import {
   dialogCopy,
   executeSessionLifecycleCommand,
@@ -85,6 +88,8 @@ export function CommandCenterWorkspace() {
   const [lastRefreshedAt, setLastRefreshedAt] = useState<string | null>(null);
   const [pending, setPending] = useState<PendingCommand | null>(null);
   const [commandBusy, setCommandBusy] = useState(false);
+  const [inspectorSession, setInspectorSession] = useState<TradingSessionBotView | null>(null);
+  const [orchestration, setOrchestration] = useState<OrchestrationReferenceView | null>(null);
   const { notifications, push, dismiss } = useOperatorNotifications();
 
   const refresh = useCallback(
@@ -144,6 +149,38 @@ export function CommandCenterWorkspace() {
     void refresh({ notify: false });
   }, [refresh]);
 
+  useEffect(() => {
+    if (!focusedId) {
+      setInspectorSession(null);
+      setOrchestration(null);
+      return;
+    }
+    let cancelled = false;
+    void api
+      .getTradingSession(focusedId)
+      .then(async (detail) => {
+        if (cancelled) return;
+        setInspectorSession(detail);
+        const deploymentId =
+          detail.deploymentReference?.deploymentId ?? detail.mission.deploymentId;
+        const reference = await loadOrchestrationReference(
+          deploymentId,
+          api.listOrchestrationRuns,
+          api.getOrchestrationRun,
+        ).catch(() => null);
+        if (!cancelled) setOrchestration(reference);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setInspectorSession(null);
+          setOrchestration(null);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [focusedId, lastRefreshedAt]);
+
   const requestAction = useCallback((action: SessionLifecycleAction, sessionId: string) => {
     setPending({ action, sessionId });
   }, []);
@@ -155,6 +192,7 @@ export function CommandCenterWorkspace() {
     try {
       await executeSessionLifecycleCommand(
         {
+          startTradingSession: api.startTradingSession,
           pauseTradingSession: api.pauseTradingSession,
           resumeTradingSession: api.resumeTradingSession,
           stopTradingSession: api.stopTradingSession,
@@ -178,7 +216,10 @@ export function CommandCenterWorkspace() {
     [visibleBots],
   );
   const runningPaper = paperSessions.filter((session) => isRunningPaperSession(session.status));
-  const selected = bots.find((bot) => bot.id === focusedId) ?? null;
+  const selected =
+    inspectorSession && inspectorSession.id === focusedId
+      ? inspectorSession
+      : (bots.find((bot) => bot.id === focusedId) ?? null);
   const botEmptyReason = resolveFleetEmptyReason(bots.length, visibleBots.length);
   const sessionEmptyReason = resolveFleetEmptyReason(
     bots.filter((bot) => isActiveSession(bot.status)).length,
@@ -242,20 +283,18 @@ export function CommandCenterWorkspace() {
       </div>
 
       <div className="space-y-4" data-testid="cc-operations-area" aria-label="Operations Area">
-        <div className="grid gap-4 lg:grid-cols-2">
-          <ExchangeOverviewPanel
-            presentation={panelPresentation({
-              loading: loadState === 'loading' && !exchangeScope,
-              error: errors.exchangeScope ?? errors.exchangeStatus,
-              empty: false,
-              ready: Boolean(exchangeScope),
-            })}
-            errorMessage={errors.exchangeScope ?? errors.exchangeStatus}
-            exchangeScope={exchangeScope}
-            exchangeStatus={exchangeStatus}
-          />
-          <EmergencyControlsPanel presentation="ready" />
-        </div>
+        {/* P6 Emergency Controls stay hidden: durable Kill Switch is not a paper product port. */}
+        <ExchangeOverviewPanel
+          presentation={panelPresentation({
+            loading: loadState === 'loading' && !exchangeScope,
+            error: errors.exchangeScope ?? errors.exchangeStatus,
+            empty: false,
+            ready: Boolean(exchangeScope),
+          })}
+          errorMessage={errors.exchangeScope ?? errors.exchangeStatus}
+          exchangeScope={exchangeScope}
+          exchangeStatus={exchangeStatus}
+        />
 
         <FleetNavigationBar
           navigation={navigation}
@@ -316,6 +355,7 @@ export function CommandCenterWorkspace() {
           <SessionDetailInspectorPanel
             presentation={selected ? 'ready' : 'empty'}
             session={selected}
+            orchestration={orchestration}
             onClearSelection={clearSelection}
             onRequestAction={requestAction}
             commandsDisabled={commandBusy}

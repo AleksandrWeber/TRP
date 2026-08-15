@@ -9,5 +9,6 @@ describe('Command Center route registration', () => {
     expect(COMMAND_CENTER_PATH).toBe('/command-center');
     expect(appSource).toContain('CommandCenterPage');
     expect(appSource).toContain('path="command-center"');
+    expect(appSource).not.toContain('LiveTradingPage');
   });
 });

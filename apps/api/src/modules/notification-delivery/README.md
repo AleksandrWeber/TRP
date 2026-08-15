@@ -22,4 +22,6 @@ Delivery only. Never Source of Truth. Never a Telegram control plane.
 
 ## Forbidden
 
-Trading commands, pause/resume/stop, runtime control, strategy/session management, report generation, Strategy Library coupling, REST product, durable persistence product.
+Trading commands, pause/resume/stop, runtime control, strategy/session management, report generation, Strategy Library coupling, REST on this module, durable persistence product.
+
+HTTP product transport lives in sibling `notification-product` (PC-06). Telegram connection HTTP lives in sibling `telegram-product` (PC-07). Domain `rest: false` is unchanged.

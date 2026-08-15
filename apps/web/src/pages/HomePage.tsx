@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import {
   api,
   statusColor,
-  type Deployment,
   type Experiment,
   type KnowledgeEntry,
+  type RuntimeHealthView,
   type Workflow,
 } from '../shared/api';
 import { useWorkspace } from '../app/WorkspaceContext';
@@ -15,7 +15,8 @@ export function HomePage() {
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [experiments, setExperiments] = useState<Experiment[]>([]);
   const [knowledge, setKnowledge] = useState<KnowledgeEntry[]>([]);
-  const [deployments, setDeployments] = useState<Deployment[]>([]);
+  const [paperSessions, setPaperSessions] = useState(0);
+  const [runtimeStatus, setRuntimeStatus] = useState<string>('—');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -26,15 +27,25 @@ export function HomePage() {
       api.listWorkflows(),
       api.listExperiments(),
       api.listKnowledge(),
-      api.listDeployments(),
+      api.listTradingSessions(),
+      api.getRuntimeHealth(),
     ])
-      .then(([w, e, k, d]) => {
-        if (cancelled) return;
-        setWorkflows(w);
-        setExperiments(e);
-        setKnowledge(k);
-        setDeployments(d);
-      })
+      .then(
+        ([w, e, k, sessions, health]: [
+          Workflow[],
+          Experiment[],
+          KnowledgeEntry[],
+          { id: string }[],
+          RuntimeHealthView,
+        ]) => {
+          if (cancelled) return;
+          setWorkflows(w);
+          setExperiments(e);
+          setKnowledge(k);
+          setPaperSessions(sessions.length);
+          setRuntimeStatus(health.status);
+        },
+      )
       .catch((err: Error) => {
         if (!cancelled) setError(err.message);
       });
@@ -47,12 +58,11 @@ export function HomePage() {
   return (
     <section className="space-y-8">
       <div>
-        <h2 className="text-2xl font-semibold">Dashboard</h2>
+        <h2 className="text-2xl font-semibold">Overview</h2>
         <p className="mt-2 text-slate-400">
-          Implementation 017 — operational overview of workflows, research, knowledge, and
-          production.{' '}
+          Research operating overview.{' '}
           <Link to="/dashboard" className="text-sky-400 hover:text-sky-300">
-            Open Research Control Center
+            Open research dashboard
           </Link>
         </p>
       </div>
@@ -63,11 +73,26 @@ export function HomePage() {
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
         <Stat label="Workflows" value={String(workflows.length)} to="/workflows" />
         <Stat label="Experiments" value={String(experiments.length)} to="/research" />
         <Stat label="Knowledge" value={String(knowledge.length)} to="/knowledge" />
-        <Stat label="Deployments" value={String(deployments.length)} to="/production" />
+        <Stat label="Paper sessions" value={String(paperSessions)} to="/command-center" />
+        <Stat label="Runtime" value={runtimeStatus} to="/command-center" />
+        <Stat label="Strategy Library" value="Browse" to="/strategy-library" />
+        <Stat label="Certify" value="Admit" to="/strategy-library/certify" />
+        <Stat label="Runtime Validation" value="Gate" to="/runtime-validation" />
+        <Stat label="Deployment" value="Bind" to="/deployments" />
+        <Stat label="Orchestrator" value="Coordinate" to="/orchestrator" />
+        <Stat label="Qualification" value="Research" to="/qualification" />
+        <Stat label="Profile" value="Versions" to="/market-profile" />
+        <Stat label="Market State" value="Current" to="/market-state" />
+        <Stat label="Reporting" value="Projections" to="/reporting" />
+        <Stat label="Notifications" value="Delivery" to="/notifications" />
+        <Stat label="Channels" value="Delivery" to="/notifications/channels" />
+        <Stat label="Cluster" value="Isolation" to="/clusters" />
+        <Stat label="Command Center" value="Operate" to="/command-center" />
+        <Stat label="Paper Bots" value="Sandbox" to="/trading/paper" />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">

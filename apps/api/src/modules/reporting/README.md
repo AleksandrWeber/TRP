@@ -29,7 +29,7 @@ Reporting **never** becomes Source of Truth.
 - `ReportingQueryService` / `REPORTING_QUERY_PORT` — definitions / runs / aggregations
 - Deterministic aggregation over Lake projections only
 
-Still inactive in Reporting: REST, UI, persistence product, jobs, PDF. Delivery is owned by Notification Delivery (Reporting does not know channels).
+Still inactive in the Reporting bounded context: persistence product, jobs, PDF. Domain port posture remains `rest: false`. PC-05 HTTP lives in the sibling `reporting-product` adapter (`GET /v1/report-runs`, `GET /v1/report-definitions`) and delegates existing queries only. Distinct from research `/v1/reports`. Delivery is owned by Notification Delivery (Reporting does not know channels). UI is `/reporting`, not `/reports`.
 
 ## Owns (declared)
 

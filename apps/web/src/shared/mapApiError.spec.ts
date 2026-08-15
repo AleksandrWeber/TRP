@@ -30,6 +30,13 @@ describe('mapHttpError', () => {
     expect(mapHttpError(404, raw)).not.toContain('{');
   });
 
+  it('maps workspace 404 without exposing JSON', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(mapHttpError(404, JSON.stringify({ message: 'Workspace not found' }))).toBe(
+      'Workspace not found.',
+    );
+  });
+
   it('maps generic 404', () => {
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
     expect(mapHttpError(404, JSON.stringify({ message: 'Dataset missing' }))).toBe(
@@ -42,6 +49,44 @@ describe('mapHttpError', () => {
     expect(mapHttpError(404, JSON.stringify({ message: 'Resource already archived' }))).toBe(
       'Already archived.',
     );
+  });
+
+  it('maps 409 duplicate account without exposing JSON', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(
+      mapHttpError(409, JSON.stringify({ message: 'User with email already exists: a@b.com' })),
+    ).toBe('An account with this email already exists.');
+  });
+
+  it('maps deployment idempotency 409 without exposing JSON', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(
+      mapHttpError(
+        409,
+        JSON.stringify({
+          message: 'idempotency key reused with a different strategy deployment command',
+        }),
+      ),
+    ).toBe('This deployment request was already submitted with different details.');
+  });
+
+  it('maps Gate FAIL 422 without override copy', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(
+      mapHttpError(
+        422,
+        JSON.stringify({
+          message: 'runtime enforcement rejected deployment: certification_missing',
+        }),
+      ),
+    ).toBe('Runtime Validation failed. The Gate did not PASS. There is no override.');
+  });
+
+  it('maps orchestration rejection 422 without implying Session start', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(
+      mapHttpError(422, JSON.stringify({ message: 'strategy_ineligible, eligibility:symbol' })),
+    ).toBe('Orchestration was rejected. Session was not started.');
   });
 
   it('maps 500 without exposing JSON', () => {

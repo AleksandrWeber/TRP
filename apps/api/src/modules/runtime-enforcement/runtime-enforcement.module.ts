@@ -23,7 +23,7 @@ import { RuntimeEnforcementLibraryReadService } from './runtime-enforcement-libr
  * Epic 5: Trading Session start refusal.
  * Epic 6: Fail-closed coverage + close readiness.
  *
- * Does not expose persistence or REST.
+ * Persistence remains process-local. REST lives in RuntimeValidationProductModule (PC-04).
  * Distinct from Strategy Library (SoT) and Strategy Runtime (evaluation loop).
  *
  * Dependency direction: Enforcement consumes Library reads;

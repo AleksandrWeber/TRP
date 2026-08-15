@@ -16,7 +16,7 @@ describe('RC-23 Epic 3 — Runtime Enforcement ports posture', () => {
       libraryLookup: true,
       libraryEligibility: true,
       persistence: false,
-      rest: false,
+      rest: true,
     });
   });
 });

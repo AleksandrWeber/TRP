@@ -19,7 +19,8 @@ Single validation boundary between Strategy Library (SoT) and Trading Session / 
 | `RuntimeEnforcementPort.validateDeployment`    | **Yes**                                     |
 | Strategy Deployment create/approve consumption | **Yes** (Epic 4)                            |
 | Trading Session start refusal                  | **Yes** (Epic 5 — authorization check only) |
-| Persistence / REST / queues                    | No                                          |
+| Persistence / queues                           | No                                          |
+| REST product transport (PC-04)                 | **Yes** — `/v1/runtime-validations`         |
 
 ## Validation result
 

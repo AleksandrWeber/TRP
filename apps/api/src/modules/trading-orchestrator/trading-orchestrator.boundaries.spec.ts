@@ -119,7 +119,7 @@ describe('RC-26 Epic 5 — Trading Orchestrator dependency direction', () => {
     expect(moduleImportsOrchestrator(EXECUTION_ENGINE_ROOT)).toBe(false);
   });
 
-  it('module composition wires Service/Query + Library/Gate; no Session/Orders/Risk/REST', () => {
+  it('module composition wires Service/Query + Library/Gate; no Session/Orders/Risk on the owner module', () => {
     const moduleSource = readFileSync(
       join(ORCHESTRATOR_ROOT, 'trading-orchestrator.module.ts'),
       'utf8',

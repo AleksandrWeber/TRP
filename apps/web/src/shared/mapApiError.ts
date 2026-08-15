@@ -42,6 +42,43 @@ export function mapHttpError(status: number, bodyText: string): string {
   if (status === 400) return 'Please check your input.';
   if (status === 401) return 'Unauthorized';
   if (status === 403) return 'You do not have permission to perform this action.';
+  if (status === 409) {
+    if (lower.includes('idempotency')) {
+      return 'This deployment request was already submitted with different details.';
+    }
+    if (lower.includes('already approved') || lower.includes('immutable')) {
+      return 'This deployment is already approved and cannot be changed.';
+    }
+    if (lower.includes('active_venue_exists')) {
+      return 'An active Cluster already exists for this exchange.';
+    }
+    if (lower.includes('scope_id_exists')) {
+      return 'A Cluster with this identity already exists.';
+    }
+    if (lower.includes('scope_archived')) {
+      return 'This Cluster is archived and cannot be changed.';
+    }
+    if (lower.includes('binding_id_exists')) {
+      return 'That account binding already exists.';
+    }
+    return 'An account with this email already exists.';
+  }
+
+  if (status === 422) {
+    if (lower.includes('runtime enforcement') || lower.includes('validation')) {
+      return 'Runtime Validation failed. The Gate did not PASS. There is no override.';
+    }
+    if (
+      lower.includes('orchestration') ||
+      lower.includes('ineligible') ||
+      lower.includes('missing_market_state') ||
+      lower.includes('handoff')
+    ) {
+      return 'Orchestration was rejected. Session was not started.';
+    }
+    if (backend && !looksLikeJson(backend)) return backend;
+    return 'This request could not be processed.';
+  }
 
   if (status === 404) {
     if (
@@ -52,6 +89,12 @@ export function mapHttpError(status: number, bodyText: string): string {
     }
     if (lower.includes('experiment') && lower.includes('not found')) {
       return 'Experiment not found.';
+    }
+    if (lower.includes('workspace') && lower.includes('not found')) {
+      return 'Workspace not found.';
+    }
+    if (lower.includes('exchange scope') || lower.includes('cluster')) {
+      return 'Cluster not found.';
     }
     return 'Requested resource was not found.';
   }

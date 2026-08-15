@@ -5,7 +5,7 @@ import { StrategyLibraryBoundaryService } from './strategy-library-boundary.serv
 import { StrategyLibraryModule } from './strategy-library.module';
 
 describe('RC-22 StrategyLibraryModule', () => {
-  it('registers boundary with Lookup/Eligibility reads active and write ports inactive', async () => {
+  it('registers boundary with Lookup/Eligibility reads and Certification write active', async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [StrategyLibraryModule],
     }).compile();
@@ -17,7 +17,7 @@ describe('RC-22 StrategyLibraryModule', () => {
     expect(boundary.knowledgeLakeOwnsMembership()).toBe(false);
     expect(boundary.getBoundary().activePorts).toEqual({
       registration: false,
-      certification: false,
+      certification: true,
       certificationDomain: true,
       tacticalEnvelopeDomain: true,
       eligibilityDomain: true,

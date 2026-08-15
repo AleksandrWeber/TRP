@@ -9,8 +9,8 @@ import { UserDomainService } from '../identity/user-domain.service';
 import { AuthenticationService } from './authentication.service';
 
 /**
- * Assigns a development password to the canonical identity after bootstrap (RC-1 security).
- * Password defaults match prisma seed (`SEED_USER_PASSWORD` / trp-admin-change-me).
+ * Historical development password bootstrap. PC-18 unwired this from AuthModule.
+ * Shared admin passwords are not assigned at runtime.
  */
 @Injectable()
 export class AuthDevelopmentBootstrap implements OnModuleInit {

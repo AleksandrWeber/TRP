@@ -33,15 +33,33 @@ export function isWithinQuietHours(
   return now >= start || now < end;
 }
 
-export function extractLocalTimeHHmm(isoTimestamp: string): string {
-  // Prefer explicit HH:mm if callers pass local wall-clock for tests;
-  // otherwise use UTC hours/minutes from ISO (deterministic without TZ DB).
+/**
+ * Convert an ISO timestamp to HH:mm in the stored preference timezone.
+ * UTC (default) keeps the existing ISO `T` clock / UTC fallback — not a scheduler.
+ */
+export function extractLocalTimeHHmm(isoTimestamp: string, timezone = 'UTC'): string {
+  const date = new Date(isoTimestamp);
+  const zone = timezone.trim() || 'UTC';
+  if (!Number.isNaN(date.getTime()) && zone !== 'UTC') {
+    try {
+      const parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: zone,
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+      }).formatToParts(date);
+      const hour = parts.find((part) => part.type === 'hour')?.value;
+      const minute = parts.find((part) => part.type === 'minute')?.value;
+      if (hour && minute) return `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
+    } catch {
+      // Invalid IANA zone — fall through to UTC extraction.
+    }
+  }
   const match = isoTimestamp.match(/T(\d{2}:\d{2})/);
   if (match) return match[1]!;
-  const d = new Date(isoTimestamp);
-  if (Number.isNaN(d.getTime())) return '00:00';
-  const hh = String(d.getUTCHours()).padStart(2, '0');
-  const mm = String(d.getUTCMinutes()).padStart(2, '0');
+  if (Number.isNaN(date.getTime())) return '00:00';
+  const hh = String(date.getUTCHours()).padStart(2, '0');
+  const mm = String(date.getUTCMinutes()).padStart(2, '0');
   return `${hh}:${mm}`;
 }
 
@@ -80,7 +98,7 @@ export function resolveDeliveryRoutes(
   if (
     quiet &&
     !(critical && prefs.schedule.criticalBypassQuietHours) &&
-    isWithinQuietHours(extractLocalTimeHHmm(cmd.requestedAt), quiet)
+    isWithinQuietHours(extractLocalTimeHHmm(cmd.requestedAt, prefs.schedule.timezone), quiet)
   ) {
     return Object.freeze([{ channelId: 'telegram', skipReason: 'quiet-hours' }]);
   }

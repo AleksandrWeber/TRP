@@ -135,8 +135,12 @@ export {
   type TimeframeCode,
 } from './domain/value-objects';
 export { StrategyLibraryBoundaryService } from './strategy-library-boundary.service';
+export { StrategyLibraryController } from './strategy-library.controller';
+export { StrategyLibraryCertificationController } from './strategy-library-certification.controller';
 export { StrategyLibraryModule } from './strategy-library.module';
+export { StrategyLibraryProductModule } from './strategy-library-product.module';
 export { InMemoryStrategyLibraryReadAdapter } from './adapters/in-memory-strategy-library-read.adapter';
+export { InMemoryStrategyLibraryCertificationAdapter } from './adapters/in-memory-strategy-library-certification.adapter';
 export {
   STRATEGY_LIBRARY_LOOKUP_PORT,
   type LibraryListQuery,
@@ -152,3 +156,19 @@ export {
   type EligibilityQuery,
   type StrategyLibraryEligibilityPort,
 } from './ports/strategy-library-eligibility.port';
+export {
+  CERTIFICATION_OUTCOMES,
+  CERTIFICATION_REASON_CODES,
+  STRATEGY_LIBRARY_CERTIFICATION_PORT,
+  type CertificationAttemptMetadata,
+  type CertificationAttemptRecord,
+  type CertificationHistoryPage,
+  type CertificationHistoryQuery,
+  type CertificationOutcome,
+  type CertificationReasonCode,
+  type CertifyResult,
+  type CertifyStrategyFamilyInput,
+  type CertifyStrategyVersionCommand,
+  type CertifyStrategyVersionInput,
+  type StrategyLibraryCertificationPort,
+} from './ports/strategy-library-certification.port';

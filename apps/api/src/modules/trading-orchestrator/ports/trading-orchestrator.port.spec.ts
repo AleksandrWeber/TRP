@@ -13,7 +13,7 @@ import {
 } from './trading-orchestrator.port';
 
 describe('RC-26 Epic 5 — Trading Orchestrator ports posture', () => {
-  it('activates service/query + coordination + consumer-read; keeps REST inactive', () => {
+  it('activates service/query + coordination + consumer-read + REST; keeps persistence inactive', () => {
     expect(typeof TRADING_ORCHESTRATOR_SERVICE_PORT).toBe('symbol');
     expect(typeof TRADING_ORCHESTRATOR_QUERY_PORT).toBe('symbol');
     expect(typeof ORCHESTRATOR_STRATEGY_LIBRARY_CONSUMER).toBe('symbol');
@@ -35,7 +35,7 @@ describe('RC-26 Epic 5 — Trading Orchestrator ports posture', () => {
       sessionHandoff: true,
       consumerRead: true,
       persistence: false,
-      rest: false,
+      rest: true,
     });
   });
 

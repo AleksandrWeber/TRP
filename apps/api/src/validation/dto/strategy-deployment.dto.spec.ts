@@ -20,6 +20,22 @@ describe('CreateStrategyDeploymentBodyDto (US211)', () => {
     expect(validateSync(dto)).toHaveLength(0);
   });
 
+  it('accepts optional libraryEntryId', () => {
+    const dto = plainToInstance(CreateStrategyDeploymentBodyDto, {
+      strategyId: 'strategy-1',
+      strategyVersion: '1.0.0',
+      libraryEntryId: 'lib-entry-1',
+      parameters: {},
+      instrument: 'BTCUSDT',
+      timeframe: '1h',
+      marketDataSourceId: 'binance-spot',
+      paperExecutionConfigurationId: 'paper-config-us167',
+      riskPolicyId: 'm2-baseline-paper-risk',
+      riskPolicyVersion: 1,
+    });
+    expect(validateSync(dto)).toHaveLength(0);
+  });
+
   it('rejects unsupported timeframe and non-positive risk policy version', () => {
     const dto = plainToInstance(CreateStrategyDeploymentBodyDto, {
       strategyId: 'strategy-1',

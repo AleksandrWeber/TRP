@@ -72,6 +72,10 @@ export type ListMarketProfileVersions = Readonly<{
   marketSymbol: string;
 }>;
 
+export type ListWorkspaceMarketProfiles = Readonly<{
+  workspaceId: string;
+}>;
+
 export type MarketProfileView = MarketProfile &
   Readonly<{
     authorizesSession: false;
@@ -107,6 +111,8 @@ export interface MarketProfileQueryPort {
   getLatestProfile(query: GetLatestMarketProfile): MarketProfileView | null;
   getProfileByVersion(query: GetMarketProfileByVersion): MarketProfileView | null;
   listProfileVersions(query: ListMarketProfileVersions): readonly MarketProfileSummary[];
+  /** Additive read of versions already in the process-local store. */
+  listWorkspaceProfiles(query: ListWorkspaceMarketProfiles): readonly MarketProfileSummary[];
 }
 
 /** Epic 6 posture: publish + query + consumer reads active; no calculation / REST / persistence. */

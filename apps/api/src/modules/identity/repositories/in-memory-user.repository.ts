@@ -4,14 +4,13 @@ import type { UserRepository } from './user.repository';
 
 /**
  * In-memory UserRepository (Map-backed) (US105).
- * No filesystem, database, or serialization.
+ * Used by unit tests. Production binds PrismaUserRepository (PC-18).
  */
 export class InMemoryUserRepository implements UserRepository {
   private readonly byId = new Map<string, User>();
   private readonly byEmail = new Map<string, string>();
 
-  save(user: User): void {
-    // Clear any email keys for this id (handles in-place email mutation).
+  async save(user: User): Promise<void> {
     for (const [emailKey, id] of [...this.byEmail.entries()]) {
       if (id === user.id) this.byEmail.delete(emailKey);
     }
@@ -27,17 +26,17 @@ export class InMemoryUserRepository implements UserRepository {
     this.byEmail.set(normalizeEmail(user.email), user.id);
   }
 
-  findById(id: UserId | string): User | null {
+  async findById(id: UserId | string): Promise<User | null> {
     return this.byId.get(id) ?? null;
   }
 
-  findByEmail(email: string): User | null {
+  async findByEmail(email: string): Promise<User | null> {
     const id = this.byEmail.get(normalizeEmail(email));
     if (!id) return null;
     return this.byId.get(id) ?? null;
   }
 
-  findAll(): User[] {
+  async findAll(): Promise<User[]> {
     return Array.from(this.byId.values());
   }
 }

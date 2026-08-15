@@ -31,8 +31,9 @@ export type AuthTokenResponse = {
 const MIN_PASSWORD_LENGTH = 8;
 
 /**
- * JWT authentication on top of Identity (US106, US107).
- * Identity remains password-free; passwordHash lives in PasswordCredentialStore.
+ * JWT authentication on top of Identity (US106, US107, PC-18).
+ * Identity remains password-free; passwordHash lives in PasswordCredentialStore
+ * and is persisted on the existing User.passwordHash column.
  * register / login / validateToken — Role embedded in issued JWT.
  */
 @Injectable()
@@ -54,7 +55,7 @@ export class AuthenticationService {
 
     let user: User;
     try {
-      user = this.users.create({ email, displayName });
+      user = await this.users.create({ email, displayName });
     } catch (error) {
       throw this.mapIdentityError(error);
     }

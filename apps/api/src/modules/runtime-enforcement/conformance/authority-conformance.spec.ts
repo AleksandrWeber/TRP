@@ -105,13 +105,13 @@ describe('RC-23 Epic 6 — Authority conformance', () => {
     }
   });
 
-  it('activates Gate + Library reads only (no REST/persistence product)', () => {
+  it('activates Gate + Library reads + REST product transport (no persistence SoT)', () => {
     expect(RUNTIME_ENFORCEMENT_PORTS_ACTIVE).toEqual({
       validateDeployment: true,
       libraryLookup: true,
       libraryEligibility: true,
       persistence: false,
-      rest: false,
+      rest: true,
     });
   });
 

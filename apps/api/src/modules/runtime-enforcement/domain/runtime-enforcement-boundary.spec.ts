@@ -117,7 +117,7 @@ describe('RC-23 Epic 1 — Runtime Enforcement boundary', () => {
       libraryLookup: true,
       libraryEligibility: true,
       persistence: false,
-      rest: false,
+      rest: true,
     });
   });
 

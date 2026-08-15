@@ -89,6 +89,7 @@ export {
   TELEGRAM_CHANNEL_ADAPTER,
   type NotificationChannelPort,
   type NotificationServicePort,
+  type ListDeliveriesQuery,
   type SendTestNotificationRequest,
   type TelegramConnectRequest,
   type TelegramConnectResult,

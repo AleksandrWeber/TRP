@@ -83,11 +83,11 @@ export const STRATEGY_LIBRARY_ELIGIBILITY_CONSUMER = Symbol(
   'STRATEGY_LIBRARY_ELIGIBILITY_CONSUMER',
 );
 
-/** Epic 3 posture: Library reads + validateDeployment active. */
+/** Epic 3 Gate + PC-04 REST product transport. Persistence remains process-local history only. */
 export const RUNTIME_ENFORCEMENT_PORTS_ACTIVE = Object.freeze({
   validateDeployment: true,
   libraryLookup: true,
   libraryEligibility: true,
   persistence: false,
-  rest: false,
+  rest: true,
 } as const);
