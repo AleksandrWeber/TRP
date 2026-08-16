@@ -5,10 +5,7 @@ import { CommandAuthorizationService } from '../../modules/auth/command-authoriz
 import type { AuthUser } from '../../modules/auth/jwt.strategy';
 import { BotFacadeService } from '../../modules/bot-facade/bot-facade.service';
 import { PaperAccountController } from '../../modules/paper-account/paper-account.controller';
-import {
-  PaperAccountStatus,
-  type PaperAccount,
-} from '../../modules/paper-account/domain/paper-account';
+import type { PaperAccount } from '../../modules/paper-account/domain/paper-account';
 import { PaperAccountService } from '../../modules/paper-account/paper-account.service';
 import type { PaperAccountRepository } from '../../modules/paper-account/persistence/paper-account.repository';
 import { Role } from '../../modules/identity/role';

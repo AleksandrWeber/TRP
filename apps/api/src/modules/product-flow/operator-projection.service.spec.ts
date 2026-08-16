@@ -173,7 +173,7 @@ describe('PC-15 15-f — operator projection service', () => {
   });
 
   it('leaves profile null when the qualification target cannot be parsed', async () => {
-    const { service, profileQuery } = harness();
+    const { profileQuery } = harness();
     const qualificationQuery = {
       listQualificationRuns: vi.fn(() => [
         Object.freeze({

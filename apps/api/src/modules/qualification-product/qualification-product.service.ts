@@ -19,10 +19,6 @@ import {
 } from '../market-qualification/ports/market-qualification.port';
 import {
   toCommandView,
-  toLifecycleView,
-  toConfidenceView,
-  toHealthView,
-  toHistoryView,
   toRunDetailView,
   toRunListItemView,
   toRunPageView,
