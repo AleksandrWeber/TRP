@@ -6,6 +6,8 @@ import type { PaperPosition } from './domain/paper-position';
 import type { TradeResult } from './domain/trade-result';
 import { PaperTradingService } from './paper-trading.service';
 import type { PortfolioSummary } from './pnl-calculator';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 /**
  * Manual Paper Trading API (US010).
@@ -13,12 +15,14 @@ import type { PortfolioSummary } from './pnl-calculator';
  * No route schedules, polls, or automatically executes a signal.
  */
 @Controller({ path: 'paper-trading', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class PaperTradingController {
   constructor(
     private readonly paperTrading: PaperTradingService,
     private readonly workspaces: WorkspaceDomainService,
   ) {}
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post('execute')
   async execute(
     @Body() body: ExecutePaperTradeBodyDto,

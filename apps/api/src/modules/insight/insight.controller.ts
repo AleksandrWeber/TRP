@@ -15,6 +15,8 @@ import { WorkspaceDomainService } from '../workspace';
 import type { Insight } from './insight';
 import { InsightDomainService } from './insight-domain.service';
 import { InsightType } from './insight-type';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 const SORT_BY = ['createdAt', 'type', 'confidence', 'title'] as const;
 
@@ -24,6 +26,7 @@ const SORT_BY = ['createdAt', 'type', 'confidence', 'title'] as const;
  * Scoped by X-Workspace-Id (US109).
  */
 @Controller({ path: 'insights', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class InsightController {
   constructor(
     private readonly insights: InsightDomainService,

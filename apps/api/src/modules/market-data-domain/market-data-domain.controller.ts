@@ -9,6 +9,8 @@ import type { Ticker } from './domain/ticker';
 import type { Timeframe } from './domain/timeframe';
 import type { MarketDataProviderHealthStatus } from './ports/market-data-provider';
 import { MarketDataProviderRegistry } from './ports/market-data-provider-registry';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 export const DEFAULT_CANDLES_LIMIT = 100;
 
@@ -28,6 +30,7 @@ export type MarketHealthView = {
  * No workspace scoping — market data is global.
  */
 @Controller({ path: 'market', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class MarketDataDomainController {
   constructor(
     private readonly registry: MarketDataProviderRegistry,

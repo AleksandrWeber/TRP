@@ -17,6 +17,8 @@ import type { AuthUser } from '../auth/jwt.strategy';
 import { WorkspaceAccessService } from '../workspace';
 import type { SignalIntent } from './domain/signal-intent';
 import { SignalIntentService } from './signal-intent.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -26,6 +28,7 @@ type RequestWithUser = { user: AuthUser };
  * no public create, Order, Risk, or Execution endpoints.
  */
 @Controller({ path: 'signal-intents', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class SignalIntentController {
   constructor(
     private readonly intents: SignalIntentService,

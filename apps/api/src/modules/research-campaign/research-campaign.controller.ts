@@ -2,8 +2,11 @@ import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { RunCampaignBodyDto } from '../../validation';
 import { CampaignReportService } from './campaign-report.service';
 import { ResearchCampaignService } from './research-campaign.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 @Controller({ path: 'research-campaigns', version: '1' })
+@RequirePermission(PermissionClass.Research)
 export class ResearchCampaignController {
   constructor(
     private readonly campaigns: ResearchCampaignService,

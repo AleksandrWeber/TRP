@@ -4,6 +4,8 @@ import { EvaluateSignalBodyDto } from '../../validation';
 import { WorkspaceDomainService } from '../workspace';
 import type { SignalResult } from './domain/signal-result';
 import { SignalEngineService } from './signal-engine.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 /**
  * Signal Engine HTTP API (US009).
@@ -13,6 +15,7 @@ import { SignalEngineService } from './signal-engine.service';
  * never a leak. No persistence — periodic evaluation is owned by US015.
  */
 @Controller({ path: 'market/signal', version: '1' })
+@RequirePermission(PermissionClass.Research)
 export class SignalEngineController {
   constructor(
     private readonly engine: SignalEngineService,

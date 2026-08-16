@@ -26,6 +26,8 @@ import {
   LiveTradingError,
 } from './live-trading-errors';
 import { LiveTradingService } from './live-trading.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -34,6 +36,7 @@ type RequestWithUser = { user: AuthUser };
  * Path `live` → `/v1/live/...`.
  */
 @Controller({ path: 'live', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class LiveTradingController {
   constructor(
     private readonly live: LiveTradingService,
@@ -132,6 +135,7 @@ export class LiveTradingController {
     });
   }
 
+  @RequirePermission(PermissionClass.LiveCommand)
   @Post('start')
   async start(
     @Req() req: RequestWithUser,
@@ -148,6 +152,7 @@ export class LiveTradingController {
     });
   }
 
+  @RequirePermission(PermissionClass.LiveCommand)
   @Post('stop')
   async stop(
     @Req() req: RequestWithUser,
@@ -160,6 +165,7 @@ export class LiveTradingController {
     });
   }
 
+  @RequirePermission(PermissionClass.LiveCommand)
   @Post('pause')
   async pause(
     @Req() req: RequestWithUser,
@@ -172,6 +178,7 @@ export class LiveTradingController {
     });
   }
 
+  @RequirePermission(PermissionClass.LiveCommand)
   @Post('resume')
   async resume(
     @Req() req: RequestWithUser,
@@ -184,6 +191,7 @@ export class LiveTradingController {
     });
   }
 
+  @RequirePermission(PermissionClass.LiveCommand)
   @Post('reconnect')
   async reconnect(
     @Req() req: RequestWithUser,
@@ -196,6 +204,7 @@ export class LiveTradingController {
     });
   }
 
+  @RequirePermission(PermissionClass.LiveCommand)
   @Post('synchronize')
   async synchronize(
     @Req() req: RequestWithUser,
@@ -208,6 +217,7 @@ export class LiveTradingController {
     });
   }
 
+  @RequirePermission(PermissionClass.LiveCommand)
   @Post('kill-switch')
   async killSwitch(
     @Req() req: RequestWithUser,
@@ -229,6 +239,7 @@ export class LiveTradingController {
     });
   }
 
+  @RequirePermission(PermissionClass.LiveCommand)
   @Post('kill-switch/clear')
   async clearKillSwitch(
     @Req() req: RequestWithUser,
@@ -241,6 +252,7 @@ export class LiveTradingController {
     });
   }
 
+  @RequirePermission(PermissionClass.LiveCommand)
   @Post('orders')
   async submitOrder(
     @Req() req: RequestWithUser,

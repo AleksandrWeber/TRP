@@ -18,6 +18,8 @@ import type { AuthUser } from '../auth/jwt.strategy';
 import { Role } from '../identity/role';
 import { WorkspaceAccessService } from '../workspace';
 import { OrderService } from './order.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -27,6 +29,7 @@ type RequestWithUser = { user: AuthUser };
  * transitions remain internal and cannot be bypassed by the HTTP adapter.
  */
 @Controller({ path: 'orders', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class OrdersController {
   constructor(
     private readonly orders: OrderService,
@@ -34,6 +37,7 @@ export class OrdersController {
     private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post()
   @Roles(Role.Trader, Role.Admin)
   async create(
@@ -69,6 +73,7 @@ export class OrdersController {
     }
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post(':orderId/cancel')
   @Roles(Role.Trader, Role.Admin)
   async cancel(

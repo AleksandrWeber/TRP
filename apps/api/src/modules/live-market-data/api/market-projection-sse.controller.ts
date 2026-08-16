@@ -3,12 +3,15 @@ import { Observable } from 'rxjs';
 import { requireWorkspaceId } from '../../../common/workspace/require-workspace';
 import { WorkspaceDomainService } from '../../workspace';
 import { MarketProjectionChannelService } from './market-projection-channel.service';
+import { RequirePermission } from '../../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../../auth/permission-catalog';
 
 /**
  * Live market projection SSE channel (US147).
  * Canonical projections only; workspace-isolated; UI cache never authoritative.
  */
 @Controller({ path: 'market-data', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class MarketProjectionSseController {
   constructor(
     private readonly channel: MarketProjectionChannelService,

@@ -47,10 +47,6 @@ export function PaperTradingPage() {
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState('Paper Bot');
   const [initialBalance, setInitialBalance] = useState('100000');
-  const [symbol, setSymbol] = useState('BTC-USD');
-  const [side, setSide] = useState('BUY');
-  const [quantity, setQuantity] = useState('1');
-  const [price, setPrice] = useState('100');
   const [busy, setBusy] = useState(false);
 
   const active = sessions.find((s) => s.id === activeId) ?? null;
@@ -132,7 +128,12 @@ export function PaperTradingPage() {
           <h2 className="mt-1 text-2xl font-semibold">Paper Bots</h2>
           <p className="mt-2 text-slate-400">
             Sandbox. Product term Bot maps to a trading session. Manual create is name and balance
-            only — not certified deploy.
+            only — not certified deploy. This screen does not place trades. Certified paper runtime
+            starts from{' '}
+            <Link to="/command-center" className="text-sky-300 hover:underline">
+              Command Center
+            </Link>
+            .
           </p>
         </div>
         <button
@@ -320,61 +321,6 @@ export function PaperTradingPage() {
                     {formatPct(portfolio.portfolioReturn)}
                   </p>
                 </div>
-              ) : null}
-
-              {active.status === 'RUNNING' ? (
-                <form
-                  className="flex flex-wrap gap-2"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    void run(async () => {
-                      await api.executePaperTrade(active.id, {
-                        symbol,
-                        side,
-                        type: 'LIMIT',
-                        quantity,
-                        requestedPrice: price,
-                      });
-                    });
-                  }}
-                >
-                  <h4 className="w-full text-sm font-medium uppercase tracking-wide text-slate-500">
-                    Execute Trade
-                  </h4>
-                  <input
-                    value={symbol}
-                    onChange={(e) => setSymbol(e.target.value)}
-                    className="w-28 rounded border border-white/15 bg-transparent px-3 py-2 text-sm"
-                    placeholder="Symbol"
-                  />
-                  <select
-                    value={side}
-                    onChange={(e) => setSide(e.target.value)}
-                    className="rounded border border-white/15 bg-slate-950 px-3 py-2 text-sm"
-                  >
-                    <option value="BUY">BUY</option>
-                    <option value="SELL">SELL</option>
-                  </select>
-                  <input
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.value)}
-                    className="w-20 rounded border border-white/15 bg-transparent px-3 py-2 text-sm"
-                    placeholder="Qty"
-                  />
-                  <input
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    className="w-24 rounded border border-white/15 bg-transparent px-3 py-2 text-sm"
-                    placeholder="Price"
-                  />
-                  <button
-                    type="submit"
-                    disabled={busy}
-                    className="rounded border border-sky-500/40 px-3 py-2 text-sm text-sky-200 hover:bg-sky-500/10 disabled:opacity-50"
-                  >
-                    Submit
-                  </button>
-                </form>
               ) : null}
 
               <div className="overflow-x-auto rounded-lg border border-white/10">

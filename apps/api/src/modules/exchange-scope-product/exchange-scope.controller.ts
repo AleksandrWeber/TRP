@@ -29,6 +29,8 @@ import {
 import type { AuthUser } from '../auth/jwt.strategy';
 import { WorkspaceAccessService } from '../workspace';
 import { ExchangeScopeProductService } from './exchange-scope-product.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 import type {
   ExchangeScopeCommandView,
   ExchangeScopeDetailView,
@@ -45,6 +47,7 @@ type RequestWithUser = { user: AuthUser };
  * `GET /exchange-scopes/default` remains the existing Bot Facade overview.
  */
 @Controller({ path: 'exchange-scopes', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class ExchangeScopeProductController {
   constructor(
     private readonly product: ExchangeScopeProductService,
@@ -79,6 +82,7 @@ export class ExchangeScopeProductController {
     return this.product.listScopes(workspaceId, query.lifecycleStatus);
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post()
   @HttpCode(201)
   create(
@@ -186,6 +190,7 @@ export class ExchangeScopeProductController {
     return this.requireDetail(request.user, workspaceHeader, params.exchangeScopeId);
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post(':exchangeScopeId/activate')
   activate(
     @Req() request: RequestWithUser,
@@ -205,6 +210,7 @@ export class ExchangeScopeProductController {
     );
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post(':exchangeScopeId/suspend')
   suspend(
     @Req() request: RequestWithUser,
@@ -224,6 +230,7 @@ export class ExchangeScopeProductController {
     );
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post(':exchangeScopeId/archive')
   archive(
     @Req() request: RequestWithUser,
@@ -243,6 +250,7 @@ export class ExchangeScopeProductController {
     );
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post(':exchangeScopeId/rename')
   rename(
     @Req() request: RequestWithUser,
@@ -262,6 +270,7 @@ export class ExchangeScopeProductController {
     );
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Put(':exchangeScopeId/config')
   updateConfig(
     @Req() request: RequestWithUser,
@@ -285,6 +294,7 @@ export class ExchangeScopeProductController {
     );
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post(':exchangeScopeId/policy')
   publishPolicy(
     @Req() request: RequestWithUser,
@@ -304,6 +314,7 @@ export class ExchangeScopeProductController {
     );
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post(':exchangeScopeId/bindings')
   bind(
     @Req() request: RequestWithUser,
@@ -323,6 +334,7 @@ export class ExchangeScopeProductController {
     );
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post(':exchangeScopeId/bindings/:bindingId/unbind')
   unbind(
     @Req() request: RequestWithUser,
@@ -341,6 +353,7 @@ export class ExchangeScopeProductController {
     );
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post(':exchangeScopeId/adapter-context')
   setAdapterContext(
     @Req() request: RequestWithUser,

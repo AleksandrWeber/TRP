@@ -14,6 +14,8 @@ import type { HistoryPage } from '../campaign-persistence/history-page';
 import { WorkspaceDomainService } from '../workspace';
 import type { ResearchReport } from './research-report';
 import { ResearchReportDomainService } from './research-report-domain.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 const SORT_BY = ['createdAt'] as const;
 
@@ -23,6 +25,7 @@ const SORT_BY = ['createdAt'] as const;
  * Scoped by X-Workspace-Id (US109).
  */
 @Controller({ path: 'reports', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class ResearchReportController {
   constructor(
     private readonly reports: ResearchReportDomainService,

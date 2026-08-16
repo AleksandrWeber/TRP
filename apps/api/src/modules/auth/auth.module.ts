@@ -10,6 +10,7 @@ import { SYSTEM_CLOCK as SESSION_CLOCK, resolveAccessJwtExpiresIn } from './auth
 import { AUTH_SESSION_CLOCK, AUTH_SESSION_REPOSITORY } from './auth-session.repository.token';
 import { AuthSessionStore } from './auth-session.store';
 import { AuthenticationService } from './authentication.service';
+import { AuthorizationDecisionService } from './authorization-decision.service';
 import { CommandAuthorizationService } from './command-authorization.service';
 import { resolveJwtSecret } from './jwt-secret';
 import { JwtStrategy } from './jwt.strategy';
@@ -31,6 +32,7 @@ import { HOST_MAIL } from './host-mail';
 /**
  * Authentication module (US106 / US158 / PC-18 / V3-S01-e).
  * JWT on top of Identity with durable password hashes and revocable sessions.
+ * Authorization decisions (V3-S02-a) live here; Identity still owns `User.role`.
  * Development bootstrap is not part of the product path.
  */
 @Module({
@@ -95,8 +97,15 @@ import { HOST_MAIL } from './host-mail';
       inject: [ConfigService],
     },
     JwtStrategy,
+    AuthorizationDecisionService,
     CommandAuthorizationService,
   ],
-  exports: [AuthenticationService, PasswordCredentialStore, JwtModule, CommandAuthorizationService],
+  exports: [
+    AuthenticationService,
+    PasswordCredentialStore,
+    JwtModule,
+    AuthorizationDecisionService,
+    CommandAuthorizationService,
+  ],
 })
 export class AuthModule {}

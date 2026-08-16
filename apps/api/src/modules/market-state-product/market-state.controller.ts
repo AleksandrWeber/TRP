@@ -20,6 +20,8 @@ import {
 import type { AuthUser } from '../auth/jwt.strategy';
 import { WorkspaceAccessService } from '../workspace';
 import { MarketStateProductService } from './market-state-product.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 import type {
   MarketStateDetailView,
   MarketStateLifecycleView,
@@ -41,6 +43,7 @@ type RequestWithUser = { user: AuthUser };
  * Does not own Market State. Does not classify. Domain `rest: false` is unchanged.
  */
 @Controller({ path: 'market-states', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class MarketStateProductController {
   constructor(
     private readonly product: MarketStateProductService,
@@ -158,6 +161,7 @@ export class MarketStateProductController {
     return this.requireCurrent(request.user, workspaceHeader, params.targetId).profile;
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post('targets/:targetId/refresh')
   refresh(
     @Req() request: RequestWithUser,

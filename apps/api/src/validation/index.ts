@@ -12,6 +12,7 @@ export {
   SessionIdParamDto,
   JobIdParamDto,
 } from './dto/base.dto';
+export { AssignRoleBodyDto, PeopleUserIdParamDto } from './dto/people.dto';
 export {
   RegisterBodyDto,
   LoginBodyDto,

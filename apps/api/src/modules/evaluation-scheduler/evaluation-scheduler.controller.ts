@@ -5,6 +5,8 @@ import { WorkspaceDomainService } from '../workspace';
 import type { EvaluationSchedule } from './domain/evaluation-schedule';
 import { ScheduleNotFoundError } from './domain/evaluation-scheduler.error';
 import { EvaluationSchedulerService } from './evaluation-scheduler.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 /**
  * Evaluation Scheduler HTTP API (US015).
@@ -12,12 +14,14 @@ import { EvaluationSchedulerService } from './evaluation-scheduler.service';
  * Workspace-scoped via X-Workspace-Id. Does not execute trades.
  */
 @Controller({ path: 'evaluation-schedules', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class EvaluationSchedulerController {
   constructor(
     private readonly scheduler: EvaluationSchedulerService,
     private readonly workspaces: WorkspaceDomainService,
   ) {}
 
+  @RequirePermission(PermissionClass.Research)
   @Post()
   async create(
     @Body() body: CreateEvaluationScheduleBodyDto,
@@ -46,6 +50,7 @@ export class EvaluationSchedulerController {
     return schedule;
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Delete(':strategyId')
   @HttpCode(204)
   remove(

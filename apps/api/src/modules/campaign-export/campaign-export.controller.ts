@@ -14,6 +14,8 @@ import { WorkspaceDomainService } from '../workspace';
 import { CampaignHistoryService } from '../campaign-persistence/campaign-history.service';
 import { CampaignExportService } from './campaign-export.service';
 import { ExportFormat } from './export-format';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type ReplyLike = {
   status: (code: number) => ReplyLike;
@@ -26,6 +28,7 @@ type ReplyLike = {
  * Flow: HistoryService.getById → CampaignExportService.export.
  */
 @Controller({ path: 'campaign-history', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class CampaignExportController {
   constructor(
     private readonly history: CampaignHistoryService,

@@ -20,6 +20,8 @@ import {
 import type { AuthUser } from '../auth/jwt.strategy';
 import { WorkspaceAccessService } from '../workspace';
 import { AiAnalyticsProductService } from './ai-analytics-product.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 import type {
   AiAnalyticsDetailView,
   AiAnalyticsHistoryPageView,
@@ -37,12 +39,14 @@ type RequestWithUser = { user: AuthUser };
  * No persistence. No report / knowledge / strategy writes.
  */
 @Controller({ path: 'ai-analytics', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class AiAnalyticsProductController {
   constructor(
     private readonly product: AiAnalyticsProductService,
     private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
+  @RequirePermission(PermissionClass.Research)
   @Post('generate')
   generate(
     @Req() request: RequestWithUser,

@@ -1,8 +1,11 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { IdParamDto, ListExecutionsQueryDto } from '../../validation';
 import { ProductionService } from './production.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 @Controller({ path: 'production', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class ProductionController {
   constructor(private readonly productionService: ProductionService) {}
 

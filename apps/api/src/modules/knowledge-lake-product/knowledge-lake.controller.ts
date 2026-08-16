@@ -17,6 +17,8 @@ import {
 import type { AuthUser } from '../auth/jwt.strategy';
 import { WorkspaceAccessService } from '../workspace';
 import { KnowledgeLakeProductService } from './knowledge-lake-product.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 import type {
   KnowledgeLakeDetailView,
   KnowledgeLakeHistoryPageView,
@@ -33,6 +35,7 @@ type RequestWithUser = { user: AuthUser };
  * Distinct from research `/v1/knowledge`. Queries only. No admission.
  */
 @Controller({ path: 'knowledge-lake', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class KnowledgeLakeProductController {
   constructor(
     private readonly product: KnowledgeLakeProductService,

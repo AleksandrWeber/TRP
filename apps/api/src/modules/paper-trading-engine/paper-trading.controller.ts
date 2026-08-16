@@ -23,6 +23,8 @@ import {
   PaperTradingError,
 } from './paper-trading-errors';
 import { PaperTradingService } from './paper-trading.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -31,6 +33,7 @@ type RequestWithUser = { user: AuthUser };
  * Path `paper` → `/v1/paper/...`. Distinct from US010 `/v1/paper-trading`.
  */
 @Controller({ path: 'paper', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class PaperTradingController {
   constructor(
     private readonly paper: PaperTradingService,
@@ -132,6 +135,7 @@ export class PaperTradingController {
     });
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post('sessions')
   async createSession(
     @Req() req: RequestWithUser,
@@ -147,6 +151,7 @@ export class PaperTradingController {
     });
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post('sessions/:id/start')
   async startSession(
     @Req() req: RequestWithUser,
@@ -159,6 +164,7 @@ export class PaperTradingController {
     });
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post('sessions/:id/pause')
   async pauseSession(
     @Req() req: RequestWithUser,
@@ -171,6 +177,7 @@ export class PaperTradingController {
     });
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post('sessions/:id/stop')
   async stopSession(
     @Req() req: RequestWithUser,
@@ -183,6 +190,7 @@ export class PaperTradingController {
     });
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post('sessions/:id/complete')
   async completeSession(
     @Req() req: RequestWithUser,
@@ -195,6 +203,7 @@ export class PaperTradingController {
     });
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Delete('sessions/:id')
   async deleteSession(
     @Req() req: RequestWithUser,

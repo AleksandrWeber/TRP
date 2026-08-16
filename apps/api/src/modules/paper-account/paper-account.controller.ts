@@ -15,6 +15,8 @@ import type { AuthUser } from '../auth/jwt.strategy';
 import { Role } from '../identity/role';
 import { PaperAccountService } from './paper-account.service';
 import { toPaperAccountView, type PaperAccountView } from './paper-account.view';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -23,6 +25,7 @@ type RequestWithUser = { user: AuthUser };
  * Paper mode only. Paper Account remains the account owner.
  */
 @Controller({ path: 'paper-accounts', version: '1' })
+@RequirePermission(PermissionClass.PaperCommand)
 export class PaperAccountController {
   constructor(
     private readonly accounts: PaperAccountService,

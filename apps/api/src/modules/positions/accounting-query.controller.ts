@@ -11,11 +11,14 @@ import {
 import type { AuthUser } from '../auth/jwt.strategy';
 import { WorkspaceAccessService } from '../workspace';
 import { AccountingQueryService } from './accounting-query.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
 /** Workspace/account-scoped, read-only accounting API (US178). */
 @Controller({ path: 'accounting', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class AccountingQueryController {
   constructor(
     private readonly queries: AccountingQueryService,

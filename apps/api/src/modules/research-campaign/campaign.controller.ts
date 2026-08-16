@@ -7,8 +7,11 @@ import {
 import { MultiDatasetCampaignService } from './multi-dataset-campaign.service';
 import { ResearchCampaignService } from './research-campaign.service';
 import { WalkForwardCampaignService } from './walk-forward-campaign.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 @Controller({ path: 'campaigns', version: '1' })
+@RequirePermission(PermissionClass.Research)
 export class CampaignController {
   constructor(
     private readonly campaigns: ResearchCampaignService,

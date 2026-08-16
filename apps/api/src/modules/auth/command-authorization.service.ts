@@ -1,5 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Role } from '../identity/role';
+import { decideAuthorization } from './authorization-decision';
+import { PermissionClass } from './permission-catalog';
 import type { AuthUser } from './jwt.strategy';
 import { WorkspaceAccessService } from '../workspace/workspace-access.service';
 
@@ -11,13 +13,10 @@ export type TradingCommandContext = Readonly<{
   idempotencyKey: string | null;
 }>;
 
-const TRADING_COMMAND_ROLES: ReadonlySet<Role> = new Set([Role.Trader, Role.Admin]);
-
 /**
- * M2 trading command authorization (US158).
- * Manual create/cancel/session commands require Trader or Administrator (Admin)
- * and verified workspace membership. Actor / workspace / correlation /
- * idempotency identifiers are retained on the authorized context.
+ * M2 trading command authorization (US158 / V3-S02-a).
+ * Paper commands require an explicit C5 allow (Trader or Admin — listed cells,
+ * not inheritance) and verified workspace membership. Ownership always wins.
  */
 @Injectable()
 export class CommandAuthorizationService {
@@ -32,7 +31,7 @@ export class CommandAuthorizationService {
     correlationId?: string;
     idempotencyKey?: string;
   }): TradingCommandContext {
-    if (!TRADING_COMMAND_ROLES.has(input.user.role)) {
+    if (!this.canIssueTradingCommand(input.user.role)) {
       throw new Error('trading command requires Trader or Administrator role');
     }
 
@@ -54,7 +53,10 @@ export class CommandAuthorizationService {
   }
 
   canIssueTradingCommand(role: Role): boolean {
-    return TRADING_COMMAND_ROLES.has(role);
+    return decideAuthorization({
+      role,
+      action: PermissionClass.PaperCommand,
+    }).allowed;
   }
 }
 

@@ -19,6 +19,8 @@ import {
 import type { AuthUser } from '../auth/jwt.strategy';
 import { WorkspaceAccessService } from '../workspace';
 import { RuntimeValidationService } from './runtime-validation.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 import {
   toRuntimeValidationHistoryView,
   toRuntimeValidationView,
@@ -33,12 +35,14 @@ type RequestWithUser = { user: AuthUser };
  * Not a new Gate. Not a new SoT. Fail-closed. No overrides.
  */
 @Controller({ path: 'runtime-validations', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class RuntimeValidationController {
   constructor(
     private readonly validations: RuntimeValidationService,
     private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
+  @RequirePermission(PermissionClass.Research)
   @Post()
   run(
     @Req() request: RequestWithUser,

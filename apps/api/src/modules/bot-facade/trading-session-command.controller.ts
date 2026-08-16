@@ -23,6 +23,8 @@ import { SessionHandoffConsumerService } from '../product-flow';
 import { isDeploymentAuthorizationRefusedError } from '../trading-session/domain/deployment-authorization-refused.error';
 import { BotFacadeService } from './bot-facade.service';
 import { assertBotIsSessionFacade, toBotView, type BotView } from './domain/bot-view';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -34,6 +36,7 @@ type LifecycleAction = 'pause' | 'resume' | 'stop';
  * to TradingSessionService. No business logic here. Orchestrator still does not create Sessions.
  */
 @Controller({ path: 'trading-sessions', version: '1' })
+@RequirePermission(PermissionClass.PaperCommand)
 export class TradingSessionCommandController {
   constructor(
     private readonly bots: BotFacadeService,

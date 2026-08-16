@@ -24,6 +24,8 @@ import {
 import type { AuthUser } from '../auth/jwt.strategy';
 import { WorkspaceAccessService } from '../workspace';
 import { QualificationProductService } from './qualification-product.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 import type {
   QualificationCommandView,
   QualificationConfidenceProductView,
@@ -44,6 +46,7 @@ type RequestWithUser = { user: AuthUser };
  * Does not own qualification artifacts. Does not score markets. Domain `rest: false` is unchanged.
  */
 @Controller({ path: 'qualification', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class QualificationProductController {
   constructor(
     private readonly product: QualificationProductService,
@@ -128,6 +131,7 @@ export class QualificationProductController {
     return this.requireTarget(request.user, workspaceHeader, params.targetId);
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post('targets/:targetId/requalify')
   requalify(
     @Req() request: RequestWithUser,
@@ -174,6 +178,7 @@ export class QualificationProductController {
     return run;
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post('runs')
   @HttpCode(201)
   request(
@@ -195,6 +200,7 @@ export class QualificationProductController {
     );
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post('runs/:qualificationRunId/confirm')
   confirm(
     @Req() request: RequestWithUser,
@@ -212,6 +218,7 @@ export class QualificationProductController {
     );
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post('runs/:qualificationRunId/cancel')
   cancel(
     @Req() request: RequestWithUser,
@@ -229,6 +236,7 @@ export class QualificationProductController {
     );
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post('runs/:qualificationRunId/complete')
   complete(
     @Req() request: RequestWithUser,
@@ -245,6 +253,7 @@ export class QualificationProductController {
     );
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post('runs/:qualificationRunId/fail')
   fail(
     @Req() request: RequestWithUser,

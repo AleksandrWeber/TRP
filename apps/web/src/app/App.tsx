@@ -11,6 +11,7 @@ import { SessionsPage } from '../pages/SessionsPage';
 import { ForgotPasswordPage } from '../pages/ForgotPasswordPage';
 import { ResetPasswordPage } from '../pages/ResetPasswordPage';
 import { PasswordPage } from '../pages/PasswordPage';
+import { PeoplePage } from '../pages/PeoplePage';
 import { MultiDatasetCampaignPage } from '../pages/MultiDatasetCampaignPage';
 import { WalkForwardCampaignPage } from '../pages/WalkForwardCampaignPage';
 import { PortfolioPage } from '../pages/PortfolioPage';
@@ -129,6 +130,7 @@ export function App() {
 
             <Route path="account/sessions" element={<SessionsPage />} />
             <Route path="account/password" element={<PasswordPage />} />
+            <Route path="people" element={<PeoplePage />} />
 
             <Route index element={<HomePage />} />
             <Route path="workflows" element={<WorkflowsPage />} />

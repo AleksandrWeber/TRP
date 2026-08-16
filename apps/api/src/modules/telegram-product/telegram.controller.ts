@@ -15,6 +15,8 @@ import { DeliveryIdParamDto, ListNotificationDeliveriesQueryDto } from '../../va
 import type { AuthUser } from '../auth/jwt.strategy';
 import { WorkspaceAccessService } from '../workspace';
 import { TelegramProductService } from './telegram-product.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 import type {
   TelegramConnectProductView,
   TelegramConnectionProductView,
@@ -31,6 +33,7 @@ type RequestWithUser = { user: AuthUser };
  * Chat id is never accepted from the client. No Bot API. No duplicated domain.
  */
 @Controller({ path: 'telegram', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class TelegramController {
   constructor(
     private readonly product: TelegramProductService,
@@ -46,6 +49,7 @@ export class TelegramController {
     return this.product.getConnection(workspaceId, request.user.userId);
   }
 
+  @RequirePermission(PermissionClass.OwnWorkspace)
   @Post('connect')
   @HttpCode(200)
   connect(
@@ -56,6 +60,7 @@ export class TelegramController {
     return this.product.connect(workspaceId, request.user.userId);
   }
 
+  @RequirePermission(PermissionClass.OwnWorkspace)
   @Post('complete')
   @HttpCode(200)
   complete(
@@ -72,6 +77,7 @@ export class TelegramController {
     }
   }
 
+  @RequirePermission(PermissionClass.OwnWorkspace)
   @Post('verify')
   @HttpCode(200)
   verify(
@@ -82,6 +88,7 @@ export class TelegramController {
     return this.product.verify(workspaceId, request.user.userId);
   }
 
+  @RequirePermission(PermissionClass.OwnWorkspace)
   @Post('disconnect')
   @HttpCode(200)
   disconnect(
@@ -92,6 +99,7 @@ export class TelegramController {
     return this.product.disconnect(workspaceId, request.user.userId);
   }
 
+  @RequirePermission(PermissionClass.OwnWorkspace)
   @Post('test')
   @HttpCode(200)
   sendTest(

@@ -14,6 +14,8 @@ import type { HistoryPage } from '../campaign-persistence/history-page';
 import { WorkspaceDomainService } from '../workspace';
 import type { CrossCampaignAnalysisResult } from './cross-campaign-analysis-result';
 import { CrossCampaignAnalysisService } from './cross-campaign-analysis.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 const SORT_BY = ['createdAt'] as const;
 
@@ -23,6 +25,7 @@ const SORT_BY = ['createdAt'] as const;
  * Scoped by X-Workspace-Id (US109).
  */
 @Controller({ path: 'cross-campaign-analysis', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class CrossCampaignAnalysisController {
   constructor(
     private readonly analyses: CrossCampaignAnalysisService,

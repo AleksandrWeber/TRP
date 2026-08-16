@@ -3,6 +3,8 @@ import { requireWorkspaceId } from '../../../common/workspace/require-workspace'
 import { IdParamDto } from '../../../validation';
 import { WorkspaceDomainService } from '../../workspace';
 import { MarketDataQueryService } from './market-data-query.service';
+import { RequirePermission } from '../../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../../auth/permission-catalog';
 import type {
   MarketCheckpointView,
   MarketLatestStateView,
@@ -17,6 +19,7 @@ import type {
  * Cannot create Orders, Sessions, or strategy evaluations.
  */
 @Controller({ path: 'market-data', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class MarketDataQueryController {
   constructor(
     private readonly queries: MarketDataQueryService,

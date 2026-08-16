@@ -21,6 +21,8 @@ import {
   RiskValidationError,
 } from './risk-errors';
 import { RiskService } from './risk.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -30,12 +32,14 @@ type RequestWithUser = { user: AuthUser };
  * Never executes orders or mutates portfolio/position.
  */
 @Controller({ path: 'risk', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class RiskController {
   constructor(
     private readonly risk: RiskService,
     private readonly workspaces: WorkspaceDomainService,
   ) {}
 
+  @RequirePermission(PermissionClass.Research)
   @Post('evaluate')
   async evaluate(
     @Req() req: RequestWithUser,
@@ -115,6 +119,7 @@ export class RiskController {
     });
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Patch('policies/:id')
   async updatePolicy(
     @Req() req: RequestWithUser,

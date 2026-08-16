@@ -16,6 +16,8 @@ import type { Recommendation } from './recommendation';
 import { RecommendationDomainService } from './recommendation-domain.service';
 import { RecommendationPriority } from './recommendation-priority';
 import { RecommendationType } from './recommendation-type';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 const SORT_BY = ['createdAt', 'type', 'priority', 'title'] as const;
 
@@ -25,6 +27,7 @@ const SORT_BY = ['createdAt', 'type', 'priority', 'title'] as const;
  * Scoped by X-Workspace-Id (US109).
  */
 @Controller({ path: 'recommendations', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class RecommendationController {
   constructor(
     private readonly recommendations: RecommendationDomainService,

@@ -5,6 +5,8 @@ import { WorkspaceDomainService } from '../workspace';
 import type { ExecutedTrade } from './domain/executed-trade';
 import type { StrategyPortfolio } from './domain/strategy-portfolio';
 import { PaperTradingExecutorService } from './paper-trading-executor.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 /**
  * Paper Trading Executor read API (US016).
@@ -12,6 +14,7 @@ import { PaperTradingExecutorService } from './paper-trading-executor.service';
  * no endpoint triggers a trade. Workspace-scoped via X-Workspace-Id.
  */
 @Controller({ path: 'paper-executor', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class PaperTradingExecutorController {
   constructor(
     private readonly executor: PaperTradingExecutorService,

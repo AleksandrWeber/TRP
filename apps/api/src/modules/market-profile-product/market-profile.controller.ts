@@ -18,6 +18,8 @@ import {
 import type { AuthUser } from '../auth/jwt.strategy';
 import { WorkspaceAccessService } from '../workspace';
 import { MarketProfileProductService } from './market-profile-product.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 import type {
   MarketProfileCompareView,
   MarketProfileDetailView,
@@ -37,6 +39,7 @@ type RequestWithUser = { user: AuthUser };
  * Does not own profile versions. Does not publish. Domain `rest: false` is unchanged.
  */
 @Controller({ path: 'market-profiles', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class MarketProfileProductController {
   constructor(
     private readonly product: MarketProfileProductService,

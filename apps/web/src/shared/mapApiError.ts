@@ -73,11 +73,20 @@ export function mapHttpError(status: number, bodyText: string): string {
     if (lower.includes('current password')) {
       return 'Current password is incorrect.';
     }
+    if (lower.includes('role is not recognized') || lower.includes('role must be')) {
+      return 'That role is not recognized.';
+    }
     return 'Please check your input.';
   }
   if (status === 401) return 'Unauthorized';
   if (status === 403) return 'You do not have permission to perform this action.';
   if (status === 409) {
+    if (lower.includes('last active administrator')) {
+      return 'Cannot change the last active Administrator.';
+    }
+    if (lower.includes('your own role')) {
+      return 'You cannot change your own role.';
+    }
     if (lower.includes('idempotency')) {
       return 'This deployment request was already submitted with different details.';
     }
@@ -133,6 +142,9 @@ export function mapHttpError(status: number, bodyText: string): string {
     }
     if (lower.includes('session') && lower.includes('not found')) {
       return 'That sign-in is no longer listed.';
+    }
+    if (lower.includes('user not found')) {
+      return 'That person is no longer listed.';
     }
     return 'Requested resource was not found.';
   }

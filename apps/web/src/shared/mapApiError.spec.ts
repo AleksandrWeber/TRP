@@ -91,6 +91,29 @@ describe('mapHttpError', () => {
     );
   });
 
+  it('maps last-Admin and own-role 409s to operator language', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(
+      mapHttpError(
+        409,
+        JSON.stringify({ message: 'Cannot change the last active Administrator.' }),
+      ),
+    ).toBe('Cannot change the last active Administrator.');
+    expect(mapHttpError(409, JSON.stringify({ message: 'You cannot change your own role.' }))).toBe(
+      'You cannot change your own role.',
+    );
+  });
+
+  it('maps unrecognized role 400 and missing person 404', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(mapHttpError(400, JSON.stringify({ message: 'Role is not recognized.' }))).toBe(
+      'That role is not recognized.',
+    );
+    expect(mapHttpError(404, JSON.stringify({ message: 'User not found' }))).toBe(
+      'That person is no longer listed.',
+    );
+  });
+
   it('maps 409 duplicate account without exposing JSON', () => {
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
     expect(

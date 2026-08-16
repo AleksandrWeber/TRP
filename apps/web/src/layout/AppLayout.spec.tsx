@@ -83,6 +83,8 @@ describe('PC-19 Operator Shell', () => {
     expect(html).toContain('Sign-in sessions');
     expect(html).toContain('href="/account/password"');
     expect(html).toContain('Password');
+    expect(html).toContain('href="/people"');
+    expect(html).toContain('People');
     expect(html).toContain('Logout');
     expect(html).toContain('Switch workspace');
     expect(html).toContain('Default Workspace');
@@ -97,6 +99,9 @@ describe('PC-19 Operator Shell', () => {
     expect(html).not.toContain('href="/trading/exchanges"');
     expect(html).not.toContain('Coming Soon');
     expect(html).not.toContain('review-epic');
+    expect(html).not.toContain('Invite teammate');
+    expect(html).not.toContain('Credential Vault');
+    expect(html).not.toContain('API keys');
     expect(html).toContain('Knowledge Lake');
     expect(html).toContain('href="/knowledge-lake"');
     expect(html).toContain('AI Analytics');

@@ -31,6 +31,8 @@ import { Role } from '../identity/role';
 import { WorkspaceAccessService } from '../workspace';
 import { isOrchestrationRejectedError } from './orchestration-rejected.error';
 import { TradingOrchestratorProductService } from './trading-orchestrator-product.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 import {
   toOrchestrationHistoryView,
   toOrchestrationPlanListView,
@@ -52,6 +54,7 @@ type RequestWithUser = { user: AuthUser };
  * Coordination only. Never creates Session, Orders, Execution, or Risk approvals.
  */
 @Controller({ path: 'orchestrations', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class TradingOrchestratorController {
   constructor(
     private readonly product: TradingOrchestratorProductService,
@@ -59,6 +62,7 @@ export class TradingOrchestratorController {
     private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post('plans')
   @Roles(Role.Trader, Role.Admin)
   createPlan(
@@ -99,6 +103,7 @@ export class TradingOrchestratorController {
     return plan;
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post('runs')
   @Roles(Role.Trader, Role.Admin)
   requestRun(
@@ -146,6 +151,7 @@ export class TradingOrchestratorController {
     return run;
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post('runs/:runId/confirm')
   @Roles(Role.Trader, Role.Admin)
   confirmRun(
@@ -165,6 +171,7 @@ export class TradingOrchestratorController {
     }
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post('runs/:runId/cancel')
   @Roles(Role.Trader, Role.Admin)
   cancelRun(
@@ -186,6 +193,7 @@ export class TradingOrchestratorController {
     }
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post('runs/:runId/selections')
   @Roles(Role.Trader, Role.Admin)
   proposeSelection(
@@ -210,6 +218,7 @@ export class TradingOrchestratorController {
     }
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post('runs/:runId/handoff')
   @Roles(Role.Trader, Role.Admin)
   emitHandoff(

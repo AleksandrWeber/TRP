@@ -5,6 +5,8 @@ import { WorkspaceDomainService } from '../workspace';
 import type { KnowledgeEntry } from './knowledge-entry';
 import { KnowledgeDomainService } from './knowledge-domain.service';
 import { KnowledgeService } from './knowledge.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 /**
  * Knowledge HTTP API.
@@ -12,6 +14,7 @@ import { KnowledgeService } from './knowledge.service';
  * Other routes remain Prisma research_outcome (legacy) — not workspace-scoped.
  */
 @Controller({ path: 'knowledge', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class KnowledgeController {
   constructor(
     private readonly knowledgeService: KnowledgeService,
@@ -33,6 +36,7 @@ export class KnowledgeController {
     return this.domain.find(query, workspaceId);
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post('backfill')
   backfill() {
     return this.knowledgeService.backfillFromExperiments();
@@ -43,6 +47,7 @@ export class KnowledgeController {
     return this.knowledgeService.get(params.id);
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post()
   create(@Body() body: CreateKnowledgeBodyDto) {
     return this.knowledgeService.create(body);

@@ -304,6 +304,14 @@ describe('AuthenticationService (US106, US107, V3-S01-c)', () => {
     });
   });
 
+  it('me reflects an Identity role assignment on the next call', async () => {
+    const issued = await authentication.register('g@example.com', 'G', TEST_PASSWORD);
+
+    await users.assignRole(issued.user.id, Role.Trader);
+
+    expect(authentication.me(issued.user.id).role).toBe(Role.Trader);
+  });
+
   it('issued JWT role follows Identity role changes', async () => {
     const admin = await users.create({
       email: 'admin@example.com',

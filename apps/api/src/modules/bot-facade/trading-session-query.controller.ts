@@ -23,6 +23,8 @@ import {
 } from './command-center-session.view';
 import type { BotView } from './domain/bot-view';
 import { OperatorProjectionService, SessionHandoffConsumerService } from '../product-flow';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -33,6 +35,7 @@ type RequestWithUser = { user: AuthUser };
  * Canonical path `trading-sessions`. No lifecycle mutations.
  */
 @Controller({ path: 'trading-sessions', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class TradingSessionQueryController {
   constructor(
     private readonly bots: BotFacadeService,

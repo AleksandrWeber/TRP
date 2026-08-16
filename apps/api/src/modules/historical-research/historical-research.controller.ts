@@ -7,14 +7,18 @@ import {
 } from '../../validation';
 import { WorkspaceDomainService } from '../workspace';
 import { HistoricalResearchService } from './historical-research.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 @Controller({ path: 'historical-research', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class HistoricalResearchController {
   constructor(
     private readonly research: HistoricalResearchService,
     private readonly workspaces: WorkspaceDomainService,
   ) {}
 
+  @RequirePermission(PermissionClass.Research)
   @Post('runs')
   run(
     @Body() body: RunHistoricalResearchBodyDto,

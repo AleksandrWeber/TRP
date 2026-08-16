@@ -18,6 +18,8 @@ import {
 import type { AuthUser } from '../auth/jwt.strategy';
 import { WorkspaceAccessService } from '../workspace';
 import { ReportingProductService } from './reporting-product.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 import type {
   ReportDefinitionPageView,
   ReportDefinitionView,
@@ -32,6 +34,7 @@ type RequestWithUser = { user: AuthUser };
  * Distinct from research `/v1/reports`. Queries only. No duplicated generation.
  */
 @Controller({ path: 'report-runs', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class ReportingRunController {
   constructor(
     private readonly product: ReportingProductService,
@@ -75,6 +78,7 @@ export class ReportingRunController {
 }
 
 @Controller({ path: 'report-definitions', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class ReportingDefinitionController {
   constructor(
     private readonly product: ReportingProductService,

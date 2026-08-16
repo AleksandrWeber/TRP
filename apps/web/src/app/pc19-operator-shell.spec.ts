@@ -24,6 +24,8 @@ describe('PC-19 product path honesty', () => {
     expect(appSource).toContain('ForgotPasswordPage');
     expect(appSource).toContain('ResetPasswordPage');
     expect(appSource).toContain('PasswordPage');
+    expect(appSource).toContain('PeoplePage');
+    expect(appSource).toContain('path="people"');
     expect(appSource).toContain('Navigate to="/trading/paper"');
     expect(appSource).toContain('Navigate to="/"');
   });
@@ -37,6 +39,8 @@ describe('PC-19 product path honesty', () => {
     expect(portfolio).not.toContain('Reset (dev)');
     expect(portfolio).not.toContain('resetPortfolio');
     expect(paper).toContain('Sandbox');
+    expect(paper).not.toContain('Execute Trade');
+    expect(paper).not.toContain('executePaperTrade');
     expect(home).not.toContain('/production');
     expect(home).toContain('/trading/paper');
     expect(home).toContain('/command-center');

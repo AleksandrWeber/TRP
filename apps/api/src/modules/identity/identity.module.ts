@@ -4,6 +4,7 @@ import { METRICS } from '../../metrics/metrics.token';
 import { instrumentRepository } from '../../metrics/instrument-repository';
 import { PrismaModule, PrismaService } from '../../storage/prisma/prisma.module';
 import { PrismaUserRepository } from './repositories/prisma-user.repository';
+import { PeopleController } from './people.controller';
 import { USER_REPOSITORY } from './repositories/user.repository.token';
 import { UserDomainService } from './user-domain.service';
 
@@ -15,6 +16,7 @@ import { UserDomainService } from './user-domain.service';
  */
 @Module({
   imports: [PrismaModule],
+  controllers: [PeopleController],
   providers: [
     {
       provide: USER_REPOSITORY,

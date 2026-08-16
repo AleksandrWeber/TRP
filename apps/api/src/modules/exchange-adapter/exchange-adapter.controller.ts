@@ -26,6 +26,8 @@ import {
   ExchangeUnsupportedCapabilityError,
 } from './exchange-adapter-errors';
 import { ExchangeAdapterService } from './exchange-adapter.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -34,6 +36,7 @@ type RequestWithUser = { user: AuthUser };
  * Path `exchanges` → `/v1/exchanges/...`.
  */
 @Controller({ path: 'exchanges', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class ExchangeAdapterController {
   constructor(
     private readonly exchanges: ExchangeAdapterService,
@@ -83,6 +86,7 @@ export class ExchangeAdapterController {
     });
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post('connect')
   @Roles(Role.Trader, Role.Admin)
   async connect(
@@ -96,6 +100,7 @@ export class ExchangeAdapterController {
     });
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post('disconnect')
   @Roles(Role.Trader, Role.Admin)
   async disconnect(

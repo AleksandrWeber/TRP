@@ -25,6 +25,8 @@ import {
   OrderValidationError,
 } from './order-errors';
 import { OrderService } from './order.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -34,6 +36,7 @@ type RequestWithUser = { user: AuthUser };
  * No exchange or live execution.
  */
 @Controller({ path: 'trading-orders', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class OrderController {
   constructor(
     private readonly orders: OrderService,
@@ -95,6 +98,7 @@ export class OrderController {
     });
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post()
   async create(
     @Req() req: RequestWithUser,
@@ -125,6 +129,7 @@ export class OrderController {
     });
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post(':id/cancel')
   async cancel(
     @Req() req: RequestWithUser,
@@ -143,6 +148,7 @@ export class OrderController {
     });
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post(':id/execute')
   async execute(
     @Req() req: RequestWithUser,
@@ -160,6 +166,7 @@ export class OrderController {
     });
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Patch(':id')
   async update(
     @Req() req: RequestWithUser,

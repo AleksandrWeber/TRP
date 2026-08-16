@@ -4,12 +4,15 @@ import type { CampaignSession } from '../campaign-session/campaign-session';
 import { CampaignImportService } from './campaign-import.service';
 import { ImportFormat } from './import-format';
 import { ImportValidationError } from './import-validation.error';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 /**
  * HTTP import of Campaign Sessions (US065).
  * Does not persist — returns validated CampaignSession only.
  */
 @Controller({ path: 'campaign-import', version: '1' })
+@RequirePermission(PermissionClass.Research)
 export class CampaignImportController {
   constructor(private readonly campaignImport: CampaignImportService) {}
 

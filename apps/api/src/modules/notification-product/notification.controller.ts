@@ -20,6 +20,8 @@ import {
 import type { AuthUser } from '../auth/jwt.strategy';
 import { WorkspaceAccessService } from '../workspace';
 import { NotificationProductService } from './notification-product.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 import type {
   NotificationChannelPageView,
   NotificationDeliveryDetailView,
@@ -41,6 +43,7 @@ type RequestWithUser = { user: AuthUser };
  * Does not deliver, connect Telegram, send tests, or activate reserved channels.
  */
 @Controller({ path: 'notification-settings', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class NotificationSettingsController {
   constructor(
     private readonly product: NotificationProductService,
@@ -58,6 +61,7 @@ export class NotificationSettingsController {
 }
 
 @Controller({ path: 'notification-preferences', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class NotificationPreferencesController {
   constructor(
     private readonly product: NotificationProductService,
@@ -73,6 +77,7 @@ export class NotificationPreferencesController {
     return this.product.getPreferences(workspaceId, request.user.userId);
   }
 
+  @RequirePermission(PermissionClass.OwnWorkspace)
   @Put()
   upsert(
     @Req() request: RequestWithUser,
@@ -105,6 +110,7 @@ export class NotificationPreferencesController {
 }
 
 @Controller({ path: 'notification-channels', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class NotificationChannelsController {
   constructor(
     private readonly product: NotificationProductService,
@@ -179,6 +185,7 @@ export class NotificationChannelsController {
 }
 
 @Controller({ path: 'notification-routing', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class NotificationRoutingController {
   constructor(
     private readonly product: NotificationProductService,
@@ -196,6 +203,7 @@ export class NotificationRoutingController {
 }
 
 @Controller({ path: 'notification-deliveries', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class NotificationDeliveriesController {
   constructor(
     private readonly product: NotificationProductService,

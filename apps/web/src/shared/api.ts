@@ -282,6 +282,16 @@ export type AuthUser = {
   id: string;
   email: string;
   role: string;
+  displayName?: string;
+  status?: string;
+};
+
+export type PeopleOperatorView = {
+  id: string;
+  email: string;
+  displayName: string;
+  role: string;
+  status: string;
 };
 
 export type SignInSessionView = {
@@ -1586,12 +1596,6 @@ export type PaperSessionStatistics = {
   losingTrades: number;
 };
 
-export type PaperTradeResult = {
-  session: PaperSessionView;
-  order: OrderView;
-  execution: PaperExecutionView | null;
-};
-
 export type ExchangeCapabilitiesView = {
   supportsSpot: boolean;
   supportsMargin: boolean;
@@ -2785,6 +2789,12 @@ export const api = {
       body: '{}',
     }),
   me: () => request<AuthUser>('/auth/me'),
+  listPeople: () => request<{ operators: PeopleOperatorView[] }>('/people'),
+  assignPersonRole: (userId: string, role: string) =>
+    request<PeopleOperatorView>(`/people/${encodeURIComponent(userId)}/role`, {
+      method: 'PATCH',
+      body: JSON.stringify({ role }),
+    }),
   listSignInSessions: () => request<{ sessions: SignInSessionView[] }>('/auth/sessions'),
   revokeSignInSession: (sessionId: string) =>
     request<{ endedCurrent: boolean }>(`/auth/sessions/${encodeURIComponent(sessionId)}`, {
@@ -3473,22 +3483,6 @@ export const api = {
     request<PaperExecutionView[]>(`/paper/sessions/${id}/executions`),
   getPaperSessionStatistics: (id: string) =>
     request<PaperSessionStatistics>(`/paper/sessions/${id}/statistics`),
-  executePaperTrade: (
-    id: string,
-    body: {
-      symbol: string;
-      side: string;
-      type: string;
-      quantity: string;
-      requestedPrice?: string | null;
-      marketPrice?: string;
-      timeInForce?: string;
-    },
-  ) =>
-    request<PaperTradeResult>(`/paper/sessions/${id}/orders`, {
-      method: 'POST',
-      body: JSON.stringify(body),
-    }),
   listExchanges: () => request<ExchangeView[]>('/exchanges'),
   getExchangeStatus: () => request<ExchangeStatusView>('/exchanges/status'),
   getExchange: (id: string) => request<ExchangeView>(`/exchanges/${id}`),

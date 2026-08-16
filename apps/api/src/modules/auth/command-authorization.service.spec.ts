@@ -70,4 +70,12 @@ describe('US158 — workspace and command authorization', () => {
     expect(access.resolveAccessibleWorkspaceId(String(other.id), 'user-owner')).toBeNull();
     expect(access.resolveAccessibleWorkspaceId('missing-workspace', 'user-owner')).toBeNull();
   });
+
+  it('uses the C5 matrix cell rather than an inherited Admin flag', () => {
+    expect(authz.canIssueTradingCommand(Role.Trader)).toBe(true);
+    expect(authz.canIssueTradingCommand(Role.Admin)).toBe(true);
+    expect(authz.canIssueTradingCommand(Role.Researcher)).toBe(false);
+    expect(authz.canIssueTradingCommand(Role.Reader)).toBe(false);
+    expect(authz.canIssueTradingCommand('Superuser' as Role)).toBe(false);
+  });
 });

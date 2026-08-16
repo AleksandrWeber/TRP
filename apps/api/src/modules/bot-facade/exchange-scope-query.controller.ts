@@ -13,6 +13,8 @@ import {
 } from '../exchange-scope';
 import { WorkspaceAccessService } from '../workspace';
 import { BotFacadeService } from './bot-facade.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -29,6 +31,7 @@ export type ExchangeScopeOverviewView = Readonly<{
  * Projects existing identity + Session counts. No policies or balances.
  */
 @Controller({ path: 'exchange-scopes', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class ExchangeScopeQueryController {
   constructor(
     private readonly bots: BotFacadeService,

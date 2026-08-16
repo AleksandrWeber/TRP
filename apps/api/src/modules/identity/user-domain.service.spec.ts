@@ -1,4 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
+import {
+  LastAdminProtectedError,
+  SelfRoleChangeError,
+  UnknownRoleError,
+} from './role-assignment.errors';
 import { Role } from './role';
 import { InMemoryUserRepository } from './repositories/in-memory-user.repository';
 import { UserDomainService } from './user-domain.service';
@@ -96,5 +101,112 @@ describe('UserDomainService (US105, US107)', () => {
 
   it('disable returns null when user is missing', async () => {
     expect(await service.disable('missing')).toBeNull();
+  });
+
+  it('lists operators sorted by email without extra fields', async () => {
+    await service.create({ email: 'zeta@example.com', displayName: 'Zeta', role: Role.Trader });
+    await service.create({ email: 'alpha@example.com', displayName: 'Alpha' });
+
+    const listed = service.list();
+    expect(listed.map((user) => user.email)).toEqual(['alpha@example.com', 'zeta@example.com']);
+    expect(
+      listed.every(
+        (user) => Object.keys(user).sort().join() === 'displayName,email,id,role,status',
+      ),
+    ).toBe(true);
+  });
+
+  it('assignRole persists a known role immediately', async () => {
+    const created = await service.create({ email: 'op@example.com', displayName: 'Op' });
+
+    const assigned = await service.assignRole(created.id, Role.Trader);
+
+    expect(assigned?.role).toBe(Role.Trader);
+    expect(service.getById(created.id)?.role).toBe(Role.Trader);
+  });
+
+  it('assignRole returns null when the user is missing', async () => {
+    expect(await service.assignRole('missing', Role.Trader)).toBeNull();
+  });
+
+  it('assignRole rejects an unknown role without changing Identity', async () => {
+    const created = await service.create({ email: 'op@example.com', displayName: 'Op' });
+
+    await expect(service.assignRole(created.id, 'Superuser' as Role)).rejects.toBeInstanceOf(
+      UnknownRoleError,
+    );
+    expect(service.getById(created.id)?.role).toBe(Role.Researcher);
+  });
+
+  it('refuses to demote the last active Administrator', async () => {
+    const onlyAdmin = await service.create({
+      email: 'admin@example.com',
+      displayName: 'Admin',
+      role: Role.Admin,
+    });
+
+    await expect(service.assignRole(onlyAdmin.id, Role.Trader)).rejects.toBeInstanceOf(
+      LastAdminProtectedError,
+    );
+    await expect(service.update(onlyAdmin.id, { role: Role.Reader })).rejects.toBeInstanceOf(
+      LastAdminProtectedError,
+    );
+    expect(service.getById(onlyAdmin.id)?.role).toBe(Role.Admin);
+  });
+
+  it('allows demoting a second Administrator', async () => {
+    await service.create({ email: 'admin-a@example.com', displayName: 'A', role: Role.Admin });
+    const second = await service.create({
+      email: 'admin-b@example.com',
+      displayName: 'B',
+      role: Role.Admin,
+    });
+
+    const demoted = await service.assignRole(second.id, Role.Trader);
+
+    expect(demoted?.role).toBe(Role.Trader);
+    expect(service.list().filter((user) => user.role === Role.Admin)).toHaveLength(1);
+  });
+
+  it('does not count a disabled Administrator toward last-Admin protection', async () => {
+    const active = await service.create({
+      email: 'active-admin@example.com',
+      displayName: 'Active',
+      role: Role.Admin,
+    });
+    const disabled = await service.create({
+      email: 'disabled-admin@example.com',
+      displayName: 'Disabled',
+      role: Role.Admin,
+    });
+    await service.disable(disabled.id);
+
+    await expect(service.assignRole(active.id, Role.Trader)).rejects.toBeInstanceOf(
+      LastAdminProtectedError,
+    );
+    const changed = await service.assignRole(disabled.id, Role.Reader);
+    expect(changed?.role).toBe(Role.Reader);
+    expect(service.getById(active.id)?.role).toBe(Role.Admin);
+  });
+
+  it('refuses an Administrator changing their own role even when another Admin exists', async () => {
+    const first = await service.create({
+      email: 'admin-a@example.com',
+      displayName: 'A',
+      role: Role.Admin,
+    });
+    const second = await service.create({
+      email: 'admin-b@example.com',
+      displayName: 'B',
+      role: Role.Admin,
+    });
+
+    await expect(service.assignRole(first.id, Role.Trader, first.id)).rejects.toBeInstanceOf(
+      SelfRoleChangeError,
+    );
+    expect(service.getById(first.id)?.role).toBe(Role.Admin);
+
+    const demoted = await service.assignRole(first.id, Role.Trader, second.id);
+    expect(demoted?.role).toBe(Role.Trader);
   });
 });

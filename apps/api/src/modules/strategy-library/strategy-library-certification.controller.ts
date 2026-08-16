@@ -19,6 +19,8 @@ import {
 } from '../../validation';
 import type { AuthUser } from '../auth/jwt.strategy';
 import { WorkspaceAccessService } from '../workspace';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 import {
   toCertificationAttemptView,
   toCertificationHistoryView,
@@ -37,6 +39,7 @@ type RequestWithUser = { user: AuthUser };
  * Not a new SoT. Not a new certification authority. Library remains membership SoT.
  */
 @Controller({ path: 'strategy-library/certifications', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class StrategyLibraryCertificationController {
   constructor(
     @Inject(STRATEGY_LIBRARY_CERTIFICATION_PORT)
@@ -44,6 +47,7 @@ export class StrategyLibraryCertificationController {
     private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
+  @RequirePermission(PermissionClass.Research)
   @Post()
   certify(
     @Req() request: RequestWithUser,

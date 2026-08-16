@@ -42,6 +42,8 @@ describe('PC-20 Product UX Polish', () => {
     expect(paths).toContain('/notifications/channels');
     expect(paths).toContain('/knowledge');
     expect(paths).toContain('/ai');
+    expect(paths).toContain('/account/password');
+    expect(paths).toContain('/people');
     expect(paths).not.toContain('/telegram');
     expect(paths).not.toContain('/trading/live');
     expect(paths).not.toContain('/production');
@@ -55,6 +57,7 @@ describe('PC-20 Product UX Polish', () => {
     expect(labels).toContain('Notification Channels');
     expect(labels).toContain('Sign-in sessions');
     expect(labels).toContain('Password');
+    expect(labels).toContain('People');
     expect(labels).not.toContain('Certify');
     expect(labels).not.toContain('Orchestrator');
     expect(labels).not.toContain('Profile');
@@ -133,8 +136,27 @@ describe('PC-20 Product UX Polish', () => {
     expect(app).not.toContain('LiveTradingPage');
     expect(layout).not.toContain('Coming Soon');
     expect(layout).not.toContain('Live Bots');
+    expect(api).not.toContain('executePaperTrade');
     expect(api).toContain('listCampaignHistory');
     expect(api).toContain('/campaign-history');
     expect(api).toContain('/campaign-history/${sessionId}/export');
+  });
+
+  it('does not leak later-wave products through People or Administration', () => {
+    const people = readSrc('../pages/PeoplePage.tsx');
+    const catalog = readSrc('../shared/product-ui/catalog.ts');
+    const app = readSrc('./App.tsx');
+
+    expect(people).not.toContain('Invite');
+    expect(people).not.toContain('Vault');
+    expect(people).not.toContain('API key');
+    expect(people).not.toContain('Billing');
+    expect(people).not.toContain('Live trading');
+    expect(catalog).not.toContain('Credential Vault');
+    expect(catalog).not.toContain('Invite teammate');
+    expect(catalog).toContain('/people');
+    expect(app).toContain('PeoplePage');
+    expect(app).not.toContain('VaultPage');
+    expect(app).not.toContain('InvitePage');
   });
 });

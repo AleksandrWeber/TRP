@@ -24,6 +24,8 @@ import { isRuntimeEnforcementRejectedError } from '../runtime-enforcement';
 import { WorkspaceAccessService } from '../workspace';
 import { StrategyDeploymentService } from './strategy-deployment.service';
 import { toStrategyDeploymentView, type StrategyDeploymentView } from './strategy-deployment.view';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -33,6 +35,7 @@ type RequestWithUser = { user: AuthUser };
  * Risk evaluation, or Execution endpoints.
  */
 @Controller({ path: 'strategy-deployments', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class StrategyDeploymentController {
   constructor(
     private readonly deployments: StrategyDeploymentService,
@@ -40,6 +43,7 @@ export class StrategyDeploymentController {
     private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post()
   @Roles(Role.Trader, Role.Admin)
   async create(
@@ -84,6 +88,7 @@ export class StrategyDeploymentController {
     }
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post(':id/approve')
   @Roles(Role.Trader, Role.Admin)
   async approve(

@@ -23,6 +23,8 @@ import {
   PositionValidationError,
 } from './position-errors';
 import { PositionService } from './position.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -31,6 +33,7 @@ type RequestWithUser = { user: AuthUser };
  * Position lifecycle endpoints. No exchange or execution.
  */
 @Controller({ path: 'positions', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class PositionController {
   constructor(
     private readonly positions: PositionService,
@@ -85,6 +88,7 @@ export class PositionController {
    * Lifecycle mutations must flow Order → Risk → Execution → PositionService.
    * Mark-price updates remain available for valuation without changing size/side.
    */
+  @RequirePermission(PermissionClass.PaperCommand)
   @Patch('mark-price')
   async markPrice(
     @Req() req: RequestWithUser,

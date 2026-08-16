@@ -21,6 +21,8 @@ import {
   PortfolioValidationError,
 } from './portfolio-errors';
 import { PortfolioService } from './portfolio.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -29,6 +31,7 @@ type RequestWithUser = { user: AuthUser };
  * Read endpoints + development-only reset. No exchange or execution.
  */
 @Controller({ path: 'portfolio', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class PortfolioController {
   constructor(
     private readonly portfolios: PortfolioService,
@@ -94,6 +97,7 @@ export class PortfolioController {
     });
   }
 
+  @RequirePermission(PermissionClass.PaperCommand)
   @Post('reset')
   async reset(@Req() req: RequestWithUser, @Headers('x-workspace-id') workspaceIdHeader?: string) {
     return this.run(async () => {

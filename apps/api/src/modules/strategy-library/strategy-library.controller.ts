@@ -18,6 +18,8 @@ import {
 } from '../../validation';
 import type { AuthUser } from '../auth/jwt.strategy';
 import { WorkspaceAccessService } from '../workspace';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 import {
   parseIncludeArchived,
   parseMembershipStatuses,
@@ -46,6 +48,7 @@ type RequestWithUser = { user: AuthUser };
  * Not a new SoT. Not `/strategies`. Registration / Lifecycle write ports stay inactive.
  */
 @Controller({ path: 'strategy-library', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class StrategyLibraryController {
   constructor(
     @Inject(STRATEGY_LIBRARY_LOOKUP_PORT)

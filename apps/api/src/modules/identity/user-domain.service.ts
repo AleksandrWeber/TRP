@@ -1,6 +1,11 @@
 import { Inject, Injectable, type OnModuleInit } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
-import { Role } from './role';
+import {
+  LastAdminProtectedError,
+  SelfRoleChangeError,
+  UnknownRoleError,
+} from './role-assignment.errors';
+import { isKnownRole, Role } from './role';
 import type { User } from './user';
 import { toUserId, type UserId } from './user-id';
 import { UserStatus } from './user-status';
@@ -21,12 +26,13 @@ export type UpdateUserInput = {
 };
 
 /**
- * Identity User domain service (US105, US107, PC-18).
- * create / getById / getByEmail / update / disable.
+ * Identity User domain service (US105, US107, PC-18, V3-S02-c).
+ * create / getById / getByEmail / list / update / assignRole / disable.
  * Storage is delegated to UserRepository (no owned Map as Source of Truth).
  * Reads are served from a hydrated cache so JWT validation stays synchronous.
  * Source of truth for user profile and role — no JWT / REST / Pipeline coupling.
  * Password hashes remain in Authentication (password-free Identity).
+ * Role assignment does not create workspace membership.
  */
 @Injectable()
 export class UserDomainService implements OnModuleInit {
@@ -74,9 +80,35 @@ export class UserDomainService implements OnModuleInit {
     return this.byEmail.get(normalizeEmail(email)) ?? null;
   }
 
+  list(): User[] {
+    return [...this.byId.values()].sort((left, right) => {
+      const byEmail = left.email.localeCompare(right.email);
+      return byEmail !== 0 ? byEmail : left.id.localeCompare(right.id);
+    });
+  }
+
+  async assignRole(id: UserId | string, role: Role, actorId?: string): Promise<User | null> {
+    const existing = this.byId.get(String(id));
+    if (!existing) return null;
+
+    this.assertCanChangeRole(existing, role, actorId);
+    if (existing.role === role) {
+      return existing;
+    }
+
+    existing.role = role;
+    await this.repository.save(existing);
+    this.index(existing);
+    return existing;
+  }
+
   async update(id: UserId | string, input: UpdateUserInput): Promise<User | null> {
     const existing = this.byId.get(String(id));
     if (!existing) return null;
+
+    if (input.role !== undefined) {
+      this.assertCanChangeRole(existing, input.role);
+    }
 
     const previousEmail = existing.email;
 
@@ -120,6 +152,29 @@ export class UserDomainService implements OnModuleInit {
   private index(user: User): void {
     this.byId.set(user.id, user);
     this.byEmail.set(normalizeEmail(user.email), user);
+  }
+
+  private assertCanChangeRole(existing: User, nextRole: Role, actorId?: string): void {
+    if (!isKnownRole(nextRole)) {
+      throw new UnknownRoleError();
+    }
+    if (actorId !== undefined && String(actorId) === existing.id && existing.role !== nextRole) {
+      throw new SelfRoleChangeError();
+    }
+    if (
+      existing.role === Role.Admin &&
+      nextRole !== Role.Admin &&
+      existing.status === UserStatus.Active &&
+      this.activeAdmins().length <= 1
+    ) {
+      throw new LastAdminProtectedError();
+    }
+  }
+
+  private activeAdmins(): User[] {
+    return [...this.byId.values()].filter(
+      (user) => user.status === UserStatus.Active && user.role === Role.Admin,
+    );
   }
 }
 

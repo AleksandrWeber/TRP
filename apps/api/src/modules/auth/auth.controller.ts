@@ -24,8 +24,10 @@ import {
 } from './auth-cookies';
 import { AuthenticationService } from './authentication.service';
 import { Public } from './decorators/public.decorator';
+import { RequirePermission } from './decorators/require-permission.decorator';
 import { Roles } from './decorators/roles.decorator';
 import type { AuthUser } from './jwt.strategy';
+import { PermissionClass } from './permission-catalog';
 
 type AuthRequest = {
   ip?: string;
@@ -140,6 +142,7 @@ export class AuthController {
     return this.authentication.resetPassword(body.token, body.password, requestContext(req));
   }
 
+  @RequirePermission(PermissionClass.Self)
   @Post('change-password')
   async changePassword(@Req() req: AuthRequest, @Body() body: ChangePasswordBodyDto) {
     return this.authentication.changePassword(
@@ -151,6 +154,7 @@ export class AuthController {
     );
   }
 
+  @RequirePermission(PermissionClass.Self)
   @Get('sessions')
   async listSessions(@Req() req: { user: AuthUser }) {
     return {
@@ -158,6 +162,7 @@ export class AuthController {
     };
   }
 
+  @RequirePermission(PermissionClass.Self)
   @Post('sessions/revoke-others')
   async revokeOtherSessions(@Req() req: AuthRequest) {
     return this.authentication.revokeOtherSessions(
@@ -167,6 +172,7 @@ export class AuthController {
     );
   }
 
+  @RequirePermission(PermissionClass.Self)
   @Post('sessions/revoke-all')
   async revokeAllSessions(
     @Req() req: AuthRequest,
@@ -181,6 +187,7 @@ export class AuthController {
     return result;
   }
 
+  @RequirePermission(PermissionClass.Self)
   @Delete('sessions/:sessionId')
   async revokeSession(
     @Req() req: AuthRequest,
@@ -199,11 +206,13 @@ export class AuthController {
     return result;
   }
 
+  @RequirePermission(PermissionClass.Self)
   @Get('me')
   me(@Req() req: { user: AuthUser }) {
     return this.authentication.me(req.user.userId);
   }
 
+  @RequirePermission(PermissionClass.RoleAdmin)
   @Get('admin')
   @Roles(Role.Admin)
   admin(@Req() req: { user: AuthUser }) {

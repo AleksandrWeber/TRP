@@ -10,8 +10,11 @@ import {
 } from '../../validation/dto/research-control-center.dto';
 import { WorkspaceDomainService } from '../workspace';
 import { ResearchControlCenterService } from './research-control-center.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 @Controller({ path: 'research-control', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class ResearchControlCenterController {
   constructor(
     private readonly controlCenter: ResearchControlCenterService,
@@ -42,6 +45,7 @@ export class ResearchControlCenterController {
     return this.controlCenter.getResearch(workspaceId, params.id);
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post('executions')
   startExecution(
     @Body() body: StartResearchExecutionBodyDto,
@@ -51,6 +55,7 @@ export class ResearchControlCenterController {
     return this.controlCenter.startResearch(workspaceId, body);
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post('executions/:id/cancel')
   cancelExecution(
     @Param() params: IdParamDto,
@@ -75,6 +80,7 @@ export class ResearchControlCenterController {
     return this.controlCenter.getOptimization(workspaceId, params.id);
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post('optimizations')
   startOptimization(
     @Body() body: StartOptimizationBodyDto,
@@ -96,6 +102,7 @@ export class ResearchControlCenterController {
     return this.controlCenter.getAnalytics(workspaceId, params.id);
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post('analytics')
   startAnalytics(
     @Body() body: StartAnalyticsBodyDto,
@@ -120,6 +127,7 @@ export class ResearchControlCenterController {
     return this.controlCenter.getEngineering(workspaceId, params.id);
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post('engineering')
   startEngineering(
     @Body() body: StartEngineeringBodyDto,
@@ -140,6 +148,7 @@ export class ResearchControlCenterController {
     return this.controlCenter.getSettings();
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Patch('settings')
   updateSettings(@Body() body: UpdateResearchControlSettingsBodyDto) {
     return this.controlCenter.updateSettings(body);

@@ -3,12 +3,15 @@ import { JobIdParamDto } from '../../validation';
 import type { Job } from './job';
 import { JobCancelConflictError } from './job-cancel-conflict.error';
 import { JobService } from './job.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 /**
  * Job Status + Cancellation API (US072–US073).
  * Status is read-only; cancel mutates PENDING → CANCELLED only.
  */
 @Controller({ path: 'jobs', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class JobController {
   constructor(private readonly jobs: JobService) {}
 
@@ -26,6 +29,7 @@ export class JobController {
     return job;
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post(':jobId/cancel')
   cancel(@Param() params: JobIdParamDto): Job {
     try {

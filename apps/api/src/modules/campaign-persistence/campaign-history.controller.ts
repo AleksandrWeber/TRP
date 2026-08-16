@@ -14,12 +14,15 @@ import { CampaignSessionStatus } from '../campaign-session/campaign-session-stat
 import { CampaignHistoryService } from './campaign-history.service';
 import type { HistoryPageRequest, HistorySortBy, HistorySortDirection } from './history-page';
 import type { HistoryQuery } from './history-query';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 const SORT_BY: HistorySortBy[] = ['createdAt', 'completedAt', 'status'];
 const SORT_DIRECTION: HistorySortDirection[] = ['ASC', 'DESC'];
 const STATUSES = Object.values(CampaignSessionStatus);
 
 @Controller({ path: 'campaign-history', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class CampaignHistoryController {
   constructor(
     private readonly history: CampaignHistoryService,

@@ -2,8 +2,11 @@ import { Body, Controller, Get, NotFoundException, Param, Patch, Post } from '@n
 import { IdParamDto, ImportBinanceBodyDto, UpdateDatasetBodyDto } from '../../validation';
 import type { MarketRegime } from './dataset-metadata';
 import { DatasetsService } from './datasets.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 @Controller({ path: 'datasets', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class DatasetsController {
   constructor(private readonly datasetsService: DatasetsService) {}
 
@@ -12,6 +15,7 @@ export class DatasetsController {
     return this.datasetsService.list();
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post('import/binance')
   importFromBinance(@Body() body: ImportBinanceBodyDto = {}) {
     return this.datasetsService.importFromBinance({
@@ -20,6 +24,7 @@ export class DatasetsController {
     });
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Patch(':id')
   async update(@Param() params: IdParamDto, @Body() body: UpdateDatasetBodyDto) {
     const dataset = await this.datasetsService.update(params.id, {

@@ -15,6 +15,8 @@ import { WorkspaceAccessService } from './workspace-access.service';
 import { WorkspaceDomainService } from './workspace-domain.service';
 import { WorkspaceStatus } from './workspace-status';
 import type { Workspace } from './workspace';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 export type WorkspaceView = {
   id: string;
@@ -30,6 +32,7 @@ export type WorkspaceBootstrapResponse = WorkspaceView;
  * Transports existing WorkspaceDomainService operations. Ownership stays on Workspace.
  */
 @Controller({ path: 'workspaces', version: '1' })
+@RequirePermission(PermissionClass.OwnWorkspace)
 export class WorkspaceController {
   constructor(
     private readonly workspaces: WorkspaceDomainService,

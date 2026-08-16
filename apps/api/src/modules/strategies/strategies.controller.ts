@@ -19,6 +19,8 @@ import type {
   StrategyTimeframe,
 } from './strategy';
 import { StrategyDomainService } from './strategy-domain.service';
+import { RequirePermission } from '../auth/decorators/require-permission.decorator';
+import { PermissionClass } from '../auth/permission-catalog';
 
 export type StrategyView = {
   id: string;
@@ -43,6 +45,7 @@ export type StrategyView = {
  * A strategy owned by another workspace is a 404, never a leak.
  */
 @Controller({ path: 'strategies', version: '1' })
+@RequirePermission(PermissionClass.Projection)
 export class StrategiesController {
   constructor(
     private readonly strategies: StrategyDomainService,
@@ -67,6 +70,7 @@ export class StrategiesController {
     return toView(strategy);
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Post()
   async create(
     @Body() body: CreateStrategyBodyDto,
@@ -89,6 +93,7 @@ export class StrategiesController {
     return toView(strategy);
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Patch(':id')
   async update(
     @Param() params: IdParamDto,
@@ -112,6 +117,7 @@ export class StrategiesController {
     return toView(strategy);
   }
 
+  @RequirePermission(PermissionClass.Research)
   @Delete(':id')
   async remove(
     @Param() params: IdParamDto,
