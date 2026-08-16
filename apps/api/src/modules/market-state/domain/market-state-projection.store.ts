@@ -111,8 +111,9 @@ export class MarketStateProjectionStore {
     toVersion?: number;
   }): MarketStateTransitionRecord | null {
     const rows = this.listTransitions(query);
-    if (query.marketStateId !== undefined && query.marketStateId.trim() !== '') {
-      return rows.find((row) => row.marketStateId === query.marketStateId.trim()) ?? null;
+    const marketStateId = query.marketStateId?.trim();
+    if (marketStateId) {
+      return rows.find((row) => row.marketStateId === marketStateId) ?? null;
     }
     if (query.toVersion !== undefined) {
       return rows.find((row) => row.toVersion === query.toVersion) ?? null;

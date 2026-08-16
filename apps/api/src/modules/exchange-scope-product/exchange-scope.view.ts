@@ -422,7 +422,6 @@ export function toAdapterContextView(
     status: context.status,
     updatedAt: context.updatedAt,
     updatedBy: context.updatedBy,
-    isExecutionEngine: false as const,
     definesWireProtocol: false as const,
     ...EXCHANGE_SCOPE_PRODUCT_FLAGS,
   });
