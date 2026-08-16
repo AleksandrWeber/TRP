@@ -1,4 +1,5 @@
 import { renderToStaticMarkup } from 'react-dom/server';
+import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CampaignSummary } from '../shared/api';
 import {
@@ -77,7 +78,11 @@ describe('CampaignHistoryView', () => {
   });
 
   it('shows improved empty state copy', () => {
-    const html = renderToStaticMarkup(<CampaignHistoryView items={[]} />);
+    const html = renderToStaticMarkup(
+      <MemoryRouter>
+        <CampaignHistoryView items={[]} />
+      </MemoryRouter>,
+    );
     expect(html).toContain('Run your first campaign.');
   });
 });

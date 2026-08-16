@@ -15,6 +15,7 @@ import { HealthModule } from './modules/health/health.module';
 import { IdentityModule } from './modules/identity/identity.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 import { KnowledgeLakeModule } from './modules/knowledge-lake';
+import { KnowledgeLakeProductModule } from './modules/knowledge-lake-product';
 import { StrategyLibraryModule } from './modules/strategy-library';
 import { StrategyLibraryProductModule } from './modules/strategy-library/strategy-library-product.module';
 import { RuntimeEnforcementModule } from './modules/runtime-enforcement';
@@ -24,6 +25,7 @@ import { ReportingProductModule } from './modules/reporting-product';
 import { NotificationProductModule } from './modules/notification-product';
 import { TelegramProductModule } from './modules/telegram-product';
 import { AiAnalyticsModule } from './modules/ai-analytics';
+import { AiAnalyticsProductModule } from './modules/ai-analytics-product';
 import { NotificationDeliveryModule } from './modules/notification-delivery';
 import { MarketQualificationModule } from './modules/market-qualification';
 import { MarketProfileModule } from './modules/market-profile';
@@ -158,6 +160,7 @@ import { ValidationModule } from './validation/validation.module';
     ExperimentsModule,
     KnowledgeModule,
     KnowledgeLakeModule,
+    KnowledgeLakeProductModule,
     StrategyLibraryModule,
     StrategyLibraryProductModule,
     RuntimeEnforcementModule,
@@ -167,6 +170,7 @@ import { ValidationModule } from './validation/validation.module';
     NotificationProductModule,
     TelegramProductModule,
     AiAnalyticsModule,
+    AiAnalyticsProductModule,
     NotificationDeliveryModule,
     MarketQualificationModule,
     MarketProfileModule,

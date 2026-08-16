@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
 import type { NotificationSettingsView } from '../shared/api';
+import { ErrorBanner, LoadingState, PageHeader, SuccessBanner } from '../shared/product-ui';
 import {
   TIMEZONE_OPTIONS,
   channelStatusLabel,
@@ -61,43 +61,25 @@ export function NotificationSettingsView({
   if (loading && !settings) {
     return (
       <section data-testid="notification-settings">
-        <p className="text-sm text-slate-500">Loading notification settings…</p>
+        <LoadingState label="Loading notification settings…" />
       </section>
     );
   }
 
   return (
     <section className="space-y-6" data-testid="notification-settings">
-      <div>
-        <p className="text-xs uppercase tracking-wide text-slate-500">Notifications</p>
-        <h2 className="mt-1 text-2xl font-semibold">Notification settings</h2>
-        <p className="mt-2 text-slate-400">
-          Delivery Layer only. Notification Delivery owns routing and recorded outcomes. Telegram
-          remains transport — this page does not connect, test, or trade.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-3 text-sm">
-          <Link to="/notifications/history" className="text-sky-400 hover:text-sky-300">
-            Delivery history
-          </Link>
-          <Link to="/notifications/channels" className="text-sky-400 hover:text-sky-300">
-            Notification channels
-          </Link>
-          <Link to="/reporting" className="text-sky-400 hover:text-sky-300">
-            Reporting
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        productId="notifications"
+        title="Notification settings"
+        description="Delivery Layer only. Notification Delivery owns routing and recorded outcomes. Telegram remains transport — this page does not connect, test, or trade."
+        extraActions={[
+          { to: '/notifications/history', label: 'Delivery history' },
+          { to: '/reporting', label: 'Reporting' },
+        ]}
+      />
 
-      {error && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {error}
-        </div>
-      )}
-      {saved && (
-        <p className="text-sm text-emerald-300" data-testid="notification-saved">
-          Preferences saved.
-        </p>
-      )}
+      <ErrorBanner message={error} />
+      <SuccessBanner message={saved ? 'Preferences saved.' : null} testId="notification-saved" />
 
       {!settings || !draft ? (
         <p className="text-sm text-slate-500" data-testid="notification-empty">

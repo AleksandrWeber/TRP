@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import type { NotificationChannelsWorkspaceView } from '../shared/api';
+import { ErrorBanner, LoadingState, PageHeader, SuccessBanner } from '../shared/product-ui';
 import {
   TIMEZONE_OPTIONS,
   configurationHealthLabel,
@@ -70,41 +71,25 @@ export function NotificationChannelsView({
   if (loading && !workspace) {
     return (
       <section data-testid="notification-channels">
-        <p className="text-sm text-slate-500">Loading notification channels…</p>
+        <LoadingState label="Loading notification channels…" />
       </section>
     );
   }
 
   return (
     <section className="space-y-6" data-testid="notification-channels">
-      <div>
-        <p className="text-xs uppercase tracking-wide text-slate-500">Notifications</p>
-        <h2 className="mt-1 text-2xl font-semibold">Notification channels</h2>
-        <p className="mt-2 text-slate-400">
-          Channel-agnostic product over Notification Delivery. Telegram is the active transport.
-          Email, Slack, Discord, Microsoft Teams, and Push stay reserved. This page does not
-          redesign routing, activate live transports, or schedule digests.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-3 text-sm">
-          <Link to="/notifications" className="text-sky-400 hover:text-sky-300">
-            Notification settings
-          </Link>
-          <Link to="/notifications/history" className="text-sky-400 hover:text-sky-300">
-            Delivery history
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        productId="notification-channels"
+        title="Notification channels"
+        description="Channel-agnostic product over Notification Delivery. Telegram is the active transport. Email, Slack, Discord, Microsoft Teams, and Push stay reserved. This page does not redesign routing, activate live transports, or schedule digests."
+        extraActions={[{ to: '/notifications/history', label: 'Delivery history' }]}
+      />
 
-      {error && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {error}
-        </div>
-      )}
-      {saved && (
-        <p className="text-sm text-emerald-300" data-testid="channels-saved">
-          Channel preferences saved.
-        </p>
-      )}
+      <ErrorBanner message={error} />
+      <SuccessBanner
+        message={saved ? 'Channel preferences saved.' : null}
+        testId="channels-saved"
+      />
 
       {!workspace || !draft ? (
         <p className="text-sm text-slate-500" data-testid="channels-empty">

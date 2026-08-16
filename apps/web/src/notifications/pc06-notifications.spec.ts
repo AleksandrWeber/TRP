@@ -30,10 +30,11 @@ describe('PC-06 Notification product path', () => {
 
   it('adds Notifications to the paper-first shell without Coming Soon or a wizard', () => {
     const layout = readSrc('../layout/AppLayout.tsx');
+    const catalog = readSrc('../shared/product-ui/catalog.ts');
     const home = readSrc('./NotificationSettingsView.tsx');
     const detail = readSrc('./NotificationDetailView.tsx');
-    expect(layout).toContain("label: 'Notifications'");
-    expect(layout).toContain("to: '/notifications'");
+    expect(catalog).toContain("label: 'Notifications'");
+    expect(catalog).toContain("to: '/notifications'");
     expect(layout).not.toContain('Coming Soon');
     expect(home).toContain('Delivery Layer only');
     expect(home).not.toContain('Coming Soon');

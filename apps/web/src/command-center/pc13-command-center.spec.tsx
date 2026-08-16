@@ -62,10 +62,11 @@ describe('PC-13 Command Center product path', () => {
 
   it('keeps Command Center as paper operations without Coming Soon or Emergency Controls', () => {
     const layout = readSrc('../layout/AppLayout.tsx');
+    const catalog = readSrc('../shared/product-ui/catalog.ts');
     const wizard = readSrc('./CreateBotWizardView.tsx');
     const detail = readSrc('./SessionDetailView.tsx');
     const workspace = readSrc('./components/CommandCenterWorkspace.tsx');
-    expect(layout).toContain("label: 'Command Center'");
+    expect(catalog).toContain("label: 'Command Center'");
     expect(layout).not.toContain('Coming Soon');
     expect(layout).not.toContain("label: 'Live Bots'");
     expect(wizard).not.toContain('Coming Soon');

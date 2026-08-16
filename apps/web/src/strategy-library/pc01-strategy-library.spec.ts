@@ -27,12 +27,14 @@ describe('PC-01 Strategy Library product path', () => {
   it('keeps research strategy CRUD labeled as not the Library', () => {
     const strategies = readSrc('../pages/StrategiesPage.tsx');
     const layout = readSrc('../layout/AppLayout.tsx');
+    const catalog = readSrc('../shared/product-ui/catalog.ts');
     expect(strategies).toContain('Research strategies');
     expect(strategies).toContain('This is not the');
     expect(strategies).toContain('to="/strategy-library"');
     expect(strategies).toContain('to="/strategy-library/certify"');
-    expect(layout).toContain("label: 'Strategy Library'");
-    expect(layout).toContain("label: 'Research strategies'");
+    expect(catalog).toContain("label: 'Strategy Library'");
+    expect(catalog).toContain("label: 'Research strategies'");
+    expect(layout).toContain('NAV_BANDS');
     expect(layout).not.toContain('Coming Soon');
   });
 });

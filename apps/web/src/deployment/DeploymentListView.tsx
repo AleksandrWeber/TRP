@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { StrategyDeploymentView } from '../shared/api';
 import { formatUtc } from '../shared/formatUtc';
+import { EmptyState, ErrorBanner, LoadingState, PageHeader } from '../shared/product-ui';
 import { deploymentStatusLabel, gateOutcomeLabel } from './deployment-wizard';
 
 export function DeploymentListView({
@@ -18,55 +19,33 @@ export function DeploymentListView({
 
   return (
     <section className="space-y-6" data-testid={history ? 'deployment-history' : 'deployment-list'}>
-      <div>
-        <p className="text-xs uppercase tracking-wide text-slate-500">Deployment</p>
-        <h2 className="mt-1 text-2xl font-semibold">
-          {history ? 'Deployment history' : 'Deployments'}
-        </h2>
-        <p className="mt-2 text-slate-400">
-          {history
+      <PageHeader
+        productId="deployment"
+        title={history ? 'Deployment history' : 'Deployments'}
+        current={history ? 'History' : undefined}
+        description={
+          history
             ? 'Create and approve events for paper Deployments in this workspace. Deployment remains the workflow owner.'
-            : 'Certified paper Deployments in this workspace. Create a draft, then approve. This does not start a Trading Session.'}
-        </p>
-      </div>
+            : 'Certified paper Deployments in this workspace. Create a draft, then approve. This does not start a Trading Session.'
+        }
+        extraActions={[
+          { to: '/deployments/new', label: 'Create Deployment', testId: 'create-deployment-link' },
+          { to: '/strategy-library', label: 'Strategy Library' },
+        ]}
+      />
 
-      {error && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {error}
-        </div>
-      )}
+      <ErrorBanner message={error} />
 
-      <div className="flex flex-wrap gap-3 text-sm">
-        <Link
-          to="/deployments/new"
-          data-testid="create-deployment-link"
-          className="text-sky-400 hover:text-sky-300"
-        >
-          Create Deployment
-        </Link>
-        {history ? (
-          <Link to="/deployments" className="text-sky-400 hover:text-sky-300">
-            Deployment list
-          </Link>
-        ) : (
-          <Link to="/deployments/history" className="text-sky-400 hover:text-sky-300">
-            Deployment history
-          </Link>
-        )}
-        <Link to="/strategy-library" className="text-sky-400 hover:text-sky-300">
-          Strategy Library
-        </Link>
-      </div>
-
-      {loading && <p className="text-sm text-slate-500">Loading deployments…</p>}
+      {loading && <LoadingState label="Loading deployments…" />}
 
       {!loading && items.length === 0 && (
-        <p
-          className="text-sm text-slate-500"
-          data-testid={history ? 'deployment-history-empty' : 'deployment-list-empty'}
-        >
-          No Deployments in this workspace.
-        </p>
+        <EmptyState
+          testId={history ? 'deployment-history-empty' : 'deployment-list-empty'}
+          title="No Deployments in this workspace."
+          description="Create a certified paper Deployment after a Gate PASS."
+          actionTo="/deployments/new"
+          actionLabel="Create Deployment"
+        />
       )}
 
       <ul className="space-y-2">

@@ -1,51 +1,7 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { COMMAND_CENTER_PATH } from '../command-center';
 import { clearAccessToken } from '../shared/auth';
+import { NAV_BANDS, isNavTargetActive } from '../shared/product-ui';
 import { WorkspaceSwitcher } from '../workspace';
-
-/** Research tools the operator can actually run today. Lake / RC-24 remain later packages. */
-const researchLinks = [
-  { to: '/', label: 'Overview' },
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: '/research', label: 'Research' },
-  { to: '/lab', label: 'Lab' },
-  { to: '/optimization', label: 'Optimization' },
-  { to: '/analytics', label: 'Analytics' },
-  { to: '/engineering', label: 'Engineering' },
-  { to: '/diagnostics', label: 'Diagnostics' },
-  { to: '/workflows', label: 'Workflows' },
-  { to: '/strategy-library', label: 'Strategy Library' },
-  { to: '/strategy-library/certify', label: 'Certify' },
-  { to: '/runtime-validation', label: 'Runtime Validation' },
-  { to: '/deployments', label: 'Deployment' },
-  { to: '/orchestrator', label: 'Orchestrator' },
-  { to: '/qualification', label: 'Qualification' },
-  { to: '/market-profile', label: 'Profile' },
-  { to: '/market-state', label: 'Market State' },
-  { to: '/reporting', label: 'Reporting' },
-  { to: '/strategies', label: 'Research strategies' },
-  { to: '/campaigns/run', label: 'Campaign' },
-  { to: '/knowledge', label: 'Knowledge' },
-  { to: '/ai', label: 'AI' },
-];
-
-/** Paper path only. Live Bots, adapter Exchanges, and Production are not product. Cluster is Exchange Scope. */
-const paperTradingLinks = [
-  { to: COMMAND_CENTER_PATH, label: 'Command Center' },
-  { to: '/clusters', label: 'Cluster' },
-  { to: '/trading/paper', label: 'Paper Bots' },
-  { to: '/trading/portfolio', label: 'Portfolio' },
-  { to: '/trading/positions', label: 'Positions' },
-  { to: '/trading/orders', label: 'Orders' },
-  { to: '/trading/risk', label: 'Risk' },
-];
-
-/** RCC preferences remain Settings. Notifications are PC-06; Channels are PC-07. */
-const administrationLinks = [
-  { to: '/notifications', label: 'Notifications' },
-  { to: '/notifications/channels', label: 'Channels' },
-  { to: '/settings', label: 'Settings' },
-];
 
 export function AppLayout() {
   const location = useLocation();
@@ -56,13 +12,8 @@ export function AppLayout() {
     navigate('/login');
   }
 
-  function isActive(to: string) {
-    if (to === '/') return location.pathname === '/';
-    return location.pathname === to || location.pathname.startsWith(`${to}/`);
-  }
-
   function linkClass(to: string, size: 'primary' | 'secondary') {
-    const active = isActive(to);
+    const active = isNavTargetActive(location.pathname, to);
     if (size === 'primary') {
       return `rounded px-2 py-1 text-sm focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-sky-400 ${
         active ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'
@@ -75,6 +26,12 @@ export function AppLayout() {
 
   return (
     <div className="min-h-screen">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-slate-900 focus:px-3 focus:py-2 focus:text-sm focus:text-white"
+      >
+        Skip to content
+      </a>
       <header className="border-b border-white/10 px-6 py-4">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
           <div>
@@ -90,41 +47,31 @@ export function AppLayout() {
             Logout
           </button>
         </div>
-        <nav
-          className="mx-auto mt-4 flex max-w-6xl flex-wrap items-center gap-3"
-          aria-label="Research"
-        >
-          <span className="text-xs uppercase tracking-wide text-slate-500">Research</span>
-          {researchLinks.map((link) => (
-            <Link key={link.to} to={link.to} className={linkClass(link.to, 'primary')}>
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <nav
-          className="mx-auto mt-2 flex max-w-6xl flex-wrap items-center gap-3"
-          aria-label="Paper trading"
-        >
-          <span className="text-xs uppercase tracking-wide text-slate-600">Paper trading</span>
-          {paperTradingLinks.map((link) => (
-            <Link key={link.to} to={link.to} className={linkClass(link.to, 'secondary')}>
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        <nav
-          className="mx-auto mt-2 flex max-w-6xl flex-wrap items-center gap-3"
-          aria-label="Administration"
-        >
-          <span className="text-xs uppercase tracking-wide text-slate-600">Administration</span>
-          {administrationLinks.map((link) => (
-            <Link key={link.to} to={link.to} className={linkClass(link.to, 'secondary')}>
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        {NAV_BANDS.map((band, index) => (
+          <nav
+            key={band.id}
+            className={`mx-auto flex max-w-6xl flex-col gap-2 ${index === 0 ? 'mt-4' : 'mt-2'}`}
+            aria-label={band.ariaLabel}
+          >
+            <span className="text-xs uppercase tracking-wide text-slate-500">{band.label}</span>
+            <div className="flex flex-col gap-2">
+              {band.groups.map((group) => (
+                <div key={group.id} className="flex flex-wrap items-center gap-3">
+                  <span className="text-[10px] uppercase tracking-wide text-slate-600">
+                    {group.label}
+                  </span>
+                  {group.links.map((link) => (
+                    <Link key={link.to} to={link.to} className={linkClass(link.to, band.size)}>
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </nav>
+        ))}
       </header>
-      <main className="mx-auto max-w-6xl px-6 py-8">
+      <main id="main-content" className="mx-auto max-w-6xl px-6 py-8">
         <Outlet />
       </main>
     </div>

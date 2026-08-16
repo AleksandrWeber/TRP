@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { MarketProfileWorkspaceView } from '../shared/api';
 import { formatUtc } from '../shared/formatUtc';
+import { EmptyState, ErrorBanner, LoadingState, PageHeader } from '../shared/product-ui';
 import { confidenceLabel } from './market-profile';
 
 export function MarketProfileHomeView({
@@ -17,35 +18,20 @@ export function MarketProfileHomeView({
 
   return (
     <section className="space-y-6" data-testid="market-profile-home">
-      <div>
-        <p className="text-xs uppercase tracking-wide text-slate-500">Profile</p>
-        <h2 className="mt-1 text-2xl font-semibold">Market Profile</h2>
-        <p className="mt-2 text-slate-400">
-          Versioned research artifact for this workspace. Profile never forces a trade, never
-          authorizes a session, and does not calculate dimensions on this page. Consumers already
-          read the latest published version.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-3 text-sm">
-          <Link to="/market-profile/history" className="text-sky-400 hover:text-sky-300">
-            Version history
-          </Link>
-          <Link to="/qualification" className="text-sky-400 hover:text-sky-300">
-            Qualification
-          </Link>
-          <Link to="/orchestrator" className="text-sky-400 hover:text-sky-300">
-            Orchestrator
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        productId="market-profile"
+        title="Market Profile"
+        description="Versioned research artifact for this workspace. Market Profile never forces a trade, never authorizes a session, and does not calculate dimensions on this page. Consumers already read the latest published version."
+        extraActions={[
+          { to: '/qualification', label: 'Qualification' },
+          { to: '/orchestrator', label: 'Trading Orchestrator' },
+        ]}
+      />
 
-      {error ? (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {error}
-        </div>
-      ) : null}
+      <ErrorBanner message={error} />
 
       {loading && !workspace ? (
-        <p className="text-slate-400">Loading Market Profile…</p>
+        <LoadingState label="Loading Market Profile…" />
       ) : (
         <>
           <dl className="grid gap-4 sm:grid-cols-3">
@@ -59,10 +45,13 @@ export function MarketProfileHomeView({
               Latest Profile
             </h3>
             {latest.length === 0 ? (
-              <p className="text-sm text-slate-500" data-testid="market-profile-empty">
-                No published Profile versions in this workspace. Complete Qualification to publish
-                via the existing pipeline.
-              </p>
+              <EmptyState
+                testId="market-profile-empty"
+                title="No published Market Profile versions in this workspace."
+                description="Complete Qualification to publish via the existing pipeline."
+                actionTo="/qualification"
+                actionLabel="Open Qualification"
+              />
             ) : (
               <ul className="space-y-2" data-testid="market-profile-latest">
                 {latest.map((item) => (

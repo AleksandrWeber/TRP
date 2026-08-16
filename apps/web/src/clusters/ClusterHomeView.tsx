@@ -4,6 +4,7 @@ import type {
   ExchangeScopeWorkspaceView,
   ExchangeVenueCatalogItemView,
 } from '../shared/api';
+import { ErrorBanner, LoadingState, PageHeader } from '../shared/product-ui';
 
 export type ClusterCreateDraft = {
   venueCode: string;
@@ -46,34 +47,20 @@ export function ClusterHomeView({
 
   return (
     <section className="space-y-6" data-testid="cluster-home">
-      <div>
-        <p className="text-xs uppercase tracking-wide text-slate-500">Cluster</p>
-        <h2 className="mt-1 text-2xl font-semibold">Exchange Scope</h2>
-        <p className="mt-2 text-slate-400">
-          Isolation boundary for this workspace. Cluster is Exchange Scope — not a live exchange
-          connection, not Runtime, and not a Trading Session.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-3 text-sm">
-          <Link to="/deployments" className="text-sky-400 hover:text-sky-300">
-            Deployment
-          </Link>
-          <Link to="/orchestrator" className="text-sky-400 hover:text-sky-300">
-            Orchestrator
-          </Link>
-          <Link to="/command-center" className="text-sky-400 hover:text-sky-300">
-            Command Center
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        productId="cluster"
+        title="Exchange Scope"
+        description="Isolation boundary for this workspace. Cluster is Exchange Scope — not a live exchange connection, not Runtime, and not a Trading Session."
+        extraActions={[
+          { to: '/deployments', label: 'Deployment' },
+          { to: '/orchestrator', label: 'Trading Orchestrator' },
+        ]}
+      />
 
-      {error ? (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {error}
-        </div>
-      ) : null}
+      <ErrorBanner message={error} />
 
       {loading && !workspace ? (
-        <p className="text-slate-400">Loading Clusters…</p>
+        <LoadingState label="Loading Clusters…" />
       ) : (
         <>
           <dl className="grid gap-4 sm:grid-cols-4">

@@ -29,10 +29,11 @@ describe('PC-05 Reporting product path', () => {
 
   it('adds Reporting to the paper-first shell without Coming Soon or ledger claims', () => {
     const layout = readSrc('../layout/AppLayout.tsx');
+    const catalog = readSrc('../shared/product-ui/catalog.ts');
     const home = readSrc('./ReportingHomeView.tsx');
     const detail = readSrc('./ReportingDetailView.tsx');
-    expect(layout).toContain("label: 'Reporting'");
-    expect(layout).toContain("to: '/reporting'");
+    expect(catalog).toContain("label: 'Reporting'");
+    expect(catalog).toContain("to: '/reporting'");
     expect(layout).not.toContain('Coming Soon');
     expect(home).toContain('not the ledger Source of Truth');
     expect(home).not.toContain('Coming Soon');

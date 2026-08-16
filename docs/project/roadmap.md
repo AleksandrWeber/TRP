@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-08-16 (documentation cleanup — status lives in [Product Completion Status](./product-completion-status.md))
+Last updated: 2026-08-16 (Final Validation PASS — status lives in [Product Completion Status](./product-completion-status.md))
 
 This file distinguishes **historical architecture delivery** from the **current product completion program**.
 
@@ -8,12 +8,12 @@ This file distinguishes **historical architecture delivery** from the **current 
 
 ### Planning Status
 
-| Track                 | Status                                                                   |
-| --------------------- | ------------------------------------------------------------------------ |
-| Architecture Planning | **CLOSED**                                                               |
-| Product Planning      | **CLOSED**                                                               |
-| Governance            | **ACTIVE**                                                               |
-| Implementation        | **IN PROGRESS** — see [canonical status](./product-completion-status.md) |
+| Track                 | Status                                                                |
+| --------------------- | --------------------------------------------------------------------- |
+| Architecture Planning | **CLOSED**                                                            |
+| Product Planning      | **CLOSED**                                                            |
+| Governance            | **ACTIVE**                                                            |
+| Implementation        | **COMPLETE** — see [canonical status](./product-completion-status.md) |
 
 Related:
 
@@ -42,7 +42,11 @@ Related:
 - **PC-09 Market Profile:** [`pc-09-implementation-report.md`](./pc-09-implementation-report.md) (**CLOSED**)
 - **PC-10 Market State:** [`pc-10-implementation-report.md`](./pc-10-implementation-report.md) (**CLOSED**)
 - **Wave C Closure:** [`wave-c-closure-report.md`](./wave-c-closure-report.md) (**CLOSED**)
-- **Product Readiness Audit v2:** [`product-readiness-audit-v2.md`](./product-readiness-audit-v2.md) (**83%**)
+- **Product Readiness Audit v2:** [`product-readiness-audit-v2.md`](./product-readiness-audit-v2.md) (**99%**)
+- **PC-16 Knowledge Lake:** [`pc-16-implementation-report.md`](./pc-16-implementation-report.md) (**CLOSED**)
+- **PC-17 AI Analytics:** [`pc-17-implementation-report.md`](./pc-17-implementation-report.md) (**CLOSED**)
+- **PC-20 Product UX Polish:** [`pc-20-implementation-report.md`](./pc-20-implementation-report.md) (**CLOSED**)
+- **Final Validation:** [`version-2-final-validation-report.md`](./version-2-final-validation-report.md) (**PASS**)
 - Product Vision (Level-0): [`trp-product-vision.md`](./trp-product-vision.md)
 - UX Vision (Level-0): [`trp-ux-vision.md`](./trp-ux-vision.md)
 - Project Status: [`project-status.md`](./project-status.md)
@@ -207,11 +211,11 @@ Related:
 
 ---
 
-## Current Phase — Product Completion Implementation
+## Current Phase — Product Completion COMPLETE (awaiting Final Certification)
 
 **Canonical status:** [`product-completion-status.md`](./product-completion-status.md)
 
-Future Version 2 work follows Product Completion **only**. It does not open a new RC. It does not start Version 3. It does not change Architecture Specification v2.0, the Authority Matrix, or the Alias Dictionary. No additional planning documents. No roadmap or package redesign.
+Future Version 2 work is **Final Certification** only. It does not open a new RC. It does not start Version 3. It does not change Architecture Specification v2.0, the Authority Matrix, or the Alias Dictionary. No additional planning documents. No roadmap or package redesign.
 
 | Artifact                                                              | Role                                                              |
 | --------------------------------------------------------------------- | ----------------------------------------------------------------- |
@@ -236,8 +240,12 @@ Future Version 2 work follows Product Completion **only**. It does not open a ne
 | [PC-15 slice 15-d Implementation](./pc-15-d-implementation-report.md) | Reporting → Notification **CLOSED**                               |
 | [PC-15 slice 15-e Implementation](./pc-15-e-implementation-report.md) | Notification → Channels **CLOSED**                                |
 | [PC-15 slice 15-f Implementation](./pc-15-f-implementation-report.md) | Dashboard & Product Projections **CLOSED** (PC-15 package Closed) |
+| [PC-16 Implementation](./pc-16-implementation-report.md)              | Knowledge Lake Product **CLOSED**                                 |
+| [PC-17 Implementation](./pc-17-implementation-report.md)              | AI Analytics Product **CLOSED**                                   |
+| [PC-20 Implementation](./pc-20-implementation-report.md)              | Product UX Polish **CLOSED**                                      |
+| [Final Validation](./version-2-final-validation-report.md)            | **PASS** — READY FOR CERTIFICATION                                |
 
-Canonical loop remaining standalone gap: **J-11 AI Narrative** (PC-17). Step states: [`product-completion-journey.md`](./product-completion-journey.md). Status: [`product-completion-status.md`](./product-completion-status.md).
+Canonical loop J-01 … J-14 is **Complete**. Step states: [`product-completion-journey.md`](./product-completion-journey.md). Status: [`product-completion-status.md`](./product-completion-status.md). Final Validation: [`version-2-final-validation-report.md`](./version-2-final-validation-report.md) (**PASS**).
 
 RC history is **complete and preserved** in the section below. Do not reopen RC-19…RC-28. Do not rewrite those closures.
 

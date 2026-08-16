@@ -27,6 +27,7 @@ describe('PC-19 product path honesty', () => {
     const portfolio = readSrc('../pages/PortfolioPage.tsx');
     const paper = readSrc('../pages/PaperTradingPage.tsx');
     const home = readSrc('../pages/HomePage.tsx');
+    const catalog = readSrc('../shared/product-ui/catalog.ts');
 
     expect(portfolio).not.toContain('Reset (dev)');
     expect(portfolio).not.toContain('resetPortfolio');
@@ -35,13 +36,16 @@ describe('PC-19 product path honesty', () => {
     expect(home).toContain('/trading/paper');
     expect(home).toContain('/command-center');
     expect(home).toContain('/strategy-library');
-    expect(home).toContain('/runtime-validation');
-    expect(home).toContain('/deployments');
-    expect(home).toContain('/orchestrator');
-    expect(home).toContain('/qualification');
-    expect(home).toContain('/reporting');
-    expect(home).toContain('/notifications');
-    expect(home).toContain('/notifications/channels');
+    expect(home).toContain('OPERATOR_JOURNEY');
+    expect(catalog).toContain('/runtime-validation');
+    expect(catalog).toContain('/deployments');
+    expect(catalog).toContain('/orchestrator');
+    expect(catalog).toContain('/qualification');
+    expect(catalog).toContain('/reporting');
+    expect(catalog).toContain('/knowledge-lake');
+    expect(catalog).toContain('/ai-analytics');
+    expect(catalog).toContain('/notifications');
+    expect(catalog).toContain('/notifications/channels');
     expect(home).toContain('listTradingSessions');
     expect(home).toContain('getRuntimeHealth');
     expect(home).not.toMatch(/['"`]\/reports(?:\/|['"`?]|$)/);

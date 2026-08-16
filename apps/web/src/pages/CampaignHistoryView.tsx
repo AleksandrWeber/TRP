@@ -1,21 +1,28 @@
-import type { CampaignSummary } from '../shared/api';
 import { CopyButton } from '../shared/CopyButton';
 import { formatUtc } from '../shared/formatUtc';
+import { EmptyState } from '../shared/product-ui';
 import { campaignVerdictFromSummary } from './CampaignResultsView';
-import { orderCampaignHistoryNewestFirst } from './campaign-history';
+import { orderCampaignHistoryNewestFirst, type CampaignHistoryItem } from './campaign-history';
 
 type CampaignHistoryViewProps = {
-  items: CampaignSummary[];
+  items: CampaignHistoryItem[];
+  onExport?: (sessionId: string, format: 'json' | 'csv') => void;
+  exportingId?: string | null;
 };
 
-export function CampaignHistoryView({ items }: CampaignHistoryViewProps) {
+export function CampaignHistoryView({ items, onExport, exportingId }: CampaignHistoryViewProps) {
   const ordered = orderCampaignHistoryNewestFirst(items);
 
   if (ordered.length === 0) {
     return (
       <section className="space-y-3" data-testid="campaign-history">
         <h3 className="text-lg font-semibold">Campaign History</h3>
-        <p className="text-sm text-slate-400">Run your first campaign.</p>
+        <EmptyState
+          title="No campaign history yet"
+          description="Run your first campaign."
+          actionTo="/campaigns/run"
+          actionLabel="Run a campaign"
+        />
       </section>
     );
   }
@@ -32,52 +39,79 @@ export function CampaignHistoryView({ items }: CampaignHistoryViewProps) {
             className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-slate-200"
           >
             <dl className="grid gap-2 sm:grid-cols-2">
-              <div>
-                <dt className="text-slate-500">startedAt</dt>
-                <dd>{formatUtc(summary.createdAt)}</dd>
-              </div>
-              <div>
-                <dt className="text-slate-500">strategyId</dt>
-                <dd className="flex flex-wrap items-center gap-2">
-                  <span>{summary.strategyId}</span>
-                  <CopyButton value={summary.strategyId} />
-                </dd>
-              </div>
-              <div>
-                <dt className="text-slate-500">datasetId</dt>
-                <dd className="flex flex-wrap items-center gap-2 break-all">
-                  <span>{summary.datasetId}</span>
-                  <CopyButton value={summary.datasetId} />
-                </dd>
-              </div>
-              <div>
-                <dt className="text-slate-500">campaignId</dt>
-                <dd className="flex flex-wrap items-center gap-2 break-all">
-                  <span>{summary.campaignId}</span>
-                  <CopyButton value={summary.campaignId} />
-                </dd>
-              </div>
-              <div>
-                <dt className="text-slate-500">totalRuns</dt>
-                <dd>{summary.totalRuns}</dd>
-              </div>
-              <div>
-                <dt className="text-slate-500">bestExperimentId</dt>
-                <dd className="flex flex-wrap items-center gap-2 break-all">
-                  <span>{summary.bestExperimentId ?? 'null'}</span>
-                  {summary.bestExperimentId ? (
-                    <CopyButton value={summary.bestExperimentId} />
-                  ) : null}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-slate-500">verdict</dt>
-                <dd>{campaignVerdictFromSummary(summary)}</dd>
-              </div>
+              <Field label="Started" value={formatUtc(summary.createdAt)} />
+              <CopyField label="Strategy" value={summary.strategyId} />
+              <CopyField label="Dataset" value={summary.datasetId} />
+              <CopyField label="Campaign" value={summary.campaignId} />
+              <Field label="Total runs" value={String(summary.totalRuns)} />
+              <CopyField
+                label="Best experiment"
+                value={summary.bestExperimentId ?? 'None'}
+                copy={summary.bestExperimentId}
+              />
+              <Field label="Verdict" value={campaignVerdictFromSummary(summary)} />
             </dl>
+            {summary.sessionId && onExport ? (
+              <div className="mt-3 flex flex-wrap gap-2">
+                <ExportButton
+                  label="Export JSON"
+                  busy={exportingId === `${summary.sessionId}:json`}
+                  onClick={() => onExport(summary.sessionId!, 'json')}
+                />
+                <ExportButton
+                  label="Export CSV"
+                  busy={exportingId === `${summary.sessionId}:csv`}
+                  onClick={() => onExport(summary.sessionId!, 'csv')}
+                />
+              </div>
+            ) : null}
           </li>
         ))}
       </ul>
     </section>
+  );
+}
+
+function Field({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-slate-500">{label}</dt>
+      <dd>{value}</dd>
+    </div>
+  );
+}
+
+function CopyField({ label, value, copy }: { label: string; value: string; copy?: string | null }) {
+  const copied = copy ?? (value === 'None' ? null : value);
+  return (
+    <div>
+      <dt className="text-slate-500">{label}</dt>
+      <dd className="flex flex-wrap items-center gap-2 break-all">
+        <span>{value}</span>
+        {copied ? <CopyButton value={copied} /> : null}
+      </dd>
+    </div>
+  );
+}
+
+function ExportButton({
+  label,
+  busy,
+  onClick,
+}: {
+  label: string;
+  busy: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      data-testid="campaign-export"
+      onClick={onClick}
+      disabled={busy}
+      className="rounded border border-white/15 px-2 py-1 text-xs text-slate-300 hover:bg-white/5 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-sky-400 disabled:opacity-50"
+    >
+      {busy ? 'Exporting…' : label}
+    </button>
   );
 }

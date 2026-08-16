@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import type { StrategyLibraryRecordView } from '../shared/api';
+import { EmptyState, ErrorBanner, LoadingState, PageHeader } from '../shared/product-ui';
 
 export function RuntimeValidationView({
   entries,
@@ -25,31 +26,25 @@ export function RuntimeValidationView({
 }) {
   return (
     <section className="space-y-6" data-testid="runtime-validation-page">
-      <div>
-        <p className="text-xs uppercase tracking-wide text-slate-500">Runtime Validation</p>
-        <h2 className="mt-1 text-2xl font-semibold">Validate a Strategy Version</h2>
-        <p className="mt-2 text-slate-400">
-          Run the fail-closed Runtime Enforcement Gate. This is a pre-check. It does not deploy,
-          start a session, or override a FAIL.
-        </p>
-      </div>
+      <PageHeader
+        productId="runtime-validation"
+        title="Validate a Strategy Version"
+        description="Run the fail-closed Runtime Enforcement Gate. This is a pre-check. It does not deploy, start a session, or override a FAIL."
+        extraActions={[{ to: '/strategy-library', label: 'Strategy Library' }]}
+      />
 
-      {error && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {error}
-        </div>
-      )}
+      <ErrorBanner message={error} />
 
       <Panel title="Select Strategy Version">
-        {loading && <p className="text-sm text-slate-500">Loading Strategy Library…</p>}
+        {loading && <LoadingState label="Loading Strategy Library…" />}
         {!loading && entries.length === 0 && (
-          <p className="text-sm text-slate-500" data-testid="runtime-validation-empty">
-            No Strategy Versions in this workspace.{' '}
-            <Link to="/strategy-library/certify" className="text-sky-400 hover:text-sky-300">
-              Certify a strategy
-            </Link>
-            .
-          </p>
+          <EmptyState
+            testId="runtime-validation-empty"
+            title="No Strategy Versions in this workspace."
+            description="Certify a research candidate before running the Gate."
+            actionTo="/strategy-library/certify"
+            actionLabel="Certify a strategy"
+          />
         )}
         <ul className="space-y-2">
           {entries.map((entry) => (

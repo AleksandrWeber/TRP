@@ -20,7 +20,7 @@ describe('LoginPage (PC-18)', () => {
     const html = renderToStaticMarkup(<LoginPage />);
 
     expect(html).toContain('Sign in');
-    expect(html).toContain('Sign in with your account to continue.');
+    expect(html).toContain('Sign in to the paper-first operator. Live trading is not offered.');
     expect(html).toContain('Need an account?');
     expect(html).toContain('Create one');
     expect(html).not.toContain('admin@trp.local');

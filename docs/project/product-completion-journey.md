@@ -17,6 +17,7 @@
 **J-08:** [PC-11](./pc-11-implementation-report.md) **COMPLETE**  
 **J-09:** [PC-15 slice 15-a](./pc-15-a-implementation-report.md) **COMPLETE**  
 **J-10:** [PC-05](./pc-05-implementation-report.md) **COMPLETE**  
+**J-11:** [PC-17](./pc-17-implementation-report.md) **COMPLETE**  
 **J-12:** [PC-06](./pc-06-implementation-report.md) **COMPLETE**  
 **J-13:** [PC-07](./pc-07-implementation-report.md) **COMPLETE**  
 **J-14:** [PC-13](./pc-13-implementation-report.md) **COMPLETE**  
@@ -24,7 +25,8 @@
 **Qualification:** [PC-08](./pc-08-implementation-report.md) **COMPLETE**  
 **Profile:** [PC-09](./pc-09-implementation-report.md) **COMPLETE**  
 **Market State:** [PC-10](./pc-10-implementation-report.md) **COMPLETE**  
-**Shell:** [PC-19](./pc-19-implementation-report.md) **COMPLETE**
+**Shell:** [PC-19](./pc-19-implementation-report.md) **COMPLETE**  
+**Polish:** [PC-20](./pc-20-implementation-report.md) **COMPLETE**
 
 There is **one** canonical Version 2 customer journey. Product Completion exists to make this path operable. It does not invent a second workflow.
 
@@ -47,7 +49,7 @@ Login
   → Command Center
 ```
 
-**Current loop status:** Steps J-01, J-02, J-04…J-10, J-12, J-13, and J-14 are **Complete**. J-13 is Telegram (channel) over **PC-07 Notification Channels Product**. J-11 AI Narrative remains **Not Started** (PC-17). Wave C (PC-12, PC-08, PC-09, PC-10) is Closed. Product Completion status: [`product-completion-status.md`](./product-completion-status.md). Scores: [audit v2](./product-readiness-audit-v2.md).
+**Current loop status:** Steps J-01 … J-14 are **Complete**. J-13 is Telegram (channel) over **PC-07 Notification Channels Product**. J-11 AI Narrative is **Complete** (PC-17). Wave C, Wave E, and Wave F (PC-20 polish) are Closed. Product Completion implementation packages are Closed. Final Validation **PASS**. Product Completion status: [`product-completion-status.md`](./product-completion-status.md). Scores: [audit v2](./product-readiness-audit-v2.md). Validation: [`version-2-final-validation-report.md`](./version-2-final-validation-report.md).
 
 ---
 
@@ -98,8 +100,8 @@ List, named create, rename, archive, switch, and persisted selection in the PC-1
 | ----------------------- | --------------------------------------------------------------------------------- |
 | **Purpose**             | Produce evidence: lab, RCC, campaigns, walk-forward. Knowledge for certification. |
 | **Current owner**       | Research Lab / Campaign / Research Control (Spec §5.1).                           |
-| **Responsible package** | None (already customer-usable). Polish only: PC-20                                |
-| **Current state**       | **Complete** (research OS). Canonical loop still **Blocked** later.               |
+| **Responsible package** | None (already customer-usable). Polish: PC-20 **Complete**.                       |
+| **Current state**       | **Complete** (research OS). Journey polish **Complete**.                          |
 | **Dependencies**        | J-01, J-02                                                                        |
 
 Must stay labeled **research** ([Product UI Policy](./product-ui-policy.md)). Not deploy. Not live trading.
@@ -198,9 +200,9 @@ Manual paper works. Certified bind (J-07) is complete. Orchestrator intent (J-08
 | **Current owner**       | Reporting — `ReportingServicePort` / `ReportingQueryPort` (RC-24).                                    |
 | **Responsible package** | PC-05 Reporting. Session → report run: PC-15. Report → AI: PC-15 15-c. Dashboard numbers: PC-15 15-f. |
 | **Current state**       | **Complete** (RC-24 product UI / REST). Research reports remain a different slice.                    |
-| **Dependencies**        | J-09 for session-backed reports. Knowledge Lake (PC-16) recommended feed.                             |
+| **Dependencies**        | J-09 for session-backed reports. Knowledge Lake (PC-16) feed **Complete**.                            |
 
-Do not treat `/reports` as this step. Report → AI wiring is complete (PC-15 15-c). Report → Notification wiring is complete (PC-15 15-d). Dashboard projection wiring is complete (PC-15 15-f). Product UI is **Complete** (PC-05). Paths are `/reporting` and `/v1/report-runs`.
+Do not treat `/reports` as this step. Report → AI wiring is complete (PC-15 15-c). Report → Notification wiring is complete (PC-15 15-d). Dashboard projection wiring is complete (PC-15 15-f). Product UI is **Complete** (PC-05). Paths are `/reporting` and `/v1/report-runs`. Knowledge Lake warehouse UI is **Complete** (PC-16) at `/knowledge-lake`.
 
 ---
 
@@ -211,10 +213,10 @@ Do not treat `/reports` as this step. Report → AI wiring is complete (PC-15 15
 | **Purpose**             | Explain a ReportRun / Lake context. Narrative only. Never capital.  |
 | **Current owner**       | AI Analytics — `AIAnalyticsPort` (RC-24).                           |
 | **Responsible package** | PC-17 AI Analytics. Reporting → AI wiring: PC-15 15-c **Complete**. |
-| **Current state**       | **Not Started**                                                     |
-| **Dependencies**        | J-10. PC-16 Lake context.                                           |
+| **Current state**       | **Complete**                                                        |
+| **Dependencies**        | J-10. PC-16 Lake context **Complete**.                              |
 
-`/ai/execute` is the OpenRouter gateway, not this step. Completed ReportRun invokes AI on the certified in-process path (PC-15 15-c). Narratives are visible on the Reporting detail panel (PC-05). Standalone AI product UI remains PC-17.
+`/ai/execute` is the OpenRouter gateway, not this step. Completed ReportRun invokes AI on the certified in-process path (PC-15 15-c). Narratives are visible on the Reporting detail panel (PC-05) and as a standalone product (PC-17). Lake context is a customer product (PC-16). PC-17 closed: [implementation](./pc-17-implementation-report.md).
 
 ---
 
@@ -270,10 +272,10 @@ These remain approved packages. They enable the spine; they do not create a seco
 | PC-09 Market Profile           | Confidence input to J-08 (read). Publish wiring: PC-15 15-b **Complete**. Product UI **Complete** ([implementation](./pc-09-implementation-report.md)).                                                                                   |
 | PC-10 Market State             | Selection context for J-08 (read). Product UI **Complete** ([implementation](./pc-10-implementation-report.md)).                                                                                                                          |
 | PC-12 Exchange Scope           | Cluster isolation for J-07 / J-08 / J-14. **Complete** ([implementation](./pc-12-implementation-report.md)).                                                                                                                              |
-| PC-16 Knowledge Lake           | Analytical feed for J-10 / J-11. Not financial SoT.                                                                                                                                                                                       |
+| PC-16 Knowledge Lake           | Analytical feed for J-10 / J-11. Not financial SoT. **Complete** ([implementation](./pc-16-implementation-report.md)).                                                                                                                    |
 | PC-15 Product Flow Integration | Wires J-08→J-09 **(15-a Complete)**, Qualification→Profile **(15-b Complete)**, J-10→J-11 **(15-c Complete)**, J-10→J-12 **(15-d Complete)**, J-12→J-13 **(15-e Complete)**, dashboard into J-14 **(15-f Complete)**. Package **Closed**. |
 | PC-19 Operator Shell           | Frame for J-01…J-14. **Complete** (paper-first chrome).                                                                                                                                                                                   |
-| PC-20 Product UX Polish        | Journey consistency and CTAs across steps. No new steps.                                                                                                                                                                                  |
+| PC-20 Product UX Polish        | Journey consistency and CTAs across steps. No new steps. **Complete** ([implementation](./pc-20-implementation-report.md)).                                                                                                               |
 
 ---
 
@@ -302,7 +304,7 @@ Every Product Completion package: which steps it **enables**, which **later** st
 | PC-17   | J-11 AI Narrative                                                                                                                                                                                        | Optional explain after J-10                 |
 | PC-06   | J-12 Notification **Complete**                                                                                                                                                                           | J-13                                        |
 | PC-07   | J-13 Telegram **Complete** (Notification Channels product)                                                                                                                                               | End of delivery path                        |
-| PC-20   | Usability of J-01…J-14                                                                                                                                                                                   | None (no new step)                          |
+| PC-20   | Usability of J-01…J-14 **Complete**                                                                                                                                                                      | None (no new step)                          |
 
 ---
 

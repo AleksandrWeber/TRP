@@ -11,6 +11,49 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ### Added
 
+- Version 2 Final Validation and Release Candidate audit — Product
+  Completion COMPLETE. PC-01 … PC-20 Closed. Architecture freeze held.
+  Paper-first readiness **99%**. Production readiness **40%**. Architecture
+  **100%**. Verdict: READY FOR CERTIFICATION. Version 2 Complete is not
+  declared. No release tag. Reports:
+  `docs/project/version-2-final-validation-report.md`,
+  `version-2-release-candidate-audit.md`,
+  `version-2-release-readiness-report.md`.
+- PC-20 Product UX Polish — Version 2 presents as one paper-first platform.
+  Navigation is grouped under Research / Paper trading / Administration.
+  Certification, Trading Orchestrator, Market Profile, and Notification
+  Channels use canonical names. Shared breadcrumbs, page actions, empty,
+  loading, error, and success chrome cover completed product homes.
+  Overview shows the operator journey. Login states paper-first. Campaign
+  history prefers existing workspace campaign sessions and export. No new
+  APIs, domains, or ownership. Stop before Final Validation. Reports:
+  `docs/project/pc-20-implementation-report.md`,
+  `pc-20-validation-report.md`, `pc-20-product-readiness-delta.md`,
+  `pc-20-release-notes.md`, `pc-20-ux-audit.md`,
+  `pc-20-navigation-audit.md`, `pc-20-consistency-report.md`,
+  `pc-20-customer-journey-audit.md`, `pc-20-accessibility-summary.md`.
+- PC-17 AI Analytics Product — existing AI Analytics generation port is one
+  customer product. REST adds list, generate, analysis detail, history, and
+  provenance on `/v1/ai-analytics`. UI is AI Analytics Home, analysis
+  browser, generate, history, narrative details, recommendations, reasoning,
+  source viewer, comparison, and knowledge / report / strategy refs at
+  `/ai-analytics`. AI Analytics remains narrative owner. Knowledge Lake,
+  Reporting, Notification, and Research `/ai` are unchanged. No trading,
+  persistence, or new storage. Stop before PC-20. Reports:
+  `docs/project/pc-17-implementation-report.md`,
+  `pc-17-validation-report.md`, `pc-17-product-readiness-delta.md`,
+  `pc-17-release-notes.md`, `pc-17-ai-analytics-ux-audit.md`.
+- PC-16 Knowledge Lake Product — existing Knowledge Lake query port is one
+  customer product. REST adds list, search, entry detail, relationships,
+  history, and provenance on `/v1/knowledge-lake`. UI is Knowledge Lake
+  Home, search, filters, entry details, relationship viewer, metadata,
+  history, references, and connected reports / narratives / research /
+  strategies / market refs at `/knowledge-lake`. Knowledge Lake remains
+  owner. Reporting, AI, and Research are unchanged. Research `/knowledge`
+  is not renamed. No editing, ingestion, or new storage. Stop before
+  PC-17. Reports: `docs/project/pc-16-implementation-report.md`,
+  `pc-16-validation-report.md`, `pc-16-product-readiness-delta.md`,
+  `pc-16-release-notes.md`, `pc-16-knowledge-lake-ux-audit.md`.
 - Version 2 documentation cleanup — one canonical Product Completion status,
   historical-snapshot rule for closed package reports, PC-07 living name
   Notification Channels Product, Wave C = PC-12 / PC-08 / PC-09 / PC-10,

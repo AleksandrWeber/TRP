@@ -27,9 +27,10 @@ describe('PC-04 Runtime Validation product path', () => {
 
   it('adds Runtime Validation to the paper-first shell without Coming Soon, override, or live claims', () => {
     const layout = readSrc('../layout/AppLayout.tsx');
+    const catalog = readSrc('../shared/product-ui/catalog.ts');
     const page = readSrc('./RuntimeValidationView.tsx');
-    expect(layout).toContain("label: 'Runtime Validation'");
-    expect(layout).toContain("to: '/runtime-validation'");
+    expect(catalog).toContain("label: 'Runtime Validation'");
+    expect(catalog).toContain("to: '/runtime-validation'");
     expect(layout).not.toContain('Coming Soon');
     expect(layout).not.toContain("label: 'Live Bots'");
     expect(page).not.toContain('Force');

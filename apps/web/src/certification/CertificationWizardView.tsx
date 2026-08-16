@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import type { Strategy } from '../shared/api';
+import { ErrorBanner, PageHeader } from '../shared/product-ui';
 import {
   CERTIFICATION_WIZARD_STEPS,
   OPTIONAL_EVIDENCE_TYPES,
@@ -46,14 +47,12 @@ export function CertificationWizardView({
 
   return (
     <section className="space-y-6" data-testid="certification-wizard">
-      <div>
-        <p className="text-xs uppercase tracking-wide text-slate-500">Certification</p>
-        <h2 className="mt-1 text-2xl font-semibold">Certify a strategy</h2>
-        <p className="mt-2 text-slate-400">
-          Admit a research candidate into Strategy Library as an immutable certified version. This
-          cannot be undone or hot-edited. Library remains the source of truth.
-        </p>
-      </div>
+      <PageHeader
+        productId="certification"
+        title="Certify a strategy"
+        description="Admit a research candidate into Strategy Library as an immutable certified version. This cannot be undone or hot-edited. Library remains the source of truth."
+        extraActions={[{ to: '/strategies', label: 'Research strategies' }]}
+      />
 
       <ol
         className="flex flex-wrap gap-2 text-xs uppercase tracking-wide"
@@ -74,11 +73,7 @@ export function CertificationWizardView({
         ))}
       </ol>
 
-      {error && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {error}
-        </div>
-      )}
+      <ErrorBanner message={error} />
 
       {step === 'candidate' && (
         <Panel title="Select research candidate">

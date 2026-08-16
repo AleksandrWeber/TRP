@@ -2,13 +2,20 @@ import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   api,
+  campaignSummaryFromSession,
+  exportCampaignHistory,
   runCampaign,
   type CampaignRunRequest,
-  type CampaignSummary,
   type Dataset,
 } from '../shared/api';
 import { toUserFacingError } from '../shared/mapApiError';
-import { appendCampaignHistory, loadCampaignHistory } from './campaign-history';
+import { ErrorBanner, LoadingState, PageHeader } from '../shared/product-ui';
+import {
+  appendCampaignHistory,
+  loadCampaignHistory,
+  mergeCampaignHistory,
+  type CampaignHistoryItem,
+} from './campaign-history';
 import { CampaignHistoryView } from './CampaignHistoryView';
 
 export function parseParamsListJson(raw: string): CampaignRunRequest['paramsList'] {
@@ -70,15 +77,29 @@ export function CampaignRunPage() {
   const [datasets, setDatasets] = useState<Dataset[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [history, setHistory] = useState<CampaignSummary[]>([]);
+  const [history, setHistory] = useState<CampaignHistoryItem[]>([]);
+  const [exportingId, setExportingId] = useState<string | null>(null);
 
   useEffect(() => {
-    setHistory(loadCampaignHistory());
+    const local = loadCampaignHistory();
+    setHistory(local);
     api
       .listDatasets()
       .then(setDatasets)
       .catch((err: unknown) => {
         console.error('[campaign] failed to load datasets for autocomplete', err);
+      });
+    api
+      .listCampaignHistory()
+      .then((page) => {
+        const workspace = page.items.map((session) => ({
+          ...campaignSummaryFromSession(session),
+          sessionId: session.id,
+        }));
+        setHistory(mergeCampaignHistory(workspace, loadCampaignHistory()));
+      })
+      .catch(() => {
+        setHistory(loadCampaignHistory());
       });
   }, []);
 
@@ -111,7 +132,7 @@ export function CampaignRunPage() {
         paramsListRaw,
       });
       const nextHistory = appendCampaignHistory(summary);
-      setHistory(nextHistory);
+      setHistory(mergeCampaignHistory(history, nextHistory));
       navigate('/campaigns/results', { state: { summary } });
     } catch (err) {
       setError(toUserFacingError(err, 'Campaign run failed'));
@@ -120,20 +141,43 @@ export function CampaignRunPage() {
     }
   }
 
+  async function onExport(sessionId: string, format: 'json' | 'csv') {
+    setExportingId(`${sessionId}:${format}`);
+    setError(null);
+    try {
+      const content = await exportCampaignHistory(sessionId, format);
+      const blob = new Blob([content], {
+        type: format === 'csv' ? 'text/csv' : 'application/json',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `campaign-${sessionId}.${format}`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(toUserFacingError(err, 'Campaign export failed'));
+    } finally {
+      setExportingId(null);
+    }
+  }
+
   return (
     <section className="space-y-8">
-      <div>
-        <h2 className="text-2xl font-semibold">Campaign Run</h2>
-        <p className="mt-2 text-slate-400">
-          Run a parameter list through the existing Campaign API (`POST /campaigns/run`).
-        </p>
-      </div>
+      <PageHeader
+        productId="campaign"
+        title="Campaign Run"
+        description="Run a parameter list through the existing Campaign API. History prefers workspace-backed campaign sessions when they exist."
+        extraActions={[
+          { to: '/campaigns/results', label: 'Results' },
+          { to: '/campaigns/multi', label: 'Multi-dataset' },
+          { to: '/campaigns/walk-forward', label: 'Walk-forward' },
+          { to: '/lab', label: 'Lab' },
+        ]}
+      />
 
-      {error && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {error}
-        </div>
-      )}
+      <ErrorBanner message={error} />
+      {loading ? <LoadingState label="Running campaign…" /> : null}
 
       <form
         onSubmit={onSubmit}
@@ -195,7 +239,7 @@ export function CampaignRunPage() {
         </button>
       </form>
 
-      <CampaignHistoryView items={history} />
+      <CampaignHistoryView items={history} onExport={onExport} exportingId={exportingId} />
     </section>
   );
 }

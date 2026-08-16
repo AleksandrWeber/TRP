@@ -44,6 +44,16 @@ import {
 } from '../orchestrator';
 import { ReportingDetailPage, ReportingHistoryPage, ReportingHomePage } from '../reporting';
 import {
+  KnowledgeLakeDetailPage,
+  KnowledgeLakeHistoryPage,
+  KnowledgeLakeHomePage,
+} from '../knowledge-lake';
+import {
+  AiAnalyticsDetailPage,
+  AiAnalyticsHistoryPage,
+  AiAnalyticsHomePage,
+} from '../ai-analytics';
+import {
   NotificationChannelDetailPage,
   NotificationChannelHistoryPage,
   NotificationChannelsPage,
@@ -169,6 +179,12 @@ export function App() {
             <Route path="campaigns/multi" element={<MultiDatasetCampaignPage />} />
             <Route path="campaigns/walk-forward" element={<WalkForwardCampaignPage />} />
             <Route path="knowledge" element={<KnowledgePage />} />
+            <Route path="knowledge-lake/history" element={<KnowledgeLakeHistoryPage />} />
+            <Route path="knowledge-lake/:entryId" element={<KnowledgeLakeDetailPage />} />
+            <Route path="knowledge-lake" element={<KnowledgeLakeHomePage />} />
+            <Route path="ai-analytics/history" element={<AiAnalyticsHistoryPage />} />
+            <Route path="ai-analytics/:analysisId" element={<AiAnalyticsDetailPage />} />
+            <Route path="ai-analytics" element={<AiAnalyticsHomePage />} />
             <Route path="qualification/history" element={<QualificationHistoryPage />} />
             <Route
               path="qualification/runs/:qualificationRunId"

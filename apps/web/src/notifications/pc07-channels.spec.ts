@@ -35,10 +35,11 @@ describe('PC-07 Notification Channels product path', () => {
 
   it('adds Channels to the paper-first shell without Coming Soon or reserved Send Test', () => {
     const layout = readSrc('../layout/AppLayout.tsx');
+    const catalog = readSrc('../shared/product-ui/catalog.ts');
     const home = readSrc('./NotificationChannelsView.tsx');
     const reserved = readSrc('./NotificationChannelDetailView.tsx');
-    expect(layout).toContain("label: 'Channels'");
-    expect(layout).toContain("to: '/notifications/channels'");
+    expect(catalog).toContain("label: 'Notification Channels'");
+    expect(catalog).toContain("to: '/notifications/channels'");
     expect(layout).not.toContain("to: '/telegram'");
     expect(layout).not.toContain('Coming Soon');
     expect(home).toContain('Channel-agnostic product');

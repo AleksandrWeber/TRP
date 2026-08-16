@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { ExchangeScopeListItemView, QualificationWorkspaceView } from '../shared/api';
 import { formatUtc } from '../shared/formatUtc';
+import { ErrorBanner, LoadingState, PageHeader } from '../shared/product-ui';
 import {
   confidenceLabel,
   healthLabel,
@@ -50,35 +51,21 @@ export function QualificationHomeView({
 
   return (
     <section className="space-y-6" data-testid="qualification-home">
-      <div>
-        <p className="text-xs uppercase tracking-wide text-slate-500">Qualification</p>
-        <h2 className="mt-1 text-2xl font-semibold">Market Qualification</h2>
-        <p className="mt-2 text-slate-400">
-          Research artifact for this workspace. Qualification never forces a trade and never
-          authorizes a session. Confidence and health are recorded snapshots — this page does not
-          score markets.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-3 text-sm">
-          <Link to="/qualification/history" className="text-sky-400 hover:text-sky-300">
-            Run history
-          </Link>
-          <Link to="/clusters" className="text-sky-400 hover:text-sky-300">
-            Cluster
-          </Link>
-          <Link to="/orchestrator" className="text-sky-400 hover:text-sky-300">
-            Orchestrator
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        productId="qualification"
+        title="Market Qualification"
+        description="Research artifact for this workspace. Qualification never forces a trade and never authorizes a session. Confidence and health are recorded snapshots — this page does not score markets."
+        extraActions={[
+          { to: '/qualification/history', label: 'Run history' },
+          { to: '/clusters', label: 'Cluster' },
+          { to: '/orchestrator', label: 'Trading Orchestrator' },
+        ]}
+      />
 
-      {error ? (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {error}
-        </div>
-      ) : null}
+      <ErrorBanner message={error} />
 
       {loading && !workspace ? (
-        <p className="text-slate-400">Loading Qualification…</p>
+        <LoadingState label="Loading Qualification…" />
       ) : (
         <>
           <dl className="grid gap-4 sm:grid-cols-4">

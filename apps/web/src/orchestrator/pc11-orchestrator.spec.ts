@@ -31,10 +31,11 @@ describe('PC-11 Trading Orchestrator product path', () => {
 
   it('adds Orchestrator to the paper-first shell without Coming Soon or session start', () => {
     const layout = readSrc('../layout/AppLayout.tsx');
+    const catalog = readSrc('../shared/product-ui/catalog.ts');
     const page = readSrc('./OrchestratorWizardView.tsx');
     const run = readSrc('./OrchestratorRunView.tsx');
-    expect(layout).toContain("label: 'Orchestrator'");
-    expect(layout).toContain("to: '/orchestrator'");
+    expect(catalog).toContain("label: 'Trading Orchestrator'");
+    expect(catalog).toContain("to: '/orchestrator'");
     expect(layout).not.toContain('Coming Soon');
     expect(layout).not.toContain("label: 'Live Bots'");
     expect(page).not.toContain('Start session');

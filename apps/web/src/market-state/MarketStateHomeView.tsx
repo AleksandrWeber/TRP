@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { MarketStateWorkspaceView } from '../shared/api';
 import { formatUtc } from '../shared/formatUtc';
+import { ErrorBanner, LoadingState, PageHeader } from '../shared/product-ui';
 import { lifecycleLabel, regimeLabel } from './market-state';
 
 export function MarketStateHomeView({
@@ -17,38 +18,20 @@ export function MarketStateHomeView({
 
   return (
     <section className="space-y-6" data-testid="market-state-home">
-      <div>
-        <p className="text-xs uppercase tracking-wide text-slate-500">Market State</p>
-        <h2 className="mt-1 text-2xl font-semibold">Market State</h2>
-        <p className="mt-2 text-slate-400">
-          Current-condition artifact for this workspace. Market State never classifies on this page,
-          never selects a strategy, and never forces a trade. Qualification and Profile remain
-          separate owners; this product shows their references.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-3 text-sm">
-          <Link to="/market-state/history" className="text-sky-400 hover:text-sky-300">
-            History
-          </Link>
-          <Link to="/qualification" className="text-sky-400 hover:text-sky-300">
-            Qualification
-          </Link>
-          <Link to="/market-profile" className="text-sky-400 hover:text-sky-300">
-            Profile
-          </Link>
-          <Link to="/orchestrator" className="text-sky-400 hover:text-sky-300">
-            Orchestrator
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        productId="market-state"
+        title="Market State"
+        description="Current-condition artifact for this workspace. Market State never classifies on this page, never selects a strategy, and never forces a trade. Qualification and Market Profile remain separate owners; this product shows their references."
+        extraActions={[
+          { to: '/qualification', label: 'Qualification' },
+          { to: '/market-profile', label: 'Market Profile' },
+        ]}
+      />
 
-      {error ? (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {error}
-        </div>
-      ) : null}
+      <ErrorBanner message={error} />
 
       {loading && !workspace ? (
-        <p className="text-slate-400">Loading Market State…</p>
+        <LoadingState label="Loading Market State…" />
       ) : (
         <>
           <dl className="grid gap-4 sm:grid-cols-3">

@@ -2,7 +2,13 @@ import type { CampaignSummary } from '../shared/api';
 
 export const CAMPAIGN_HISTORY_KEY = 'trp_campaign_history';
 
-export function orderCampaignHistoryNewestFirst(items: CampaignSummary[]): CampaignSummary[] {
+export type CampaignHistoryItem = CampaignSummary & {
+  sessionId?: string;
+};
+
+export function orderCampaignHistoryNewestFirst<
+  T extends { createdAt: string; campaignId: string },
+>(items: T[]): T[] {
   return [...items].sort(
     (a, b) =>
       Date.parse(b.createdAt) - Date.parse(a.createdAt) || b.campaignId.localeCompare(a.campaignId),
@@ -28,4 +34,18 @@ export function appendCampaignHistory(summary: CampaignSummary): CampaignSummary
     localStorage.setItem(CAMPAIGN_HISTORY_KEY, JSON.stringify(next));
   }
   return next;
+}
+
+export function mergeCampaignHistory(
+  workspace: CampaignHistoryItem[],
+  local: CampaignSummary[],
+): CampaignHistoryItem[] {
+  const byId = new Map<string, CampaignHistoryItem>();
+  for (const item of local) {
+    byId.set(item.campaignId, item);
+  }
+  for (const item of workspace) {
+    byId.set(item.campaignId, item);
+  }
+  return orderCampaignHistoryNewestFirst([...byId.values()]);
 }

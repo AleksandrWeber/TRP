@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import type { ReportRunListItemView } from '../shared/api';
 import { formatUtc } from '../shared/formatUtc';
+import { EmptyState, ErrorBanner, LoadingState, PageHeader } from '../shared/product-ui';
 import {
   REPORT_KIND_FILTERS,
   REPORT_MODE_FILTERS,
@@ -42,31 +43,18 @@ export function ReportingHomeView({
 }) {
   return (
     <section className="space-y-6" data-testid="reporting-home">
-      <div>
-        <p className="text-xs uppercase tracking-wide text-slate-500">Reporting</p>
-        <h2 className="mt-1 text-2xl font-semibold">Report runs</h2>
-        <p className="mt-2 text-slate-400">
-          Analytical projections for this workspace. These are not the ledger Source of Truth.
-          Reporting owns the report. AI remains narrative only. Notification remains delivery only.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-3 text-sm">
-          <Link to="/reporting/history" className="text-sky-400 hover:text-sky-300">
-            Report history
-          </Link>
-          <Link to="/notifications" className="text-sky-400 hover:text-sky-300">
-            Notifications
-          </Link>
-          <Link to="/command-center" className="text-sky-400 hover:text-sky-300">
-            Command Center
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        productId="reporting"
+        title="Report runs"
+        description="Analytical projections for this workspace. These are not the ledger Source of Truth. Reporting owns the report. AI remains narrative only. Notification remains delivery only."
+        extraActions={[
+          { to: '/reporting/history', label: 'Report history' },
+          { to: '/command-center', label: 'Command Center' },
+          { to: '/ai-analytics', label: 'AI Analytics' },
+        ]}
+      />
 
-      {error && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {error}
-        </div>
-      )}
+      <ErrorBanner message={error} />
 
       <div className="flex flex-wrap items-end gap-3">
         <label className="block space-y-1 text-sm">
@@ -102,12 +90,15 @@ export function ReportingHomeView({
         />
       </div>
 
-      {loading && <p className="text-sm text-slate-500">Loading report runs…</p>}
+      {loading && <LoadingState label="Loading report runs…" />}
       {!loading && items.length === 0 && (
-        <p className="text-sm text-slate-500" data-testid="reporting-empty">
-          No report runs in this workspace. Reports are generated from completed sessions; this page
-          does not create a new report engine.
-        </p>
+        <EmptyState
+          testId="reporting-empty"
+          title="No report runs in this workspace."
+          description="Reports are generated from completed sessions; this page does not create a new report engine."
+          actionTo="/command-center"
+          actionLabel="Open Command Center"
+        />
       )}
 
       <ul className="space-y-2">

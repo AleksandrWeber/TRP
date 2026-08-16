@@ -27,8 +27,10 @@ describe('PC-02 Certification product path', () => {
 
   it('adds Certify to the paper-first shell without Coming Soon or live claims', () => {
     const layout = readSrc('../layout/AppLayout.tsx');
-    expect(layout).toContain("label: 'Certify'");
-    expect(layout).toContain("to: '/strategy-library/certify'");
+    const catalog = readSrc('../shared/product-ui/catalog.ts');
+    expect(catalog).toContain("label: 'Certification'");
+    expect(catalog).toContain("to: '/strategy-library/certify'");
+    expect(layout).toContain('NAV_BANDS');
     expect(layout).not.toContain('Coming Soon');
     expect(layout).not.toContain("label: 'Live Bots'");
   });

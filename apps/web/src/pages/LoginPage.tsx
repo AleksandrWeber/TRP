@@ -91,8 +91,8 @@ export function LoginPage() {
           </h1>
           <p className="mt-2 text-sm text-slate-400">
             {mode === 'signin'
-              ? 'Sign in with your account to continue.'
-              : 'Create an account to start using the platform.'}
+              ? 'Sign in to the paper-first operator. Live trading is not offered.'
+              : 'Create an account to enter the paper-first operator. Live trading is not offered.'}
           </p>
         </div>
 

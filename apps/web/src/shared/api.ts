@@ -133,6 +133,27 @@ export type CampaignSummary = {
   failedRuns: CampaignFailedRun[];
 };
 
+export type CampaignHistorySessionView = {
+  id: string;
+  workspaceId: string;
+  status: string;
+  createdAt: string;
+  completedAt?: string;
+  report: Omit<CampaignSummary, 'failedRuns'> & {
+    bestProfitFactor?: number | null;
+    verdict?: string;
+    recommendations?: string[];
+  };
+};
+
+export type CampaignHistoryPageView = {
+  items: CampaignHistorySessionView[];
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+};
+
 export type MultiDatasetCampaignRequest = {
   strategyId: string;
   datasets: string[];
@@ -758,6 +779,320 @@ export type ReportRunListQuery = {
   tradingSessionId?: string;
   q?: string;
   limit?: number;
+};
+
+export type KnowledgeLakeSourceRefView = {
+  ownerType: string;
+  id: string;
+};
+
+export type KnowledgeLakeListItemView = {
+  entryId: string;
+  eventId: string;
+  workspaceId: string;
+  producer: string;
+  category: string;
+  mode: string;
+  occurredAt: string;
+  admittedAt: string;
+  exchangeScopeId: string;
+  tradingSessionId: string | null;
+  correlationId: string | null;
+  sourceRef: KnowledgeLakeSourceRefView | null;
+  schemaVersion: string;
+  authorityClass: 'projection';
+  ledgerSoT: false;
+  analyticalCopy: true;
+};
+
+export type KnowledgeLakePageView = {
+  items: KnowledgeLakeListItemView[];
+  nextCursor: string | null;
+  authorityClass: 'projection';
+  ledgerSoT: false;
+  analyticalCopy: true;
+};
+
+export type KnowledgeLakeRelationshipView = {
+  kind: 'correlation' | 'session' | 'source-ref';
+  relatedEntryId: string;
+  reason: string;
+  producer: string;
+  category: string;
+  authorityClass: 'projection';
+};
+
+export type KnowledgeLakeProvenanceView = {
+  entryId: string;
+  producer: string;
+  occurredAt: string;
+  admittedAt: string;
+  schemaVersion: string;
+  sourceRef: KnowledgeLakeSourceRefView | null;
+  ownershipChain: readonly ['source-of-truth', 'projection', 'knowledge-lake'];
+  authorityClass: 'projection';
+  ledgerSoT: false;
+  mutatesSource: false;
+};
+
+export type KnowledgeLakeConnectedReportView = {
+  reportRunId: string;
+  name: string;
+  kind: string;
+  status: string;
+  createdAt: string;
+  href: string;
+  authorityClass: 'projection';
+};
+
+export type KnowledgeLakeConnectedNarrativeView = {
+  reportRunId: string;
+  availableOnReporting: true;
+  href: string;
+  authorsNarrative: false;
+  authorityClass: 'narrative-reference';
+};
+
+export type KnowledgeLakeConnectedResearchView = {
+  ownerType: string;
+  id: string;
+  producer: string;
+  outcomeKind: string | null;
+  href: string | null;
+  authorityClass: 'projection';
+};
+
+export type KnowledgeLakeConnectedStrategyView = {
+  libraryEntryId: string;
+  strategyFamilyId: string | null;
+  version: string | null;
+  present: boolean;
+  href: string;
+  authorityClass: 'source_of_truth' | 'projection';
+};
+
+export type KnowledgeLakeConnectedMarketView = {
+  kind: 'qualification' | 'market-profile' | 'market-state';
+  ownerType: string;
+  id: string;
+  href: string | null;
+  present: true;
+  authorityClass: 'projection';
+};
+
+export type KnowledgeLakeDetailView = KnowledgeLakeListItemView & {
+  payload: unknown;
+  provenance: KnowledgeLakeProvenanceView;
+  relationships: readonly KnowledgeLakeRelationshipView[];
+  references: readonly KnowledgeLakeSourceRefView[];
+  connectedReports: readonly KnowledgeLakeConnectedReportView[];
+  connectedNarratives: readonly KnowledgeLakeConnectedNarrativeView[];
+  connectedResearch: readonly KnowledgeLakeConnectedResearchView[];
+  connectedStrategies: readonly KnowledgeLakeConnectedStrategyView[];
+  connectedMarket: readonly KnowledgeLakeConnectedMarketView[];
+  exportAvailable: true;
+  exportKind: 'projection-json';
+};
+
+export type KnowledgeLakeHistoryItemView = KnowledgeLakeListItemView & {
+  ingestedAt: string;
+};
+
+export type KnowledgeLakeHistoryPageView = {
+  items: KnowledgeLakeHistoryItemView[];
+  nextCursor: string | null;
+  authorityClass: 'projection';
+  ledgerSoT: false;
+  analyticalCopy: true;
+};
+
+export type KnowledgeLakeListQuery = {
+  q?: string;
+  producer?: string;
+  category?: string;
+  mode?: string;
+  libraryEntryId?: string;
+  reportRunId?: string;
+  tradingSessionId?: string;
+  exchangeScopeId?: string;
+  correlationId?: string;
+  occurredFrom?: string;
+  occurredTo?: string;
+  limit?: number;
+  cursor?: string;
+};
+
+export type AiAnalyticsKind = 'explain' | 'summarize' | 'trends' | 'narrative';
+
+export type AiAnalyticsSourceRefView = {
+  ownerType: string;
+  id: string;
+  href: string | null;
+};
+
+export type AiAnalyticsListItemView = {
+  analysisId: string;
+  narrativeId: string;
+  workspaceId: string;
+  kind: AiAnalyticsKind;
+  reportRunId: string | null;
+  createdAt: string;
+  summary: string;
+  authorityClass: 'narrative';
+  sourceOfTruth: false;
+  forcesTrade: false;
+};
+
+export type AiAnalyticsPageView = {
+  items: AiAnalyticsListItemView[];
+  nextCursor: string | null;
+  authorityClass: 'narrative';
+  sourceOfTruth: false;
+  forcesTrade: false;
+};
+
+export type AiAnalyticsHistoryItemView = AiAnalyticsListItemView & {
+  generatedAt: string;
+};
+
+export type AiAnalyticsHistoryPageView = {
+  items: AiAnalyticsHistoryItemView[];
+  nextCursor: string | null;
+  authorityClass: 'narrative';
+  sourceOfTruth: false;
+  forcesTrade: false;
+};
+
+export type AiAnalyticsRecommendationView = {
+  recommendationId: string;
+  text: string;
+  href: string | null;
+  forcesTrade: false;
+  ownsStrategy: false;
+  ownsReport: false;
+};
+
+export type AiAnalyticsInsightView = {
+  insightId: string;
+  kind: string;
+  text: string;
+  forcesTrade: false;
+};
+
+export type AiAnalyticsReasoningView = {
+  provider: string;
+  modelId: string;
+  templateVersion: string;
+  method: string;
+  ownsFacts: false;
+  ownsReports: false;
+};
+
+export type AiAnalyticsProvenanceView = {
+  analysisId: string;
+  narrativeId: string;
+  kind: AiAnalyticsKind;
+  createdAt: string;
+  modelMeta: Record<string, unknown> | null;
+  sourceRefs: readonly AiAnalyticsSourceRefView[];
+  ownershipChain: readonly ['source-of-truth', 'projection', 'narrative'];
+  authorityClass: 'narrative';
+  sourceOfTruth: false;
+  mutatesSource: false;
+  forcesTrade: false;
+};
+
+export type AiAnalyticsKnowledgeRefView = {
+  entryId: string;
+  href: string;
+  present: boolean;
+  authorityClass: 'projection';
+};
+
+export type AiAnalyticsReportRefView = {
+  reportRunId: string;
+  name: string;
+  kind: string;
+  status: string;
+  href: string;
+  ownsReport: false;
+  authorityClass: 'projection';
+};
+
+export type AiAnalyticsStrategyRefView = {
+  libraryEntryId: string;
+  version: string | null;
+  present: boolean;
+  href: string;
+  ownsStrategy: false;
+  authorityClass: 'source_of_truth' | 'projection';
+};
+
+export type AiAnalyticsMarketRefView = {
+  kind: 'qualification' | 'market-profile' | 'market-state' | 'deployment' | 'trading-session';
+  ownerType: string;
+  id: string;
+  href: string | null;
+  present: true;
+};
+
+export type AiAnalyticsComparisonSliceView = {
+  metricKey: string;
+  leftValue: unknown;
+  rightValue: unknown;
+  delta: unknown;
+  authorityClass: 'projection';
+  ownsReports: false;
+};
+
+export type AiAnalyticsComparisonView = {
+  leftAnalysisId: string;
+  rightAnalysisId: string;
+  leftReportRunId: string;
+  rightReportRunId: string;
+  leftKind: AiAnalyticsKind;
+  rightKind: AiAnalyticsKind;
+  leftText: string;
+  rightText: string;
+  slices: readonly AiAnalyticsComparisonSliceView[];
+  leftStrategy: AiAnalyticsStrategyRefView | null;
+  rightStrategy: AiAnalyticsStrategyRefView | null;
+  authorityClass: 'narrative';
+  sourceOfTruth: false;
+  forcesTrade: false;
+};
+
+export type AiAnalyticsDetailView = AiAnalyticsListItemView & {
+  text: string;
+  disclaimer: string;
+  modesCovered: readonly string[];
+  provenance: AiAnalyticsProvenanceView;
+  reasoning: AiAnalyticsReasoningView;
+  recommendations: readonly AiAnalyticsRecommendationView[];
+  insights: readonly AiAnalyticsInsightView[];
+  sources: readonly AiAnalyticsSourceRefView[];
+  knowledgeRefs: readonly AiAnalyticsKnowledgeRefView[];
+  reportRefs: readonly AiAnalyticsReportRefView[];
+  strategyRefs: readonly AiAnalyticsStrategyRefView[];
+  marketRefs: readonly AiAnalyticsMarketRefView[];
+  comparison: AiAnalyticsComparisonView | null;
+};
+
+export type AiAnalyticsListQuery = {
+  q?: string;
+  kind?: AiAnalyticsKind;
+  reportRunId?: string;
+  libraryEntryId?: string;
+  limit?: number;
+};
+
+export type GenerateAiAnalyticsRequest = {
+  kind?: AiAnalyticsKind;
+  reportRunId?: string;
+  compareReportRunId?: string;
+  libraryEntryId?: string;
+  compareLibraryEntryId?: string;
+  focus?: string;
 };
 
 export type NotificationChannelView = {
@@ -2247,6 +2582,39 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+async function requestText(path: string, init?: RequestInit): Promise<string> {
+  const headers = new Headers(init?.headers);
+  const token = getAccessToken();
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+  const workspace = getActiveWorkspace();
+  if (workspace && !headers.has('X-Workspace-Id')) {
+    headers.set('X-Workspace-Id', workspace.id);
+  }
+
+  let res: Response;
+  try {
+    res = await fetch(`${apiUrl}${API_PREFIX}${path}`, { ...init, headers });
+  } catch {
+    throw new Error(`Cannot reach API at ${apiUrl}. Start it with: pnpm --filter api start`);
+  }
+
+  if (res.status === 401) {
+    clearAccessToken();
+    if (!window.location.pathname.startsWith('/login')) {
+      window.location.assign('/login');
+    }
+  }
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(mapHttpError(res.status, text));
+  }
+
+  return res.text();
+}
+
 export function runCampaign(body: CampaignRunRequest) {
   return request<CampaignSummary>('/campaigns/run', {
     method: 'POST',
@@ -2273,6 +2641,57 @@ export function runWalkForwardCampaign(body: WalkForwardCampaignRequest) {
     method: 'POST',
     body: JSON.stringify(body),
   });
+}
+
+export function listCampaignHistory() {
+  return request<CampaignHistoryPageView>('/campaign-history?pageSize=50&sortDirection=DESC');
+}
+
+export function exportCampaignHistory(sessionId: string, format: 'json' | 'csv') {
+  return requestText(`/campaign-history/${sessionId}/export?format=${format}`);
+}
+
+export function campaignSummaryFromSession(session: CampaignHistorySessionView): CampaignSummary {
+  return {
+    campaignId: session.report.campaignId,
+    strategyId: session.report.strategyId,
+    datasetId: session.report.datasetId,
+    totalRuns: session.report.totalRuns,
+    passCount: session.report.passCount,
+    failCount: session.report.failCount,
+    needsReviewCount: session.report.needsReviewCount,
+    bestExperimentId: session.report.bestExperimentId,
+    createdAt: session.report.createdAt,
+    failedRuns: [],
+  };
+}
+
+function knowledgeLakeQueryString(query: KnowledgeLakeListQuery): string {
+  const params = new URLSearchParams();
+  if (query.q?.trim()) params.set('q', query.q.trim());
+  if (query.producer) params.set('producer', query.producer);
+  if (query.category) params.set('category', query.category);
+  if (query.mode) params.set('mode', query.mode);
+  if (query.libraryEntryId) params.set('libraryEntryId', query.libraryEntryId);
+  if (query.reportRunId) params.set('reportRunId', query.reportRunId);
+  if (query.tradingSessionId) params.set('tradingSessionId', query.tradingSessionId);
+  if (query.exchangeScopeId) params.set('exchangeScopeId', query.exchangeScopeId);
+  if (query.correlationId) params.set('correlationId', query.correlationId);
+  if (query.occurredFrom) params.set('occurredFrom', query.occurredFrom);
+  if (query.occurredTo) params.set('occurredTo', query.occurredTo);
+  if (query.limit) params.set('limit', String(query.limit));
+  if (query.cursor) params.set('cursor', query.cursor);
+  return params.toString();
+}
+
+function aiAnalyticsQueryString(query: AiAnalyticsListQuery): string {
+  const params = new URLSearchParams();
+  if (query.q?.trim()) params.set('q', query.q.trim());
+  if (query.kind) params.set('kind', query.kind);
+  if (query.reportRunId) params.set('reportRunId', query.reportRunId);
+  if (query.libraryEntryId) params.set('libraryEntryId', query.libraryEntryId);
+  if (query.limit) params.set('limit', String(query.limit));
+  return params.toString();
 }
 
 export const api = {
@@ -2406,6 +2825,50 @@ export const api = {
   },
   getReportRun: (reportRunId: string) =>
     request<ReportRunDetailView>(`/report-runs/${reportRunId}`),
+  listKnowledgeLake: (query: KnowledgeLakeListQuery = {}) => {
+    const qs = knowledgeLakeQueryString(query);
+    return request<KnowledgeLakePageView>(`/knowledge-lake${qs ? `?${qs}` : ''}`);
+  },
+  searchKnowledgeLake: (query: KnowledgeLakeListQuery = {}) => {
+    const qs = knowledgeLakeQueryString(query);
+    return request<KnowledgeLakePageView>(`/knowledge-lake/search${qs ? `?${qs}` : ''}`);
+  },
+  listKnowledgeLakeHistory: (query: KnowledgeLakeListQuery = {}) => {
+    const qs = knowledgeLakeQueryString(query);
+    return request<KnowledgeLakeHistoryPageView>(`/knowledge-lake/history${qs ? `?${qs}` : ''}`);
+  },
+  getKnowledgeLakeRelationships: (entryId: string) =>
+    request<{
+      entryId: string;
+      items: KnowledgeLakeRelationshipView[];
+      authorityClass: 'projection';
+      ledgerSoT: false;
+    }>(`/knowledge-lake/relationships?entryId=${encodeURIComponent(entryId)}`),
+  getKnowledgeLakeProvenance: (entryId: string) =>
+    request<KnowledgeLakeProvenanceView>(
+      `/knowledge-lake/provenance?entryId=${encodeURIComponent(entryId)}`,
+    ),
+  getKnowledgeLakeEntry: (entryId: string) =>
+    request<KnowledgeLakeDetailView>(`/knowledge-lake/${entryId}`),
+  listAiAnalytics: (query: AiAnalyticsListQuery = {}) => {
+    const qs = aiAnalyticsQueryString(query);
+    return request<AiAnalyticsPageView>(`/ai-analytics${qs ? `?${qs}` : ''}`);
+  },
+  listAiAnalyticsHistory: (query: AiAnalyticsListQuery = {}) => {
+    const qs = aiAnalyticsQueryString(query);
+    return request<AiAnalyticsHistoryPageView>(`/ai-analytics/history${qs ? `?${qs}` : ''}`);
+  },
+  getAiAnalyticsProvenance: (analysisId: string) =>
+    request<AiAnalyticsProvenanceView>(
+      `/ai-analytics/provenance?analysisId=${encodeURIComponent(analysisId)}`,
+    ),
+  getAiAnalytics: (analysisId: string) =>
+    request<AiAnalyticsDetailView>(`/ai-analytics/${encodeURIComponent(analysisId)}`),
+  generateAiAnalytics: (body: GenerateAiAnalyticsRequest) =>
+    request<AiAnalyticsDetailView>('/ai-analytics/generate', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
   listReportDefinitions: (kind?: string) =>
     request<ReportDefinitionPageView>(
       `/report-definitions${kind ? `?kind=${encodeURIComponent(kind)}` : ''}`,
@@ -2548,6 +3011,8 @@ export const api = {
       body: JSON.stringify({}),
     }),
   runCampaign,
+  listCampaignHistory,
+  exportCampaignHistory,
   analyzeCampaign,
   runMultiDatasetCampaign,
   runWalkForwardCampaign,

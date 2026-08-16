@@ -35,8 +35,9 @@ describe('PC-07 Telegram channel path', () => {
 
   it('keeps Telegram connect on the telegram channel without chat id input', () => {
     const layout = readSrc('../layout/AppLayout.tsx');
+    const catalog = readSrc('../shared/product-ui/catalog.ts');
     const home = readSrc('./TelegramSettingsView.tsx');
-    expect(layout).toContain("label: 'Channels'");
+    expect(catalog).toContain("label: 'Notification Channels'");
     expect(layout).not.toContain('Coming Soon');
     expect(home).toContain('Connect Telegram');
     expect(home).toContain('cannot trade, pause, or kill');

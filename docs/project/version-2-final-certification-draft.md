@@ -2,18 +2,19 @@
 
 **Document:** Version 2 Final Certification (Draft)  
 **Date:** 2026-08-16  
-**Status:** **DRAFT** — not a certification, not an RC, not an ADR, not a score change  
+**Status:** **DRAFT** — Final Validation PASS; not a certification, not an RC, not an ADR, not Version 2 Complete  
 **Does not declare:** Version 2 Complete
 
-This draft prepares the final certification record. After **PC-16 Knowledge Lake Product**, **PC-17 AI Analytics Product**, and **PC-20 Product UX Polish** close, only the following fields need updating:
+This draft prepares the final certification record. Final Validation **PASS** ([report](./version-2-final-validation-report.md)). Fields below are filled from that validation except certification date and Version 2 Complete, which wait for architectural review.
 
-| Field to finalize later             | Placeholder                         |
-| ----------------------------------- | ----------------------------------- |
-| Final paper-first product readiness | DRAFT — to be finalized after PC-20 |
-| Final production readiness          | DRAFT — to be finalized after PC-20 |
-| PC-20 outcome                       | DRAFT — to be finalized after PC-20 |
-| Final validation                    | DRAFT — to be finalized after PC-20 |
-| Certification / release date        | DRAFT — to be finalized after PC-20 |
+| Field                               | Value after Final Validation       |
+| ----------------------------------- | ---------------------------------- |
+| Final paper-first product readiness | **99%** (audit baseline 55%)       |
+| Final production readiness          | **40%**                            |
+| PC-16 / PC-17 / PC-20 outcome       | **Closed**                         |
+| Final validation                    | **PASS** — READY FOR CERTIFICATION |
+| Certification / release date        | Pending architectural review       |
+| Version 2 Complete declared         | **No**                             |
 
 Living status remains [`product-completion-status.md`](./product-completion-status.md). Scores remain [`product-readiness-audit-v2.md`](./product-readiness-audit-v2.md). Debt remains [`technical-debt.md`](./technical-debt.md).
 
@@ -24,11 +25,11 @@ Living status remains [`product-completion-status.md`](./product-completion-stat
 ## Current living wording (not a final verdict)
 
 **Version 2 Architecture Complete.**  
-**Version 2 Product Completion In Progress.**  
+**Version 2 Product Completion COMPLETE.**  
 **Paper-first Product Operational.**  
 **Customer Product not yet Complete.**
 
-Remaining Product Completion packages: PC-16, PC-17, PC-20. Do not begin PC-16 until review.
+Product Completion packages PC-01 … PC-20 are Closed. Final Validation PASS. Remaining: Version 2 Final Certification. Do not begin Final Certification until architectural review.
 
 ---
 
@@ -120,11 +121,11 @@ Source: [Release History](./release-history.md), [RC-28 Closure](./rc-28-closure
 
 ### Product Completion
 
-Product Completion planning is **CLOSED**. Implementation is **IN PROGRESS**.
+Product Completion planning is **CLOSED**. Implementation is **COMPLETE**. Final Validation is **PASS**.
 
 The program exposes certified ports through REST, UI, durable backing of existing aggregates, adapter completion on existing channel ports, and producer → consumer wiring. HTTP is transport. UI is not Source of Truth.
 
-Seventeen packages are Closed. Three remain. Wave C is Closed. Paper-first product readiness is **83%** (audit baseline 55%). Production readiness is **40%**. Architecture remains **100%**.
+Twenty packages are Closed. Waves A–F are Closed. Paper-first product readiness is **99%** (audit baseline 55%). Production readiness is **40%**. Architecture remains **100%**.
 
 Source: [Canonical Status](./product-completion-status.md), [Audit v2](./product-readiness-audit-v2.md).
 
@@ -172,37 +173,37 @@ Source: [Wave C Closure](./wave-c-closure-report.md).
 | PC-13   | Command Center Product       | Closed        |
 | PC-15   | Product Flow Integration     | Closed        |
 
-Certified bind after Gate PASS. Orchestrator emits intent (`createsSession` remains false). Session consumes handoff (slice 15-a). Command Center create / operate paper Bots. Emergency remains hidden (no durable paper Kill Switch). PC-15 closed against existing ports; Lake / AI product UI remain PC-16 / PC-17.
+Certified bind after Gate PASS. Orchestrator emits intent (`createsSession` remains false). Session consumes handoff (slice 15-a). Command Center create / operate paper Bots. Emergency remains hidden (no durable paper Kill Switch). PC-15 closed against existing ports. Lake / AI product UI are PC-16 / PC-17 (**Closed**).
 
 PC-03 and PC-11 are Wave D, not Wave C.
 
-### Wave E — Evidence and delivery (In progress)
+### Wave E — Evidence and delivery (Closed)
 
 | Package | Title                         | Living status |
 | ------- | ----------------------------- | ------------- |
 | PC-05   | Reporting Product             | Closed        |
 | PC-06   | Notification Product          | Closed        |
 | PC-07   | Notification Channels Product | Closed        |
-| PC-16   | Knowledge Lake Product        | Not started   |
-| PC-17   | AI Analytics Product          | Not started   |
+| PC-16   | Knowledge Lake Product        | Closed        |
+| PC-17   | AI Analytics Product          | Closed        |
 
 RC-24 reporting as a customer product. Notification settings / routing. PC-07 is **Notification Channels Product**; journey step J-13 remains Telegram (the only active channel). Reserved channels stay reserved. Production Telegram Bot API remains deferred.
 
-### Wave F — UX closeout (Not started)
+### Wave F — UX closeout (Closed)
 
 | Package | Title             | Living status |
 | ------- | ----------------- | ------------- |
-| PC-20   | Product UX Polish | Not started   |
+| PC-20   | Product UX Polish | Closed        |
 
 No new ports. No new flows.
 
 ### Current completed packages (living)
 
-Closed: PC-18, PC-19, PC-14, PC-01, PC-02, PC-04, PC-03, PC-11, PC-13, PC-15, PC-05, PC-06, PC-07, PC-12, PC-08, PC-09, PC-10.
+Closed: PC-18, PC-19, PC-14, PC-01, PC-02, PC-04, PC-03, PC-11, PC-13, PC-15, PC-05, PC-06, PC-07, PC-12, PC-08, PC-09, PC-10, PC-16, PC-17, PC-20.
 
-Not started: **PC-16**, **PC-17**, **PC-20**.
+Not started: **none** (Product Completion packages). Remaining: Version 2 Final Certification.
 
-Canonical journey: J-01, J-02, J-04…J-10, J-12, J-13, J-14 Complete. **J-11 AI Narrative** remains Not Started (PC-17).
+Canonical journey: J-01 … J-14 Complete. J-11 AI Narrative is Complete (PC-17).
 
 Closed `pc-*-*.md` reports are historical snapshots. They are not living status.
 
@@ -210,7 +211,7 @@ Closed `pc-*-*.md` reports are historical snapshots. They are not living status.
 
 ## 3. What was intentionally deferred
 
-These items are **not** remaining Product Completion packages. PC-16, PC-17, and PC-20 are Product Completion, not debt.
+These items are **not** remaining Product Completion packages. PC-16, PC-17, and PC-20 are Closed Product Completion. They are not debt.
 
 | Item                        | Disposition                                                                      |
 | --------------------------- | -------------------------------------------------------------------------------- |
@@ -240,38 +241,38 @@ RC-19 … RC-28 closed. Spec v2.0, Authority Matrix, and Alias Dictionary unmodi
 
 The program is finished when **all** of the following are true:
 
-| #   | Criterion                                                                        | Current living evidence                                    |
-| --- | -------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| 1   | User can certify strategies                                                      | PC-02 Closed                                               |
-| 2   | User can deploy a certified version                                              | PC-03 Closed                                               |
-| 3   | Runtime Validation available; Gate visible; fail-closed                          | PC-04 Closed                                               |
-| 4   | User can create paper deployments                                                | PC-03 Closed                                               |
-| 5   | User can run paper sessions on that path                                         | PC-15 15-a Closed                                          |
-| 6   | Reporting works as the RC-24 product                                             | PC-05 Closed                                               |
-| 7   | Notification Delivery works as a user product                                    | PC-06 Closed                                               |
-| 8   | Telegram works as a user product (connect / test / receive; not a control plane) | PC-07 Closed (in-memory path)                              |
-| 9   | Command Center completes the paper journey                                       | PC-13 Closed                                               |
-| 10  | Complete paper-first customer workflow exists                                    | Operable (Audit v2). Lake and standalone AI product remain |
-| 11  | Durable identity exists                                                          | PC-18 Closed                                               |
-| 12  | Operator sees a paper-first shell                                                | PC-19 Closed                                               |
-| 13  | Producer / consumer flows run in the product                                     | PC-15 Closed                                               |
-| 14  | Architecture remains unchanged                                                   | Freeze verified                                            |
+| #   | Criterion                                                                        | Current living evidence                                                                          |
+| --- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| 1   | User can certify strategies                                                      | PC-02 Closed                                                                                     |
+| 2   | User can deploy a certified version                                              | PC-03 Closed                                                                                     |
+| 3   | Runtime Validation available; Gate visible; fail-closed                          | PC-04 Closed                                                                                     |
+| 4   | User can create paper deployments                                                | PC-03 Closed                                                                                     |
+| 5   | User can run paper sessions on that path                                         | PC-15 15-a Closed                                                                                |
+| 6   | Reporting works as the RC-24 product                                             | PC-05 Closed                                                                                     |
+| 7   | Notification Delivery works as a user product                                    | PC-06 Closed                                                                                     |
+| 8   | Telegram works as a user product (connect / test / receive; not a control plane) | PC-07 Closed (in-memory path)                                                                    |
+| 9   | Command Center completes the paper journey                                       | PC-13 Closed                                                                                     |
+| 10  | Complete paper-first customer workflow exists                                    | Operable (Audit v2). Lake and standalone AI product Closed (PC-16 / PC-17). PC-20 polish Closed. |
+| 11  | Durable identity exists                                                          | PC-18 Closed                                                                                     |
+| 12  | Operator sees a paper-first shell                                                | PC-19 Closed                                                                                     |
+| 13  | Producer / consumer flows run in the product                                     | PC-15 Closed                                                                                     |
+| 14  | Architecture remains unchanged                                                   | Freeze verified                                                                                  |
 
-When 1–14 are true **and** remaining packages PC-16, PC-17, and PC-20 are Closed, Version 2 as a **customer product** may be declared complete. Version 3 remains not started. Live capital remains unauthorized.
+When 1–14 are true **and** packages PC-16, PC-17, and PC-20 are Closed **and** Final Validation has passed, Version 2 as a **customer product** may be declared complete after Final Certification. That declaration has **not** been made. Version 3 remains not started. Live capital remains unauthorized.
 
-### Placeholders — DRAFT — to be finalized after PC-20
+### Placeholders — filled after Final Validation (Version 2 Complete still No)
 
-| Field                         | Current living value             | Final certification value                 |
-| ----------------------------- | -------------------------------- | ----------------------------------------- |
-| Paper-first product readiness | **83%** (Audit v2, baseline 55%) | **DRAFT — to be finalized after PC-20**   |
-| Production readiness          | **40%**                          | **DRAFT — to be finalized after PC-20**   |
-| Architecture readiness        | **100%**                         | **100%** (frozen; not expected to change) |
-| PC-16 Knowledge Lake Product  | Not started                      | **DRAFT — to be finalized after PC-20**   |
-| PC-17 AI Analytics Product    | Not started                      | **DRAFT — to be finalized after PC-20**   |
-| PC-20 Product UX Polish       | Not started                      | **DRAFT — to be finalized after PC-20**   |
-| Final validation              | Not run for Version 2 Complete   | **DRAFT — to be finalized after PC-20**   |
-| Certification / release date  | —                                | **DRAFT — to be finalized after PC-20**   |
-| Version 2 Complete declared   | **No**                           | **DRAFT — to be finalized after PC-20**   |
+| Field                         | Current living value             | Final certification value                                   |
+| ----------------------------- | -------------------------------- | ----------------------------------------------------------- |
+| Paper-first product readiness | **99%** (Audit v2, baseline 55%) | **99%**                                                     |
+| Production readiness          | **40%**                          | **40%**                                                     |
+| Architecture readiness        | **100%**                         | **100%** (frozen; not expected to change)                   |
+| PC-16 Knowledge Lake Product  | Closed                           | **Closed**                                                  |
+| PC-17 AI Analytics Product    | Closed                           | **Closed**                                                  |
+| PC-20 Product UX Polish       | Closed                           | **Closed**                                                  |
+| Final validation              | **PASS**                         | **PASS** — [report](./version-2-final-validation-report.md) |
+| Certification / release date  | —                                | Pending architectural review                                |
+| Version 2 Complete declared   | **No**                           | **No** — wait for architectural review                      |
 
 Do not copy scores into other living documents. They live in Audit v2 until a later audit replaces them.
 
@@ -304,7 +305,7 @@ Source: charter Part 12; Audit v2 Release Position.
 | 2026-08-10 | Architecture Specification v2.0 approved. RC-19 … RC-26 closures recorded.                                                                              |
 | 2026-08-14 | RC-27 CLOSED (`v1.0.0-rc27`). RC-28 CLOSED. Tag `v2.0.0`. Version 2 **architecture** certified paper-first.                                             |
 | 2026-08-15 | Product Completion planning CLOSED. Waves A–D and Wave E product UIs except Lake / AI Closed. Wave C CLOSED. Product Readiness Audit v2: 55% → **83%**. |
-| 2026-08-16 | Version 2 documentation COMPLETE. This certification draft prepared.                                                                                    |
+| 2026-08-16 | PC-16, PC-17, PC-20 Closed. Paper-first readiness **99%**. Final Validation PASS. Certification draft updated. Version 2 Complete not declared.         |
 
 RC-18 residual US295 / ADL-008 remains Open in parallel. It is not on this timeline as a Product Completion gate.
 
@@ -324,14 +325,14 @@ Closures: [`rc-19-closure-report.md`](./rc-19-closure-report.md) … [`rc-28-clo
 
 ## Appendix C — Product Completion milestones
 
-| Wave                      | Packages                                             | Living status |
-| ------------------------- | ---------------------------------------------------- | ------------- |
-| A — Trust and shell       | PC-18, PC-19, PC-14                                  | Closed        |
-| B — Strategy admission    | PC-01, PC-02, PC-04                                  | Closed        |
-| C — Market context        | PC-12, PC-08, PC-09, PC-10                           | Closed        |
-| D — Certified paper       | PC-03, PC-11, PC-13, PC-15                           | Closed        |
-| E — Evidence and delivery | PC-05, PC-06, PC-07 Closed; PC-16, PC-17 not started | In progress   |
-| F — UX closeout           | PC-20                                                | Not started   |
+| Wave                      | Packages                          | Living status |
+| ------------------------- | --------------------------------- | ------------- |
+| A — Trust and shell       | PC-18, PC-19, PC-14               | Closed        |
+| B — Strategy admission    | PC-01, PC-02, PC-04               | Closed        |
+| C — Market context        | PC-12, PC-08, PC-09, PC-10        | Closed        |
+| D — Certified paper       | PC-03, PC-11, PC-13, PC-15        | Closed        |
+| E — Evidence and delivery | PC-05, PC-06, PC-07, PC-16, PC-17 | Closed        |
+| F — UX closeout           | PC-20                             | Closed        |
 
 Journey: [`product-completion-journey.md`](./product-completion-journey.md). Tracker: [`v2-product-completion-backlog.md`](./v2-product-completion-backlog.md).
 
@@ -344,7 +345,9 @@ Journey: [`product-completion-journey.md`](./product-completion-journey.md). Tra
 | [Architecture Specification v2.0](./trp-architecture-specification-v2.md) | Frozen constitution                         |
 | [Authority Matrix](./v2-authority-matrix.md)                              | Frozen SoT / projection / narrative classes |
 | [Alias Dictionary](./v2-alias-dictionary.md)                              | Frozen product language                     |
-| [Product Readiness Audit v2](./product-readiness-audit-v2.md)             | Living scores (83% / 40% / 100%)            |
+| [Product Readiness Audit v2](./product-readiness-audit-v2.md)             | Living scores (99% / 40% / 100%)            |
+| [Final Validation Report](./version-2-final-validation-report.md)         | Final Validation PASS                       |
+| [Release Candidate Audit](./version-2-release-candidate-audit.md)         | READY FOR CERTIFICATION                     |
 | [Technical Debt Register](./technical-debt.md)                            | Canonical deferred residuals                |
 | [Product Completion Status](./product-completion-status.md)               | Canonical living status                     |
 | [Product Completion charter](./v2-product-completion-program.md)          | Planning CLOSED                             |
@@ -358,12 +361,44 @@ Journey: [`product-completion-journey.md`](./product-completion-journey.md). Tra
 | This draft does                                                                | This draft does not                      |
 | ------------------------------------------------------------------------------ | ---------------------------------------- |
 | Record vision, delivery, deferrals, and completion criteria from existing docs | Declare Version 2 Complete               |
-| Leave PC-20 / readiness / validation / date as placeholders                    | Change architecture                      |
+| Fill PC-20 / readiness / validation from Final Validation PASS                 | Change architecture                      |
 | Point at the Technical Debt register                                           | Duplicate the debt inventory             |
 | Match Canonical Status wording                                                 | Change Product Completion package status |
 | Exist as a standalone draft                                                    | Modify README, Roadmap, or Backlog       |
 
-**STOP.** After review, continue with **PC-16 Knowledge Lake Product**. Do not treat this file as final certification.
+---
+
+## Lessons Learned
+
+This is a product retrospective. It is not an architecture section. It does not change certification criteria, scores, or package status.
+
+### Why Product Completion became necessary after RC-28
+
+RC-28 certified that the twelve Version 2 surfaces exist with correct ownership, ports, in-process composition, and conformance tests. That answers: _does the system exist?_ A paying customer still could not walk certify → gate → deploy → orchestrate → paper session → report → Telegram → dashboard as one product. Architecture delivery built the platform. Product Completion exists to ship the product on that platform.
+
+### Why architecture completion does not automatically mean product completion
+
+Architecture completeness is ownership and freeze. Product completeness is a customer who can operate the certified loop. Ports, `rest: false` modules, and Vitest composition are not screens, durable login, honest chrome, or producer → consumer wiring in the running product. Living wording keeps these separate: **Version 2 Architecture Complete** and **Customer Product not yet Complete**.
+
+### Why customer journeys are a better completion metric than backend availability
+
+Backend availability can be 88% while the journey hard-stops at Certify. The Canonical Journey (J-01…J-14) made the gap visible: which step a person can finish today. Closed packages are those that moved a step from Not Started to Complete, not those that only proved a port exists.
+
+### Why preserving the Authority Matrix prevented architectural drift
+
+The Authority Matrix froze who owns money, lifecycle, narrative, and projection. Product Completion was allowed to expose owners, not become them. Orchestrator still does not create Sessions. Lake is still not financial SoT. Command Center still does not own lifecycle. UI still is not SoT. That rule stopped REST and pages from turning into a second architecture.
+
+### Why exposing existing capabilities was preferable to redesigning the platform
+
+Redesign would have reopened Spec v2.0, ownership, and RC-19…RC-28. Version 2 did not need a second engine. It needed HTTP, UI, durable backing of existing aggregates, and wiring of certified ports. Exposing what already existed finished the paper-first product without inventing domains.
+
+### Why Version 2 should finish before Version 3 begins
+
+Version 3 items already listed (live capital, venue adapters, IDE shell, reserved channels) are outside this program. Starting them now would mix an unfinished certification with a new architecture track. PC-16, PC-17, and PC-20 are Closed. Final Validation PASS. Certify after architectural review. Then plan Version 3. Not before.
+
+---
+
+**STOP.** Do not treat this file as final certification. Do not create the release tag. Wait for architectural review.
 
 ---
 

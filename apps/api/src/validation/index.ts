@@ -16,6 +16,17 @@ export { RegisterBodyDto, LoginBodyDto } from './dto/auth.dto';
 export { WorkspaceNameBodyDto } from './dto/workspaces.dto';
 export { ListKnowledgeQueryDto, CreateKnowledgeBodyDto } from './dto/knowledge.dto';
 export {
+  KnowledgeLakeEntryIdParamDto,
+  KnowledgeLakeEntryQueryDto,
+  ListKnowledgeLakeQueryDto,
+} from './dto/knowledge-lake.dto';
+export {
+  AiAnalyticsIdParamDto,
+  AiAnalyticsProvenanceQueryDto,
+  GenerateAiAnalyticsBodyDto,
+  ListAiAnalyticsQueryDto,
+} from './dto/ai-analytics.dto';
+export {
   RunCampaignBodyDto,
   RunMultiCampaignBodyDto,
   RunWalkForwardCampaignBodyDto,

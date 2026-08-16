@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import type { LibraryMembershipStatus, StrategyLibraryRecordView } from '../shared/api';
+import { EmptyState, ErrorBanner, LoadingState, PageHeader } from '../shared/product-ui';
 import {
   eligibilityBadgeClass,
   envelopeBadgeClass,
@@ -35,37 +36,22 @@ export function LibraryBrowserView({
 }) {
   return (
     <section className="space-y-6" data-testid="strategy-library-page">
-      <div>
-        <h2 className="text-2xl font-semibold">Strategy Library</h2>
-        <p className="mt-2 text-slate-400">
-          Certified strategy membership for this workspace. Versions are immutable. This is not the
-          research strategy editor.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-3 text-sm">
-          <Link
-            to="/strategy-library/certify"
-            data-testid="library-certify-link"
-            className="text-sky-400 hover:text-sky-300"
-          >
-            Certify a strategy
-          </Link>
-          <Link to="/strategy-library/certifications" className="text-sky-400 hover:text-sky-300">
-            Certification history
-          </Link>
-          <Link to="/runtime-validation" className="text-sky-400 hover:text-sky-300">
-            Runtime Validation
-          </Link>
-          <Link to="/deployments" className="text-sky-400 hover:text-sky-300">
-            Deployment
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        productId="strategy-library"
+        title="Strategy Library"
+        description="Certified strategy membership for this workspace. Versions are immutable. This is not the research strategy editor."
+        extraActions={[
+          {
+            to: '/strategy-library/certify',
+            label: 'Certify a strategy',
+            testId: 'library-certify-link',
+          },
+          { to: '/strategy-library/certifications', label: 'Certification history' },
+          { to: '/deployments', label: 'Deployment' },
+        ]}
+      />
 
-      {error && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {error}
-        </div>
-      )}
+      <ErrorBanner message={error} />
 
       <div className="flex flex-wrap items-center gap-3">
         <label className="sr-only" htmlFor="library-search">
@@ -98,16 +84,16 @@ export function LibraryBrowserView({
         </div>
       </div>
 
-      {loading && <p className="text-sm text-slate-500">Loading library…</p>}
+      {loading && <LoadingState label="Loading library…" />}
 
       {!loading && families.length === 0 && (
-        <p className="text-sm text-slate-500" data-testid="library-empty">
-          No certified strategies in this workspace.{' '}
-          <Link to="/strategy-library/certify" className="text-sky-400 hover:text-sky-300">
-            Certify a strategy
-          </Link>
-          .
-        </p>
+        <EmptyState
+          testId="library-empty"
+          title="No certified strategies in this workspace."
+          description="Admit a research candidate into Strategy Library as an immutable certified version."
+          actionTo="/strategy-library/certify"
+          actionLabel="Certify a strategy"
+        />
       )}
 
       <div className="space-y-4">

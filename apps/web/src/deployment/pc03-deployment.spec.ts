@@ -31,9 +31,10 @@ describe('PC-03 Deployment product path', () => {
 
   it('adds Deployment to the paper-first shell without Coming Soon, auto-deploy, or live claims', () => {
     const layout = readSrc('../layout/AppLayout.tsx');
+    const catalog = readSrc('../shared/product-ui/catalog.ts');
     const page = readSrc('./DeploymentWizardView.tsx');
-    expect(layout).toContain("label: 'Deployment'");
-    expect(layout).toContain("to: '/deployments'");
+    expect(catalog).toContain("label: 'Deployment'");
+    expect(catalog).toContain("to: '/deployments'");
     expect(layout).not.toContain('Coming Soon');
     expect(layout).not.toContain("label: 'Live Bots'");
     expect(page).not.toContain('Force');

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import type { StrategyDeploymentView, StrategyLibraryRecordView } from '../shared/api';
+import { ErrorBanner, PageHeader } from '../shared/product-ui';
 import {
   ORCHESTRATOR_WIZARD_STEPS,
   orchestrationProgressLabel,
@@ -53,14 +54,15 @@ export function OrchestratorWizardView({
 
   return (
     <section className="space-y-6" data-testid="orchestrator-wizard">
-      <div>
-        <p className="text-xs uppercase tracking-wide text-slate-500">Trading Orchestrator</p>
-        <h2 className="mt-1 text-2xl font-semibold">Request orchestration</h2>
-        <p className="mt-2 text-slate-400">
-          Coordinate a certified paper selection and emit a Session Handoff Intent. Trading
-          Orchestrator does not start a Trading Session, place orders, or approve risk.
-        </p>
-      </div>
+      <PageHeader
+        productId="orchestrator"
+        title="Request orchestration"
+        description="Coordinate a certified paper selection and emit a Session Handoff Intent. Trading Orchestrator does not start a Trading Session, place orders, or approve risk."
+        extraActions={[
+          { to: '/orchestrator/plans', label: 'Plans' },
+          { to: '/deployments', label: 'Deployment' },
+        ]}
+      />
 
       <ol
         className="flex flex-wrap gap-2 text-xs uppercase tracking-wide"
@@ -81,11 +83,7 @@ export function OrchestratorWizardView({
         ))}
       </ol>
 
-      {error && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {error}
-        </div>
-      )}
+      <ErrorBanner message={error} />
 
       {step === 'plan' && (
         <Panel title="Plan">

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { PageHeader, SuccessBanner } from '../../shared/product-ui';
 import { ErrorPanel, LoadingOverlay } from '../components';
 import { useSettings, useUpdateSettings } from '../hooks';
 
@@ -33,24 +34,18 @@ export function SettingsPage() {
     <section className="relative space-y-6">
       <LoadingOverlay visible={settings.isLoading} />
       <header>
-        <h2 className="text-2xl font-semibold">Settings</h2>
-        <p className="mt-2 text-slate-400">
-          Research Control Center preferences. No trading configuration.
-        </p>
+        <PageHeader
+          productId="settings"
+          title="Settings"
+          description="Research Control Center preferences. No trading configuration."
+        />
       </header>
 
       {settings.isError ? (
         <ErrorPanel error={settings.error} onRetry={() => void settings.refetch()} />
       ) : null}
       {update.isError ? <ErrorPanel error={update.error} /> : null}
-      {saved ? (
-        <p
-          className="rounded border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200"
-          role="status"
-        >
-          Settings saved.
-        </p>
-      ) : null}
+      {saved ? <SuccessBanner message="Settings saved." /> : null}
 
       <form
         onSubmit={(e) => void handleSave(e)}
