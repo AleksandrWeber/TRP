@@ -70,7 +70,7 @@ describe('PC-13 Command Center product path', () => {
     expect(layout).not.toContain('Coming Soon');
     expect(layout).not.toContain("label: 'Live Bots'");
     expect(wizard).not.toContain('Coming Soon');
-    expect(wizard).toContain('does not place orders');
+    expect(wizard).toContain('does not authorize live trading');
     expect(detail).toContain('Creates Session: false');
     expect(workspace).not.toContain('EmergencyControlsPanel');
   });

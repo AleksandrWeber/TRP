@@ -32,7 +32,7 @@ export function dialogCopy(action: SessionLifecycleAction, sessionId: string) {
   if (action === 'start') {
     return {
       title: 'Start session?',
-      message: `Start ${sessionId}. Trading Session will arm paper runtime if the bound Deployment is approved. This does not place orders.`,
+      message: `Start ${sessionId}. Trading Session will arm paper runtime if the bound Deployment is approved. Closed-candle market events then evaluate the runtime and may create paper orders. This does not authorize live capital.`,
       confirmLabel: 'Start',
       variant: 'default' as const,
     };

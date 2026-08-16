@@ -51,6 +51,7 @@ describe('US223 — Strategy Trading Pipeline dependency boundaries', () => {
     expect(moduleSource).toMatch(/OrdersModule/);
     expect(moduleSource).toMatch(/CanonicalOrderPathModule/);
     expect(moduleSource).toMatch(/PositionsModule/);
+    expect(moduleSource).toMatch(/TradingSessionRuntimeWorker/);
     expect(moduleSource).not.toContain('ExecutionAdapterModule');
     expect(moduleSource).not.toContain('SignalEngineModule');
     expect(moduleSource).not.toContain('EvaluationSchedulerModule');
@@ -65,5 +66,15 @@ describe('US223 — Strategy Trading Pipeline dependency boundaries', () => {
     expect(serviceSource).toMatch(/orderFillRecordedEnvelope/);
     expect(serviceSource).not.toMatch(/applyFillToPosition|recordFill\(/);
     expect(serviceSource).not.toMatch(/EXECUTION_ADAPTER|PaperExecutionAdapter/);
+  });
+
+  it('keeps the runtime worker event-driven without a polling loop', () => {
+    const workerSource = readFileSync(join(ROOT, 'trading-session-runtime.worker.ts'), 'utf8');
+    expect(workerSource).toMatch(/MarketClosedCandle|CLOSED_CANDLE_TICK_EVENT_TYPE/);
+    expect(workerSource).toMatch(/StrategyTradingPipelineService/);
+    expect(workerSource).toMatch(/RuntimeEvaluationService|pipeline.run/);
+    expect(workerSource).not.toMatch(/while\s*\(\s*true\s*\)/);
+    expect(workerSource).not.toMatch(/setInterval/);
+    expect(workerSource).not.toMatch(/SignalEngine/);
   });
 });

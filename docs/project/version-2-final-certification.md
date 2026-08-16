@@ -2,12 +2,14 @@
 
 **Document:** Version 2 Final Certification  
 **Date:** 2026-08-16  
-**Status:** **CERTIFIED**  
-**Verdict:** **VERSION 2 COMPLETE**  
-**Release tag:** `v2.0.1`  
+**Status:** **SUSPENDED** — Pending Runtime Engine Completion  
+**Verdict:** **VERSION 2 CERTIFICATION SUSPENDED** (not a rollback)  
+**Release tag:** `v2.0.1` (preserved)  
 **Architecture tag:** `v2.0.0` (RC-28 — preserved, not moved)
 
-This is the official Version 2 certification. It is not an RC, not an ADR, and not a score change. Architecture Specification v2.0, the Authority Matrix, and the Alias Dictionary remain frozen.
+> **Hold (2026-08-16):** This record is the Version 2 certification snapshot. It is **not** deleted. Living status is **Version 2 Certification Suspended — Pending Runtime Engine Completion**. Version 3 must not begin. Canonical hold: [`version-2-certification-hold.md`](./version-2-certification-hold.md). Audit: [`runtime-completion-audit.md`](./runtime-completion-audit.md). Architecture Specification v2.0, the Authority Matrix, Alias Dictionary, RC history, and Product Completion history are unmodified.
+
+This is the official Version 2 certification record. It is not an RC, not an ADR, and not a score change. Architecture Specification v2.0, the Authority Matrix, and the Alias Dictionary remain frozen.
 
 Prepared from the approved draft [`version-2-final-certification-draft.md`](./version-2-final-certification-draft.md). Evidence: [Final Validation](./version-2-final-validation-report.md) **PASS**. Passport: [Release Manifest](./version-2-release-manifest.md).
 
@@ -15,14 +17,14 @@ Living status: [`product-completion-status.md`](./product-completion-status.md).
 
 **Authority freeze (unchanged):** Architecture Specification v2.0 · Authority Matrix · Alias Dictionary · RC-19 … RC-28 CLOSED
 
-| Field                               | Certified value              |
-| ----------------------------------- | ---------------------------- |
-| Final paper-first product readiness | **99%** (audit baseline 55%) |
-| Final production readiness          | **40%**                      |
-| PC-16 / PC-17 / PC-20 outcome       | **Closed**                   |
-| Final validation                    | **PASS** — **CERTIFIED**     |
-| Certification / release date        | 2026-08-16                   |
-| Version 2 Complete declared         | **Yes**                      |
+| Field                               | Certified value                        |
+| ----------------------------------- | -------------------------------------- |
+| Final paper-first product readiness | **99%** (audit baseline 55%)           |
+| Final production readiness          | **40%**                                |
+| PC-16 / PC-17 / PC-20 outcome       | **Closed**                             |
+| Final validation                    | **PASS** — certification **SUSPENDED** |
+| Certification / release date        | 2026-08-16                             |
+| Version 2 Complete declared         | **Suspended** — Runtime Engine hold    |
 
 ---
 
@@ -30,10 +32,10 @@ Living status: [`product-completion-status.md`](./product-completion-status.md).
 
 **Version 2 Architecture Complete.**  
 **Version 2 Product Completion COMPLETE.**  
-**Paper-first Product Operational.**  
-**Version 2 COMPLETE.**
+**Paper-first operator lifecycle complete.**  
+**Version 2 Certification Suspended — Pending Runtime Engine Completion.**
 
-Product Completion packages PC-01 … PC-20 are Closed. Final Validation PASS. Release Candidate PASS. Paper-first customer product **CERTIFIED**. Version 3 is **NEXT PLANNED WORK**. Live capital remains unauthorized.
+Product Completion packages PC-01 … PC-20 are Closed. Final Validation PASS. Release Candidate PASS. Paper-first **operator lifecycle** was certified; the Runtime Engine was then found unimplemented. Certification is **SUSPENDED**. Version 3 must **not** begin. Live capital remains unauthorized. Snapshot below is preserved.
 
 ---
 
@@ -408,7 +410,7 @@ Version 3 items already listed (live capital, venue adapters, IDE shell, reserve
 
 ---
 
-**STOP.** After this certification every new capability belongs to Version 3.
+**STOP.** Certification is **SUSPENDED** pending Runtime Engine Completion. Version 3 must not begin. Hold: [`version-2-certification-hold.md`](./version-2-certification-hold.md).
 
 ---
 

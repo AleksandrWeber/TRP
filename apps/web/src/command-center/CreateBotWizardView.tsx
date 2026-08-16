@@ -51,8 +51,8 @@ export function CreateBotWizardView({
         <h2 className="mt-1 text-2xl font-semibold">Create paper bot</h2>
         <p className="mt-2 text-slate-400">
           Start a paper Trading Session from an approved Deployment. Command Center is command UI
-          only. Trading Session remains the Session owner. This does not place orders or enable live
-          trading.
+          only. Trading Session remains the Session owner. After start, paper runtime reacts to
+          market events. This does not authorize live trading.
         </p>
       </div>
 

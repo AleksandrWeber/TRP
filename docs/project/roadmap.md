@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-08-16 (Version 2 COMPLETE — status lives in [Product Completion Status](./product-completion-status.md))
+Last updated: 2026-08-16 (Version 2 Certification Suspended — Pending Runtime Engine Completion — status lives in [Product Completion Status](./product-completion-status.md))
 
 This file distinguishes **historical architecture delivery** from the **current product completion program**.
 
@@ -211,11 +211,11 @@ Related:
 
 ---
 
-## Current Phase — Version 2 COMPLETE (Version 3 is NEXT PLANNED WORK)
+## Current Phase — Version 2 Certification Suspended (Runtime Engine Completion; Version 3 must not begin)
 
 **Canonical status:** [`product-completion-status.md`](./product-completion-status.md)
 
-Version 2 is **CERTIFIED**. Every new capability belongs to Version 3. It does not reopen RC-19…RC-28. It does not change Architecture Specification v2.0, the Authority Matrix, or the Alias Dictionary.
+Version 2 certification is **SUSPENDED** pending architectural review of Runtime Engine Completion. Version 3 must not begin. It does not reopen RC-19…RC-28. It does not change Architecture Specification v2.0, the Authority Matrix, or the Alias Dictionary. Canonical runtime: [`runtime-sequence-diagram.md`](./runtime-sequence-diagram.md).
 
 | Artifact                                                              | Role                                                              |
 | --------------------------------------------------------------------- | ----------------------------------------------------------------- |
@@ -244,9 +244,9 @@ Version 2 is **CERTIFIED**. Every new capability belongs to Version 3. It does n
 | [PC-17 Implementation](./pc-17-implementation-report.md)              | AI Analytics Product **CLOSED**                                   |
 | [PC-20 Implementation](./pc-20-implementation-report.md)              | Product UX Polish **CLOSED**                                      |
 | [Final Validation](./version-2-final-validation-report.md)            | **PASS**                                                          |
-| [Final Certification](./version-2-final-certification.md)             | **CERTIFIED** — VERSION 2 COMPLETE (`v2.0.1`)                     |
+| [Final Certification](./version-2-final-certification.md)             | **SUSPENDED** — `v2.0.1` preserved; Runtime Engine under review   |
 
-Canonical loop J-01 … J-14 is **Complete**. Version 2 is **COMPLETE**. Step states: [`product-completion-journey.md`](./product-completion-journey.md). Status: [`product-completion-status.md`](./product-completion-status.md). Certification: [`version-2-final-certification.md`](./version-2-final-certification.md).
+Canonical loop J-01 … J-14 is **Complete** for the operator lifecycle. Version 2 Certification remains **SUSPENDED**. Step states: [`product-completion-journey.md`](./product-completion-journey.md). Status: [`product-completion-status.md`](./product-completion-status.md). Certification: [`version-2-final-certification.md`](./version-2-final-certification.md).
 
 RC history is **complete and preserved** in the section below. Do not reopen RC-19…RC-28. Do not rewrite those closures.
 

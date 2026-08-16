@@ -13,10 +13,10 @@ Other living documents **link here**. They must not maintain a second copy of th
 
 **Version 2 Architecture Complete.**  
 **Version 2 Product Completion COMPLETE.**  
-**Paper-first Product Operational.**  
-**Version 2 COMPLETE.**
+**Paper-first operator lifecycle complete.**  
+**Version 2 Certification Suspended — Pending Runtime Engine Completion.**
 
-Architecture delivery (RC-19 … RC-28, tag `v2.0.0`) is closed and frozen. Spec v2.0, the Authority Matrix, and the Alias Dictionary are unmodified. Product Completion planning is closed. Product Completion implementation packages (PC-01 … PC-20) are **Closed**. Final Validation is **PASS**. Version 2 Final Certification is **CERTIFIED**. Product tag `v2.0.1`. Version 3 is **NEXT PLANNED WORK**.
+Architecture delivery (RC-19 … RC-28, tag `v2.0.0`) is closed and frozen. Spec v2.0, the Authority Matrix, and the Alias Dictionary are unmodified. Product Completion planning is closed. Product Completion implementation packages (PC-01 … PC-20) are **Closed**. Final Validation is **PASS**. Version 2 Final Certification is **SUSPENDED** (not rolled back). Product tag `v2.0.1` is preserved. Version 3 must **not** begin. Hold: [`version-2-certification-hold.md`](./version-2-certification-hold.md). Runtime audit: [`runtime-completion-audit.md`](./runtime-completion-audit.md). Canonical runtime: [`runtime-sequence-diagram.md`](./runtime-sequence-diagram.md). Implementation submitted: [`runtime-engine-implementation-report.md`](./runtime-engine-implementation-report.md).
 
 Paper-first product readiness is **99%** (audit baseline 55%). Production readiness is **40%**. Architecture remains **100%**. Scores live in [Product Readiness Audit v2](./product-readiness-audit-v2.md). They are not restated elsewhere.
 
@@ -28,14 +28,14 @@ Certification: [`version-2-final-certification.md`](./version-2-final-certificat
 
 ## How to read Version 2 “complete”
 
-| Phrase                                | Meaning                                                                 | Where it lives                                                  |
-| ------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------- |
-| Version 2 Architecture Complete       | RC-19 … RC-28 certified paper-first platform at `v2.0.0`.               | RC closures (historical; do not edit)                           |
-| Version 2 Product Completion COMPLETE | Planning closed. Implementation packages closed. Final Validation PASS. | This file                                                       |
-| Paper-first Product Operational       | Certified operator loop works on paper.                                 | [Audit v2](./product-readiness-audit-v2.md)                     |
-| Version 2 COMPLETE                    | Paper-first customer product certified (`v2.0.1`).                      | This file · [certification](./version-2-final-certification.md) |
-| Production SaaS                       | Not ready. Live capital unauthorized.                                   | Audit v2 Release Position                                       |
-| Version 3                             | NEXT PLANNED WORK.                                                      | This file                                                       |
+| Phrase                                | Meaning                                                                           | Where it lives                                                                                              |
+| ------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Version 2 Architecture Complete       | RC-19 … RC-28 certified paper-first platform at `v2.0.0`.                         | RC closures (historical; do not edit)                                                                       |
+| Version 2 Product Completion COMPLETE | Planning closed. Implementation packages closed. Final Validation PASS.           | This file                                                                                                   |
+| Paper-first Product Operational       | Certified operator loop works on paper.                                           | [Audit v2](./product-readiness-audit-v2.md)                                                                 |
+| Version 2 COMPLETE                    | **Suspended.** Operator lifecycle certified; Runtime Engine submitted for review. | This file · [hold](./version-2-certification-hold.md) · [certification](./version-2-final-certification.md) |
+| Production SaaS                       | Not ready. Live capital unauthorized.                                             | Audit v2 Release Position                                                                                   |
+| Version 3                             | **Must not begin** until Runtime Engine Completion restores CERTIFIED.            | This file · [hold](./version-2-certification-hold.md)                                                       |
 
 RC-28 history that says architecture is complete (paper-first) is **preserved**. Tag `v2.0.0` is not moved.
 
@@ -81,9 +81,9 @@ They are not living status.
 
 ## Remaining implementation
 
-None in Version 2. All Product Completion packages are Closed. Version 2 is **COMPLETE**.
+Product Completion packages remain Closed. Runtime Engine production wiring is **submitted for architectural review**. Certification remains **SUSPENDED**. Canonical sequence: [`runtime-sequence-diagram.md`](./runtime-sequence-diagram.md). Implementation: [`runtime-engine-implementation-report.md`](./runtime-engine-implementation-report.md).
 
-**STOP.** Every new capability belongs to Version 3.
+**STOP.** Version 3 must not begin. Do not restore Version 2 Certification until architectural review of Runtime Engine Completion.
 
 ---
 

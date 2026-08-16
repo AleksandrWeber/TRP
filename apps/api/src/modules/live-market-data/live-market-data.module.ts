@@ -25,6 +25,8 @@ import { MarketStatusService } from './status/market-status.service';
 import { MARKET_SUBSCRIPTION_PERSISTENCE } from './subscriptions/market-subscription-persistence';
 import { MarketSubscriptionRegistry } from './subscriptions/market-subscription-registry';
 import { PrismaMarketSubscriptionPersistence } from './subscriptions/prisma-market-subscription.persistence';
+import { ClosedCandleIngestService } from './ingest/closed-candle-ingest.service';
+import { LiveMarketFeedCoordinator } from './ingest/live-market-feed.coordinator';
 
 /**
  * Live Market Data Nest module (US126–US147).
@@ -80,6 +82,8 @@ import { PrismaMarketSubscriptionPersistence } from './subscriptions/prisma-mark
     },
     MarketDataQueryService,
     MarketProjectionChannelService,
+    ClosedCandleIngestService,
+    LiveMarketFeedCoordinator,
   ],
   exports: [
     LiveMarketConnectorRegistry,
@@ -95,6 +99,7 @@ import { PrismaMarketSubscriptionPersistence } from './subscriptions/prisma-mark
     MarketDataQueryService,
     MarketProjectionBroadcaster,
     MarketProjectionChannelService,
+    ClosedCandleIngestService,
   ],
 })
 export class LiveMarketDataModule {}

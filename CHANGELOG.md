@@ -9,6 +9,24 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ## [Unreleased]
 
+### Added
+
+- Production Runtime Engine for paper trading — after Command Center Start
+  Session, closed-candle market events drive the existing
+  `RuntimeEvaluationService` and `StrategyTradingPipelineService.run()`
+  path to paper orders, accounting, reporting, notification, and AI
+  narrative. No new bounded context, Source of Truth, or REST resource.
+  Version 2 Certification remains **SUSPENDED** pending architectural
+  review. Reports: `docs/project/runtime-sequence-diagram.md`,
+  `runtime-engine-implementation-report.md`,
+  `runtime-engine-architecture-impact.md`,
+  `runtime-engine-compatibility-report.md`,
+  `runtime-engine-integration-report.md`,
+  `runtime-engine-validation-report.md`,
+  `runtime-engine-end-to-end-report.md`,
+  `runtime-engine-customer-visible-changes.md`,
+  `runtime-engine-product-readiness-delta.md`.
+
 ## [2.0.1] — 2026-08-16
 
 ### Added

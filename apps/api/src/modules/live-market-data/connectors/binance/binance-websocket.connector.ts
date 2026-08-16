@@ -12,6 +12,7 @@ import type {
 } from '../../ports/live-market-connector';
 import { BINANCE_SPOT_SOURCE_ID } from './binance-spot.source';
 import { subscriptionKey, toBinanceStreamName } from './binance-stream-name';
+import type { BinanceKlineStreamMessage } from './map-binance-kline-message';
 import {
   computeReconnectDelayMs,
   DEFAULT_CONNECTOR_RESILIENCE_POLICY,
@@ -29,6 +30,13 @@ export type TrackedSubscription = Readonly<{
   request: LiveMarketSubscribeRequest;
 }>;
 
+export type BinanceKlineFrameHandler = (frame: {
+  message: unknown;
+  receivedAt: string;
+  workspaceId: string;
+  timeframe?: Timeframe;
+}) => void;
+
 export type BinanceWebSocketConnectorOptions = {
   webSocketFactory: WebSocketFactory;
   /** Public combined stream endpoint (no credentials). */
@@ -39,6 +47,11 @@ export type BinanceWebSocketConnectorOptions = {
   policy?: Partial<ConnectorResiliencePolicy>;
   /** When false, unexpected disconnect does not auto-reconnect (tests). */
   autoReconnect?: boolean;
+  /**
+   * Optional closed-kline delivery. Mapping / validation stay in Live Market Data ingest.
+   * Connector remains credential-free and strategy-free.
+   */
+  onKlineFrame?: BinanceKlineFrameHandler;
   /**
    * Rejected if present — public streams must not accept private credentials.
    */
@@ -63,6 +76,7 @@ export class BinanceWebSocketConnector implements LiveMarketConnector {
   private readonly random: () => number;
   private readonly policy: ConnectorResiliencePolicy;
   private readonly autoReconnect: boolean;
+  private readonly onKlineFrame: BinanceKlineFrameHandler | null;
 
   private socket: WebSocketLike | null = null;
   private state: ConnectorConnectionState = ConnectorConnectionState.DISCONNECTED;
@@ -98,6 +112,7 @@ export class BinanceWebSocketConnector implements LiveMarketConnector {
       ...options.policy,
     });
     this.autoReconnect = options.autoReconnect ?? true;
+    this.onKlineFrame = options.onKlineFrame ?? null;
   }
 
   capabilities(): LiveMarketConnectorCapabilities {
@@ -380,7 +395,45 @@ export class BinanceWebSocketConnector implements LiveMarketConnector {
           }
         }
       }
+      return;
     }
+
+    this.deliverKlineFrame(parsed);
+  }
+
+  private deliverKlineFrame(parsed: unknown): void {
+    if (!this.onKlineFrame) return;
+    const kline = unwrapKlinePayload(parsed);
+    if (!kline) return;
+    const match = this.matchSubscription(kline);
+    if (!match) return;
+    this.onKlineFrame({
+      message: kline,
+      receivedAt: this.lastMessageAt ?? new Date(this.now()).toISOString(),
+      workspaceId: String(match.request.workspaceId),
+      timeframe: match.request.timeframe,
+    });
+  }
+
+  private matchSubscription(message: BinanceKlineStreamMessage): TrackedSubscription | undefined {
+    const symbol = String(message.k?.s ?? message.s ?? '')
+      .trim()
+      .toUpperCase();
+    const interval = String(message.k?.i ?? '').trim();
+    if (symbol === '') return undefined;
+    for (const row of this.subscriptions.values()) {
+      if (String(row.request.instrument).trim().toUpperCase() !== symbol) continue;
+      if (row.request.channel !== MarketStreamChannel.CLOSED_CANDLE) continue;
+      if (
+        interval !== '' &&
+        row.request.timeframe !== undefined &&
+        String(row.request.timeframe) !== interval
+      ) {
+        continue;
+      }
+      return row;
+    }
+    return undefined;
   }
 
   private async onSocketClosed(): Promise<void> {
@@ -527,4 +580,20 @@ function assertNoCredentials(options: BinanceWebSocketConnectorOptions): void {
       throw new Error('BinanceWebSocketConnector does not accept private trading credentials');
     }
   }
+}
+
+function unwrapKlinePayload(parsed: unknown): BinanceKlineStreamMessage | null {
+  if (!parsed || typeof parsed !== 'object') return null;
+  const record = parsed as { e?: unknown; k?: unknown; data?: unknown };
+  const payload =
+    record.data && typeof record.data === 'object'
+      ? (record.data as { e?: unknown; k?: unknown })
+      : record;
+  if (payload.k && typeof payload.k === 'object') {
+    return payload as BinanceKlineStreamMessage;
+  }
+  if (payload.e === 'kline') {
+    return payload as BinanceKlineStreamMessage;
+  }
+  return null;
 }

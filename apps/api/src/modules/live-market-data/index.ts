@@ -250,3 +250,8 @@ export {
 } from './api/market-projection-broadcaster';
 export { MarketProjectionChannelService } from './api/market-projection-channel.service';
 export { MarketProjectionSseController } from './api/market-projection-sse.controller';
+export { ClosedCandleIngestService } from './ingest/closed-candle-ingest.service';
+export type {
+  ClosedCandleIngestOutcome,
+  ClosedCandleIngestResult,
+} from './ingest/closed-candle-ingest.service';

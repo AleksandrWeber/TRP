@@ -69,6 +69,7 @@ import { AccountingReconciliationModule } from './reconciliation/accounting-reco
     PortfolioProjectionService,
     AccountingRebuildService,
     AccountingQueryService,
+    POSITION_REPOSITORY,
   ],
 })
 export class PositionsModule {}

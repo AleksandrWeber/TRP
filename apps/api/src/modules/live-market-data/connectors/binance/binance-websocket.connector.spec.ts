@@ -104,6 +104,42 @@ describe('Binance WebSocket connection lifecycle (US133)', () => {
     expect('lastRawMessage' in connector).toBe(false);
   });
 
+  it('delivers closed kline frames to the ingest listener without exposing raw keys on health', async () => {
+    const sockets: FakeWebSocket[] = [];
+    const frames: Array<{ workspaceId: string; timeframe?: string }> = [];
+    const connector = new BinanceWebSocketConnector({
+      webSocketFactory: createFakeWebSocketFactory(sockets),
+      onKlineFrame: (frame) => {
+        frames.push({ workspaceId: frame.workspaceId, timeframe: frame.timeframe });
+      },
+    });
+    await connector.connect();
+    await connector.subscribe({
+      workspaceId: 'ws-1',
+      instrument: 'BTCUSDT',
+      channel: MarketStreamChannel.CLOSED_CANDLE,
+      timeframe: Timeframe.H1,
+    });
+    sockets[0]!.receive({ result: null, id: JSON.parse(sockets[0]!.sent[0]!).id });
+    sockets[0]!.receive({
+      e: 'kline',
+      s: 'BTCUSDT',
+      k: {
+        t: 1,
+        T: 2,
+        s: 'BTCUSDT',
+        i: '1h',
+        o: '1',
+        h: '2',
+        l: '1',
+        c: '1.5',
+        v: '10',
+        x: true,
+      },
+    });
+    expect(frames).toEqual([{ workspaceId: 'ws-1', timeframe: Timeframe.H1 }]);
+  });
+
   it('rejects private trading credentials', () => {
     expect(
       () =>
