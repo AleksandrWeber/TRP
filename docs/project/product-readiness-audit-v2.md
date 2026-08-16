@@ -4,6 +4,7 @@
 **Date:** 2026-08-15  
 **Nature:** Product-surface comparison against the 2026-08-14 Product Readiness Audit  
 **Baseline:** Version 2 Product Readiness Audit (2026-08-14) — **PRODUCT PARTIALLY READY, 55%**  
+**Clarifications:** 2026-08-16 — appended Paper Product Readiness, Customer Can/Cannot, Technical Debt Register, and Release Position. Scores, package statuses, and architecture wording are unchanged.  
 **This is not:** an architecture audit, a Spec change, an RC, an ADR, or Version 3
 
 **Authority freeze (verified unchanged):** Architecture Specification v2.0 · Authority Matrix · Alias Dictionary · RC-19 … RC-28 CLOSED
@@ -344,19 +345,143 @@ API (used in the overall formula, not a separate baseline row): **~50% implied �
 
 ---
 
+## Version 2 Paper Product Readiness
+
+The **83%** overall score in this audit is **paper-first Version 2 product readiness**. It measures whether a paper-first operator can use certified Version 2 capabilities as a product. It is **not** a SaaS production readiness score. It is **not** an architecture score.
+
+These three measurements answer different questions:
+
+| Measurement                       | Score in this audit  | What it measures                                                                                 |
+| --------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------ |
+| **Paper-first Product Readiness** | **83%** (was 55%)    | Can a paper-first operator complete the certified customer loop on paper?                        |
+| **Production Readiness**          | **40%** (was 28%)    | Can this ship as live-capital / multi-tenant SaaS production? Live capital remains unauthorized. |
+| **Architecture Readiness**        | **100%** (unchanged) | Is Spec v2.0 ownership, freeze, and RC-19…RC-28 certification intact?                            |
+
+Do not mix them. Architecture can be 100% while production SaaS is not ready. Paper-first product can be operational while Version 2 Complete is still open (PC-16, PC-17, PC-20).
+
+---
+
+## Customer Can Do
+
+What a customer can actually accomplish **today**. No future capabilities.
+
+| Area                 | What the customer can do today                                                                                                                                                         |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Identity             | Create an account and sign in. Credentials survive process restart. Login is not prefilled with a shared admin password.                                                               |
+| Workspace            | List, create, rename, archive, and switch workspaces in the paper-first shell. Later work runs in the selected workspace.                                                              |
+| Research             | Import datasets, run lab experiments, Research Control executions, campaigns, walk-forward, and research strategy CRUD. Surfaces stay labeled research.                                |
+| Certification        | Certify a research candidate into the Strategy Library as an immutable certified version. Inspect certification history and reasons.                                                   |
+| Strategy Library     | Browse and inspect certified membership, eligibility, and envelopes. `/strategies` remains research CRUD, not Library.                                                                 |
+| Runtime Validation   | Run the fail-closed Gate on a deployment request. See PASS / FAIL, reasons, Strategy Version, timestamp, and history. No override.                                                     |
+| Deployment           | Bind a certified library version to a paper Mission after Gate PASS. Inspect list, details, history, and the validation stamp. Deployment does not start the session.                  |
+| Trading Orchestrator | Request coordination, inspect plans, progress, history, and the Session Handoff Intent. Orchestrator does not create the session.                                                      |
+| Paper Trading        | Operate the manual paper sandbox (create / start / pause / stop / trade). On the certified path, create and operate a paper session from Command Center after the handoff is consumed. |
+| Reporting            | Request and read RC-24 ReportRuns at `/reporting`. See dashboard projections from existing owner reads. Research `/reports` remains a different slice.                                 |
+| Notifications        | Enable preferences, routing, and quiet hours. Inspect delivery history.                                                                                                                |
+| Telegram             | Connect, test, and receive on the certified in-memory Telegram path. Telegram is delivery only, never a trading control plane.                                                         |
+| Command Center       | Create a paper Bot, view the fleet, pause / resume / stop, and inspect session detail. Emergency Kill Switch is hidden.                                                                |
+| Cluster              | Manage Exchange Scope as Cluster: list, create, rename, activate, suspend, archive; inspect versions, bindings, policy inputs, lifecycle, history.                                     |
+| Qualification        | Request, confirm, cancel, complete, fail, and requalify market research targets. Inspect lifecycle, confidence, health, and history.                                                   |
+| Market Profile       | Inspect latest published Profile, version history, metadata, dimensions, Qualification source, and metadata-only compare.                                                              |
+| Market State         | Inspect current state, lifecycle, transitions, history, metadata, and Qual/Profile references. Refresh an existing snapshot.                                                           |
+
+---
+
+## Customer Cannot Do
+
+Actual limitations only. Completed work is not listed. Architecture freeze facts are not listed.
+
+| Limitation                      | What that means today                                                                                   |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Live trading                    | Live Bots are off the product path. Live capital is unauthorized.                                       |
+| Real exchange execution         | BINANCE / BYBIT / OKX venue I/O is stubbed. Cluster is isolation configuration, not a live terminal.    |
+| SMTP delivery                   | Email is reserved-inactive.                                                                             |
+| Slack delivery                  | Slack is reserved-inactive.                                                                             |
+| Discord delivery                | Discord is reserved-inactive.                                                                           |
+| Teams delivery                  | Teams is reserved-inactive.                                                                             |
+| Push delivery                   | Push is reserved-inactive.                                                                              |
+| Production Telegram Bot API     | Connect / test / receive use the in-memory adapter. There is no production Bot network.                 |
+| Knowledge Lake product          | `/knowledge` is Implementation 014 search, not the Lake warehouse.                                      |
+| Standalone AI Analytics product | `/ai` is the OpenRouter gateway. RC-24 narratives attach to ReportRuns; there is no AI product surface. |
+| Durable Kill Switch             | Emergency controls are hidden. There is no durable paper Kill Switch.                                   |
+
+---
+
+## Technical Debt Register
+
+Intentionally deferred technical items in one place. This is **not** a backlog. PC-16, PC-17, and PC-20 remain Product Completion packages and are not listed here.
+
+### Infrastructure
+
+| Name                | Reason deferred                                                         | Product impact                                                                     | Target program |
+| ------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | -------------- |
+| IDE shell           | Residual `ide-shell`. PC-19 delivered paper-first chrome, not an IDE.   | Operators use classic Research / Paper / Administration nav.                       | Version 3      |
+| Durable Kill Switch | Durable Kill Switch REST is live-only. Paper product hides the control. | No fleet-wide kill on paper. Pause / resume / stop remain.                         | Version 3      |
+| US295               | RC-18 parallel residual. Production restart-safety claim language.      | Does not block the paper-first loop. Blocks production restart-safety PASS claims. | Infrastructure |
+| ADL-008             | Same residual as US295. Architecture closeout, not a product screen.    | Same as US295.                                                                     | Infrastructure |
+
+### Persistence
+
+| Name                            | Reason deferred                                                                                          | Product impact                                                                                                                           | Target program |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| Process-local analytical stores | Certified `persistence: false` on several V2 analytical modules. Residual `durable-persistence-product`. | Restart can drop Reporting, Notification, Orchestrator, and related analytical artifacts. Identity/workspace/paper sessions are durable. | Infrastructure |
+
+### Delivery
+
+| Name                   | Reason deferred                                                                         | Product impact                                                                                    | Target program |
+| ---------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | -------------- |
+| Telegram Bot API       | RC-24 deferred production Bot network. `InMemoryTelegramAdapter` is the certified path. | Telegram connect / test / receive work in-process. They do not hit Telegram’s production Bot API. | Infrastructure |
+| SMTP provider          | Email channel is reserved-inactive.                                                     | No email notifications.                                                                           | Version 3      |
+| Slack provider         | Slack channel is reserved-inactive.                                                     | No Slack notifications.                                                                           | Version 3      |
+| Discord provider       | Discord channel is reserved-inactive.                                                   | No Discord notifications.                                                                         | Version 3      |
+| Teams provider         | Teams channel is reserved-inactive.                                                     | No Teams notifications.                                                                           | Version 3      |
+| Push provider          | Push channel is reserved-inactive.                                                      | No push notifications.                                                                            | Version 3      |
+| Durable delivery queue | RC-24 non-goal. Delivery is in-process.                                                 | Deliveries are not a durable outbox/queue product. Restart can lose in-flight adapter state.      | Infrastructure |
+
+### Testing
+
+| Name                    | Reason deferred                                  | Product impact                                                           | Target program |
+| ----------------------- | ------------------------------------------------ | ------------------------------------------------------------------------ | -------------- |
+| Playwright E2E (TD-043) | Historically deferred. Product tests are Vitest. | No browser customer E2E suite. Conformance and package tests still pass. | Infrastructure |
+
+### Integrations
+
+| Name                      | Reason deferred                                                                  | Product impact                                          | Target program |
+| ------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------- | -------------- |
+| Additional venue adapters | Residual `additional-venue-adapters`. Real BINANCE / BYBIT / OKX I/O is stubbed. | MOCK / paper path works. Live venue I/O does not.       | Version 3      |
+| Live capital              | Paper Freeze ADR-012…018. Residual `live-capital`.                               | Version 2 is paper-first. Live capital is unauthorized. | Version 3      |
+
+---
+
+## Release Position
+
+**Version 2 Paper Product — Operational.** A paper-first operator can sign in, switch workspace, research, certify, pass the Gate, deploy, orchestrate, start a paper session from the handoff, read RC-24 reports, receive Telegram on the in-memory path, and operate from Command Center. Overall paper-first product readiness is **83%**. This is the current shippable paper product, not a live SaaS.
+
+**Version 2 Complete — Not yet.** Product Completion still contains PC-16 Knowledge Lake Product, PC-17 AI Analytics Product, and PC-20 Product UX Polish. The canonical paper loop is operable; the customer product is not finished until those packages close.
+
+**Production SaaS — Not ready.** Production readiness is **40%**. Live capital is unauthorized. Venue I/O is stubbed. Telegram is in-memory. Several V2 analytical stores are process-local. US295 / ADL-008 remains open for production restart-safety claims. Version 1 (`v1.0.0`) remains the production-ready research OS release.
+
+**Version 3 — Not started.** Version 3 is out of scope until Version 2 Complete. Live capital, IDE shell, additional venue adapters, and reserved notification-channel activation belong there or to infrastructure residuals. They are not Product Completion packages.
+
+---
+
 ## Executive Conclusion
 
-**Can Version 2 now be released for paper-first operators?**
+**Version 2 Paper Product is Operational.**
 
-**Not as Version 2 Complete.** The canonical paper-first loop is operable. A paper-first operator can sign in, switch workspace, research, certify, pass the Gate, deploy, orchestrate, start a paper session from the handoff, read RC-24 reports, receive Telegram on the in-memory path, and operate from Command Center. Architecture is unchanged.
+**Version 2 Customer Product is not yet Complete.**
 
-Version 2 cannot be declared complete, and should not be marketed as a finished customer product, until the remaining product blockers close:
+The certified paper-first operator journey is operational.
 
-1. **PC-16** Knowledge Lake Product
-2. **PC-17** AI Analytics Product
-3. **PC-20** Product UX Polish
+Version 2 cannot yet be declared fully complete because Product Completion still contains:
 
-Do not begin those packages in this audit. Live capital is not a paper-first release blocker; it remains unauthorized by design.
+- PC-16 Knowledge Lake Product
+- PC-17 AI Analytics Product
+- PC-20 Product UX Polish
+
+Live capital remains intentionally outside Version 2.
+
+Do not begin those packages in this audit.
 
 ---
 
