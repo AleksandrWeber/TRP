@@ -1,4 +1,11 @@
-import { clearAccessToken, getAccessToken, getActiveWorkspace } from './auth';
+import {
+  clearAccessToken,
+  getAccessToken,
+  getActiveWorkspace,
+  getCsrfToken,
+  setAccessToken,
+  setCsrfToken,
+} from './auth';
 import { mapHttpError } from './mapApiError';
 
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
@@ -277,9 +284,20 @@ export type AuthUser = {
   role: string;
 };
 
+export type SignInSessionView = {
+  id: string;
+  current: boolean;
+  device: string;
+  browser: string;
+  network: string | null;
+  lastActiveAt: string;
+  signedInAt: string;
+};
+
 export type LoginResponse = {
   accessToken: string;
   expiresIn: string;
+  csrfToken: string;
   user: AuthUser;
 };
 
@@ -2501,8 +2519,39 @@ export type MarketStateRefreshView = MarketStateProductFlags & {
 };
 
 async function requestAbsolute<T>(url: string, init?: RequestInit): Promise<T> {
-  const headers = new Headers(init?.headers);
-  if (!headers.has('Content-Type')) {
+  return sessionRequest<T>(url, init);
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  return sessionRequest<T>(`${apiUrl}${API_PREFIX}${path}`, init, path);
+}
+
+async function requestText(path: string, init?: RequestInit): Promise<string> {
+  return sessionRequest<string>(`${apiUrl}${API_PREFIX}${path}`, init, path, 'text');
+}
+
+const AUTH_BOOTSTRAP_PATHS = [
+  '/auth/login',
+  '/auth/register',
+  '/auth/refresh',
+  '/auth/logout',
+  '/auth/csrf',
+  '/auth/recovery',
+  '/auth/forgot-password',
+  '/auth/reset-password',
+];
+
+let refreshInFlight: Promise<boolean> | null = null;
+
+function isAuthBootstrapPath(path?: string): boolean {
+  if (!path) return false;
+  return AUTH_BOOTSTRAP_PATHS.some(
+    (candidate) => path === candidate || path.startsWith(`${candidate}?`),
+  );
+}
+
+function applySessionHeaders(headers: Headers, method: string, path?: string) {
+  if (!headers.has('Content-Type') && method !== 'GET' && method !== 'HEAD') {
     headers.set('Content-Type', 'application/json');
   }
 
@@ -2511,108 +2560,128 @@ async function requestAbsolute<T>(url: string, init?: RequestInit): Promise<T> {
     headers.set('Authorization', `Bearer ${token}`);
   }
 
+  const csrf = getCsrfToken();
+  const mutating = method !== 'GET' && method !== 'HEAD';
+  if (
+    csrf &&
+    mutating &&
+    (path === '/auth/refresh' || path === '/auth/logout' || !isAuthBootstrapPath(path))
+  ) {
+    headers.set('X-CSRF-Token', csrf);
+  }
+
   const workspace = getActiveWorkspace();
   if (workspace && !headers.has('X-Workspace-Id')) {
     headers.set('X-Workspace-Id', workspace.id);
   }
+}
+
+async function ensureCsrfToken(): Promise<string | null> {
+  const existing = getCsrfToken();
+  if (existing) return existing;
+  try {
+    const res = await fetch(`${apiUrl}${API_PREFIX}/auth/csrf`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+    if (!res.ok) return null;
+    const body = (await res.json()) as { csrfToken?: string };
+    if (!body.csrfToken) return null;
+    setCsrfToken(body.csrfToken);
+    return body.csrfToken;
+  } catch {
+    return null;
+  }
+}
+
+async function tryRefreshSession(): Promise<boolean> {
+  if (refreshInFlight) return refreshInFlight;
+  refreshInFlight = (async () => {
+    try {
+      await ensureCsrfToken();
+      const headers = new Headers({ 'Content-Type': 'application/json' });
+      const csrf = getCsrfToken();
+      if (csrf) headers.set('X-CSRF-Token', csrf);
+      const res = await fetch(`${apiUrl}${API_PREFIX}/auth/refresh`, {
+        method: 'POST',
+        credentials: 'include',
+        headers,
+        body: '{}',
+      });
+      if (!res.ok) return false;
+      const body = (await res.json()) as LoginResponse;
+      if (!body.accessToken) return false;
+      setAccessToken(body.accessToken, body.csrfToken);
+      return true;
+    } catch {
+      return false;
+    }
+  })();
+  try {
+    return await refreshInFlight;
+  } finally {
+    refreshInFlight = null;
+  }
+}
+
+async function sessionRequest<T>(
+  url: string,
+  init?: RequestInit,
+  path?: string,
+  mode: 'json' | 'text' = 'json',
+): Promise<T> {
+  const method = (init?.method ?? 'GET').toUpperCase();
+  if (method !== 'GET' && method !== 'HEAD' && !isAuthBootstrapPath(path)) {
+    await ensureCsrfToken();
+  }
+  const headers = new Headers(init?.headers);
+  applySessionHeaders(headers, method, path);
 
   let res: Response;
   try {
     res = await fetch(url, {
       ...init,
+      method,
       headers,
+      credentials: 'include',
     });
   } catch {
     throw new Error(`Cannot reach API at ${apiUrl}. Start it with: pnpm --filter api start`);
   }
 
+  if (res.status === 401 && !isAuthBootstrapPath(path)) {
+    const refreshed = await tryRefreshSession();
+    if (refreshed) {
+      const retryHeaders = new Headers(init?.headers);
+      applySessionHeaders(retryHeaders, method, path);
+      res = await fetch(url, {
+        ...init,
+        method,
+        headers: retryHeaders,
+        credentials: 'include',
+      });
+    }
+  }
+
   if (res.status === 401) {
-    clearAccessToken();
-    if (!window.location.pathname.startsWith('/login')) {
-      window.location.assign('/login');
+    if (!isAuthBootstrapPath(path)) {
+      clearAccessToken();
+      if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
+        window.location.assign('/login');
+      }
     }
   }
 
   if (!res.ok) {
     const text = await res.text();
     throw new Error(mapHttpError(res.status, text));
+  }
+
+  if (mode === 'text') {
+    return (await res.text()) as T;
   }
 
   return res.json() as Promise<T>;
-}
-
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const headers = new Headers(init?.headers);
-  if (!headers.has('Content-Type')) {
-    headers.set('Content-Type', 'application/json');
-  }
-
-  const token = getAccessToken();
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
-  }
-
-  const workspace = getActiveWorkspace();
-  if (workspace && !headers.has('X-Workspace-Id')) {
-    headers.set('X-Workspace-Id', workspace.id);
-  }
-
-  let res: Response;
-  try {
-    res = await fetch(`${apiUrl}${API_PREFIX}${path}`, {
-      ...init,
-      headers,
-    });
-  } catch {
-    throw new Error(`Cannot reach API at ${apiUrl}. Start it with: pnpm --filter api start`);
-  }
-
-  if (res.status === 401) {
-    clearAccessToken();
-    if (!window.location.pathname.startsWith('/login')) {
-      window.location.assign('/login');
-    }
-  }
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(mapHttpError(res.status, text));
-  }
-
-  return res.json() as Promise<T>;
-}
-
-async function requestText(path: string, init?: RequestInit): Promise<string> {
-  const headers = new Headers(init?.headers);
-  const token = getAccessToken();
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
-  }
-  const workspace = getActiveWorkspace();
-  if (workspace && !headers.has('X-Workspace-Id')) {
-    headers.set('X-Workspace-Id', workspace.id);
-  }
-
-  let res: Response;
-  try {
-    res = await fetch(`${apiUrl}${API_PREFIX}${path}`, { ...init, headers });
-  } catch {
-    throw new Error(`Cannot reach API at ${apiUrl}. Start it with: pnpm --filter api start`);
-  }
-
-  if (res.status === 401) {
-    clearAccessToken();
-    if (!window.location.pathname.startsWith('/login')) {
-      window.location.assign('/login');
-    }
-  }
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(mapHttpError(res.status, text));
-  }
-
-  return res.text();
 }
 
 export function runCampaign(body: CampaignRunRequest) {
@@ -2705,7 +2774,49 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ email, displayName, password }),
     }),
+  refresh: () =>
+    request<LoginResponse>('/auth/refresh', {
+      method: 'POST',
+      body: '{}',
+    }),
+  logout: () =>
+    request<{ ok: true }>('/auth/logout', {
+      method: 'POST',
+      body: '{}',
+    }),
   me: () => request<AuthUser>('/auth/me'),
+  listSignInSessions: () => request<{ sessions: SignInSessionView[] }>('/auth/sessions'),
+  revokeSignInSession: (sessionId: string) =>
+    request<{ endedCurrent: boolean }>(`/auth/sessions/${encodeURIComponent(sessionId)}`, {
+      method: 'DELETE',
+      body: '{}',
+    }),
+  revokeOtherSignInSessions: () =>
+    request<{ revokedCount: number }>('/auth/sessions/revoke-others', {
+      method: 'POST',
+      body: '{}',
+    }),
+  revokeAllSignInSessions: () =>
+    request<{ endedCurrent: true }>('/auth/sessions/revoke-all', {
+      method: 'POST',
+      body: '{}',
+    }),
+  recoveryStatus: () => request<{ available: boolean; message: string }>('/auth/recovery'),
+  forgotPassword: (email: string) =>
+    request<{ outcome: 'accepted' | 'unavailable'; message: string }>('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    }),
+  resetPassword: (token: string, password: string) =>
+    request<{ ok: true }>('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({ token, password }),
+    }),
+  changePassword: (currentPassword: string, newPassword: string) =>
+    request<{ ok: true }>('/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ currentPassword, newPassword }),
+    }),
   bootstrapWorkspace: () =>
     request<WorkspaceView>('/workspaces/bootstrap', {
       method: 'POST',

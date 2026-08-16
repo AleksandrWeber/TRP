@@ -53,6 +53,8 @@ describe('PC-20 Product UX Polish', () => {
     expect(labels).toContain('Trading Orchestrator');
     expect(labels).toContain('Market Profile');
     expect(labels).toContain('Notification Channels');
+    expect(labels).toContain('Sign-in sessions');
+    expect(labels).toContain('Password');
     expect(labels).not.toContain('Certify');
     expect(labels).not.toContain('Orchestrator');
     expect(labels).not.toContain('Profile');

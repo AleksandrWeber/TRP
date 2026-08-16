@@ -39,7 +39,26 @@ export class PasswordCredentialStore implements OnModuleInit {
     return bcrypt.compare(password, passwordHash);
   }
 
+  /**
+   * Timing-safe-ish compare for login: missing users still pay a bcrypt compare.
+   * Never returns true for a missing credential.
+   */
+  async verifyAgainstStoredOrDummy(userId: string | undefined, password: string): Promise<boolean> {
+    if (userId && this.passwordHashes.has(userId)) {
+      return this.verify(userId, password);
+    }
+    await bcrypt.compare(password, await dummyPasswordHash());
+    return false;
+  }
+
   has(userId: string): boolean {
     return this.passwordHashes.has(userId);
   }
+}
+
+let dummyHashPromise: Promise<string> | undefined;
+
+function dummyPasswordHash(): Promise<string> {
+  dummyHashPromise ??= bcrypt.hash('timing-dummy', BCRYPT_ROUNDS);
+  return dummyHashPromise;
 }

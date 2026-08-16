@@ -45,6 +45,14 @@ describe('auth storage (US002)', () => {
     localStorage.clear();
   });
 
+  it('keeps the access token in memory instead of localStorage', () => {
+    setAccessToken('token', 'csrf');
+
+    expect(getAccessToken()).toBe('token');
+    expect(localStorage.getItem('trp_access_token')).toBeNull();
+    expect(localStorage.getItem('trp_signed_in')).toBe('1');
+  });
+
   it('stores and reads the active workspace', () => {
     setActiveWorkspace({ id: 'ws-1', name: 'Default Workspace' });
 
@@ -58,6 +66,8 @@ describe('auth storage (US002)', () => {
     clearAccessToken();
 
     expect(getAccessToken()).toBeNull();
+    expect(localStorage.getItem('trp_access_token')).toBeNull();
+    expect(localStorage.getItem('trp_signed_in')).toBeNull();
     expect(getActiveWorkspace()).toBeNull();
   });
 

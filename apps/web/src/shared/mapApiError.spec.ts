@@ -18,6 +18,39 @@ describe('mapHttpError', () => {
     expect(spy).toHaveBeenCalled();
   });
 
+  it('maps 400 password policy errors to product language', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(
+      mapHttpError(
+        400,
+        JSON.stringify({
+          statusCode: 400,
+          errors: [
+            {
+              code: 'isProductPassword',
+              message: 'Password must include a letter and a number.',
+              field: 'password',
+              value: '[redacted]',
+            },
+          ],
+        }),
+      ),
+    ).toBe('Password must include a letter and a number.');
+  });
+
+  it('maps recovery and current-password 400s to operator language', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(
+      mapHttpError(
+        400,
+        JSON.stringify({ message: 'This recovery link is invalid or has expired.' }),
+      ),
+    ).toBe('This recovery link is invalid or has expired.');
+    expect(mapHttpError(400, JSON.stringify({ message: 'Current password is incorrect.' }))).toBe(
+      'Current password is incorrect.',
+    );
+  });
+
   it('maps experiment 404 without exposing JSON', () => {
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const raw = JSON.stringify({
@@ -34,6 +67,13 @@ describe('mapHttpError', () => {
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
     expect(mapHttpError(404, JSON.stringify({ message: 'Workspace not found' }))).toBe(
       'Workspace not found.',
+    );
+  });
+
+  it('maps session 404 to operator language', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(mapHttpError(404, JSON.stringify({ message: 'Session not found.' }))).toBe(
+      'That sign-in is no longer listed.',
     );
   });
 

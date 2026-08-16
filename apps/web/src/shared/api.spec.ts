@@ -2,8 +2,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('./auth', () => ({
   getAccessToken: () => 'test-token',
+  getCsrfToken: () => null,
   getActiveWorkspace: () => ({ id: 'ws-test', name: 'Test' }),
   clearAccessToken: vi.fn(),
+  setAccessToken: vi.fn(),
+  setCsrfToken: vi.fn(),
 }));
 
 import { api, runCampaign } from './api';
@@ -48,14 +51,19 @@ describe('runCampaign', () => {
 
     const result = await runCampaign(body);
 
-    expect(fetch).toHaveBeenCalledTimes(1);
-    const [url, init] = vi.mocked(fetch).mock.calls[0]!;
+    expect(fetch).toHaveBeenCalled();
+    const campaignCall = vi
+      .mocked(fetch)
+      .mock.calls.find(([url]) => String(url).includes('/v1/campaigns/run'));
+    expect(campaignCall).toBeDefined();
+    const [url, init] = campaignCall!;
     expect(String(url)).toContain('/v1/campaigns/run');
     expect(init?.method).toBe('POST');
     expect(init?.body).toBe(JSON.stringify(body));
     const headers = new Headers(init?.headers);
     expect(headers.get('Authorization')).toBe('Bearer test-token');
     expect(headers.get('X-Workspace-Id')).toBe('ws-test');
+    expect(init?.credentials).toBe('include');
     expect(result).toEqual(summary);
   });
 });

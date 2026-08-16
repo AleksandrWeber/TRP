@@ -1,4 +1,5 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { api } from '../shared/api';
 import { clearAccessToken } from '../shared/auth';
 import { NAV_BANDS, isNavTargetActive } from '../shared/product-ui';
 import { WorkspaceSwitcher } from '../workspace';
@@ -7,7 +8,12 @@ export function AppLayout() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  function logout() {
+  async function logout() {
+    try {
+      await api.logout();
+    } catch {
+      // Client still signs out even if the server session is already gone.
+    }
     clearAccessToken();
     navigate('/login');
   }

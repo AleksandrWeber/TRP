@@ -2,8 +2,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../shared/auth', () => ({
   getAccessToken: () => 'test-token',
+  getCsrfToken: () => null,
   getActiveWorkspace: () => ({ id: 'ws-test', name: 'Test' }),
   clearAccessToken: vi.fn(),
+  setAccessToken: vi.fn(),
+  setCsrfToken: vi.fn(),
 }));
 
 import { api } from '../shared/api';

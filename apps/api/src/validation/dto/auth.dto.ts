@@ -1,4 +1,5 @@
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsOptional, IsString, IsUUID, MinLength } from 'class-validator';
+import { IsProductPassword } from '../is-product-password.validator';
 
 export class RegisterBodyDto {
   @IsEmail()
@@ -9,7 +10,7 @@ export class RegisterBodyDto {
   displayName!: string;
 
   @IsString()
-  @MinLength(8)
+  @IsProductPassword()
   password!: string;
 }
 
@@ -20,4 +21,40 @@ export class LoginBodyDto {
   @IsString()
   @MinLength(8)
   password!: string;
+}
+
+export class RefreshBodyDto {
+  @IsOptional()
+  @IsString()
+  refreshToken?: string;
+}
+
+export class AuthSessionIdParamDto {
+  @IsUUID('4')
+  sessionId!: string;
+}
+
+export class ForgotPasswordBodyDto {
+  @IsEmail()
+  email!: string;
+}
+
+export class ResetPasswordBodyDto {
+  @IsString()
+  @MinLength(1)
+  token!: string;
+
+  @IsString()
+  @IsProductPassword()
+  password!: string;
+}
+
+export class ChangePasswordBodyDto {
+  @IsString()
+  @MinLength(8)
+  currentPassword!: string;
+
+  @IsString()
+  @IsProductPassword()
+  newPassword!: string;
 }

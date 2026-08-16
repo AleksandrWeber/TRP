@@ -25,6 +25,48 @@ model User {
   updatedAt    DateTime @updatedAt
 }
 
+/// Auth-owned login lockout (V3-S01-b). Not Identity profile. Not a session store.
+model AuthLoginLockout {
+  userId         String    @id @map("user_id")
+  failedAttempts Int       @default(0) @map("failed_attempts")
+  lockedUntil    DateTime? @map("locked_until")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  @@map("auth_login_lockouts")
+}
+
+/// Auth-owned operator session (V3-S01-c). Not Trading Session / SessionRecoveryState.
+model AuthSession {
+  id               String    @id
+  familyId         String    @map("family_id")
+  userId           String    @map("user_id")
+  refreshTokenHash String    @unique @map("refresh_token_hash")
+  expiresAt        DateTime  @map("expires_at")
+  revokedAt        DateTime? @map("revoked_at")
+  replacedById     String?   @map("replaced_by_id")
+  ip               String?
+  userAgent        String?   @map("user_agent")
+  mfaSatisfied     Boolean   @default(false) @map("mfa_satisfied")
+  createdAt        DateTime  @map("created_at")
+
+  @@index([userId])
+  @@index([familyId])
+  @@map("auth_sessions")
+}
+
+/// Auth-owned password reset token (V3-S01-e). Not Identity. Not Notification Delivery.
+model AuthPasswordReset {
+  id         String    @id
+  userId     String    @map("user_id")
+  tokenHash  String    @unique @map("token_hash")
+  expiresAt  DateTime  @map("expires_at")
+  consumedAt DateTime? @map("consumed_at")
+  createdAt  DateTime  @map("created_at")
+
+  @@index([userId])
+  @@map("auth_password_resets")
+}
+
 
 /// Durable Workspace aggregate and ownership boundary (RC-16 Foundations / US002).
 model WorkspaceRecord {

@@ -3,27 +3,32 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../shared/api';
 import { getActiveWorkspace, setAccessToken, setActiveWorkspace } from '../shared/auth';
 import { toUserFacingError } from '../shared/mapApiError';
+import { PRODUCT_PASSWORD_POLICY_HINT } from '../shared/passwordPolicy';
 import { resolveActiveWorkspace } from '../workspace/resolve-active-workspace';
+import { type AuthMode, toSignInFailureMessage, validateAuthForm } from './loginForm';
 
-type Mode = 'signin' | 'register';
-
-function isValidEmail(value: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
-}
-
-function toAuthError(err: unknown, mode: Mode): string {
+function toAuthError(err: unknown, mode: AuthMode): string {
   const fallback = mode === 'signin' ? 'Sign in failed' : 'Could not create the account';
   const message = toUserFacingError(err, fallback);
-  const lower = message.toLowerCase();
-  if (message === 'Unauthorized' || lower.includes('invalid credentials')) {
-    return 'Invalid email or password.';
+  if (mode === 'signin') {
+    return toSignInFailureMessage(message);
   }
   return message;
 }
 
 export function LoginPage() {
+  const [mode, setMode] = useState<AuthMode>('signin');
+  return <AuthCredentialsForm mode={mode} onSwitchMode={setMode} />;
+}
+
+export function AuthCredentialsForm({
+  mode,
+  onSwitchMode,
+}: {
+  mode: AuthMode;
+  onSwitchMode: (mode: AuthMode) => void;
+}) {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<Mode>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
@@ -32,15 +37,11 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   function validate(): string | null {
-    if (!email.trim()) return 'Enter your email.';
-    if (!isValidEmail(email)) return 'Enter a valid email address.';
-    if (password.length < 8) return 'Password must be at least 8 characters.';
-    if (mode === 'register' && !displayName.trim()) return 'Enter your name.';
-    return null;
+    return validateAuthForm({ mode, email, password, displayName });
   }
 
-  function switchMode(next: Mode) {
-    setMode(next);
+  function switchMode(next: AuthMode) {
+    onSwitchMode(next);
     setError(null);
     setFieldError(null);
   }
@@ -62,7 +63,7 @@ export function LoginPage() {
         mode === 'register'
           ? await api.register(email.trim(), displayName.trim(), password)
           : await api.login(email.trim(), password);
-      setAccessToken(result.accessToken);
+      setAccessToken(result.accessToken, result.csrfToken);
       const workspace = await resolveActiveWorkspace({
         stored: getActiveWorkspace(),
         getWorkspace: (id) => api.getWorkspace(id),
@@ -144,6 +145,9 @@ export function LoginPage() {
             disabled={loading}
             className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 outline-none focus:border-white/30 disabled:opacity-50"
           />
+          {mode === 'register' && (
+            <span className="block text-xs text-slate-500">{PRODUCT_PASSWORD_POLICY_HINT}</span>
+          )}
         </label>
 
         <button
@@ -159,6 +163,14 @@ export function LoginPage() {
               ? 'Sign in'
               : 'Create account'}
         </button>
+
+        {mode === 'signin' ? (
+          <p className="text-center text-sm text-slate-400">
+            <a href="/forgot-password" className="text-white underline-offset-2 hover:underline">
+              Forgot password?
+            </a>
+          </p>
+        ) : null}
 
         <p className="text-center text-sm text-slate-400">
           {mode === 'signin' ? (

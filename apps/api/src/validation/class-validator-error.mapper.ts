@@ -25,7 +25,7 @@ function collect(error: ValidationError, parent: string, out: ValidationErrorDet
         code,
         message,
         field,
-        value: error.value,
+        value: redactSensitiveValue(field, error.value),
       });
     }
   }
@@ -35,6 +35,14 @@ function collect(error: ValidationError, parent: string, out: ValidationErrorDet
       collect(child, field, out);
     }
   }
+}
+
+function redactSensitiveValue(field: string, value: unknown): unknown {
+  const leaf = field.split('.').pop()?.toLowerCase() ?? '';
+  if (leaf === 'password' || leaf.endsWith('password')) {
+    return '[redacted]';
+  }
+  return value;
 }
 
 function isValidationErrorLike(value: unknown): value is ValidationError {

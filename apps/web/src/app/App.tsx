@@ -7,6 +7,10 @@ import { CampaignRunPage } from '../pages/CampaignRunPage';
 import { HomePage } from '../pages/HomePage';
 import { KnowledgePage } from '../pages/KnowledgePage';
 import { LoginPage } from '../pages/LoginPage';
+import { SessionsPage } from '../pages/SessionsPage';
+import { ForgotPasswordPage } from '../pages/ForgotPasswordPage';
+import { ResetPasswordPage } from '../pages/ResetPasswordPage';
+import { PasswordPage } from '../pages/PasswordPage';
 import { MultiDatasetCampaignPage } from '../pages/MultiDatasetCampaignPage';
 import { WalkForwardCampaignPage } from '../pages/WalkForwardCampaignPage';
 import { PortfolioPage } from '../pages/PortfolioPage';
@@ -101,6 +105,8 @@ export function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route element={<RequireAuth />}>
           <Route element={<AppLayout />}>
             <Route
@@ -120,6 +126,9 @@ export function App() {
               <Route path="diagnostics" element={<LazyDiagnosticsPage />} />
               <Route path="settings" element={<LazySettingsPage />} />
             </Route>
+
+            <Route path="account/sessions" element={<SessionsPage />} />
+            <Route path="account/password" element={<PasswordPage />} />
 
             <Route index element={<HomePage />} />
             <Route path="workflows" element={<WorkflowsPage />} />

@@ -305,6 +305,20 @@ export const PRODUCT_CHROME: readonly ProductChrome[] = [
     band: 'administration',
     loadingLabel: 'Loading settings…',
   },
+  {
+    id: 'sign-in-sessions',
+    label: 'Sign-in sessions',
+    path: '/account/sessions',
+    band: 'administration',
+    loadingLabel: 'Loading sign-in sessions…',
+  },
+  {
+    id: 'password',
+    label: 'Password',
+    path: '/account/password',
+    band: 'administration',
+    loadingLabel: 'Loading password…',
+  },
 ];
 
 export const NAV_BANDS: readonly NavBand[] = [
@@ -408,7 +422,11 @@ export const NAV_BANDS: readonly NavBand[] = [
       {
         id: 'preferences',
         label: 'Preferences',
-        links: [{ to: '/settings', label: 'Settings' }],
+        links: [
+          { to: '/settings', label: 'Settings' },
+          { to: '/account/sessions', label: 'Sign-in sessions' },
+          { to: '/account/password', label: 'Password' },
+        ],
       },
     ],
   },

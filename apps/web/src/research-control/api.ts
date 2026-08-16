@@ -3,7 +3,7 @@
  * Thin transport layer — no business logic.
  */
 
-import { clearAccessToken, getAccessToken, getActiveWorkspace } from '../shared/auth';
+import { clearAccessToken, getAccessToken, getActiveWorkspace, getCsrfToken } from '../shared/auth';
 import { mapHttpError } from '../shared/mapApiError';
 
 const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
@@ -143,6 +143,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
+  const csrf = getCsrfToken();
+  if (csrf && (init?.method ?? 'GET').toUpperCase() !== 'GET') {
+    headers.set('X-CSRF-Token', csrf);
+  }
 
   const workspace = getActiveWorkspace();
   if (workspace?.id) {
@@ -154,6 +158,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     response = await fetch(`${apiUrl}${API_PREFIX}${path}`, {
       ...init,
       headers,
+      credentials: 'include',
     });
   } catch {
     throw new Error(`Cannot reach API at ${apiUrl}. Start it with: pnpm --filter @trp/api start`);

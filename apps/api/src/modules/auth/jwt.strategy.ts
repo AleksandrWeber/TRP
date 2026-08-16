@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import type { Role } from '../identity/role';
+import { ACCESS_COOKIE_NAME, INVALID_SESSION_MESSAGE } from './auth-session';
+import { parseCookieHeader } from './auth-cookies';
 import { AuthenticationService } from './authentication.service';
 import { resolveJwtSecret } from './jwt-secret';
 
@@ -10,6 +12,7 @@ export type JwtPayload = {
   sub: string;
   email: string;
   role: Role;
+  sid: string;
 };
 
 export type AuthUser = {
@@ -17,11 +20,21 @@ export type AuthUser = {
   email: string;
   displayName: string;
   role: Role;
+  sessionId?: string;
 };
 
+function extractAccessToken(request: {
+  headers?: Record<string, string | string[] | undefined>;
+}): string | null {
+  const bearer = ExtractJwt.fromAuthHeaderAsBearerToken()(request as never);
+  if (bearer) return bearer;
+  const cookies = parseCookieHeader(request.headers?.cookie);
+  return cookies[ACCESS_COOKIE_NAME] ?? null;
+}
+
 /**
- * Passport JWT strategy (US106, US107, US158).
- * Validates signature/expiry, then resolves Identity user (including role) via AuthenticationService.
+ * Passport JWT strategy (US106, US107, US158, V3-S01-c).
+ * Validates signature/expiry, then Auth session + Identity.
  * Production rejects insecure JWT secret fallbacks at module construction.
  */
 @Injectable()
@@ -31,16 +44,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly authentication: AuthenticationService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: extractAccessToken,
       ignoreExpiration: false,
       secretOrKey: resolveJwtSecret(config),
     });
   }
 
-  validate(payload: JwtPayload): AuthUser {
-    if (!payload?.sub) {
-      throw new UnauthorizedException();
+  async validate(payload: JwtPayload): Promise<AuthUser> {
+    if (!payload?.sub || !payload?.sid) {
+      throw new UnauthorizedException(INVALID_SESSION_MESSAGE);
     }
-    return this.authentication.resolveAuthUser(payload.sub);
+    return this.authentication.resolveSessionAuthUser(payload.sub, payload.sid);
   }
 }

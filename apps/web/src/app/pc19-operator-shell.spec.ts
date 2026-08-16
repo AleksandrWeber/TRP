@@ -19,6 +19,11 @@ describe('PC-19 product path honesty', () => {
     expect(appSource).not.toContain('CommandCenterEpic6ReviewPage');
     expect(appSource).toContain('path="trading/paper"');
     expect(appSource).toContain('path="command-center"');
+    expect(appSource).toContain('path="account/sessions"');
+    expect(appSource).toContain('SessionsPage');
+    expect(appSource).toContain('ForgotPasswordPage');
+    expect(appSource).toContain('ResetPasswordPage');
+    expect(appSource).toContain('PasswordPage');
     expect(appSource).toContain('Navigate to="/trading/paper"');
     expect(appSource).toContain('Navigate to="/"');
   });

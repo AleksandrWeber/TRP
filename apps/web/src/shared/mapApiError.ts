@@ -33,13 +33,48 @@ export function extractBackendMessage(bodyText: string): string | null {
   return trimmed;
 }
 
+function isProductPasswordMessage(message: string): boolean {
+  const lower = message.toLowerCase();
+  return (
+    lower.includes('letter and a number') ||
+    lower.includes('at least 8 character') ||
+    lower.includes('choose a stronger password')
+  );
+}
+
+function extractProductPasswordMessage(bodyText: string, backend: string | null): string | null {
+  try {
+    const body = JSON.parse(bodyText) as {
+      message?: string | string[];
+      errors?: Array<{ field?: string; message?: string }>;
+    };
+    const fromField = body.errors?.find((item) => item.field === 'password')?.message?.trim();
+    if (fromField && isProductPasswordMessage(fromField)) return fromField;
+  } catch {
+    // not JSON — fall through to backend message
+  }
+
+  if (backend && isProductPasswordMessage(backend)) return backend;
+  return null;
+}
+
 export function mapHttpError(status: number, bodyText: string): string {
   console.error('[api]', status, bodyText);
 
   const backend = extractBackendMessage(bodyText);
   const lower = (backend ?? '').toLowerCase();
 
-  if (status === 400) return 'Please check your input.';
+  if (status === 400) {
+    const passwordMessage = extractProductPasswordMessage(bodyText, backend);
+    if (passwordMessage) return passwordMessage;
+    if (lower.includes('recovery link') || lower.includes('invalid or has expired')) {
+      return 'This recovery link is invalid or has expired.';
+    }
+    if (lower.includes('current password')) {
+      return 'Current password is incorrect.';
+    }
+    return 'Please check your input.';
+  }
   if (status === 401) return 'Unauthorized';
   if (status === 403) return 'You do not have permission to perform this action.';
   if (status === 409) {
@@ -95,6 +130,9 @@ export function mapHttpError(status: number, bodyText: string): string {
     }
     if (lower.includes('exchange scope') || lower.includes('cluster')) {
       return 'Cluster not found.';
+    }
+    if (lower.includes('session') && lower.includes('not found')) {
+      return 'That sign-in is no longer listed.';
     }
     return 'Requested resource was not found.';
   }

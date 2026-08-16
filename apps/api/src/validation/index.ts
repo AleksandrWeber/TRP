@@ -12,7 +12,15 @@ export {
   SessionIdParamDto,
   JobIdParamDto,
 } from './dto/base.dto';
-export { RegisterBodyDto, LoginBodyDto } from './dto/auth.dto';
+export {
+  RegisterBodyDto,
+  LoginBodyDto,
+  RefreshBodyDto,
+  AuthSessionIdParamDto,
+  ForgotPasswordBodyDto,
+  ResetPasswordBodyDto,
+  ChangePasswordBodyDto,
+} from './dto/auth.dto';
 export { WorkspaceNameBodyDto } from './dto/workspaces.dto';
 export { ListKnowledgeQueryDto, CreateKnowledgeBodyDto } from './dto/knowledge.dto';
 export {

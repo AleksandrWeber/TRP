@@ -79,6 +79,10 @@ describe('PC-19 Operator Shell', () => {
     expect(html).toContain('Cluster');
     expect(html).toContain('href="/trading/paper"');
     expect(html).toContain('href="/settings"');
+    expect(html).toContain('href="/account/sessions"');
+    expect(html).toContain('Sign-in sessions');
+    expect(html).toContain('href="/account/password"');
+    expect(html).toContain('Password');
     expect(html).toContain('Logout');
     expect(html).toContain('Switch workspace');
     expect(html).toContain('Default Workspace');
