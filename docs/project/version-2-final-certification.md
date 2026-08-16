@@ -1,37 +1,39 @@
-> **Historical draft.** Official certification: [`version-2-final-certification.md`](./version-2-final-certification.md). This file is not living status.
+# Version 2 Final Certification
 
-# Version 2 Final Certification — Draft
-
-**Document:** Version 2 Final Certification (Draft)  
+**Document:** Version 2 Final Certification  
 **Date:** 2026-08-16  
-**Status:** **DRAFT** — Final Validation PASS; not a certification, not an RC, not an ADR, not Version 2 Complete  
-**Does not declare:** Version 2 Complete
+**Status:** **CERTIFIED**  
+**Verdict:** **VERSION 2 COMPLETE**  
+**Release tag:** `v2.0.1`  
+**Architecture tag:** `v2.0.0` (RC-28 — preserved, not moved)
 
-This draft prepares the final certification record. Final Validation **PASS** ([report](./version-2-final-validation-report.md)). Fields below are filled from that validation except certification date and Version 2 Complete, which wait for architectural review.
+This is the official Version 2 certification. It is not an RC, not an ADR, and not a score change. Architecture Specification v2.0, the Authority Matrix, and the Alias Dictionary remain frozen.
 
-| Field                               | Value after Final Validation       |
-| ----------------------------------- | ---------------------------------- |
-| Final paper-first product readiness | **99%** (audit baseline 55%)       |
-| Final production readiness          | **40%**                            |
-| PC-16 / PC-17 / PC-20 outcome       | **Closed**                         |
-| Final validation                    | **PASS** — READY FOR CERTIFICATION |
-| Certification / release date        | Pending architectural review       |
-| Version 2 Complete declared         | **No**                             |
+Prepared from the approved draft [`version-2-final-certification-draft.md`](./version-2-final-certification-draft.md). Evidence: [Final Validation](./version-2-final-validation-report.md) **PASS**. Passport: [Release Manifest](./version-2-release-manifest.md).
 
-Living status remains [`product-completion-status.md`](./product-completion-status.md). Scores remain [`product-readiness-audit-v2.md`](./product-readiness-audit-v2.md). Debt remains [`technical-debt.md`](./technical-debt.md).
+Living status: [`product-completion-status.md`](./product-completion-status.md). Scores: [`product-readiness-audit-v2.md`](./product-readiness-audit-v2.md). Debt: [`technical-debt.md`](./technical-debt.md).
 
 **Authority freeze (unchanged):** Architecture Specification v2.0 · Authority Matrix · Alias Dictionary · RC-19 … RC-28 CLOSED
 
+| Field                               | Certified value              |
+| ----------------------------------- | ---------------------------- |
+| Final paper-first product readiness | **99%** (audit baseline 55%) |
+| Final production readiness          | **40%**                      |
+| PC-16 / PC-17 / PC-20 outcome       | **Closed**                   |
+| Final validation                    | **PASS** — **CERTIFIED**     |
+| Certification / release date        | 2026-08-16                   |
+| Version 2 Complete declared         | **Yes**                      |
+
 ---
 
-## Current living wording (not a final verdict)
+## Certified wording
 
 **Version 2 Architecture Complete.**  
 **Version 2 Product Completion COMPLETE.**  
 **Paper-first Product Operational.**  
-**Customer Product not yet Complete.**
+**Version 2 COMPLETE.**
 
-Product Completion packages PC-01 … PC-20 are Closed. Final Validation PASS. Remaining: Version 2 Final Certification. Do not begin Final Certification until architectural review.
+Product Completion packages PC-01 … PC-20 are Closed. Final Validation PASS. Release Candidate PASS. Paper-first customer product **CERTIFIED**. Version 3 is **NEXT PLANNED WORK**. Live capital remains unauthorized.
 
 ---
 
@@ -55,7 +57,7 @@ Sources: [Product Vision](./trp-product-vision.md), [Architecture Specification 
 
 Architecture delivery (RC-19 … RC-28) certified a paper-first **platform**: twelve Version 2 surfaces exist as owned modules with application ports, in-process composition, and conformance tests.
 
-Product Completion exists to turn that platform into a **paper-first customer product** by exposing existing capabilities — without redesigning architecture, adding domains, moving ownership, or opening Version 3.
+Product Completion turned that platform into a **paper-first customer product** by exposing existing capabilities — without redesigning architecture, adding domains, moving ownership, or opening Version 3.
 
 Success is a user who can complete:
 
@@ -74,7 +76,7 @@ Source: [Product Completion charter](./v2-product-completion-program.md) Part 1.
 
 Version 2 is paper-first. Completing Version 2 does not authorize live capital, real venue I/O, or new exchanges. Nothing reaches production without validation and human approval. Real-capital trading remains out of scope until a future ADR.
 
-Paper Freeze ADR-012…ADR-018 remains ACTIVE. Live Bots are not a live product path. Production SaaS readiness is not the target of Product Completion.
+Paper Freeze ADR-012…ADR-018 remains ACTIVE. Live Bots are not a live product path. Production SaaS readiness is not the target of this certification.
 
 Sources: Spec §1; charter principles 7 and 13; Audit v2 Release Position.
 
@@ -94,7 +96,7 @@ These Spec §2 philosophies govern Version 2. They are not restated as new rules
 
 Engineering detail: [`../00-architecture-principles.md`](../00-architecture-principles.md). Ownership: [Authority Matrix](./v2-authority-matrix.md). Language: [Alias Dictionary](./v2-alias-dictionary.md).
 
-Product Completion may expose existing owners. It may not amend Spec v2.0, move ownership, or invent a new Source of Truth.
+Product Completion exposed existing owners. It did not amend Spec v2.0, move ownership, or invent a new Source of Truth.
 
 ---
 
@@ -102,7 +104,7 @@ Product Completion may expose existing owners. It may not amend Spec v2.0, move 
 
 ### Architecture delivery — RC-19 … RC-28
 
-Architecture is **closed** at tag `v2.0.0`. RC history is preserved. Do not reopen these RCs. Do not rewrite their closures.
+Architecture is **closed** at tag `v2.0.0`. RC history is preserved. Do not reopen these RCs. Do not rewrite their closures. Do not move tag `v2.0.0`.
 
 | RC    | Theme                                           | Outcome                                                                                                 |
 | ----- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
@@ -117,13 +119,13 @@ Architecture is **closed** at tag `v2.0.0`. RC history is preserved. Do not reop
 | RC-27 | Multi-Exchange Scope                            | Venue isolation without engine clones. Tag `v1.0.0-rc27`. CLOSED.                                       |
 | RC-28 | Version 2 Stabilization & Conformance           | Paper-first **architecture** certified. Tag `v2.0.0`. CLOSED.                                           |
 
-RC-28 certified the assembled platform. It does **not** mean the customer product is finished. Living wording: Version 2 Architecture Complete.
+RC-28 certified the assembled platform. Product Completion certified the customer product on that platform. Tag `v2.0.1` marks Version 2 Complete.
 
 Source: [Release History](./release-history.md), [RC-28 Closure](./rc-28-closure-report.md).
 
 ### Product Completion
 
-Product Completion planning is **CLOSED**. Implementation is **COMPLETE**. Final Validation is **PASS**.
+Product Completion planning is **CLOSED**. Implementation is **COMPLETE**. Final Validation is **PASS**. This certification **closes** the program.
 
 The program exposes certified ports through REST, UI, durable backing of existing aggregates, adapter completion on existing channel ports, and producer → consumer wiring. HTTP is transport. UI is not Source of Truth.
 
@@ -199,13 +201,11 @@ RC-24 reporting as a customer product. Notification settings / routing. PC-07 is
 
 No new ports. No new flows.
 
-### Current completed packages (living)
+### Completed packages
 
 Closed: PC-18, PC-19, PC-14, PC-01, PC-02, PC-04, PC-03, PC-11, PC-13, PC-15, PC-05, PC-06, PC-07, PC-12, PC-08, PC-09, PC-10, PC-16, PC-17, PC-20.
 
-Not started: **none** (Product Completion packages). Remaining: Version 2 Final Certification.
-
-Canonical journey: J-01 … J-14 Complete. J-11 AI Narrative is Complete (PC-17).
+Canonical journey: J-01 … J-14 Complete.
 
 Closed `pc-*-*.md` reports are historical snapshots. They are not living status.
 
@@ -213,7 +213,7 @@ Closed `pc-*-*.md` reports are historical snapshots. They are not living status.
 
 ## 3. What was intentionally deferred
 
-These items are **not** remaining Product Completion packages. PC-16, PC-17, and PC-20 are Closed Product Completion. They are not debt.
+These items are **not** remaining Product Completion packages. They are Version 3 or infrastructure residuals.
 
 | Item                        | Disposition                                                                      |
 | --------------------------- | -------------------------------------------------------------------------------- |
@@ -223,76 +223,72 @@ These items are **not** remaining Product Completion packages. PC-16, PC-17, and
 | Reserved delivery channels  | SMTP, Slack, Discord, Teams, Push remain reserved-inactive.                      |
 | IDE shell                   | Residual `ide-shell`. PC-19 delivered paper-first chrome, not an IDE.            |
 | Durable paper Kill Switch   | Emergency controls hidden. Durable Kill Switch REST is live-only.                |
-| Version 3                   | Not started. Out of scope until Version 2 Complete.                              |
+| Version 3                   | **NEXT PLANNED WORK.**                                                           |
 
-Canonical register: [`technical-debt.md`](./technical-debt.md). This draft does not duplicate that inventory.
+Canonical register: [`technical-debt.md`](./technical-debt.md). This certification does not duplicate that inventory.
 
 US295 / ADL-008 remains an architecture residual (TD-036). It is not a Product Completion package and does not block the paper-first loop. It blocks production restart-safety PASS claims.
 
 ---
 
-## 4. Why Version 2 would be considered complete
+## 4. Why Version 2 is complete
 
-This section describes **criteria**. It does **not** declare Version 2 Complete.
+### Architecture criterion (met)
 
-### Architecture criterion (already met)
+RC-19 … RC-28 closed. Spec v2.0, Authority Matrix, and Alias Dictionary unmodified. Architecture readiness **100%**. Living phrase: **Version 2 Architecture Complete**. Tag `v2.0.0`.
 
-RC-19 … RC-28 closed. Spec v2.0, Authority Matrix, and Alias Dictionary unmodified. Architecture readiness **100%**. Living phrase: **Version 2 Architecture Complete**.
+### Product Completion criteria (charter Part 11) — all met
 
-### Product Completion criteria (charter Part 11)
+| #   | Criterion                                                                        | Evidence                      |
+| --- | -------------------------------------------------------------------------------- | ----------------------------- |
+| 1   | User can certify strategies                                                      | PC-02 Closed                  |
+| 2   | User can deploy a certified version                                              | PC-03 Closed                  |
+| 3   | Runtime Validation available; Gate visible; fail-closed                          | PC-04 Closed                  |
+| 4   | User can create paper deployments                                                | PC-03 Closed                  |
+| 5   | User can run paper sessions on that path                                         | PC-15 15-a Closed             |
+| 6   | Reporting works as the RC-24 product                                             | PC-05 Closed                  |
+| 7   | Notification Delivery works as a user product                                    | PC-06 Closed                  |
+| 8   | Telegram works as a user product (connect / test / receive; not a control plane) | PC-07 Closed (in-memory path) |
+| 9   | Command Center completes the paper journey                                       | PC-13 Closed                  |
+| 10  | Complete paper-first customer workflow exists                                    | J-01 … J-14 Complete          |
+| 11  | Durable identity exists                                                          | PC-18 Closed                  |
+| 12  | Operator sees a paper-first shell                                                | PC-19 Closed                  |
+| 13  | Producer / consumer flows run in the product                                     | PC-15 Closed                  |
+| 14  | Architecture remains unchanged                                                   | Freeze verified               |
 
-The program is finished when **all** of the following are true:
+PC-16, PC-17, and PC-20 are Closed. Final Validation PASS. Release Candidate PASS. Version 2 as a **paper-first customer product** is therefore complete. Version 3 is next planned work. Live capital remains unauthorized.
 
-| #   | Criterion                                                                        | Current living evidence                                                                          |
-| --- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| 1   | User can certify strategies                                                      | PC-02 Closed                                                                                     |
-| 2   | User can deploy a certified version                                              | PC-03 Closed                                                                                     |
-| 3   | Runtime Validation available; Gate visible; fail-closed                          | PC-04 Closed                                                                                     |
-| 4   | User can create paper deployments                                                | PC-03 Closed                                                                                     |
-| 5   | User can run paper sessions on that path                                         | PC-15 15-a Closed                                                                                |
-| 6   | Reporting works as the RC-24 product                                             | PC-05 Closed                                                                                     |
-| 7   | Notification Delivery works as a user product                                    | PC-06 Closed                                                                                     |
-| 8   | Telegram works as a user product (connect / test / receive; not a control plane) | PC-07 Closed (in-memory path)                                                                    |
-| 9   | Command Center completes the paper journey                                       | PC-13 Closed                                                                                     |
-| 10  | Complete paper-first customer workflow exists                                    | Operable (Audit v2). Lake and standalone AI product Closed (PC-16 / PC-17). PC-20 polish Closed. |
-| 11  | Durable identity exists                                                          | PC-18 Closed                                                                                     |
-| 12  | Operator sees a paper-first shell                                                | PC-19 Closed                                                                                     |
-| 13  | Producer / consumer flows run in the product                                     | PC-15 Closed                                                                                     |
-| 14  | Architecture remains unchanged                                                   | Freeze verified                                                                                  |
+### Certified values
 
-When 1–14 are true **and** packages PC-16, PC-17, and PC-20 are Closed **and** Final Validation has passed, Version 2 as a **customer product** may be declared complete after Final Certification. That declaration has **not** been made. Version 3 remains not started. Live capital remains unauthorized.
+| Field                         | Certified value                                             |
+| ----------------------------- | ----------------------------------------------------------- |
+| Paper-first product readiness | **99%** (Audit v2, baseline 55%)                            |
+| Production readiness          | **40%**                                                     |
+| Architecture readiness        | **100%**                                                    |
+| PC-16 Knowledge Lake Product  | Closed                                                      |
+| PC-17 AI Analytics Product    | Closed                                                      |
+| PC-20 Product UX Polish       | Closed                                                      |
+| Final validation              | **PASS** — [report](./version-2-final-validation-report.md) |
+| Certification / release date  | 2026-08-16                                                  |
+| Version 2 Complete declared   | **Yes**                                                     |
 
-### Placeholders — filled after Final Validation (Version 2 Complete still No)
-
-| Field                         | Current living value             | Final certification value                                   |
-| ----------------------------- | -------------------------------- | ----------------------------------------------------------- |
-| Paper-first product readiness | **99%** (Audit v2, baseline 55%) | **99%**                                                     |
-| Production readiness          | **40%**                          | **40%**                                                     |
-| Architecture readiness        | **100%**                         | **100%** (frozen; not expected to change)                   |
-| PC-16 Knowledge Lake Product  | Closed                           | **Closed**                                                  |
-| PC-17 AI Analytics Product    | Closed                           | **Closed**                                                  |
-| PC-20 Product UX Polish       | Closed                           | **Closed**                                                  |
-| Final validation              | **PASS**                         | **PASS** — [report](./version-2-final-validation-report.md) |
-| Certification / release date  | —                                | Pending architectural review                                |
-| Version 2 Complete declared   | **No**                           | **No** — wait for architectural review                      |
-
-Do not copy scores into other living documents. They live in Audit v2 until a later audit replaces them.
+Scores live in Audit v2. They are not restated as new numbers elsewhere.
 
 ---
 
 ## 5. What belongs to Version 3
 
-Version 3 is **not started**. This section lists only work already documented as outside Version 2. No architecture redesign. No speculation.
+Version 3 is **NEXT PLANNED WORK**. This section lists only work already documented as outside Version 2. No architecture redesign. No speculation.
 
-| Item                                                            | Why it is not Version 2 Product Completion                                                  |
-| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Live capital                                                    | Paper Freeze. Residual `live-capital`. Requires a future ADR.                               |
-| Real BINANCE / BYBIT / OKX I/O                                  | Residual `additional-venue-adapters`.                                                       |
-| New exchanges beyond current architecture                       | Not this program.                                                                           |
-| IDE shell                                                       | Residual `ide-shell`.                                                                       |
-| Activation of reserved notification channels                    | Email / Slack / Discord / Teams / Push stay reserved-inactive.                              |
-| Multi-tenant SaaS, RBAC teams, billing                          | Product Vision non-goals.                                                                   |
-| Architecture redesign / new ADR / new RC / new domain / new SoT | Forbidden in Product Completion. Belong to a later architecture program if ever authorized. |
+| Item                                                            | Why it is not Version 2                                        |
+| --------------------------------------------------------------- | -------------------------------------------------------------- |
+| Live capital                                                    | Paper Freeze. Residual `live-capital`. Requires a future ADR.  |
+| Real BINANCE / BYBIT / OKX I/O                                  | Residual `additional-venue-adapters`.                          |
+| New exchanges beyond current architecture                       | Not this program.                                              |
+| IDE shell                                                       | Residual `ide-shell`.                                          |
+| Activation of reserved notification channels                    | Email / Slack / Discord / Teams / Push stay reserved-inactive. |
+| Multi-tenant SaaS, RBAC teams, billing                          | Product Vision non-goals.                                      |
+| Architecture redesign / new ADR / new RC / new domain / new SoT | Belong to a later architecture program if ever authorized.     |
 
 Telegram as a control plane, AI as capital or Gate authority, and a parallel Bot aggregate remain **forbidden**, not Version 3 features.
 
@@ -300,26 +296,49 @@ Source: charter Part 12; Audit v2 Release Position.
 
 ---
 
+## 6. Certification Statement
+
+This certifies the following.
+
+| Prerequisite                  | Result                                                                                |
+| ----------------------------- | ------------------------------------------------------------------------------------- |
+| Architecture frozen           | **Yes** — Spec v2.0, Authority Matrix, Alias Dictionary, RC-19 … RC-28 unmodified     |
+| Product Completion complete   | **Yes** — PC-01 … PC-20 Closed                                                        |
+| Documentation complete        | **Yes**                                                                               |
+| Validation passed             | **Yes** — typecheck, lint, API 3251, Web 218, Research 24, smoke 147, conformance 107 |
+| Repository clean              | **Yes** — `main`, synchronized with origin                                            |
+| Release tagged                | **Yes** — product tag `v2.0.1`; architecture tag `v2.0.0` preserved                   |
+| Version 2 officially complete | **Yes**                                                                               |
+
+**CERTIFIED.**  
+**VERSION 2 COMPLETE.**
+
+This certification does **not** authorize live capital, production Telegram Bot API, additional venue adapters, or Version 3 work as Version 2 scope.
+
+---
+
 ## Appendix A — Timeline
 
-| Date       | Milestone                                                                                                                                               |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-08-10 | Architecture Specification v2.0 approved. RC-19 … RC-26 closures recorded.                                                                              |
-| 2026-08-14 | RC-27 CLOSED (`v1.0.0-rc27`). RC-28 CLOSED. Tag `v2.0.0`. Version 2 **architecture** certified paper-first.                                             |
-| 2026-08-15 | Product Completion planning CLOSED. Waves A–D and Wave E product UIs except Lake / AI Closed. Wave C CLOSED. Product Readiness Audit v2: 55% → **83%**. |
-| 2026-08-16 | PC-16, PC-17, PC-20 Closed. Paper-first readiness **99%**. Final Validation PASS. Certification draft updated. Version 2 Complete not declared.         |
+| Date       | Milestone                                                                                                       |
+| ---------- | --------------------------------------------------------------------------------------------------------------- |
+| 2026-08-10 | Architecture Specification v2.0 approved. RC-19 … RC-26 closures recorded.                                      |
+| 2026-08-14 | RC-27 CLOSED (`v1.0.0-rc27`). RC-28 CLOSED. Tag `v2.0.0`. Version 2 **architecture** certified paper-first.     |
+| 2026-08-15 | Product Completion planning CLOSED. Waves A–D Closed. Wave C CLOSED. Product Readiness Audit v2: 55% → **83%**. |
+| 2026-08-16 | PC-16, PC-17, PC-20 Closed. Paper-first readiness **99%**. Final Validation PASS. Release Manifest PASS.        |
+| 2026-08-16 | Version 2 Final Certification. Tag `v2.0.1`. **VERSION 2 COMPLETE.**                                            |
 
-RC-18 residual US295 / ADL-008 remains Open in parallel. It is not on this timeline as a Product Completion gate.
+RC-18 residual US295 / ADL-008 remains Open in parallel. It is not a Product Completion gate.
 
 ---
 
 ## Appendix B — Major RC milestones
 
-| Tag / record                  | Meaning                                                   |
-| ----------------------------- | --------------------------------------------------------- |
-| `v1.0.0`                      | Version 1 production-ready research OS (unchanged).       |
-| `v1.0.0-rc21` … `v1.0.0-rc27` | Architecture surface closures.                            |
-| `v2.0.0`                      | Paper-first Version 2 **architecture** certified (RC-28). |
+| Tag / record                  | Meaning                                                                   |
+| ----------------------------- | ------------------------------------------------------------------------- |
+| `v1.0.0`                      | Version 1 production-ready research OS (unchanged).                       |
+| `v1.0.0-rc21` … `v1.0.0-rc27` | Architecture surface closures.                                            |
+| `v2.0.0`                      | Paper-first Version 2 **architecture** certified (RC-28). Not moved.      |
+| `v2.0.1`                      | Version 2 **paper-first customer product** certified. Version 2 Complete. |
 
 Closures: [`rc-19-closure-report.md`](./rc-19-closure-report.md) … [`rc-28-closure-report.md`](./rc-28-closure-report.md).
 
@@ -349,24 +368,13 @@ Journey: [`product-completion-journey.md`](./product-completion-journey.md). Tra
 | [Alias Dictionary](./v2-alias-dictionary.md)                              | Frozen product language                     |
 | [Product Readiness Audit v2](./product-readiness-audit-v2.md)             | Living scores (99% / 40% / 100%)            |
 | [Final Validation Report](./version-2-final-validation-report.md)         | Final Validation PASS                       |
-| [Release Candidate Audit](./version-2-release-candidate-audit.md)         | READY FOR CERTIFICATION                     |
+| [Release Candidate Audit](./version-2-release-candidate-audit.md)         | PASS                                        |
+| [Release Manifest](./version-2-release-manifest.md)                       | Release passport                            |
 | [Technical Debt Register](./technical-debt.md)                            | Canonical deferred residuals                |
 | [Product Completion Status](./product-completion-status.md)               | Canonical living status                     |
 | [Product Completion charter](./v2-product-completion-program.md)          | Planning CLOSED                             |
 | [Wave C Closure](./wave-c-closure-report.md)                              | Wave C = PC-12, PC-08, PC-09, PC-10         |
 | [Documentation Cleanup Report](./documentation-cleanup-report.md)         | Version 2 documentation COMPLETE            |
-
----
-
-## Draft control
-
-| This draft does                                                                | This draft does not                      |
-| ------------------------------------------------------------------------------ | ---------------------------------------- |
-| Record vision, delivery, deferrals, and completion criteria from existing docs | Declare Version 2 Complete               |
-| Fill PC-20 / readiness / validation from Final Validation PASS                 | Change architecture                      |
-| Point at the Technical Debt register                                           | Duplicate the debt inventory             |
-| Match Canonical Status wording                                                 | Change Product Completion package status |
-| Exist as a standalone draft                                                    | Modify README, Roadmap, or Backlog       |
 
 ---
 
@@ -376,11 +384,11 @@ This is a product retrospective. It is not an architecture section. It does not 
 
 ### Why Product Completion became necessary after RC-28
 
-RC-28 certified that the twelve Version 2 surfaces exist with correct ownership, ports, in-process composition, and conformance tests. That answers: _does the system exist?_ A paying customer still could not walk certify → gate → deploy → orchestrate → paper session → report → Telegram → dashboard as one product. Architecture delivery built the platform. Product Completion exists to ship the product on that platform.
+RC-28 certified that the twelve Version 2 surfaces exist with correct ownership, ports, in-process composition, and conformance tests. That answers: _does the system exist?_ A paying customer still could not walk certify → gate → deploy → orchestrate → paper session → report → Telegram → dashboard as one product. Architecture delivery built the platform. Product Completion shipped the product on that platform.
 
 ### Why architecture completion does not automatically mean product completion
 
-Architecture completeness is ownership and freeze. Product completeness is a customer who can operate the certified loop. Ports, `rest: false` modules, and Vitest composition are not screens, durable login, honest chrome, or producer → consumer wiring in the running product. Living wording keeps these separate: **Version 2 Architecture Complete** and **Customer Product not yet Complete**.
+Architecture completeness is ownership and freeze. Product completeness is a customer who can operate the certified loop. Ports, `rest: false` modules, and Vitest composition are not screens, durable login, honest chrome, or producer → consumer wiring in the running product.
 
 ### Why customer journeys are a better completion metric than backend availability
 
@@ -396,12 +404,12 @@ Redesign would have reopened Spec v2.0, ownership, and RC-19…RC-28. Version 2 
 
 ### Why Version 2 should finish before Version 3 begins
 
-Version 3 items already listed (live capital, venue adapters, IDE shell, reserved channels) are outside this program. Starting them now would mix an unfinished certification with a new architecture track. PC-16, PC-17, and PC-20 are Closed. Final Validation PASS. Certify after architectural review. Then plan Version 3. Not before.
+Version 3 items already listed (live capital, venue adapters, IDE shell, reserved channels) are outside this program. Version 2 is now complete. Version 3 is next planned work. Every new capability belongs to Version 3.
 
 ---
 
-**STOP.** Do not treat this file as final certification. Do not create the release tag. Wait for architectural review.
+**STOP.** After this certification every new capability belongs to Version 3.
 
 ---
 
-**End of Version 2 Final Certification Draft.**
+**End of Version 2 Final Certification.**

@@ -3,7 +3,7 @@
 **Document:** Product Completion Status  
 **Role:** Single living status paragraph for Version 2 Product Completion  
 **Date:** 2026-08-16  
-**Not:** an RC, an ADR, a score change, or Version 2 Complete
+**Not:** an RC, an ADR, or a score change
 
 Other living documents **link here**. They must not maintain a second copy of this paragraph.
 
@@ -14,30 +14,30 @@ Other living documents **link here**. They must not maintain a second copy of th
 **Version 2 Architecture Complete.**  
 **Version 2 Product Completion COMPLETE.**  
 **Paper-first Product Operational.**  
-**Customer Product not yet Complete.**
+**Version 2 COMPLETE.**
 
-Architecture delivery (RC-19 … RC-28, tag `v2.0.0`) is closed and frozen. Spec v2.0, the Authority Matrix, and the Alias Dictionary are unmodified. Product Completion planning is closed. Product Completion implementation packages (PC-01 … PC-20) are **Closed**. Final Validation is **PASS**. Remaining is **Version 2 Final Certification**. Do not begin Final Certification until architectural review.
+Architecture delivery (RC-19 … RC-28, tag `v2.0.0`) is closed and frozen. Spec v2.0, the Authority Matrix, and the Alias Dictionary are unmodified. Product Completion planning is closed. Product Completion implementation packages (PC-01 … PC-20) are **Closed**. Final Validation is **PASS**. Version 2 Final Certification is **CERTIFIED**. Product tag `v2.0.1`. Version 3 is **NEXT PLANNED WORK**.
 
 Paper-first product readiness is **99%** (audit baseline 55%). Production readiness is **40%**. Architecture remains **100%**. Scores live in [Product Readiness Audit v2](./product-readiness-audit-v2.md). They are not restated elsewhere.
 
 Technical debt lives in [`technical-debt.md`](./technical-debt.md). That register is canonical.
 
-Final Validation: [`version-2-final-validation-report.md`](./version-2-final-validation-report.md). Release Candidate: [`version-2-release-candidate-audit.md`](./version-2-release-candidate-audit.md). Readiness: [`version-2-release-readiness-report.md`](./version-2-release-readiness-report.md).
+Certification: [`version-2-final-certification.md`](./version-2-final-certification.md). Passport: [`version-2-release-manifest.md`](./version-2-release-manifest.md).
 
 ---
 
 ## How to read Version 2 “complete”
 
-| Phrase                                | Meaning                                                                 | Where it lives                              |
-| ------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------- |
-| Version 2 Architecture Complete       | RC-19 … RC-28 certified paper-first platform at `v2.0.0`.               | RC closures (historical; do not edit)       |
-| Version 2 Product Completion COMPLETE | Planning closed. Implementation packages closed. Final Validation PASS. | This file                                   |
-| Paper-first Product Operational       | Certified operator loop works on paper.                                 | [Audit v2](./product-readiness-audit-v2.md) |
-| Customer Product not yet Complete     | Version 2 Complete waits on Final Certification.                        | This file                                   |
-| Production SaaS                       | Not ready. Live capital unauthorized.                                   | Audit v2 Release Position                   |
-| Version 3                             | Not started.                                                            | This file                                   |
+| Phrase                                | Meaning                                                                 | Where it lives                                                  |
+| ------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Version 2 Architecture Complete       | RC-19 … RC-28 certified paper-first platform at `v2.0.0`.               | RC closures (historical; do not edit)                           |
+| Version 2 Product Completion COMPLETE | Planning closed. Implementation packages closed. Final Validation PASS. | This file                                                       |
+| Paper-first Product Operational       | Certified operator loop works on paper.                                 | [Audit v2](./product-readiness-audit-v2.md)                     |
+| Version 2 COMPLETE                    | Paper-first customer product certified (`v2.0.1`).                      | This file · [certification](./version-2-final-certification.md) |
+| Production SaaS                       | Not ready. Live capital unauthorized.                                   | Audit v2 Release Position                                       |
+| Version 3                             | NEXT PLANNED WORK.                                                      | This file                                                       |
 
-RC-28 history that says architecture is complete (paper-first) is **preserved**. It does not mean the customer product is finished.
+RC-28 history that says architecture is complete (paper-first) is **preserved**. Tag `v2.0.0` is not moved.
 
 ---
 
@@ -50,11 +50,11 @@ They are not living status.
 **Current truth lives in:**
 
 - this file
+- [Version 2 Final Certification](./version-2-final-certification.md)
 - [Canonical Product Journey](./product-completion-journey.md)
 - [Product Completion Backlog](./v2-product-completion-backlog.md)
 - [Product Readiness Audit v2](./product-readiness-audit-v2.md)
 - [Project Status](./project-status.md)
-- [Final Validation Report](./version-2-final-validation-report.md)
 
 ---
 
@@ -81,9 +81,9 @@ They are not living status.
 
 ## Remaining implementation
 
-None. All Product Completion packages are Closed. Final Validation **PASS**.
+None in Version 2. All Product Completion packages are Closed. Version 2 is **COMPLETE**.
 
-**STOP.** Do not create the final Version 2 certification. Do not create the release tag. Wait for architectural review.
+**STOP.** Every new capability belongs to Version 3.
 
 ---
 

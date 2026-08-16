@@ -49,7 +49,7 @@ Login
   → Command Center
 ```
 
-**Current loop status:** Steps J-01 … J-14 are **Complete**. J-13 is Telegram (channel) over **PC-07 Notification Channels Product**. J-11 AI Narrative is **Complete** (PC-17). Wave C, Wave E, and Wave F (PC-20 polish) are Closed. Product Completion implementation packages are Closed. Final Validation **PASS**. Product Completion status: [`product-completion-status.md`](./product-completion-status.md). Scores: [audit v2](./product-readiness-audit-v2.md). Validation: [`version-2-final-validation-report.md`](./version-2-final-validation-report.md).
+**Current loop status:** Steps J-01 … J-14 are **Complete**. Version 2 is **COMPLETE** ([certification](./version-2-final-certification.md)). J-13 is Telegram (channel) over **PC-07 Notification Channels Product**. J-11 AI Narrative is **Complete** (PC-17). Product Completion status: [`product-completion-status.md`](./product-completion-status.md). Scores: [audit v2](./product-readiness-audit-v2.md).
 
 ---
 

@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-08-16 (Final Validation PASS — status lives in [Product Completion Status](./product-completion-status.md))
+Last updated: 2026-08-16 (Version 2 COMPLETE — status lives in [Product Completion Status](./product-completion-status.md))
 
 This file distinguishes **historical architecture delivery** from the **current product completion program**.
 
@@ -8,12 +8,12 @@ This file distinguishes **historical architecture delivery** from the **current 
 
 ### Planning Status
 
-| Track                 | Status                                                                |
-| --------------------- | --------------------------------------------------------------------- |
-| Architecture Planning | **CLOSED**                                                            |
-| Product Planning      | **CLOSED**                                                            |
-| Governance            | **ACTIVE**                                                            |
-| Implementation        | **COMPLETE** — see [canonical status](./product-completion-status.md) |
+| Track                 | Status                                |
+| --------------------- | ------------------------------------- |
+| Architecture Planning | **CLOSED**                            |
+| Product Planning      | **CLOSED**                            |
+| Governance            | **ACTIVE**                            |
+| Implementation        | **COMPLETE** — Version 2 **COMPLETE** |
 
 Related:
 
@@ -211,11 +211,11 @@ Related:
 
 ---
 
-## Current Phase — Product Completion COMPLETE (awaiting Final Certification)
+## Current Phase — Version 2 COMPLETE (Version 3 is NEXT PLANNED WORK)
 
 **Canonical status:** [`product-completion-status.md`](./product-completion-status.md)
 
-Future Version 2 work is **Final Certification** only. It does not open a new RC. It does not start Version 3. It does not change Architecture Specification v2.0, the Authority Matrix, or the Alias Dictionary. No additional planning documents. No roadmap or package redesign.
+Version 2 is **CERTIFIED**. Every new capability belongs to Version 3. It does not reopen RC-19…RC-28. It does not change Architecture Specification v2.0, the Authority Matrix, or the Alias Dictionary.
 
 | Artifact                                                              | Role                                                              |
 | --------------------------------------------------------------------- | ----------------------------------------------------------------- |
@@ -243,9 +243,10 @@ Future Version 2 work is **Final Certification** only. It does not open a new RC
 | [PC-16 Implementation](./pc-16-implementation-report.md)              | Knowledge Lake Product **CLOSED**                                 |
 | [PC-17 Implementation](./pc-17-implementation-report.md)              | AI Analytics Product **CLOSED**                                   |
 | [PC-20 Implementation](./pc-20-implementation-report.md)              | Product UX Polish **CLOSED**                                      |
-| [Final Validation](./version-2-final-validation-report.md)            | **PASS** — READY FOR CERTIFICATION                                |
+| [Final Validation](./version-2-final-validation-report.md)            | **PASS**                                                          |
+| [Final Certification](./version-2-final-certification.md)             | **CERTIFIED** — VERSION 2 COMPLETE (`v2.0.1`)                     |
 
-Canonical loop J-01 … J-14 is **Complete**. Step states: [`product-completion-journey.md`](./product-completion-journey.md). Status: [`product-completion-status.md`](./product-completion-status.md). Final Validation: [`version-2-final-validation-report.md`](./version-2-final-validation-report.md) (**PASS**).
+Canonical loop J-01 … J-14 is **Complete**. Version 2 is **COMPLETE**. Step states: [`product-completion-journey.md`](./product-completion-journey.md). Status: [`product-completion-status.md`](./product-completion-status.md). Certification: [`version-2-final-certification.md`](./version-2-final-certification.md).
 
 RC history is **complete and preserved** in the section below. Do not reopen RC-19…RC-28. Do not rewrite those closures.
 

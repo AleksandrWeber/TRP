@@ -3,10 +3,11 @@
 **Document:** Version 2 Release Manifest  
 **Role:** Canonical release passport for Version 2  
 **Date:** 2026-08-16  
-**Nature:** Release identity only — not an audit, not a certification, not a roadmap, not an RC, not an ADR  
-**Does not declare:** Version 2 Complete
+**Nature:** Release identity only — not an audit, not a roadmap, not an RC, not an ADR  
+**Status:** **CERTIFIED**  
+**Verdict:** **VERSION 2 COMPLETE**
 
-This file summarizes the Version 2 paper-first release in one place. Scores live in [Product Readiness Audit v2](./product-readiness-audit-v2.md). Living status lives in [Product Completion Status](./product-completion-status.md). Debt lives in [`technical-debt.md`](./technical-debt.md). Evidence lives in [Final Validation](./version-2-final-validation-report.md) and the [Release Candidate Audit](./version-2-release-candidate-audit.md).
+This file summarizes the Version 2 paper-first release in one place. Scores live in [Product Readiness Audit v2](./product-readiness-audit-v2.md). Living status lives in [Product Completion Status](./product-completion-status.md). Debt lives in [`technical-debt.md`](./technical-debt.md). Evidence lives in [Final Validation](./version-2-final-validation-report.md), the [Release Candidate Audit](./version-2-release-candidate-audit.md), and [Version 2 Final Certification](./version-2-final-certification.md).
 
 ---
 
@@ -20,10 +21,10 @@ This file summarizes the Version 2 paper-first release in one place. Scores live
 | Paper-first Product | Yes — operational                          |
 | Release Date        | 2026-08-16                                 |
 | Commit              | `92012458635afca3e132adedde01579bfaf61eee` |
-| Git Tag             |                                            |
-| Status              | **READY FOR CERTIFICATION**                |
+| Git Tag             | `v2.0.1`                                   |
+| Status              | **CERTIFIED**                              |
 
-The architecture tag `v2.0.0` (RC-28) remains the architecture baseline. It is not this product passport’s release tag. The product Git Tag field stays empty until Version 2 Final Certification.
+Architecture tag `v2.0.0` (RC-28) remains the architecture baseline and is not moved. Product certification tag is `v2.0.1`.
 
 ---
 
@@ -118,20 +119,21 @@ These are not remaining Product Completion packages. They do not block paper-fir
 
 ## 8. Release Outcome
 
-**PENDING CERTIFICATION**
+**CERTIFIED** — **VERSION 2 COMPLETE**
 
-| Field              | Value |
-| ------------------ | ----- |
-| Certification Date |       |
-| Release Tag        |       |
-| Final Commit       |       |
-| Version 2 Complete |       |
+| Field              | Value                            |
+| ------------------ | -------------------------------- |
+| Certification Date | 2026-08-16                       |
+| Release Tag        | `v2.0.1`                         |
+| Final Commit       | tagged `v2.0.1` on `origin/main` |
+| Release Status     | **CERTIFIED**                    |
+| Version 2 Complete | **Yes**                          |
 
-These fields remain empty until Version 2 Final Certification.
+Architecture tag `v2.0.0` is unchanged. Product tag `v2.0.1` identifies this certification commit.
 
 ---
 
-**STOP.** Wait for approval. Next task is **only** Version 2 Final Certification. Do not create the final certification in this task. Do not create the release tag.
+**STOP.** After this certification every new capability belongs to Version 3.
 
 ---
 

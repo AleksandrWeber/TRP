@@ -17,17 +17,17 @@ Scoring rule (unchanged from the baseline audit): Architecture % is the closed R
 
 ## Executive Summary
 
-| Question                        | Baseline (2026-08-14)    | Current (2026-08-15)                                                                                                                                                         |
-| ------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Verdict                         | PRODUCT PARTIALLY READY  | **PRODUCT SUBSTANTIALLY READY** — Version 2 Architecture Complete; Version 2 Product Completion COMPLETE; Paper-first Product Operational; Customer Product not yet Complete |
-| Overall product readiness       | **55%**                  | **99%**                                                                                                                                                                      |
-| Architecturally complete        | YES                      | **YES** (unchanged)                                                                                                                                                          |
-| Backend as product              | PARTIAL                  | **YES** for closed packages                                                                                                                                                  |
-| Frontend complete               | NO                       | **YES** for declared V2 screens and polish                                                                                                                                   |
-| User ready (canonical loop)     | NO                       | **YES** for certify → gate → deploy → orchestrate → paper session → report → Telegram → dashboard                                                                            |
-| Paper trading ready             | PARTIAL (manual sandbox) | **YES** (sandbox + certified path)                                                                                                                                           |
-| Production ready (live capital) | NO                       | **NO** (live still unauthorized)                                                                                                                                             |
-| Version 2 Complete              | No                       | **No** — Final Validation PASS; Final Certification has not run                                                                                                              |
+| Question                        | Baseline (2026-08-14)    | Current (2026-08-15)                                                                                                                                   |
+| ------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Verdict                         | PRODUCT PARTIALLY READY  | **VERSION 2 COMPLETE** — Version 2 Architecture Complete; Version 2 Product Completion COMPLETE; Paper-first Product Operational; CERTIFIED (`v2.0.1`) |
+| Overall product readiness       | **55%**                  | **99%**                                                                                                                                                |
+| Architecturally complete        | YES                      | **YES** (unchanged)                                                                                                                                    |
+| Backend as product              | PARTIAL                  | **YES** for closed packages                                                                                                                            |
+| Frontend complete               | NO                       | **YES** for declared V2 screens and polish                                                                                                             |
+| User ready (canonical loop)     | NO                       | **YES** for certify → gate → deploy → orchestrate → paper session → report → Telegram → dashboard                                                      |
+| Paper trading ready             | PARTIAL (manual sandbox) | **YES** (sandbox + certified path)                                                                                                                     |
+| Production ready (live capital) | NO                       | **NO** (live still unauthorized)                                                                                                                       |
+| Version 2 Complete              | No                       | **Yes** — CERTIFIED (`v2.0.1`)                                                                                                                         |
 
 ### Previous readiness
 
@@ -43,12 +43,11 @@ Twenty Product Completion packages closed (PC-18, PC-19, PC-14, PC-01, PC-02, PC
 
 ### What remains
 
-| Remaining                          | Why it is still a gap                                                           |
-| ---------------------------------- | ------------------------------------------------------------------------------- |
-| **Version 2 Final Certification**  | Not started. Required before Version 2 Complete. Wait for architectural review. |
-| Live capital / venue I/O           | Out of program. Production readiness stays low by design.                       |
-| Process-local V2 analytical stores | Residual `durable-persistence-product`. Not a new SoT.                          |
-| Telegram production Bot API        | In-memory adapter path is wired. Production Bot network remains deferred.       |
+| Remaining                          | Why it is still a gap                                                     |
+| ---------------------------------- | ------------------------------------------------------------------------- |
+| Live capital / venue I/O           | Out of program. Production readiness stays low by design.                 |
+| Process-local V2 analytical stores | Residual `durable-persistence-product`. Not a new SoT.                    |
+| Telegram production Bot API        | In-memory adapter path is wired. Production Bot network remains deferred. |
 
 ---
 
@@ -231,13 +230,12 @@ Closed-package rows are 100% of **declared Product Completion scope**, not 100% 
 
 ## Remaining Gaps
 
-List of **actual remaining gaps only**. Completed work is not repeated.
+List of **actual remaining gaps only**. Completed work is not repeated. These are not Version 2 Product Completion packages.
 
-1. **Version 2 Final Certification has not run.** Product Completion is COMPLETE. Final Validation PASS. Version 2 Complete waits on certification after architectural review.
-2. **Telegram production Bot API is deferred.** Connect / test / receive use the certified in-memory adapter path. That is not a production Bot network.
-3. **V2 analytical stores remain process-local** where `persistence: false` was certified. Restart can drop those artifacts. Residual `durable-persistence-product`.
-4. **Live capital remains unauthorized.** Venue I/O for BINANCE / BYBIT / OKX is stubbed. Out of this program.
-5. **US295 / ADL-008** remains an architecture residual for production restart-safety claims. Not a Product Completion package.
+1. **Telegram production Bot API is deferred.** Connect / test / receive use the certified in-memory adapter path. That is not a production Bot network.
+2. **V2 analytical stores remain process-local** where `persistence: false` was certified. Restart can drop those artifacts. Residual `durable-persistence-product`.
+3. **Live capital remains unauthorized.** Venue I/O for BINANCE / BYBIT / OKX is stubbed. Out of this program.
+4. **US295 / ADL-008** remains an architecture residual for production restart-safety claims. Not a Product Completion package.
 
 ---
 
@@ -245,9 +243,9 @@ List of **actual remaining gaps only**. Completed work is not repeated.
 
 Product blockers only. Architecture is not a blocker.
 
-| Blocker                               | Blocks                         | Package           |
-| ------------------------------------- | ------------------------------ | ----------------- |
-| Version 2 Final Certification not run | Version 2 Complete declaration | **Not a package** |
+| Blocker                     | Blocks                                   | Package           |
+| --------------------------- | ---------------------------------------- | ----------------- |
+| Version 2 Complete declared | Paper-first product certified (`v2.0.1`) | **Not a package** |
 
 Not product blockers for the **canonical paper-first loop** (certify → gate → deploy → orchestrate → paper session → report → Telegram → dashboard):
 
@@ -344,7 +342,7 @@ These three measurements answer different questions:
 | **Production Readiness**          | **40%** (was 28%)    | Can this ship as live-capital / multi-tenant SaaS production? Live capital remains unauthorized. |
 | **Architecture Readiness**        | **100%** (unchanged) | Is Spec v2.0 ownership, freeze, and RC-19…RC-28 certification intact?                            |
 
-Do not mix them. Architecture can be 100% while production SaaS is not ready. Paper-first product can be operational while Version 2 Complete is still open (Final Validation).
+Do not mix them. Architecture can be 100% while production SaaS is not ready. Paper-first product can be operational and Version 2 Complete while live capital remains unauthorized.
 
 ---
 
@@ -398,7 +396,7 @@ Actual limitations only. Completed work is not listed. Architecture freeze facts
 
 Intentionally deferred technical items live in one place: [`technical-debt.md`](./technical-debt.md).
 
-That register is canonical. This audit does not keep a second inventory. Remaining work (Version 2 Final Certification) is not debt; it is listed in [Product Completion Status](./product-completion-status.md).
+That register is canonical. This audit does not keep a second inventory. Version 2 remaining Product Completion work is none; status lives in [Product Completion Status](./product-completion-status.md).
 
 Version 2 product residuals indexed there include IDE shell (TD-046), durable paper Kill Switch (TD-047), US295 / ADL-008 (TD-036), process-local analytical stores (TD-048), Telegram production Bot API (TD-049), reserved notification channels (TD-050), notification durable delivery queue (TD-045, distinct from resolved paper Outbox/Inbox TD-035), Playwright E2E (TD-043), additional venue adapters (TD-051), and live capital (TD-052).
 
@@ -408,15 +406,15 @@ Version 2 product residuals indexed there include IDE shell (TD-046), durable pa
 
 **Version 2 Architecture Complete.** RC-19 … RC-28 certified the paper-first platform at `v2.0.0`.
 
-**Version 2 Product Completion COMPLETE.** Implementation packages Closed. Final Validation PASS. Remaining: Version 2 Final Certification. Canonical wording: [`product-completion-status.md`](./product-completion-status.md).
+**Version 2 Product Completion COMPLETE.** Implementation packages Closed. Final Validation PASS. Version 2 Final Certification **CERTIFIED**. Canonical wording: [`product-completion-status.md`](./product-completion-status.md).
 
 **Paper-first Product Operational.** A paper-first operator can sign in, switch workspace, research, certify, pass the Gate, deploy, orchestrate, start a paper session from the handoff, read RC-24 reports, query Knowledge Lake, generate AI narratives, receive Telegram on the in-memory path, and operate from Command Center. Overall paper-first product readiness is **99%**. This is the current shippable paper product, not a live SaaS.
 
-**Customer Product not yet Complete.** Final Validation PASS. Version 2 certification remains a draft pending architectural review.
+**Version 2 COMPLETE.** Paper-first customer product CERTIFIED (`v2.0.1`). Live capital remains unauthorized.
 
 **Production SaaS — Not ready.** Production readiness is **40%**. Live capital is unauthorized. Venue I/O is stubbed. Telegram is in-memory. Several V2 analytical stores are process-local. US295 / ADL-008 remains open for production restart-safety claims. Version 1 (`v1.0.0`) remains the production-ready research OS release.
 
-**Version 3 — Not started.** Version 3 is out of scope until Version 2 Complete. Live capital, IDE shell, additional venue adapters, and reserved notification-channel activation belong there or to infrastructure residuals. They are not Product Completion packages.
+**Version 3 — NEXT PLANNED WORK.** Live capital, IDE shell, additional venue adapters, and reserved notification-channel activation belong there or to infrastructure residuals. They are not Product Completion packages.
 
 ---
 
@@ -428,20 +426,17 @@ Version 2 product residuals indexed there include IDE shell (TD-046), durable pa
 
 **Paper-first Product Operational.**
 
-**Customer Product not yet Complete.**
+**Version 2 COMPLETE.**
 
 The certified paper-first operator journey is operational and presented as one platform.
 
-Version 2 cannot yet be declared fully complete because:
+Version 2 is CERTIFIED as a paper-first customer product (`v2.0.1`).
 
-- Version 2 Final Certification has not run
-- Architectural review is required first
-
-Live capital remains intentionally outside Version 2.
+Live capital remains intentionally outside Version 2. Every new capability belongs to Version 3.
 
 ---
 
-**STOP.** Do not create the final Version 2 certification. Do not create the release tag. Wait for architectural review.
+**STOP.** Every new capability belongs to Version 3.
 
 ---
 

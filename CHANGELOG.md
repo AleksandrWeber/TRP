@@ -9,13 +9,21 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ## [Unreleased]
 
+## [2.0.1] — 2026-08-16
+
 ### Added
 
+- Version 2 Final Certification — paper-first customer product **CERTIFIED**.
+  **VERSION 2 COMPLETE.** Product tag `v2.0.1`. Architecture tag `v2.0.0`
+  (RC-28) is preserved and not moved. Live capital remains unauthorized.
+  Version 3 is next planned work. Report:
+  `docs/project/version-2-final-certification.md`. Passport:
+  `docs/project/version-2-release-manifest.md`.
 - Version 2 Final Validation and Release Candidate audit — Product
   Completion COMPLETE. PC-01 … PC-20 Closed. Architecture freeze held.
   Paper-first readiness **99%**. Production readiness **40%**. Architecture
-  **100%**. Verdict: READY FOR CERTIFICATION. Version 2 Complete is not
-  declared. No release tag. Reports:
+  **100%**. Audit verdict was READY FOR CERTIFICATION; this release certifies
+  it. Reports:
   `docs/project/version-2-final-validation-report.md`,
   `version-2-release-candidate-audit.md`,
   `version-2-release-readiness-report.md`.

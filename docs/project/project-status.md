@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-08-16 (Final Validation PASS — status lives in [Product Completion Status](./product-completion-status.md))
+2026-08-16 (Version 2 COMPLETE — status lives in [Product Completion Status](./product-completion-status.md))
 
 **Level-0 authority:**
 
@@ -61,6 +61,8 @@ Last updated:
 - [Final Validation Report](./version-2-final-validation-report.md) (**PASS**)
 - [Release Candidate Audit](./version-2-release-candidate-audit.md)
 - [Release Readiness Report](./version-2-release-readiness-report.md)
+- [Version 2 Final Certification](./version-2-final-certification.md) (**CERTIFIED**)
+- [Release Manifest](./version-2-release-manifest.md)
 
 **RC-19:** [Migration Plan](./rc-19-migration-plan.md) · [Closure Report](./rc-19-closure-report.md) (**CLOSED**)  
 **RC-20:** [Implementation Plan](./rc-20-implementation-plan.md) · [UI Contract](./rc-20-command-center-ui-contract.md) · [Closure Report](./rc-20-closure-report.md) (**CLOSED**)
@@ -69,7 +71,8 @@ Last updated:
 
 # Repository Status
 
-**VERSION 1 COMPLETE — PRODUCTION READY**
+**VERSION 1 COMPLETE — PRODUCTION READY**  
+**VERSION 2 COMPLETE — PAPER-FIRST PRODUCT CERTIFIED (`v2.0.1`)**
 
 | Field                  | Value            |
 | ---------------------- | ---------------- |
@@ -100,14 +103,14 @@ Cluster Closure Report:
 
 ### Planning Status
 
-| Track                 | Status                                                                |
-| --------------------- | --------------------------------------------------------------------- |
-| Architecture Planning | **CLOSED**                                                            |
-| Product Planning      | **CLOSED**                                                            |
-| Governance            | **ACTIVE**                                                            |
-| Implementation        | **COMPLETE** — see [canonical status](./product-completion-status.md) |
+| Track                 | Status                                |
+| --------------------- | ------------------------------------- |
+| Architecture Planning | **CLOSED**                            |
+| Product Planning      | **CLOSED**                            |
+| Governance            | **ACTIVE**                            |
+| Implementation        | **COMPLETE** — Version 2 **COMPLETE** |
 
-Architecture Specification v2.0, Authority Matrix, and Alias Dictionary remain frozen. Do not add planning documents, governance documents, roadmap redesign, or package redesign. Product Completion implementation packages are Closed. Final Validation **PASS**. **STOP before Final Certification until architectural review.**
+Architecture Specification v2.0, Authority Matrix, and Alias Dictionary remain frozen. Do not add planning documents, governance documents, roadmap redesign, or package redesign. Product Completion is Closed. Version 2 is **COMPLETE**. **Every new capability belongs to Version 3.**
 
 Charter: [`v2-product-completion-program.md`](./v2-product-completion-program.md).  
 Freeze record: [`product-completion-readiness-report.md`](./product-completion-readiness-report.md).
