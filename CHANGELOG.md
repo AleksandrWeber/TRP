@@ -11,13 +11,19 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ### Added
 
+- Version 2 certification restored. Runtime Engine Completion completed.
+  Runtime Final Certification Audit passed (Verdict A). Living status is
+  **Version 2 Certified**. Architecture Specification v2.0, the Authority
+  Matrix, Alias Dictionary, RC history, and Product Completion history are
+  unmodified. Report:
+  `docs/project/version-2-certification-restoration-report.md`. Audit:
+  `docs/project/runtime-final-certification-audit.md`.
 - Production Runtime Engine for paper trading — after Command Center Start
   Session, closed-candle market events drive the existing
   `RuntimeEvaluationService` and `StrategyTradingPipelineService.run()`
   path to paper orders, accounting, reporting, notification, and AI
   narrative. No new bounded context, Source of Truth, or REST resource.
-  Version 2 Certification remains **SUSPENDED** pending architectural
-  review. Reports: `docs/project/runtime-sequence-diagram.md`,
+  Reports: `docs/project/runtime-sequence-diagram.md`,
   `runtime-engine-implementation-report.md`,
   `runtime-engine-architecture-impact.md`,
   `runtime-engine-compatibility-report.md`,

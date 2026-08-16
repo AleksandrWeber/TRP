@@ -2,29 +2,31 @@
 
 **Document:** Version 2 Final Certification  
 **Date:** 2026-08-16  
-**Status:** **SUSPENDED** — Pending Runtime Engine Completion  
-**Verdict:** **VERSION 2 CERTIFICATION SUSPENDED** (not a rollback)  
-**Release tag:** `v2.0.1` (preserved)  
+**Status:** **CERTIFIED**  
+**Verdict:** **VERSION 2 CERTIFIED**  
+**Release tag:** `v2.0.1`  
 **Architecture tag:** `v2.0.0` (RC-28 — preserved, not moved)
 
-> **Hold (2026-08-16):** This record is the Version 2 certification snapshot. It is **not** deleted. Living status is **Version 2 Certification Suspended — Pending Runtime Engine Completion**. Version 3 must not begin. Canonical hold: [`version-2-certification-hold.md`](./version-2-certification-hold.md). Audit: [`runtime-completion-audit.md`](./runtime-completion-audit.md). Architecture Specification v2.0, the Authority Matrix, Alias Dictionary, RC history, and Product Completion history are unmodified.
+> **Restoration (2026-08-16):** Runtime Engine Completion **completed**. Runtime Final Certification Audit **passed** (Verdict A — Version 2 Runtime is operational). Temporary suspension wording is removed. Architecture Specification v2.0, the Authority Matrix, Alias Dictionary, RC history, and Product Completion history remain unmodified. Restoration: [`version-2-certification-restoration-report.md`](./version-2-certification-restoration-report.md). Audit: [`runtime-final-certification-audit.md`](./runtime-final-certification-audit.md). Prior hold (historical): [`version-2-certification-hold.md`](./version-2-certification-hold.md).
 
-This is the official Version 2 certification record. It is not an RC, not an ADR, and not a score change. Architecture Specification v2.0, the Authority Matrix, and the Alias Dictionary remain frozen.
+This is the official Version 2 certification. It is not an RC, not an ADR, and not a score change. Architecture Specification v2.0, the Authority Matrix, and the Alias Dictionary remain frozen.
 
-Prepared from the approved draft [`version-2-final-certification-draft.md`](./version-2-final-certification-draft.md). Evidence: [Final Validation](./version-2-final-validation-report.md) **PASS**. Passport: [Release Manifest](./version-2-release-manifest.md).
+Prepared from the approved draft [`version-2-final-certification-draft.md`](./version-2-final-certification-draft.md). Evidence: [Final Validation](./version-2-final-validation-report.md) **PASS**. Runtime: [Runtime Final Certification Audit](./runtime-final-certification-audit.md) **PASS**. Passport: [Release Manifest](./version-2-release-manifest.md).
 
 Living status: [`product-completion-status.md`](./product-completion-status.md). Scores: [`product-readiness-audit-v2.md`](./product-readiness-audit-v2.md). Debt: [`technical-debt.md`](./technical-debt.md).
 
 **Authority freeze (unchanged):** Architecture Specification v2.0 · Authority Matrix · Alias Dictionary · RC-19 … RC-28 CLOSED
 
-| Field                               | Certified value                        |
-| ----------------------------------- | -------------------------------------- |
-| Final paper-first product readiness | **99%** (audit baseline 55%)           |
-| Final production readiness          | **40%**                                |
-| PC-16 / PC-17 / PC-20 outcome       | **Closed**                             |
-| Final validation                    | **PASS** — certification **SUSPENDED** |
-| Certification / release date        | 2026-08-16                             |
-| Version 2 Complete declared         | **Suspended** — Runtime Engine hold    |
+| Field                               | Certified value                   |
+| ----------------------------------- | --------------------------------- |
+| Final paper-first product readiness | **99%** (audit baseline 55%)      |
+| Final production readiness          | **40%**                           |
+| PC-16 / PC-17 / PC-20 outcome       | **Closed**                        |
+| Runtime Engine Completion           | **Completed**                     |
+| Runtime Final Certification Audit   | **PASS** — Verdict A              |
+| Final validation                    | **PASS** — **CERTIFIED**          |
+| Certification / release date        | 2026-08-16                        |
+| Version 2 Complete declared         | **Yes** — **Version 2 Certified** |
 
 ---
 
@@ -32,10 +34,10 @@ Living status: [`product-completion-status.md`](./product-completion-status.md).
 
 **Version 2 Architecture Complete.**  
 **Version 2 Product Completion COMPLETE.**  
-**Paper-first operator lifecycle complete.**  
-**Version 2 Certification Suspended — Pending Runtime Engine Completion.**
+**Paper-first Product Operational.**  
+**Version 2 Certified.**
 
-Product Completion packages PC-01 … PC-20 are Closed. Final Validation PASS. Release Candidate PASS. Paper-first **operator lifecycle** was certified; the Runtime Engine was then found unimplemented. Certification is **SUSPENDED**. Version 3 must **not** begin. Live capital remains unauthorized. Snapshot below is preserved.
+Product Completion packages PC-01 … PC-20 are Closed. Final Validation PASS. Release Candidate PASS. Runtime Engine Completion completed. Runtime Final Certification Audit passed. Paper-first customer product **CERTIFIED**. Version 3 is the **next implementation target**. Live capital remains unauthorized.
 
 ---
 
@@ -225,7 +227,7 @@ These items are **not** remaining Product Completion packages. They are Version 
 | Reserved delivery channels  | SMTP, Slack, Discord, Teams, Push remain reserved-inactive.                      |
 | IDE shell                   | Residual `ide-shell`. PC-19 delivered paper-first chrome, not an IDE.            |
 | Durable paper Kill Switch   | Emergency controls hidden. Durable Kill Switch REST is live-only.                |
-| Version 3                   | **NEXT PLANNED WORK.**                                                           |
+| Version 3                   | **Next implementation target.**                                                  |
 
 Canonical register: [`technical-debt.md`](./technical-debt.md). This certification does not duplicate that inventory.
 
@@ -258,7 +260,7 @@ RC-19 … RC-28 closed. Spec v2.0, Authority Matrix, and Alias Dictionary unmodi
 | 13  | Producer / consumer flows run in the product                                     | PC-15 Closed                  |
 | 14  | Architecture remains unchanged                                                   | Freeze verified               |
 
-PC-16, PC-17, and PC-20 are Closed. Final Validation PASS. Release Candidate PASS. Version 2 as a **paper-first customer product** is therefore complete. Version 3 is next planned work. Live capital remains unauthorized.
+PC-16, PC-17, and PC-20 are Closed. Final Validation PASS. Release Candidate PASS. Runtime Engine Completion completed. Runtime Final Certification Audit passed. Version 2 as a **paper-first customer product** is therefore **Certified**. Version 3 is the next implementation target. Live capital remains unauthorized.
 
 ### Certified values
 
@@ -272,7 +274,7 @@ PC-16, PC-17, and PC-20 are Closed. Final Validation PASS. Release Candidate PAS
 | PC-20 Product UX Polish       | Closed                                                      |
 | Final validation              | **PASS** — [report](./version-2-final-validation-report.md) |
 | Certification / release date  | 2026-08-16                                                  |
-| Version 2 Complete declared   | **Yes**                                                     |
+| Version 2 Complete declared   | **Yes** — **Version 2 Certified**                           |
 
 Scores live in Audit v2. They are not restated as new numbers elsewhere.
 
@@ -280,7 +282,7 @@ Scores live in Audit v2. They are not restated as new numbers elsewhere.
 
 ## 5. What belongs to Version 3
 
-Version 3 is **NEXT PLANNED WORK**. This section lists only work already documented as outside Version 2. No architecture redesign. No speculation.
+Version 3 is the **next implementation target**. This section lists only work already documented as outside Version 2. No architecture redesign. No speculation.
 
 | Item                                                            | Why it is not Version 2                                        |
 | --------------------------------------------------------------- | -------------------------------------------------------------- |
@@ -302,17 +304,19 @@ Source: charter Part 12; Audit v2 Release Position.
 
 This certifies the following.
 
-| Prerequisite                  | Result                                                                                |
-| ----------------------------- | ------------------------------------------------------------------------------------- |
-| Architecture frozen           | **Yes** — Spec v2.0, Authority Matrix, Alias Dictionary, RC-19 … RC-28 unmodified     |
-| Product Completion complete   | **Yes** — PC-01 … PC-20 Closed                                                        |
-| Documentation complete        | **Yes**                                                                               |
-| Validation passed             | **Yes** — typecheck, lint, API 3251, Web 218, Research 24, smoke 147, conformance 107 |
-| Repository clean              | **Yes** — `main`, synchronized with origin                                            |
-| Release tagged                | **Yes** — product tag `v2.0.1`; architecture tag `v2.0.0` preserved                   |
-| Version 2 officially complete | **Yes**                                                                               |
+| Prerequisite                      | Result                                                                                |
+| --------------------------------- | ------------------------------------------------------------------------------------- |
+| Architecture frozen               | **Yes** — Spec v2.0, Authority Matrix, Alias Dictionary, RC-19 … RC-28 unmodified     |
+| Product Completion complete       | **Yes** — PC-01 … PC-20 Closed                                                        |
+| Runtime Engine Completion         | **Yes** — completed                                                                   |
+| Runtime Final Certification Audit | **Yes** — Verdict A **PASS**                                                          |
+| Documentation complete            | **Yes**                                                                               |
+| Validation passed                 | **Yes** — typecheck, lint, API 3259, Web 218, Research 24, smoke 147, conformance 107 |
+| Repository clean                  | **Yes** — `main`, synchronized with origin                                            |
+| Release tagged                    | **Yes** — product tag `v2.0.1`; architecture tag `v2.0.0` preserved                   |
+| Version 2 officially complete     | **Yes** — **Version 2 Certified**                                                     |
 
-**CERTIFIED.**  
+**VERSION 2 CERTIFIED.**  
 **VERSION 2 COMPLETE.**
 
 This certification does **not** authorize live capital, production Telegram Bot API, additional venue adapters, or Version 3 work as Version 2 scope.
@@ -328,6 +332,8 @@ This certification does **not** authorize live capital, production Telegram Bot 
 | 2026-08-15 | Product Completion planning CLOSED. Waves A–D Closed. Wave C CLOSED. Product Readiness Audit v2: 55% → **83%**. |
 | 2026-08-16 | PC-16, PC-17, PC-20 Closed. Paper-first readiness **99%**. Final Validation PASS. Release Manifest PASS.        |
 | 2026-08-16 | Version 2 Final Certification. Tag `v2.0.1`. **VERSION 2 COMPLETE.**                                            |
+| 2026-08-16 | Certification held pending Runtime Engine Completion.                                                           |
+| 2026-08-16 | Runtime Engine Completion completed. Runtime Final Certification Audit Verdict A. **Version 2 Certified.**      |
 
 RC-18 residual US295 / ADL-008 remains Open in parallel. It is not a Product Completion gate.
 
@@ -363,20 +369,22 @@ Journey: [`product-completion-journey.md`](./product-completion-journey.md). Tra
 
 ## Appendix D — Reference documents
 
-| Document                                                                  | Role                                        |
-| ------------------------------------------------------------------------- | ------------------------------------------- |
-| [Architecture Specification v2.0](./trp-architecture-specification-v2.md) | Frozen constitution                         |
-| [Authority Matrix](./v2-authority-matrix.md)                              | Frozen SoT / projection / narrative classes |
-| [Alias Dictionary](./v2-alias-dictionary.md)                              | Frozen product language                     |
-| [Product Readiness Audit v2](./product-readiness-audit-v2.md)             | Living scores (99% / 40% / 100%)            |
-| [Final Validation Report](./version-2-final-validation-report.md)         | Final Validation PASS                       |
-| [Release Candidate Audit](./version-2-release-candidate-audit.md)         | PASS                                        |
-| [Release Manifest](./version-2-release-manifest.md)                       | Release passport                            |
-| [Technical Debt Register](./technical-debt.md)                            | Canonical deferred residuals                |
-| [Product Completion Status](./product-completion-status.md)               | Canonical living status                     |
-| [Product Completion charter](./v2-product-completion-program.md)          | Planning CLOSED                             |
-| [Wave C Closure](./wave-c-closure-report.md)                              | Wave C = PC-12, PC-08, PC-09, PC-10         |
-| [Documentation Cleanup Report](./documentation-cleanup-report.md)         | Version 2 documentation COMPLETE            |
+| Document                                                                     | Role                                        |
+| ---------------------------------------------------------------------------- | ------------------------------------------- |
+| [Architecture Specification v2.0](./trp-architecture-specification-v2.md)    | Frozen constitution                         |
+| [Authority Matrix](./v2-authority-matrix.md)                                 | Frozen SoT / projection / narrative classes |
+| [Alias Dictionary](./v2-alias-dictionary.md)                                 | Frozen product language                     |
+| [Product Readiness Audit v2](./product-readiness-audit-v2.md)                | Living scores (99% / 40% / 100%)            |
+| [Final Validation Report](./version-2-final-validation-report.md)            | Final Validation PASS                       |
+| [Release Candidate Audit](./version-2-release-candidate-audit.md)            | PASS                                        |
+| [Release Manifest](./version-2-release-manifest.md)                          | Release passport                            |
+| [Technical Debt Register](./technical-debt.md)                               | Canonical deferred residuals                |
+| [Product Completion Status](./product-completion-status.md)                  | Canonical living status                     |
+| [Runtime Final Certification Audit](./runtime-final-certification-audit.md)  | Runtime Verdict A PASS                      |
+| [Certification Restoration](./version-2-certification-restoration-report.md) | Official restoration of Version 2 Certified |
+| [Product Completion charter](./v2-product-completion-program.md)             | Planning CLOSED                             |
+| [Wave C Closure](./wave-c-closure-report.md)                                 | Wave C = PC-12, PC-08, PC-09, PC-10         |
+| [Documentation Cleanup Report](./documentation-cleanup-report.md)            | Version 2 documentation COMPLETE            |
 
 ---
 
@@ -406,11 +414,11 @@ Redesign would have reopened Spec v2.0, ownership, and RC-19…RC-28. Version 2 
 
 ### Why Version 2 should finish before Version 3 begins
 
-Version 3 items already listed (live capital, venue adapters, IDE shell, reserved channels) are outside this program. Version 2 is now complete. Version 3 is next planned work. Every new capability belongs to Version 3.
+Version 3 items already listed (live capital, venue adapters, IDE shell, reserved channels) are outside this program. Version 2 is now **Certified**. Version 3 is the next implementation target. Every new capability belongs to Version 3.
 
 ---
 
-**STOP.** Certification is **SUSPENDED** pending Runtime Engine Completion. Version 3 must not begin. Hold: [`version-2-certification-hold.md`](./version-2-certification-hold.md).
+**STOP.** After this certification every new capability belongs to Version 3.
 
 ---
 

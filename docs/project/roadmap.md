@@ -1,6 +1,6 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-08-16 (Version 2 Certification Suspended — Pending Runtime Engine Completion — status lives in [Product Completion Status](./product-completion-status.md))
+Last updated: 2026-08-16 (Version 2 Certified — status lives in [Product Completion Status](./product-completion-status.md))
 
 This file distinguishes **historical architecture delivery** from the **current product completion program**.
 
@@ -211,42 +211,43 @@ Related:
 
 ---
 
-## Current Phase — Version 2 Certification Suspended (Runtime Engine Completion; Version 3 must not begin)
+## Current Phase — Version 2 Certified (Version 3 is the next implementation target)
 
 **Canonical status:** [`product-completion-status.md`](./product-completion-status.md)
 
-Version 2 certification is **SUSPENDED** pending architectural review of Runtime Engine Completion. Version 3 must not begin. It does not reopen RC-19…RC-28. It does not change Architecture Specification v2.0, the Authority Matrix, or the Alias Dictionary. Canonical runtime: [`runtime-sequence-diagram.md`](./runtime-sequence-diagram.md).
+Version 2 is **Certified**. Runtime Engine Completion is completed. Runtime Final Certification Audit passed. Version 3 is the next implementation target. It does not reopen RC-19…RC-28. It does not change Architecture Specification v2.0, the Authority Matrix, or the Alias Dictionary. Canonical runtime: [`runtime-sequence-diagram.md`](./runtime-sequence-diagram.md). Restoration: [`version-2-certification-restoration-report.md`](./version-2-certification-restoration-report.md).
 
-| Artifact                                                              | Role                                                              |
-| --------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| [Product Completion Roadmap](./v2-product-completion-program.md)      | Governing charter (planning CLOSED)                               |
-| [Product Completion Backlog](./v2-product-completion-backlog.md)      | Execution tracker                                                 |
-| [Canonical Product Journey](./product-completion-journey.md)          | One customer path (J-01…J-14)                                     |
-| [Definition of Done](./product-completion-definition-of-done.md)      | Mandatory package closure                                         |
-| [Product UI Policy](./product-ui-policy.md)                           | Forbids fake or misleading UI                                     |
-| [Readiness Report](./product-completion-readiness-report.md)          | Planning freeze                                                   |
-| [PC-18 Implementation](./pc-18-implementation-report.md)              | Identity Product **CLOSED**                                       |
-| [PC-19 Implementation](./pc-19-implementation-report.md)              | Operator Shell **CLOSED**                                         |
-| [PC-14 Implementation](./pc-14-implementation-report.md)              | Workspace Management **CLOSED**                                   |
-| [PC-01 Implementation](./pc-01-implementation-report.md)              | Strategy Library Product **CLOSED**                               |
-| [PC-02 Implementation](./pc-02-implementation-report.md)              | Certification Product **CLOSED**                                  |
-| [PC-04 Implementation](./pc-04-implementation-report.md)              | Runtime Validation Product **CLOSED**                             |
-| [PC-03 Implementation](./pc-03-implementation-report.md)              | Deployment Product **CLOSED**                                     |
-| [PC-11 Implementation](./pc-11-implementation-report.md)              | Trading Orchestrator Product **CLOSED**                           |
-| [PC-13 Implementation](./pc-13-implementation-report.md)              | Command Center Product **CLOSED**                                 |
-| [PC-15 slice 15-a Implementation](./pc-15-a-implementation-report.md) | Orchestrator → Session **CLOSED**                                 |
-| [PC-15 slice 15-b Implementation](./pc-15-b-implementation-report.md) | Qualification → Profile **CLOSED**                                |
-| [PC-15 slice 15-c Implementation](./pc-15-c-implementation-report.md) | Reporting → AI **CLOSED**                                         |
-| [PC-15 slice 15-d Implementation](./pc-15-d-implementation-report.md) | Reporting → Notification **CLOSED**                               |
-| [PC-15 slice 15-e Implementation](./pc-15-e-implementation-report.md) | Notification → Channels **CLOSED**                                |
-| [PC-15 slice 15-f Implementation](./pc-15-f-implementation-report.md) | Dashboard & Product Projections **CLOSED** (PC-15 package Closed) |
-| [PC-16 Implementation](./pc-16-implementation-report.md)              | Knowledge Lake Product **CLOSED**                                 |
-| [PC-17 Implementation](./pc-17-implementation-report.md)              | AI Analytics Product **CLOSED**                                   |
-| [PC-20 Implementation](./pc-20-implementation-report.md)              | Product UX Polish **CLOSED**                                      |
-| [Final Validation](./version-2-final-validation-report.md)            | **PASS**                                                          |
-| [Final Certification](./version-2-final-certification.md)             | **SUSPENDED** — `v2.0.1` preserved; Runtime Engine under review   |
+| Artifact                                                                     | Role                                                              |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| [Product Completion Roadmap](./v2-product-completion-program.md)             | Governing charter (planning CLOSED)                               |
+| [Product Completion Backlog](./v2-product-completion-backlog.md)             | Execution tracker                                                 |
+| [Canonical Product Journey](./product-completion-journey.md)                 | One customer path (J-01…J-14)                                     |
+| [Definition of Done](./product-completion-definition-of-done.md)             | Mandatory package closure                                         |
+| [Product UI Policy](./product-ui-policy.md)                                  | Forbids fake or misleading UI                                     |
+| [Readiness Report](./product-completion-readiness-report.md)                 | Planning freeze                                                   |
+| [PC-18 Implementation](./pc-18-implementation-report.md)                     | Identity Product **CLOSED**                                       |
+| [PC-19 Implementation](./pc-19-implementation-report.md)                     | Operator Shell **CLOSED**                                         |
+| [PC-14 Implementation](./pc-14-implementation-report.md)                     | Workspace Management **CLOSED**                                   |
+| [PC-01 Implementation](./pc-01-implementation-report.md)                     | Strategy Library Product **CLOSED**                               |
+| [PC-02 Implementation](./pc-02-implementation-report.md)                     | Certification Product **CLOSED**                                  |
+| [PC-04 Implementation](./pc-04-implementation-report.md)                     | Runtime Validation Product **CLOSED**                             |
+| [PC-03 Implementation](./pc-03-implementation-report.md)                     | Deployment Product **CLOSED**                                     |
+| [PC-11 Implementation](./pc-11-implementation-report.md)                     | Trading Orchestrator Product **CLOSED**                           |
+| [PC-13 Implementation](./pc-13-implementation-report.md)                     | Command Center Product **CLOSED**                                 |
+| [PC-15 slice 15-a Implementation](./pc-15-a-implementation-report.md)        | Orchestrator → Session **CLOSED**                                 |
+| [PC-15 slice 15-b Implementation](./pc-15-b-implementation-report.md)        | Qualification → Profile **CLOSED**                                |
+| [PC-15 slice 15-c Implementation](./pc-15-c-implementation-report.md)        | Reporting → AI **CLOSED**                                         |
+| [PC-15 slice 15-d Implementation](./pc-15-d-implementation-report.md)        | Reporting → Notification **CLOSED**                               |
+| [PC-15 slice 15-e Implementation](./pc-15-e-implementation-report.md)        | Notification → Channels **CLOSED**                                |
+| [PC-15 slice 15-f Implementation](./pc-15-f-implementation-report.md)        | Dashboard & Product Projections **CLOSED** (PC-15 package Closed) |
+| [PC-16 Implementation](./pc-16-implementation-report.md)                     | Knowledge Lake Product **CLOSED**                                 |
+| [PC-17 Implementation](./pc-17-implementation-report.md)                     | AI Analytics Product **CLOSED**                                   |
+| [PC-20 Implementation](./pc-20-implementation-report.md)                     | Product UX Polish **CLOSED**                                      |
+| [Final Validation](./version-2-final-validation-report.md)                   | **PASS**                                                          |
+| [Final Certification](./version-2-final-certification.md)                    | **CERTIFIED** — VERSION 2 CERTIFIED (`v2.0.1`)                    |
+| [Certification Restoration](./version-2-certification-restoration-report.md) | Hold lifted. Runtime Final Audit Verdict A                        |
 
-Canonical loop J-01 … J-14 is **Complete** for the operator lifecycle. Version 2 Certification remains **SUSPENDED**. Step states: [`product-completion-journey.md`](./product-completion-journey.md). Status: [`product-completion-status.md`](./product-completion-status.md). Certification: [`version-2-final-certification.md`](./version-2-final-certification.md).
+Canonical loop J-01 … J-14 is **Complete**. Version 2 is **Certified**. Step states: [`product-completion-journey.md`](./product-completion-journey.md). Status: [`product-completion-status.md`](./product-completion-status.md). Certification: [`version-2-final-certification.md`](./version-2-final-certification.md).
 
 RC history is **complete and preserved** in the section below. Do not reopen RC-19…RC-28. Do not rewrite those closures.
 

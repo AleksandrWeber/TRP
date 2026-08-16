@@ -2,25 +2,27 @@
 
 **Document:** Version 2 Certification Hold  
 **Date:** 2026-08-16  
-**Status:** **ACTIVE**  
-**Wording:** **Version 2 Certification Suspended — Pending Runtime Engine Completion**
+**Status:** **LIFTED**  
+**Wording:** **Version 2 Certified**
 
-This is **not** a rollback. Architecture Specification v2.0, the Authority Matrix, the Alias Dictionary, RC-19 … RC-28 history, and Product Completion package history are unmodified. Tag `v2.0.1` is not deleted. Final Validation evidence is not rewritten.
+This hold is closed. It is **not** a rollback record. Architecture Specification v2.0, the Authority Matrix, the Alias Dictionary, RC-19 … RC-28 history, and Product Completion package history remain unmodified. Tag `v2.0.1` is preserved. Final Validation evidence is not rewritten.
 
-Version 3 must **not** begin.
+Official restoration: [`version-2-certification-restoration-report.md`](./version-2-certification-restoration-report.md). Living status: [`product-completion-status.md`](./product-completion-status.md). Certification: [`version-2-final-certification.md`](./version-2-final-certification.md).
+
+Version 3 is the **next implementation target**.
 
 ---
 
-## Why
+## Why the hold existed
 
-An implementation audit after Version 2 Final Validation found that the certified paper-first **operator lifecycle** is complete, but the automated **Runtime Engine** is not:
+An implementation audit after Version 2 Final Validation found that the certified paper-first **operator lifecycle** was complete, but the automated **Runtime Engine** was not:
 
-- Start Session loads context, becomes RUNNING, arms Strategy Runtime.
+- Start Session loaded context, became RUNNING, armed Strategy Runtime.
 - No runtime execution loop.
 - No production caller of `StrategyTradingPipelineService.run`.
-- Automatic Paper Orders are never created.
+- Automatic Paper Orders were never created.
 
-Evidence: [Runtime Completion Audit](./runtime-completion-audit.md), [Runtime Trading Engine Verification](./runtime-trading-engine-verification.md).
+Evidence (historical): [Runtime Completion Audit](./runtime-completion-audit.md), [Runtime Trading Engine Verification](./runtime-trading-engine-verification.md).
 
 ---
 
@@ -28,17 +30,15 @@ Evidence: [Runtime Completion Audit](./runtime-completion-audit.md), [Runtime Tr
 
 **Version 2 Architecture Complete.**  
 **Version 2 Product Completion COMPLETE.**  
-**Paper-first operator lifecycle complete.**  
-**Version 2 Certification Suspended — Pending Runtime Engine Completion.**  
-**Version 3 must not begin.**
+**Paper-first Product Operational.**  
+**Version 2 Certified.**  
+**Version 3 is the next implementation target.**
 
 Canonical living status: [`product-completion-status.md`](./product-completion-status.md).
 
-The prior certification record remains on file as a snapshot: [`version-2-final-certification.md`](./version-2-final-certification.md) (status **SUSPENDED**).
-
 ---
 
-## What is frozen
+## What remained frozen
 
 | Artifact                        | Disposition                       |
 | ------------------------------- | --------------------------------- |
@@ -48,16 +48,14 @@ The prior certification record remains on file as a snapshot: [`version-2-final-
 | RC-19 … RC-28 reports           | Unchanged (history)               |
 | PC-01 … PC-20 reports           | Unchanged (history)               |
 | Architecture tag `v2.0.0`       | Preserved                         |
-| Product tag `v2.0.1`            | Preserved; certification **held** |
+| Product tag `v2.0.1`            | Preserved; certification restored |
 
 ---
 
-## What returns certification
+## What returned certification
 
-Only the criteria in [Runtime Implementation Plan](./runtime-implementation-plan.md) § Completion criteria, verified after architectural review. Implementation is submitted: [`runtime-engine-implementation-report.md`](./runtime-engine-implementation-report.md). Canonical sequence: [`runtime-sequence-diagram.md`](./runtime-sequence-diagram.md). After review, Final Validation, and explicit approval, living status may again say Version 2 CERTIFIED.
-
-Until then Version 2 remains the active implementation target. Certification stays **SUSPENDED**.
+The criteria in [Runtime Implementation Plan](./runtime-implementation-plan.md) § Completion criteria were met. Implementation: [`runtime-engine-implementation-report.md`](./runtime-engine-implementation-report.md). Canonical sequence: [`runtime-sequence-diagram.md`](./runtime-sequence-diagram.md). Independent verification: [Runtime Final Certification Audit](./runtime-final-certification-audit.md) **Verdict A**. Living status is again **Version 2 Certified**.
 
 ---
 
-**STOP.** Do not start Version 3. Do not restore CERTIFIED until architectural review.
+**STOP.** This hold is lifted. Version 3 is the next implementation target.

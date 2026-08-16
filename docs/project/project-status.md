@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-08-16 (Version 2 Certification Suspended — Pending Runtime Engine Completion — status lives in [Product Completion Status](./product-completion-status.md))
+2026-08-16 (Version 2 Certified — status lives in [Product Completion Status](./product-completion-status.md))
 
 **Level-0 authority:**
 
@@ -61,11 +61,13 @@ Last updated:
 - [Final Validation Report](./version-2-final-validation-report.md) (**PASS**)
 - [Release Candidate Audit](./version-2-release-candidate-audit.md)
 - [Release Readiness Report](./version-2-release-readiness-report.md)
-- [Version 2 Certification Hold](./version-2-certification-hold.md) (**ACTIVE**)
-- [Runtime Completion Audit](./runtime-completion-audit.md)
+- [Version 2 Certification Hold](./version-2-certification-hold.md) (**LIFTED**)
+- [Runtime Completion Audit](./runtime-completion-audit.md) (historical)
+- [Runtime Final Certification Audit](./runtime-final-certification-audit.md) (**PASS** — Verdict A)
 - [Runtime Sequence Diagram](./runtime-sequence-diagram.md) (canonical production runtime)
-- [Runtime Engine Implementation Report](./runtime-engine-implementation-report.md) (submitted for review)
-- [Version 2 Final Certification](./version-2-final-certification.md) (**SUSPENDED** — snapshot, not rolled back)
+- [Runtime Engine Implementation Report](./runtime-engine-implementation-report.md) (completed)
+- [Version 2 Certification Restoration](./version-2-certification-restoration-report.md)
+- [Version 2 Final Certification](./version-2-final-certification.md) (**CERTIFIED**)
 - [Release Manifest](./version-2-release-manifest.md)
 
 **RC-19:** [Migration Plan](./rc-19-migration-plan.md) · [Closure Report](./rc-19-closure-report.md) (**CLOSED**)  
@@ -76,7 +78,7 @@ Last updated:
 # Repository Status
 
 **VERSION 1 COMPLETE — PRODUCTION READY**  
-**VERSION 2 CERTIFICATION SUSPENDED — PENDING RUNTIME ENGINE COMPLETION (`v2.0.1` preserved)**
+**VERSION 2 CERTIFIED — PAPER-FIRST PRODUCT (`v2.0.1`)**
 
 | Field                  | Value            |
 | ---------------------- | ---------------- |

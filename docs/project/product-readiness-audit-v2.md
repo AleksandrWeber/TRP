@@ -406,15 +406,15 @@ Version 2 product residuals indexed there include IDE shell (TD-046), durable pa
 
 **Version 2 Architecture Complete.** RC-19 … RC-28 certified the paper-first platform at `v2.0.0`.
 
-**Version 2 Product Completion COMPLETE.** Implementation packages Closed. Final Validation PASS. Version 2 Final Certification **CERTIFIED**. Canonical wording: [`product-completion-status.md`](./product-completion-status.md).
+**Version 2 Product Completion COMPLETE.** Implementation packages Closed. Final Validation PASS. Runtime Engine Completion completed. Runtime Final Certification Audit passed. Version 2 Final Certification **CERTIFIED**. Canonical wording: [`product-completion-status.md`](./product-completion-status.md).
 
 **Paper-first Product Operational.** A paper-first operator can sign in, switch workspace, research, certify, pass the Gate, deploy, orchestrate, start a paper session from the handoff, read RC-24 reports, query Knowledge Lake, generate AI narratives, receive Telegram on the in-memory path, and operate from Command Center. Overall paper-first product readiness is **99%**. This is the current shippable paper product, not a live SaaS.
 
-**Version 2 COMPLETE.** Paper-first customer product CERTIFIED (`v2.0.1`). Live capital remains unauthorized.
+**Version 2 COMPLETE.** Paper-first customer product **Version 2 Certified** (`v2.0.1`). Live capital remains unauthorized.
 
 **Production SaaS — Not ready.** Production readiness is **40%**. Live capital is unauthorized. Venue I/O is stubbed. Telegram is in-memory. Several V2 analytical stores are process-local. US295 / ADL-008 remains open for production restart-safety claims. Version 1 (`v1.0.0`) remains the production-ready research OS release.
 
-**Version 3 — NEXT PLANNED WORK.** Live capital, IDE shell, additional venue adapters, and reserved notification-channel activation belong there or to infrastructure residuals. They are not Product Completion packages.
+**Version 3 — next implementation target.** Live capital, IDE shell, additional venue adapters, and reserved notification-channel activation belong there or to infrastructure residuals. They are not Product Completion packages.
 
 ---
 
@@ -426,17 +426,17 @@ Version 2 product residuals indexed there include IDE shell (TD-046), durable pa
 
 **Paper-first Product Operational.**
 
-**Version 2 COMPLETE.**
+**Version 2 Certified.**
 
 The certified paper-first operator journey is operational and presented as one platform.
 
-Version 2 is CERTIFIED as a paper-first customer product (`v2.0.1`).
+Version 2 is **Certified** as a paper-first customer product (`v2.0.1`). Runtime Engine Completion completed. Runtime Final Certification Audit passed.
 
-Live capital remains intentionally outside Version 2. Every new capability belongs to Version 3.
+Live capital remains intentionally outside Version 2. Version 3 is the next implementation target.
 
 ---
 
-**STOP.** Every new capability belongs to Version 3.
+**STOP.** Version 3 is the next implementation target.
 
 ---
 
