@@ -1,11 +1,13 @@
 # TRP — Technical Debt Register
 
-Last updated: 2026-08-01 (RC-18 — TD-036 R1–R5 Closed; R6/US295 open)
+Last updated: 2026-08-16 (canonical register for Version 2 product residuals; TD-045…TD-052 added)
 
-Living register of known technical debt. Reviewed at RC-15.1 closeout after Validation Sprint V1 (VS001–VS004); TD-028…TD-033 added from Validation Sprint findings. TD-035 and TD-038 resolved by M2 US155 PostgreSQL runtime wiring.
+Living register of known technical debt. Reviewed at RC-15.1 closeout after Validation Sprint V1 (VS001–VS004); TD-028…TD-033 added from Validation Sprint findings. TD-035 and TD-038 resolved by M2 US155 PostgreSQL runtime wiring. Version 2 Product Completion residuals (formerly duplicated in Audit v2) are indexed here.
 
 Related:
 
+- Canonical Product Completion Status: [`product-completion-status.md`](./product-completion-status.md)
+- Product Readiness Audit v2: [`product-readiness-audit-v2.md`](./product-readiness-audit-v2.md)
 - Project Status: [`project-status.md`](./project-status.md)
 - Release History: [`release-history.md`](./release-history.md)
 - Architecture Snapshot: [`architecture-snapshot.md`](./architecture-snapshot.md)
@@ -54,7 +56,7 @@ Related:
 | TD-032 | Operational Metadata Isolation            | Mitigated (M2)     | ADR-013/014/018 semantic vs operational split is enforced in market events and in M2 Fill, valuation, Portfolio source-hash, and deterministic rebuild inputs. Continue validation across RC-17 runtime artifacts.                                                                                                        | RC-17                                       |
 | TD-033 | Large Dataset Scalability                 | Deferred           | Million-bar workloads retain full per-bar snapshot arrays in memory (~2.7 GB at 1m×10 in VS002) and required an iterative peak/trough fix (spread over large arrays overflowed the call stack). Consider streaming / aggregated snapshots. (VS002)                                                                        | RC-16+ (Scalability)                        |
 | TD-034 | Stage-1 Production Path Consolidation     | Resolved (M3 gate) | RC-16 Phase0 retired the manual `ProductionService.tick` path, removed the Stage-1 paper adapter, and disabled the direct paper session execution bypass so paper execution can only proceed through the canonical Order → Risk → Execution Engine → Paper Execution Adapter → Fill → Position → Ledger → Portfolio path. | Completed 2026-07-29                        |
-| TD-035 | Durable Event Delivery                    | Resolved (M2)      | US155 binds Nest runtime to Prisma Outbox/Inbox/checkpoints and transactional writer, with lifecycle-managed polling. The process-local Event Bus remains activity-only; retries/dead letters remain durable.                                                                                                             | Completed in RC-16 M2                       |
+| TD-035 | Durable Event Delivery                    | Resolved (M2)      | US155 binds Nest runtime to Prisma Outbox/Inbox/checkpoints and transactional writer, with lifecycle-managed polling. The process-local Event Bus remains activity-only; retries/dead letters remain durable. **This is paper runtime event durability. It is not the Notification durable delivery queue (TD-045).**     | Completed in RC-16 M2                       |
 | TD-036 | Runtime Recovery and Reconciliation       | Partial (RC-18)    | **RC-17 BASELINED + RC-18 R1–R5 Done (2026-08-01):** US290–US294 Implemented (chaos Evidence Package attached). Remaining mandatory: US295 ADL-008. See residual ownership table / Residual Register.                                                                                                                     | RC-18 (US295) / E19 / backlog               |
 | TD-037 | Decimal Ledger Migration                  | Resolved (M2)      | US153 and US172–US178 provide exact decimal contracts, immutable Fill-derived Position accounting, balanced append-only Ledger entries, atomic idempotent Fill application, decimal valuation/Portfolio, and deterministic reconciliation.                                                                                | Completed in RC-16 M2                       |
 | TD-038 | Live Market Nest Outbox Wiring            | Resolved (M2)      | US155 switched `EventProcessingModule` to Prisma Outbox/Inbox/ConsumerCheckpoint providers and lifecycle polling without changing ADR-013 contracts.                                                                                                                                                                      | Completed in RC-16 M2                       |
@@ -62,8 +64,16 @@ Related:
 | TD-040 | Position Fill Application Ordering        | Resolved (M3 gate) | Explicit per-Position Fill application ordinals persist in `position_fill_applications` under the Position lock. Rebuild prefers that durable order over Fill timestamps so interleaved delivery remains reproducible after restart/replay; unique `fill_id` blocks duplicate reordering.                                 | Completed 2026-07-29                        |
 | TD-041 | Ledger History Pagination                 | Planned            | US178 Ledger history is workspace/account scoped and read-only but currently unbounded. Add stable cursor pagination before RC-17 E19 operational history grows.                                                                                                                                                          | RC-17 E19                                   |
 | TD-042 | Durable Consumer Fan-out Progress         | Resolved (M3 gate) | Outbox stores durable per-consumer delivery acknowledgements in `outbox_consumer_deliveries`. The dispatcher skips already-acked consumers on retry/restart, records ack after successful handle, and only then marks the Outbox row published — preserving at-least-once transport with idempotent fan-out progress.     | Completed 2026-07-29                        |
-| TD-043 | Playwright regression suite               | Deferred           | RC-17 deliberately skipped introducing Playwright. Add browser regression coverage (Login, Lab, Strategies, Campaign, Knowledge, Production, AI) in a later RC once tooling is approved.                                                                                                                                  | Future RC (E2E tooling)                     |
+| TD-043 | Playwright regression suite               | Deferred           | RC-17 deliberately skipped introducing Playwright. CANONICAL stack intent still lists Playwright. Shipped product tests are Vitest. Add browser regression coverage (Login, Lab, Strategies, Campaign, Knowledge, Production, AI) in a later RC once tooling is approved.                                                 | Future RC (E2E tooling)                     |
 | TD-044 | Gradual web Error Stack                   | Deferred           | RC-17 mapped API errors in existing `shared/api` / research-control clients (`mapHttpError`). A fuller shared ErrorAlert / useApiError stack remains optional and should not block production readiness.                                                                                                                  | Future RC (UX hardening)                    |
+| TD-045 | Notification durable delivery queue       | Deferred           | Distinct from TD-035 (paper Outbox/Inbox, resolved). RC-24 non-goal. Notification delivery is in-process. Restart can lose in-flight adapter state. Not a Product Completion package.                                                                                                                                     | Infrastructure                              |
+| TD-046 | IDE shell                                 | Deferred           | Residual `ide-shell`. PC-19 delivered paper-first chrome, not an IDE. Operators use classic Research / Paper / Administration nav.                                                                                                                                                                                        | Version 3                                   |
+| TD-047 | Durable paper Kill Switch                 | Deferred           | Durable Kill Switch REST is live-only. Paper product hides the control. Pause / resume / stop remain.                                                                                                                                                                                                                     | Version 3                                   |
+| TD-048 | Process-local V2 analytical stores        | Deferred           | Certified `persistence: false` on several V2 analytical modules. Residual `durable-persistence-product`. Restart can drop Reporting, Notification, Orchestrator, and related analytical artifacts. Identity / workspace / paper sessions are durable.                                                                     | Infrastructure                              |
+| TD-049 | Telegram production Bot API               | Deferred           | RC-24 deferred production Bot network. `InMemoryTelegramAdapter` is the certified path. Connect / test / receive work in-process. They do not hit Telegram’s production Bot API. PC-07 Notification Channels Product remains Closed on that path.                                                                         | Infrastructure                              |
+| TD-050 | Reserved notification channels            | Deferred           | SMTP, Slack, Discord, Teams, and Push are reserved-inactive. No email / Slack / Discord / Teams / push notifications.                                                                                                                                                                                                     | Version 3                                   |
+| TD-051 | Additional venue adapters                 | Deferred           | Residual `additional-venue-adapters`. Real BINANCE / BYBIT / OKX I/O is stubbed. MOCK / paper path works.                                                                                                                                                                                                                 | Version 3                                   |
+| TD-052 | Live capital                              | Deferred           | Paper Freeze ADR-012…018. Residual `live-capital`. Version 2 is paper-first. Live capital is unauthorized.                                                                                                                                                                                                                | Version 3                                   |
 
 ---
 
@@ -88,8 +98,16 @@ Related:
 - TD-007 — No Vector Search
 - TD-030 — Scoring Strategy (configurable comparison weights)
 - TD-033 — Large Dataset Scalability (streaming / aggregated snapshots)
-- TD-043 — Playwright regression suite (deferred from RC-17)
+- TD-043 — Playwright regression suite (deferred from RC-17; CANONICAL lists stack intent)
 - TD-044 — Gradual web Error Stack (mapHttpError shipped; full stack optional)
+- TD-045 — Notification durable delivery queue (not TD-035)
+- TD-046 — IDE shell
+- TD-047 — Durable paper Kill Switch
+- TD-048 — Process-local V2 analytical stores
+- TD-049 — Telegram production Bot API
+- TD-050 — Reserved notification channels (SMTP / Slack / Discord / Teams / Push)
+- TD-051 — Additional venue adapters
+- TD-052 — Live capital
 
 ### Mitigated / Partial
 
@@ -99,7 +117,7 @@ Related:
 
 ### Resolved
 
-- TD-035 — Durable Event Delivery (PostgreSQL Nest runtime + lifecycle poller)
+- TD-035 — Durable Event Delivery (PostgreSQL Nest runtime + lifecycle poller; **not** Notification queue TD-045)
 - TD-034 — Stage-1 Production Path Consolidation (legacy tick/direct paper execution removed)
 - TD-037 — Decimal Ledger Migration (including valuation/Portfolio/reconciliation)
 - TD-038 — Live Market Nest Outbox Wiring
@@ -213,4 +231,4 @@ Items historically listed under Project Status “Open Technical Debt” that ar
 
 ## Maintenance
 
-Update this file when debt is added, resolved, or reclassified after a User Story or RC audit.
+Update this file when debt is added, resolved, or reclassified after a User Story, RC audit, or Product Completion closeout. Do not duplicate this inventory in Audit v2, README, or Project Status.

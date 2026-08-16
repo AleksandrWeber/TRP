@@ -39,6 +39,8 @@ constraints.
 | Deploy          | Docker Compose                        |
 | Testing         | Vitest + Playwright                   |
 
+Playwright is stack **intent**. Shipped product tests are Vitest. Browser E2E is deferred ([TD-043](./project/technical-debt.md)).
+
 **Not used in Version 1:** Python, FastAPI, Celery, VectorBT, Backtrader, Kafka, Kubernetes, GraphQL, Elasticsearch.
 
 ---

@@ -2,7 +2,8 @@
 
 **Document:** Product Completion Journey  
 **Status:** Canonical user journey for Version 2 paper-first product  
-**Date:** 2026-08-15  
+**Date:** 2026-08-16  
+**Canonical status:** [Product Completion Status](./product-completion-status.md)  
 **Governing charter:** [Version 2 Product Completion Roadmap](./v2-product-completion-program.md)  
 **Tracker:** [Product Completion Backlog](./v2-product-completion-backlog.md)  
 **Closure:** [Definition of Done](./product-completion-definition-of-done.md)  
@@ -46,7 +47,7 @@ Login
   → Command Center
 ```
 
-**Current loop status:** J-01 Login **Complete**. Operator shell **Complete** (PC-19). J-02 Workspace **Complete** (PC-14). J-04 Certification **Complete** (PC-02). J-05 Strategy Library **Complete** (PC-01). J-06 Runtime Validation **Complete** (PC-04). J-07 Deployment **Complete** (PC-03). J-08 Trading Orchestrator **Complete** (PC-11). J-09 Trading Session **Complete** (PC-15 15-a). J-10 Reporting **Complete** (PC-05). J-12 Notification **Complete** (PC-06). J-13 Telegram **Complete** (PC-07 Notification Channels). J-14 Command Center **Complete** (PC-13). Dashboard data wiring **Complete** (PC-15 15-f). Canonical delivery path is operable through Telegram. Cluster isolation product **Complete** (PC-12). Qualification product **Complete** (PC-08). Market Profile product **Complete** (PC-09). Market State product **Complete** (PC-10). **Wave C Closed** ([closure](./wave-c-closure-report.md)). Remaining product packages: AI product UI (PC-17), Knowledge Lake (PC-16), UX polish (PC-20). J-11 AI Narrative remains **Not Started** as a standalone product. Qualification → Profile wiring (15-b) is complete. Reporting → AI wiring (15-c) is complete. Reporting → Notification wiring (15-d) is complete. Notification → Channels wiring (15-e) is complete. PC-15 Product Flow Integration is **Closed**. Overall product readiness **83%** ([audit v2](./product-readiness-audit-v2.md)).
+**Current loop status:** Steps J-01, J-02, J-04…J-10, J-12, J-13, and J-14 are **Complete**. J-13 is Telegram (channel) over **PC-07 Notification Channels Product**. J-11 AI Narrative remains **Not Started** (PC-17). Wave C (PC-12, PC-08, PC-09, PC-10) is Closed. Product Completion status: [`product-completion-status.md`](./product-completion-status.md). Scores: [audit v2](./product-readiness-audit-v2.md).
 
 ---
 

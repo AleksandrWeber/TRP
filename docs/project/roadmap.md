@@ -1,20 +1,23 @@
 # TRP Research OS — Roadmap
 
-Last updated: 2026-08-15 (PC-10 CLOSED · Wave C CLOSED · Product Readiness Audit v2 83%)
+Last updated: 2026-08-16 (documentation cleanup — status lives in [Product Completion Status](./product-completion-status.md))
 
 This file distinguishes **historical architecture delivery** from the **current product completion program**.
 
+**Canonical Product Completion status:** [`product-completion-status.md`](./product-completion-status.md)
+
 ### Planning Status
 
-| Track                 | Status                                                                                             |
-| --------------------- | -------------------------------------------------------------------------------------------------- |
-| Architecture Planning | **CLOSED**                                                                                         |
-| Product Planning      | **CLOSED**                                                                                         |
-| Governance            | **ACTIVE**                                                                                         |
-| Implementation        | **IN PROGRESS** (Waves A–C Closed; PC-16 / PC-17 / PC-20 remain. Do not begin PC-16 until review.) |
+| Track                 | Status                                                                   |
+| --------------------- | ------------------------------------------------------------------------ |
+| Architecture Planning | **CLOSED**                                                               |
+| Product Planning      | **CLOSED**                                                               |
+| Governance            | **ACTIVE**                                                               |
+| Implementation        | **IN PROGRESS** — see [canonical status](./product-completion-status.md) |
 
 Related:
 
+- **Canonical status:** [`product-completion-status.md`](./product-completion-status.md)
 - **Product Completion Roadmap (planning CLOSED):** [`v2-product-completion-program.md`](./v2-product-completion-program.md)
 - **Execution tracker:** [`v2-product-completion-backlog.md`](./v2-product-completion-backlog.md)
 - **Canonical journey:** [`product-completion-journey.md`](./product-completion-journey.md)
@@ -206,7 +209,7 @@ Related:
 
 ## Current Phase — Product Completion Implementation
 
-**Product Completion planning is CLOSED. PC-18 Identity, PC-19 Operator Shell, PC-14 Workspace, PC-01 Strategy Library, PC-02 Certification, PC-04 Runtime Validation, PC-03 Deployment, PC-11 Trading Orchestrator, PC-13 Command Center, PC-15 Product Flow Integration, PC-05 Reporting Product, PC-06 Notification Product, PC-07 Notification Channels Product, PC-12 Exchange Scope Product, PC-08 Qualification Product, PC-09 Market Profile Product, and PC-10 Market State Product are Closed. Wave C is Closed. Overall product readiness 83% ([audit v2](./product-readiness-audit-v2.md)). Next after review: PC-17 AI Analytics Product / PC-16 Knowledge Lake Product. Do not begin them now.**
+**Canonical status:** [`product-completion-status.md`](./product-completion-status.md)
 
 Future Version 2 work follows Product Completion **only**. It does not open a new RC. It does not start Version 3. It does not change Architecture Specification v2.0, the Authority Matrix, or the Alias Dictionary. No additional planning documents. No roadmap or package redesign.
 
@@ -234,7 +237,7 @@ Future Version 2 work follows Product Completion **only**. It does not open a ne
 | [PC-15 slice 15-e Implementation](./pc-15-e-implementation-report.md) | Notification → Channels **CLOSED**                                |
 | [PC-15 slice 15-f Implementation](./pc-15-f-implementation-report.md) | Dashboard & Product Projections **CLOSED** (PC-15 package Closed) |
 
-Canonical loop today: J-01 **Complete**. Operator shell **Complete** (PC-19). J-02 **Complete** (PC-14). J-04 **Complete** (PC-02). J-05 **Complete** (PC-01). J-06 **Complete** (PC-04). J-07 **Complete** (PC-03). J-08 **Complete** (PC-11). J-09 **Complete** (PC-15 15-a). J-10 **Complete** (PC-05). J-12 **Complete** (PC-06). J-13 **Complete** (PC-07). J-14 **Complete** (PC-13). Dashboard data wiring **Complete** (PC-15 15-f). Cluster / Qualification / Profile / Market State **Complete** (Wave C). Loop remaining standalone gap: **J-11 AI Narrative** (PC-17). Architecture is certified (`v2.0.0`). Overall Product Readiness **83%** (audit baseline 55%; [audit v2](./product-readiness-audit-v2.md)).
+Canonical loop remaining standalone gap: **J-11 AI Narrative** (PC-17). Step states: [`product-completion-journey.md`](./product-completion-journey.md). Status: [`product-completion-status.md`](./product-completion-status.md).
 
 RC history is **complete and preserved** in the section below. Do not reopen RC-19…RC-28. Do not rewrite those closures.
 
@@ -370,7 +373,7 @@ Authority: [`rc-19-closure-report.md`](./rc-19-closure-report.md),
 **Architecture delivery (RC-19…RC-28) is complete and preserved** (tag `v2.0.0`).
 Paper-first Version 2 architecture is certified.
 
-**Active Version 2 work is Product Completion implementation only. Waves A–C and certified paper / evidence product UIs (except Lake and AI product) are Closed. Do not begin PC-17 / PC-16 until this closeout is reviewed.**
+**Active Version 2 work is Product Completion implementation only.** Status: [`product-completion-status.md`](./product-completion-status.md).
 Do not sequence new V2 product work from [`v2-implementation-roadmap.md`](./v2-implementation-roadmap.md).
 That document is the historical architecture roadmap. Do not add planning documents.
 

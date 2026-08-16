@@ -5,6 +5,10 @@
 **Nature:** Planning freeze and implementation-readiness record — not an RC, not an ADR, not Version 3  
 **Governing charter:** [Version 2 Product Completion Roadmap](./v2-product-completion-program.md)
 
+This document is the **planning freeze snapshot**. It preserves the freeze verdict (**READY TO START PC-18**) at close of planning.
+
+**Living status:** [Product Completion Status](./product-completion-status.md)
+
 This is the **last Product Completion planning artifact**. It closes planning. It does not implement PC-18.
 
 ---
@@ -156,6 +160,8 @@ Next package after PC-18 closes: **PC-19 Operator Shell** (depends on PC-18 only
 ---
 
 ## Post-freeze implementation (not a planning change)
+
+The rows below are package-close **snapshots**. They preserve interim 58% scores and “next package” language at the moment of close. Current living status: [`product-completion-status.md`](./product-completion-status.md). Current scores: [`product-readiness-audit-v2.md`](./product-readiness-audit-v2.md).
 
 PC-18 implementation outcome: [`pc-18-product-readiness-update.md`](./pc-18-product-readiness-update.md) — Identity **100%**, overall **58%**, J-01 **Complete**.
 PC-19 implementation outcome: [`pc-19-product-readiness-update.md`](./pc-19-product-readiness-update.md) — Operator Shell declared scope **100%**, overall **58%** (not re-scored), Live Trading hidden.

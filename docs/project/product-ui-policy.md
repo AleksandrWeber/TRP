@@ -6,7 +6,8 @@
 **Governing charter:** [Version 2 Product Completion Roadmap](./v2-product-completion-program.md)  
 **Evidence source:** Version 2 Product Readiness Audit (2026-08-14)  
 **Comparison:** [Product Readiness Audit v2](./product-readiness-audit-v2.md) (2026-08-15)  
-**Planning freeze:** [Product Completion Readiness Report](./product-completion-readiness-report.md) (**READY TO START PC-18**)
+**Planning freeze:** [Product Completion Readiness Report](./product-completion-readiness-report.md) (historical freeze snapshot)  
+**Current status:** [Product Completion Status](./product-completion-status.md)
 
 Purpose: **prevent fake or misleading UI.** Version 2 is paper-first. The interface may only present capabilities a user can actually operate.
 

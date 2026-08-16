@@ -7,6 +7,7 @@ Status: Authoritative living summary of release outcomes
 Related:
 
 - [Project Status](./project-status.md)
+- [Product Completion Status](./product-completion-status.md)
 - [Roadmap](./roadmap.md)
 - [Story ID Allocation](./story-id-allocation.md)
 - [RC-18 Mid-Release Health Review](./rc-18-mid-release-health-review.md)

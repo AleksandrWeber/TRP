@@ -14,6 +14,8 @@
 
 **Verdict: PASS WITH RECOMMENDATIONS**
 
+**Cleanup (2026-08-16):** Recommendations 1–6 are closed. See [Documentation Cleanup Report](./documentation-cleanup-report.md) and [Consistency Validation Report](./consistency-validation-report.md). Do not repeat this audit’s hygiene work unless implementation requires new docs.
+
 Living documents agree on the current product truth:
 
 - Architecture delivery is closed (`v2.0.0`, RC-19 … RC-28).
@@ -123,7 +125,7 @@ Checked markdown links in:
 
 Roadmap’s Architecture Decision Log link [`../Architecture/ADR/ADL.md`](../Architecture/ADR/ADL.md) exists.
 
-**Finding L-01 (low).** `docs/README.md` displays `[docs/CANONICAL.md](./CANONICAL.md)`. The target resolves (`docs/CANONICAL.md`). The display path is slightly misleading for readers who copy the label.
+**Finding L-01 (low).** `docs/README.md` displayed the label `docs/CANONICAL.md` with href `./CANONICAL.md`. The target resolved (`docs/CANONICAL.md`). The display path was slightly misleading. Cleanup: README now displays `CANONICAL.md`.
 
 **Finding L-02 (low).** CHANGELOG Unreleased entries cite sibling filenames (`pc-10-validation-report.md`) after a first `docs/project/...` path. They are not clickable links. Not broken; harder to navigate.
 

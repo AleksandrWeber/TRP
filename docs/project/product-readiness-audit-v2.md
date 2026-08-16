@@ -4,12 +4,12 @@
 **Date:** 2026-08-15  
 **Nature:** Product-surface comparison against the 2026-08-14 Product Readiness Audit  
 **Baseline:** Version 2 Product Readiness Audit (2026-08-14) — **PRODUCT PARTIALLY READY, 55%**  
-**Clarifications:** 2026-08-16 — appended Paper Product Readiness, Customer Can/Cannot, Technical Debt Register, and Release Position. Scores, package statuses, and architecture wording are unchanged.  
+**Clarifications:** 2026-08-16 — appended Paper Product Readiness, Customer Can/Cannot, Technical Debt Register, and Release Position. Documentation cleanup the same day replaced the duplicated debt inventory with a link to [`technical-debt.md`](./technical-debt.md) and aligned living wording with [Product Completion Status](./product-completion-status.md). Scores, package statuses, and architecture wording are unchanged.  
 **This is not:** an architecture audit, a Spec change, an RC, an ADR, or Version 3
 
 **Authority freeze (verified unchanged):** Architecture Specification v2.0 · Authority Matrix · Alias Dictionary · RC-19 … RC-28 CLOSED
 
-**Related:** [Wave C Closure](./wave-c-closure-report.md) · [Canonical Journey](./product-completion-journey.md) · [Backlog](./v2-product-completion-backlog.md)
+**Related:** [Canonical Status](./product-completion-status.md) · [Wave C Closure](./wave-c-closure-report.md) · [Canonical Journey](./product-completion-journey.md) · [Backlog](./v2-product-completion-backlog.md) · [Technical Debt](./technical-debt.md)
 
 Scoring rule (unchanged from the baseline audit): Architecture % is the closed RC-28 result. Product % weights Frontend 35%, UX 25%, API 20%, Integration 10%, Backend 10%. Integration means data reaches a user or an adjacent running product path — not that a port exists or a conformance test chains modules.
 
@@ -17,17 +17,17 @@ Scoring rule (unchanged from the baseline audit): Architecture % is the closed R
 
 ## Executive Summary
 
-| Question                        | Baseline (2026-08-14)    | Current (2026-08-15)                                                                              |
-| ------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------- |
-| Verdict                         | PRODUCT PARTIALLY READY  | **PRODUCT SUBSTANTIALLY READY** (paper-first loop operable; Version 2 Complete not yet)           |
-| Overall product readiness       | **55%**                  | **83%**                                                                                           |
-| Architecturally complete        | YES                      | **YES** (unchanged)                                                                               |
-| Backend as product              | PARTIAL                  | **YES** for closed packages; Lake / AI product REST remain                                        |
-| Frontend complete               | NO                       | **NO** — Lake warehouse and AI product UI remain                                                  |
-| User ready (canonical loop)     | NO                       | **YES** for certify → gate → deploy → orchestrate → paper session → report → Telegram → dashboard |
-| Paper trading ready             | PARTIAL (manual sandbox) | **YES** (sandbox + certified path)                                                                |
-| Production ready (live capital) | NO                       | **NO** (live still unauthorized)                                                                  |
-| Version 2 Complete              | No                       | **No** — PC-16, PC-17, PC-20 remain                                                               |
+| Question                        | Baseline (2026-08-14)    | Current (2026-08-15)                                                                                                                                                            |
+| ------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Verdict                         | PRODUCT PARTIALLY READY  | **PRODUCT SUBSTANTIALLY READY** — Version 2 Architecture Complete; Version 2 Product Completion In Progress; Paper-first Product Operational; Customer Product not yet Complete |
+| Overall product readiness       | **55%**                  | **83%**                                                                                                                                                                         |
+| Architecturally complete        | YES                      | **YES** (unchanged)                                                                                                                                                             |
+| Backend as product              | PARTIAL                  | **YES** for closed packages; Lake / AI product REST remain                                                                                                                      |
+| Frontend complete               | NO                       | **NO** — Lake warehouse and AI product UI remain                                                                                                                                |
+| User ready (canonical loop)     | NO                       | **YES** for certify → gate → deploy → orchestrate → paper session → report → Telegram → dashboard                                                                               |
+| Paper trading ready             | PARTIAL (manual sandbox) | **YES** (sandbox + certified path)                                                                                                                                              |
+| Production ready (live capital) | NO                       | **NO** (live still unauthorized)                                                                                                                                                |
+| Version 2 Complete              | No                       | **No** — PC-16, PC-17, PC-20 remain                                                                                                                                             |
 
 ### Previous readiness
 
@@ -409,55 +409,23 @@ Actual limitations only. Completed work is not listed. Architecture freeze facts
 
 ## Technical Debt Register
 
-Intentionally deferred technical items in one place. This is **not** a backlog. PC-16, PC-17, and PC-20 remain Product Completion packages and are not listed here.
+Intentionally deferred technical items live in one place: [`technical-debt.md`](./technical-debt.md).
 
-### Infrastructure
+That register is canonical. This audit does not keep a second inventory. Product Completion remaining packages (PC-16, PC-17, PC-20) are not debt; they are listed in [Product Completion Status](./product-completion-status.md).
 
-| Name                | Reason deferred                                                         | Product impact                                                                     | Target program |
-| ------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | -------------- |
-| IDE shell           | Residual `ide-shell`. PC-19 delivered paper-first chrome, not an IDE.   | Operators use classic Research / Paper / Administration nav.                       | Version 3      |
-| Durable Kill Switch | Durable Kill Switch REST is live-only. Paper product hides the control. | No fleet-wide kill on paper. Pause / resume / stop remain.                         | Version 3      |
-| US295               | RC-18 parallel residual. Production restart-safety claim language.      | Does not block the paper-first loop. Blocks production restart-safety PASS claims. | Infrastructure |
-| ADL-008             | Same residual as US295. Architecture closeout, not a product screen.    | Same as US295.                                                                     | Infrastructure |
-
-### Persistence
-
-| Name                            | Reason deferred                                                                                          | Product impact                                                                                                                           | Target program |
-| ------------------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| Process-local analytical stores | Certified `persistence: false` on several V2 analytical modules. Residual `durable-persistence-product`. | Restart can drop Reporting, Notification, Orchestrator, and related analytical artifacts. Identity/workspace/paper sessions are durable. | Infrastructure |
-
-### Delivery
-
-| Name                   | Reason deferred                                                                         | Product impact                                                                                    | Target program |
-| ---------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | -------------- |
-| Telegram Bot API       | RC-24 deferred production Bot network. `InMemoryTelegramAdapter` is the certified path. | Telegram connect / test / receive work in-process. They do not hit Telegram’s production Bot API. | Infrastructure |
-| SMTP provider          | Email channel is reserved-inactive.                                                     | No email notifications.                                                                           | Version 3      |
-| Slack provider         | Slack channel is reserved-inactive.                                                     | No Slack notifications.                                                                           | Version 3      |
-| Discord provider       | Discord channel is reserved-inactive.                                                   | No Discord notifications.                                                                         | Version 3      |
-| Teams provider         | Teams channel is reserved-inactive.                                                     | No Teams notifications.                                                                           | Version 3      |
-| Push provider          | Push channel is reserved-inactive.                                                      | No push notifications.                                                                            | Version 3      |
-| Durable delivery queue | RC-24 non-goal. Delivery is in-process.                                                 | Deliveries are not a durable outbox/queue product. Restart can lose in-flight adapter state.      | Infrastructure |
-
-### Testing
-
-| Name                    | Reason deferred                                  | Product impact                                                           | Target program |
-| ----------------------- | ------------------------------------------------ | ------------------------------------------------------------------------ | -------------- |
-| Playwright E2E (TD-043) | Historically deferred. Product tests are Vitest. | No browser customer E2E suite. Conformance and package tests still pass. | Infrastructure |
-
-### Integrations
-
-| Name                      | Reason deferred                                                                  | Product impact                                          | Target program |
-| ------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------- | -------------- |
-| Additional venue adapters | Residual `additional-venue-adapters`. Real BINANCE / BYBIT / OKX I/O is stubbed. | MOCK / paper path works. Live venue I/O does not.       | Version 3      |
-| Live capital              | Paper Freeze ADR-012…018. Residual `live-capital`.                               | Version 2 is paper-first. Live capital is unauthorized. | Version 3      |
+Version 2 product residuals indexed there include IDE shell (TD-046), durable paper Kill Switch (TD-047), US295 / ADL-008 (TD-036), process-local analytical stores (TD-048), Telegram production Bot API (TD-049), reserved notification channels (TD-050), notification durable delivery queue (TD-045, distinct from resolved paper Outbox/Inbox TD-035), Playwright E2E (TD-043), additional venue adapters (TD-051), and live capital (TD-052).
 
 ---
 
 ## Release Position
 
-**Version 2 Paper Product — Operational.** A paper-first operator can sign in, switch workspace, research, certify, pass the Gate, deploy, orchestrate, start a paper session from the handoff, read RC-24 reports, receive Telegram on the in-memory path, and operate from Command Center. Overall paper-first product readiness is **83%**. This is the current shippable paper product, not a live SaaS.
+**Version 2 Architecture Complete.** RC-19 … RC-28 certified the paper-first platform at `v2.0.0`.
 
-**Version 2 Complete — Not yet.** Product Completion still contains PC-16 Knowledge Lake Product, PC-17 AI Analytics Product, and PC-20 Product UX Polish. The canonical paper loop is operable; the customer product is not finished until those packages close.
+**Version 2 Product Completion In Progress.** Remaining packages: PC-16, PC-17, PC-20. Canonical wording: [`product-completion-status.md`](./product-completion-status.md).
+
+**Paper-first Product Operational.** A paper-first operator can sign in, switch workspace, research, certify, pass the Gate, deploy, orchestrate, start a paper session from the handoff, read RC-24 reports, receive Telegram on the in-memory path, and operate from Command Center. Overall paper-first product readiness is **83%**. This is the current shippable paper product, not a live SaaS.
+
+**Customer Product not yet Complete.** Product Completion still contains PC-16 Knowledge Lake Product, PC-17 AI Analytics Product, and PC-20 Product UX Polish.
 
 **Production SaaS — Not ready.** Production readiness is **40%**. Live capital is unauthorized. Venue I/O is stubbed. Telegram is in-memory. Several V2 analytical stores are process-local. US295 / ADL-008 remains open for production restart-safety claims. Version 1 (`v1.0.0`) remains the production-ready research OS release.
 
@@ -467,9 +435,13 @@ Intentionally deferred technical items in one place. This is **not** a backlog. 
 
 ## Executive Conclusion
 
-**Version 2 Paper Product is Operational.**
+**Version 2 Architecture Complete.**
 
-**Version 2 Customer Product is not yet Complete.**
+**Version 2 Product Completion In Progress.**
+
+**Paper-first Product Operational.**
+
+**Customer Product not yet Complete.**
 
 The certified paper-first operator journey is operational.
 

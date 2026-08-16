@@ -1,7 +1,7 @@
 # TRP Research OS — Project Status
 
 Last updated:
-2026-08-15 (PC-10 CLOSED · Wave C CLOSED · Product Readiness Audit v2 83%)
+2026-08-16 (documentation cleanup — status lives in [Product Completion Status](./product-completion-status.md))
 
 **Level-0 authority:**
 
@@ -22,8 +22,10 @@ Last updated:
 - [Engineering Audit](./engineering-audit-report-v2-freeze.md)
 - [RC-18 Snapshot](./rc-18-current-system-snapshot.md)
 - [V2 Roadmap RC-19…28](./v2-implementation-roadmap.md) (**CLOSED** — architecture delivery)
+- [Product Completion Status](./product-completion-status.md) (**canonical living status**)
 - [Version 2 Product Completion Roadmap](./v2-product-completion-program.md) (product charter — planning **CLOSED**)
 - [Version 2 Product Completion Backlog](./v2-product-completion-backlog.md) (execution tracker)
+- [Technical Debt Register](./technical-debt.md) (canonical debt register)
 - [Canonical Product Journey](./product-completion-journey.md)
 - [Definition of Done](./product-completion-definition-of-done.md)
 - [Product UI Policy](./product-ui-policy.md)
@@ -88,18 +90,18 @@ Cluster Closure Report:
 
 # Current Phase
 
-**RC-19 … RC-28 CLOSED · Product Completion planning CLOSED · Waves A–C CLOSED · PC-10 Market State CLOSED · Product readiness 83% · Next: PC-17 / PC-16 (after this closeout review). Do not begin them now.**
+**Canonical status:** [`product-completion-status.md`](./product-completion-status.md)
 
 ### Planning Status
 
-| Track                 | Status                                                                                             |
-| --------------------- | -------------------------------------------------------------------------------------------------- |
-| Architecture Planning | **CLOSED**                                                                                         |
-| Product Planning      | **CLOSED**                                                                                         |
-| Governance            | **ACTIVE**                                                                                         |
-| Implementation        | **IN PROGRESS** (Waves A–C Closed; PC-16 / PC-17 / PC-20 remain. Do not begin PC-16 until review.) |
+| Track                 | Status                                                                   |
+| --------------------- | ------------------------------------------------------------------------ |
+| Architecture Planning | **CLOSED**                                                               |
+| Product Planning      | **CLOSED**                                                               |
+| Governance            | **ACTIVE**                                                               |
+| Implementation        | **IN PROGRESS** — see [canonical status](./product-completion-status.md) |
 
-Architecture Specification v2.0, Authority Matrix, and Alias Dictionary remain frozen. Do not add planning documents, governance documents, roadmap redesign, or package redesign. Future work is Implement → Review → Validate → Close. **STOP before PC-17 / PC-16 until this Wave C closeout is reviewed.**
+Architecture Specification v2.0, Authority Matrix, and Alias Dictionary remain frozen. Do not add planning documents, governance documents, roadmap redesign, or package redesign. Future work is Implement → Review → Validate → Close. **STOP before PC-16 until review.**
 
 Charter: [`v2-product-completion-program.md`](./v2-product-completion-program.md).  
 Freeze record: [`product-completion-readiness-report.md`](./product-completion-readiness-report.md).
@@ -286,7 +288,7 @@ RC-27 (Multi-Exchange Scope) is **CLOSED** (tag `v1.0.0-rc27`).
 **RC-28** (Version 2 Stabilization & Conformance) is **CLOSED** (tag `v2.0.0`).
 Paper-first Version 2 architecture is certified.
 
-**Product Completion planning is CLOSED.** PC-18 Identity Product is **Closed**. PC-19 Operator Shell is **Closed**. PC-14 Workspace Management is **Closed**. PC-01 Strategy Library Product is **Closed**. PC-02 Certification Product is **Closed**. PC-04 Runtime Validation Product is **Closed**. PC-03 Deployment Product is **Closed**. PC-11 Trading Orchestrator Product is **Closed**. PC-13 Command Center Product is **Closed**. PC-15 Product Flow Integration is **Closed**. PC-05 Reporting Product is **Closed**. PC-06 Notification Product is **Closed**. PC-07 Notification Channels Product is **Closed**. PC-12 Exchange Scope Product is **Closed**. PC-08 Qualification Product is **Closed** ([implementation](./pc-08-implementation-report.md), [validation](./pc-08-validation-report.md), [readiness delta](./pc-08-product-readiness-update.md), [release notes](./pc-08-release-notes.md)). PC-09 Market Profile Product is **Closed** ([implementation](./pc-09-implementation-report.md), [validation](./pc-09-validation-report.md), [readiness delta](./pc-09-product-readiness-update.md), [release notes](./pc-09-release-notes.md)). PC-10 Market State Product is **Closed** ([implementation](./pc-10-implementation-report.md), [validation](./pc-10-validation-report.md), [readiness delta](./pc-10-product-readiness-update.md), [release notes](./pc-10-release-notes.md)). Wave C is **Closed** ([closure](./wave-c-closure-report.md)). Product Readiness Audit v2: **83%** ([audit](./product-readiness-audit-v2.md); baseline 55%). Identity **100%**. Operator Shell declared scope **100%**. Workspace declared scope **100%**. Strategy Library declared scope **100%**. Certification declared scope **100%**. Runtime Validation declared scope **100%**. Deployment declared scope **100%**. Orchestrator declared scope **100%**. Command Center declared scope **100%**. Reporting declared scope **100%**. Notification declared scope **100%**. Notification Channels declared scope **100%**. Exchange Scope declared scope **100%**. Qualification declared scope **100%**. Market Profile declared scope **100%**. Market State declared scope **100%**. J-01 **Complete**. Shell **Complete**. J-02 **Complete**. J-04 **Complete**. J-05 **Complete**. J-06 **Complete**. J-07 **Complete**. J-08 **Complete**. J-09 **Complete**. J-10 **Complete**. J-12 **Complete**. J-13 **Complete**. J-14 **Complete**. Dashboard data wiring **Complete**. Cluster product **Complete**. Qualification product **Complete**. Market Profile product **Complete**. Market State product **Complete**. Remaining: **PC-17** / **PC-16** / **PC-20**. Do not begin PC-16 until this closeout is reviewed.
+**Product Completion:** see [`product-completion-status.md`](./product-completion-status.md). Scores: [`product-readiness-audit-v2.md`](./product-readiness-audit-v2.md). Journey: [`product-completion-journey.md`](./product-completion-journey.md). Tracker: [`v2-product-completion-backlog.md`](./v2-product-completion-backlog.md).
 IDE shell and live capital remain deferred. Live Trading is hidden in the product shell.
 
 Historical Research OS goal (unchanged): Evidence-driven Research OS —

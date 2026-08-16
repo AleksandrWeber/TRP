@@ -12,8 +12,9 @@
 **Charter:** [Version 2 Product Completion Roadmap](./v2-product-completion-program.md)  
 **Tracker:** [Product Completion Backlog](./v2-product-completion-backlog.md)  
 **Journey:** [Canonical Product Journey](./product-completion-journey.md)
+**Canonical status:** [Product Completion Status](./product-completion-status.md)
 
-This report closes Wave C. It does not begin PC-16, PC-17, or PC-20. It does not amend Spec v2.0, the Authority Matrix, or the Alias Dictionary.
+This report closes Wave C (**PC-12, PC-08, PC-09, PC-10**). It does not begin PC-16, PC-17, or PC-20. It does not amend Spec v2.0, the Authority Matrix, or the Alias Dictionary.
 
 ---
 

@@ -11,6 +11,13 @@ for Research Engine / Validation / Knowledge Schema versions tracked in
 
 ### Added
 
+- Version 2 documentation cleanup — one canonical Product Completion status,
+  historical-snapshot rule for closed package reports, PC-07 living name
+  Notification Channels Product, Wave C = PC-12 / PC-08 / PC-09 / PC-10,
+  and `docs/project/technical-debt.md` as the sole debt register. Reports:
+  `docs/project/documentation-cleanup-report.md`,
+  `docs/project/consistency-validation-report.md`,
+  `docs/project/product-completion-status.md`.
 - Wave C closed — Exchange Scope (PC-12), Qualification (PC-08), Market
   Profile (PC-09), and Market State (PC-10) are customer products. Product
   Readiness Audit v2 recalculates overall readiness 55% → 83%. Remaining

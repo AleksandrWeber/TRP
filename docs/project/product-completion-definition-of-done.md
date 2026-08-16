@@ -8,7 +8,8 @@
 **Tracker:** [Product Completion Backlog](./v2-product-completion-backlog.md)  
 **Journey:** [Canonical Product Journey](./product-completion-journey.md)  
 **UI rules:** [Product UI Policy](./product-ui-policy.md)  
-**Planning freeze:** [Product Completion Readiness Report](./product-completion-readiness-report.md) (**READY TO START PC-18**)
+**Planning freeze:** [Product Completion Readiness Report](./product-completion-readiness-report.md) (historical freeze snapshot)  
+**Current status:** [Product Completion Status](./product-completion-status.md)
 
 This is the **only** closure checklist for Product Completion. A package may be marked `Closed` in the Backlog only when **every** item below is true for that package’s **declared scope** in the Roadmap.
 
