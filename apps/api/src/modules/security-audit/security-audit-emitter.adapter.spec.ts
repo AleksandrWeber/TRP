@@ -24,6 +24,7 @@ describe('security-audit-emitter.adapter (V3-S05-a)', () => {
         actorId: 'admin-1',
         subjectId: 'user-2',
         resourceType: 'user-role',
+        resourceId: 'user-2',
       },
       payload: { fromRole: 'RESEARCHER', toRole: 'TRADER' },
     });

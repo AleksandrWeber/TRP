@@ -73,6 +73,9 @@ function resourceTypeFor(eventType: string): string | undefined {
 function resourceIdFor(eventType: string, context: LogContext): string | undefined {
   const sessionId = stringValue(context.sessionId);
   if (sessionId) return sessionId;
+  if (eventType === 'authz.role-change') {
+    return stringValue(context.subjectUserId);
+  }
   if (eventType === 'vault.lifecycle' || eventType === 'vault.access-denied') {
     const type = stringValue(context.type);
     const purpose = stringValue(context.purpose);

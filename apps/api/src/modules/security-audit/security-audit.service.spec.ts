@@ -96,7 +96,7 @@ describe('SecurityAuditService', () => {
     ).rejects.toThrow('sensitive field');
   });
 
-  it('refuses incomplete privilege attribution', async () => {
+  it('persists Identity-global role attribution without a workspace', async () => {
     const service = new SecurityAuditService(new InMemorySecurityAuditRepository());
 
     await expect(
@@ -104,8 +104,21 @@ describe('SecurityAuditService', () => {
         eventType: 'authz.role-change',
         source: 'identity',
         outcome: 'assigned',
-        attribution: { actorId: 'admin-1', subjectId: 'user-2', resourceType: 'user-role' },
+        attribution: {
+          actorId: 'admin-1',
+          subjectId: 'user-2',
+          resourceType: 'user-role',
+          resourceId: 'user-2',
+        },
       }),
-    ).rejects.toThrow('workspaceId');
+    ).resolves.toMatchObject({
+      eventType: 'authz.role-change',
+      attribution: {
+        actorId: 'admin-1',
+        subjectId: 'user-2',
+        resourceType: 'user-role',
+        resourceId: 'user-2',
+      },
+    });
   });
 });

@@ -14,6 +14,20 @@ This report covers **S02-e only**. Implementation slices S02-a … S02-e are don
 
 ---
 
+## F-02 Certification Remediation
+
+**Date:** 2026-08-17
+**Scope:** Identity-global role attribution only. This is not a package Close or scope change.
+
+- Identity-global People role assignments now await one Security Audit append.
+- The audit contract explicitly allows no `workspaceId` for this approved global Identity event while retaining actor, subject, resource type, resource id, event type, outcome, and timestamp.
+- Workspace attribution remains preserved when a workspace-scoped authorization denial supplies it.
+- Regression evidence verifies one role-assignment audit write with no secret-shaped payload.
+
+Identity still owns roles; Security Audit still owns persistence. No bounded context, Source of Truth, Master Plan, or product surface changed.
+
+---
+
 ## What shipped
 
 Role changes and C6 refusals are recorded as structured application events on the existing Logger. Privilege constraints are evidenced: role assignment is not workspace membership; Admin cannot skip Gate or Risk; later-wave products did not appear. An Administrator who tries to change their own role in People is denied and sees a clear explanation.

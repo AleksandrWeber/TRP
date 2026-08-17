@@ -2,14 +2,18 @@ import { describe, expect, it } from 'vitest';
 import { normalizeSecurityAuditAttribution } from './security-audit-attribution';
 
 describe('security-audit-attribution', () => {
-  it('requires workspace-scoped privilege attribution', () => {
-    expect(() =>
+  it('accepts Identity-global role attribution without inventing a workspace', () => {
+    expect(
       normalizeSecurityAuditAttribution('authz.role-change', {
         actorId: 'admin-1',
         subjectId: 'user-2',
         resourceType: 'user-role',
       }),
-    ).toThrow('workspaceId');
+    ).toEqual({
+      actorId: 'admin-1',
+      subjectId: 'user-2',
+      resourceType: 'user-role',
+    });
   });
 
   it('preserves honest optional attribution for sign-in events', () => {
@@ -31,6 +35,18 @@ describe('security-audit-attribution', () => {
       workspaceId: 'workspace-a',
       actorId: 'admin-1',
       correlationId: 'corr-1',
+    });
+  });
+
+  it('preserves workspace attribution for workspace-scoped authorization denials', () => {
+    expect(
+      normalizeSecurityAuditAttribution('authz.deny', {
+        workspaceId: 'workspace-a',
+        actorId: 'admin-1',
+      }),
+    ).toEqual({
+      workspaceId: 'workspace-a',
+      actorId: 'admin-1',
     });
   });
 });

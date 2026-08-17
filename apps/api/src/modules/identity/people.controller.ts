@@ -75,7 +75,7 @@ export class PeopleController {
     try {
       const user = await this.users.assignRole(params.userId, body.role, actorUserId);
       if (!user) {
-        this.recordAssignment({
+        await this.recordAssignment({
           outcome: 'denied',
           actorUserId,
           subjectUserId: params.userId,
@@ -86,7 +86,7 @@ export class PeopleController {
         throw new NotFoundException('User not found');
       }
       if (fromRole !== user.role) {
-        this.recordAssignment({
+        await this.recordAssignment({
           outcome: 'assigned',
           actorUserId,
           subjectUserId: user.id,
@@ -111,15 +111,15 @@ export class PeopleController {
     }
   }
 
-  private recordAssignment(payload: {
+  private async recordAssignment(payload: {
     outcome: 'assigned' | 'denied';
     actorUserId: string;
     subjectUserId: string;
     fromRole?: string;
     toRole?: string;
     reason?: RoleChangeReason;
-  }): void {
-    recordRoleChange(this.logger, payload, this.audit);
+  }): Promise<void> {
+    await recordRoleChange(this.logger, payload, this.audit);
   }
 }
 

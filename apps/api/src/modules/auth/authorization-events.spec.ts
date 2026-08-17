@@ -34,10 +34,10 @@ class RecordingLogger implements Logger {
 }
 
 describe('Authorization events (V3-S02-e)', () => {
-  it('records an assigned role change with actor, subject, from, and to', () => {
+  it('records an assigned role change with actor, subject, from, and to', async () => {
     const logger = new RecordingLogger();
 
-    recordRoleChange(logger, {
+    await recordRoleChange(logger, {
       outcome: 'assigned',
       actorUserId: 'admin-1',
       subjectUserId: 'op-2',
@@ -62,10 +62,10 @@ describe('Authorization events (V3-S02-e)', () => {
     expect(authorizationEventLeaksSensitiveData(logger.entries[0].context)).toBe(false);
   });
 
-  it('records last-Admin and self-role refusals without secrets', () => {
+  it('records last-Admin and self-role refusals without secrets', async () => {
     const logger = new RecordingLogger();
 
-    recordRoleChange(logger, {
+    await recordRoleChange(logger, {
       outcome: 'denied',
       actorUserId: 'admin-1',
       subjectUserId: 'admin-1',
@@ -73,7 +73,7 @@ describe('Authorization events (V3-S02-e)', () => {
       toRole: 'Trader',
       reason: 'self_role',
     });
-    recordRoleChange(logger, {
+    await recordRoleChange(logger, {
       outcome: 'denied',
       actorUserId: 'admin-2',
       subjectUserId: 'admin-1',
@@ -114,6 +114,23 @@ describe('Authorization events (V3-S02-e)', () => {
       },
     });
     expect(authorizationEventLeaksSensitiveData(logger.entries[0].context)).toBe(false);
+  });
+
+  it('keeps workspace attribution on a workspace-scoped authorization denial', () => {
+    const logger = new RecordingLogger();
+
+    recordC6Deny(logger, {
+      actorUserId: 'admin-1',
+      role: 'Administrator',
+      reason: 'workspace_forbidden',
+      workspaceId: 'workspace-a',
+    });
+
+    expect(logger.entries[0].context).toMatchObject({
+      event: AUTHZ_DENY_EVENT,
+      actorUserId: 'admin-1',
+      workspaceId: 'workspace-a',
+    });
   });
 
   it('treats password, token, hash, and email fields as sensitive leaks', () => {

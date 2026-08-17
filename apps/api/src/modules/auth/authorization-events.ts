@@ -31,20 +31,21 @@ export type C6DenyEvent = {
   actorUserId: string;
   role: string;
   reason: string;
+  workspaceId?: string;
 };
 
-export function recordRoleChange(
+export async function recordRoleChange(
   logger: Logger,
   payload: RoleChangeEvent,
   audit?: SecurityAuditService,
-): void {
+): Promise<void> {
   const context = toRoleChangeContext(payload);
   if (payload.outcome === 'assigned') {
     logger.info(AUTHZ_ROLE_CHANGE_EVENT, context);
   } else {
     logger.warn(AUTHZ_ROLE_CHANGE_EVENT, context);
   }
-  void persistSecurityAuditEvent(audit, AUTHZ_ROLE_CHANGE_EVENT, context, 'authorization');
+  await persistSecurityAuditEvent(audit, AUTHZ_ROLE_CHANGE_EVENT, context, 'authorization');
 }
 
 export function recordC6Deny(
@@ -59,6 +60,7 @@ export function recordC6Deny(
     actorUserId: payload.actorUserId,
     role: payload.role,
     reason: payload.reason,
+    ...(payload.workspaceId === undefined ? {} : { workspaceId: payload.workspaceId }),
   };
   logger.warn(AUTHZ_DENY_EVENT, context);
   void persistSecurityAuditEvent(audit, AUTHZ_DENY_EVENT, context, 'authorization');

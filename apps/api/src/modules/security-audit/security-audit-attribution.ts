@@ -13,12 +13,11 @@ const ATTRIBUTION_RULES: Readonly<Record<string, AttributionRule>> = Object.free
   'auth.session': { actorId: true },
   'auth.recover': { actorId: true },
   'authz.role-change': {
-    workspaceId: true,
     actorId: true,
     subjectId: true,
     resourceType: true,
   },
-  'authz.deny': { workspaceId: true, actorId: true },
+  'authz.deny': { actorId: true },
   'vault.lifecycle': {
     workspaceId: true,
     actorId: true,

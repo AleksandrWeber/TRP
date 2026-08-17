@@ -13,6 +13,7 @@ import { createValidationPipe, ValidationExceptionFilter } from '../../validatio
 import type { LogContext, Logger } from '../../logging/logger';
 import { LOGGER } from '../../logging/logger.token';
 import { SecurityAuditService } from '../security-audit/security-audit.service';
+import type { SecurityAuditWrite } from '../security-audit/security-audit-record';
 import { Role } from './role';
 import type { AuthUser } from '../auth/jwt.strategy';
 import {
@@ -74,9 +75,16 @@ class RecordingLogger implements Logger {
   }
 }
 
-class NoopSecurityAuditService {
-  async record(): Promise<{ id: string }> {
+class RecordingSecurityAuditService {
+  readonly writes: SecurityAuditWrite[] = [];
+
+  async record(write: SecurityAuditWrite): Promise<{ id: string }> {
+    this.writes.push(write);
     return { id: 'audit-test' };
+  }
+
+  reset(): void {
+    this.writes.length = 0;
   }
 }
 
@@ -88,17 +96,19 @@ describe('People HTTP (V3-S02-c)', () => {
   let app: NestFastifyApplication;
   let users: UserDomainService;
   let events: RecordingLogger;
+  let audit: RecordingSecurityAuditService;
   let sequence = 0;
 
   beforeAll(async () => {
     users = new UserDomainService(new InMemoryUserRepository());
     events = new RecordingLogger();
+    audit = new RecordingSecurityAuditService();
     const moduleRef = await Test.createTestingModule({
       controllers: [PeopleController],
       providers: [
         { provide: UserDomainService, useValue: users },
         { provide: LOGGER, useValue: events },
-        { provide: SecurityAuditService, useClass: NoopSecurityAuditService },
+        { provide: SecurityAuditService, useValue: audit },
         Reflector,
       ],
     }).compile();
@@ -121,6 +131,7 @@ describe('People HTTP (V3-S02-c)', () => {
     users = new UserDomainService(new InMemoryUserRepository());
     (app.get(PeopleController) as unknown as { users: UserDomainService }).users = users;
     events.reset();
+    audit.reset();
   });
 
   function nextEmail(prefix: string): string {
@@ -181,6 +192,29 @@ describe('People HTTP (V3-S02-c)', () => {
     );
     expect(events.entries[0].context).not.toHaveProperty('workspaceId');
     expect(authorizationEventLeaksSensitiveData(events.entries[0].context)).toBe(false);
+    expect(audit.writes).toEqual([
+      expect.objectContaining({
+        eventType: AUTHZ_ROLE_CHANGE_EVENT,
+        outcome: 'assigned',
+        source: 'authorization',
+        attribution: {
+          actorId: 'caller-1',
+          subjectId: operator.id,
+          resourceType: 'user-role',
+          resourceId: operator.id,
+        },
+        payload: {
+          fromRole: Role.Researcher,
+          toRole: Role.Trader,
+        },
+      }),
+    ]);
+    expect(
+      JSON.stringify({
+        attribution: audit.writes[0]?.attribution,
+        payload: audit.writes[0]?.payload,
+      }),
+    ).not.toMatch(/password|token|hash|secret|cookie|authorization|email/i);
 
     const listed = await list(Role.Admin);
     expect(listed.statusCode).toBe(200);

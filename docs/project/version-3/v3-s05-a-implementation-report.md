@@ -1,5 +1,14 @@
 # V3-S05-a Implementation Report
 
+## F-02 Certification Remediation
+
+**Date:** 2026-08-17
+**Scope:** Security Audit attribution contract for approved Identity-global role events.
+
+`authz.role-change` no longer requires an invented workspace. The persisted record retains actor, subject, resource type, resource id, event type, outcome, and timestamp. Workspace-scoped authorization denials retain supplied workspace attribution. The Identity role-assignment path awaits the Audit append and regression coverage verifies one non-secret role-change write.
+
+Security Audit remains the sole persistence owner. This remediation creates no new event store, bounded context, product feature, or Master Plan change.
+
 ## Delivered
 
 Security Audit now owns a durable append-only record model and internal write
