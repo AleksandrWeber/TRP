@@ -1,3 +1,9 @@
+import {
+  listExchangeProviders,
+  lookupExchangeProvider,
+  type ExchangeProviderMetadata,
+} from '../exchange-connectivity';
+
 export const CONNECTION_TYPES = ['EXCHANGE', 'NOTIFICATION', 'AI'] as const;
 export type ConnectionType = (typeof CONNECTION_TYPES)[number];
 
@@ -55,8 +61,12 @@ export type ConnectionCatalogView = {
       id: ConnectionProvider;
       displayName: string;
       credentialFields: readonly string[];
+      capabilities?: ExchangeProviderMetadata['capabilities'];
+      availability?: ExchangeProviderMetadata['availability'];
+      category?: ExchangeProviderMetadata['category'];
     }[];
   }[];
+  exchangeProviders: readonly ExchangeProviderMetadata[];
 };
 
 const TYPE_DISPLAY_NAMES: Record<ConnectionType, string> = {
@@ -71,13 +81,25 @@ export function connectionCatalog(): ConnectionCatalogView {
       id,
       displayName: TYPE_DISPLAY_NAMES[id],
       providers: CONNECTION_PROVIDERS.filter((provider) => provider.connectionType === id).map(
-        ({ id: providerId, displayName, credentialFields }) => ({
-          id: providerId,
-          displayName,
-          credentialFields,
-        }),
+        ({ id: providerId, displayName, credentialFields, connectionType }) => {
+          const exchange =
+            connectionType === 'EXCHANGE' ? lookupExchangeProvider(providerId) : null;
+          return {
+            id: providerId,
+            displayName,
+            credentialFields,
+            ...(exchange
+              ? {
+                  capabilities: exchange.capabilities,
+                  availability: exchange.availability,
+                  category: exchange.category,
+                }
+              : {}),
+          };
+        },
       ),
     })),
+    exchangeProviders: listExchangeProviders(),
   };
 }
 

@@ -2,11 +2,21 @@
 
 **Document:** Version 3 Exchange Connectivity Overview
 **Date:** 2026-08-17
-**Status:** Product-facing record of W2-S02 Implementation Package — Planning **COMPLETE**. Not implementation. Awaiting Product Owner Approval.
+**Status:** W2-S02-a implemented. Remaining W2-S02 slices await Product Owner review before W2-S02-b.
 **Product:** Exchange Connectivity Foundation
-**Nature:** Customer description. Not an RC. Not an ADR. Not implementation. Not a Master Plan revision.
+**Nature:** Customer description. Not an RC. Not an ADR. Not a Master Plan revision.
 
 This is what an ordinary operator experiences. It is not an internal design note.
+
+---
+
+## W2-S02-a delivered foundation
+
+Operators can now open **Connections** and see the supported Exchange catalog: **Binance**, **Bybit**, and **OKX**. Each provider shows its declared capabilities (Spot, Futures, Testnet, Margin, WebSocket, REST). Choosing a provider shows those capabilities. An Exchange Connection references the selected provider.
+
+This slice does **not** connect, authenticate, or talk to an exchange. There is no Connect button, no Authenticate button, and no Live status from this slice. Capabilities are metadata. They do not mean trading, balances, or an authenticated session.
+
+Handshake and honest venue Connected remain later W2-S02 slices.
 
 ---
 
@@ -206,6 +216,8 @@ After Exchange Connectivity Foundation ships its product outcomes:
 Wave 1 Security Foundation is **CERTIFIED COMPLETE** and is consumed, not reopened.
 W2-S01 Connection Management is **CLOSED** and is consumed, not redesigned.
 
+W2-S02-a is implemented. Wait for Product Owner review before W2-S02-b.
+
 ---
 
 ## Out of scope declarations
@@ -233,4 +245,4 @@ This product does **not** include:
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S02 implementation begins.
+**STOP.** Wait for Product Owner review before W2-S02-b. Handshake, HTTP, and venue communication remain later slices.

@@ -1,8 +1,9 @@
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../storage/prisma/prisma.module';
-import { SecretVaultService } from '../secret-vault';
+import { lookupExchangeProvider, type ExchangeProviderMetadata } from '../exchange-connectivity';
 import type { Role } from '../identity/role';
+import { SecretVaultService } from '../secret-vault';
 import {
   connectionCatalog,
   providerType,
@@ -32,6 +33,7 @@ export type ConnectionMetadataView = {
   connectionType: ConnectionType;
   status: ConnectionStatus;
   credentialsStored: boolean;
+  exchangeProvider: ExchangeProviderMetadata | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -70,6 +72,9 @@ export class ConnectionsService {
   }): Promise<ConnectionMetadataView> {
     const connectionType = providerType(input.provider);
     if (!connectionType) {
+      throw new NotFoundException('Offered provider not found');
+    }
+    if (connectionType === 'EXCHANGE' && lookupExchangeProvider(input.provider) === null) {
       throw new NotFoundException('Offered provider not found');
     }
     const now = new Date();
@@ -415,6 +420,8 @@ function toView(row: ConnectionRow): ConnectionMetadataView {
     connectionType: row.connectionType as ConnectionType,
     status: connectionStatus(row.status),
     credentialsStored: row.vaultSecretId !== null && connectionStatus(row.status) !== 'REVOKED',
+    exchangeProvider:
+      row.connectionType === 'EXCHANGE' ? (lookupExchangeProvider(row.provider) ?? null) : null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };

@@ -39,6 +39,10 @@ export class ConnectionsController {
     private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
+  /**
+   * W2-S01 catalog plus W2-S02-a exchange provider metadata.
+   * This endpoint does not connect, authenticate, or send HTTP to a venue.
+   */
   @Get('catalog')
   catalog(
     @Req() request: RequestWithUser,

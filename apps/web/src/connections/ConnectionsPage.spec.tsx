@@ -1,7 +1,9 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import type { ConnectionCatalogView, ConnectionMetadataView } from '../shared/api';
-import { ConnectionsView } from './ConnectionsView';
+import { ConnectionsView, type ConnectionsViewProps } from './ConnectionsView';
+
+const exchangeCapabilities = ['SPOT', 'FUTURES', 'TESTNET', 'MARGIN', 'WEBSOCKET', 'REST'] as const;
 
 const catalog: ConnectionCatalogView = {
   connectionTypes: [
@@ -9,9 +11,30 @@ const catalog: ConnectionCatalogView = {
       id: 'EXCHANGE',
       displayName: 'Exchange',
       providers: [
-        { id: 'BINANCE', displayName: 'Binance', credentialFields: ['apiKey', 'apiSecret'] },
-        { id: 'BYBIT', displayName: 'Bybit', credentialFields: ['apiKey', 'apiSecret'] },
-        { id: 'OKX', displayName: 'OKX', credentialFields: ['apiKey', 'apiSecret', 'passphrase'] },
+        {
+          id: 'BINANCE',
+          displayName: 'Binance',
+          credentialFields: ['apiKey', 'apiSecret'],
+          capabilities: [...exchangeCapabilities],
+          availability: 'AVAILABLE',
+          category: 'EXCHANGE',
+        },
+        {
+          id: 'BYBIT',
+          displayName: 'Bybit',
+          credentialFields: ['apiKey', 'apiSecret'],
+          capabilities: [...exchangeCapabilities],
+          availability: 'AVAILABLE',
+          category: 'EXCHANGE',
+        },
+        {
+          id: 'OKX',
+          displayName: 'OKX',
+          credentialFields: ['apiKey', 'apiSecret', 'passphrase'],
+          capabilities: [...exchangeCapabilities],
+          availability: 'AVAILABLE',
+          category: 'EXCHANGE',
+        },
       ],
     },
     {
@@ -32,6 +55,29 @@ const catalog: ConnectionCatalogView = {
       providers: [{ id: 'OPENROUTER', displayName: 'OpenRouter', credentialFields: ['apiKey'] }],
     },
   ],
+  exchangeProviders: [
+    {
+      id: 'BINANCE',
+      displayName: 'Binance',
+      category: 'EXCHANGE',
+      capabilities: [...exchangeCapabilities],
+      availability: 'AVAILABLE',
+    },
+    {
+      id: 'BYBIT',
+      displayName: 'Bybit',
+      category: 'EXCHANGE',
+      capabilities: [...exchangeCapabilities],
+      availability: 'AVAILABLE',
+    },
+    {
+      id: 'OKX',
+      displayName: 'OKX',
+      category: 'EXCHANGE',
+      capabilities: [...exchangeCapabilities],
+      availability: 'AVAILABLE',
+    },
+  ],
 };
 
 const connection: ConnectionMetadataView = {
@@ -42,15 +88,44 @@ const connection: ConnectionMetadataView = {
   connectionType: 'EXCHANGE',
   status: 'DISCONNECTED',
   credentialsStored: true,
+  exchangeProvider: catalog.exchangeProviders[0] ?? null,
   createdAt: '2026-08-17T16:00:00.000Z',
   updatedAt: '2026-08-17T16:00:00.000Z',
+};
+
+const viewProps: Omit<ConnectionsViewProps, 'connections' | 'provider'> = {
+  catalog,
+  displayName: '',
+  renameId: null,
+  renameValue: '',
+  credentialConnection: connection,
+  credentialValues: { apiKey: '', apiSecret: '' },
+  loading: false,
+  saving: false,
+  error: null,
+  onDisplayName: () => undefined,
+  onProvider: () => undefined,
+  onCreate: (event) => event.preventDefault(),
+  onStartRename: () => undefined,
+  onRenameValue: () => undefined,
+  onRename: (event) => event.preventDefault(),
+  onCancelRename: () => undefined,
+  onStartCredentials: () => undefined,
+  onCredentialValue: () => undefined,
+  onStoreCredentials: (event) => event.preventDefault(),
+  onCancelCredentials: () => undefined,
+  onValidate: () => undefined,
+  onDisconnect: () => undefined,
+  onDisable: () => undefined,
+  onRevoke: () => undefined,
 };
 
 describe('Connections UI (W2-S01-d)', () => {
   it('renders validation and lifecycle actions without exposing credentials', () => {
     const html = renderToStaticMarkup(
       <ConnectionsView
-        catalog={catalog}
+        {...viewProps}
+        provider="BINANCE"
         connections={[
           connection,
           { ...connection, id: 'connection-2', status: 'PENDING_VALIDATION' },
@@ -59,30 +134,6 @@ describe('Connections UI (W2-S01-d)', () => {
           { ...connection, id: 'connection-5', status: 'DISABLED' },
           { ...connection, id: 'connection-6', status: 'REVOKED', credentialsStored: false },
         ]}
-        displayName=""
-        provider="BINANCE"
-        renameId={null}
-        renameValue=""
-        credentialConnection={connection}
-        credentialValues={{ apiKey: '', apiSecret: '' }}
-        loading={false}
-        saving={false}
-        error={null}
-        onDisplayName={() => undefined}
-        onProvider={() => undefined}
-        onCreate={(event) => event.preventDefault()}
-        onStartRename={() => undefined}
-        onRenameValue={() => undefined}
-        onRename={(event) => event.preventDefault()}
-        onCancelRename={() => undefined}
-        onStartCredentials={() => undefined}
-        onCredentialValue={() => undefined}
-        onStoreCredentials={(event) => event.preventDefault()}
-        onCancelCredentials={() => undefined}
-        onValidate={() => undefined}
-        onDisconnect={() => undefined}
-        onDisable={() => undefined}
-        onRevoke={() => undefined}
       />,
     );
 
@@ -111,5 +162,40 @@ describe('Connections UI (W2-S01-d)', () => {
     expect(html).not.toContain('Reveal');
     expect(html).not.toContain('Show Secret');
     expect(html).not.toContain('Copy Secret');
+  });
+});
+
+describe('Connections UI exchange catalog (W2-S02-a)', () => {
+  it('renders supported exchanges, provider selection, and capabilities', () => {
+    const html = renderToStaticMarkup(
+      <ConnectionsView {...viewProps} provider="BINANCE" connections={[connection]} />,
+    );
+
+    expect(html).toContain('Supported exchanges');
+    expect(html).toContain('Binance');
+    expect(html).toContain('Bybit');
+    expect(html).toContain('OKX');
+    expect(html).toContain('Available');
+    expect(html).toContain('Supports Spot');
+    expect(html).toContain('Supports Futures');
+    expect(html).toContain('Supports Testnet');
+    expect(html).toContain('Supports Margin');
+    expect(html).toContain('Supports WebSocket');
+    expect(html).toContain('Supports REST');
+    expect(html).toContain('Binance capabilities:');
+    expect(html).not.toContain('Authenticate');
+    expect(html).not.toContain('Live status');
+    expect(html).not.toContain('Trading enabled');
+    expect(html).not.toMatch(/>Connect</);
+  });
+
+  it('shows the selected provider capabilities when the operator chooses an exchange', () => {
+    const html = renderToStaticMarkup(
+      <ConnectionsView {...viewProps} provider="OKX" connections={[]} />,
+    );
+
+    expect(html).toContain('OKX capabilities:');
+    expect(html).toContain('Supports Spot');
+    expect(html).not.toContain('Binance capabilities:');
   });
 });

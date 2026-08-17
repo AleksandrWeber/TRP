@@ -144,7 +144,21 @@ describe('ConnectionsService (W2-S01)', () => {
       provider: 'BINANCE',
       connectionType: 'EXCHANGE',
       status: 'DISCONNECTED',
+      exchangeProvider: {
+        id: 'BINANCE',
+        displayName: 'Binance',
+        category: 'EXCHANGE',
+        availability: 'AVAILABLE',
+      },
     });
+    expect(connection.exchangeProvider?.capabilities).toEqual([
+      'SPOT',
+      'FUTURES',
+      'TESTNET',
+      'MARGIN',
+      'WEBSOCKET',
+      'REST',
+    ]);
     expect(JSON.stringify(connection)).not.toMatch(/apiKey|password|token|secret|ciphertext/i);
   });
 
@@ -171,6 +185,7 @@ describe('ConnectionsService (W2-S01)', () => {
     const renamed = await service.rename('workspace-a', created.id, 'Workspace A Telegram');
     expect(renamed.displayName).toBe('Workspace A Telegram');
     expect(renamed.status).toBe('DISCONNECTED');
+    expect(renamed.exchangeProvider).toBeNull();
     expect(await service.list('workspace-a')).toHaveLength(1);
   });
 
@@ -375,5 +390,51 @@ describe('ConnectionsService (W2-S01)', () => {
       credentials: { apiKey: 'key-two', apiSecret: 'secret-two' },
     });
     expect(restored).toMatchObject({ status: 'DISCONNECTED', credentialsStored: true });
+  });
+});
+
+describe('ConnectionsService exchange provider reference (W2-S02-a)', () => {
+  it('projects the exchange catalog onto Connections without changing lifecycle', async () => {
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      memoryVault() as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+    );
+
+    const catalog = service.catalog();
+    expect(catalog.exchangeProviders.map((provider) => provider.id)).toEqual([
+      'BINANCE',
+      'BYBIT',
+      'OKX',
+    ]);
+    expect(
+      catalog.exchangeProviders.every((provider) => provider.capabilities.includes('REST')),
+    ).toBe(true);
+    expect(JSON.stringify(catalog)).not.toMatch(/https?:\/\//);
+    expect(JSON.stringify(catalog)).not.toContain('Trading enabled');
+  });
+
+  it('keeps an Exchange connection reference inside the owning workspace', async () => {
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      memoryVault() as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+    );
+    const created = await service.create({
+      workspaceId: 'workspace-a',
+      displayName: 'Primary Binance',
+      provider: 'BINANCE',
+    });
+
+    expect(created.exchangeProvider?.id).toBe('BINANCE');
+    await expect(service.get('workspace-b', created.id)).rejects.toThrow('Connection not found');
+    await expect(service.list('workspace-b')).resolves.toEqual([]);
+    expect((await service.get('workspace-a', created.id)).exchangeProvider?.displayName).toBe(
+      'Binance',
+    );
   });
 });

@@ -65,6 +65,7 @@ export function ConnectionsView({
   const credentialProvider = catalog?.connectionTypes
     .flatMap((type) => type.providers)
     .find((providerItem) => providerItem.id === credentialConnection?.provider);
+  const selectedExchange = catalog?.exchangeProviders.find((item) => item.id === provider);
 
   return (
     <section className="space-y-8">
@@ -73,7 +74,9 @@ export function ConnectionsView({
         <h2 className="mt-1 text-3xl font-semibold">Connections</h2>
         <p className="mt-2 max-w-3xl text-slate-400">
           Store provider credentials and validate that the configured connection satisfies the
-          current contract. Connected does not indicate live trading, delivery, or AI execution.
+          current contract. Exchange connections can reference a supported provider and show its
+          declared capabilities. Connected does not indicate live trading, delivery, or AI
+          execution.
         </p>
       </div>
 
@@ -84,6 +87,24 @@ export function ConnectionsView({
       ) : null}
 
       <div className="grid gap-6 lg:grid-cols-2">
+        <section className="rounded border border-white/10 p-5">
+          <h3 className="text-lg font-medium">Supported exchanges</h3>
+          {loading ? <p className="mt-3 text-slate-400">Loading catalog…</p> : null}
+          <div className="mt-4 space-y-4">
+            {catalog?.exchangeProviders.map((item) => (
+              <div key={item.id}>
+                <h4 className="font-medium">{item.displayName}</h4>
+                <p className="mt-1 text-sm text-slate-400">
+                  {item.availability === 'AVAILABLE' ? 'Available' : 'Unavailable'}
+                </p>
+                <p className="mt-1 text-sm text-slate-400">
+                  {item.capabilities.map(capabilityLabel).join(' · ')}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         <section className="rounded border border-white/10 p-5">
           <h3 className="text-lg font-medium">Offered providers</h3>
           {loading ? <p className="mt-3 text-slate-400">Loading catalog…</p> : null}
@@ -98,7 +119,9 @@ export function ConnectionsView({
             ))}
           </div>
         </section>
+      </div>
 
+      <div className="grid gap-6 lg:grid-cols-2">
         <form onSubmit={onCreate} className="rounded border border-white/10 p-5">
           <h3 className="text-lg font-medium">Create metadata entry</h3>
           <label className="mt-4 block text-sm">
@@ -127,6 +150,12 @@ export function ConnectionsView({
               )}
             </select>
           </label>
+          {selectedExchange ? (
+            <p className="mt-3 text-sm text-slate-400">
+              {selectedExchange.displayName} capabilities:{' '}
+              {selectedExchange.capabilities.map(capabilityLabel).join(' · ')}
+            </p>
+          ) : null}
           <button
             type="submit"
             disabled={saving}
@@ -151,6 +180,11 @@ export function ConnectionsView({
                 <p className="text-sm text-slate-400">
                   {connection.connectionType} · {connection.provider}
                 </p>
+                {connection.exchangeProvider ? (
+                  <p className="text-sm text-slate-400">
+                    {connection.exchangeProvider.capabilities.map(capabilityLabel).join(' · ')}
+                  </p>
+                ) : null}
               </div>
               <div className="flex items-center gap-3">
                 <span className="rounded bg-slate-700 px-2 py-1 text-xs">
@@ -310,6 +344,25 @@ export function ConnectionsView({
 
 function fieldLabel(field: string): string {
   return field.replace(/([A-Z])/g, ' $1').replace(/^./, (value) => value.toUpperCase());
+}
+
+function capabilityLabel(capability: string): string {
+  switch (capability) {
+    case 'SPOT':
+      return 'Supports Spot';
+    case 'FUTURES':
+      return 'Supports Futures';
+    case 'TESTNET':
+      return 'Supports Testnet';
+    case 'MARGIN':
+      return 'Supports Margin';
+    case 'WEBSOCKET':
+      return 'Supports WebSocket';
+    case 'REST':
+      return 'Supports REST';
+    default:
+      return capability;
+  }
 }
 
 function statusLabel(status: ConnectionMetadataView['status']): string {

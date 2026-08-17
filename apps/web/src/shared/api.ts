@@ -14,6 +14,17 @@ const API_PREFIX = '/v1';
 
 export type ConnectionType = 'EXCHANGE' | 'NOTIFICATION' | 'AI';
 export type ConnectionProvider = 'BINANCE' | 'BYBIT' | 'OKX' | 'TELEGRAM' | 'SMTP' | 'OPENROUTER';
+export type ExchangeProviderCapability =
+  'SPOT' | 'FUTURES' | 'TESTNET' | 'MARGIN' | 'WEBSOCKET' | 'REST';
+export type ExchangeProviderAvailability = 'AVAILABLE' | 'UNAVAILABLE';
+
+export type ExchangeProviderMetadata = {
+  id: string;
+  displayName: string;
+  category: 'EXCHANGE';
+  capabilities: ExchangeProviderCapability[];
+  availability: ExchangeProviderAvailability;
+};
 
 export type ConnectionCatalogView = {
   connectionTypes: Array<{
@@ -23,8 +34,12 @@ export type ConnectionCatalogView = {
       id: ConnectionProvider;
       displayName: string;
       credentialFields: string[];
+      capabilities?: ExchangeProviderCapability[];
+      availability?: ExchangeProviderAvailability;
+      category?: 'EXCHANGE';
     }>;
   }>;
+  exchangeProviders: ExchangeProviderMetadata[];
 };
 
 export type ConnectionMetadataView = {
@@ -41,6 +56,7 @@ export type ConnectionMetadataView = {
     | 'DISABLED'
     | 'REVOKED';
   credentialsStored: boolean;
+  exchangeProvider: ExchangeProviderMetadata | null;
   createdAt: string;
   updatedAt: string;
 };

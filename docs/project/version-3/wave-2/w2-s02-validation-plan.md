@@ -2,7 +2,7 @@
 
 **Package:** W2-S02 Exchange Connectivity Foundation
 **Wave:** 2 — Connection Management
-**Status:** Planning **COMPLETE**. Not executed. Awaiting Product Owner Approval, then implementation, then validation.
+**Status:** W2-S02-a executed. Remaining slices are not executed. Close remains pending.
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w2-s02-product-scope.md`](./w2-s02-product-scope.md)
 **Security:** [`w2-s02-security-review.md`](./w2-s02-security-review.md)
@@ -34,13 +34,28 @@ Do not validate order placement, balances, positions, leverage, market-data engi
 
 ## 1. Implementation slices (validation mapping)
 
-| Slice        | Must prove at slice review                                                      | Close contribution  |
-| ------------ | ------------------------------------------------------------------------------- | ------------------- |
-| **W2-S02-a** | One connectivity contract for Binance, Bybit, OKX; additional providers allowed | Abstraction         |
-| **W2-S02-b** | Connect establishes a real authenticated exchange session via Vault credentials | Handshake           |
-| **W2-S02-c** | Health and provider availability are honest                                     | Health              |
-| **W2-S02-d** | Connected means authenticated communication succeeded; never Trading enabled    | Status / projection |
-| **W2-S02-e** | Verification Standard + regressions + full walkthrough                          | Close evidence      |
+| Slice        | Must prove at slice review                                                      | Close contribution                     |
+| ------------ | ------------------------------------------------------------------------------- | -------------------------------------- |
+| **W2-S02-a** | One connectivity contract for Binance, Bybit, OKX; additional providers allowed | Abstraction — **executed** (see below) |
+| **W2-S02-b** | Connect establishes a real authenticated exchange session via Vault credentials | Handshake                              |
+| **W2-S02-c** | Health and provider availability are honest                                     | Health                                 |
+| **W2-S02-d** | Connected means authenticated communication succeeded; never Trading enabled    | Status / projection                    |
+| **W2-S02-e** | Verification Standard + regressions + full walkthrough                          | Close evidence                         |
+
+### W2-S02-a execution evidence
+
+Recorded in [`w2-s02-a-validation-report.md`](./w2-s02-a-validation-report.md).
+
+| Proof                                                                  | Result |
+| ---------------------------------------------------------------------- | ------ |
+| Provider registry, lookup, and selection for Binance, Bybit, OKX       | PASS   |
+| Capability model is metadata only                                      | PASS   |
+| Connection references an Exchange Provider inside the owning workspace | PASS   |
+| Catalog rendering and provider selection in Connections                | PASS   |
+| No HTTP, SDK, handshake, Connect, Authenticate, or Live status         | PASS   |
+| Wave 1 authorization and Connection Management lifecycle smoke         | PASS   |
+
+W2-S02-a does **not** Close W2-S02. Handshake, health, venue Connected, and the full Exchange Connectivity Walkthrough remain later slices.
 
 ---
 
@@ -247,4 +262,4 @@ Do not treat the following as W2-S02 Close evidence:
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S02 implementation begins. Execute this plan only after implementation.
+**STOP.** Wait for Product Owner review before W2-S02-b. Execute remaining slices only after Product Owner review of W2-S02-a.
