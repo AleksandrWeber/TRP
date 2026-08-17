@@ -85,6 +85,8 @@ describe('PC-19 Operator Shell', () => {
     expect(html).toContain('Password');
     expect(html).toContain('href="/people"');
     expect(html).toContain('People');
+    expect(html).toContain('href="/connections"');
+    expect(html).toContain('Connections');
     expect(html).toContain('Logout');
     expect(html).toContain('Switch workspace');
     expect(html).toContain('Default Workspace');

@@ -63,7 +63,7 @@ export class ConnectionsController {
     );
   }
 
-  @RequirePermission(PermissionClass.OwnWorkspace)
+  @RequirePermission(PermissionClass.VaultConnections)
   @Post()
   create(
     @Req() request: RequestWithUser,
@@ -77,7 +77,7 @@ export class ConnectionsController {
     });
   }
 
-  @RequirePermission(PermissionClass.OwnWorkspace)
+  @RequirePermission(PermissionClass.VaultConnections)
   @Patch(':id')
   rename(
     @Req() request: RequestWithUser,

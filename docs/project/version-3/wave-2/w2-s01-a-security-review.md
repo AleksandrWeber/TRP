@@ -4,7 +4,7 @@
 
 - Authentication, authorization, and workspace membership checks are consumed from Wave 1; they were not modified.
 - Catalog and metadata reads require a workspace context that passes the existing membership check.
-- Metadata create and rename require the existing own-workspace permission.
+- Metadata create and rename consume the existing Vault/connections permission so Reader and Researcher cannot mutate metadata.
 - Reads and updates are scoped by both connection id and workspace id, preventing foreign-workspace lookup or rename.
 - The schema and request DTOs contain no API keys, passwords, tokens, secrets, ciphertext, or Vault references.
 - The global validation policy rejects unknown request properties, preventing secret-shaped fields from being silently accepted.

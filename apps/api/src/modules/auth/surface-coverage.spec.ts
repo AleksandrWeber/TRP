@@ -78,6 +78,7 @@ import { PermissionClass } from './permission-catalog';
 import { RolesGuard } from './roles.guard';
 import type { AuthUser } from './jwt.strategy';
 import { PeopleController } from '../identity/people.controller';
+import { ConnectionsController } from '../connections/connections.controller';
 
 const CUSTOMER_CONTROLLERS: readonly Type<object>[] = [
   AppController,
@@ -148,6 +149,7 @@ const CUSTOMER_CONTROLLERS: readonly Type<object>[] = [
   WorkflowController,
   WorkspaceController,
   PeopleController,
+  ConnectionsController,
 ];
 
 const PUBLIC_HANDLERS = new Set([
@@ -212,6 +214,16 @@ describe('HTTP surface coverage (V3-S02-b)', () => {
     expect(liveStart?.permission).toBe(PermissionClass.LiveCommand);
     expect(certify?.permission).toBe(PermissionClass.Research);
     expect(paperCreate?.permission).toBe(PermissionClass.PaperCommand);
+  });
+
+  it('classifies connection metadata mutations as C8', () => {
+    const handlers = collectControllerHandlers(ConnectionsController);
+    const create = handlers.find((handler) => handler.handler === 'create');
+    const rename = handlers.find((handler) => handler.handler === 'rename');
+    const catalog = handlers.find((handler) => handler.handler === 'catalog');
+    expect(create?.permission).toBe(PermissionClass.VaultConnections);
+    expect(rename?.permission).toBe(PermissionClass.VaultConnections);
+    expect(catalog?.permission).toBe(PermissionClass.Projection);
   });
 
   it('classifies People list and role assignment as C6', () => {
@@ -283,6 +295,24 @@ describe('Surface coverage walkthrough (V3-S02-b)', () => {
       false,
     );
     expect(guard.canActivate(contextFor(PeopleController, 'list', user(Role.Reader)))).toBe(false);
+  });
+
+  it('blocks Reader and Researcher from creating or renaming connections', () => {
+    expect(guard.canActivate(contextFor(ConnectionsController, 'create', user(Role.Reader)))).toBe(
+      false,
+    );
+    expect(guard.canActivate(contextFor(ConnectionsController, 'rename', user(Role.Reader)))).toBe(
+      false,
+    );
+    expect(
+      guard.canActivate(contextFor(ConnectionsController, 'create', user(Role.Researcher))),
+    ).toBe(false);
+    expect(guard.canActivate(contextFor(ConnectionsController, 'create', user(Role.Trader)))).toBe(
+      true,
+    );
+    expect(guard.canActivate(contextFor(ConnectionsController, 'catalog', user(Role.Reader)))).toBe(
+      true,
+    );
   });
 
   it('allows Reader projections and own-workspace actions', () => {
