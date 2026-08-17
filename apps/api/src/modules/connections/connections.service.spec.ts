@@ -75,9 +75,14 @@ function memoryPrisma() {
 
 function memoryVault() {
   let secret: { id: string; workspaceId: string; type: string } | null = null;
+  const retrieveCalls: Array<{ workspaceId: string; type: string }> = [];
   return {
+    retrieveCalls,
     get: async () => secret,
-    retrieve: async () => ({ apiKey: 'key-one', apiSecret: 'secret-one' }),
+    retrieve: async (query: { workspaceId: string; type: string }) => {
+      retrieveCalls.push({ workspaceId: query.workspaceId, type: query.type });
+      return { apiKey: 'key-one', apiSecret: 'secret-one' };
+    },
     store: async (input: { workspaceId: string; type: string; fields: Record<string, string> }) => {
       secret = { id: 'vault-secret-1', workspaceId: input.workspaceId, type: input.type };
       return { metadata: secret, lifecycle: [] };
@@ -123,6 +128,33 @@ function lifecycleAudit() {
   };
 }
 
+function handshakeStub(
+  outcome:
+    | 'CONNECTED'
+    | 'VALIDATION_FAILED'
+    | 'HANDSHAKE_TIMEOUT'
+    | 'PROVIDER_UNAVAILABLE'
+    | 'AUTHENTICATION_FAILED' = 'CONNECTED',
+) {
+  const calls: Array<{ workspaceId: string; connectionId: string; provider: string }> = [];
+  return {
+    calls,
+    perform: async (request: {
+      workspaceId: string;
+      connectionId: string;
+      provider: string;
+      vaultSecretId: string;
+    }) => {
+      calls.push({
+        workspaceId: request.workspaceId,
+        connectionId: request.connectionId,
+        provider: request.provider,
+      });
+      return { outcome };
+    },
+  };
+}
+
 describe('ConnectionsService (W2-S01)', () => {
   it('creates metadata only with the provider type and disconnected default', async () => {
     const service = new ConnectionsService(
@@ -131,6 +163,7 @@ describe('ConnectionsService (W2-S01)', () => {
       successfulValidator(),
       validationAudit() as never,
       lifecycleAudit() as never,
+      handshakeStub() as never,
     );
     const connection = await service.create({
       workspaceId: 'workspace-a',
@@ -169,6 +202,7 @@ describe('ConnectionsService (W2-S01)', () => {
       successfulValidator(),
       validationAudit() as never,
       lifecycleAudit() as never,
+      handshakeStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -198,6 +232,7 @@ describe('ConnectionsService (W2-S01)', () => {
       successfulValidator(),
       validationAudit() as never,
       audit as never,
+      handshakeStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -234,24 +269,26 @@ describe('ConnectionsService (W2-S01)', () => {
   it('moves a credentialed connection to Connected only through successful validation', async () => {
     const vault = memoryVault();
     const audit = validationAudit();
+    const handshake = handshakeStub();
     const service = new ConnectionsService(
       memoryPrisma() as never,
       vault as never,
       successfulValidator(),
       audit as never,
       lifecycleAudit() as never,
+      handshake as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
-      displayName: 'Primary Binance',
-      provider: 'BINANCE',
+      displayName: 'Workspace Telegram',
+      provider: 'TELEGRAM',
     });
     await service.storeCredentials({
       workspaceId: 'workspace-a',
       actorUserId: 'operator-a',
       actorRole: Role.Trader,
       id: created.id,
-      credentials: { apiKey: 'key-one', apiSecret: 'secret-one' },
+      credentials: { botToken: 'token-one' },
     });
 
     const validated = await service.validate({
@@ -263,14 +300,16 @@ describe('ConnectionsService (W2-S01)', () => {
 
     expect(validated.status).toBe('CONNECTED');
     expect(audit.events.map((event) => event.outcome)).toEqual(['started', 'succeeded']);
-    expect(JSON.stringify(validated)).not.toContain('key-one');
+    expect(vault.retrieveCalls).toHaveLength(1);
+    expect(handshake.calls).toEqual([]);
+    expect(JSON.stringify(validated)).not.toContain('token-one');
 
     const replaced = await service.replaceCredentials({
       workspaceId: 'workspace-a',
       actorUserId: 'operator-a',
       actorRole: Role.Trader,
       id: created.id,
-      credentials: { apiKey: 'key-two', apiSecret: 'secret-two' },
+      credentials: { botToken: 'token-two' },
     });
     expect(replaced.status).toBe('DISCONNECTED');
   });
@@ -285,11 +324,12 @@ describe('ConnectionsService (W2-S01)', () => {
       { validate: async () => ({ outcome: 'failed' as const }) },
       audit as never,
       lifecycleAudit() as never,
+      handshakeStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
-      displayName: 'Primary Binance',
-      provider: 'BINANCE',
+      displayName: 'Workspace Telegram',
+      provider: 'TELEGRAM',
     });
     await service.storeCredentials({
       workspaceId: 'workspace-a',
@@ -327,6 +367,7 @@ describe('ConnectionsService (W2-S01)', () => {
       successfulValidator(),
       validationAudit() as never,
       audit as never,
+      handshakeStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -401,6 +442,7 @@ describe('ConnectionsService exchange provider reference (W2-S02-a)', () => {
       successfulValidator(),
       validationAudit() as never,
       lifecycleAudit() as never,
+      handshakeStub() as never,
     );
 
     const catalog = service.catalog();
@@ -423,6 +465,7 @@ describe('ConnectionsService exchange provider reference (W2-S02-a)', () => {
       successfulValidator(),
       validationAudit() as never,
       lifecycleAudit() as never,
+      handshakeStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -436,5 +479,93 @@ describe('ConnectionsService exchange provider reference (W2-S02-a)', () => {
     expect((await service.get('workspace-a', created.id)).exchangeProvider?.displayName).toBe(
       'Binance',
     );
+  });
+});
+
+describe('ConnectionsService exchange handshake (W2-S02-b)', () => {
+  async function credentialedExchange(
+    handshake: ReturnType<typeof handshakeStub>,
+    provider: 'BINANCE' | 'BYBIT' | 'OKX' = 'BINANCE',
+  ) {
+    const vault = memoryVault();
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      vault as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+      handshake as never,
+    );
+    const created = await service.create({
+      workspaceId: 'workspace-a',
+      displayName: `${provider} connection`,
+      provider,
+    });
+    await service.storeCredentials({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+      credentials: { apiKey: 'key-one', apiSecret: 'secret-one' },
+    });
+    return { service, vault, created };
+  }
+
+  it('assigns Connected only after the handshake service reports authenticated communication', async () => {
+    const handshake = handshakeStub('CONNECTED');
+    const { service, vault, created } = await credentialedExchange(handshake);
+
+    const validated = await service.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+    });
+
+    expect(validated.status).toBe('CONNECTED');
+    expect(vault.retrieveCalls).toEqual([]);
+    expect(handshake.calls).toEqual([
+      { workspaceId: 'workspace-a', connectionId: created.id, provider: 'BINANCE' },
+    ]);
+    expect(JSON.stringify(validated)).not.toMatch(/apiKey|apiSecret|key-one|secret-one/i);
+    expect(JSON.stringify(validated)).not.toContain('Trading enabled');
+  });
+
+  it('maps handshake failures to honest operator-safe statuses', async () => {
+    const cases = [
+      ['VALIDATION_FAILED', 'VALIDATION_FAILED'],
+      ['HANDSHAKE_TIMEOUT', 'HANDSHAKE_TIMEOUT'],
+      ['PROVIDER_UNAVAILABLE', 'PROVIDER_UNAVAILABLE'],
+      ['AUTHENTICATION_FAILED', 'AUTHENTICATION_FAILED'],
+    ] as const;
+
+    for (const [outcome, status] of cases) {
+      const handshake = handshakeStub(outcome);
+      const { service, vault, created } = await credentialedExchange(handshake);
+      const validated = await service.validate({
+        workspaceId: 'workspace-a',
+        actorUserId: 'operator-a',
+        actorRole: Role.Trader,
+        id: created.id,
+      });
+      expect(validated.status).toBe(status);
+      expect(vault.retrieveCalls).toEqual([]);
+      expect(JSON.stringify(validated)).not.toContain('secret-one');
+    }
+  });
+
+  it('keeps exchange handshake inside the owning workspace', async () => {
+    const handshake = handshakeStub('CONNECTED');
+    const { service, created } = await credentialedExchange(handshake);
+
+    await expect(
+      service.validate({
+        workspaceId: 'workspace-b',
+        actorUserId: 'operator-b',
+        actorRole: Role.Trader,
+        id: created.id,
+      }),
+    ).rejects.toThrow('Connection not found');
+    expect(handshake.calls).toEqual([]);
   });
 });

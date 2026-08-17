@@ -1,7 +1,11 @@
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../storage/prisma/prisma.module';
-import { lookupExchangeProvider, type ExchangeProviderMetadata } from '../exchange-connectivity';
+import {
+  ExchangeHandshakeService,
+  lookupExchangeProvider,
+  type ExchangeProviderMetadata,
+} from '../exchange-connectivity';
 import type { Role } from '../identity/role';
 import { SecretVaultService } from '../secret-vault';
 import {
@@ -12,7 +16,7 @@ import {
   type ConnectionType,
 } from './connection-catalog';
 import { ConnectionLifecycleAudit } from './connection-lifecycle-audit';
-import { assertConnectionTransition } from './connection-lifecycle';
+import { assertConnectionTransition, canStartConnectionValidation } from './connection-lifecycle';
 import { ConnectionValidationAudit } from './connection-validation-audit';
 import { CONNECTION_VALIDATOR, type ConnectionValidator } from './connection-validator';
 import { vaultSecretTypeForProvider } from './connection-vault';
@@ -22,6 +26,9 @@ export type ConnectionStatus =
   | 'PENDING_VALIDATION'
   | 'CONNECTED'
   | 'VALIDATION_FAILED'
+  | 'HANDSHAKE_TIMEOUT'
+  | 'PROVIDER_UNAVAILABLE'
+  | 'AUTHENTICATION_FAILED'
   | 'DISABLED'
   | 'REVOKED';
 
@@ -47,6 +54,7 @@ export class ConnectionsService {
     private readonly validator: ConnectionValidator,
     private readonly validationAudit: ConnectionValidationAudit,
     private readonly lifecycleAudit: ConnectionLifecycleAudit,
+    private readonly handshake: ExchangeHandshakeService,
   ) {}
 
   catalog(): ConnectionCatalogView {
@@ -251,27 +259,64 @@ export class ConnectionsService {
       throw new ConflictException('Credentials have not been stored for this connection.');
     }
     const currentStatus = connectionStatus(connection.status);
-    if (currentStatus !== 'DISCONNECTED' && currentStatus !== 'VALIDATION_FAILED') {
+    if (!canStartConnectionValidation(currentStatus)) {
       throw new ConflictException('Connection cannot be validated from its current state.');
     }
 
     const pending = await this.transitionStatus(connection, 'PENDING_VALIDATION');
+    if (connection.connectionType === 'EXCHANGE') {
+      return this.completeExchangeHandshake(input, pending);
+    }
+    return this.completeLocalValidation(input, pending);
+  }
+
+  private async completeExchangeHandshake(
+    input: {
+      workspaceId: string;
+      actorUserId: string;
+      actorRole: Role;
+    },
+    pending: ConnectionRow,
+  ): Promise<ConnectionMetadataView> {
+    try {
+      const result = await this.handshake.perform({
+        workspaceId: input.workspaceId,
+        actorUserId: input.actorUserId,
+        actorRole: input.actorRole,
+        connectionId: pending.id,
+        provider: pending.provider,
+        vaultSecretId: pending.vaultSecretId as string,
+      });
+      return this.finishValidation(pending, result.outcome);
+    } catch {
+      return this.finishValidation(pending, 'VALIDATION_FAILED');
+    }
+  }
+
+  private async completeLocalValidation(
+    input: {
+      workspaceId: string;
+      actorUserId: string;
+      actorRole: Role;
+    },
+    pending: ConnectionRow,
+  ): Promise<ConnectionMetadataView> {
     try {
       await this.validationAudit.record({
         outcome: 'started',
         workspaceId: input.workspaceId,
         actorUserId: input.actorUserId,
-        connectionId: connection.id,
-        provider: connection.provider as ConnectionProvider,
+        connectionId: pending.id,
+        provider: pending.provider as ConnectionProvider,
       });
-      const type = vaultSecretTypeForProvider(connection.provider as ConnectionProvider);
+      const type = vaultSecretTypeForProvider(pending.provider as ConnectionProvider);
       const metadata = await this.vault.get({
         actorWorkspaceId: input.actorUserId,
         actorRole: input.actorRole,
         workspaceId: input.workspaceId,
         type,
       });
-      if (metadata?.id !== connection.vaultSecretId) {
+      if (metadata?.id !== pending.vaultSecretId) {
         throw new Error('Vault credential reference could not be verified.');
       }
       const credentials = await this.vault.retrieve({
@@ -283,22 +328,31 @@ export class ConnectionsService {
       const result = await this.validator.validate({
         workspaceId: input.workspaceId,
         connectionId: pending.id,
-        provider: connection.provider as ConnectionProvider,
+        provider: pending.provider as ConnectionProvider,
         credentials,
       });
-      return this.completeValidation({
+      const completed = await this.finishValidation(
         pending,
-        workspaceId: input.workspaceId,
-        actorUserId: input.actorUserId,
+        result.outcome === 'succeeded' ? 'CONNECTED' : 'VALIDATION_FAILED',
+      );
+      await this.validationAudit.record({
         outcome: result.outcome,
-      });
-    } catch {
-      return this.completeValidation({
-        pending,
         workspaceId: input.workspaceId,
         actorUserId: input.actorUserId,
-        outcome: 'failed',
+        connectionId: completed.id,
+        provider: completed.provider as ConnectionProvider,
       });
+      return completed;
+    } catch {
+      const failed = await this.finishValidation(pending, 'VALIDATION_FAILED');
+      await this.validationAudit.record({
+        outcome: 'failed',
+        workspaceId: input.workspaceId,
+        actorUserId: input.actorUserId,
+        connectionId: failed.id,
+        provider: failed.provider as ConnectionProvider,
+      });
+      return failed;
     }
   }
 
@@ -325,23 +379,11 @@ export class ConnectionsService {
     return row;
   }
 
-  private async completeValidation(input: {
-    pending: ConnectionRow;
-    workspaceId: string;
-    actorUserId: string;
-    outcome: 'succeeded' | 'failed';
-  }): Promise<ConnectionMetadataView> {
-    const status: ConnectionStatus =
-      input.outcome === 'succeeded' ? 'CONNECTED' : 'VALIDATION_FAILED';
-    const completed = await this.transitionStatus(input.pending, status);
-    await this.validationAudit.record({
-      outcome: input.outcome,
-      workspaceId: input.workspaceId,
-      actorUserId: input.actorUserId,
-      connectionId: completed.id,
-      provider: completed.provider as ConnectionProvider,
-    });
-    return toView(completed);
+  private async finishValidation(
+    pending: ConnectionRow,
+    status: ConnectionStatus,
+  ): Promise<ConnectionMetadataView> {
+    return toView(await this.transitionStatus(pending, status));
   }
 
   private async transitionStatus(
@@ -433,6 +475,9 @@ function connectionStatus(status: string): ConnectionStatus {
     status === 'PENDING_VALIDATION' ||
     status === 'CONNECTED' ||
     status === 'VALIDATION_FAILED' ||
+    status === 'HANDSHAKE_TIMEOUT' ||
+    status === 'PROVIDER_UNAVAILABLE' ||
+    status === 'AUTHENTICATION_FAILED' ||
     status === 'DISABLED' ||
     status === 'REVOKED'
   ) {

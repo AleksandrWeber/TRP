@@ -28,3 +28,22 @@ export {
   type ExchangeProviderIdentity,
 } from './exchange-connectivity.contract';
 export { ExchangeConnectivityModule } from './exchange-connectivity.module';
+export {
+  EXCHANGE_HANDSHAKE_FAILURE_OUTCOMES,
+  EXCHANGE_HANDSHAKE_OUTCOMES,
+  isConnectedHandshakeOutcome,
+  isExchangeHandshakeOutcome,
+  type ExchangeHandshakeOutcome,
+  type ExchangeHandshakeResult,
+} from './exchange-handshake.result';
+export {
+  ExchangeHandshakeService,
+  type ExchangeHandshakeRequest,
+} from './exchange-handshake.service';
+export {
+  EXCHANGE_PROVIDER_ADAPTERS,
+  type ExchangeHandshakeAdapterKind,
+  type ExchangeHandshakeAdapterRequest,
+  type ExchangeHandshakeAdapterResult,
+  type ExchangeProviderAdapter,
+} from './exchange-provider-adapter';

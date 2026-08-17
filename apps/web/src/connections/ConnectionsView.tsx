@@ -74,9 +74,9 @@ export function ConnectionsView({
         <h2 className="mt-1 text-3xl font-semibold">Connections</h2>
         <p className="mt-2 max-w-3xl text-slate-400">
           Store provider credentials and validate that the configured connection satisfies the
-          current contract. Exchange connections can reference a supported provider and show its
-          declared capabilities. Connected does not indicate live trading, delivery, or AI
-          execution.
+          current contract. Exchange connections run an authenticated handshake with the selected
+          exchange. Connected means the exchange accepted authenticated communication. Connected
+          does not indicate live trading, delivery, balances, orders, or AI execution.
         </p>
       </div>
 
@@ -204,18 +204,14 @@ export function ConnectionsView({
                     {connection.credentialsStored ? 'Replace credentials' : 'Store credentials'}
                   </button>
                 ) : null}
-                {connection.credentialsStored &&
-                (connection.status === 'DISCONNECTED' ||
-                  connection.status === 'VALIDATION_FAILED') ? (
+                {connection.credentialsStored && canRunValidate(connection.status) ? (
                   <button
                     type="button"
                     onClick={() => onValidate(connection)}
                     disabled={saving}
                     className="text-sm text-sky-300 underline disabled:opacity-50"
                   >
-                    {connection.status === 'VALIDATION_FAILED'
-                      ? 'Retry validation'
-                      : 'Run Validate'}
+                    {connection.status === 'DISCONNECTED' ? 'Run Validate' : 'Retry validation'}
                   </button>
                 ) : null}
                 {connection.status === 'CONNECTED' ? (
@@ -228,9 +224,7 @@ export function ConnectionsView({
                     Disconnect
                   </button>
                 ) : null}
-                {connection.status === 'DISCONNECTED' ||
-                connection.status === 'CONNECTED' ||
-                connection.status === 'VALIDATION_FAILED' ? (
+                {canDisable(connection.status) ? (
                   <button
                     type="button"
                     onClick={() => onDisable(connection)}
@@ -373,6 +367,12 @@ function statusLabel(status: ConnectionMetadataView['status']): string {
       return 'Connected';
     case 'VALIDATION_FAILED':
       return 'Validation Failed';
+    case 'HANDSHAKE_TIMEOUT':
+      return 'Handshake Timeout';
+    case 'PROVIDER_UNAVAILABLE':
+      return 'Provider Unavailable';
+    case 'AUTHENTICATION_FAILED':
+      return 'Authentication Failed';
     case 'DISABLED':
       return 'Disabled';
     case 'REVOKED':
@@ -380,4 +380,25 @@ function statusLabel(status: ConnectionMetadataView['status']): string {
     default:
       return 'Disconnected';
   }
+}
+
+function canRunValidate(status: ConnectionMetadataView['status']): boolean {
+  return (
+    status === 'DISCONNECTED' ||
+    status === 'VALIDATION_FAILED' ||
+    status === 'HANDSHAKE_TIMEOUT' ||
+    status === 'PROVIDER_UNAVAILABLE' ||
+    status === 'AUTHENTICATION_FAILED'
+  );
+}
+
+function canDisable(status: ConnectionMetadataView['status']): boolean {
+  return (
+    status === 'DISCONNECTED' ||
+    status === 'CONNECTED' ||
+    status === 'VALIDATION_FAILED' ||
+    status === 'HANDSHAKE_TIMEOUT' ||
+    status === 'PROVIDER_UNAVAILABLE' ||
+    status === 'AUTHENTICATION_FAILED'
+  );
 }

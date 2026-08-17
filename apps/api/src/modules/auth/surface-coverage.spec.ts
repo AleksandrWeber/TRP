@@ -221,8 +221,10 @@ describe('HTTP surface coverage (V3-S02-b)', () => {
     const create = handlers.find((handler) => handler.handler === 'create');
     const rename = handlers.find((handler) => handler.handler === 'rename');
     const catalog = handlers.find((handler) => handler.handler === 'catalog');
+    const validate = handlers.find((handler) => handler.handler === 'validate');
     expect(create?.permission).toBe(PermissionClass.VaultConnections);
     expect(rename?.permission).toBe(PermissionClass.VaultConnections);
+    expect(validate?.permission).toBe(PermissionClass.VaultConnections);
     expect(catalog?.permission).toBe(PermissionClass.Projection);
     expect(handlers.some((handler) => handler.handler === 'connect')).toBe(false);
     expect(handlers.some((handler) => handler.handler === 'authenticate')).toBe(false);
@@ -312,6 +314,12 @@ describe('Surface coverage walkthrough (V3-S02-b)', () => {
     expect(guard.canActivate(contextFor(ConnectionsController, 'create', user(Role.Trader)))).toBe(
       true,
     );
+    expect(
+      guard.canActivate(contextFor(ConnectionsController, 'validate', user(Role.Reader))),
+    ).toBe(false);
+    expect(
+      guard.canActivate(contextFor(ConnectionsController, 'validate', user(Role.Trader))),
+    ).toBe(true);
     expect(guard.canActivate(contextFor(ConnectionsController, 'catalog', user(Role.Reader)))).toBe(
       true,
     );

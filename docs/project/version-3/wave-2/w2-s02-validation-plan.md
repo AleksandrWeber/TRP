@@ -2,7 +2,7 @@
 
 **Package:** W2-S02 Exchange Connectivity Foundation
 **Wave:** 2 — Connection Management
-**Status:** W2-S02-a executed. Remaining slices are not executed. Close remains pending.
+**Status:** W2-S02-a and W2-S02-b executed. Remaining slices are not executed. Close remains pending.
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w2-s02-product-scope.md`](./w2-s02-product-scope.md)
 **Security:** [`w2-s02-security-review.md`](./w2-s02-security-review.md)
@@ -37,7 +37,7 @@ Do not validate order placement, balances, positions, leverage, market-data engi
 | Slice        | Must prove at slice review                                                      | Close contribution                     |
 | ------------ | ------------------------------------------------------------------------------- | -------------------------------------- |
 | **W2-S02-a** | One connectivity contract for Binance, Bybit, OKX; additional providers allowed | Abstraction — **executed** (see below) |
-| **W2-S02-b** | Connect establishes a real authenticated exchange session via Vault credentials | Handshake                              |
+| **W2-S02-b** | Connect establishes a real authenticated exchange session via Vault credentials | Handshake — **executed** (see below)   |
 | **W2-S02-c** | Health and provider availability are honest                                     | Health                                 |
 | **W2-S02-d** | Connected means authenticated communication succeeded; never Trading enabled    | Status / projection                    |
 | **W2-S02-e** | Verification Standard + regressions + full walkthrough                          | Close evidence                         |
@@ -56,6 +56,24 @@ Recorded in [`w2-s02-a-validation-report.md`](./w2-s02-a-validation-report.md).
 | Wave 1 authorization and Connection Management lifecycle smoke         | PASS   |
 
 W2-S02-a does **not** Close W2-S02. Handshake, health, venue Connected, and the full Exchange Connectivity Walkthrough remain later slices.
+
+### W2-S02-b execution evidence
+
+Recorded in [`w2-s02-b-validation-report.md`](./w2-s02-b-validation-report.md).
+
+| Proof                                                                             | Result |
+| --------------------------------------------------------------------------------- | ------ |
+| Binance authenticated handshake via Vault credentials                             | PASS   |
+| Connected assigned only after authenticated communication success                 | PASS   |
+| Authentication Failed, Handshake Timeout, Provider Unavailable, Validation Failed | PASS   |
+| Connection Management does not receive Exchange plaintext secrets                 | PASS   |
+| Workspace isolation and existing Validate authorization                           | PASS   |
+| Handshake Started / Succeeded / Failed audit events                               | PASS   |
+| UI Validate flow and handshake outcomes without secrets or trading claims         | PASS   |
+| No balances, orders, market data, WebSockets, or live trading                     | PASS   |
+| Wave 1 authorization and Connection Management lifecycle smoke                    | PASS   |
+
+W2-S02-b does **not** Close W2-S02. Health, provider availability as a live product, remaining handshake providers, and the full Exchange Connectivity Walkthrough remain later slices.
 
 ---
 
@@ -262,4 +280,4 @@ Do not treat the following as W2-S02 Close evidence:
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S02-b. Execute remaining slices only after Product Owner review of W2-S02-a.
+**STOP.** Wait for Product Owner review before W2-S02-c. Execute remaining slices only after Product Owner review of W2-S02-b.

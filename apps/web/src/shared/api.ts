@@ -53,6 +53,9 @@ export type ConnectionMetadataView = {
     | 'PENDING_VALIDATION'
     | 'CONNECTED'
     | 'VALIDATION_FAILED'
+    | 'HANDSHAKE_TIMEOUT'
+    | 'PROVIDER_UNAVAILABLE'
+    | 'AUTHENTICATION_FAILED'
     | 'DISABLED'
     | 'REVOKED';
   credentialsStored: boolean;

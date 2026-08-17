@@ -199,3 +199,40 @@ describe('Connections UI exchange catalog (W2-S02-a)', () => {
     expect(html).not.toContain('Binance capabilities:');
   });
 });
+
+describe('Connections UI exchange handshake (W2-S02-b)', () => {
+  it('renders validate flow and handshake outcomes without secrets or provider payloads', () => {
+    const html = renderToStaticMarkup(
+      <ConnectionsView
+        {...viewProps}
+        provider="BINANCE"
+        connections={[
+          connection,
+          { ...connection, id: 'pending', status: 'PENDING_VALIDATION' },
+          { ...connection, id: 'connected', status: 'CONNECTED' },
+          { ...connection, id: 'failed', status: 'VALIDATION_FAILED' },
+          { ...connection, id: 'timeout', status: 'HANDSHAKE_TIMEOUT' },
+          { ...connection, id: 'unavailable', status: 'PROVIDER_UNAVAILABLE' },
+          { ...connection, id: 'auth-failed', status: 'AUTHENTICATION_FAILED' },
+        ]}
+      />,
+    );
+
+    expect(html).toContain('Run Validate');
+    expect(html).toContain('Retry validation');
+    expect(html).toContain('Pending Validation');
+    expect(html).toContain('Connected');
+    expect(html).toContain('Validation Failed');
+    expect(html).toContain('Handshake Timeout');
+    expect(html).toContain('Provider Unavailable');
+    expect(html).toContain('Authentication Failed');
+    expect(html).toContain('the exchange accepted authenticated communication');
+    expect(html).not.toContain('Trading enabled');
+    expect(html).not.toContain('apiKey');
+    expect(html).not.toContain('apiSecret');
+    expect(html).not.toContain('X-MBX-APIKEY');
+    expect(html).not.toContain('stack');
+    expect(html).not.toContain('/sapi/v1/account/apiRestrictions');
+    expect(html).not.toContain('Invalid API-key');
+  });
+});
