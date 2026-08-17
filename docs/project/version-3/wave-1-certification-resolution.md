@@ -85,12 +85,13 @@ This is not a Master Plan revision, package redesign, ownership change, or Wave 
 
 ### F-07 — S05 Verification Standard record
 
-| Item                       | Resolution                                                                                                                                                                |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Existing evidence reusable | Partially: S05 slice security reviews, store/timeline/integrity/incident tests, Close report, audit product certification audit, and readiness delta.                     |
-| Missing artifact           | Completed S05 §4–§19 worksheet, both OWASP mappings, and §19 regression-suite record.                                                                                     |
-| New implementation needed  | No for the worksheet itself. If a required row has no existing evidence, mark it REQUIRES ACTION rather than inventing a PASS; that outcome would expose additional work. |
-| Minimum record             | One S05 Close worksheet distinguishing foundation-delivered controls from named later owners and explicitly recording the approved retention/export limits.               |
+| Item                       | Resolution                                                                                                                                                                                                                                                            |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Existing evidence reusable | Partially: S05 slice security reviews, store/timeline/integrity/incident tests, Close report, audit product certification audit, and readiness delta.                                                                                                                 |
+| Missing artifact           | Completed S05 §4–§19 worksheet, both OWASP mappings, and §19 regression-suite record.                                                                                                                                                                                 |
+| New implementation needed  | No for the worksheet itself. If a required row has no existing evidence, mark it REQUIRES ACTION rather than inventing a PASS; that outcome would expose additional work.                                                                                             |
+| Minimum record             | One S05 Close worksheet distinguishing foundation-delivered controls from named later owners and explicitly recording the approved retention/export limits.                                                                                                           |
+| Remediation status         | **RESOLVED** — completed worksheet at [`v3-s05-security-verification-worksheet.md`](./v3-s05-security-verification-worksheet.md); referenced from [`v3-s05-e-security-review.md`](./v3-s05-e-security-review.md). Zero **REQUIRES ACTION**. No implementation change. |
 
 ### F-08 — S06 Verification Standard record
 

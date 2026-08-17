@@ -19,3 +19,25 @@
 Default Policy, classification, Event Minimalism, Investigation Completeness,
 Investigation Reproducibility, and scope containment. Its result is
 implementation-ready, with Product Owner Close approval still required.
+
+## Security Verification Standard (mandatory Close worksheet)
+
+**Completed worksheet (every §4–§19 row):**
+[`v3-s05-security-verification-worksheet.md`](./v3-s05-security-verification-worksheet.md)
+
+| Gate                              | Verdict  |
+| --------------------------------- | -------- |
+| Every §4–§17 category row present | PASS     |
+| §18.1 OWASP Top 10 mapping        | PASS     |
+| §18.2 OWASP API Top 10 mapping    | PASS     |
+| §19 Security Regression Suite     | PASS     |
+| Any REQUIRES ACTION               | **None** |
+
+The worksheet distinguishes S05's delivered audit foundation from later owners:
+monitoring, analytics, dashboards, alerting, customer history UI, search/filter,
+customer download, automated retention execution, Connections, live financial
+logging, and Wave 2 capabilities are **NOT APPLICABLE**. It records the
+integrity foundation's stated limit: changed surviving records are detected; an
+external tamper-proof ledger is not claimed.
+
+**STOP.** F-07 worksheet complete. Do not implement F-08. Await Product Owner review.

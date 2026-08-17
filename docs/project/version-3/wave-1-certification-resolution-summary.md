@@ -15,14 +15,14 @@ The minimum corrections stay inside existing Authentication, Identity, Vault, an
 
 ## Certification evidence work
 
-Four certification-document defects remain:
+Three certification-document defects remain:
 
 - **F-06:** ~~S04 needs a completed per-row Verification Standard worksheet.~~ **RESOLVED** — [`v3-s04-security-verification-worksheet.md`](./v3-s04-security-verification-worksheet.md)
-- **F-07:** S05 needs a completed per-row Verification Standard worksheet.
+- **F-07:** ~~S05 needs a completed per-row Verification Standard worksheet.~~ **RESOLVED** — [`v3-s05-security-verification-worksheet.md`](./v3-s05-security-verification-worksheet.md)
 - **F-08:** S06 needs a completed per-row Verification Standard worksheet.
 - **F-14:** S06 needs **Production Composition Proof** for applicable isolation rows, then a focused evidence record.
 
-F-07–F-08 can reuse much of the existing test and review evidence. F-14 cannot be cured by documentation alone.
+F-08 can reuse much of the existing test and review evidence. F-14 cannot be cured by documentation alone.
 
 **Production Composition Proof** is technology-neutral. A production entry point (HTTP, REST, GraphQL, or another) is acceptable if evidence exercises real dependency injection, real authorization, real persistence, and real production composition, without mocks or in-memory substitutions.
 
@@ -39,7 +39,7 @@ Authorize Certification Remediation for F-02, F-10, F-11, F-12, F-06–F-08, F-1
 ## Final answers
 
 1. Implementation defects remaining: **0** (F-02, F-10, F-11, F-12 closed by prior remediation commits)
-2. Certification-document defects remaining: **3** (F-07, F-08, F-14; **F-06 resolved**)
+2. Certification-document defects remaining: **2** (F-08, F-14; **F-06 and F-07 resolved**)
 3. Governance conflict remaining: **Yes — F-05**
 4. After resolving them: **Independent Certification Validation is still required before certification.**
 
