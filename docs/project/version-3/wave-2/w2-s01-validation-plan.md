@@ -107,6 +107,21 @@ Evidence: [`w2-s01-d-validation-report.md`](./w2-s01-d-validation-report.md).
 
 ---
 
+## W2-S01-e close evidence record
+
+| Close evidence                                                                    | Result                               |
+| --------------------------------------------------------------------------------- | ------------------------------------ |
+| Implementation, architecture, security, product, and validation reviews           | PASS                                 |
+| Security Verification Standard worksheet, OWASP mappings, and regression evidence | PASS                                 |
+| Evidence-backed product walkthrough                                               | PASS                                 |
+| Lint, typecheck, full tests, web build, and diff check                            | PASS                                 |
+| Readiness Delta and Certification Readiness                                       | Ready for Product Owner Close Review |
+| Product Owner Close decision                                                      | PENDING                              |
+
+Evidence: [`w2-s01-close-report.md`](./w2-s01-close-report.md), [`w2-s01-certification-readiness.md`](./w2-s01-certification-readiness.md), and [`w2-s01-security-verification-worksheet.md`](./w2-s01-security-verification-worksheet.md).
+
+---
+
 ## 2. Unit tests
 
 | Area                       | Must prove                                                     |
