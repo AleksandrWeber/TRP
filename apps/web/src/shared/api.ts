@@ -29,6 +29,10 @@ export type ExchangeSessionState =
 export type ExchangeHealthProjection =
   'HEALTHY' | 'UNAVAILABLE' | 'EXPIRED' | 'AUTHENTICATION_FAILED' | 'CONNECTION_LOST';
 export type ExchangeProviderAvailabilityObservation = 'AVAILABLE' | 'UNAVAILABLE' | 'UNKNOWN';
+export type ExchangeSessionCapability =
+  'SPOT' | 'MARGIN' | 'FUTURES' | 'TESTNET' | 'REST' | 'WEBSOCKET' | 'WITHDRAW' | 'DEPOSIT';
+export type ExchangeCapabilityState =
+  'SUPPORTED' | 'UNSUPPORTED' | 'UNAVAILABLE' | 'UNKNOWN' | 'VERIFICATION_FAILED';
 
 export type ExchangeSessionView = {
   state: ExchangeSessionState;
@@ -36,6 +40,17 @@ export type ExchangeSessionView = {
   reconnectRequired: boolean;
   reconnectAllowed: boolean;
   providerAvailability: ExchangeProviderAvailabilityObservation;
+};
+
+export type ExchangeVerifiedCapability = {
+  capability: ExchangeSessionCapability;
+  state: ExchangeCapabilityState;
+};
+
+export type ExchangeCapabilityView = {
+  capabilities: ExchangeVerifiedCapability[];
+  verifiedAt: string | null;
+  verificationFailed: boolean;
 };
 
 export type ExchangeProviderMetadata = {
@@ -83,6 +98,7 @@ export type ConnectionMetadataView = {
   credentialsStored: boolean;
   exchangeProvider: ExchangeProviderMetadata | null;
   session: ExchangeSessionView | null;
+  capabilities: ExchangeCapabilityView | null;
   createdAt: string;
   updatedAt: string;
 };

@@ -48,6 +48,33 @@ export {
 } from './exchange-session.service';
 export { ExchangeSessionAudit } from './exchange-session.audit';
 export {
+  EXCHANGE_SESSION_CAPABILITIES,
+  canUseVerifiedCapability,
+  isExchangeSessionCapability,
+  type ExchangeSessionCapability,
+} from './exchange-capability';
+export {
+  EXCHANGE_CAPABILITY_STATES,
+  IllegalExchangeCapabilityTransitionError,
+  isExchangeCapabilityState,
+  type ExchangeCapabilityState,
+} from './exchange-capability.state';
+export {
+  mapProviderCapabilities,
+  type ExchangeCapabilityEvidence,
+  type ExchangeVerifiedCapability,
+} from './exchange-capability.mapping';
+export {
+  projectExchangeCapabilities,
+  type ExchangeCapabilityView,
+} from './exchange-capability.projection';
+export {
+  ExchangeCapabilityService,
+  type ExchangeCapabilityVerificationRequest,
+} from './exchange-capability.service';
+export { ExchangeCapabilityAudit } from './exchange-capability.audit';
+export { ExchangeCapabilityCache } from './exchange-capability.cache';
+export {
   EXCHANGE_HANDSHAKE_FAILURE_OUTCOMES,
   EXCHANGE_HANDSHAKE_OUTCOMES,
   isConnectedHandshakeOutcome,

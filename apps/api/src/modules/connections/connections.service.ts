@@ -2,11 +2,13 @@ import { ConflictException, Inject, Injectable, NotFoundException } from '@nestj
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../storage/prisma/prisma.module';
 import {
+  ExchangeCapabilityService,
   ExchangeHandshakeService,
   ExchangeSessionService,
   IllegalExchangeSessionTransitionError,
   lookupExchangeProvider,
   projectExchangeSession,
+  type ExchangeCapabilityView,
   type ExchangeProviderMetadata,
   type ExchangeSessionObservation,
   type ExchangeSessionView,
@@ -49,6 +51,7 @@ export type ConnectionMetadataView = {
   credentialsStored: boolean;
   exchangeProvider: ExchangeProviderMetadata | null;
   session: ExchangeSessionView | null;
+  capabilities: ExchangeCapabilityView | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -64,6 +67,7 @@ export class ConnectionsService {
     private readonly lifecycleAudit: ConnectionLifecycleAudit,
     private readonly handshake: ExchangeHandshakeService,
     private readonly sessions: ExchangeSessionService,
+    private readonly capabilities: ExchangeCapabilityService,
   ) {}
 
   catalog(): ConnectionCatalogView {
@@ -75,11 +79,11 @@ export class ConnectionsService {
       where: { workspaceId },
       orderBy: { createdAt: 'asc' },
     });
-    return rows.map(toView);
+    return rows.map((row) => this.view(row));
   }
 
   async get(workspaceId: string, id: string): Promise<ConnectionMetadataView> {
-    return toView(await this.getRow(workspaceId, id));
+    return this.view(await this.getRow(workspaceId, id));
   }
 
   async create(input: {
@@ -106,7 +110,7 @@ export class ConnectionsService {
         createdAt: now,
       },
     });
-    return toView(row);
+    return this.view(row);
   }
 
   async rename(
@@ -119,7 +123,7 @@ export class ConnectionsService {
       where: { id },
       data: { displayName: displayName.trim() },
     });
-    return toView(row);
+    return this.view(row);
   }
 
   async storeCredentials(input: {
@@ -160,7 +164,8 @@ export class ConnectionsService {
       where: { id: connection.id },
       data: { vaultSecretId: stored.metadata.id, status: 'DISCONNECTED' },
     });
-    return toView(row);
+    this.capabilities.clear(input.workspaceId, connection.id);
+    return this.view(row);
   }
 
   async replaceCredentials(input: {
@@ -192,6 +197,7 @@ export class ConnectionsService {
       where: { id: connection.id },
       data: { vaultSecretId: stored.metadata.id, status: 'DISCONNECTED' },
     });
+    this.capabilities.clear(input.workspaceId, connection.id);
     await this.lifecycleAudit.record({
       outcome: 'credentials_replaced',
       workspaceId: input.workspaceId,
@@ -199,7 +205,7 @@ export class ConnectionsService {
       connectionId: row.id,
       provider: row.provider as ConnectionProvider,
     });
-    return toView(row);
+    return this.view(row);
   }
 
   async disconnect(input: {
@@ -247,6 +253,7 @@ export class ConnectionsService {
       type,
     });
     const row = await this.updateStatus(connection.id, 'REVOKED');
+    this.capabilities.clear(input.workspaceId, connection.id);
     await this.lifecycleAudit.record({
       outcome: 'revoked',
       workspaceId: input.workspaceId,
@@ -254,7 +261,7 @@ export class ConnectionsService {
       connectionId: row.id,
       provider: row.provider as ConnectionProvider,
     });
-    return toView(row);
+    return this.view(row);
   }
 
   async validate(input: {
@@ -272,6 +279,7 @@ export class ConnectionsService {
       throw new ConflictException('Connection cannot be validated from its current state.');
     }
 
+    this.capabilities.clear(input.workspaceId, connection.id);
     const pending = await this.transitionStatus(connection, 'PENDING_VALIDATION');
     if (connection.connectionType === 'EXCHANGE') {
       return this.completeExchangeHandshake(input, pending);
@@ -310,7 +318,8 @@ export class ConnectionsService {
       } else {
         await this.sessions.reconnectRequired(actor);
       }
-      return toView(row);
+      this.capabilities.clear(input.workspaceId, row.id);
+      return this.view(row);
     } catch (error) {
       if (error instanceof IllegalExchangeSessionTransitionError) {
         throw new ConflictException(error.message);
@@ -346,6 +355,18 @@ export class ConnectionsService {
             provider: pending.provider,
           })
           .catch(() => undefined);
+        await this.capabilities
+          .verify({
+            workspaceId: input.workspaceId,
+            actorUserId: input.actorUserId,
+            actorRole: input.actorRole,
+            connectionId: pending.id,
+            provider: pending.provider,
+            vaultSecretId: pending.vaultSecretId as string,
+            handshakeSucceeded: true,
+          })
+          .catch(() => undefined);
+        return this.view(await this.getRow(input.workspaceId, pending.id));
       }
       return completed;
     } catch {
@@ -423,6 +444,7 @@ export class ConnectionsService {
   ): Promise<ConnectionMetadataView> {
     const connection = await this.getRow(input.workspaceId, input.id);
     const row = await this.transitionStatus(connection, status);
+    this.capabilities.clear(input.workspaceId, row.id);
     await this.lifecycleAudit.record({
       outcome,
       workspaceId: input.workspaceId,
@@ -430,7 +452,7 @@ export class ConnectionsService {
       connectionId: row.id,
       provider: row.provider as ConnectionProvider,
     });
-    return toView(row);
+    return this.view(row);
   }
 
   private async getRow(workspaceId: string, id: string): Promise<ConnectionRow> {
@@ -443,7 +465,7 @@ export class ConnectionsService {
     pending: ConnectionRow,
     status: ConnectionStatus,
   ): Promise<ConnectionMetadataView> {
-    return toView(await this.transitionStatus(pending, status));
+    return this.view(await this.transitionStatus(pending, status));
   }
 
   private async transitionStatus(
@@ -499,6 +521,30 @@ export class ConnectionsService {
       throw new ConflictException('Credentials are already assigned to this provider.');
     }
   }
+
+  private view(row: ConnectionRow): ConnectionMetadataView {
+    const status = connectionStatus(row.status);
+    return {
+      id: row.id,
+      workspaceId: row.workspaceId,
+      displayName: row.displayName,
+      provider: row.provider as ConnectionProvider,
+      connectionType: row.connectionType as ConnectionType,
+      status,
+      credentialsStored: row.vaultSecretId !== null && status !== 'REVOKED',
+      exchangeProvider:
+        row.connectionType === 'EXCHANGE' ? (lookupExchangeProvider(row.provider) ?? null) : null,
+      session: projectExchangeSession(row.connectionType, status),
+      capabilities: this.capabilities.projection(
+        row.workspaceId,
+        row.id,
+        row.connectionType,
+        status,
+      ),
+      createdAt: row.createdAt.toISOString(),
+      updatedAt: row.updatedAt.toISOString(),
+    };
+  }
 }
 
 type ConnectionRow = {
@@ -512,23 +558,6 @@ type ConnectionRow = {
   createdAt: Date;
   updatedAt: Date;
 };
-
-function toView(row: ConnectionRow): ConnectionMetadataView {
-  return {
-    id: row.id,
-    workspaceId: row.workspaceId,
-    displayName: row.displayName,
-    provider: row.provider as ConnectionProvider,
-    connectionType: row.connectionType as ConnectionType,
-    status: connectionStatus(row.status),
-    credentialsStored: row.vaultSecretId !== null && connectionStatus(row.status) !== 'REVOKED',
-    exchangeProvider:
-      row.connectionType === 'EXCHANGE' ? (lookupExchangeProvider(row.provider) ?? null) : null,
-    session: projectExchangeSession(row.connectionType, connectionStatus(row.status)),
-    createdAt: row.createdAt.toISOString(),
-    updatedAt: row.updatedAt.toISOString(),
-  };
-}
 
 function connectionStatus(status: string): ConnectionStatus {
   if (

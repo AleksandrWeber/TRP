@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 const directory = join(process.cwd(), 'src/modules/exchange-connectivity');
 
-describe('Exchange connectivity isolation (W2-S02-c)', () => {
+describe('Exchange connectivity isolation (W2-S02-d)', () => {
   it('keeps HTTP in the handshake client and never imports trading or SDK owners', async () => {
     const files = (await readdir(directory)).filter(
       (name) => name.endsWith('.ts') && !name.endsWith('.spec.ts'),
@@ -47,10 +47,23 @@ describe('Exchange connectivity isolation (W2-S02-c)', () => {
       .map((file) => file.name)
       .sort();
     expect(vaultImporters).toEqual([
+      'exchange-capability.service.ts',
       'exchange-connectivity.module.ts',
       'exchange-handshake.service.ts',
       'exchange-handshake.vault.ts',
     ]);
+
+    const capabilitySources = sources.filter((file) =>
+      file.name.startsWith('exchange-capability.'),
+    );
+    for (const file of capabilitySources) {
+      expect(file.source).not.toMatch(/from ['"]\.\.\/live-trading-engine/);
+      expect(file.source).not.toMatch(/from ['"]\.\.\/orders/);
+      expect(file.source).not.toMatch(/from ['"]\.\.\/positions/);
+      expect(file.source).not.toMatch(/from ['"]\.\.\/portfolio/);
+      expect(file.source).not.toMatch(/from ['"]\.\.\/market-data/);
+      expect(file.source).not.toMatch(/\bsetInterval\s*\(/);
+    }
 
     const adapterSources = sources.filter((file) => file.name.endsWith('adapter.ts'));
     for (const adapter of adapterSources) {

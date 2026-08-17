@@ -3,6 +3,8 @@ import type {
   ConnectionCatalogView,
   ConnectionMetadataView,
   ConnectionProvider,
+  ExchangeCapabilityState,
+  ExchangeSessionCapability,
 } from '../shared/api';
 
 export type ConnectionsViewProps = {
@@ -77,8 +79,9 @@ export function ConnectionsView({
           current contract. Exchange connections run an authenticated handshake with the selected
           exchange. Connected means the exchange accepted authenticated communication. Connection
           health reflects only the observed authenticated session. Reconnect is advisory; the
-          product does not reconnect automatically. Connected does not indicate live trading,
-          delivery, balances, orders, market data, or execution.
+          product does not reconnect automatically. Verified capabilities describe what the
+          authenticated session was observed to allow. They are not used. Connected does not
+          indicate live trading, delivery, balances, orders, market data, or execution.
         </p>
       </div>
 
@@ -196,6 +199,26 @@ export function ConnectionsView({
                       : 'Reconnect not required'}{' '}
                     · Provider {availabilityLabel(connection.session.providerAvailability)}
                   </p>
+                ) : null}
+                {connection.capabilities ? (
+                  <div className="mt-1 text-sm text-slate-400">
+                    <p>Verified capabilities</p>
+                    {connection.capabilities.capabilities.map((item) => (
+                      <p key={item.capability}>
+                        {verifiedCapabilityLabel(item.capability)}:{' '}
+                        {capabilityStateLabel(item.state)}
+                      </p>
+                    ))}
+                    {connection.capabilities.verifiedAt ? (
+                      <p>Verified at {connection.capabilities.verifiedAt}</p>
+                    ) : null}
+                    {connection.capabilities.capabilities.some(
+                      (item) => item.state === 'UNAVAILABLE',
+                    ) ? (
+                      <p>Unavailable capability</p>
+                    ) : null}
+                    {connection.capabilities.verificationFailed ? <p>Verification failed</p> : null}
+                  </div>
                 ) : null}
               </div>
               <div className="flex items-center gap-3">
@@ -471,6 +494,44 @@ function availabilityLabel(
       return 'Available';
     case 'UNAVAILABLE':
       return 'Unavailable';
+    default:
+      return 'Unknown';
+  }
+}
+
+function verifiedCapabilityLabel(capability: ExchangeSessionCapability): string {
+  switch (capability) {
+    case 'SPOT':
+      return 'Spot Trading';
+    case 'MARGIN':
+      return 'Margin Trading';
+    case 'FUTURES':
+      return 'Futures';
+    case 'TESTNET':
+      return 'Testnet';
+    case 'REST':
+      return 'REST';
+    case 'WEBSOCKET':
+      return 'WebSocket';
+    case 'WITHDRAW':
+      return 'Withdraw';
+    case 'DEPOSIT':
+      return 'Deposit';
+    default:
+      return capability;
+  }
+}
+
+function capabilityStateLabel(state: ExchangeCapabilityState): string {
+  switch (state) {
+    case 'SUPPORTED':
+      return 'Supported';
+    case 'UNSUPPORTED':
+      return 'Unsupported';
+    case 'UNAVAILABLE':
+      return 'Unavailable';
+    case 'VERIFICATION_FAILED':
+      return 'Verification Failed';
     default:
       return 'Unknown';
   }

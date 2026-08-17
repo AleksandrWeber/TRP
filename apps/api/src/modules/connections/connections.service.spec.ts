@@ -164,6 +164,70 @@ function sessionService() {
   );
 }
 
+function capabilityStub(
+  view: {
+    capabilities: Array<{ capability: string; state: string }>;
+    verifiedAt: string | null;
+    verificationFailed: boolean;
+  } | null = {
+    capabilities: [
+      { capability: 'SPOT', state: 'SUPPORTED' },
+      { capability: 'MARGIN', state: 'UNAVAILABLE' },
+      { capability: 'FUTURES', state: 'UNKNOWN' },
+      { capability: 'TESTNET', state: 'UNKNOWN' },
+      { capability: 'REST', state: 'SUPPORTED' },
+      { capability: 'WEBSOCKET', state: 'UNKNOWN' },
+      { capability: 'WITHDRAW', state: 'UNAVAILABLE' },
+      { capability: 'DEPOSIT', state: 'UNKNOWN' },
+    ],
+    verifiedAt: '2026-08-17T19:00:00.000Z',
+    verificationFailed: false,
+  },
+) {
+  const cache = new Map<string, NonNullable<typeof view>>();
+  const verifyCalls: Array<{
+    workspaceId: string;
+    connectionId: string;
+    handshakeSucceeded: boolean;
+  }> = [];
+  const cleared: Array<{ workspaceId: string; connectionId: string }> = [];
+  return {
+    verifyCalls,
+    cleared,
+    projection: (
+      workspaceId: string,
+      connectionId: string,
+      connectionType: string,
+      status: string,
+    ) => {
+      if (connectionType !== 'EXCHANGE' || status !== 'CONNECTED') {
+        return null;
+      }
+      return cache.get(`${workspaceId}:${connectionId}`) ?? null;
+    },
+    verify: async (request: {
+      workspaceId: string;
+      connectionId: string;
+      handshakeSucceeded: boolean;
+    }) => {
+      verifyCalls.push({
+        workspaceId: request.workspaceId,
+        connectionId: request.connectionId,
+        handshakeSucceeded: request.handshakeSucceeded,
+      });
+      if (!request.handshakeSucceeded || view === null) {
+        return null;
+      }
+      cache.set(`${request.workspaceId}:${request.connectionId}`, view);
+      return view;
+    },
+    clear: (workspaceId: string, connectionId: string) => {
+      cleared.push({ workspaceId, connectionId });
+      cache.delete(`${workspaceId}:${connectionId}`);
+    },
+  };
+}
+
 describe('ConnectionsService (W2-S01)', () => {
   it('creates metadata only with the provider type and disconnected default', async () => {
     const service = new ConnectionsService(
@@ -174,6 +238,7 @@ describe('ConnectionsService (W2-S01)', () => {
       lifecycleAudit() as never,
       handshakeStub() as never,
       sessionService() as never,
+      capabilityStub() as never,
     );
     const connection = await service.create({
       workspaceId: 'workspace-a',
@@ -214,6 +279,7 @@ describe('ConnectionsService (W2-S01)', () => {
       lifecycleAudit() as never,
       handshakeStub() as never,
       sessionService() as never,
+      capabilityStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -245,6 +311,7 @@ describe('ConnectionsService (W2-S01)', () => {
       audit as never,
       handshakeStub() as never,
       sessionService() as never,
+      capabilityStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -290,6 +357,7 @@ describe('ConnectionsService (W2-S01)', () => {
       lifecycleAudit() as never,
       handshake as never,
       sessionService() as never,
+      capabilityStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -339,6 +407,7 @@ describe('ConnectionsService (W2-S01)', () => {
       lifecycleAudit() as never,
       handshakeStub() as never,
       sessionService() as never,
+      capabilityStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -383,6 +452,7 @@ describe('ConnectionsService (W2-S01)', () => {
       audit as never,
       handshakeStub() as never,
       sessionService() as never,
+      capabilityStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -459,6 +529,7 @@ describe('ConnectionsService exchange provider reference (W2-S02-a)', () => {
       lifecycleAudit() as never,
       handshakeStub() as never,
       sessionService() as never,
+      capabilityStub() as never,
     );
 
     const catalog = service.catalog();
@@ -483,6 +554,7 @@ describe('ConnectionsService exchange provider reference (W2-S02-a)', () => {
       lifecycleAudit() as never,
       handshakeStub() as never,
       sessionService() as never,
+      capabilityStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -513,6 +585,7 @@ describe('ConnectionsService exchange handshake (W2-S02-b)', () => {
       lifecycleAudit() as never,
       handshake as never,
       sessionService() as never,
+      capabilityStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -610,6 +683,7 @@ describe('ConnectionsService exchange session health (W2-S02-c)', () => {
 
   async function credentialedWithSession(
     handshake: ReturnType<typeof handshakeStub> = handshakeStub('CONNECTED'),
+    capabilities: ReturnType<typeof capabilityStub> = capabilityStub(),
   ) {
     const sessions = sessionWithAudit();
     const vault = memoryVault();
@@ -621,6 +695,7 @@ describe('ConnectionsService exchange session health (W2-S02-c)', () => {
       lifecycleAudit() as never,
       handshake as never,
       sessions.service,
+      capabilities as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -634,7 +709,7 @@ describe('ConnectionsService exchange session health (W2-S02-c)', () => {
       id: created.id,
       credentials: { apiKey: 'key-one', apiSecret: 'secret-one' },
     });
-    return { service, vault, created, handshake, sessions };
+    return { service, vault, created, handshake, sessions, capabilities };
   }
 
   it('projects a healthy session only after authenticated handshake succeeds', async () => {
@@ -778,6 +853,7 @@ describe('ConnectionsService exchange session health (W2-S02-c)', () => {
       lifecycleAudit() as never,
       handshakeStub() as never,
       sessionService() as never,
+      capabilityStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -785,6 +861,7 @@ describe('ConnectionsService exchange session health (W2-S02-c)', () => {
       provider: 'TELEGRAM',
     });
     expect(created.session).toBeNull();
+    expect(created.capabilities).toBeNull();
     await expect(
       service.observeSession({
         workspaceId: 'workspace-a',
@@ -793,5 +870,197 @@ describe('ConnectionsService exchange session health (W2-S02-c)', () => {
         observation: 'CONNECTION_LOST',
       }),
     ).rejects.toThrow('Session observations apply only to Exchange connections.');
+  });
+});
+
+describe('ConnectionsService exchange capability verification (W2-S02-d)', () => {
+  it('verifies capabilities only after authenticated handshake succeeds', async () => {
+    const capabilities = capabilityStub();
+    const sessions = new ExchangeSessionService(
+      new ExchangeSessionAudit({ record: async () => undefined } as never),
+    );
+    const vault = memoryVault();
+    const connected = new ConnectionsService(
+      memoryPrisma() as never,
+      vault as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+      handshakeStub('CONNECTED') as never,
+      sessions as never,
+      capabilities as never,
+    );
+    const created = await connected.create({
+      workspaceId: 'workspace-a',
+      displayName: 'Primary Binance',
+      provider: 'BINANCE',
+    });
+    await connected.storeCredentials({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+      credentials: { apiKey: 'key-one', apiSecret: 'secret-one' },
+    });
+
+    const validated = await connected.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+    });
+
+    expect(validated.status).toBe('CONNECTED');
+    expect(validated.session?.state).toBe('CONNECTED');
+    expect(validated.capabilities).toEqual({
+      capabilities: [
+        { capability: 'SPOT', state: 'SUPPORTED' },
+        { capability: 'MARGIN', state: 'UNAVAILABLE' },
+        { capability: 'FUTURES', state: 'UNKNOWN' },
+        { capability: 'TESTNET', state: 'UNKNOWN' },
+        { capability: 'REST', state: 'SUPPORTED' },
+        { capability: 'WEBSOCKET', state: 'UNKNOWN' },
+        { capability: 'WITHDRAW', state: 'UNAVAILABLE' },
+        { capability: 'DEPOSIT', state: 'UNKNOWN' },
+      ],
+      verifiedAt: '2026-08-17T19:00:00.000Z',
+      verificationFailed: false,
+    });
+    expect(capabilities.verifyCalls).toEqual([
+      { workspaceId: 'workspace-a', connectionId: created.id, handshakeSucceeded: true },
+    ]);
+    expect(JSON.stringify(validated)).not.toMatch(/apiKey|apiSecret|key-one|secret-one/i);
+    expect(JSON.stringify(validated)).not.toContain('Trading enabled');
+  });
+
+  it('does not verify capabilities when handshake fails', async () => {
+    const capabilities = capabilityStub();
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      memoryVault() as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+      handshakeStub('AUTHENTICATION_FAILED') as never,
+      sessionService() as never,
+      capabilities as never,
+    );
+    const created = await service.create({
+      workspaceId: 'workspace-a',
+      displayName: 'Primary Binance',
+      provider: 'BINANCE',
+    });
+    await service.storeCredentials({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+      credentials: { apiKey: 'key-one', apiSecret: 'secret-one' },
+    });
+    const failed = await service.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+    });
+    expect(failed.status).toBe('AUTHENTICATION_FAILED');
+    expect(failed.capabilities).toBeNull();
+    expect(capabilities.verifyCalls).toEqual([]);
+  });
+
+  it('keeps the authenticated session when capability verification fails', async () => {
+    const capabilities = capabilityStub({
+      capabilities: [
+        { capability: 'SPOT', state: 'VERIFICATION_FAILED' },
+        { capability: 'MARGIN', state: 'VERIFICATION_FAILED' },
+        { capability: 'FUTURES', state: 'VERIFICATION_FAILED' },
+        { capability: 'TESTNET', state: 'VERIFICATION_FAILED' },
+        { capability: 'REST', state: 'SUPPORTED' },
+        { capability: 'WEBSOCKET', state: 'VERIFICATION_FAILED' },
+        { capability: 'WITHDRAW', state: 'VERIFICATION_FAILED' },
+        { capability: 'DEPOSIT', state: 'VERIFICATION_FAILED' },
+      ],
+      verifiedAt: '2026-08-17T19:00:00.000Z',
+      verificationFailed: true,
+    });
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      memoryVault() as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+      handshakeStub('CONNECTED') as never,
+      sessionService() as never,
+      capabilities as never,
+    );
+    const created = await service.create({
+      workspaceId: 'workspace-a',
+      displayName: 'Primary Binance',
+      provider: 'BINANCE',
+    });
+    await service.storeCredentials({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+      credentials: { apiKey: 'key-one', apiSecret: 'secret-one' },
+    });
+    const validated = await service.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+    });
+    expect(validated.status).toBe('CONNECTED');
+    expect(validated.session?.state).toBe('CONNECTED');
+    expect(validated.capabilities?.verificationFailed).toBe(true);
+    expect(
+      validated.capabilities?.capabilities.find((item) => item.capability === 'REST')?.state,
+    ).toBe('SUPPORTED');
+  });
+
+  it('keeps workspace isolation and clears capabilities when the session ends', async () => {
+    const capabilities = capabilityStub();
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      memoryVault() as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+      handshakeStub('CONNECTED') as never,
+      sessionService() as never,
+      capabilities as never,
+    );
+    const created = await service.create({
+      workspaceId: 'workspace-a',
+      displayName: 'Primary Binance',
+      provider: 'BINANCE',
+    });
+    await service.storeCredentials({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+      credentials: { apiKey: 'key-one', apiSecret: 'secret-one' },
+    });
+    await service.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+    });
+
+    await expect(service.get('workspace-b', created.id)).rejects.toThrow('Connection not found');
+
+    const disconnected = await service.disconnect({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      id: created.id,
+    });
+    expect(disconnected.status).toBe('DISCONNECTED');
+    expect(disconnected.capabilities).toBeNull();
+    expect(capabilities.cleared).toEqual(
+      expect.arrayContaining([{ workspaceId: 'workspace-a', connectionId: created.id }]),
+    );
   });
 });

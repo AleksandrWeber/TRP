@@ -2,11 +2,21 @@
 
 **Document:** Version 3 Exchange Connectivity Overview
 **Date:** 2026-08-17
-**Status:** W2-S02-c implemented. Remaining W2-S02 slices await Product Owner review before W2-S02-d.
+**Status:** W2-S02-d implemented. Remaining W2-S02 slices await Product Owner review before W2-S02-e.
 **Product:** Exchange Connectivity Foundation
 **Nature:** Customer description. Not an RC. Not an ADR. Not a Master Plan revision.
 
 This is what an ordinary operator experiences. It is not an internal design note.
+
+---
+
+## W2-S02-d delivered foundation
+
+Operators can see verified capabilities for an authenticated exchange session on **Connections**. After Validate succeeds, the row shows **Verified Capabilities**, each **Capability State**, **Verification Time**, **Unavailable Capability** when a capability is not available for this session, and **Verification Failed** when verification could not finish.
+
+Verified capabilities are Spot Trading, Margin Trading, Futures, Testnet, REST, WebSocket, Withdraw, and Deposit. States are Supported, Unsupported, Unavailable, Unknown, or Verification Failed. Unknown is preferred over guessing. Verification failure does not disconnect the session.
+
+Verified capabilities describe what the authenticated session was observed to allow. They are not used. They do not mean trading is enabled, balances are loaded, orders can be placed, or market data is streaming.
 
 ---
 
@@ -64,7 +74,7 @@ Connected does NOT mean Trading enabled.
 
 Connection Management is **CLOSED**. The operator can already create an Exchange connection, store credentials securely, and manage lifecycle without editing a server file.
 
-W2-S02-b is the Binance handshake proof. W2-S02-c is session health. Remaining status projection stays a later slice.
+W2-S02-b is the Binance handshake proof. W2-S02-c is session health. W2-S02-d is capability verification. Close evidence stays a later slice.
 
 ---
 
@@ -147,7 +157,19 @@ The operator can disconnect. The connection is no longer Connected. The product 
 | **Reconnect required**            | A new Validate is allowed; the product does not reconnect itself |
 | **Provider availability**         | Available, Unavailable, or Unknown from the observed session     |
 
-Connected is not Trading enabled. Healthy is not execution ready.
+### Verified capabilities (what the operator sees)
+
+| Fact                      | What it means to the operator                                              |
+| ------------------------- | -------------------------------------------------------------------------- |
+| **Verified capabilities** | What the authenticated session was observed to allow — not trading actions |
+| **Supported**             | Evidence showed this capability is present for the current session         |
+| **Unsupported**           | The provider does not offer this capability                                |
+| **Unavailable**           | The provider offers it, but this session does not have it                  |
+| **Unknown**               | Not enough evidence; the product does not guess                            |
+| **Verification Failed**   | Verification could not finish; the session remains Connected               |
+| **Verification time**     | When verification last completed or failed for this session                |
+
+Connected is not Trading enabled. Healthy is not execution ready. Verified is not used.
 
 ---
 
@@ -256,7 +278,7 @@ After Exchange Connectivity Foundation ships its product outcomes:
 Wave 1 Security Foundation is **CERTIFIED COMPLETE** and is consumed, not reopened.
 W2-S01 Connection Management is **CLOSED** and is consumed, not redesigned.
 
-W2-S02-c is implemented. Wait for Product Owner review before W2-S02-d.
+W2-S02-d is implemented. Wait for Product Owner review before W2-S02-e.
 
 ---
 
@@ -285,4 +307,4 @@ This product does **not** include:
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S02-d. Remaining handshake providers and capability projection remain later slices.
+**STOP.** Wait for Product Owner review before W2-S02-e. Remaining handshake providers and Close evidence remain later slices.

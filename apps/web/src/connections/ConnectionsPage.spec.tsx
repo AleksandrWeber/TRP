@@ -98,6 +98,7 @@ const connection: ConnectionMetadataView = {
   credentialsStored: true,
   exchangeProvider: catalog.exchangeProviders[0] ?? null,
   session: disconnectedSession,
+  capabilities: null,
   createdAt: '2026-08-17T16:00:00.000Z',
   updatedAt: '2026-08-17T16:00:00.000Z',
 };
@@ -321,6 +322,85 @@ describe('Connections UI exchange session health (W2-S02-c)', () => {
     expect(html).not.toContain('Balances available');
     expect(html).not.toContain('Market data available');
     expect(html).not.toContain('Execution ready');
+    expect(html).not.toContain('apiKey');
+    expect(html).not.toContain('apiSecret');
+  });
+});
+
+describe('Connections UI exchange capability verification (W2-S02-d)', () => {
+  it('renders verified capability states without trading or market-data claims', () => {
+    const html = renderToStaticMarkup(
+      <ConnectionsView
+        {...viewProps}
+        provider="BINANCE"
+        connections={[
+          {
+            ...connection,
+            id: 'verified',
+            status: 'CONNECTED',
+            session: {
+              state: 'CONNECTED',
+              health: 'HEALTHY',
+              reconnectRequired: false,
+              reconnectAllowed: false,
+              providerAvailability: 'AVAILABLE',
+            },
+            capabilities: {
+              capabilities: [
+                { capability: 'SPOT', state: 'SUPPORTED' },
+                { capability: 'MARGIN', state: 'UNAVAILABLE' },
+                { capability: 'FUTURES', state: 'UNKNOWN' },
+                { capability: 'TESTNET', state: 'UNKNOWN' },
+                { capability: 'REST', state: 'SUPPORTED' },
+                { capability: 'WEBSOCKET', state: 'UNKNOWN' },
+                { capability: 'WITHDRAW', state: 'UNAVAILABLE' },
+                { capability: 'DEPOSIT', state: 'UNKNOWN' },
+              ],
+              verifiedAt: '2026-08-17T19:00:00.000Z',
+              verificationFailed: false,
+            },
+          },
+          {
+            ...connection,
+            id: 'failed-verification',
+            status: 'CONNECTED',
+            session: {
+              state: 'CONNECTED',
+              health: 'HEALTHY',
+              reconnectRequired: false,
+              reconnectAllowed: false,
+              providerAvailability: 'AVAILABLE',
+            },
+            capabilities: {
+              capabilities: [
+                { capability: 'SPOT', state: 'VERIFICATION_FAILED' },
+                { capability: 'REST', state: 'SUPPORTED' },
+              ],
+              verifiedAt: '2026-08-17T19:05:00.000Z',
+              verificationFailed: true,
+            },
+          },
+        ]}
+      />,
+    );
+
+    expect(html).toContain('Verified capabilities');
+    expect(html).toContain('Spot Trading: Supported');
+    expect(html).toContain('Margin Trading: Unavailable');
+    expect(html).toContain('Futures: Unknown');
+    expect(html).toContain('Testnet: Unknown');
+    expect(html).toContain('REST: Supported');
+    expect(html).toContain('WebSocket: Unknown');
+    expect(html).toContain('Withdraw: Unavailable');
+    expect(html).toContain('Deposit: Unknown');
+    expect(html).toContain('Verified at 2026-08-17T19:00:00.000Z');
+    expect(html).toContain('Unavailable capability');
+    expect(html).toContain('Verification failed');
+    expect(html).toContain('They are not used');
+    expect(html).not.toContain('Trading enabled');
+    expect(html).not.toContain('Balances available');
+    expect(html).not.toContain('Place order');
+    expect(html).not.toContain('Market data available');
     expect(html).not.toContain('apiKey');
     expect(html).not.toContain('apiSecret');
   });

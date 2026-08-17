@@ -29,9 +29,10 @@ type RequestWithUser = { user: AuthUser };
 
 /**
  * W2-S01-b transport plus W2-S01-c validation, W2-S02-b exchange handshake,
- * and W2-S02-c session health projection. Credentials are passed write-only to
- * Vault and never returned. Handshake and session state for Exchange
- * connections are delegated to Exchange Connectivity.
+ * W2-S02-c session health projection, and W2-S02-d capability verification
+ * projection. Credentials are passed write-only to Vault and never returned.
+ * Handshake, session state, and verified capabilities for Exchange connections
+ * are delegated to Exchange Connectivity.
  */
 @Controller({ path: 'connections', version: '1' })
 @RequirePermission(PermissionClass.Projection)
