@@ -28,6 +28,17 @@ Identity still owns roles; Security Audit still owns persistence. No bounded con
 
 ---
 
+## F-10 Certification Remediation
+
+**Date:** 2026-08-17
+**Scope:** Mandatory Identity role-assignment audit writes only.
+
+Changed role assignments now save the Identity role and append the required `authz.role-change` Security Audit record inside the existing persistence transaction. If the append fails, the role write is rolled back and Identity's in-memory read cache is not updated. Successful assignment creates exactly one role mutation and one audit record.
+
+Authorization denials and non-mutation telemetry retain their existing handling; this remediation does not expand mandatory transactional events.
+
+---
+
 ## What shipped
 
 Role changes and C6 refusals are recorded as structured application events on the existing Logger. Privilege constraints are evidenced: role assignment is not workspace membership; Admin cannot skip Gate or Risk; later-wave products did not appear. An Administrator who tries to change their own role in People is denied and sees a clear explanation.

@@ -1,4 +1,5 @@
 import type { LogContext, Logger } from '../../logging/logger';
+import type { TransactionContext } from '../../storage/prisma/prisma-transaction.service';
 import type { SecurityAuditService } from '../security-audit/security-audit.service';
 import { persistSecurityAuditEvent } from '../security-audit/security-audit-persist';
 
@@ -19,11 +20,12 @@ export type VaultLifecycleEvent = Readonly<{
  * Structured Vault security events (V3-S03 / V3-S05-a).
  * Vault owns lifecycle facts; Security Audit persists them. No secret material.
  */
-export function recordVaultLifecycle(
+export async function recordVaultLifecycle(
   logger: Logger,
   payload: VaultLifecycleEvent,
   audit?: SecurityAuditService,
-): void {
+  transaction?: TransactionContext,
+): Promise<void> {
   const context: LogContext = {
     event: VAULT_LIFECYCLE_EVENT,
     outcome: payload.outcome,
@@ -33,7 +35,7 @@ export function recordVaultLifecycle(
     purpose: payload.purpose,
   };
   logger.info(VAULT_LIFECYCLE_EVENT, context);
-  void persistSecurityAuditEvent(audit, VAULT_LIFECYCLE_EVENT, context, 'vault');
+  await persistSecurityAuditEvent(audit, VAULT_LIFECYCLE_EVENT, context, 'vault', transaction);
 }
 
 export function recordVaultAccessDenied(

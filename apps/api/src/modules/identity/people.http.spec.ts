@@ -14,6 +14,10 @@ import type { LogContext, Logger } from '../../logging/logger';
 import { LOGGER } from '../../logging/logger.token';
 import { SecurityAuditService } from '../security-audit/security-audit.service';
 import type { SecurityAuditWrite } from '../security-audit/security-audit-record';
+import {
+  PrismaTransactionService,
+  type TransactionContext,
+} from '../../storage/prisma/prisma-transaction.service';
 import { Role } from './role';
 import type { AuthUser } from '../auth/jwt.strategy';
 import {
@@ -88,6 +92,12 @@ class RecordingSecurityAuditService {
   }
 }
 
+class ImmediateTransactionService {
+  async run<T>(work: (transaction: TransactionContext) => Promise<T>): Promise<T> {
+    return work(Object.freeze({}) as TransactionContext);
+  }
+}
+
 /**
  * C6 Admin-only. Unauthenticated 401. Invalid role 400. Last Admin 409.
  * Role-change and C6-deny events are structured logs without secrets.
@@ -109,6 +119,7 @@ describe('People HTTP (V3-S02-c)', () => {
         { provide: UserDomainService, useValue: users },
         { provide: LOGGER, useValue: events },
         { provide: SecurityAuditService, useValue: audit },
+        { provide: PrismaTransactionService, useClass: ImmediateTransactionService },
         Reflector,
       ],
     }).compile();

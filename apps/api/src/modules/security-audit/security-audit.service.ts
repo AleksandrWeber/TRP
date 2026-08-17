@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { createHash, randomUUID } from 'node:crypto';
+import type { TransactionContext } from '../../storage/prisma/prisma-transaction.service';
 import { normalizeSecurityAuditAttribution } from './security-audit-attribution';
 import { securityAuditClassificationFor } from './security-audit-classification';
 import {
@@ -25,7 +26,10 @@ export class SecurityAuditService {
     private readonly repository: SecurityAuditRepository,
   ) {}
 
-  async record(write: SecurityAuditWrite): Promise<SecurityAuditRecord> {
+  async record(
+    write: SecurityAuditWrite,
+    transaction?: TransactionContext,
+  ): Promise<SecurityAuditRecord> {
     const classification = securityAuditClassificationFor(write.eventType);
     if (!classification) {
       throw new Error(`Security Audit refuses unclassified event type: ${write.eventType}`);
@@ -70,7 +74,7 @@ export class SecurityAuditService {
       ...recordWithoutIntegrity,
       integrityHash: integrityHashFor(recordWithoutIntegrity),
     });
-    await this.repository.append(record);
+    await this.repository.append(record, transaction);
     return record;
   }
 }

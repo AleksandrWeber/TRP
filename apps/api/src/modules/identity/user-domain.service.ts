@@ -1,6 +1,10 @@
 import { Inject, Injectable, type OnModuleInit } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import {
+  PrismaTransactionService,
+  type TransactionContext,
+} from '../../storage/prisma/prisma-transaction.service';
+import {
   LastAdminProtectedError,
   SelfRoleChangeError,
   UnknownRoleError,
@@ -100,6 +104,35 @@ export class UserDomainService implements OnModuleInit {
     await this.repository.save(existing);
     this.index(existing);
     return existing;
+  }
+
+  /**
+   * Coordinates the Identity-owned role write with a mandatory externally-owned
+   * append in one existing persistence transaction. The caller supplies only
+   * the append operation; Identity retains role validation and mutation.
+   */
+  async assignRoleWithMandatoryAudit(
+    id: UserId | string,
+    role: Role,
+    actorId: string,
+    transactions: Pick<PrismaTransactionService, 'run'>,
+    appendAudit: (user: User, previousRole: Role, transaction: TransactionContext) => Promise<void>,
+  ): Promise<User | null> {
+    const existing = this.byId.get(String(id));
+    if (!existing) return null;
+
+    this.assertCanChangeRole(existing, role, actorId);
+    if (existing.role === role) return existing;
+
+    const previousRole = existing.role;
+    const updated: User = { ...existing, role };
+    const committed = await transactions.run(async (transaction) => {
+      await this.repository.save(updated, transaction);
+      await appendAudit(updated, previousRole, transaction);
+      return updated;
+    });
+    this.index(committed);
+    return committed;
   }
 
   async update(id: UserId | string, input: UpdateUserInput): Promise<User | null> {

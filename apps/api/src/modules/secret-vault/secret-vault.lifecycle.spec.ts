@@ -17,6 +17,9 @@ import {
 } from './vault-errors';
 import { vaultValidationPerformsVendorIo } from './secret-validation';
 import { staticWrappingKeySource } from './wrapping-key';
+import type { SecurityAuditService } from '../security-audit/security-audit.service';
+import type { SecurityAuditWrite } from '../security-audit/security-audit-record';
+import type { TransactionContext } from '../../storage/prisma/prisma-transaction.service';
 
 class MutableClock implements Clock {
   constructor(private iso: string) {}
@@ -35,6 +38,69 @@ const BINANCE_FIELDS = { apiKey: 'key-a', apiSecret: 'secret-a' };
 const BINANCE_REPLACEMENT = { apiKey: 'key-b', apiSecret: 'secret-b' };
 const BINANCE_REPLACEMENT_B = { apiKey: 'key-c', apiSecret: 'secret-c' };
 const testAccess = { assertCanAccess: () => undefined };
+
+class RollbackVaultRepository implements SecretVaultRepository {
+  private delegate = new InMemorySecretVaultRepository();
+  private rejectNextCompareAndSet = false;
+
+  async compareAndSet(
+    record: SecretVaultRecord,
+    expectedRevision: number | null,
+  ): Promise<boolean> {
+    if (this.rejectNextCompareAndSet) {
+      this.rejectNextCompareAndSet = false;
+      return false;
+    }
+    return this.delegate.compareAndSet(record, expectedRevision);
+  }
+
+  findBySlot(slot: SecretSlot): Promise<SecretVaultRecord | null> {
+    return this.delegate.findBySlot(slot);
+  }
+
+  listByWorkspaceId(workspaceId: string): Promise<SecretVaultRecord[]> {
+    return this.delegate.listByWorkspaceId(workspaceId);
+  }
+
+  deleteIfRevision(slot: SecretSlot, expectedRevision: number): Promise<boolean> {
+    return this.delegate.deleteIfRevision(slot, expectedRevision);
+  }
+
+  snapshot(): string {
+    return this.delegate.snapshot();
+  }
+
+  restore(snapshot: string): void {
+    this.delegate = InMemorySecretVaultRepository.fromSnapshot(snapshot);
+  }
+
+  rejectNextWrite(): void {
+    this.rejectNextCompareAndSet = true;
+  }
+}
+
+class SnapshotTransactionService {
+  constructor(private readonly repository: RollbackVaultRepository) {}
+
+  async run<T>(work: (transaction: TransactionContext) => Promise<T>): Promise<T> {
+    const snapshot = this.repository.snapshot();
+    try {
+      return await work(Object.freeze({}) as TransactionContext);
+    } catch (error) {
+      this.repository.restore(snapshot);
+      throw error;
+    }
+  }
+}
+
+class RecordingSecurityAuditService {
+  readonly writes: SecurityAuditWrite[] = [];
+
+  async record(write: SecurityAuditWrite): Promise<{ id: string }> {
+    this.writes.push(write);
+    return { id: `audit-${this.writes.length}` };
+  }
+}
 
 class StaleOnceRepository implements SecretVaultRepository {
   private stale = true;
@@ -101,6 +167,75 @@ describe('Secret Vault lifecycle (V3-S03-c)', () => {
     expect(metadataContainsSecretFields(stored.metadata)).toBe(false);
     expect(JSON.stringify(stored.metadata)).not.toContain('key-a');
     expect(service.vaultConnectedMeansProviderWorks()).toBe(false);
+  });
+
+  it('commits one vault lifecycle mutation with one mandatory audit append', async () => {
+    const repository = new RollbackVaultRepository();
+    const audit = new RecordingSecurityAuditService();
+    const service = new SecretVaultService(
+      repository,
+      new MutableClock('2026-08-17T12:00:00.000Z'),
+      staticWrappingKeySource(WRAPPING_KEY),
+      testAccess,
+      undefined,
+      audit as unknown as SecurityAuditService,
+      new SnapshotTransactionService(repository),
+    );
+
+    await service.store({
+      actorWorkspaceId: 'ws-a',
+      workspaceId: 'ws-a',
+      type: HoldableSecretType.Binance,
+      fields: BINANCE_FIELDS,
+    });
+
+    expect(await service.list('ws-a', 'ws-a')).toHaveLength(1);
+    expect(audit.writes).toEqual([
+      expect.objectContaining({ eventType: 'vault.lifecycle', outcome: 'created' }),
+    ]);
+
+    repository.rejectNextWrite();
+    await service.replace({
+      actorWorkspaceId: 'ws-a',
+      workspaceId: 'ws-a',
+      type: HoldableSecretType.Binance,
+      fields: BINANCE_REPLACEMENT,
+    });
+
+    expect(await service.list('ws-a', 'ws-a')).toHaveLength(1);
+    expect(audit.writes).toEqual([
+      expect.objectContaining({ eventType: 'vault.lifecycle', outcome: 'created' }),
+      expect.objectContaining({ eventType: 'vault.lifecycle', outcome: 'replaced' }),
+    ]);
+  });
+
+  it('rolls back a vault lifecycle mutation when its mandatory audit append fails', async () => {
+    const repository = new RollbackVaultRepository();
+    const failingAudit = {
+      record: async () => {
+        throw new Error('audit append failed');
+      },
+    };
+    const service = new SecretVaultService(
+      repository,
+      new MutableClock('2026-08-17T12:00:00.000Z'),
+      staticWrappingKeySource(WRAPPING_KEY),
+      testAccess,
+      undefined,
+      failingAudit as unknown as SecurityAuditService,
+      new SnapshotTransactionService(repository),
+    );
+
+    await expect(
+      service.store({
+        actorWorkspaceId: 'ws-a',
+        workspaceId: 'ws-a',
+        type: HoldableSecretType.Binance,
+        fields: BINANCE_FIELDS,
+      }),
+    ).rejects.toThrow('audit append failed');
+
+    expect(await service.list('ws-a', 'ws-a')).toEqual([]);
   });
 
   it('validates well-formed fields without storing and without vendor I/O', async () => {

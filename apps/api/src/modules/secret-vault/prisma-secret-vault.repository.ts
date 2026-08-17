@@ -1,5 +1,9 @@
 import type { PrismaClient } from '@prisma/client';
 import {
+  prismaClientForTransaction,
+  type TransactionContext,
+} from '../../storage/prisma/prisma-transaction.service';
+import {
   cloneSecretCiphertext,
   isSecretCiphertext,
   type SecretCiphertext,
@@ -92,12 +96,14 @@ export class PrismaSecretVaultRepository implements SecretVaultRepository {
   async compareAndSet(
     record: SecretVaultRecord,
     expectedRevision: number | null,
+    transaction?: TransactionContext,
   ): Promise<boolean> {
     assertCiphertextOnlyPersist(record);
+    const client = transaction ? prismaClientForTransaction(transaction) : this.prisma;
     const columns = ciphertextColumns(record.ciphertext);
     if (expectedRevision === null) {
       try {
-        await this.prisma.vaultSecret.create({
+        await client.vaultSecret.create({
           data: {
             id: record.id,
             workspaceId: record.workspaceId,
@@ -116,7 +122,7 @@ export class PrismaSecretVaultRepository implements SecretVaultRepository {
         throw error;
       }
     }
-    const updated = await this.prisma.vaultSecret.updateMany({
+    const updated = await client.vaultSecret.updateMany({
       where: {
         id: record.id,
         workspaceId: record.workspaceId,
@@ -154,8 +160,13 @@ export class PrismaSecretVaultRepository implements SecretVaultRepository {
     return rows.map((row) => toRecord(row));
   }
 
-  async deleteIfRevision(slot: SecretSlot, expectedRevision: number): Promise<boolean> {
-    const deleted = await this.prisma.vaultSecret.deleteMany({
+  async deleteIfRevision(
+    slot: SecretSlot,
+    expectedRevision: number,
+    transaction?: TransactionContext,
+  ): Promise<boolean> {
+    const client = transaction ? prismaClientForTransaction(transaction) : this.prisma;
+    const deleted = await client.vaultSecret.deleteMany({
       where: {
         workspaceId: slot.workspaceId,
         type: slot.type,

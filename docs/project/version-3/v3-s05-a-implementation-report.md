@@ -9,6 +9,15 @@
 
 Security Audit remains the sole persistence owner. This remediation creates no new event store, bounded context, product feature, or Master Plan change.
 
+## F-10 Certification Remediation
+
+**Date:** 2026-08-17
+**Scope:** Existing mandatory role-assignment and Vault lifecycle audit records.
+
+Security Audit append now accepts the existing opaque transaction context used by the Identity and Vault repositories. The owner services execute their privileged mutation and the Audit append in that one transaction, so an append error aborts both writes. Security Audit retains record construction, validation, and persistence ownership; it does not own or mutate Identity or Vault state.
+
+Platform security signals, denied-access facts without a state mutation, and other informational events intentionally remain best-effort.
+
 ## Delivered
 
 Security Audit now owns a durable append-only record model and internal write

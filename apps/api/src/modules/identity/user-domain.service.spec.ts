@@ -8,6 +8,20 @@ import { Role } from './role';
 import { InMemoryUserRepository } from './repositories/in-memory-user.repository';
 import { UserDomainService } from './user-domain.service';
 import { UserStatus } from './user-status';
+import type { TransactionContext } from '../../storage/prisma/prisma-transaction.service';
+
+class RollbackTransactionService {
+  constructor(private readonly rollback: () => Promise<void>) {}
+
+  async run<T>(work: (transaction: TransactionContext) => Promise<T>): Promise<T> {
+    try {
+      return await work(Object.freeze({}) as TransactionContext);
+    } catch (error) {
+      await this.rollback();
+      throw error;
+    }
+  }
+}
 
 describe('UserDomainService (US105, US107)', () => {
   let service: UserDomainService;
@@ -123,6 +137,56 @@ describe('UserDomainService (US105, US107)', () => {
 
     expect(assigned?.role).toBe(Role.Trader);
     expect(service.getById(created.id)?.role).toBe(Role.Trader);
+  });
+
+  it('commits one role mutation only after its mandatory audit append succeeds', async () => {
+    const repository = new InMemoryUserRepository();
+    const atomicService = new UserDomainService(repository);
+    const created = await atomicService.create({
+      email: 'atomic@example.com',
+      displayName: 'Atomic',
+    });
+    let auditWrites = 0;
+
+    const assigned = await atomicService.assignRoleWithMandatoryAudit(
+      created.id,
+      Role.Trader,
+      'admin-1',
+      new RollbackTransactionService(async () => undefined),
+      async () => {
+        auditWrites += 1;
+      },
+    );
+
+    expect(assigned?.role).toBe(Role.Trader);
+    expect(atomicService.getById(created.id)?.role).toBe(Role.Trader);
+    expect(await repository.findById(created.id)).toMatchObject({ role: Role.Trader });
+    expect(auditWrites).toBe(1);
+  });
+
+  it('rolls back a role mutation when its mandatory audit append fails', async () => {
+    const repository = new InMemoryUserRepository();
+    const atomicService = new UserDomainService(repository);
+    const created = await atomicService.create({
+      email: 'rollback@example.com',
+      displayName: 'Rollback',
+    });
+    const original = { ...created };
+
+    await expect(
+      atomicService.assignRoleWithMandatoryAudit(
+        created.id,
+        Role.Trader,
+        'admin-1',
+        new RollbackTransactionService(() => repository.save(original)),
+        async () => {
+          throw new Error('audit append failed');
+        },
+      ),
+    ).rejects.toThrow('audit append failed');
+
+    expect(atomicService.getById(created.id)?.role).toBe(Role.Researcher);
+    expect(await repository.findById(created.id)).toMatchObject({ role: Role.Researcher });
   });
 
   it('assignRole returns null when the user is missing', async () => {

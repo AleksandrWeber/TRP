@@ -18,6 +18,10 @@ import { AssignRoleBodyDto, PeopleUserIdParamDto, VALIDATION_PIPE_OPTIONS } from
 import type { AuthUser } from '../auth/jwt.strategy';
 import { SecurityAuditService } from '../security-audit/security-audit.service';
 import { recordRoleChange, type RoleChangeReason } from '../auth/authorization-events';
+import {
+  PrismaTransactionService,
+  type TransactionContext,
+} from '../../storage/prisma/prisma-transaction.service';
 import { RequirePermission } from '../auth/decorators/require-permission.decorator';
 import { PermissionClass } from '../auth/permission-catalog';
 import {
@@ -52,6 +56,7 @@ export class PeopleController {
     @Inject(UserDomainService) private readonly users: UserDomainService,
     @Inject(LOGGER) logger: Logger,
     @Inject(SecurityAuditService) private readonly audit: SecurityAuditService,
+    @Inject(PrismaTransactionService) private readonly transactions: PrismaTransactionService,
   ) {
     this.logger = logger.child('PeopleController');
   }
@@ -73,7 +78,23 @@ export class PeopleController {
     const existing = this.users.getById(params.userId);
     const fromRole = existing?.role;
     try {
-      const user = await this.users.assignRole(params.userId, body.role, actorUserId);
+      const user = await this.users.assignRoleWithMandatoryAudit(
+        params.userId,
+        body.role,
+        actorUserId,
+        this.transactions,
+        (assignedUser, previousRole, transaction) =>
+          this.recordAssignment(
+            {
+              outcome: 'assigned',
+              actorUserId,
+              subjectUserId: assignedUser.id,
+              fromRole: previousRole,
+              toRole: assignedUser.role,
+            },
+            transaction,
+          ),
+      );
       if (!user) {
         await this.recordAssignment({
           outcome: 'denied',
@@ -84,15 +105,6 @@ export class PeopleController {
           reason: 'not_found',
         });
         throw new NotFoundException('User not found');
-      }
-      if (fromRole !== user.role) {
-        await this.recordAssignment({
-          outcome: 'assigned',
-          actorUserId,
-          subjectUserId: user.id,
-          fromRole,
-          toRole: user.role,
-        });
       }
       return toOperatorView(user);
     } catch (error) {
@@ -111,15 +123,18 @@ export class PeopleController {
     }
   }
 
-  private async recordAssignment(payload: {
-    outcome: 'assigned' | 'denied';
-    actorUserId: string;
-    subjectUserId: string;
-    fromRole?: string;
-    toRole?: string;
-    reason?: RoleChangeReason;
-  }): Promise<void> {
-    await recordRoleChange(this.logger, payload, this.audit);
+  private async recordAssignment(
+    payload: {
+      outcome: 'assigned' | 'denied';
+      actorUserId: string;
+      subjectUserId: string;
+      fromRole?: string;
+      toRole?: string;
+      reason?: RoleChangeReason;
+    },
+    transaction?: TransactionContext,
+  ): Promise<void> {
+    await recordRoleChange(this.logger, payload, this.audit, transaction);
   }
 }
 

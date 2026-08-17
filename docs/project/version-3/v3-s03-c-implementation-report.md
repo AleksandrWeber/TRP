@@ -15,6 +15,17 @@ The Implementation Package named this slice “Credential validation (no vendor 
 
 ---
 
+## F-10 Certification Remediation
+
+**Date:** 2026-08-17
+**Scope:** Mandatory Vault lifecycle audit writes only.
+
+Vault create, replace, revoke, and delete now perform the Vault-owned mutation and required `vault.lifecycle` Security Audit append inside the existing persistence transaction. An append failure rolls back the lifecycle change; a successful lifecycle mutation produces one audit record. This adds no event bus, outbox, retry worker, persistence layer, or Vault API surface.
+
+Vault access denials and non-mutation diagnostics are not changed by this remediation.
+
+---
+
 ## What shipped
 
 The Credential Vault now owns the secret lifecycle end to end. Created → Validated → Connected → Revoked → Deleted is enforced. Well-formed fields are required before store. Corrupted ciphertext fails closed: integrity check fails, the secret is unavailable, nothing is returned, paper continues.

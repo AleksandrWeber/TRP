@@ -1,4 +1,8 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
+import {
+  prismaClientForTransaction,
+  type TransactionContext,
+} from '../../storage/prisma/prisma-transaction.service';
 import type { SecurityAuditRecord, SecurityAuditTimelinePage } from './security-audit-record';
 import { toSecurityAuditRecord } from './security-audit-record.mapper';
 import type { SecurityAuditRepository } from './security-audit.repository';
@@ -7,8 +11,9 @@ import type { SecurityAuditRepository } from './security-audit.repository';
 export class PrismaSecurityAuditRepository implements SecurityAuditRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async append(record: SecurityAuditRecord): Promise<void> {
-    await this.prisma.securityAuditRecord.create({
+  async append(record: SecurityAuditRecord, transaction?: TransactionContext): Promise<void> {
+    const client = transaction ? prismaClientForTransaction(transaction) : this.prisma;
+    await client.securityAuditRecord.create({
       data: {
         id: record.id,
         eventType: record.eventType,

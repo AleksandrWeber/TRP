@@ -3,13 +3,14 @@ import type {
   SecurityAuditTimelineCursor,
   SecurityAuditTimelinePage,
 } from './security-audit-record';
+import type { TransactionContext } from '../../storage/prisma/prisma-transaction.service';
 
 /**
  * Append-only persistence port. There are deliberately no update or delete
  * operations on product paths.
  */
 export interface SecurityAuditRepository {
-  append(record: SecurityAuditRecord): Promise<void>;
+  append(record: SecurityAuditRecord, transaction?: TransactionContext): Promise<void>;
   /** Internal-only complete read for deterministic integrity verification. */
   readAllForIntegrityVerification(): Promise<readonly SecurityAuditRecord[]>;
   /**

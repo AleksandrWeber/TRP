@@ -1,4 +1,5 @@
 import type { LogContext, Logger } from '../../logging/logger';
+import type { TransactionContext } from '../../storage/prisma/prisma-transaction.service';
 import type { SecurityAuditService } from '../security-audit/security-audit.service';
 import { persistSecurityAuditEvent } from '../security-audit/security-audit-persist';
 import { PermissionClass } from './permission-catalog';
@@ -38,6 +39,7 @@ export async function recordRoleChange(
   logger: Logger,
   payload: RoleChangeEvent,
   audit?: SecurityAuditService,
+  transaction?: TransactionContext,
 ): Promise<void> {
   const context = toRoleChangeContext(payload);
   if (payload.outcome === 'assigned') {
@@ -45,7 +47,13 @@ export async function recordRoleChange(
   } else {
     logger.warn(AUTHZ_ROLE_CHANGE_EVENT, context);
   }
-  await persistSecurityAuditEvent(audit, AUTHZ_ROLE_CHANGE_EVENT, context, 'authorization');
+  await persistSecurityAuditEvent(
+    audit,
+    AUTHZ_ROLE_CHANGE_EVENT,
+    context,
+    'authorization',
+    transaction,
+  );
 }
 
 export function recordC6Deny(

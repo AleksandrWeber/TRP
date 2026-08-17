@@ -1,4 +1,8 @@
 import { Prisma, type PrismaClient, type User as PrismaUser } from '@prisma/client';
+import {
+  prismaClientForTransaction,
+  type TransactionContext,
+} from '../../../storage/prisma/prisma-transaction.service';
 import type { User } from '../user';
 import { toUserId, type UserId } from '../user-id';
 import { UserStatus } from '../user-status';
@@ -13,9 +17,10 @@ import type { UserRepository } from './user.repository';
 export class PrismaUserRepository implements UserRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async save(user: User): Promise<void> {
+  async save(user: User, transaction?: TransactionContext): Promise<void> {
     try {
-      await this.prisma.user.upsert({
+      const client = transaction ? prismaClientForTransaction(transaction) : this.prisma;
+      await client.user.upsert({
         where: { id: user.id },
         create: {
           id: user.id,

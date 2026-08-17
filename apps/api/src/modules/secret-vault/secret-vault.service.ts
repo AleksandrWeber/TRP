@@ -1,5 +1,9 @@
 import { Inject, Injectable, Optional } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
+import {
+  PrismaTransactionService,
+  type TransactionContext,
+} from '../../storage/prisma/prisma-transaction.service';
 import type { Logger } from '../../logging/logger';
 import { LOGGER } from '../../logging/logger.token';
 import { NoOpLogger } from '../../logging/noop.logger';
@@ -97,6 +101,9 @@ export class SecretVaultService {
     private readonly accessControl: Pick<VaultAccessControl, 'assertCanAccess'>,
     @Optional() @Inject(LOGGER) logger?: Logger,
     @Optional() @Inject(SecurityAuditService) private readonly audit?: SecurityAuditService,
+    @Optional()
+    @Inject(PrismaTransactionService)
+    private readonly transactions?: Pick<PrismaTransactionService, 'run'>,
   ) {
     this.logger = logger?.child(SecretVaultService.name) ?? new NoOpLogger();
   }
@@ -189,48 +196,53 @@ export class SecretVaultService {
 
   async revoke(query: WorkspaceScopedQuery): Promise<SecretVaultMetadata> {
     this.authorize(query);
-    for (let attempt = 0; attempt < MAX_CONCURRENCY_RETRIES; attempt += 1) {
-      const record = await this.requireStored(query);
-      this.requireTransition(record.state, SecretState.Revoked);
-      const updated: SecretVaultRecord = Object.freeze({
-        ...record,
-        state: SecretState.Revoked,
-        revision: record.revision + 1,
-        ciphertext: null,
-        updatedAt: this.clock.nowIso(),
-      });
-      if (await this.repository.compareAndSet(updated, record.revision)) {
-        this.emitVaultLifecycle(query, record.type, record.purpose, 'revoked');
-        return this.metadataFrom(updated);
+    return this.runMandatoryAuditTransaction(async (transaction) => {
+      for (let attempt = 0; attempt < MAX_CONCURRENCY_RETRIES; attempt += 1) {
+        const record = await this.requireStored(query);
+        this.requireTransition(record.state, SecretState.Revoked);
+        const updated: SecretVaultRecord = Object.freeze({
+          ...record,
+          state: SecretState.Revoked,
+          revision: record.revision + 1,
+          ciphertext: null,
+          updatedAt: this.clock.nowIso(),
+        });
+        if (await this.repository.compareAndSet(updated, record.revision, transaction)) {
+          await this.emitVaultLifecycle(query, record.type, record.purpose, 'revoked', transaction);
+          return this.metadataFrom(updated);
+        }
       }
-    }
-    throw new VaultLifecycleError();
+      throw new VaultLifecycleError();
+    });
   }
 
   async delete(query: WorkspaceScopedQuery): Promise<void> {
     this.authorize(query);
-    for (let attempt = 0; attempt < MAX_CONCURRENCY_RETRIES; attempt += 1) {
-      const record = await this.findSlot(query);
-      if (!record) {
-        throw new VaultNotStoredError();
+    await this.runMandatoryAuditTransaction(async (transaction) => {
+      for (let attempt = 0; attempt < MAX_CONCURRENCY_RETRIES; attempt += 1) {
+        const record = await this.findSlot(query);
+        if (!record) {
+          throw new VaultNotStoredError();
+        }
+        if (record.state === SecretState.Connected) {
+          this.requireTransition(SecretState.Connected, SecretState.Revoked);
+          this.requireTransition(SecretState.Revoked, SecretState.Deleted);
+        } else {
+          this.requireTransition(record.state, SecretState.Deleted);
+        }
+        if (
+          await this.repository.deleteIfRevision(
+            this.slot(query, record.type, record.purpose),
+            record.revision,
+            transaction,
+          )
+        ) {
+          await this.emitVaultLifecycle(query, record.type, record.purpose, 'deleted', transaction);
+          return;
+        }
       }
-      if (record.state === SecretState.Connected) {
-        this.requireTransition(SecretState.Connected, SecretState.Revoked);
-        this.requireTransition(SecretState.Revoked, SecretState.Deleted);
-      } else {
-        this.requireTransition(record.state, SecretState.Deleted);
-      }
-      if (
-        await this.repository.deleteIfRevision(
-          this.slot(query, record.type, record.purpose),
-          record.revision,
-        )
-      ) {
-        this.emitVaultLifecycle(query, record.type, record.purpose, 'deleted');
-        return;
-      }
-    }
-    throw new VaultLifecycleError();
+      throw new VaultLifecycleError();
+    });
   }
 
   vaultConnectedMeansProviderWorks(): false {
@@ -257,38 +269,40 @@ export class SecretVaultService {
     const wrappingKey = requireWrappingKey(this.wrappingKeySource);
     lifecycle.push(this.requireTransition(SecretState.Validated, SecretState.Connected));
 
-    for (let attempt = 0; attempt < MAX_CONCURRENCY_RETRIES; attempt += 1) {
-      const existing = await this.repository.findBySlot(slot);
-      if (options.requireExisting && !existing) {
-        throw new VaultNotStoredError();
-      }
-      if (existing) {
-        this.requireTransition(existing.state, SecretState.Created);
-      }
-      const now = this.clock.nowIso();
-      const record: SecretVaultRecord = Object.freeze({
-        id: existing?.id ?? randomUUID(),
-        workspaceId: input.workspaceId,
-        type,
-        purpose,
-        state: SecretState.Connected,
-        revision: existing ? existing.revision + 1 : 0,
-        ciphertext: wrapSecretFields(material, wrappingKey, slot),
-        createdAt: existing?.createdAt ?? now,
-        updatedAt: now,
-      });
-      assertCiphertextOnlyPersist(record);
-      if (await this.repository.compareAndSet(record, existing?.revision ?? null)) {
-        const outcome: VaultLifecycleOutcome = options.requireExisting
-          ? 'replaced'
-          : existing
+    return this.runMandatoryAuditTransaction(async (transaction) => {
+      for (let attempt = 0; attempt < MAX_CONCURRENCY_RETRIES; attempt += 1) {
+        const existing = await this.repository.findBySlot(slot);
+        if (options.requireExisting && !existing) {
+          throw new VaultNotStoredError();
+        }
+        if (existing) {
+          this.requireTransition(existing.state, SecretState.Created);
+        }
+        const now = this.clock.nowIso();
+        const record: SecretVaultRecord = Object.freeze({
+          id: existing?.id ?? randomUUID(),
+          workspaceId: input.workspaceId,
+          type,
+          purpose,
+          state: SecretState.Connected,
+          revision: existing ? existing.revision + 1 : 0,
+          ciphertext: wrapSecretFields(material, wrappingKey, slot),
+          createdAt: existing?.createdAt ?? now,
+          updatedAt: now,
+        });
+        assertCiphertextOnlyPersist(record);
+        if (await this.repository.compareAndSet(record, existing?.revision ?? null, transaction)) {
+          const outcome: VaultLifecycleOutcome = options.requireExisting
             ? 'replaced'
-            : 'created';
-        this.emitVaultLifecycle(input, type, purpose, outcome);
-        return { metadata: this.metadataFrom(record), lifecycle };
+            : existing
+              ? 'replaced'
+              : 'created';
+          await this.emitVaultLifecycle(input, type, purpose, outcome, transaction);
+          return { metadata: this.metadataFrom(record), lifecycle };
+        }
       }
-    }
-    throw new VaultLifecycleError();
+      throw new VaultLifecycleError();
+    });
   }
 
   private unwrapOrFailClosed(record: SecretVaultRecord): SecretFieldMap {
@@ -391,13 +405,14 @@ export class SecretVaultService {
     // Vault never auto-imports process.env. Operators re-enter secrets.
   }
 
-  private emitVaultLifecycle(
+  private async emitVaultLifecycle(
     scope: Pick<WorkspaceScopedQuery, 'actorWorkspaceId' | 'workspaceId'>,
     type: HoldableSecretType,
     purpose: SecretPurpose,
     outcome: VaultLifecycleOutcome,
-  ): void {
-    recordVaultLifecycle(
+    transaction?: TransactionContext,
+  ): Promise<void> {
+    await recordVaultLifecycle(
       this.logger,
       {
         outcome,
@@ -407,6 +422,14 @@ export class SecretVaultService {
         purpose,
       },
       this.audit,
+      transaction,
     );
+  }
+
+  private async runMandatoryAuditTransaction<T>(
+    work: (transaction?: TransactionContext) => Promise<T>,
+  ): Promise<T> {
+    if (!this.audit || !this.transactions) return work();
+    return this.transactions.run((transaction) => work(transaction));
   }
 }
