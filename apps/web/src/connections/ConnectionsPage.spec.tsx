@@ -46,12 +46,17 @@ const connection: ConnectionMetadataView = {
   updatedAt: '2026-08-17T16:00:00.000Z',
 };
 
-describe('Connections UI (W2-S01-a)', () => {
-  it('renders the catalog, metadata creation, and disconnected status', () => {
+describe('Connections UI (W2-S01-c)', () => {
+  it('renders validation actions and every validation state without exposing credentials', () => {
     const html = renderToStaticMarkup(
       <ConnectionsView
         catalog={catalog}
-        connections={[connection]}
+        connections={[
+          connection,
+          { ...connection, id: 'connection-2', status: 'PENDING_VALIDATION' },
+          { ...connection, id: 'connection-3', status: 'CONNECTED' },
+          { ...connection, id: 'connection-4', status: 'VALIDATION_FAILED' },
+        ]}
         displayName=""
         provider="BINANCE"
         renameId={null}
@@ -72,6 +77,7 @@ describe('Connections UI (W2-S01-a)', () => {
         onCredentialValue={() => undefined}
         onStoreCredentials={(event) => event.preventDefault()}
         onCancelCredentials={() => undefined}
+        onValidate={() => undefined}
       />,
     );
 
@@ -84,8 +90,11 @@ describe('Connections UI (W2-S01-a)', () => {
     expect(html).toContain('Create metadata entry');
     expect(html).toContain('Primary Binance');
     expect(html).toContain('Disconnected');
-    expect(html).not.toContain('>Connected<');
-    expect(html).not.toContain('Validate');
+    expect(html).toContain('Pending Validation');
+    expect(html).toContain('Connected');
+    expect(html).toContain('Validation Failed');
+    expect(html).toContain('Run Validate');
+    expect(html).toContain('Retry validation');
     expect(html).toContain('Credentials stored securely.');
     expect(html).toContain('Replace credentials');
     expect(html).toContain('type="password"');

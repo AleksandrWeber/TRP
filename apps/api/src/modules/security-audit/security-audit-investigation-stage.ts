@@ -22,6 +22,7 @@ export function investigationStageFor(record: SecurityAuditRecord): Investigatio
     case 'privilege':
       return 'escalation';
     case 'vault':
+    case 'connection':
       return 'credential-impact';
     case 'security-platform':
       return 'pressure';

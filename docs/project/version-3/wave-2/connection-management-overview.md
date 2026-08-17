@@ -26,6 +26,14 @@ Saving credentials changes neither the connection status nor product claims. Eve
 
 ---
 
+## W2-S01-c delivered validation foundation
+
+Operators can now run a validation workflow for a connection with stored credentials. The row shows **Pending Validation** while validation runs, then **Connected** when the current local configuration contract succeeds or **Validation Failed** when it does not. A failed validation can be retried.
+
+This does not call a provider and does not establish live trading, message delivery, SMTP delivery, or AI execution. Credentials remain write-only and are never shown in the validation workflow.
+
+---
+
 ## Purpose
 
 Connection Management is the place in the product where an operator manages connections to external services — exchanges, Telegram, email (SMTP), and OpenRouter — without editing a server file.

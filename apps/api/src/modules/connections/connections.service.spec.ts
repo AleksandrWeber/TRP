@@ -59,12 +59,13 @@ function memoryPrisma() {
         data,
       }: {
         where: { id: string };
-        data: Partial<Pick<ConnectionRow, 'displayName' | 'vaultSecretId'>>;
+        data: Partial<Pick<ConnectionRow, 'displayName' | 'vaultSecretId' | 'status'>>;
       }) => {
         const row = rows.find((candidate) => candidate.id === where.id);
         if (!row) throw new Error('missing');
         if (data.displayName !== undefined) row.displayName = data.displayName;
         if (data.vaultSecretId !== undefined) row.vaultSecretId = data.vaultSecretId;
+        if (data.status !== undefined) row.status = data.status;
         row.updatedAt = new Date('2026-08-17T16:05:00.000Z');
         return row;
       },
@@ -76,6 +77,7 @@ function memoryVault() {
   let secret: { id: string; workspaceId: string; type: string } | null = null;
   return {
     get: async () => secret,
+    retrieve: async () => ({ apiKey: 'key-one', apiSecret: 'secret-one' }),
     store: async (input: { workspaceId: string; type: string; fields: Record<string, string> }) => {
       secret = { id: 'vault-secret-1', workspaceId: input.workspaceId, type: input.type };
       return { metadata: secret, lifecycle: [] };
@@ -93,9 +95,28 @@ function memoryVault() {
   };
 }
 
+function successfulValidator() {
+  return { validate: async () => ({ outcome: 'succeeded' as const }) };
+}
+
+function validationAudit() {
+  const events: Array<{ outcome: string; workspaceId: string; connectionId: string }> = [];
+  return {
+    events,
+    record: async (event: { outcome: string; workspaceId: string; connectionId: string }) => {
+      events.push(event);
+    },
+  };
+}
+
 describe('ConnectionsService (W2-S01)', () => {
   it('creates metadata only with the provider type and disconnected default', async () => {
-    const service = new ConnectionsService(memoryPrisma() as never, memoryVault() as never);
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      memoryVault() as never,
+      successfulValidator(),
+      validationAudit() as never,
+    );
     const connection = await service.create({
       workspaceId: 'workspace-a',
       displayName: ' Primary Binance ',
@@ -113,7 +134,12 @@ describe('ConnectionsService (W2-S01)', () => {
   });
 
   it('keeps CRUD metadata inside the owning workspace', async () => {
-    const service = new ConnectionsService(memoryPrisma() as never, memoryVault() as never);
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      memoryVault() as never,
+      successfulValidator(),
+      validationAudit() as never,
+    );
     const created = await service.create({
       workspaceId: 'workspace-a',
       displayName: 'Telegram alerts',
@@ -134,7 +160,12 @@ describe('ConnectionsService (W2-S01)', () => {
 
   it('stores and replaces credentials in Vault without returning them or changing status', async () => {
     const vault = memoryVault();
-    const service = new ConnectionsService(memoryPrisma() as never, vault as never);
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      vault as never,
+      successfulValidator(),
+      validationAudit() as never,
+    );
     const created = await service.create({
       workspaceId: 'workspace-a',
       displayName: 'Primary Binance',
@@ -164,5 +195,90 @@ describe('ConnectionsService (W2-S01)', () => {
     expect(replaced.status).toBe('DISCONNECTED');
     expect(JSON.stringify(replaced)).not.toContain('key-two');
     expect(JSON.stringify(replaced)).not.toContain('secret-two');
+  });
+
+  it('moves a credentialed connection to Connected only through successful validation', async () => {
+    const vault = memoryVault();
+    const audit = validationAudit();
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      vault as never,
+      successfulValidator(),
+      audit as never,
+    );
+    const created = await service.create({
+      workspaceId: 'workspace-a',
+      displayName: 'Primary Binance',
+      provider: 'BINANCE',
+    });
+    await service.storeCredentials({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+      credentials: { apiKey: 'key-one', apiSecret: 'secret-one' },
+    });
+
+    const validated = await service.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+    });
+
+    expect(validated.status).toBe('CONNECTED');
+    expect(audit.events.map((event) => event.outcome)).toEqual(['started', 'succeeded']);
+    expect(JSON.stringify(validated)).not.toContain('key-one');
+
+    const replaced = await service.replaceCredentials({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+      credentials: { apiKey: 'key-two', apiSecret: 'secret-two' },
+    });
+    expect(replaced.status).toBe('DISCONNECTED');
+  });
+
+  it('ends validation as Validation Failed and allows a retry', async () => {
+    const prisma = memoryPrisma();
+    const vault = memoryVault();
+    const audit = validationAudit();
+    const service = new ConnectionsService(
+      prisma as never,
+      vault as never,
+      { validate: async () => ({ outcome: 'failed' as const }) },
+      audit as never,
+    );
+    const created = await service.create({
+      workspaceId: 'workspace-a',
+      displayName: 'Primary Binance',
+      provider: 'BINANCE',
+    });
+    await service.storeCredentials({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+      credentials: { apiKey: 'key-one', apiSecret: 'secret-one' },
+    });
+
+    const failed = await service.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+    });
+    expect(failed.status).toBe('VALIDATION_FAILED');
+    expect(audit.events.map((event) => event.outcome)).toEqual(['started', 'failed']);
+
+    await expect(
+      service.validate({
+        workspaceId: 'workspace-b',
+        actorUserId: 'operator-b',
+        actorRole: Role.Trader,
+        id: created.id,
+      }),
+    ).rejects.toThrow('Connection not found');
   });
 });

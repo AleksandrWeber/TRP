@@ -102,6 +102,27 @@ export function ConnectionsPage() {
     }
   }
 
+  async function validate(connection: ConnectionMetadataView) {
+    setSaving(true);
+    setError(null);
+    setConnections((items) =>
+      items.map((item) =>
+        item.id === connection.id ? { ...item, status: 'PENDING_VALIDATION' } : item,
+      ),
+    );
+    try {
+      const validated = await api.validateConnection(connection.id);
+      setConnections((items) => items.map((item) => (item.id === validated.id ? validated : item)));
+    } catch (reason) {
+      setConnections((items) =>
+        items.map((item) => (item.id === connection.id ? connection : item)),
+      );
+      setError(toUserFacingError(reason, 'Validation could not be completed.'));
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <ConnectionsView
       catalog={catalog}
@@ -137,6 +158,7 @@ export function ConnectionsPage() {
         setCredentialConnection(null);
         setCredentialValues({});
       }}
+      onValidate={validate}
     />
   );
 }

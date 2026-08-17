@@ -28,6 +28,7 @@ export type ConnectionsViewProps = {
   onCredentialValue: (field: string, value: string) => void;
   onStoreCredentials: (event: FormEvent<HTMLFormElement>) => void;
   onCancelCredentials: () => void;
+  onValidate: (connection: ConnectionMetadataView) => void;
 };
 
 export function ConnectionsView({
@@ -53,6 +54,7 @@ export function ConnectionsView({
   onCredentialValue,
   onStoreCredentials,
   onCancelCredentials,
+  onValidate,
 }: ConnectionsViewProps) {
   const credentialProvider = catalog?.connectionTypes
     .flatMap((type) => type.providers)
@@ -64,8 +66,8 @@ export function ConnectionsView({
         <p className="text-sm uppercase tracking-[0.2em] text-slate-400">Workspace connections</p>
         <h2 className="mt-1 text-3xl font-semibold">Connections</h2>
         <p className="mt-2 max-w-3xl text-slate-400">
-          Create provider metadata for this workspace. All connections remain Disconnected until a
-          later product capability provides validation.
+          Store provider credentials and validate that the configured connection satisfies the
+          current contract. Connected does not indicate live trading, delivery, or AI execution.
         </p>
       </div>
 
@@ -145,7 +147,9 @@ export function ConnectionsView({
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <span className="rounded bg-slate-700 px-2 py-1 text-xs">Disconnected</span>
+                <span className="rounded bg-slate-700 px-2 py-1 text-xs">
+                  {statusLabel(connection.status)}
+                </span>
                 <span className="text-xs text-slate-400">
                   {connection.credentialsStored
                     ? 'Credentials stored securely.'
@@ -158,6 +162,20 @@ export function ConnectionsView({
                 >
                   {connection.credentialsStored ? 'Replace credentials' : 'Store credentials'}
                 </button>
+                {connection.credentialsStored &&
+                (connection.status === 'DISCONNECTED' ||
+                  connection.status === 'VALIDATION_FAILED') ? (
+                  <button
+                    type="button"
+                    onClick={() => onValidate(connection)}
+                    disabled={saving}
+                    className="text-sm text-sky-300 underline disabled:opacity-50"
+                  >
+                    {connection.status === 'VALIDATION_FAILED'
+                      ? 'Retry validation'
+                      : 'Run Validate'}
+                  </button>
+                ) : null}
                 <button
                   type="button"
                   onClick={() => onStartRename(connection)}
@@ -250,4 +268,17 @@ export function ConnectionsView({
 
 function fieldLabel(field: string): string {
   return field.replace(/([A-Z])/g, ' $1').replace(/^./, (value) => value.toUpperCase());
+}
+
+function statusLabel(status: ConnectionMetadataView['status']): string {
+  switch (status) {
+    case 'PENDING_VALIDATION':
+      return 'Pending Validation';
+    case 'CONNECTED':
+      return 'Connected';
+    case 'VALIDATION_FAILED':
+      return 'Validation Failed';
+    default:
+      return 'Disconnected';
+  }
 }

@@ -33,7 +33,7 @@ export type ConnectionMetadataView = {
   displayName: string;
   provider: ConnectionProvider;
   connectionType: ConnectionType;
-  status: 'DISCONNECTED';
+  status: 'DISCONNECTED' | 'PENDING_VALIDATION' | 'CONNECTED' | 'VALIDATION_FAILED';
   credentialsStored: boolean;
   createdAt: string;
   updatedAt: string;
@@ -2899,6 +2899,10 @@ export const api = {
     request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}/credentials`, {
       method: 'PUT',
       body: JSON.stringify({ credentials }),
+    }),
+  validateConnection: (id: string) =>
+    request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}/validate`, {
+      method: 'POST',
     }),
   listStrategyLibrary: (query: LibraryListQuery = {}) => {
     const params = new URLSearchParams();

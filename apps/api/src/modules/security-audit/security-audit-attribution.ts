@@ -30,6 +30,12 @@ const ATTRIBUTION_RULES: Readonly<Record<string, AttributionRule>> = Object.free
     resourceType: true,
     resourceId: true,
   },
+  'connection.validation': {
+    workspaceId: true,
+    actorId: true,
+    resourceType: true,
+    resourceId: true,
+  },
   'platform.abuse.throttled': {},
   'platform.deny.shaped': {},
 });

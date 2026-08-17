@@ -10,6 +10,7 @@ export type SecurityAuditEventClass =
   | 'authorization'
   | 'privilege'
   | 'vault'
+  | 'connection'
   | 'security-platform';
 
 export type SecurityAuditCriticality = 'critical' | 'high';
@@ -88,6 +89,15 @@ const CATALOG: Readonly<Record<string, SecurityAuditClassification>> = Object.fr
     securityImpact: 'critical',
     financialIntegrityValue: 'critical',
     retention: 'longest',
+  },
+  'connection.validation': {
+    eventClass: 'connection',
+    criticality: 'high',
+    investigationValue: 'Who started validation, and did the connection validation contract pass?',
+    customerTrustValue: 'high',
+    securityImpact: 'high',
+    financialIntegrityValue: 'high',
+    retention: 'long',
   },
   'platform.abuse.throttled': {
     eventClass: 'security-platform',

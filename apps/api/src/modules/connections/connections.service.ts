@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../storage/prisma/prisma.module';
 import { SecretVaultService } from '../secret-vault';
@@ -10,7 +10,12 @@ import {
   type ConnectionProvider,
   type ConnectionType,
 } from './connection-catalog';
+import { ConnectionValidationAudit } from './connection-validation-audit';
+import { CONNECTION_VALIDATOR, type ConnectionValidator } from './connection-validator';
 import { vaultSecretTypeForProvider } from './connection-vault';
+
+export type ConnectionStatus =
+  'DISCONNECTED' | 'PENDING_VALIDATION' | 'CONNECTED' | 'VALIDATION_FAILED';
 
 export type ConnectionMetadataView = {
   id: string;
@@ -18,7 +23,7 @@ export type ConnectionMetadataView = {
   displayName: string;
   provider: ConnectionProvider;
   connectionType: ConnectionType;
-  status: 'DISCONNECTED';
+  status: ConnectionStatus;
   credentialsStored: boolean;
   createdAt: string;
   updatedAt: string;
@@ -29,6 +34,9 @@ export class ConnectionsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly vault: SecretVaultService,
+    @Inject(CONNECTION_VALIDATOR)
+    private readonly validator: ConnectionValidator,
+    private readonly validationAudit: ConnectionValidationAudit,
   ) {}
 
   catalog(): ConnectionCatalogView {
@@ -105,7 +113,7 @@ export class ConnectionsService {
     });
     const row = await this.prisma.connectionRecord.update({
       where: { id: connection.id },
-      data: { vaultSecretId: stored.metadata.id },
+      data: { vaultSecretId: stored.metadata.id, status: 'DISCONNECTED' },
     });
     return toView(row);
   }
@@ -133,15 +141,101 @@ export class ConnectionsService {
     }
     const row = await this.prisma.connectionRecord.update({
       where: { id: connection.id },
-      data: { vaultSecretId: stored.metadata.id },
+      data: { vaultSecretId: stored.metadata.id, status: 'DISCONNECTED' },
     });
     return toView(row);
+  }
+
+  async validate(input: {
+    workspaceId: string;
+    actorUserId: string;
+    actorRole: Role;
+    id: string;
+  }): Promise<ConnectionMetadataView> {
+    const connection = await this.getRow(input.workspaceId, input.id);
+    if (connection.vaultSecretId === null) {
+      throw new ConflictException('Credentials have not been stored for this connection.');
+    }
+    const currentStatus = connectionStatus(connection.status);
+    if (currentStatus !== 'DISCONNECTED' && currentStatus !== 'VALIDATION_FAILED') {
+      throw new ConflictException('Connection cannot be validated from its current state.');
+    }
+
+    const pending = await this.setStatus(connection.id, 'PENDING_VALIDATION');
+    await this.validationAudit.record({
+      outcome: 'started',
+      workspaceId: input.workspaceId,
+      actorUserId: input.actorUserId,
+      connectionId: connection.id,
+      provider: connection.provider as ConnectionProvider,
+    });
+
+    try {
+      const type = vaultSecretTypeForProvider(connection.provider as ConnectionProvider);
+      const metadata = await this.vault.get({
+        actorWorkspaceId: input.actorUserId,
+        actorRole: input.actorRole,
+        workspaceId: input.workspaceId,
+        type,
+      });
+      if (metadata?.id !== connection.vaultSecretId) {
+        throw new Error('Vault credential reference could not be verified.');
+      }
+      const credentials = await this.vault.retrieve({
+        actorWorkspaceId: input.actorUserId,
+        actorRole: input.actorRole,
+        workspaceId: input.workspaceId,
+        type,
+      });
+      const result = await this.validator.validate({
+        workspaceId: input.workspaceId,
+        connectionId: pending.id,
+        provider: connection.provider as ConnectionProvider,
+        credentials,
+      });
+      return this.completeValidation({
+        pending,
+        workspaceId: input.workspaceId,
+        actorUserId: input.actorUserId,
+        outcome: result.outcome,
+      });
+    } catch {
+      return this.completeValidation({
+        pending,
+        workspaceId: input.workspaceId,
+        actorUserId: input.actorUserId,
+        outcome: 'failed',
+      });
+    }
   }
 
   private async getRow(workspaceId: string, id: string): Promise<ConnectionRow> {
     const row = await this.prisma.connectionRecord.findFirst({ where: { id, workspaceId } });
     if (!row) throw new NotFoundException('Connection not found');
     return row;
+  }
+
+  private async completeValidation(input: {
+    pending: ConnectionRow;
+    workspaceId: string;
+    actorUserId: string;
+    outcome: 'succeeded' | 'failed';
+  }): Promise<ConnectionMetadataView> {
+    const status: ConnectionStatus =
+      input.outcome === 'succeeded' ? 'CONNECTED' : 'VALIDATION_FAILED';
+    const completed = await this.setStatus(input.pending.id, status);
+    await this.validationAudit.record({
+      outcome: input.outcome,
+      workspaceId: input.workspaceId,
+      actorUserId: input.actorUserId,
+      connectionId: completed.id,
+      provider: completed.provider as ConnectionProvider,
+    });
+    return toView(completed);
+  }
+
+  private async setStatus(id: string, status: ConnectionStatus): Promise<ConnectionRow> {
+    return this.prisma.connectionRecord.update({ where: { id }, data: { status } });
   }
 
   private async assertCredentialSlotAvailable(
@@ -190,9 +284,21 @@ function toView(row: ConnectionRow): ConnectionMetadataView {
     displayName: row.displayName,
     provider: row.provider as ConnectionProvider,
     connectionType: row.connectionType as ConnectionType,
-    status: 'DISCONNECTED',
+    status: connectionStatus(row.status),
     credentialsStored: row.vaultSecretId !== null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
+}
+
+function connectionStatus(status: string): ConnectionStatus {
+  if (
+    status === 'DISCONNECTED' ||
+    status === 'PENDING_VALIDATION' ||
+    status === 'CONNECTED' ||
+    status === 'VALIDATION_FAILED'
+  ) {
+    return status;
+  }
+  return 'DISCONNECTED';
 }

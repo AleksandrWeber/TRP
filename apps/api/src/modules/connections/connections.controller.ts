@@ -140,6 +140,25 @@ export class ConnectionsController {
       throw credentialError(error);
     }
   }
+
+  @RequirePermission(PermissionClass.VaultConnections)
+  @Post(':id/validate')
+  async validate(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('id') id: string,
+  ): Promise<ConnectionMetadataView> {
+    try {
+      return await this.connections.validate({
+        workspaceId: requireWorkspace(this.workspaceAccess, request.user, workspaceHeader),
+        actorUserId: request.user.userId,
+        actorRole: request.user.role,
+        id,
+      });
+    } catch (error) {
+      throw validationError(error);
+    }
+  }
 }
 
 function requireWorkspace(
@@ -164,4 +183,11 @@ function credentialError(error: unknown): Error {
     return error;
   }
   return new BadRequestException('Credentials could not be stored.');
+}
+
+function validationError(error: unknown): Error {
+  if (error instanceof ConflictException || error instanceof NotFoundException) {
+    return error;
+  }
+  return new BadRequestException('Validation could not be completed.');
 }

@@ -75,6 +75,22 @@ Evidence: [`w2-s01-b-validation-report.md`](./w2-s01-b-validation-report.md).
 
 ---
 
+## W2-S01-c execution record
+
+| Slice assertion                                                                                | Result |
+| ---------------------------------------------------------------------------------------------- | ------ |
+| Validation transitions from Disconnected or Validation Failed through Pending Validation       | PASS   |
+| Connected is assigned only after provider-independent validator success                        | PASS   |
+| Validation reads credentials server-side from the existing Vault and never projects them       | PASS   |
+| Validation is scoped to the owning workspace and consumes existing C8 authorization            | PASS   |
+| Security Audit records validation started, succeeded, and failed                               | PASS   |
+| Connections UI offers validation, shows each validation state, and permits retry after failure | PASS   |
+| Provider I/O, background jobs, live trading, delivery, and AI execution remain absent          | PASS   |
+
+Evidence: [`w2-s01-c-validation-report.md`](./w2-s01-c-validation-report.md).
+
+---
+
 ## 2. Unit tests
 
 | Area                       | Must prove                                                     |
