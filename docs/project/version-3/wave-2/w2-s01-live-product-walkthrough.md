@@ -1,24 +1,20 @@
 # W2-S01 Live Product Walkthrough Evidence
 
-**Status:** REQUIRES ACTION — the repeated live walkthrough passed Connection Management flows but did not execute the separate workspace-isolation and unauthorized-role sessions.
-**Scope:** Product Owner Close evidence and targeted validation-remediation record only. No architecture or ownership changes.
+**Status:** PASS — all mandatory live walkthrough steps completed through the real product UI.
+**Scope:** Product Owner Close evidence only. No implementation, architecture, or ownership changes.
 
 ## Environment
 
-| Field               | Value                                                               |
-| ------------------- | ------------------------------------------------------------------- |
-| Date                | 2026-08-17                                                          |
-| Product             | Local TRP application, normal browser UI at `http://localhost:5173` |
-| Product version     | `0cf7704` plus the validation-remediation working tree              |
-| Operator account    | `admin@trp.local` (seeded local operator; password not recorded)    |
-| Workspace           | Default Workspace                                                   |
-| Connection created  | `W2-S01 Live Walkthrough Binance`                                   |
-| Provider            | Exchange — Binance                                                  |
-| Credential material | Synthetic non-production values; values are not recorded            |
-
-## Evidence method
-
-The operator used the sign-in and Connections browser UI only. No direct SQL, SSH, or manually invoked product API was used. A browser capture was reviewed during the session; no screenshot is committed because it includes credential-entry controls, even though their values were masked.
+| Field           | Value                                                                   |
+| --------------- | ----------------------------------------------------------------------- |
+| Date            | 2026-08-17                                                              |
+| Product         | Local TRP application, normal browser UI at `http://localhost:5173`     |
+| Product version | `1a04b6b` (`fix(connections): resolve validation walkthrough blocker`)  |
+| Operator A      | `admin@trp.local` (Administrator; seeded local operator)                |
+| Operator B      | `w2-s01-operator-b-20260817@example.test` (created via UI)              |
+| Workspace A     | Default Workspace (`163bcf3b-ee70-4049-bf80-8ff79ca344ab`)              |
+| Workspace B     | Operator B bootstrap workspace (`7c9cc6e9-d762-4cad-b71e-f6d2dc8d13ec`) |
+| Evidence method | Real browser UI only; no direct SQL, SSH, or manually invoked APIs      |
 
 ## Initial walkthrough
 
@@ -57,15 +53,49 @@ The initial run stopped at credential storage because the local API host configu
 | 9   | Disconnect                      | PASS         | The primary connection returned to `Disconnected`.                                                                       |
 | 10  | Disable                         | PASS         | The separate Bybit entry showed `Disabled`; its validate and credential actions were absent.                             |
 | 11  | Revoke                          | PASS         | The primary connection showed `Revoked`, `No credentials stored`, and only `Store credentials` for material recovery.    |
-| 12  | Workspace isolation             | NOT EXECUTED | A separate non-member Workspace B operator session was not executed in this remediation.                                 |
-| 13  | Authorization without C8        | NOT EXECUTED | A separate non-C8 role session was not executed in this remediation.                                                     |
+| 12  | Workspace isolation             | NOT EXECUTED | Deferred to the final evidence session below.                                                                            |
+| 13  | Authorization without C8        | NOT EXECUTED | Deferred to the final evidence session below.                                                                            |
 | 14  | Secret exposure                 | PASS         | Stored values were password-masked at entry, never shown after save, and views exposed only the stored/not-stored state. |
 | 15  | Honest Product                  | PASS         | Connections states that Connected does not indicate live trading, delivery, or AI execution.                             |
 
-## Validation HTTP 400 root cause
+## Final evidence session — remaining steps
 
-The Connections browser client sent bodyless `POST` commands with `Content-Type: application/json`. Fastify rejects an empty JSON request before the controller receives it, producing HTTP 400. The remediation sends `{}` for bodyless Connection validate, disconnect, disable, and revoke commands. A browser retest confirmed Validation reached `Pending Validation` then `Connected`.
+### Walkthrough A — Workspace Isolation
+
+| Field       | Value                                                                                                 |
+| ----------- | ----------------------------------------------------------------------------------------------------- |
+| Operator A  | `admin@trp.local` in Workspace A (Default Workspace)                                                  |
+| Operator B  | `w2-s01-operator-b-20260817@example.test` in Workspace B                                              |
+| Workspace A | Default Workspace — connections `W2-S01 Live Walkthrough Binance`, `W2-S01 Disable Walkthrough Bybit` |
+| Workspace B | Operator B workspace — connection `W2-S01 Isolation B Connection`                                     |
+| Verdict     | PASS                                                                                                  |
+
+Observed result:
+
+1. As Operator B (Researcher, then Trader), Connections listed only Workspace B content. Operator A’s connections were not visible.
+2. As Operator B, Create of a foreign Workspace A connection was not available through the UI because Workspace A connections were not listed and Workspace A was not selectable as a foreign member workspace.
+3. As Operator B (Trader), created `W2-S01 Isolation B Connection` in Workspace B.
+4. As Operator A, Connections listed only Workspace A rows (`W2-S01 Live Walkthrough Binance`, `W2-S01 Disable Walkthrough Bybit`) and did **not** show `W2-S01 Isolation B Connection`.
+5. Because Workspace B connections were not visible to Operator A, validate, replace credentials, disconnect, disable, and revoke for Workspace B connections could not be initiated through the real UI.
+
+### Walkthrough B — Authorization (non-C8)
+
+| Field     | Value                                                             |
+| --------- | ----------------------------------------------------------------- |
+| Operator  | `w2-s01-operator-b-20260817@example.test` while role = Researcher |
+| C8 status | Researcher lacks VaultConnections (C8)                            |
+| Verdict   | PASS                                                              |
+
+Observed result:
+
+1. While signed in as Researcher, Connections showed create controls, but Create metadata for `Unauthorized Create Attempt` returned the operator-safe alert `You do not have permission to perform this action.` API logged HTTP 403 on `POST /v1/connections`.
+2. No connection metadata was created under that denial (`No connection metadata has been created.` remained).
+3. Store credentials, Replace credentials, Validate, Disconnect, Disable, and Revoke were unavailable through the UI because no connection row existed to act on after Create was denied.
+
+## Validation HTTP 400 root cause (prior remediation)
+
+The Connections browser client sent bodyless `POST` commands with `Content-Type: application/json`. Fastify rejects an empty JSON request before the controller receives it, producing HTTP 400. The remediation sends `{}` for bodyless Connection validate, disconnect, disable, and revoke commands.
 
 ## Result
 
-The repeated real-product flow passed all exercised Connection Management lifecycle steps. W2-S01 remains **REQUIRES ACTION** for Product Owner Close Review until the two separate-role sessions (workspace isolation and non-C8 authorization denial) are recorded. This document does not declare W2-S01 Closed.
+The live product walkthrough is complete. Lifecycle, secret non-disclosure, honest Connected copy, workspace isolation, and non-C8 authorization evidence are all recorded as PASS. W2-S01 is ready for Product Owner Close Review. This document does not declare W2-S01 Closed.
