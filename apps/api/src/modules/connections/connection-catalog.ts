@@ -2,16 +2,47 @@ export const CONNECTION_TYPES = ['EXCHANGE', 'NOTIFICATION', 'AI'] as const;
 export type ConnectionType = (typeof CONNECTION_TYPES)[number];
 
 export const CONNECTION_PROVIDERS = [
-  { id: 'BINANCE', displayName: 'Binance', connectionType: 'EXCHANGE' },
-  { id: 'BYBIT', displayName: 'Bybit', connectionType: 'EXCHANGE' },
-  { id: 'OKX', displayName: 'OKX', connectionType: 'EXCHANGE' },
-  { id: 'TELEGRAM', displayName: 'Telegram', connectionType: 'NOTIFICATION' },
-  { id: 'SMTP', displayName: 'SMTP', connectionType: 'NOTIFICATION' },
-  { id: 'OPENROUTER', displayName: 'OpenRouter', connectionType: 'AI' },
+  {
+    id: 'BINANCE',
+    displayName: 'Binance',
+    connectionType: 'EXCHANGE',
+    credentialFields: ['apiKey', 'apiSecret'],
+  },
+  {
+    id: 'BYBIT',
+    displayName: 'Bybit',
+    connectionType: 'EXCHANGE',
+    credentialFields: ['apiKey', 'apiSecret'],
+  },
+  {
+    id: 'OKX',
+    displayName: 'OKX',
+    connectionType: 'EXCHANGE',
+    credentialFields: ['apiKey', 'apiSecret', 'passphrase'],
+  },
+  {
+    id: 'TELEGRAM',
+    displayName: 'Telegram',
+    connectionType: 'NOTIFICATION',
+    credentialFields: ['botToken'],
+  },
+  {
+    id: 'SMTP',
+    displayName: 'SMTP',
+    connectionType: 'NOTIFICATION',
+    credentialFields: ['host', 'port', 'username', 'password', 'sender'],
+  },
+  {
+    id: 'OPENROUTER',
+    displayName: 'OpenRouter',
+    connectionType: 'AI',
+    credentialFields: ['apiKey'],
+  },
 ] as const satisfies readonly {
   id: string;
   displayName: string;
   connectionType: ConnectionType;
+  credentialFields: readonly string[];
 }[];
 
 export type ConnectionProvider = (typeof CONNECTION_PROVIDERS)[number]['id'];
@@ -20,7 +51,11 @@ export type ConnectionCatalogView = {
   connectionTypes: readonly {
     id: ConnectionType;
     displayName: string;
-    providers: readonly { id: ConnectionProvider; displayName: string }[];
+    providers: readonly {
+      id: ConnectionProvider;
+      displayName: string;
+      credentialFields: readonly string[];
+    }[];
   }[];
 };
 
@@ -36,7 +71,11 @@ export function connectionCatalog(): ConnectionCatalogView {
       id,
       displayName: TYPE_DISPLAY_NAMES[id],
       providers: CONNECTION_PROVIDERS.filter((provider) => provider.connectionType === id).map(
-        ({ id: providerId, displayName }) => ({ id: providerId, displayName }),
+        ({ id: providerId, displayName, credentialFields }) => ({
+          id: providerId,
+          displayName,
+          credentialFields,
+        }),
       ),
     })),
   };
@@ -45,5 +84,11 @@ export function connectionCatalog(): ConnectionCatalogView {
 export function providerType(provider: string): ConnectionType | null {
   return (
     CONNECTION_PROVIDERS.find((candidate) => candidate.id === provider)?.connectionType ?? null
+  );
+}
+
+export function credentialFieldsForProvider(provider: string): readonly string[] | null {
+  return (
+    CONNECTION_PROVIDERS.find((candidate) => candidate.id === provider)?.credentialFields ?? null
   );
 }

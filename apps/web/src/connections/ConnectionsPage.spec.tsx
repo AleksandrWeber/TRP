@@ -9,23 +9,27 @@ const catalog: ConnectionCatalogView = {
       id: 'EXCHANGE',
       displayName: 'Exchange',
       providers: [
-        { id: 'BINANCE', displayName: 'Binance' },
-        { id: 'BYBIT', displayName: 'Bybit' },
-        { id: 'OKX', displayName: 'OKX' },
+        { id: 'BINANCE', displayName: 'Binance', credentialFields: ['apiKey', 'apiSecret'] },
+        { id: 'BYBIT', displayName: 'Bybit', credentialFields: ['apiKey', 'apiSecret'] },
+        { id: 'OKX', displayName: 'OKX', credentialFields: ['apiKey', 'apiSecret', 'passphrase'] },
       ],
     },
     {
       id: 'NOTIFICATION',
       displayName: 'Notification',
       providers: [
-        { id: 'TELEGRAM', displayName: 'Telegram' },
-        { id: 'SMTP', displayName: 'SMTP' },
+        { id: 'TELEGRAM', displayName: 'Telegram', credentialFields: ['botToken'] },
+        {
+          id: 'SMTP',
+          displayName: 'SMTP',
+          credentialFields: ['host', 'port', 'username', 'password', 'sender'],
+        },
       ],
     },
     {
       id: 'AI',
       displayName: 'AI',
-      providers: [{ id: 'OPENROUTER', displayName: 'OpenRouter' }],
+      providers: [{ id: 'OPENROUTER', displayName: 'OpenRouter', credentialFields: ['apiKey'] }],
     },
   ],
 };
@@ -37,6 +41,7 @@ const connection: ConnectionMetadataView = {
   provider: 'BINANCE',
   connectionType: 'EXCHANGE',
   status: 'DISCONNECTED',
+  credentialsStored: true,
   createdAt: '2026-08-17T16:00:00.000Z',
   updatedAt: '2026-08-17T16:00:00.000Z',
 };
@@ -51,6 +56,8 @@ describe('Connections UI (W2-S01-a)', () => {
         provider="BINANCE"
         renameId={null}
         renameValue=""
+        credentialConnection={connection}
+        credentialValues={{ apiKey: '', apiSecret: '' }}
         loading={false}
         saving={false}
         error={null}
@@ -61,6 +68,10 @@ describe('Connections UI (W2-S01-a)', () => {
         onRenameValue={() => undefined}
         onRename={(event) => event.preventDefault()}
         onCancelRename={() => undefined}
+        onStartCredentials={() => undefined}
+        onCredentialValue={() => undefined}
+        onStoreCredentials={(event) => event.preventDefault()}
+        onCancelCredentials={() => undefined}
       />,
     );
 
@@ -75,7 +86,11 @@ describe('Connections UI (W2-S01-a)', () => {
     expect(html).toContain('Disconnected');
     expect(html).not.toContain('>Connected<');
     expect(html).not.toContain('Validate');
-    expect(html).not.toContain('API key');
-    expect(html).not.toContain('password');
+    expect(html).toContain('Credentials stored securely.');
+    expect(html).toContain('Replace credentials');
+    expect(html).toContain('type="password"');
+    expect(html).not.toContain('Reveal');
+    expect(html).not.toContain('Show Secret');
+    expect(html).not.toContain('Copy Secret');
   });
 });

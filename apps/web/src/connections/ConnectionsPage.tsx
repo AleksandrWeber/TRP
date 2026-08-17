@@ -17,6 +17,10 @@ export function ConnectionsPage() {
   const [provider, setProvider] = useState<ConnectionProvider>('BINANCE');
   const [renameId, setRenameId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState('');
+  const [credentialConnection, setCredentialConnection] = useState<ConnectionMetadataView | null>(
+    null,
+  );
+  const [credentialValues, setCredentialValues] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -79,6 +83,25 @@ export function ConnectionsPage() {
     }
   }
 
+  async function storeCredentials(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!credentialConnection) return;
+    setSaving(true);
+    setError(null);
+    try {
+      const saved = credentialConnection.credentialsStored
+        ? await api.replaceConnectionCredentials(credentialConnection.id, credentialValues)
+        : await api.storeConnectionCredentials(credentialConnection.id, credentialValues);
+      setConnections((items) => items.map((item) => (item.id === saved.id ? saved : item)));
+      setCredentialConnection(null);
+      setCredentialValues({});
+    } catch (reason) {
+      setError(toUserFacingError(reason, 'Could not store credentials securely.'));
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <ConnectionsView
       catalog={catalog}
@@ -87,6 +110,8 @@ export function ConnectionsPage() {
       provider={provider}
       renameId={renameId}
       renameValue={renameValue}
+      credentialConnection={credentialConnection}
+      credentialValues={credentialValues}
       loading={loading}
       saving={saving}
       error={error}
@@ -100,6 +125,18 @@ export function ConnectionsPage() {
       onRenameValue={setRenameValue}
       onRename={rename}
       onCancelRename={() => setRenameId(null)}
+      onStartCredentials={(connection) => {
+        setCredentialConnection(connection);
+        setCredentialValues({});
+      }}
+      onCredentialValue={(field, value) =>
+        setCredentialValues((values) => ({ ...values, [field]: value }))
+      }
+      onStoreCredentials={storeCredentials}
+      onCancelCredentials={() => {
+        setCredentialConnection(null);
+        setCredentialValues({});
+      }}
     />
   );
 }

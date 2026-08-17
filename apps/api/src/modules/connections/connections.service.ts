@@ -1,6 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../storage/prisma/prisma.module';
+import { SecretVaultService } from '../secret-vault';
+import type { Role } from '../identity/role';
 import {
   connectionCatalog,
   providerType,
@@ -8,6 +10,7 @@ import {
   type ConnectionProvider,
   type ConnectionType,
 } from './connection-catalog';
+import { vaultSecretTypeForProvider } from './connection-vault';
 
 export type ConnectionMetadataView = {
   id: string;
@@ -16,13 +19,17 @@ export type ConnectionMetadataView = {
   provider: ConnectionProvider;
   connectionType: ConnectionType;
   status: 'DISCONNECTED';
+  credentialsStored: boolean;
   createdAt: string;
   updatedAt: string;
 };
 
 @Injectable()
 export class ConnectionsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly vault: SecretVaultService,
+  ) {}
 
   catalog(): ConnectionCatalogView {
     return connectionCatalog();
@@ -37,9 +44,7 @@ export class ConnectionsService {
   }
 
   async get(workspaceId: string, id: string): Promise<ConnectionMetadataView> {
-    const row = await this.prisma.connectionRecord.findFirst({ where: { id, workspaceId } });
-    if (!row) throw new NotFoundException('Connection not found');
-    return toView(row);
+    return toView(await this.getRow(workspaceId, id));
   }
 
   async create(input: {
@@ -71,12 +76,98 @@ export class ConnectionsService {
     id: string,
     displayName: string,
   ): Promise<ConnectionMetadataView> {
-    await this.get(workspaceId, id);
+    await this.getRow(workspaceId, id);
     const row = await this.prisma.connectionRecord.update({
       where: { id },
       data: { displayName: displayName.trim() },
     });
     return toView(row);
+  }
+
+  async storeCredentials(input: {
+    workspaceId: string;
+    actorUserId: string;
+    actorRole: Role;
+    id: string;
+    credentials: Record<string, string>;
+  }): Promise<ConnectionMetadataView> {
+    const connection = await this.getRow(input.workspaceId, input.id);
+    if (connection.vaultSecretId !== null) {
+      throw new ConflictException('Credentials are already stored. Use replace credentials.');
+    }
+    await this.assertCredentialSlotAvailable(connection, input.actorUserId, input.actorRole);
+    const stored = await this.vault.store({
+      actorWorkspaceId: input.actorUserId,
+      actorRole: input.actorRole,
+      workspaceId: input.workspaceId,
+      type: vaultSecretTypeForProvider(connection.provider as ConnectionProvider),
+      fields: input.credentials,
+    });
+    const row = await this.prisma.connectionRecord.update({
+      where: { id: connection.id },
+      data: { vaultSecretId: stored.metadata.id },
+    });
+    return toView(row);
+  }
+
+  async replaceCredentials(input: {
+    workspaceId: string;
+    actorUserId: string;
+    actorRole: Role;
+    id: string;
+    credentials: Record<string, string>;
+  }): Promise<ConnectionMetadataView> {
+    const connection = await this.getRow(input.workspaceId, input.id);
+    if (connection.vaultSecretId === null) {
+      throw new ConflictException('Credentials have not been stored for this connection.');
+    }
+    const stored = await this.vault.replace({
+      actorWorkspaceId: input.actorUserId,
+      actorRole: input.actorRole,
+      workspaceId: input.workspaceId,
+      type: vaultSecretTypeForProvider(connection.provider as ConnectionProvider),
+      fields: input.credentials,
+    });
+    if (stored.metadata.id !== connection.vaultSecretId) {
+      throw new ConflictException('Credential ownership could not be verified.');
+    }
+    const row = await this.prisma.connectionRecord.update({
+      where: { id: connection.id },
+      data: { vaultSecretId: stored.metadata.id },
+    });
+    return toView(row);
+  }
+
+  private async getRow(workspaceId: string, id: string): Promise<ConnectionRow> {
+    const row = await this.prisma.connectionRecord.findFirst({ where: { id, workspaceId } });
+    if (!row) throw new NotFoundException('Connection not found');
+    return row;
+  }
+
+  private async assertCredentialSlotAvailable(
+    connection: ConnectionRow,
+    actorUserId: string,
+    actorRole: Role,
+  ): Promise<void> {
+    const existingConnection = await this.prisma.connectionRecord.findFirst({
+      where: {
+        workspaceId: connection.workspaceId,
+        provider: connection.provider,
+        vaultSecretId: { not: null },
+      },
+    });
+    if (existingConnection) {
+      throw new ConflictException('Credentials are already assigned to this provider.');
+    }
+    const existingSecret = await this.vault.get({
+      actorWorkspaceId: actorUserId,
+      actorRole,
+      workspaceId: connection.workspaceId,
+      type: vaultSecretTypeForProvider(connection.provider as ConnectionProvider),
+    });
+    if (existingSecret !== null) {
+      throw new ConflictException('Credentials are already assigned to this provider.');
+    }
   }
 }
 
@@ -86,6 +177,7 @@ type ConnectionRow = {
   displayName: string;
   provider: string;
   connectionType: string;
+  vaultSecretId: string | null;
   status: string;
   createdAt: Date;
   updatedAt: Date;
@@ -99,6 +191,7 @@ function toView(row: ConnectionRow): ConnectionMetadataView {
     provider: row.provider as ConnectionProvider,
     connectionType: row.connectionType as ConnectionType,
     status: 'DISCONNECTED',
+    credentialsStored: row.vaultSecretId !== null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };

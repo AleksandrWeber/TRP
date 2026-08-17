@@ -19,7 +19,11 @@ export type ConnectionCatalogView = {
   connectionTypes: Array<{
     id: ConnectionType;
     displayName: string;
-    providers: Array<{ id: ConnectionProvider; displayName: string }>;
+    providers: Array<{
+      id: ConnectionProvider;
+      displayName: string;
+      credentialFields: string[];
+    }>;
   }>;
 };
 
@@ -30,6 +34,7 @@ export type ConnectionMetadataView = {
   provider: ConnectionProvider;
   connectionType: ConnectionType;
   status: 'DISCONNECTED';
+  credentialsStored: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -2884,6 +2889,16 @@ export const api = {
     request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}`, {
       method: 'PATCH',
       body: JSON.stringify({ displayName }),
+    }),
+  storeConnectionCredentials: (id: string, credentials: Record<string, string>) =>
+    request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}/credentials`, {
+      method: 'POST',
+      body: JSON.stringify({ credentials }),
+    }),
+  replaceConnectionCredentials: (id: string, credentials: Record<string, string>) =>
+    request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}/credentials`, {
+      method: 'PUT',
+      body: JSON.stringify({ credentials }),
     }),
   listStrategyLibrary: (query: LibraryListQuery = {}) => {
     const params = new URLSearchParams();

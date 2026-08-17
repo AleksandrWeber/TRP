@@ -1,28 +1,35 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   ForbiddenException,
   Get,
   Headers,
+  NotFoundException,
   Param,
   Patch,
   Post,
+  Put,
   Req,
 } from '@nestjs/common';
 import type { AuthUser } from '../auth/jwt.strategy';
 import { RequirePermission } from '../auth/decorators/require-permission.decorator';
 import { PermissionClass } from '../auth/permission-catalog';
 import { WorkspaceAccessService } from '../workspace';
-import { CreateConnectionMetadataDto, RenameConnectionMetadataDto } from './connections.dto';
+import {
+  CreateConnectionMetadataDto,
+  RenameConnectionMetadataDto,
+  StoreConnectionCredentialsDto,
+} from './connections.dto';
 import { ConnectionsService, type ConnectionMetadataView } from './connections.service';
 import type { ConnectionCatalogView } from './connection-catalog';
 
 type RequestWithUser = { user: AuthUser };
 
 /**
- * W2-S01-a metadata-only transport. It neither accepts nor returns credentials,
- * and it deliberately has no validation, connect, or provider I/O endpoint.
+ * W2-S01-b transport. Credentials are passed write-only to Vault and never
+ * returned. It deliberately has no validation, connect, or provider I/O endpoint.
  */
 @Controller({ path: 'connections', version: '1' })
 @RequirePermission(PermissionClass.Projection)
@@ -91,6 +98,48 @@ export class ConnectionsController {
       body.displayName,
     );
   }
+
+  @RequirePermission(PermissionClass.VaultConnections)
+  @Post(':id/credentials')
+  async storeCredentials(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('id') id: string,
+    @Body() body: StoreConnectionCredentialsDto,
+  ): Promise<ConnectionMetadataView> {
+    try {
+      return await this.connections.storeCredentials({
+        workspaceId: requireWorkspace(this.workspaceAccess, request.user, workspaceHeader),
+        actorUserId: request.user.userId,
+        actorRole: request.user.role,
+        id,
+        credentials: body.credentials,
+      });
+    } catch (error) {
+      throw credentialError(error);
+    }
+  }
+
+  @RequirePermission(PermissionClass.VaultConnections)
+  @Put(':id/credentials')
+  async replaceCredentials(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('id') id: string,
+    @Body() body: StoreConnectionCredentialsDto,
+  ): Promise<ConnectionMetadataView> {
+    try {
+      return await this.connections.replaceCredentials({
+        workspaceId: requireWorkspace(this.workspaceAccess, request.user, workspaceHeader),
+        actorUserId: request.user.userId,
+        actorRole: request.user.role,
+        id,
+        credentials: body.credentials,
+      });
+    } catch (error) {
+      throw credentialError(error);
+    }
+  }
 }
 
 function requireWorkspace(
@@ -108,4 +157,11 @@ function requireWorkspace(
     throw new ForbiddenException('workspace access denied');
   }
   return workspaceId;
+}
+
+function credentialError(error: unknown): Error {
+  if (error instanceof ConflictException || error instanceof NotFoundException) {
+    return error;
+  }
+  return new BadRequestException('Credentials could not be stored.');
 }

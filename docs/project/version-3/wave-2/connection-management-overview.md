@@ -18,6 +18,14 @@ Every entry shows **Disconnected**. This slice does not collect credentials, cal
 
 ---
 
+## W2-S01-b delivered Vault credential foundation
+
+Operators can now enter provider credential fields for an existing connection and store or replace them securely through Vault. The fields are write-only: after save, they clear and cannot be viewed, copied, exported, or downloaded.
+
+Saving credentials changes neither the connection status nor product claims. Every connection remains **Disconnected** until a later approved validation slice.
+
+---
+
 ## Purpose
 
 Connection Management is the place in the product where an operator manages connections to external services — exchanges, Telegram, email (SMTP), and OpenRouter — without editing a server file.

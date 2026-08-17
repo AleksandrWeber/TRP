@@ -12,6 +12,8 @@ export type ConnectionsViewProps = {
   provider: ConnectionProvider;
   renameId: string | null;
   renameValue: string;
+  credentialConnection: ConnectionMetadataView | null;
+  credentialValues: Record<string, string>;
   loading: boolean;
   saving: boolean;
   error: string | null;
@@ -22,6 +24,10 @@ export type ConnectionsViewProps = {
   onRenameValue: (value: string) => void;
   onRename: (event: FormEvent<HTMLFormElement>) => void;
   onCancelRename: () => void;
+  onStartCredentials: (connection: ConnectionMetadataView) => void;
+  onCredentialValue: (field: string, value: string) => void;
+  onStoreCredentials: (event: FormEvent<HTMLFormElement>) => void;
+  onCancelCredentials: () => void;
 };
 
 export function ConnectionsView({
@@ -31,6 +37,8 @@ export function ConnectionsView({
   provider,
   renameId,
   renameValue,
+  credentialConnection,
+  credentialValues,
   loading,
   saving,
   error,
@@ -41,7 +49,15 @@ export function ConnectionsView({
   onRenameValue,
   onRename,
   onCancelRename,
+  onStartCredentials,
+  onCredentialValue,
+  onStoreCredentials,
+  onCancelCredentials,
 }: ConnectionsViewProps) {
+  const credentialProvider = catalog?.connectionTypes
+    .flatMap((type) => type.providers)
+    .find((providerItem) => providerItem.id === credentialConnection?.provider);
+
   return (
     <section className="space-y-8">
       <div>
@@ -130,6 +146,18 @@ export function ConnectionsView({
               </div>
               <div className="flex items-center gap-3">
                 <span className="rounded bg-slate-700 px-2 py-1 text-xs">Disconnected</span>
+                <span className="text-xs text-slate-400">
+                  {connection.credentialsStored
+                    ? 'Credentials stored securely.'
+                    : 'No credentials stored'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onStartCredentials(connection)}
+                  className="text-sm text-sky-300 underline"
+                >
+                  {connection.credentialsStored ? 'Replace credentials' : 'Store credentials'}
+                </button>
                 <button
                   type="button"
                   onClick={() => onStartRename(connection)}
@@ -175,6 +203,51 @@ export function ConnectionsView({
           </div>
         </form>
       ) : null}
+
+      {credentialConnection && credentialProvider ? (
+        <form onSubmit={onStoreCredentials} className="rounded border border-white/10 p-5">
+          <h3 className="text-lg font-medium">
+            {credentialConnection.credentialsStored ? 'Replace credentials' : 'Store credentials'}
+          </h3>
+          <p className="mt-2 text-sm text-slate-400">
+            Credentials are stored securely and cannot be viewed after saving. This does not
+            validate or connect the provider.
+          </p>
+          {credentialProvider.credentialFields.map((field) => (
+            <label key={field} className="mt-4 block text-sm">
+              {fieldLabel(field)}
+              <input
+                type="password"
+                value={credentialValues[field] ?? ''}
+                onChange={(event) => onCredentialValue(field, event.target.value)}
+                autoComplete="off"
+                required
+                className="mt-1 w-full rounded border border-white/20 bg-slate-950 px-3 py-2"
+              />
+            </label>
+          ))}
+          <div className="mt-5 flex gap-3">
+            <button
+              type="submit"
+              disabled={saving}
+              className="rounded bg-sky-500 px-4 py-2 font-medium text-slate-950 disabled:opacity-50"
+            >
+              Save credentials
+            </button>
+            <button
+              type="button"
+              onClick={onCancelCredentials}
+              className="rounded border border-white/20 px-4 py-2"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      ) : null}
     </section>
   );
+}
+
+function fieldLabel(field: string): string {
+  return field.replace(/([A-Z])/g, ' $1').replace(/^./, (value) => value.toUpperCase());
 }

@@ -174,20 +174,22 @@ model WorkspaceRecord {
   @@map("workspace_records")
 }
 
-/// Connection Management-owned workspace metadata (W2-S01-a).
-/// Credentials, ciphertext, and provider protocol state are deliberately excluded.
+/// Connection Management-owned workspace metadata (W2-S01-a/b).
+/// Credentials and ciphertext remain Vault-owned; this nullable value is an opaque Vault id only.
 model ConnectionRecord {
   id             String   @id
   workspaceId    String   @map("workspace_id")
   displayName    String   @map("display_name")
   provider       String
   connectionType String   @map("connection_type")
+  vaultSecretId  String?  @map("vault_secret_id")
   status         String   @default("DISCONNECTED")
   createdAt      DateTime @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
   @@index([workspaceId, createdAt])
   @@index([workspaceId, provider])
+  @@unique([workspaceId, provider, vaultSecretId])
   @@map("connection_records")
 }
 

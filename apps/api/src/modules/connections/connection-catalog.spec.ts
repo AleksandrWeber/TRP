@@ -9,23 +9,33 @@ describe('Connection catalog (W2-S01-a)', () => {
           id: 'EXCHANGE',
           displayName: 'Exchange',
           providers: [
-            { id: 'BINANCE', displayName: 'Binance' },
-            { id: 'BYBIT', displayName: 'Bybit' },
-            { id: 'OKX', displayName: 'OKX' },
+            { id: 'BINANCE', displayName: 'Binance', credentialFields: ['apiKey', 'apiSecret'] },
+            { id: 'BYBIT', displayName: 'Bybit', credentialFields: ['apiKey', 'apiSecret'] },
+            {
+              id: 'OKX',
+              displayName: 'OKX',
+              credentialFields: ['apiKey', 'apiSecret', 'passphrase'],
+            },
           ],
         },
         {
           id: 'NOTIFICATION',
           displayName: 'Notification',
           providers: [
-            { id: 'TELEGRAM', displayName: 'Telegram' },
-            { id: 'SMTP', displayName: 'SMTP' },
+            { id: 'TELEGRAM', displayName: 'Telegram', credentialFields: ['botToken'] },
+            {
+              id: 'SMTP',
+              displayName: 'SMTP',
+              credentialFields: ['host', 'port', 'username', 'password', 'sender'],
+            },
           ],
         },
         {
           id: 'AI',
           displayName: 'AI',
-          providers: [{ id: 'OPENROUTER', displayName: 'OpenRouter' }],
+          providers: [
+            { id: 'OPENROUTER', displayName: 'OpenRouter', credentialFields: ['apiKey'] },
+          ],
         },
       ],
     });

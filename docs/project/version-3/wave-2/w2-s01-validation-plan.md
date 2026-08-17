@@ -59,6 +59,22 @@ Evidence: [`w2-s01-a-validation-report.md`](./w2-s01-a-validation-report.md).
 
 ---
 
+## W2-S01-b execution record
+
+| Slice assertion                                                                   | Result |
+| --------------------------------------------------------------------------------- | ------ |
+| Credentials are stored and replaced only through the existing Vault               | PASS   |
+| Connection metadata stores only an opaque nullable Vault reference                | PASS   |
+| Credential mutation consumes existing C8 authorization and workspace verification | PASS   |
+| Responses never contain credential material or Vault identifiers                  | PASS   |
+| Credentials are cleared from the UI after save and cannot be revealed             | PASS   |
+| Connection status remains Disconnected                                            | PASS   |
+| Existing Vault created/replaced lifecycle events provide audit evidence           | PASS   |
+
+Evidence: [`w2-s01-b-validation-report.md`](./w2-s01-b-validation-report.md).
+
+---
+
 ## 2. Unit tests
 
 | Area                       | Must prove                                                     |
