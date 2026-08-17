@@ -92,6 +92,10 @@ function memoryVault() {
       }
       return { metadata: secret, lifecycle: [] };
     },
+    revoke: async () => {
+      if (!secret) throw new Error('missing');
+      return secret;
+    },
   };
 }
 
@@ -109,6 +113,16 @@ function validationAudit() {
   };
 }
 
+function lifecycleAudit() {
+  const events: Array<{ outcome: string; workspaceId: string; connectionId: string }> = [];
+  return {
+    events,
+    record: async (event: { outcome: string; workspaceId: string; connectionId: string }) => {
+      events.push(event);
+    },
+  };
+}
+
 describe('ConnectionsService (W2-S01)', () => {
   it('creates metadata only with the provider type and disconnected default', async () => {
     const service = new ConnectionsService(
@@ -116,6 +130,7 @@ describe('ConnectionsService (W2-S01)', () => {
       memoryVault() as never,
       successfulValidator(),
       validationAudit() as never,
+      lifecycleAudit() as never,
     );
     const connection = await service.create({
       workspaceId: 'workspace-a',
@@ -139,6 +154,7 @@ describe('ConnectionsService (W2-S01)', () => {
       memoryVault() as never,
       successfulValidator(),
       validationAudit() as never,
+      lifecycleAudit() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -160,11 +176,13 @@ describe('ConnectionsService (W2-S01)', () => {
 
   it('stores and replaces credentials in Vault without returning them or changing status', async () => {
     const vault = memoryVault();
+    const audit = lifecycleAudit();
     const service = new ConnectionsService(
       memoryPrisma() as never,
       vault as never,
       successfulValidator(),
       validationAudit() as never,
+      audit as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -195,6 +213,7 @@ describe('ConnectionsService (W2-S01)', () => {
     expect(replaced.status).toBe('DISCONNECTED');
     expect(JSON.stringify(replaced)).not.toContain('key-two');
     expect(JSON.stringify(replaced)).not.toContain('secret-two');
+    expect(audit.events.map((event) => event.outcome)).toEqual(['credentials_replaced']);
   });
 
   it('moves a credentialed connection to Connected only through successful validation', async () => {
@@ -205,6 +224,7 @@ describe('ConnectionsService (W2-S01)', () => {
       vault as never,
       successfulValidator(),
       audit as never,
+      lifecycleAudit() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -249,6 +269,7 @@ describe('ConnectionsService (W2-S01)', () => {
       vault as never,
       { validate: async () => ({ outcome: 'failed' as const }) },
       audit as never,
+      lifecycleAudit() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -280,5 +301,79 @@ describe('ConnectionsService (W2-S01)', () => {
         id: created.id,
       }),
     ).rejects.toThrow('Connection not found');
+  });
+
+  it('coordinates replace, disconnect, disable, and revoke with Vault-backed lifecycle state', async () => {
+    const vault = memoryVault();
+    const audit = lifecycleAudit();
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      vault as never,
+      successfulValidator(),
+      validationAudit() as never,
+      audit as never,
+    );
+    const created = await service.create({
+      workspaceId: 'workspace-a',
+      displayName: 'Primary Binance',
+      provider: 'BINANCE',
+    });
+    await service.storeCredentials({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+      credentials: { apiKey: 'key-one', apiSecret: 'secret-one' },
+    });
+    await service.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+    });
+
+    const disconnected = await service.disconnect({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      id: created.id,
+    });
+    expect(disconnected.status).toBe('DISCONNECTED');
+
+    const disabled = await service.disable({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      id: created.id,
+    });
+    expect(disabled.status).toBe('DISABLED');
+    await expect(
+      service.validate({
+        workspaceId: 'workspace-a',
+        actorUserId: 'operator-a',
+        actorRole: Role.Trader,
+        id: created.id,
+      }),
+    ).rejects.toThrow('Connection cannot be validated');
+
+    const revoked = await service.revoke({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+    });
+    expect(revoked).toMatchObject({ status: 'REVOKED', credentialsStored: false });
+    expect(audit.events.map((event) => event.outcome)).toEqual([
+      'disconnected',
+      'disabled',
+      'revoked',
+    ]);
+
+    const restored = await service.storeCredentials({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+      credentials: { apiKey: 'key-two', apiSecret: 'secret-two' },
+    });
+    expect(restored).toMatchObject({ status: 'DISCONNECTED', credentialsStored: true });
   });
 });

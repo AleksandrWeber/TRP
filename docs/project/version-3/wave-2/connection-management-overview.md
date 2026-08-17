@@ -34,6 +34,14 @@ This does not call a provider and does not establish live trading, message deliv
 
 ---
 
+## W2-S01-d delivered lifecycle management
+
+Operators can now replace credentials, disconnect a connected connection, disable a connection, and revoke its Vault-backed credentials. Replacing credentials and disconnecting return the connection to **Disconnected**, so validation is required before it can become **Connected** again. Disabled connections cannot be validated. Revoked credentials become unusable until an operator stores new write-only credentials.
+
+These lifecycle actions do not communicate with a provider and do not delete, reveal, export, or duplicate secrets.
+
+---
+
 ## Purpose
 
 Connection Management is the place in the product where an operator manages connections to external services — exchanges, Telegram, email (SMTP), and OpenRouter — without editing a server file.

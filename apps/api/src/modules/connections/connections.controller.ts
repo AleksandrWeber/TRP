@@ -159,6 +159,53 @@ export class ConnectionsController {
       throw validationError(error);
     }
   }
+
+  @RequirePermission(PermissionClass.VaultConnections)
+  @Post(':id/disconnect')
+  async disconnect(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('id') id: string,
+  ): Promise<ConnectionMetadataView> {
+    return this.connections.disconnect({
+      workspaceId: requireWorkspace(this.workspaceAccess, request.user, workspaceHeader),
+      actorUserId: request.user.userId,
+      id,
+    });
+  }
+
+  @RequirePermission(PermissionClass.VaultConnections)
+  @Post(':id/disable')
+  async disable(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('id') id: string,
+  ): Promise<ConnectionMetadataView> {
+    return this.connections.disable({
+      workspaceId: requireWorkspace(this.workspaceAccess, request.user, workspaceHeader),
+      actorUserId: request.user.userId,
+      id,
+    });
+  }
+
+  @RequirePermission(PermissionClass.VaultConnections)
+  @Post(':id/revoke')
+  async revoke(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('id') id: string,
+  ): Promise<ConnectionMetadataView> {
+    try {
+      return await this.connections.revoke({
+        workspaceId: requireWorkspace(this.workspaceAccess, request.user, workspaceHeader),
+        actorUserId: request.user.userId,
+        actorRole: request.user.role,
+        id,
+      });
+    } catch (error) {
+      throw validationError(error);
+    }
+  }
 }
 
 function requireWorkspace(

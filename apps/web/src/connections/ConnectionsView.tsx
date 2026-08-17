@@ -29,6 +29,9 @@ export type ConnectionsViewProps = {
   onStoreCredentials: (event: FormEvent<HTMLFormElement>) => void;
   onCancelCredentials: () => void;
   onValidate: (connection: ConnectionMetadataView) => void;
+  onDisconnect: (connection: ConnectionMetadataView) => void;
+  onDisable: (connection: ConnectionMetadataView) => void;
+  onRevoke: (connection: ConnectionMetadataView) => void;
 };
 
 export function ConnectionsView({
@@ -55,6 +58,9 @@ export function ConnectionsView({
   onStoreCredentials,
   onCancelCredentials,
   onValidate,
+  onDisconnect,
+  onDisable,
+  onRevoke,
 }: ConnectionsViewProps) {
   const credentialProvider = catalog?.connectionTypes
     .flatMap((type) => type.providers)
@@ -155,13 +161,15 @@ export function ConnectionsView({
                     ? 'Credentials stored securely.'
                     : 'No credentials stored'}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => onStartCredentials(connection)}
-                  className="text-sm text-sky-300 underline"
-                >
-                  {connection.credentialsStored ? 'Replace credentials' : 'Store credentials'}
-                </button>
+                {connection.status !== 'DISABLED' ? (
+                  <button
+                    type="button"
+                    onClick={() => onStartCredentials(connection)}
+                    className="text-sm text-sky-300 underline"
+                  >
+                    {connection.credentialsStored ? 'Replace credentials' : 'Store credentials'}
+                  </button>
+                ) : null}
                 {connection.credentialsStored &&
                 (connection.status === 'DISCONNECTED' ||
                   connection.status === 'VALIDATION_FAILED') ? (
@@ -174,6 +182,40 @@ export function ConnectionsView({
                     {connection.status === 'VALIDATION_FAILED'
                       ? 'Retry validation'
                       : 'Run Validate'}
+                  </button>
+                ) : null}
+                {connection.status === 'CONNECTED' ? (
+                  <button
+                    type="button"
+                    onClick={() => onDisconnect(connection)}
+                    disabled={saving}
+                    className="text-sm text-sky-300 underline disabled:opacity-50"
+                  >
+                    Disconnect
+                  </button>
+                ) : null}
+                {connection.status === 'DISCONNECTED' ||
+                connection.status === 'CONNECTED' ||
+                connection.status === 'VALIDATION_FAILED' ? (
+                  <button
+                    type="button"
+                    onClick={() => onDisable(connection)}
+                    disabled={saving}
+                    className="text-sm text-sky-300 underline disabled:opacity-50"
+                  >
+                    Disable
+                  </button>
+                ) : null}
+                {connection.credentialsStored &&
+                connection.status !== 'PENDING_VALIDATION' &&
+                connection.status !== 'REVOKED' ? (
+                  <button
+                    type="button"
+                    onClick={() => onRevoke(connection)}
+                    disabled={saving}
+                    className="text-sm text-sky-300 underline disabled:opacity-50"
+                  >
+                    Revoke
                   </button>
                 ) : null}
                 <button
@@ -278,6 +320,10 @@ function statusLabel(status: ConnectionMetadataView['status']): string {
       return 'Connected';
     case 'VALIDATION_FAILED':
       return 'Validation Failed';
+    case 'DISABLED':
+      return 'Disabled';
+    case 'REVOKED':
+      return 'Revoked';
     default:
       return 'Disconnected';
   }

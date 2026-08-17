@@ -10,12 +10,19 @@ import {
   type ConnectionProvider,
   type ConnectionType,
 } from './connection-catalog';
+import { ConnectionLifecycleAudit } from './connection-lifecycle-audit';
+import { assertConnectionTransition } from './connection-lifecycle';
 import { ConnectionValidationAudit } from './connection-validation-audit';
 import { CONNECTION_VALIDATOR, type ConnectionValidator } from './connection-validator';
 import { vaultSecretTypeForProvider } from './connection-vault';
 
 export type ConnectionStatus =
-  'DISCONNECTED' | 'PENDING_VALIDATION' | 'CONNECTED' | 'VALIDATION_FAILED';
+  | 'DISCONNECTED'
+  | 'PENDING_VALIDATION'
+  | 'CONNECTED'
+  | 'VALIDATION_FAILED'
+  | 'DISABLED'
+  | 'REVOKED';
 
 export type ConnectionMetadataView = {
   id: string;
@@ -37,6 +44,7 @@ export class ConnectionsService {
     @Inject(CONNECTION_VALIDATOR)
     private readonly validator: ConnectionValidator,
     private readonly validationAudit: ConnectionValidationAudit,
+    private readonly lifecycleAudit: ConnectionLifecycleAudit,
   ) {}
 
   catalog(): ConnectionCatalogView {
@@ -100,10 +108,22 @@ export class ConnectionsService {
     credentials: Record<string, string>;
   }): Promise<ConnectionMetadataView> {
     const connection = await this.getRow(input.workspaceId, input.id);
-    if (connection.vaultSecretId !== null) {
+    const status = connectionStatus(connection.status);
+    if (status === 'DISABLED') {
+      throw new ConflictException('Disabled connections cannot store credentials.');
+    }
+    if (connection.vaultSecretId !== null && status !== 'REVOKED') {
       throw new ConflictException('Credentials are already stored. Use replace credentials.');
     }
-    await this.assertCredentialSlotAvailable(connection, input.actorUserId, input.actorRole);
+    if (status === 'REVOKED') {
+      await this.assertRevokedCredentialSlotAvailable(
+        connection,
+        input.actorUserId,
+        input.actorRole,
+      );
+    } else {
+      await this.assertCredentialSlotAvailable(connection, input.actorUserId, input.actorRole);
+    }
     const stored = await this.vault.store({
       actorWorkspaceId: input.actorUserId,
       actorRole: input.actorRole,
@@ -111,6 +131,9 @@ export class ConnectionsService {
       type: vaultSecretTypeForProvider(connection.provider as ConnectionProvider),
       fields: input.credentials,
     });
+    if (status === 'REVOKED') {
+      assertConnectionTransition(status, 'DISCONNECTED');
+    }
     const row = await this.prisma.connectionRecord.update({
       where: { id: connection.id },
       data: { vaultSecretId: stored.metadata.id, status: 'DISCONNECTED' },
@@ -126,8 +149,12 @@ export class ConnectionsService {
     credentials: Record<string, string>;
   }): Promise<ConnectionMetadataView> {
     const connection = await this.getRow(input.workspaceId, input.id);
+    const status = connectionStatus(connection.status);
     if (connection.vaultSecretId === null) {
       throw new ConflictException('Credentials have not been stored for this connection.');
+    }
+    if (status !== 'DISCONNECTED') {
+      assertConnectionTransition(status, 'DISCONNECTED');
     }
     const stored = await this.vault.replace({
       actorWorkspaceId: input.actorUserId,
@@ -142,6 +169,68 @@ export class ConnectionsService {
     const row = await this.prisma.connectionRecord.update({
       where: { id: connection.id },
       data: { vaultSecretId: stored.metadata.id, status: 'DISCONNECTED' },
+    });
+    await this.lifecycleAudit.record({
+      outcome: 'credentials_replaced',
+      workspaceId: input.workspaceId,
+      actorUserId: input.actorUserId,
+      connectionId: row.id,
+      provider: row.provider as ConnectionProvider,
+    });
+    return toView(row);
+  }
+
+  async disconnect(input: {
+    workspaceId: string;
+    actorUserId: string;
+    id: string;
+  }): Promise<ConnectionMetadataView> {
+    return this.transitionLifecycle(input, 'DISCONNECTED', 'disconnected');
+  }
+
+  async disable(input: {
+    workspaceId: string;
+    actorUserId: string;
+    id: string;
+  }): Promise<ConnectionMetadataView> {
+    return this.transitionLifecycle(input, 'DISABLED', 'disabled');
+  }
+
+  async revoke(input: {
+    workspaceId: string;
+    actorUserId: string;
+    actorRole: Role;
+    id: string;
+  }): Promise<ConnectionMetadataView> {
+    const connection = await this.getRow(input.workspaceId, input.id);
+    const status = connectionStatus(connection.status);
+    assertConnectionTransition(status, 'REVOKED');
+    if (connection.vaultSecretId === null) {
+      throw new ConflictException('Credentials have not been stored for this connection.');
+    }
+    const type = vaultSecretTypeForProvider(connection.provider as ConnectionProvider);
+    const metadata = await this.vault.get({
+      actorWorkspaceId: input.actorUserId,
+      actorRole: input.actorRole,
+      workspaceId: input.workspaceId,
+      type,
+    });
+    if (metadata?.id !== connection.vaultSecretId) {
+      throw new ConflictException('Credential ownership could not be verified.');
+    }
+    await this.vault.revoke({
+      actorWorkspaceId: input.actorUserId,
+      actorRole: input.actorRole,
+      workspaceId: input.workspaceId,
+      type,
+    });
+    const row = await this.updateStatus(connection.id, 'REVOKED');
+    await this.lifecycleAudit.record({
+      outcome: 'revoked',
+      workspaceId: input.workspaceId,
+      actorUserId: input.actorUserId,
+      connectionId: row.id,
+      provider: row.provider as ConnectionProvider,
     });
     return toView(row);
   }
@@ -161,16 +250,15 @@ export class ConnectionsService {
       throw new ConflictException('Connection cannot be validated from its current state.');
     }
 
-    const pending = await this.setStatus(connection.id, 'PENDING_VALIDATION');
-    await this.validationAudit.record({
-      outcome: 'started',
-      workspaceId: input.workspaceId,
-      actorUserId: input.actorUserId,
-      connectionId: connection.id,
-      provider: connection.provider as ConnectionProvider,
-    });
-
+    const pending = await this.transitionStatus(connection, 'PENDING_VALIDATION');
     try {
+      await this.validationAudit.record({
+        outcome: 'started',
+        workspaceId: input.workspaceId,
+        actorUserId: input.actorUserId,
+        connectionId: connection.id,
+        provider: connection.provider as ConnectionProvider,
+      });
       const type = vaultSecretTypeForProvider(connection.provider as ConnectionProvider);
       const metadata = await this.vault.get({
         actorWorkspaceId: input.actorUserId,
@@ -209,6 +297,23 @@ export class ConnectionsService {
     }
   }
 
+  private async transitionLifecycle(
+    input: { workspaceId: string; actorUserId: string; id: string },
+    status: 'DISCONNECTED' | 'DISABLED',
+    outcome: 'disconnected' | 'disabled',
+  ): Promise<ConnectionMetadataView> {
+    const connection = await this.getRow(input.workspaceId, input.id);
+    const row = await this.transitionStatus(connection, status);
+    await this.lifecycleAudit.record({
+      outcome,
+      workspaceId: input.workspaceId,
+      actorUserId: input.actorUserId,
+      connectionId: row.id,
+      provider: row.provider as ConnectionProvider,
+    });
+    return toView(row);
+  }
+
   private async getRow(workspaceId: string, id: string): Promise<ConnectionRow> {
     const row = await this.prisma.connectionRecord.findFirst({ where: { id, workspaceId } });
     if (!row) throw new NotFoundException('Connection not found');
@@ -223,7 +328,7 @@ export class ConnectionsService {
   }): Promise<ConnectionMetadataView> {
     const status: ConnectionStatus =
       input.outcome === 'succeeded' ? 'CONNECTED' : 'VALIDATION_FAILED';
-    const completed = await this.setStatus(input.pending.id, status);
+    const completed = await this.transitionStatus(input.pending, status);
     await this.validationAudit.record({
       outcome: input.outcome,
       workspaceId: input.workspaceId,
@@ -234,7 +339,15 @@ export class ConnectionsService {
     return toView(completed);
   }
 
-  private async setStatus(id: string, status: ConnectionStatus): Promise<ConnectionRow> {
+  private async transitionStatus(
+    connection: ConnectionRow,
+    status: ConnectionStatus,
+  ): Promise<ConnectionRow> {
+    assertConnectionTransition(connectionStatus(connection.status), status);
+    return this.updateStatus(connection.id, status);
+  }
+
+  private async updateStatus(id: string, status: ConnectionStatus): Promise<ConnectionRow> {
     return this.prisma.connectionRecord.update({ where: { id }, data: { status } });
   }
 
@@ -263,6 +376,22 @@ export class ConnectionsService {
       throw new ConflictException('Credentials are already assigned to this provider.');
     }
   }
+
+  private async assertRevokedCredentialSlotAvailable(
+    connection: ConnectionRow,
+    actorUserId: string,
+    actorRole: Role,
+  ): Promise<void> {
+    const existingSecret = await this.vault.get({
+      actorWorkspaceId: actorUserId,
+      actorRole,
+      workspaceId: connection.workspaceId,
+      type: vaultSecretTypeForProvider(connection.provider as ConnectionProvider),
+    });
+    if (existingSecret !== null && existingSecret.id !== connection.vaultSecretId) {
+      throw new ConflictException('Credentials are already assigned to this provider.');
+    }
+  }
 }
 
 type ConnectionRow = {
@@ -285,7 +414,7 @@ function toView(row: ConnectionRow): ConnectionMetadataView {
     provider: row.provider as ConnectionProvider,
     connectionType: row.connectionType as ConnectionType,
     status: connectionStatus(row.status),
-    credentialsStored: row.vaultSecretId !== null,
+    credentialsStored: row.vaultSecretId !== null && connectionStatus(row.status) !== 'REVOKED',
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
@@ -296,7 +425,9 @@ function connectionStatus(status: string): ConnectionStatus {
     status === 'DISCONNECTED' ||
     status === 'PENDING_VALIDATION' ||
     status === 'CONNECTED' ||
-    status === 'VALIDATION_FAILED'
+    status === 'VALIDATION_FAILED' ||
+    status === 'DISABLED' ||
+    status === 'REVOKED'
   ) {
     return status;
   }

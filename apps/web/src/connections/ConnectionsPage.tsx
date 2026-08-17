@@ -123,6 +123,27 @@ export function ConnectionsPage() {
     }
   }
 
+  async function lifecycle(
+    connection: ConnectionMetadataView,
+    action: 'disconnect' | 'disable' | 'revoke',
+  ) {
+    setSaving(true);
+    setError(null);
+    try {
+      const updated =
+        action === 'disconnect'
+          ? await api.disconnectConnection(connection.id)
+          : action === 'disable'
+            ? await api.disableConnection(connection.id)
+            : await api.revokeConnection(connection.id);
+      setConnections((items) => items.map((item) => (item.id === updated.id ? updated : item)));
+    } catch (reason) {
+      setError(toUserFacingError(reason, `Could not ${action} the connection.`));
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <ConnectionsView
       catalog={catalog}
@@ -159,6 +180,9 @@ export function ConnectionsPage() {
         setCredentialValues({});
       }}
       onValidate={validate}
+      onDisconnect={(connection) => lifecycle(connection, 'disconnect')}
+      onDisable={(connection) => lifecycle(connection, 'disable')}
+      onRevoke={(connection) => lifecycle(connection, 'revoke')}
     />
   );
 }

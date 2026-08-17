@@ -46,8 +46,8 @@ const connection: ConnectionMetadataView = {
   updatedAt: '2026-08-17T16:00:00.000Z',
 };
 
-describe('Connections UI (W2-S01-c)', () => {
-  it('renders validation actions and every validation state without exposing credentials', () => {
+describe('Connections UI (W2-S01-d)', () => {
+  it('renders validation and lifecycle actions without exposing credentials', () => {
     const html = renderToStaticMarkup(
       <ConnectionsView
         catalog={catalog}
@@ -56,6 +56,8 @@ describe('Connections UI (W2-S01-c)', () => {
           { ...connection, id: 'connection-2', status: 'PENDING_VALIDATION' },
           { ...connection, id: 'connection-3', status: 'CONNECTED' },
           { ...connection, id: 'connection-4', status: 'VALIDATION_FAILED' },
+          { ...connection, id: 'connection-5', status: 'DISABLED' },
+          { ...connection, id: 'connection-6', status: 'REVOKED', credentialsStored: false },
         ]}
         displayName=""
         provider="BINANCE"
@@ -78,6 +80,9 @@ describe('Connections UI (W2-S01-c)', () => {
         onStoreCredentials={(event) => event.preventDefault()}
         onCancelCredentials={() => undefined}
         onValidate={() => undefined}
+        onDisconnect={() => undefined}
+        onDisable={() => undefined}
+        onRevoke={() => undefined}
       />,
     );
 
@@ -93,10 +98,15 @@ describe('Connections UI (W2-S01-c)', () => {
     expect(html).toContain('Pending Validation');
     expect(html).toContain('Connected');
     expect(html).toContain('Validation Failed');
+    expect(html).toContain('Disabled');
+    expect(html).toContain('Revoked');
     expect(html).toContain('Run Validate');
     expect(html).toContain('Retry validation');
     expect(html).toContain('Credentials stored securely.');
     expect(html).toContain('Replace credentials');
+    expect(html).toContain('Disconnect');
+    expect(html).toContain('Disable');
+    expect(html).toContain('Revoke');
     expect(html).toContain('type="password"');
     expect(html).not.toContain('Reveal');
     expect(html).not.toContain('Show Secret');

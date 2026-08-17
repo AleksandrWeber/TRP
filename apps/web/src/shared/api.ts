@@ -33,7 +33,13 @@ export type ConnectionMetadataView = {
   displayName: string;
   provider: ConnectionProvider;
   connectionType: ConnectionType;
-  status: 'DISCONNECTED' | 'PENDING_VALIDATION' | 'CONNECTED' | 'VALIDATION_FAILED';
+  status:
+    | 'DISCONNECTED'
+    | 'PENDING_VALIDATION'
+    | 'CONNECTED'
+    | 'VALIDATION_FAILED'
+    | 'DISABLED'
+    | 'REVOKED';
   credentialsStored: boolean;
   createdAt: string;
   updatedAt: string;
@@ -2902,6 +2908,18 @@ export const api = {
     }),
   validateConnection: (id: string) =>
     request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}/validate`, {
+      method: 'POST',
+    }),
+  disconnectConnection: (id: string) =>
+    request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}/disconnect`, {
+      method: 'POST',
+    }),
+  disableConnection: (id: string) =>
+    request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}/disable`, {
+      method: 'POST',
+    }),
+  revokeConnection: (id: string) =>
+    request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}/revoke`, {
       method: 'POST',
     }),
   listStrategyLibrary: (query: LibraryListQuery = {}) => {

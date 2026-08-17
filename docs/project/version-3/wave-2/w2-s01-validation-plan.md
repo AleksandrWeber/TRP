@@ -91,6 +91,22 @@ Evidence: [`w2-s01-c-validation-report.md`](./w2-s01-c-validation-report.md).
 
 ---
 
+## W2-S01-d execution record
+
+| Slice assertion                                                                                   | Result |
+| ------------------------------------------------------------------------------------------------- | ------ |
+| Replacing credentials replaces Vault material and returns a connected connection to Disconnected  | PASS   |
+| Disconnect changes Connected to Disconnected without provider communication or secret deletion    | PASS   |
+| Disable prevents validation and presents Disabled status                                          | PASS   |
+| Revoke makes the Vault credential unusable, presents Revoked status, and requires new credentials | PASS   |
+| Lifecycle actions retain workspace isolation and existing C8 authorization                        | PASS   |
+| Security Audit records credentials replaced, disconnected, disabled, and revoked                  | PASS   |
+| UI shows lifecycle actions and never reveals or exports credentials                               | PASS   |
+
+Evidence: [`w2-s01-d-validation-report.md`](./w2-s01-d-validation-report.md).
+
+---
+
 ## 2. Unit tests
 
 | Area                       | Must prove                                                     |

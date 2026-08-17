@@ -99,6 +99,15 @@ const CATALOG: Readonly<Record<string, SecurityAuditClassification>> = Object.fr
     financialIntegrityValue: 'high',
     retention: 'long',
   },
+  'connection.lifecycle': {
+    eventClass: 'connection',
+    criticality: 'high',
+    investigationValue: 'Who changed a connection lifecycle state or its credential material?',
+    customerTrustValue: 'high',
+    securityImpact: 'high',
+    financialIntegrityValue: 'high',
+    retention: 'long',
+  },
   'platform.abuse.throttled': {
     eventClass: 'security-platform',
     criticality: 'high',
