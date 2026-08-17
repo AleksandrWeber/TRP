@@ -46,6 +46,20 @@ export class InMemoryAuthSessionRepository implements AuthSessionRepository {
     return earliest;
   }
 
+  async rotateIfActive(currentId: string, next: AuthSessionRecord, now: Date): Promise<boolean> {
+    const current = this.records.get(currentId);
+    if (!current || current.revokedAt !== null || current.expiresAt <= now) {
+      return false;
+    }
+    this.records.set(currentId, {
+      ...current,
+      revokedAt: now,
+      replacedById: next.id,
+    });
+    this.records.set(next.id, { ...next });
+    return true;
+  }
+
   async revoke(
     id: string,
     params: { revokedAt: Date; replacedById?: string | null },

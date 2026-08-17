@@ -13,6 +13,17 @@ This report covers **S01-c only**. S01-d and S01-e were not started. V3-S01 is n
 
 ---
 
+## F-12 Certification Remediation
+
+**Date:** 2026-08-17
+**Scope:** Authentication-owned refresh-token rotation only.
+
+Refresh rotation now conditionally claims the active, unexpired predecessor and creates its successor in one existing session-persistence transaction. The claim succeeds once; only that request receives a new refresh secret. Concurrent losers receive the established invalid-session response, and no successor session is created for them. Reuse detection for an already-revoked token remains unchanged.
+
+Authentication retains refresh-token and session ownership. Security Audit behavior, Identity, Vault, session product scope, and architectural boundaries are unchanged.
+
+---
+
 ## What shipped
 
 Login and register now issue a revocable Auth session instead of an irrevocable 8h Bearer stored in `localStorage`.

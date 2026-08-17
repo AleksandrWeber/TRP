@@ -446,6 +446,41 @@ describe('AuthenticationService (US106, US107, V3-S01-c)', () => {
     });
   });
 
+  it('allows one concurrent refresh and records one rotation event', async () => {
+    const logger = new RecordingLogger();
+    const { authentication, sessions } = createAuthentication({ logger });
+    const issued = await authentication.register(
+      'concurrent-rot@example.com',
+      'Concurrent',
+      TEST_PASSWORD,
+    );
+
+    const attempts = await Promise.allSettled([
+      authentication.refresh(issued.refreshToken),
+      authentication.refresh(issued.refreshToken),
+    ]);
+    const successful = attempts.filter(
+      (
+        attempt,
+      ): attempt is PromiseFulfilledResult<Awaited<ReturnType<typeof authentication.refresh>>> =>
+        attempt.status === 'fulfilled',
+    );
+
+    expect(successful).toHaveLength(1);
+    expect(successful[0]!.value.refreshToken).not.toBe(issued.refreshToken);
+    expect(await sessions.listActive(issued.user.id)).toEqual([
+      expect.objectContaining({ id: successful[0]!.value.sessionId }),
+    ]);
+    expect(
+      logger.entries.filter(
+        (entry) => entry.context?.event === 'auth.session' && entry.context.outcome === 'refresh',
+      ),
+    ).toHaveLength(1);
+    await expect(authentication.refresh(issued.refreshToken)).rejects.toMatchObject({
+      message: INVALID_SESSION_MESSAGE,
+    });
+  });
+
   it('rejects a revoked session immediately', async () => {
     const { authentication } = createAuthentication();
     const issued = await authentication.register('rev@example.com', 'Rev', TEST_PASSWORD);

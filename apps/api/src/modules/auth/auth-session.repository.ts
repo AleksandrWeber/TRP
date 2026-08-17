@@ -10,6 +10,8 @@ export interface AuthSessionRepository {
   findByRefreshHash(refreshTokenHash: string): Promise<AuthSessionRecord | null>;
   findActiveByUserId(userId: string, now: Date): Promise<AuthSessionRecord[]>;
   findEarliestCreatedAtByFamilyIds(familyIds: string[]): Promise<Map<string, Date>>;
+  /** Claims the current active session and creates exactly one successor. */
+  rotateIfActive(currentId: string, next: AuthSessionRecord, now: Date): Promise<boolean>;
   revoke(id: string, params: { revokedAt: Date; replacedById?: string | null }): Promise<void>;
   revokeFamily(familyId: string, revokedAt: Date): Promise<void>;
   revokeAllForUser(userId: string, revokedAt: Date): Promise<number>;

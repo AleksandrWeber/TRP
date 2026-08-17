@@ -62,6 +62,33 @@ export class PrismaAuthSessionRepository implements AuthSessionRepository {
     return earliest;
   }
 
+  async rotateIfActive(currentId: string, next: AuthSessionRecord, now: Date): Promise<boolean> {
+    return this.prisma.$transaction(async (transaction) => {
+      const claimed = await transaction.authSession.updateMany({
+        where: { id: currentId, revokedAt: null, expiresAt: { gt: now } },
+        data: { revokedAt: now, replacedById: next.id },
+      });
+      if (claimed.count !== 1) return false;
+
+      await transaction.authSession.create({
+        data: {
+          id: next.id,
+          familyId: next.familyId,
+          userId: next.userId,
+          refreshTokenHash: next.refreshTokenHash,
+          expiresAt: next.expiresAt,
+          revokedAt: next.revokedAt,
+          replacedById: next.replacedById,
+          ip: next.ip,
+          userAgent: next.userAgent,
+          mfaSatisfied: next.mfaSatisfied,
+          createdAt: next.createdAt,
+        },
+      });
+      return true;
+    });
+  }
+
   async revoke(
     id: string,
     params: { revokedAt: Date; replacedById?: string | null },

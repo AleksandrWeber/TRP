@@ -42,6 +42,28 @@ describe('AuthSessionStore (V3-S01-c)', () => {
     await expect(store.requireActive(rotated.sessionId, 'user-1')).rejects.toBeTruthy();
   });
 
+  it('allows exactly one concurrent refresh rotation without duplicate sessions', async () => {
+    const store = new AuthSessionStore(new InMemoryAuthSessionRepository());
+    const issued = await store.issue('user-1');
+
+    const attempts = await Promise.allSettled([
+      store.rotate(issued.refreshToken),
+      store.rotate(issued.refreshToken),
+      store.rotate(issued.refreshToken),
+    ]);
+    const successful = attempts.filter(
+      (attempt): attempt is PromiseFulfilledResult<Awaited<ReturnType<typeof store.rotate>>> =>
+        attempt.status === 'fulfilled',
+    );
+
+    expect(successful).toHaveLength(1);
+    expect(successful[0]!.value.refreshToken).not.toBe(issued.refreshToken);
+    expect(await store.listActive('user-1')).toEqual([
+      expect.objectContaining({ id: successful[0]!.value.sessionId }),
+    ]);
+    await expect(store.rotate(issued.refreshToken)).rejects.toBeTruthy();
+  });
+
   it('rejects expired refresh without dummy delays', async () => {
     const clock = new ManualClock();
     const store = new AuthSessionStore(new InMemoryAuthSessionRepository(), clock);

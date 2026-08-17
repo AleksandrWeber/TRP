@@ -100,8 +100,9 @@ export class AuthSessionStore {
       mfaSatisfied: current.mfaSatisfied,
       createdAt: now,
     };
-    await this.repository.save(next);
-    await this.repository.revoke(current.id, { revokedAt: now, replacedById: next.id });
+    if (!(await this.repository.rotateIfActive(current.id, next, now))) {
+      throw new UnauthorizedException(INVALID_SESSION_MESSAGE);
+    }
     return {
       sessionId: next.id,
       familyId: next.familyId,
