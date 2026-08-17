@@ -1,14 +1,14 @@
 # V3-S02-e Product Review
 
-**Package:** V3-S02 RBAC Product  
-**Slice:** S02-e — Privilege Constraints & Authorization Events  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Post-implementation slice review — **not** package Close  
-**Master Plan outcomes owned by S02:** Admin assigns a role; operator cannot perform another role’s actions; J3-02  
-**Outcomes owned by this slice:** Role changes are auditable; privilege decisions are traceable; an Administrator who tries to change their own role is denied with a clear explanation  
-**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)  
-**Overview:** [`authorization-events-overview.md`](./authorization-events-overview.md)  
+**Package:** V3-S02 RBAC Product
+**Slice:** S02-e — Privilege Constraints & Authorization Events
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Post-implementation slice review — **not** package Close
+**Master Plan outcomes owned by S02:** Admin assigns a role; operator cannot perform another role’s actions; J3-02
+**Outcomes owned by this slice:** Role changes are auditable; privilege decisions are traceable; an Administrator who tries to change their own role is denied with a clear explanation
+**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)
+**Overview:** [`authorization-events-overview.md`](./authorization-events-overview.md)
 **Nature:** Product review. Not an RC. Not an ADR.
 
 Package Close requires the full RBAC Walkthrough (J3-02) recorded as a live operator pass. This slice evidences privilege constraints, authorization events, and the own-role People journey. It does not Close the package.
@@ -21,7 +21,7 @@ Package Close requires the full RBAC Walkthrough (J3-02) recorded as a live oper
 - How they do it: Administration → People. No SSH, customer `.env`, or SQL. They do not open a log viewer.
 - Master Plan: Wave 1 / SEC-02, **complete for implementation slices**. Package Close still needs Product Owner review and the live J3-02 recording.
 
-**Verdict (this slice):** **PASS**  
+**Verdict (this slice):** **PASS**
 **Verdict (package Close):** **REQUIRES ACTION** — Product Owner review and live J3-02 remain.
 
 ## 2. Customer does NOT receive

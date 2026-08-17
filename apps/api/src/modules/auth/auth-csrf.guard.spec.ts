@@ -52,6 +52,29 @@ describe('AuthCsrfGuard (V3-S01-c)', () => {
     ).toBe(true);
   });
 
+  it('requires a matching CSRF header when only the access cookie is present', () => {
+    expect(() =>
+      guard.canActivate(
+        context({
+          method: 'PATCH',
+          url: '/v1/people/11111111-1111-4111-8111-111111111111/role',
+          cookie: 'trp_access=access-token; trp_csrf=token-1',
+        }),
+      ),
+    ).toThrow(ForbiddenException);
+
+    expect(
+      guard.canActivate(
+        context({
+          method: 'PATCH',
+          url: '/v1/people/11111111-1111-4111-8111-111111111111/role',
+          cookie: 'trp_access=access-token; trp_csrf=token-1',
+          csrfHeader: 'token-1',
+        }),
+      ),
+    ).toBe(true);
+  });
+
   it('requires a matching CSRF header for cookie-authenticated People role assignment', () => {
     expect(() =>
       guard.canActivate(

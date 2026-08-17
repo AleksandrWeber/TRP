@@ -1,11 +1,11 @@
 # V3-S01-c Validation Report
 
-**Package:** V3-S01 Authentication & Session  
-**Slice:** S01-c — Session issuance, refresh, secure transport  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Post-implementation slice validation — **not** package Close  
-**Plan:** [`v3-s01-validation-plan.md`](./v3-s01-validation-plan.md)  
+**Package:** V3-S01 Authentication & Session
+**Slice:** S01-c — Session issuance, refresh, secure transport
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Post-implementation slice validation — **not** package Close
+**Plan:** [`v3-s01-validation-plan.md`](./v3-s01-validation-plan.md)
 **Nature:** Validation report. Not an RC. Not an ADR. Not package Close.
 
 This report records S01-c evidence against the package validation plan. Rows owned by later slices are **NOT RUN** here.
@@ -105,28 +105,28 @@ Master Plan S01 checkboxes (recover, session inventory) remain **unchecked**. Se
 
 These answers are for **this slice**. They are not a V3-S01 Close.
 
-1. **What did the customer receive?**  
+1. **What did the customer receive?**
    A revocable sign-in session: short access, rotating refresh, production-secure cookies, automatic refresh while the session is valid, and server logout. Stolen leftover tokens stop working.
 
-2. **What did the customer NOT receive?**  
+2. **What did the customer NOT receive?**
    Session list / revoke-other-device / sign-out-everywhere UI, password recovery, email verification, MFA, OAuth, passkeys, trusted devices, or remember me.
 
-3. **What business problem was solved?**  
+3. **What business problem was solved?**
    An 8-hour Bearer in `localStorage` could keep acting after theft or leftover access. That product path is closed.
 
-4. **What remains?**  
+4. **What remains?**
    S01-d session management UI; S01-e recovery and authenticated password change. Then V3-S02.
 
-5. **Which slice becomes available next?**  
+5. **Which slice becomes available next?**
    **S01-d Session management product.** Not V3-S02.
 
-6. **Was the Master Plan respected?**  
+6. **Was the Master Plan respected?**
    **Yes.**
 
-7. **Were Product Principles respected?**  
+7. **Were Product Principles respected?**
    **Yes.**
 
-8. **Were any architectural deviations introduced?**  
+8. **Were any architectural deviations introduced?**
    **No.**
 
 ---

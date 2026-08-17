@@ -1,9 +1,9 @@
 # Authentication Capability Map
 
-**Document:** Version 3 Authentication Capability Map  
-**Date:** 2026-08-16  
-**Status:** Product inventory after V3-S01 Close  
-**Product:** Authentication Platform  
+**Document:** Version 3 Authentication Capability Map
+**Date:** 2026-08-16
+**Status:** Product inventory after V3-S01 Close
+**Product:** Authentication Platform
 **Nature:** Customer capability map. Not an RC. Not an ADR. Not implementation. Not a Master Plan revision.
 
 One page. What the customer can do now, and what they cannot. Not how it is built.

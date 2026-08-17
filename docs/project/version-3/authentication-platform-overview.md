@@ -1,9 +1,9 @@
 # Authentication Platform Overview
 
-**Document:** Version 3 Authentication Platform Overview  
-**Date:** 2026-08-16  
-**Status:** Product-facing record of V3-S01  
-**Product:** Authentication Platform  
+**Document:** Version 3 Authentication Platform Overview
+**Date:** 2026-08-16
+**Status:** Product-facing record of V3-S01
+**Product:** Authentication Platform
 **Nature:** Customer description. Not an RC. Not an ADR. Not implementation. Not a Master Plan revision.
 
 This is what an ordinary operator experiences. It is not an internal design note.

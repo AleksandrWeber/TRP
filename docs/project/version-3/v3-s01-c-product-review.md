@@ -1,13 +1,13 @@
 # V3-S01-c Product Review
 
-**Package:** V3-S01 Authentication & Session  
-**Slice:** S01-c — Session issuance, refresh, secure transport  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Post-implementation slice review — **not** package Close  
-**Master Plan outcomes owned by S01:** register, secure login, recovery, session revoke  
-**Outcomes owned by this slice:** remain signed in securely; refresh; lose access after expiry or revoke  
-**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)  
+**Package:** V3-S01 Authentication & Session
+**Slice:** S01-c — Session issuance, refresh, secure transport
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Post-implementation slice review — **not** package Close
+**Master Plan outcomes owned by S01:** register, secure login, recovery, session revoke
+**Outcomes owned by this slice:** remain signed in securely; refresh; lose access after expiry or revoke
+**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)
 **Nature:** Product review. Not an RC. Not an ADR.
 
 Package Close requires the full S01 walkthrough. This slice does not claim it.
@@ -20,7 +20,7 @@ Package Close requires the full S01 walkthrough. This slice does not claim it.
 - How they do it: `/login` → email, password → Sign in → paper-first shell. Refresh is automatic. Logout calls the server and returns to `/login`.
 - Master Plan: Wave 1 / §14 session line, **partial** (issuance, refresh, secure transport). Session list/revoke-one/everywhere is S01-d. Recovery is S01-e.
 
-**Verdict (this slice):** **PASS**  
+**Verdict (this slice):** **PASS**
 **Verdict (package Close):** **REQUIRES ACTION** — remaining S01 customer outcomes not shipped.
 
 ## 2. Customer does NOT receive

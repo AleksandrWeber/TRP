@@ -1,15 +1,17 @@
 # Version 3 Security Checklist
 
-**Document:** Version 3 Security Checklist  
-**Date:** 2026-08-16  
-**Status:** Mandatory for every `V3-*` package  
-**Extended:** 2026-08-16 — Threat Review (lightweight STRIDE) is mandatory in every Security Review  
-**Extended:** 2026-08-16 — Timing Assessment and Abuse Assessment are mandatory from S01-c  
-**Authority:** Subordinate to [`version-3-master-plan.md`](./version-3-master-plan.md) §7 and [`v3-security-vision.md`](./v3-security-vision.md)  
-**Template:** [`version-3-package-template.md`](./version-3-package-template.md)  
+**Document:** Version 3 Security Checklist
+**Date:** 2026-08-16
+**Status:** Mandatory for every `V3-*` package
+**Extended:** 2026-08-16 — Threat Review (lightweight STRIDE) is mandatory in every Security Review
+**Extended:** 2026-08-16 — Timing Assessment and Abuse Assessment are mandatory from S01-c
+**Extended:** 2026-08-17 — Mandatory itemized verification: [`version-3-security-verification-standard.md`](./version-3-security-verification-standard.md) (OWASP Top 10 + API Top 10 + Security Regression Suite). Required beginning with the **next** package after that standard is approved. Do **not** rewrite Closed or Accepted packages.
+**Authority:** Subordinate to [`version-3-master-plan.md`](./version-3-master-plan.md) §7 and [`v3-security-vision.md`](./v3-security-vision.md)
+**Template:** [`version-3-package-template.md`](./version-3-package-template.md)
+**Verification standard:** [`version-3-security-verification-standard.md`](./version-3-security-verification-standard.md)
 **Nature:** Checklist. Not an RC. Not an ADR. Not implementation.
 
-Every Version 3 package must complete this checklist twice: at **Implementation Package** (planning intent) and at **Close** (evidence). Every Security Review must also include the **Threat Review**, **Timing Assessment**, and **Abuse Assessment** tables below (see grandfathering). A package cannot Close while any item is **REQUIRES ACTION**.
+Every Version 3 package must complete this checklist twice: at **Implementation Package** (planning intent) and at **Close** (evidence). Every Security Review must also include the **Threat Review**, **Timing Assessment**, and **Abuse Assessment** tables below (see grandfathering). Packages that start **after** the Security Verification Standard is approved must also complete that standard (every category, every row, plus the Security Regression Suite). A package cannot Close while any item is **REQUIRES ACTION**.
 
 S01-a is accepted without a Threat Review table. S01-a and S01-b are accepted without Timing Assessment or Abuse Assessment. Do **not** rewrite those reviews. Every subsequent Security Review (starting S01-b) must include Threat Review. Every subsequent Security Review (starting S01-c) must include Timing Assessment and Abuse Assessment.
 
@@ -217,10 +219,37 @@ Rules:
 
 ---
 
+## Security Verification Standard (mandatory for packages that start after approval)
+
+Copy and complete [`version-3-security-verification-standard.md`](./version-3-security-verification-standard.md).
+
+That standard is **additive**. It does not replace this checklist, STRIDE, Timing Assessment, or Abuse Assessment.
+
+It requires:
+
+| Gate                          | Meaning                                                                                                                     |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Categories 1–14               | Injection through Secure Headers — every row PASS / NOT APPLICABLE / REQUIRES ACTION                                        |
+| OWASP Top 10                  | Explicit mapping (extends the worksheet above)                                                                              |
+| OWASP API Top 10              | Explicit mapping                                                                                                            |
+| **Security Regression Suite** | Every found-and-fixed vulnerability owned by this package leaves an automated regression test that runs with ordinary tests |
+
+Grandfathering: packages and slices already Closed or Accepted before the standard was approved are **not** rewritten. Beginning with the **next** package, Close is blocked while any verification-standard row or regression-suite row is **REQUIRES ACTION**.
+
+---
+
 ## Close rule
 
 ```text
-any REQUIRES ACTION (checklist, OWASP worksheet, Threat Review, Timing Assessment, or Abuse Assessment)  →  package cannot Close; implementation stops until resolved
+any REQUIRES ACTION (
+  checklist,
+  OWASP worksheet,
+  Threat Review,
+  Timing Assessment,
+  Abuse Assessment,
+  or — when this package is subject to it —
+  Security Verification Standard / Security Regression Suite
+)  →  package cannot Close; implementation stops until resolved
 all PASS or NOT APPLICABLE  →  Security Review gate may PASS
 ```
 

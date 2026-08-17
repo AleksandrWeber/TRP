@@ -50,13 +50,16 @@ describe('Permission matrix (V3-S02-a)', () => {
     expect(MATRIX_SOURCE).not.toMatch(/\bparentRole\b/);
   });
 
-  it('denies live, vault/connections, and bypass for every role', () => {
+  it('grants C8 only to Trader and Admin, and denies live/bypass for every role', () => {
     for (const role of Object.values(Role)) {
       expect(roleAllowsPermission(role, PermissionClass.LiveCommand)).toBe(false);
-      expect(roleAllowsPermission(role, PermissionClass.VaultConnections)).toBe(false);
       expect(roleAllowsPermission(role, PermissionClass.Bypass)).toBe(false);
       expect(roleAllowsPermission(role, PermissionClass.Public)).toBe(false);
     }
+    expect(roleAllowsPermission(Role.Reader, PermissionClass.VaultConnections)).toBe(false);
+    expect(roleAllowsPermission(Role.Researcher, PermissionClass.VaultConnections)).toBe(false);
+    expect(roleAllowsPermission(Role.Trader, PermissionClass.VaultConnections)).toBe(true);
+    expect(roleAllowsPermission(Role.Admin, PermissionClass.VaultConnections)).toBe(true);
   });
 
   it('keeps register default Researcher off paper command and role admin', () => {

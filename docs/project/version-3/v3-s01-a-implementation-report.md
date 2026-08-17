@@ -1,12 +1,12 @@
 # V3-S01-a Implementation Report
 
-**Package:** V3-S01 Authentication & Session  
-**Slice:** S01-a — Registration & Password Policy  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Status:** Slice implemented — **not** package Close  
-**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)  
-**Package:** [`v3-s01-implementation-package.md`](./v3-s01-implementation-package.md)  
+**Package:** V3-S01 Authentication & Session
+**Slice:** S01-a — Registration & Password Policy
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Status:** Slice implemented — **not** package Close
+**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)
+**Package:** [`v3-s01-implementation-package.md`](./v3-s01-implementation-package.md)
 **Nature:** Implementation report. Not an RC. Not an ADR. Not a Master Plan revision.
 
 This report covers **S01-a only**. S01-b through S01-e were not started. V3-S01 is not Closed.

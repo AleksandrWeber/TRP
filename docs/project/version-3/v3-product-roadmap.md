@@ -1,8 +1,8 @@
 # Version 3 Product Roadmap
 
-**Document:** Version 3 Product Roadmap  
-**Date:** 2026-08-16  
-**Status:** Annex — planning **FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md)  
+**Document:** Version 3 Product Roadmap
+**Date:** 2026-08-16
+**Status:** Annex — planning **FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md)
 **Companion:** [Execution Roadmap](./v3-execution-roadmap.md) · [Capability Inventory](./v3-capability-inventory.md)
 
 This is the product view of Version 3. It organizes work into groups, states reuse of Version 2, and records which groups are in, later, or out.

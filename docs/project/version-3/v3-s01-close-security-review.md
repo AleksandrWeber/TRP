@@ -1,12 +1,12 @@
 # V3-S01 Close Security Review
 
-**Package:** V3-S01 Authentication & Session  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Close  
-**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md) §7 · [`v3-security-vision.md`](./v3-security-vision.md)  
-**Planning review (unmodified):** [`v3-s01-security-review.md`](./v3-s01-security-review.md)  
-**Checklist:** [`version-3-security-checklist.md`](./version-3-security-checklist.md)  
+**Package:** V3-S01 Authentication & Session
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Close
+**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md) §7 · [`v3-security-vision.md`](./v3-security-vision.md)
+**Planning review (unmodified):** [`v3-s01-security-review.md`](./v3-s01-security-review.md)
+**Checklist:** [`version-3-security-checklist.md`](./version-3-security-checklist.md)
 **Nature:** Security review. Not an RC. Not an ADR. Not the audit product.
 
 This is the Close evidence review. The planning security review is not rewritten. Slice security reviews S01-a … S01-e are evidence.

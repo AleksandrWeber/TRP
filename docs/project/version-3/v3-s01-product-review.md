@@ -1,11 +1,11 @@
 # V3-S01 Product Review
 
-**Package:** V3-S01 Authentication & Session  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Close  
-**Master Plan outcomes owned:** register, secure login, account recovery, session list/revoke  
-**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)  
+**Package:** V3-S01 Authentication & Session
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Close
+**Master Plan outcomes owned:** register, secure login, account recovery, session list/revoke
+**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)
 **Nature:** Product review. Not an RC. Not an ADR.
 
 ---

@@ -75,7 +75,7 @@ export function csrfCookie(value: string, env?: CookieEnvironment): string {
       name: CSRF_COOKIE_NAME,
       value,
       maxAgeMs: REFRESH_TOKEN_TTL_MS,
-      path: '/v1/auth',
+      path: '/',
       httpOnly: true,
     },
     env,
@@ -93,7 +93,7 @@ export function expiredAuthCookies(env?: CookieEnvironment): string[] {
       env,
     ),
     serializeAuthCookie(
-      { name: CSRF_COOKIE_NAME, value: '', maxAgeMs: 0, path: '/v1/auth', httpOnly: true },
+      { name: CSRF_COOKIE_NAME, value: '', maxAgeMs: 0, path: '/', httpOnly: true },
       env,
     ),
   ];

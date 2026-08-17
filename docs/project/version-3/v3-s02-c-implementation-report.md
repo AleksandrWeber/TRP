@@ -1,12 +1,12 @@
 # V3-S02-c Implementation Report
 
-**Package:** V3-S02 RBAC Product  
-**Slice:** S02-c — Role Assignment API  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Status:** Slice implemented — **not** package Close  
-**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)  
-**Package:** [`v3-s02-implementation-package.md`](./v3-s02-implementation-package.md)  
+**Package:** V3-S02 RBAC Product
+**Slice:** S02-c — Role Assignment API
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Status:** Slice implemented — **not** package Close
+**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)
+**Package:** [`v3-s02-implementation-package.md`](./v3-s02-implementation-package.md)
 **Nature:** Implementation report. Not an RC. Not an ADR. Not a Master Plan revision.
 
 This report covers **S02-c only**. S02-d and S02-e were not started. V3-S02 is not Closed.

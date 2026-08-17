@@ -1,13 +1,13 @@
 # V3-S01-b Product Review
 
-**Package:** V3-S01 Authentication & Session  
-**Slice:** S01-b — Login & Lockout  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Post-implementation slice review — **not** package Close  
-**Master Plan outcomes owned by S01:** register, secure login, recovery, session revoke  
-**Outcomes owned by this slice:** sign in securely; lockout after password spray with generic errors  
-**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)  
+**Package:** V3-S01 Authentication & Session
+**Slice:** S01-b — Login & Lockout
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Post-implementation slice review — **not** package Close
+**Master Plan outcomes owned by S01:** register, secure login, recovery, session revoke
+**Outcomes owned by this slice:** sign in securely; lockout after password spray with generic errors
+**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)
 **Nature:** Product review. Not an RC. Not an ADR.
 
 Package Close requires the full S01 walkthrough. This slice does not claim it.
@@ -20,7 +20,7 @@ Package Close requires the full S01 walkthrough. This slice does not claim it.
 - How they do it: `/login` → email, password → Sign in. Wrong or unknown credentials show “Invalid email or password.” After a valid sign-in they still enter the paper-first shell (PC-18).
 - Master Plan: Wave 1 / §14 login line, **partial** (secure login + lockout). Recovery and sessions are later slices.
 
-**Verdict (this slice):** **PASS**  
+**Verdict (this slice):** **PASS**
 **Verdict (package Close):** **REQUIRES ACTION** — remaining S01 customer outcomes not shipped.
 
 ## 2. Customer does NOT receive

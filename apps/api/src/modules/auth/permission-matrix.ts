@@ -4,7 +4,7 @@
  * Explicit allow only. No inheritance engine.
  * Admin paper-command ability is a listed cell, not `Admin extends Trader`.
  * C0 is public transport (`@Public()`), not a role grant.
- * C7 / C8 / C9 are never granted in this package.
+ * C7 / C9 are never granted. C8 is bound to Vault lifecycle in V3-S03-d.
  */
 
 import { Role } from '../identity/role';
@@ -29,6 +29,7 @@ const TRADER_ALLOWS = [
   PermissionClass.Projection,
   PermissionClass.Research,
   PermissionClass.PaperCommand,
+  PermissionClass.VaultConnections,
 ] as const;
 
 const ADMIN_ALLOWS = [
@@ -38,6 +39,7 @@ const ADMIN_ALLOWS = [
   PermissionClass.Research,
   PermissionClass.PaperCommand,
   PermissionClass.RoleAdmin,
+  PermissionClass.VaultConnections,
 ] as const;
 
 export const ROLE_PERMISSIONS: Readonly<Record<Role, readonly PermissionClass[]>> = {

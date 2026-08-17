@@ -1,10 +1,10 @@
 # V3-S01 Validation Report
 
-**Package:** V3-S01 Authentication & Session  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Close  
-**Plan:** [`v3-s01-validation-plan.md`](./v3-s01-validation-plan.md) (planning document — not rewritten)  
+**Package:** V3-S01 Authentication & Session
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Close
+**Plan:** [`v3-s01-validation-plan.md`](./v3-s01-validation-plan.md) (planning document — not rewritten)
 **Nature:** Validation report. Not an RC. Not an ADR.
 
 This report records Close results against the package validation plan.

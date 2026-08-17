@@ -12,6 +12,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createValidationPipe, ValidationExceptionFilter } from '../../validation';
 import type { LogContext, Logger } from '../../logging/logger';
 import { LOGGER } from '../../logging/logger.token';
+import { SecurityAuditService } from '../security-audit/security-audit.service';
 import { Role } from './role';
 import type { AuthUser } from '../auth/jwt.strategy';
 import {
@@ -73,8 +74,13 @@ class RecordingLogger implements Logger {
   }
 }
 
+class NoopSecurityAuditService {
+  async record(): Promise<{ id: string }> {
+    return { id: 'audit-test' };
+  }
+}
+
 /**
- * Role assignment HTTP (V3-S02-c / V3-S02-e).
  * C6 Admin-only. Unauthenticated 401. Invalid role 400. Last Admin 409.
  * Role-change and C6-deny events are structured logs without secrets.
  */
@@ -92,6 +98,7 @@ describe('People HTTP (V3-S02-c)', () => {
       providers: [
         { provide: UserDomainService, useValue: users },
         { provide: LOGGER, useValue: events },
+        { provide: SecurityAuditService, useClass: NoopSecurityAuditService },
         Reflector,
       ],
     }).compile();

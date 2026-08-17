@@ -1,9 +1,9 @@
 # V3-S01 Security Review (planning)
 
-**Package:** V3-S01 Authentication & Session  
-**Wave:** 1 — Security Foundation  
-**Status:** Planning security review — **not** a post-implementation closeout  
-**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md) §7 and [`v3-security-vision.md`](./v3-security-vision.md)  
+**Package:** V3-S01 Authentication & Session
+**Wave:** 1 — Security Foundation
+**Status:** Planning security review — **not** a post-implementation closeout
+**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md) §7 and [`v3-security-vision.md`](./v3-security-vision.md)
 **Umbrella:** [`v3-s01-implementation-package.md`](./v3-s01-implementation-package.md)
 
 This review describes **only** controls that belong in V3-S01. Later Wave 1 packages keep their owners.

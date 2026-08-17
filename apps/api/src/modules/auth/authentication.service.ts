@@ -4,6 +4,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  Optional,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -11,6 +12,7 @@ import { JwtService } from '@nestjs/jwt';
 import { randomBytes } from 'node:crypto';
 import type { Logger } from '../../logging/logger';
 import { LOGGER } from '../../logging/logger.token';
+import { SecurityAuditService, persistSecurityAuditEvent } from '../security-audit';
 import type { Role } from '../identity/role';
 import type { User } from '../identity/user';
 import { UserDomainService } from '../identity/user-domain.service';
@@ -76,6 +78,7 @@ export class AuthenticationService {
     @Inject(PasswordResetStore) private readonly resets: PasswordResetStore,
     @Inject(HOST_MAIL) private readonly mail: HostMailPort,
     @Inject(LOGGER) logger: Logger,
+    @Optional() @Inject(SecurityAuditService) private readonly audit?: SecurityAuditService,
   ) {
     this.logger = logger.child(AuthenticationService.name);
   }
@@ -129,7 +132,7 @@ export class AuthenticationService {
     }
 
     await this.lockouts.clear(user.id);
-    this.logLogin('success', { userId: user.id, request });
+    await this.logLogin('success', { userId: user.id, request });
     return this.issueSession(user, request);
   }
 
@@ -140,7 +143,7 @@ export class AuthenticationService {
 
     const rotated = await this.sessions.rotate(refreshToken, request);
     const user = this.requireActiveUser(rotated.userId);
-    this.logSession('refresh', { userId: user.id, sessionId: rotated.sessionId, request });
+    await this.logSession('refresh', { userId: user.id, sessionId: rotated.sessionId, request });
     return this.signIssued(user, rotated);
   }
 
@@ -175,7 +178,7 @@ export class AuthenticationService {
     if (sessionId) {
       await this.sessions.revoke(sessionId);
     }
-    this.logSession('logout', { userId, sessionId, request });
+    await this.logSession('logout', { userId, sessionId, request });
   }
 
   async logoutByRefresh(refreshToken: string, request?: SessionRequestContext): Promise<void> {
@@ -186,7 +189,11 @@ export class AuthenticationService {
     if (!revoked) {
       throw new UnauthorizedException(INVALID_SESSION_MESSAGE);
     }
-    this.logSession('logout', { userId: revoked.userId, sessionId: revoked.sessionId, request });
+    await this.logSession('logout', {
+      userId: revoked.userId,
+      sessionId: revoked.sessionId,
+      request,
+    });
   }
 
   issueCsrfToken(): string {
@@ -232,7 +239,7 @@ export class AuthenticationService {
     }
 
     await this.sessions.revokeFamilyOf(target.id);
-    this.logSession('revoke', { userId, sessionId, request });
+    await this.logSession('revoke', { userId, sessionId, request });
     return { endedCurrent: sessionId === currentId };
   }
 
@@ -243,7 +250,7 @@ export class AuthenticationService {
   ): Promise<{ revokedCount: number }> {
     const currentId = await this.requireCurrentSession(userId, currentSessionId);
     const revokedCount = await this.sessions.revokeOthers(userId, currentId);
-    this.logSession('revoke-others', { userId, sessionId: currentId, request });
+    await this.logSession('revoke-others', { userId, sessionId: currentId, request });
     return { revokedCount };
   }
 
@@ -254,7 +261,7 @@ export class AuthenticationService {
   ): Promise<{ endedCurrent: true }> {
     const currentId = await this.requireCurrentSession(userId, currentSessionId);
     await this.sessions.revokeAllForUser(userId);
-    this.logSession('revoke-all', { userId, sessionId: currentId, request });
+    await this.logSession('revoke-all', { userId, sessionId: currentId, request });
     return { endedCurrent: true };
   }
 
@@ -270,7 +277,7 @@ export class AuthenticationService {
     request?: SessionRequestContext,
   ): Promise<{ outcome: 'accepted' | 'unavailable'; message: string }> {
     if (!this.mail.isConfigured()) {
-      this.logRecover('unavailable', { request });
+      await this.logRecover('unavailable', { request });
       return { outcome: 'unavailable', message: RECOVERY_UNAVAILABLE_MESSAGE };
     }
 
@@ -287,10 +294,10 @@ export class AuthenticationService {
           userId: user.id,
         });
       }
-      this.logRecover('requested', { userId: user.id, request });
+      await this.logRecover('requested', { userId: user.id, request });
     } else {
       await this.resets.dummyWork();
-      this.logRecover('requested', { request });
+      await this.logRecover('requested', { request });
     }
 
     return { outcome: 'accepted', message: RECOVERY_ACCEPTED_MESSAGE };
@@ -304,13 +311,13 @@ export class AuthenticationService {
     this.assertProductPassword(password);
     const consumed = await this.resets.consume(token);
     if (!consumed) {
-      this.logRecover('invalid', { request });
+      await this.logRecover('invalid', { request });
       throw new BadRequestException(INVALID_RECOVERY_MESSAGE);
     }
 
     const user = this.users.getById(consumed.userId);
     if (!user || user.status === UserStatus.Disabled) {
-      this.logRecover('invalid', { userId: consumed.userId, request });
+      await this.logRecover('invalid', { userId: consumed.userId, request });
       throw new BadRequestException(INVALID_RECOVERY_MESSAGE);
     }
 
@@ -318,7 +325,7 @@ export class AuthenticationService {
     await this.sessions.revokeAllForUser(user.id);
     await this.lockouts.clear(user.id);
     await this.resets.consumeAllForUser(user.id);
-    this.logRecover('completed', { userId: user.id, request });
+    await this.logRecover('completed', { userId: user.id, request });
     return { ok: true };
   }
 
@@ -340,7 +347,7 @@ export class AuthenticationService {
     await this.credentials.setPassword(userId, newPassword);
     await this.sessions.revokeOthers(userId, currentId);
     await this.resets.consumeAllForUser(userId);
-    this.logSession('password-change', { userId, sessionId: currentId, request });
+    await this.logSession('password-change', { userId, sessionId: currentId, request });
     return { ok: true };
   }
 
@@ -421,7 +428,7 @@ export class AuthenticationService {
     request?: SessionRequestContext,
   ): Promise<IssuedAuthSession> {
     const issued = await this.sessions.issue(user.id, request);
-    this.logSession('create', { userId: user.id, sessionId: issued.sessionId, request });
+    await this.logSession('create', { userId: user.id, sessionId: issued.sessionId, request });
     return this.signIssued(user, issued);
   }
 
@@ -460,14 +467,14 @@ export class AuthenticationService {
     userId?: string;
     request?: LoginRequestContext;
   }): never {
-    this.logLogin(params.outcome, { userId: params.userId, request: params.request });
+    void this.logLogin(params.outcome, { userId: params.userId, request: params.request });
     throw new UnauthorizedException(INVALID_LOGIN_MESSAGE);
   }
 
-  private logLogin(
+  private async logLogin(
     outcome: 'success' | 'failure' | 'lockout' | 'locked',
     params: { userId?: string; request?: LoginRequestContext },
-  ): void {
+  ): Promise<void> {
     const context = {
       event: 'auth.login',
       outcome,
@@ -477,12 +484,13 @@ export class AuthenticationService {
     };
     if (outcome === 'success') {
       this.logger.info('auth.login', context);
-      return;
+    } else {
+      this.logger.warn('auth.login', context);
     }
-    this.logger.warn('auth.login', context);
+    await this.recordSecurityEvent('auth.login', context);
   }
 
-  private logSession(
+  private async logSession(
     outcome:
       | 'create'
       | 'refresh'
@@ -492,28 +500,39 @@ export class AuthenticationService {
       | 'revoke-all'
       | 'password-change',
     params: { userId?: string; sessionId?: string; request?: SessionRequestContext },
-  ): void {
-    this.logger.info('auth.session', {
+  ): Promise<void> {
+    const context = {
       event: 'auth.session',
       outcome,
       userId: params.userId,
       sessionId: params.sessionId,
       ip: params.request?.ip,
       userAgent: params.request?.userAgent,
-    });
+    };
+    this.logger.info('auth.session', context);
+    await this.recordSecurityEvent('auth.session', context);
   }
 
-  private logRecover(
+  private async logRecover(
     outcome: 'unavailable' | 'requested' | 'completed' | 'invalid',
     params: { userId?: string; request?: SessionRequestContext },
-  ): void {
-    this.logger.info('auth.recover', {
+  ): Promise<void> {
+    const context = {
       event: 'auth.recover',
       outcome,
       userId: params.userId,
       ip: params.request?.ip,
       userAgent: params.request?.userAgent,
-    });
+    };
+    this.logger.info('auth.recover', context);
+    await this.recordSecurityEvent('auth.recover', context);
+  }
+
+  private async recordSecurityEvent(
+    eventType: string,
+    context: Record<string, unknown>,
+  ): Promise<void> {
+    await persistSecurityAuditEvent(this.audit, eventType, context, 'authentication');
   }
 
   private mapIdentityError(error: unknown): Error {

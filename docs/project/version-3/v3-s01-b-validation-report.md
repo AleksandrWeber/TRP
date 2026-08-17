@@ -1,9 +1,9 @@
 # V3-S01-b Validation Report
 
-**Package:** V3-S01 Authentication & Session  
-**Slice:** S01-b — Login & Lockout  
-**Date:** 2026-08-16  
-**Nature:** Slice validation evidence. Not package Close. Not an RC. Not an ADR.  
+**Package:** V3-S01 Authentication & Session
+**Slice:** S01-b — Login & Lockout
+**Date:** 2026-08-16
+**Nature:** Slice validation evidence. Not package Close. Not an RC. Not an ADR.
 **Plan:** [`v3-s01-validation-plan.md`](./v3-s01-validation-plan.md) (unmodified; executed only for S01-b rows)
 
 ---
@@ -105,28 +105,28 @@ Master Plan S01 checkboxes (recover, sessions) remain **unchecked**. Secure logi
 
 These answers are for **this slice**. They are not a V3-S01 Close.
 
-1. **What did the customer receive?**  
+1. **What did the customer receive?**
    Sign-in in the product UI with per-account lockout after 5 failed passwords, a 15-minute cooldown, generic “Invalid email or password.” errors, structured login/lockout logs, and no password in API responses.
 
-2. **What did the customer NOT receive?**  
+2. **What did the customer NOT receive?**
    Refresh tokens, session management, server logout, password recovery, email verification, MFA, OAuth, passkeys, trusted devices, or remember me.
 
-3. **What business problem was solved?**  
+3. **What business problem was solved?**
    A single account could be password-sprayed without a cooldown. That product path is closed.
 
-4. **What remains?**  
+4. **What remains?**
    S01-c revocable sessions and secure transport; S01-d session management UI; S01-e recovery and authenticated password change. Then V3-S02.
 
-5. **Which slice becomes available next?**  
+5. **Which slice becomes available next?**
    **S01-c Session issuance, refresh, secure transport.** Not V3-S02.
 
-6. **Was the Master Plan respected?**  
+6. **Was the Master Plan respected?**
    **Yes.** Login and lockout only. Refresh, recovery, and MFA were not added.
 
-7. **Were Product Principles respected?**  
+7. **Were Product Principles respected?**
    **Yes.** Customer First, Security Before Convenience, Honest Product, No Hidden Configuration, and Architecture Is a Constraint were applied. Live remains unearned.
 
-8. **Were any architectural deviations introduced?**  
+8. **Were any architectural deviations introduced?**
    **No.**
 
 ---

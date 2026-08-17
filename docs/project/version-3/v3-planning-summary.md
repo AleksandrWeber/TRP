@@ -1,8 +1,8 @@
 # Version 3 Planning Summary
 
-**Document:** Version 3 Planning Summary  
-**Date:** 2026-08-16  
-**Status:** **Superseded as entry point** — planning **FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md)  
+**Document:** Version 3 Planning Summary
+**Date:** 2026-08-16
+**Status:** **Superseded as entry point** — planning **FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md)
 **Nature:** Historical executive draft. Not an RC. Not an ADR. Not implementation.
 
 **Do not use this file as the Version 3 source of truth.** Use the [Master Plan](./version-3-master-plan.md). Counts and live-gate wording below were corrected by the [Consistency Audit](./v3-planning-consistency-audit.md) (F1, F2).
@@ -11,7 +11,7 @@
 
 ## Verdict
 
-**VERSION 3 PLANNING IS FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md).  
+**VERSION 3 PLANNING IS FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md).
 **IMPLEMENTATION MUST NOT BEGIN UNTIL THE MASTER PLAN IS ACCEPTED.**
 
 Version 3 is a **platform extension** of certified Version 2. It is not a redesign and not a polish release.

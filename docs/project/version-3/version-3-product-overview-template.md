@@ -1,10 +1,10 @@
 # Version 3 Product Overview Template
 
-**Document:** Version 3 Product Overview Template  
-**Date:** 2026-08-16  
-**Status:** Binding customer-language standard for major Version 3 products  
-**Authority:** Subordinate to [`version-3-master-plan.md`](./version-3-master-plan.md)  
-**Style example (do not rewrite):** [`session-lifecycle-overview.md`](./session-lifecycle-overview.md)  
+**Document:** Version 3 Product Overview Template
+**Date:** 2026-08-16
+**Status:** Binding customer-language standard for major Version 3 products
+**Authority:** Subordinate to [`version-3-master-plan.md`](./version-3-master-plan.md)
+**Style example (do not rewrite):** [`session-lifecycle-overview.md`](./session-lifecycle-overview.md)
 **Nature:** Template. Not an RC. Not an ADR. Not implementation. Not a Master Plan revision. Not an architecture note.
 
 Copy this file for each major customer product. Replace placeholders. Do not delete sections. If a section does not apply, write **NOT APPLICABLE**, name the later product or Master Plan deferral, and stop.

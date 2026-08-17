@@ -2,6 +2,7 @@ import { Inject, Injectable, type OnApplicationBootstrap } from '@nestjs/common'
 import type { Logger } from '../../logging/logger';
 import { LOGGER } from '../../logging/logger.token';
 import { ApiHealthCheck } from './api-health-check';
+import { verifySecurityPlatformConfig } from '../../security-platform';
 import { verifyConfigurationValidity } from './configuration-validity';
 import { DatabaseHealthCheck } from './database-health-check';
 import { PrismaMigrationCheck } from './prisma-migration-check';
@@ -64,6 +65,7 @@ export class StartupVerification implements OnApplicationBootstrap {
     const database = await this.databaseHealthCheck.check();
     const migrations = await this.prismaMigrationCheck.check();
     const configuration = verifyConfigurationValidity(env);
+    const securityPlatform = verifySecurityPlatformConfig(env);
 
     const issues: string[] = [];
     const warnings: string[] = [];
@@ -84,6 +86,10 @@ export class StartupVerification implements OnApplicationBootstrap {
 
     if (!configuration.valid) {
       issues.push(...configuration.issues);
+    }
+
+    if (!securityPlatform.valid) {
+      issues.push(...securityPlatform.issues);
     }
 
     if (api.status === 'down') {

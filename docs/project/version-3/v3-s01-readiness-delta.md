@@ -1,10 +1,10 @@
 # V3-S01 Readiness Delta
 
-**Package:** V3-S01 Authentication & Session  
-**Date:** 2026-08-16  
-**Status:** Version 3 status file after package Close  
-**Baseline:** [`v3-readiness-dashboard.md`](./v3-readiness-dashboard.md) (planning annex — **not** rewritten)  
-**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)  
+**Package:** V3-S01 Authentication & Session
+**Date:** 2026-08-16
+**Status:** Version 3 status file after package Close
+**Baseline:** [`v3-readiness-dashboard.md`](./v3-readiness-dashboard.md) (planning annex — **not** rewritten)
+**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)
 **Nature:** Readiness delta. Not an RC. Not an ADR. Not a Master Plan revision. Not Audit v2.
 
 The planning dashboard remains the Version 2 reuse baseline. This file records what V3-S01 changed toward declared Version 3 scope. Audit v2 scores (99% paper / 40% production / 100% architecture) are **not** edited here.

@@ -1,10 +1,10 @@
 # Version 3 Product Checklist
 
-**Document:** Version 3 Product Checklist  
-**Date:** 2026-08-16  
-**Status:** Mandatory for every `V3-*` package  
-**Authority:** Subordinate to [`version-3-master-plan.md`](./version-3-master-plan.md) Product Principles and customer wave outcomes  
-**Template:** [`version-3-package-template.md`](./version-3-package-template.md)  
+**Document:** Version 3 Product Checklist
+**Date:** 2026-08-16
+**Status:** Mandatory for every `V3-*` package
+**Authority:** Subordinate to [`version-3-master-plan.md`](./version-3-master-plan.md) Product Principles and customer wave outcomes
+**Template:** [`version-3-package-template.md`](./version-3-package-template.md)
 **Nature:** Checklist. Not an RC. Not an ADR. Not implementation.
 
 Every Version 3 package must answer every prompt below. A developer-only path is not the product path. Customer First still applies: the feature must be usable without SSH, Docker, or editing customer `.env`. Host infrastructure may remain server-operated.

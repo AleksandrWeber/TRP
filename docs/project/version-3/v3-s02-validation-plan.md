@@ -1,12 +1,12 @@
 # V3-S02 Validation Plan
 
-**Package:** V3-S02 RBAC Product  
-**Wave:** 1 — Security Foundation  
-**Status:** Planning — **not** executed  
-**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)  
-**Scope:** [`v3-s02-product-scope.md`](./v3-s02-product-scope.md)  
-**Security:** [`v3-s02-security-review.md`](./v3-s02-security-review.md)  
-**Umbrella:** [`v3-s02-implementation-package.md`](./v3-s02-implementation-package.md)  
+**Package:** V3-S02 RBAC Product
+**Wave:** 1 — Security Foundation
+**Status:** Planning — **not** executed
+**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)
+**Scope:** [`v3-s02-product-scope.md`](./v3-s02-product-scope.md)
+**Security:** [`v3-s02-security-review.md`](./v3-s02-security-review.md)
+**Umbrella:** [`v3-s02-implementation-package.md`](./v3-s02-implementation-package.md)
 **Checklists:** [`version-3-product-checklist.md`](./version-3-product-checklist.md) · [`version-3-architecture-checklist.md`](./version-3-architecture-checklist.md) · [`version-3-security-checklist.md`](./version-3-security-checklist.md)
 
 Validation runs after implementation and the implementation report. This package is **not Closed** until every section below has a recorded result.

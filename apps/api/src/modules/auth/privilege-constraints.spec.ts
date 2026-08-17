@@ -17,10 +17,10 @@ function readSrc(relativeFromAuth: string): string {
 }
 
 describe('Privilege constraints (V3-S02-e)', () => {
-  it('does not let Admin skip Gate or Risk (C9 / C7 / C8 unbound)', () => {
+  it('does not let Admin skip Gate or Risk (C9 / C7 remain unbound)', () => {
     expect(roleAllowsPermission(Role.Admin, PermissionClass.Bypass)).toBe(false);
     expect(roleAllowsPermission(Role.Admin, PermissionClass.LiveCommand)).toBe(false);
-    expect(roleAllowsPermission(Role.Admin, PermissionClass.VaultConnections)).toBe(false);
+    expect(roleAllowsPermission(Role.Admin, PermissionClass.VaultConnections)).toBe(true);
     expect(decideAuthorization({ role: Role.Admin, action: PermissionClass.Bypass }).allowed).toBe(
       false,
     );

@@ -1,11 +1,11 @@
 # V3-S01 Validation Plan
 
-**Package:** V3-S01 Authentication & Session  
-**Wave:** 1 — Security Foundation  
-**Status:** Planning — **not** executed  
-**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)  
-**Scope:** [`v3-s01-product-scope.md`](./v3-s01-product-scope.md)  
-**Security:** [`v3-s01-security-review.md`](./v3-s01-security-review.md)  
+**Package:** V3-S01 Authentication & Session
+**Wave:** 1 — Security Foundation
+**Status:** Planning — **not** executed
+**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)
+**Scope:** [`v3-s01-product-scope.md`](./v3-s01-product-scope.md)
+**Security:** [`v3-s01-security-review.md`](./v3-s01-security-review.md)
 **Umbrella:** [`v3-s01-implementation-package.md`](./v3-s01-implementation-package.md)
 
 Validation runs after implementation and the implementation report. This package is **not Closed** until every section below has a recorded result.

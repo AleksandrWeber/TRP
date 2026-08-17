@@ -1,9 +1,9 @@
 # Permission Matrix Overview
 
-**Document:** Version 3 Permission Matrix Overview  
-**Date:** 2026-08-16  
-**Status:** Product-facing record of V3-S02 Close  
-**Product:** Roles and permissions  
+**Document:** Version 3 Permission Matrix Overview
+**Date:** 2026-08-16
+**Status:** Product-facing record of V3-S02 Close
+**Product:** Roles and permissions
 **Nature:** Customer description. Not an RC. Not an ADR. Not implementation. Not a Master Plan revision.
 
 This is for the product owner and the Administrator who assigns roles. It is not an engineering note.

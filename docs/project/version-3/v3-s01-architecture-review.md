@@ -1,12 +1,12 @@
 # V3-S01 Architecture Review
 
-**Package:** V3-S01 Authentication & Session  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Close  
-**Existing owner:** Authentication (credentials, lockout, sessions, reset, host mail port) / Identity (profile, role, status)  
-**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md) §10–11, §16  
-**Checklist:** [`version-3-architecture-checklist.md`](./version-3-architecture-checklist.md)  
+**Package:** V3-S01 Authentication & Session
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Close
+**Existing owner:** Authentication (credentials, lockout, sessions, reset, host mail port) / Identity (profile, role, status)
+**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md) §10–11, §16
+**Checklist:** [`version-3-architecture-checklist.md`](./version-3-architecture-checklist.md)
 **Nature:** Architecture review. Not an RC. Not an ADR. Not a Spec v2.0 amendment.
 
 Slice architecture reviews S01-a … S01-e are evidence. This review is the package Close gate.
@@ -101,7 +101,7 @@ Slice architecture reviews S01-a … S01-e are evidence. This review is the pack
 | No Master Plan or Spec change required          | **PASS** |                                            |
 | Reuse table honored                             | **PASS** | Major extension of Identity/Auth           |
 
-**Dependencies used:** PC-18, Workspace access, bcrypt store.  
+**Dependencies used:** PC-18, Workspace access, bcrypt store.
 **Dependencies refused:** Notification catalog, Telegram, Device Trust, vault.
 
 ### 7. Architecture impact justified

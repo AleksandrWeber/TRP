@@ -1,14 +1,14 @@
 # V3-S02-d Product Review
 
-**Package:** V3-S02 RBAC Product  
-**Slice:** S02-d — People Product  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Post-implementation slice review — **not** package Close  
-**Master Plan outcomes owned by S02:** Admin assigns a role; operator cannot perform another role’s actions; J3-02  
-**Outcomes owned by this slice:** Administrators no longer need API tools to assign roles; role management is a normal product feature  
-**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)  
-**Overview:** [`people-product-overview.md`](./people-product-overview.md)  
+**Package:** V3-S02 RBAC Product
+**Slice:** S02-d — People Product
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Post-implementation slice review — **not** package Close
+**Master Plan outcomes owned by S02:** Admin assigns a role; operator cannot perform another role’s actions; J3-02
+**Outcomes owned by this slice:** Administrators no longer need API tools to assign roles; role management is a normal product feature
+**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)
+**Overview:** [`people-product-overview.md`](./people-product-overview.md)
 **Nature:** Product review. Not an RC. Not an ADR.
 
 Package Close requires the full RBAC Walkthrough (J3-02) recorded as a live operator pass. This slice evidences the UI-visible steps. It does not Close the package.
@@ -21,7 +21,7 @@ Package Close requires the full RBAC Walkthrough (J3-02) recorded as a live oper
 - How they do it: Administration → People. No SSH, customer `.env`, or SQL.
 - Master Plan: Wave 1 / SEC-02, **partial** (People UI). Package Close still needs S02-e and the live J3-02 recording.
 
-**Verdict (this slice):** **PASS**  
+**Verdict (this slice):** **PASS**
 **Verdict (package Close):** **REQUIRES ACTION** — S02-e and live J3-02 remain.
 
 ## 2. Customer does NOT receive

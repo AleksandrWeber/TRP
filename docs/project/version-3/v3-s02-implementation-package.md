@@ -11,9 +11,9 @@ Nature:             Implementation package. Not an RC. Not an ADR. Not a Master 
 Canon:              version-3-master-plan.md
 ```
 
-**Process:** [`version-3-implementation-policy.md`](./version-3-implementation-policy.md)  
-**Template:** [`version-3-package-template.md`](./version-3-package-template.md)  
-**Governance:** [`version-3-governance-freeze.md`](./version-3-governance-freeze.md)  
+**Process:** [`version-3-implementation-policy.md`](./version-3-implementation-policy.md)
+**Template:** [`version-3-package-template.md`](./version-3-package-template.md)
+**Governance:** [`version-3-governance-freeze.md`](./version-3-governance-freeze.md)
 **Annexes used (read-only):** Execution Roadmap, Security Vision, Capability Inventory, Product Roadmap.
 
 **Companions:**
@@ -415,7 +415,7 @@ Refresh-token reuse → family revoke is **NOT APPLICABLE**: this package does n
 | Does not require Master Plan or Spec change        | **PASS** | Planning question YES              |
 | Reuse table honored                                | **PASS** | Major extension Identity/Auth only |
 
-**Dependencies used:** PC-18, PC-14, S01, existing Role / guards / command authz.  
+**Dependencies used:** PC-18, PC-14, S01, existing Role / guards / command authz.
 **Dependencies refused:** S03–S06, Wave 2+, Wave 9.
 
 ### 7. Architecture impact justified (intent)

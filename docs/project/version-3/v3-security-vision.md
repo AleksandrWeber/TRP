@@ -1,9 +1,9 @@
 # Version 3 Security Vision
 
-**Document:** Version 3 Security Vision  
-**Date:** 2026-08-16  
-**Status:** Annex — planning **FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md)  
-**Role:** Mandatory strategic product for Version 3  
+**Document:** Version 3 Security Vision
+**Date:** 2026-08-16
+**Status:** Annex — planning **FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md)
+**Role:** Mandatory strategic product for Version 3
 **Does not:** implement controls, redesign the Canonical Order Path, or authorize live capital
 
 TRP will manage financial assets. Version 3 therefore treats **protection against data theft, request tampering, order manipulation, credential leakage, and financial fraud** as a primary objective — equal to research quality, not an afterthought.
@@ -220,8 +220,8 @@ Dual control (recommended): Admin enables live on workspace; Trader starts sessi
 
 ## 7. Exit (Security Platform)
 
-Security Platform is **foundation-complete** at Wave 1 exit (vault + RBAC + OWASP + audit + isolation).  
-It is **financial-complete** at Wave 6 exit (action log + tamper-evidence + live MFA).  
+Security Platform is **foundation-complete** at Wave 1 exit (vault + RBAC + OWASP + audit + isolation).
+It is **financial-complete** at Wave 6 exit (action log + tamper-evidence + live MFA).
 It is **operable** at Wave 3 exit (health dashboard + monitoring).
 
 Version 3 Complete requires all three.

@@ -1,13 +1,13 @@
 # V3-S02 Security Review (planning)
 
-**Package:** V3-S02 RBAC Product  
-**Wave:** 1 — Security Foundation  
-**Status:** Planning security review — **not** a post-implementation closeout  
-**Stage:** Implementation Package  
-**Date:** 2026-08-16  
-**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md) §7 and [`v3-security-vision.md`](./v3-security-vision.md)  
-**Checklist:** [`version-3-security-checklist.md`](./version-3-security-checklist.md)  
-**Umbrella:** [`v3-s02-implementation-package.md`](./v3-s02-implementation-package.md)  
+**Package:** V3-S02 RBAC Product
+**Wave:** 1 — Security Foundation
+**Status:** Planning security review — **not** a post-implementation closeout
+**Stage:** Implementation Package
+**Date:** 2026-08-16
+**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md) §7 and [`v3-security-vision.md`](./v3-security-vision.md)
+**Checklist:** [`version-3-security-checklist.md`](./version-3-security-checklist.md)
+**Umbrella:** [`v3-s02-implementation-package.md`](./v3-s02-implementation-package.md)
 **Scope:** [`v3-s02-product-scope.md`](./v3-s02-product-scope.md)
 
 This review describes **only** controls that belong in V3-S02. Authentication remains Authentication. Workspace remains Workspace. Vault, OWASP platform, audit product, isolation suite, connections, and live capital keep their owners.

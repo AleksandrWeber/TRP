@@ -1,11 +1,11 @@
 # V3-S01 Implementation Report
 
-**Package:** V3-S01 Authentication & Session  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Status:** Package implementation complete — Close recorded separately  
-**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)  
-**Package:** [`v3-s01-implementation-package.md`](./v3-s01-implementation-package.md)  
+**Package:** V3-S01 Authentication & Session
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Status:** Package implementation complete — Close recorded separately
+**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)
+**Package:** [`v3-s01-implementation-package.md`](./v3-s01-implementation-package.md)
 **Nature:** Implementation report. Not an RC. Not an ADR. Not a Master Plan revision.
 
 This report rolls up **S01-a … S01-e**. Slice reports remain the per-slice record and are not rewritten.

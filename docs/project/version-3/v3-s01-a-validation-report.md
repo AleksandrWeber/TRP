@@ -1,9 +1,9 @@
 # V3-S01-a Validation Report
 
-**Package:** V3-S01 Authentication & Session  
-**Slice:** S01-a — Registration & Password Policy  
-**Date:** 2026-08-16  
-**Nature:** Slice validation evidence. Not package Close. Not an RC. Not an ADR.  
+**Package:** V3-S01 Authentication & Session
+**Slice:** S01-a — Registration & Password Policy
+**Date:** 2026-08-16
+**Nature:** Slice validation evidence. Not package Close. Not an RC. Not an ADR.
 **Plan:** [`v3-s01-validation-plan.md`](./v3-s01-validation-plan.md) (unmodified; executed only for S01-a rows)
 
 ---
@@ -99,28 +99,28 @@ Master Plan S01 checkboxes (login, recover, sessions) remain **unchecked**.
 
 These answers are for **this slice**. They are not a V3-S01 Close.
 
-1. **What did the customer receive?**  
+1. **What did the customer receive?**
    Create-account in the product UI with a stronger password rule (length 8 + letter + number), bcrypt hashing, duplicate-email handling, and operator-language errors. Default role remains Researcher. The login form stays empty.
 
-2. **What did the customer NOT receive?**  
+2. **What did the customer NOT receive?**
    Email verification as a gate, login lockout, server logout, session list/revoke, refresh tokens, password recovery, MFA, OAuth, passkeys, role admin, vault, or live trading.
 
-3. **What business problem was solved?**  
+3. **What business problem was solved?**
    New operators could previously register with length-only or known-weak seed passwords. That product path is closed.
 
-4. **What remains?**  
+4. **What remains?**
    S01-b lockout; S01-c revocable sessions and secure transport; S01-d session management UI; S01-e recovery and authenticated password change. Then V3-S02.
 
-5. **What package/slice is next?**  
+5. **What package/slice is next?**
    **S01-b Login & Lockout.** Not V3-S02.
 
-6. **Was the Master Plan respected?**  
+6. **Was the Master Plan respected?**
    **Yes.** Registration and password policy only. Email verification was not added because it is not a Master Plan S01 outcome.
 
-7. **Were Product Principles respected?**  
+7. **Were Product Principles respected?**
    **Yes.** Customer First, Security Before Convenience, Honest Product, and Architecture Is a Constraint were applied. Live remains unearned.
 
-8. **Were any architectural deviations introduced?**  
+8. **Were any architectural deviations introduced?**
    **No.**
 
 ---

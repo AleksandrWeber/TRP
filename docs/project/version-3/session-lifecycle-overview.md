@@ -1,9 +1,9 @@
 # Session Lifecycle Overview
 
-**Document:** Version 3 Session Lifecycle Overview  
-**Date:** 2026-08-16  
-**Status:** Product-facing record of S01-c (accepted)  
-**Package:** V3-S01 Authentication & Session  
+**Document:** Version 3 Session Lifecycle Overview
+**Date:** 2026-08-16
+**Status:** Product-facing record of S01-c (accepted)
+**Package:** V3-S01 Authentication & Session
 **Nature:** Customer description. Not an RC. Not an ADR. Not implementation. Not a Master Plan revision.
 
 This is what an ordinary operator experiences after sign-in. It is not an internal design note.

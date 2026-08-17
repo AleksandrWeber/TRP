@@ -1,9 +1,9 @@
 # Version 3 Planning Package
 
-**Canonical document:** [`version-3-master-plan.md`](./version-3-master-plan.md)  
-**Status:** **PLANNING FROZEN** — 2026-08-16  
-**Process:** [`version-3-implementation-policy.md`](./version-3-implementation-policy.md)  
-**Nature:** Planning only. Not an RC. Not an ADR. Not implementation.  
+**Canonical document:** [`version-3-master-plan.md`](./version-3-master-plan.md)
+**Status:** **PLANNING FROZEN** — 2026-08-16
+**Process:** [`version-3-implementation-policy.md`](./version-3-implementation-policy.md)
+**Nature:** Planning only. Not an RC. Not an ADR. Not implementation.
 **Rule:** Do not write Version 3 production code until the Master Plan is accepted **and** the package Implementation Package is approved. **V3-S01** is **CLOSED**. Next package: **V3-S02** at Implementation Package.
 
 Version 2 is **CERTIFIED** (`v2.0.1`). Architecture Specification v2.0, the Authority Matrix, and the Alias Dictionary remain the frozen constitution. This folder does **not** amend Version 2 documentation.

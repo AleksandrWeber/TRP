@@ -1,8 +1,8 @@
 # Version 3 Readiness Dashboard
 
-**Document:** Version 3 Readiness Dashboard  
-**Date:** 2026-08-16  
-**Status:** Annex — planning **FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md)  
+**Document:** Version 3 Readiness Dashboard
+**Date:** 2026-08-16
+**Status:** Annex — planning **FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md)
 **Source:** [Capability Inventory](./v3-capability-inventory.md)
 
 Readiness is reuse of **Version 2**, not progress of Version 3 implementation (which has not started).

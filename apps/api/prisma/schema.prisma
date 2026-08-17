@@ -67,6 +67,99 @@ model AuthPasswordReset {
   @@map("auth_password_resets")
 }
 
+/// Vault-owned customer vendor secret ciphertext (V3-S03-b).
+/// Not ExchangeConnection. Not host wrapping key. No plaintext columns.
+model VaultSecret {
+  id             String    @id
+  workspaceId    String    @map("workspace_id")
+  type           String
+  purpose        String
+  state          String
+  revision       Int       @default(0)
+  wrappingSalt   String?   @map("wrapping_salt")
+  wrappedDataKey String?   @map("wrapped_data_key")
+  dataKeyNonce   String?   @map("data_key_nonce")
+  dataKeyTag     String?   @map("data_key_tag")
+  payload        String?
+  payloadNonce   String?   @map("payload_nonce")
+  payloadTag     String?   @map("payload_tag")
+  createdAt      DateTime  @map("created_at")
+  updatedAt      DateTime  @map("updated_at")
+
+  @@unique([workspaceId, type, purpose])
+  @@index([workspaceId])
+  @@map("vault_secrets")
+}
+
+/// Security Audit-owned immutable history (V3-S05-a).
+/// This is not Authentication, RBAC, Vault, Monitoring, or Ledger state.
+model SecurityAuditRecord {
+  id                 String   @id
+  eventType          String   @map("event_type")
+  eventClass         String   @map("event_class")
+  criticality        String
+  schemaVersion      Int      @map("schema_version")
+  workspaceId        String?  @map("workspace_id")
+  actorId            String?  @map("actor_id")
+  subjectId          String?  @map("subject_id")
+  resourceType       String?  @map("resource_type")
+  resourceId         String?  @map("resource_id")
+  outcome            String
+  occurredAt         DateTime @map("occurred_at")
+  recordedAt         DateTime @map("recorded_at")
+  correlationId      String?  @map("correlation_id")
+  source             String
+  eventFingerprint   String   @map("event_fingerprint")
+  payload            Json
+  integrityVersion   Int      @map("integrity_version")
+  integrityHash      String   @map("integrity_hash")
+  incidentLinks      SecurityAuditIncidentEvent[]
+
+  @@index([workspaceId, occurredAt])
+  @@index([eventType, occurredAt])
+  @@index([eventClass, occurredAt])
+  @@index([actorId, occurredAt])
+  @@map("security_audit_records")
+}
+
+/// Security Audit investigation container (V3-S05-d). Evidence remains on audit events.
+model SecurityAuditIncident {
+  id               String                              @id
+  workspaceId      String                              @map("workspace_id")
+  openedAt         DateTime                            @map("opened_at")
+  openedByActorId  String?                             @map("opened_by_actor_id")
+  events           SecurityAuditIncidentEvent[]
+  lifecycle        SecurityAuditIncidentLifecycleEntry[]
+
+  @@index([workspaceId, openedAt])
+  @@map("security_audit_incidents")
+}
+
+/// Append-only reference: Incident contains Event, without copying event facts.
+model SecurityAuditIncidentEvent {
+  incidentId String               @map("incident_id")
+  eventId    String               @map("event_id")
+  linkedAt   DateTime             @map("linked_at")
+  incident   SecurityAuditIncident @relation(fields: [incidentId], references: [id], onDelete: Restrict)
+  event      SecurityAuditRecord   @relation(fields: [eventId], references: [id], onDelete: Restrict)
+
+  @@id([incidentId, eventId])
+  @@index([eventId])
+  @@map("security_audit_incident_events")
+}
+
+/// Append-only lifecycle facts; current incident state is derived from the latest entry.
+model SecurityAuditIncidentLifecycleEntry {
+  incidentId String                @map("incident_id")
+  occurredAt DateTime              @map("occurred_at")
+  status     String
+  actorId    String?               @map("actor_id")
+  incident   SecurityAuditIncident @relation(fields: [incidentId], references: [id], onDelete: Restrict)
+
+  @@id([incidentId, occurredAt])
+  @@map("security_audit_incident_lifecycle")
+}
+
 
 /// Durable Workspace aggregate and ownership boundary (RC-16 Foundations / US002).
 model WorkspaceRecord {

@@ -1,13 +1,13 @@
 # V3-S02-e Security Review
 
-**Package:** V3-S02 RBAC Product  
-**Slice:** S02-e — Privilege Constraints & Authorization Events  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Post-implementation slice review — **not** package Close  
-**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md) §7 · [`v3-security-vision.md`](./v3-security-vision.md)  
-**Planning review:** [`v3-s02-security-review.md`](./v3-s02-security-review.md) (unmodified)  
-**Checklist:** [`version-3-security-checklist.md`](./version-3-security-checklist.md)  
+**Package:** V3-S02 RBAC Product
+**Slice:** S02-e — Privilege Constraints & Authorization Events
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Post-implementation slice review — **not** package Close
+**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md) §7 · [`v3-security-vision.md`](./v3-security-vision.md)
+**Planning review:** [`v3-s02-security-review.md`](./v3-s02-security-review.md) (unmodified)
+**Checklist:** [`version-3-security-checklist.md`](./version-3-security-checklist.md)
 **Nature:** Security review. Not an RC. Not an ADR. Not the audit product.
 
 ---

@@ -1,13 +1,13 @@
 # V3-S01-d Product Review
 
-**Package:** V3-S01 Authentication & Session  
-**Slice:** S01-d — Session management UI  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Post-implementation slice review — **not** package Close  
-**Master Plan outcomes owned by S01:** register, secure login, recovery, session revoke  
-**Outcomes owned by this slice:** see active sign-ins; identify this device; end another sign-in; end every other sign-in; sign out everywhere  
-**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)  
+**Package:** V3-S01 Authentication & Session
+**Slice:** S01-d — Session management UI
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Post-implementation slice review — **not** package Close
+**Master Plan outcomes owned by S01:** register, secure login, recovery, session revoke
+**Outcomes owned by this slice:** see active sign-ins; identify this device; end another sign-in; end every other sign-in; sign out everywhere
+**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)
 **Nature:** Product review. Not an RC. Not an ADR.
 
 Package Close requires the full S01 walkthrough. This slice does not claim it.
@@ -20,7 +20,7 @@ Package Close requires the full S01 walkthrough. This slice does not claim it.
 - How they do it: sign in → Administration → Preferences → **Sign-in sessions**. Confirm before ending. Header **Logout** still ends this device (server logout from S01-c).
 - Master Plan: Wave 1 / §14 “see and sign out sessions (including sign out everywhere)”, **this slice**. Recovery remains S01-e.
 
-**Verdict (this slice):** **PASS**  
+**Verdict (this slice):** **PASS**
 **Verdict (package Close):** **REQUIRES ACTION** — recovery not shipped.
 
 ## 2. Customer does NOT receive

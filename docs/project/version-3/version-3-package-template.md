@@ -1,23 +1,25 @@
 # Version 3 Package Template
 
-**Document:** Version 3 Package Template  
-**Date:** 2026-08-16  
-**Status:** Binding execution standard for every `V3-*` package  
-**Extended:** 2026-08-16 — Product Walkthrough (Product Review) and Threat Review (Security Review) are mandatory  
-**Extended:** 2026-08-16 — Session walkthrough must include refresh reuse → family revoke when the package owns sessions  
-**Authority:** Subordinate to [`version-3-master-plan.md`](./version-3-master-plan.md)  
-**Process:** [`version-3-implementation-policy.md`](./version-3-implementation-policy.md)  
+**Document:** Version 3 Package Template
+**Date:** 2026-08-16
+**Status:** Binding execution standard for every `V3-*` package
+**Extended:** 2026-08-16 — Product Walkthrough (Product Review) and Threat Review (Security Review) are mandatory
+**Extended:** 2026-08-16 — Session walkthrough must include refresh reuse → family revoke when the package owns sessions
+**Extended:** 2026-08-17 — Optional dual Close naming when planned: **Platform Complete** (domain ready for consumers) vs **Customer Complete** (operators can use the product surface). See [`version-3-implementation-policy.md`](./version-3-implementation-policy.md) binding rule 12 and [`v3-s03-close-criteria-resolution.md`](./v3-s03-close-criteria-resolution.md).
+**Authority:** Subordinate to [`version-3-master-plan.md`](./version-3-master-plan.md)
+**Process:** [`version-3-implementation-policy.md`](./version-3-implementation-policy.md)
 **Nature:** Template. Not an RC. Not an ADR. Not implementation. Not a Master Plan revision.
 
 Copy this file for every Version 3 package. Replace placeholders. Do not delete sections. If a section does not apply, write **NOT APPLICABLE**, name the owning package or Master Plan deferral, and stop. Do not invent work to fill a blank.
 
 **Canon companions (mandatory, copy and complete per package):**
 
-| Checklist    | File                                                                           |
-| ------------ | ------------------------------------------------------------------------------ |
-| Security     | [`version-3-security-checklist.md`](./version-3-security-checklist.md)         |
-| Product      | [`version-3-product-checklist.md`](./version-3-product-checklist.md)           |
-| Architecture | [`version-3-architecture-checklist.md`](./version-3-architecture-checklist.md) |
+| Checklist / standard  | File                                                                                           |
+| --------------------- | ---------------------------------------------------------------------------------------------- |
+| Security              | [`version-3-security-checklist.md`](./version-3-security-checklist.md)                         |
+| Security verification | [`version-3-security-verification-standard.md`](./version-3-security-verification-standard.md) |
+| Product               | [`version-3-product-checklist.md`](./version-3-product-checklist.md)                           |
+| Architecture          | [`version-3-architecture-checklist.md`](./version-3-architecture-checklist.md)                 |
 
 ---
 
@@ -26,7 +28,7 @@ Copy this file for every Version 3 package. Replace placeholders. Do not delete 
 1. Identify the package ID from the Master Plan / Execution Roadmap. If the work is not listed, **stop**.
 2. Create `docs/project/version-3/v3-<id>-implementation-package.md` from this template (example: `v3-s02-implementation-package.md`).
 3. Fill every required section below **before** Approval.
-4. Complete the three checklists at Implementation Package time (planning verdicts) and again at Close (evidence verdicts). Product Review must include the Product Walkthrough artifact. Security Review must include the Threat Review (STRIDE) table.
+4. Complete the three checklists at Implementation Package time (planning verdicts) and again at Close (evidence verdicts). Product Review must include the Product Walkthrough artifact. Security Review must include the Threat Review (STRIDE) table. Packages that start after the Security Verification Standard is approved must also complete that standard (every category, every row) and the Security Regression Suite.
 5. Do not write production code until this package is **Approved**.
 6. Do not mark the package **Closed** until the Package Close Checklist and Package Summary Standard are complete.
 
@@ -349,7 +351,19 @@ Controls explicitly **not** this package (name the owning `V3-*` ID):
 | ------- | ----- |
 |         |       |
 
-A package cannot Close while any checklist item **or Threat Review row** is **REQUIRES ACTION**.
+### Security Verification Standard (mandatory for packages that start after approval)
+
+Copy and complete [`version-3-security-verification-standard.md`](./version-3-security-verification-standard.md).
+
+Every category and every row must be marked **PASS**, **NOT APPLICABLE**, or **REQUIRES ACTION**. No section may be omitted. Blank is not PASS.
+
+Must include:
+
+- Injection through Secure Headers (categories 1–14)
+- Explicit OWASP Top 10 and OWASP API Top 10 mapping
+- **Security Regression Suite** — every found-and-fixed vulnerability owned by this package leaves an automated regression test that runs with ordinary tests
+
+A package cannot Close while any checklist item, Threat Review row, Timing/Abuse row, verification-standard row, or regression-suite row is **REQUIRES ACTION**.
 
 ---
 
@@ -394,6 +408,7 @@ Close requires all of the following that apply. Tests that mock the customer out
 | UI tests                                                      | Yes / NOT APPLICABLE                                                                                                          |          |
 | Manual product walkthrough (no SSH / customer `.env` / SQL)   | **Yes** for any customer-visible package — the Product Walkthrough artifact in Product Review, not a unit/integration/UI test |          |
 | Security verification (checklist)                             | **Yes**                                                                                                                       |          |
+| Security Verification Standard + Regression Suite             | **Yes** for packages that start after the standard is approved; grandfathered packages: **NOT APPLICABLE**                    |          |
 | Architecture verification (checklist)                         | **Yes**                                                                                                                       |          |
 | Product verification (checklist)                              | **Yes**                                                                                                                       |          |
 | Customer acceptance of Master Plan outcomes this package owns | **Yes**                                                                                                                       |          |
@@ -406,15 +421,15 @@ Companion validation document (if the package needs a longer plan): `v3-<id>-val
 
 Every package produces these before Close. Names may use the package ID. Do not create RC or ADR documents from a package.
 
-| Report                 | When                        | Path convention                                                                                                                      |
-| ---------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Implementation Package | Before Approval             | `v3-<id>-implementation-package.md` (this template)                                                                                  |
-| Implementation Report  | After Implementation        | `v3-<id>-implementation-report.md`                                                                                                   |
-| Architecture Review    | After Implementation Report | `v3-<id>-architecture-review.md` **or** completed architecture checklist attached to Close                                           |
-| Security Review        | After Architecture Review   | `v3-<id>-security-review.md` **or** completed security checklist attached to Close. **Must include Threat Review (STRIDE).**         |
-| Product Review         | After Security Review       | `v3-<id>-product-review.md` **or** completed product checklist attached to Close. **Must include the Product Walkthrough artifact.** |
-| Validation evidence    | After Product Review        | `v3-<id>-validation-plan.md` plus recorded results                                                                                   |
-| Package Close record   | At Close                    | Close Checklist + Package Summary Standard below                                                                                     |
+| Report                 | When                        | Path convention                                                                                                                                                                                                                                   |
+| ---------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Implementation Package | Before Approval             | `v3-<id>-implementation-package.md` (this template)                                                                                                                                                                                               |
+| Implementation Report  | After Implementation        | `v3-<id>-implementation-report.md`                                                                                                                                                                                                                |
+| Architecture Review    | After Implementation Report | `v3-<id>-architecture-review.md` **or** completed architecture checklist attached to Close                                                                                                                                                        |
+| Security Review        | After Architecture Review   | `v3-<id>-security-review.md` **or** completed security checklist attached to Close. **Must include Threat Review (STRIDE).** Packages that start after approval must also include the Security Verification Standard + Security Regression Suite. |
+| Product Review         | After Security Review       | `v3-<id>-product-review.md` **or** completed product checklist attached to Close. **Must include the Product Walkthrough artifact.**                                                                                                              |
+| Validation evidence    | After Product Review        | `v3-<id>-validation-plan.md` plus recorded results                                                                                                                                                                                                |
+| Package Close record   | At Close                    | Close Checklist + Package Summary Standard below                                                                                                                                                                                                  |
 
 Optional companions when the Implementation Package would otherwise become unreadable: product-scope, security-review (planning), validation-plan. They are not a license to skip template sections.
 
@@ -430,7 +445,7 @@ A package may be marked **CLOSED** only after **all** of the following are true.
 | --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
 | 1   | **Implementation Review** — slices done; Implementation Report written; honest limitations recorded                                                                                                                                                               | PASS / NOT DONE |
 | 2   | **Architecture Review** — architecture checklist complete; no ownership drift; no duplicate context or SoT                                                                                                                                                        | PASS / NOT DONE |
-| 3   | **Security Review** — security checklist complete; Threat Review (STRIDE) complete; zero **REQUIRES ACTION**                                                                                                                                                      | PASS / NOT DONE |
+| 3   | **Security Review** — security checklist complete; Threat Review (STRIDE) complete; Timing/Abuse complete where required; Security Verification Standard + Regression Suite complete when this package is subject to them; zero **REQUIRES ACTION**               | PASS / NOT DONE |
 | 4   | **Product Review** — product checklist complete; Product Walkthrough artifact present and **PASS** (or **NOT APPLICABLE** with reason); customer-visible outcomes demonstrated                                                                                    | PASS / NOT DONE |
 | 5   | **Validation** — validation plan executed; customer walkthrough passed                                                                                                                                                                                            | PASS / NOT DONE |
 | 6   | **All mandatory reports** — listed in Required Reports, present, and consistent                                                                                                                                                                                   | PASS / NOT DONE |

@@ -1,5 +1,10 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
-import { CSRF_COOKIE_NAME, CSRF_HEADER_NAME, REFRESH_COOKIE_NAME } from './auth-session';
+import {
+  ACCESS_COOKIE_NAME,
+  CSRF_COOKIE_NAME,
+  CSRF_HEADER_NAME,
+  REFRESH_COOKIE_NAME,
+} from './auth-session';
 import { parseCookieHeader } from './auth-cookies';
 import { secretsMatch } from './auth-session.store';
 
@@ -30,7 +35,11 @@ export class AuthCsrfGuard implements CanActivate {
     }
 
     const cookies = parseCookieHeader(request.headers?.cookie);
-    if (!cookies[REFRESH_COOKIE_NAME] && !cookies[CSRF_COOKIE_NAME]) {
+    const hasSessionCookie =
+      Boolean(cookies[ACCESS_COOKIE_NAME]) ||
+      Boolean(cookies[REFRESH_COOKIE_NAME]) ||
+      Boolean(cookies[CSRF_COOKIE_NAME]);
+    if (!hasSessionCookie) {
       return true;
     }
 

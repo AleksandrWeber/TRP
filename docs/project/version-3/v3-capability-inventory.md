@@ -1,7 +1,7 @@
 # Version 3 Capability Inventory
 
-**Document:** Version 3 Capability Inventory  
-**Date:** 2026-08-16  
+**Document:** Version 3 Capability Inventory
+**Date:** 2026-08-16
 **Status:** Annex — planning **FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md)
 
 Readiness scale (binding):
@@ -14,7 +14,7 @@ Readiness scale (binding):
 | **25**  | Major implementation required    |
 | **0**   | Does not exist                   |
 
-Priority: **Critical** / **High** / **Medium** / **Low**.  
+Priority: **Critical** / **High** / **Medium** / **Low**.
 Complexity: **S** / **M** / **L** / **XL**.
 
 Dashboard compact view: [`v3-readiness-dashboard.md`](./v3-readiness-dashboard.md).

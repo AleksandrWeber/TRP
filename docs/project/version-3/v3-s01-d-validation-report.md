@@ -1,11 +1,11 @@
 # V3-S01-d Validation Report
 
-**Package:** V3-S01 Authentication & Session  
-**Slice:** S01-d — Session management UI  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Post-implementation slice validation — **not** package Close  
-**Plan:** [`v3-s01-validation-plan.md`](./v3-s01-validation-plan.md)  
+**Package:** V3-S01 Authentication & Session
+**Slice:** S01-d — Session management UI
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Post-implementation slice validation — **not** package Close
+**Plan:** [`v3-s01-validation-plan.md`](./v3-s01-validation-plan.md)
 **Nature:** Validation report. Not an RC. Not an ADR. Not package Close.
 
 This report records S01-d evidence against the package validation plan. Rows owned by later slices are **NOT RUN** here.
@@ -105,28 +105,28 @@ Master Plan S01 checkbox for recovery remains **unchecked**. Session inventory i
 
 These answers are for **this slice**. They are not a V3-S01 Close.
 
-1. **What did the customer receive?**  
+1. **What did the customer receive?**
    A Sign-in sessions page: see active sign-ins, identify this device, end another sign-in, end every other sign-in, or sign out everywhere. Ended sign-ins lose access immediately.
 
-2. **What did the customer NOT receive?**  
+2. **What did the customer NOT receive?**
    Password recovery, email verification, MFA, OAuth, passkeys, trusted devices, remember me, vault, RBAC, or Connection Management.
 
-3. **What business problem was solved?**  
+3. **What business problem was solved?**
    Operators could not see or end other devices without SSH or a database. Leftover or untrusted sign-ins can now be ended in the product.
 
-4. **What remains?**  
+4. **What remains?**
    S01-e recovery and authenticated password change. Then V3-S02.
 
-5. **Which slice becomes available next?**  
+5. **Which slice becomes available next?**
    **S01-e Password recovery and change.** Not V3-S02.
 
-6. **Was the Master Plan respected?**  
+6. **Was the Master Plan respected?**
    **Yes.**
 
-7. **Were Product Principles respected?**  
+7. **Were Product Principles respected?**
    **Yes.**
 
-8. **Were any architectural deviations introduced?**  
+8. **Were any architectural deviations introduced?**
    **No.**
 
 ---

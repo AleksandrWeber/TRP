@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import type { Metrics } from '../../metrics/metrics';
 import { METRICS } from '../../metrics/metrics.token';
 import { instrumentRepository } from '../../metrics/instrument-repository';
+import { SecurityAuditModule } from '../security-audit';
 import { PrismaModule, PrismaService } from '../../storage/prisma/prisma.module';
 import { PrismaUserRepository } from './repositories/prisma-user.repository';
 import { PeopleController } from './people.controller';
@@ -15,7 +16,7 @@ import { UserDomainService } from './user-domain.service';
  * Development bootstrap is not part of the product path.
  */
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, SecurityAuditModule],
   controllers: [PeopleController],
   providers: [
     {

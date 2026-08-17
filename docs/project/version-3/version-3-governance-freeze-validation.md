@@ -1,8 +1,8 @@
 # Version 3 Governance Freeze — Validation Report
 
-**Document:** Validation Report  
-**Date:** 2026-08-16  
-**Nature:** Documentation validation only. Not an RC. Not an ADR. Not implementation.  
+**Document:** Validation Report
+**Date:** 2026-08-16
+**Nature:** Documentation validation only. Not an RC. Not an ADR. Not implementation.
 **Validates:** [`version-3-governance-freeze.md`](./version-3-governance-freeze.md)
 
 ---

@@ -1,0 +1,2 @@
+ALTER TABLE "vault_secrets"
+ADD COLUMN "revision" INTEGER NOT NULL DEFAULT 0;

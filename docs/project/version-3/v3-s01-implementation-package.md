@@ -1,13 +1,13 @@
 # V3-S01 Authentication & Session — Implementation Package
 
-**Package:** V3-S01  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Status:** **READY FOR IMPLEMENTATION** — pending **Approval** (no production code in this task)  
-**Nature:** Implementation package. Not an RC. Not an ADR. Not a Master Plan revision.  
+**Package:** V3-S01
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Status:** **READY FOR IMPLEMENTATION** — pending **Approval** (no production code in this task)
+**Nature:** Implementation package. Not an RC. Not an ADR. Not a Master Plan revision.
 **Process:** [`version-3-implementation-policy.md`](./version-3-implementation-policy.md)
 
-**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)  
+**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)
 **Annexes used (read-only):** Execution Roadmap, Security Vision, Capability Inventory, Product Roadmap.
 
 **Companions:**

@@ -1,9 +1,9 @@
 # Version 3 Planning Consistency Audit
 
-**Document:** Version 3 Planning Consistency Audit  
-**Date:** 2026-08-16  
-**Nature:** Final planning review. Not an RC. Not an ADR. Not implementation.  
-**Scope:** All files under `docs/project/version-3/` as of this date, plus the planning canvas.  
+**Document:** Version 3 Planning Consistency Audit
+**Date:** 2026-08-16
+**Nature:** Final planning review. Not an RC. Not an ADR. Not implementation.
+**Scope:** All files under `docs/project/version-3/` as of this date, plus the planning canvas.
 **Verdict:** **Issues found, documented, and closed in the Master Plan.** Planning may freeze.
 
 Canonical after this review: [`version-3-master-plan.md`](./version-3-master-plan.md).
@@ -83,7 +83,7 @@ Wave 6 may start only when **all** are true:
 4. Wave 4 exit (real venue handshake / I/O adapters)
 5. Approved **live-capital ADR**
 
-Wave 5 (notifications) is **not** a live-trading prerequisite.  
+Wave 5 (notifications) is **not** a live-trading prerequisite.
 Wave 7–10 are **not** live-trading prerequisites.
 
 ---
@@ -118,8 +118,8 @@ These IDs list two waves. They are **phases of one capability**, not two backlog
 
 ### F5 — “Connect Binance” Wave 2 vs Wave 4
 
-Connection Vision / Execution Wave 2: collect keys, do **not** claim live I/O.  
-Dashboard: CM-07 is Wave 4.  
+Connection Vision / Execution Wave 2: collect keys, do **not** claim live I/O.
+Dashboard: CM-07 is Wave 4.
 A naive reading of “Wave 2 = user connects Binance” would pull venue I/O into Wave 2 and skip Wave 4.
 
 **Closure — frozen customer meaning:**
@@ -166,7 +166,7 @@ README, Planning Summary, and Execution Roadmap each read as “start here.”
 
 ### F10 — Billing “optional” vs Version 3 Complete
 
-Vision: billing only if SaaS subgroup approved.  
+Vision: billing only if SaaS subgroup approved.
 Roadmap: Waves 9–10 are in Version 3 Complete unless a later planning revision descopes them.
 
 **Closure:** Wave 9 Billing is **in Version 3 Complete**. It is **not** required to start Waves 1–6. Descope only by an approved planning revision of the Master Plan.

@@ -4,11 +4,24 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import { AppModule } from './app.module';
+import { LOGGER } from './logging/logger.token';
+import { SecurityAuditService } from './modules/security-audit/security-audit.service';
+import {
+  assertSecurityPlatformBoot,
+  createBrowserSecurityPolicy,
+  registerSecurityPlatformHttpHooks,
+} from './security-platform';
 
 async function bootstrap() {
+  const securityConfig = assertSecurityPlatformBoot();
+
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter({ logger: true }),
+    new FastifyAdapter({
+      logger: true,
+      bodyLimit: securityConfig.maxRequestBodyBytes,
+      requestTimeout: securityConfig.requestTimeoutMs,
+    }),
   );
 
   // Global ValidationPipe is registered via ValidationModule (APP_PIPE) — US113.
@@ -36,13 +49,18 @@ async function bootstrap() {
 
   await app.register(helmet, {
     global: true,
-    contentSecurityPolicy: process.env.NODE_ENV === 'production',
+    ...createBrowserSecurityPolicy(),
   });
 
   await app.register(rateLimit, {
     global: true,
-    max: Number(process.env.API_RATE_LIMIT_MAX ?? 200),
-    timeWindow: process.env.API_RATE_LIMIT_WINDOW ?? '1 minute',
+    max: securityConfig.platformAbusePolicy.general.limit,
+    timeWindow: securityConfig.platformAbusePolicy.general.windowMs,
+  });
+
+  registerSecurityPlatformHttpHooks(app.getHttpAdapter().getInstance(), securityConfig, {
+    logger: app.get(LOGGER),
+    audit: app.get(SecurityAuditService),
   });
 
   const port = Number(process.env.API_PORT ?? 3000);

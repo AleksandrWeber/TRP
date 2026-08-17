@@ -5,6 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { PrismaModule, PrismaService } from '../../storage/prisma/prisma.module';
 import { IdentityModule } from '../identity/identity.module';
 import { WorkspaceModule } from '../workspace';
+import { SecurityAuditModule } from '../security-audit';
 import { AuthController } from './auth.controller';
 import { SYSTEM_CLOCK as SESSION_CLOCK, resolveAccessJwtExpiresIn } from './auth-session';
 import { AUTH_SESSION_CLOCK, AUTH_SESSION_REPOSITORY } from './auth-session.repository.token';
@@ -39,6 +40,7 @@ import { HOST_MAIL } from './host-mail';
   imports: [
     IdentityModule,
     WorkspaceModule,
+    SecurityAuditModule,
     PrismaModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({

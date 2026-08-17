@@ -1,9 +1,9 @@
 # Version 3 Master Plan
 
-**Document:** Version 3 Master Plan  
-**Role:** **Canonical Product Owner document for the entire Version 3 lifecycle**  
-**Date frozen:** 2026-08-16  
-**Status:** **PLANNING FROZEN** — awaiting acceptance before implementation  
+**Document:** Version 3 Master Plan
+**Role:** **Canonical Product Owner document for the entire Version 3 lifecycle**
+**Date frozen:** 2026-08-16
+**Status:** **PLANNING FROZEN** — awaiting acceptance before implementation
 **Nature:** Planning. Not an RC. Not an ADR. Not implementation.
 
 From this point forward, all Version 3 implementation, reviews, audits, and planning decisions **must reference this file**. Annexes may add detail; they must not silently contradict this plan. Change requires an **approved planning revision** of this document.
@@ -171,7 +171,7 @@ Nothing in Version 2 certification is reopened. Nothing in this plan authorizes 
 
 ## 4. Execution waves
 
-Packages: [`v3-execution-roadmap.md`](./v3-execution-roadmap.md).  
+Packages: [`v3-execution-roadmap.md`](./v3-execution-roadmap.md).
 **Live gate:** Waves **1 + 2 + 3 + 4** complete **and** live-capital ADR before Wave 6.
 
 | Wave   | Name                               | Business value                                             | Packages                   |
@@ -270,8 +270,8 @@ Avoid implementation detail. A wave exits when a customer can see these outcomes
 
 ## 5. Executive dashboard
 
-Readiness % = Version 2 reuse of that product (inventory scale).  
-Reuse % = how much of the **architecture/product owner** already exists (100 = certified V2 product, 0 = new).  
+Readiness % = Version 2 reuse of that product (inventory scale).
+Reuse % = how much of the **architecture/product owner** already exists (100 = certified V2 product, 0 = new).
 Status = Version 3 implementation status (all **Not started** except maintain).
 
 | Product                      | Business value                     | Priority | Readiness % | Reuse % | Wave  | Status                   |
@@ -505,7 +505,7 @@ Version 2 sources (read-only): [Final Certification](../version-2-final-certific
 
 ---
 
-**PLANNING IS FROZEN.**  
+**PLANNING IS FROZEN.**
 **STOP.** Wait for review before **V3-S01 Authentication & Session** begins.
 
 ---

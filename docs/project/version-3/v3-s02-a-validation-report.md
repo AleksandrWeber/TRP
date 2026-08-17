@@ -1,9 +1,9 @@
 # V3-S02-a Validation Report
 
-**Package:** V3-S02 RBAC Product  
-**Slice:** S02-a — Permission Model  
-**Date:** 2026-08-16  
-**Nature:** Slice validation evidence. Not package Close. Not an RC. Not an ADR.  
+**Package:** V3-S02 RBAC Product
+**Slice:** S02-a — Permission Model
+**Date:** 2026-08-16
+**Nature:** Slice validation evidence. Not package Close. Not an RC. Not an ADR.
 **Plan:** [`v3-s02-validation-plan.md`](./v3-s02-validation-plan.md) (unmodified; executed only for S02-a rows)
 
 ---
@@ -119,28 +119,28 @@ Master Plan S02 checkboxes (Admin assigns role in the product; J3-02) remain **u
 
 These answers are for **this slice**. They are not a V3-S02 Close.
 
-1. **What did the customer receive?**  
+1. **What did the customer receive?**
    A server-side permission model: catalog C0–C9, explicit role mapping, authorization decision service, default deny, and guard integration. The platform can consistently decide who may perform which action. No visible UI change.
 
-2. **What did the customer NOT receive?**  
+2. **What did the customer NOT receive?**
    People management UI, role assignment UI, workspace invitations, Credential Vault, Connection Management, exchange permissions, live trading authorization, HTTP coverage of remaining TD-006 surfaces, last-Admin protection, or authorization event logs.
 
-3. **What business problem was solved?**  
+3. **What business problem was solved?**
    Privilege was scattered (hard-coded trading roles, allow-by-omission elsewhere) and could not be reasoned about as one product policy. That policy now exists and fail-closes.
 
-4. **What remains?**  
+4. **What remains?**
    S02-b surface coverage; S02-c role assignment API; S02-d People product; S02-e privilege constraints and authorization events. Then V3-S03.
 
-5. **Which slice becomes available next?**  
+5. **Which slice becomes available next?**
    **S02-b Surface coverage (TD-006 remainder).** Not V3-S03.
 
-6. **Was the Master Plan respected?**  
+6. **Was the Master Plan respected?**
    **Yes.** Permission model only. No new bounded context. No People product. No live capital. No Master Plan edit.
 
-7. **Were Product Principles respected?**  
+7. **Were Product Principles respected?**
    **Yes.** Security Before Convenience, One Source of Truth, Honest Product, Live Must Be Earned, and Architecture Is a Constraint were applied.
 
-8. **Were any architectural deviations introduced?**  
+8. **Were any architectural deviations introduced?**
    **No.**
 
 ---

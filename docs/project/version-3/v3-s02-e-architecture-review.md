@@ -1,13 +1,13 @@
 # V3-S02-e Architecture Review
 
-**Package:** V3-S02 RBAC Product  
-**Slice:** S02-e — Privilege Constraints & Authorization Events  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Post-implementation slice review — **not** package Close  
-**Existing owner:** Authentication / RBAC records authorization decisions. Identity owns `User.role`. Workspace owns membership. Logger (US111) is the existing event model.  
-**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md) §10–11, §16  
-**Checklist:** [`version-3-architecture-checklist.md`](./version-3-architecture-checklist.md)  
+**Package:** V3-S02 RBAC Product
+**Slice:** S02-e — Privilege Constraints & Authorization Events
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Post-implementation slice review — **not** package Close
+**Existing owner:** Authentication / RBAC records authorization decisions. Identity owns `User.role`. Workspace owns membership. Logger (US111) is the existing event model.
+**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md) §10–11, §16
+**Checklist:** [`version-3-architecture-checklist.md`](./version-3-architecture-checklist.md)
 **Nature:** Architecture review. Not an RC. Not an ADR. Not a Spec v2.0 amendment.
 
 ---

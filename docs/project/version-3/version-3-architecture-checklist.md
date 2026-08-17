@@ -1,10 +1,10 @@
 # Version 3 Architecture Checklist
 
-**Document:** Version 3 Architecture Checklist  
-**Date:** 2026-08-16  
-**Status:** Mandatory for every `V3-*` package  
-**Authority:** Subordinate to [`version-3-master-plan.md`](./version-3-master-plan.md) §10–11, §16 and Architecture Specification v2.0 (read-only)  
-**Template:** [`version-3-package-template.md`](./version-3-package-template.md)  
+**Document:** Version 3 Architecture Checklist
+**Date:** 2026-08-16
+**Status:** Mandatory for every `V3-*` package
+**Authority:** Subordinate to [`version-3-master-plan.md`](./version-3-master-plan.md) §10–11, §16 and Architecture Specification v2.0 (read-only)
+**Template:** [`version-3-package-template.md`](./version-3-package-template.md)
 **Nature:** Checklist. Not an RC. Not an ADR. Not implementation. Not a Spec v2.0 amendment.
 
 Every Version 3 package must verify the items below at **Implementation Package** (intent) and at **Close** (evidence). Version 3 extends the certified platform. It does not redesign Version 2.

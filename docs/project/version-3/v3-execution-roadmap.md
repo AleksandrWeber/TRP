@@ -1,8 +1,8 @@
 # Version 3 Execution Roadmap
 
-**Document:** Version 3 Execution Roadmap  
-**Date:** 2026-08-16  
-**Status:** Annex — planning **FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md)  
+**Document:** Version 3 Execution Roadmap
+**Date:** 2026-08-16
+**Status:** Annex — planning **FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md)
 **First package after Master Plan acceptance:** **V3-S01 Authentication & Session**
 
 **Live-capital gate:** Wave 6 starts only after Waves **1 + 2 + 3 + 4** exit **and** an approved live-capital ADR. Wave 5 is not a live prerequisite.

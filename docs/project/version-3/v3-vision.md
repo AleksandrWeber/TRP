@@ -1,9 +1,9 @@
 # Version 3 Vision
 
-**Document:** Version 3 Vision  
-**Date:** 2026-08-16  
-**Status:** Annex — planning **FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md)  
-**Authority after Master Plan acceptance:** Product intent for Version 3 (subordinate to Level-0 Product Vision unless that Vision is explicitly updated)  
+**Document:** Version 3 Vision
+**Date:** 2026-08-16
+**Status:** Annex — planning **FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md)
+**Authority after Master Plan acceptance:** Product intent for Version 3 (subordinate to Level-0 Product Vision unless that Vision is explicitly updated)
 **Does not:** implement, amend Spec v2.0, reopen RC-19…RC-28, or authorize live capital
 
 Related: [Master Plan](./version-3-master-plan.md) · [Product Roadmap](./v3-product-roadmap.md) · [Security Vision](./v3-security-vision.md) · [Connection Management Vision](./v3-connection-management-vision.md)

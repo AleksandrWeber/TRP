@@ -1,13 +1,13 @@
 # V3-S02-a Product Review
 
-**Package:** V3-S02 RBAC Product  
-**Slice:** S02-a — Permission Model  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Post-implementation slice review — **not** package Close  
-**Master Plan outcomes owned by S02:** Admin assigns a role; operator cannot perform another role’s actions; J3-02  
-**Outcomes owned by this slice:** the platform can consistently decide who may perform which action  
-**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)  
+**Package:** V3-S02 RBAC Product
+**Slice:** S02-a — Permission Model
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Post-implementation slice review — **not** package Close
+**Master Plan outcomes owned by S02:** Admin assigns a role; operator cannot perform another role’s actions; J3-02
+**Outcomes owned by this slice:** the platform can consistently decide who may perform which action
+**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)
 **Nature:** Product review. Not an RC. Not an ADR.
 
 Package Close requires the full RBAC Walkthrough (J3-02). This slice does not claim it. No visible UI changes shipped.
@@ -20,7 +20,7 @@ Package Close requires the full RBAC Walkthrough (J3-02). This slice does not cl
 - How they do it: no new UI in this slice. The decision is used by the existing Auth guard and paper-command gate. People assignment remains a later slice.
 - Master Plan: Wave 1 / SEC-02 / SEC-03, **partial** (permission model only). J3-02 People path is S02-c/d.
 
-**Verdict (this slice):** **PASS**  
+**Verdict (this slice):** **PASS**
 **Verdict (package Close):** **REQUIRES ACTION** — remaining S02 customer outcomes not shipped.
 
 ## 2. Customer does NOT receive

@@ -1,9 +1,9 @@
 # V3-S01 Product Scope
 
-**Package:** V3-S01 Authentication & Session  
-**Wave:** 1 — Security Foundation  
-**Status:** Implementation package — **not implementation**  
-**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)  
+**Package:** V3-S01 Authentication & Session
+**Wave:** 1 — Security Foundation
+**Status:** Implementation package — **not implementation**
+**Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)
 **Umbrella:** [`v3-s01-implementation-package.md`](./v3-s01-implementation-package.md)
 
 This document freezes **IN / OUT** and **customer-visible acceptance** for V3-S01. It does not add journeys the Master Plan did not already name.

@@ -1,13 +1,13 @@
 # V3-S01-e Product Review
 
-**Package:** V3-S01 Authentication & Session  
-**Slice:** S01-e — Password recovery and authenticated password change  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Post-implementation slice review — **not** package Close  
-**Master Plan outcomes owned by S01:** register, secure login, recovery, session revoke  
-**Outcomes owned by this slice:** recover a forgotten password; change password while signed in  
-**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)  
+**Package:** V3-S01 Authentication & Session
+**Slice:** S01-e — Password recovery and authenticated password change
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Post-implementation slice review — **not** package Close
+**Master Plan outcomes owned by S01:** register, secure login, recovery, session revoke
+**Outcomes owned by this slice:** recover a forgotten password; change password while signed in
+**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)
 **Nature:** Product review. Not an RC. Not an ADR.
 
 Package Close requires the full S01 walkthrough. This slice does not claim Close.
@@ -20,7 +20,7 @@ Package Close requires the full S01 walkthrough. This slice does not claim Close
 - How they do it: Sign in → **Forgot password?** → enter email. If mail is on, they follow the instructions and choose a new password, then sign in. If mail is off, the product says recovery is unavailable. Signed-in: Administration → Preferences → **Password**.
 - Master Plan: Wave 1 / §14 recover, **this slice**. Authenticated change is the companion in Product Scope.
 
-**Verdict (this slice):** **PASS**  
+**Verdict (this slice):** **PASS**
 **Verdict (package Close):** **REQUIRES ACTION** — Close is a separate review after this slice is accepted.
 
 ## 2. Customer does NOT receive

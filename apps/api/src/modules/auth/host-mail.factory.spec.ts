@@ -22,4 +22,13 @@ describe('host mail factory (V3-S01-e)', () => {
     } as unknown as ConfigService;
     expect(publicAppOrigin(withCors)).toBe('http://localhost:5173');
   });
+
+  it('never derives reset links from inbound Host headers', () => {
+    const config = {
+      get: (key: string) => (key === 'PUBLIC_APP_URL' ? 'https://app.example' : undefined),
+    } as unknown as ConfigService;
+
+    expect(publicAppOrigin(config)).toBe('https://app.example');
+    expect(publicAppOrigin(config)).not.toContain('attacker.example');
+  });
 });

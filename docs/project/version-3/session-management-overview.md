@@ -1,9 +1,9 @@
 # Sign-in Sessions Overview
 
-**Document:** Version 3 Sign-in Sessions Overview  
-**Date:** 2026-08-16  
-**Status:** Product-facing record of S01-d  
-**Product:** Sign-in Sessions  
+**Document:** Version 3 Sign-in Sessions Overview
+**Date:** 2026-08-16
+**Status:** Product-facing record of S01-d
+**Product:** Sign-in Sessions
 **Nature:** Customer description. Not an RC. Not an ADR. Not implementation. Not a Master Plan revision.
 
 This is what an ordinary operator experiences. It is not an internal design note.

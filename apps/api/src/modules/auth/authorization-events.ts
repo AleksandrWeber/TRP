@@ -1,4 +1,6 @@
 import type { LogContext, Logger } from '../../logging/logger';
+import type { SecurityAuditService } from '../security-audit/security-audit.service';
+import { persistSecurityAuditEvent } from '../security-audit/security-audit-persist';
 import { PermissionClass } from './permission-catalog';
 
 /**
@@ -31,24 +33,35 @@ export type C6DenyEvent = {
   reason: string;
 };
 
-export function recordRoleChange(logger: Logger, payload: RoleChangeEvent): void {
+export function recordRoleChange(
+  logger: Logger,
+  payload: RoleChangeEvent,
+  audit?: SecurityAuditService,
+): void {
   const context = toRoleChangeContext(payload);
   if (payload.outcome === 'assigned') {
     logger.info(AUTHZ_ROLE_CHANGE_EVENT, context);
-    return;
+  } else {
+    logger.warn(AUTHZ_ROLE_CHANGE_EVENT, context);
   }
-  logger.warn(AUTHZ_ROLE_CHANGE_EVENT, context);
+  void persistSecurityAuditEvent(audit, AUTHZ_ROLE_CHANGE_EVENT, context, 'authorization');
 }
 
-export function recordC6Deny(logger: Logger, payload: C6DenyEvent): void {
-  logger.warn(AUTHZ_DENY_EVENT, {
+export function recordC6Deny(
+  logger: Logger,
+  payload: C6DenyEvent,
+  audit?: SecurityAuditService,
+): void {
+  const context = {
     event: AUTHZ_DENY_EVENT,
     outcome: 'denied',
     permission: PermissionClass.RoleAdmin,
     actorUserId: payload.actorUserId,
     role: payload.role,
     reason: payload.reason,
-  });
+  };
+  logger.warn(AUTHZ_DENY_EVENT, context);
+  void persistSecurityAuditEvent(audit, AUTHZ_DENY_EVENT, context, 'authorization');
 }
 
 export function toRoleChangeContext(payload: RoleChangeEvent): LogContext {

@@ -1,9 +1,9 @@
 # Version 3 Governance Freeze
 
-**Document:** Version 3 Governance Freeze  
-**Date:** 2026-08-16  
-**Status:** **FROZEN** — Version 3 engineering process complete  
-**Authority:** Process freeze. Subordinate to [`version-3-master-plan.md`](./version-3-master-plan.md) for product scope.  
+**Document:** Version 3 Governance Freeze
+**Date:** 2026-08-16
+**Status:** **FROZEN** — Version 3 engineering process complete
+**Authority:** Process freeze. Subordinate to [`version-3-master-plan.md`](./version-3-master-plan.md) for product scope.
 **Nature:** Governance freeze record. Not an RC. Not an ADR. Not implementation. Not a Master Plan revision. Not architecture work. Not a Product package.
 
 This document declares the Version 3 engineering process complete. After this freeze, the process itself does not evolve. Future work evolves the **product**, not the **process**.

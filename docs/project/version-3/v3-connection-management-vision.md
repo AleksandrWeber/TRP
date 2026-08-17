@@ -1,9 +1,9 @@
 # Version 3 Connection Management Vision
 
-**Document:** Version 3 Connection Management Vision  
-**Date:** 2026-08-16  
-**Status:** Annex — planning **FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md)  
-**Role:** Unified Connection Management product  
+**Document:** Version 3 Connection Management Vision
+**Date:** 2026-08-16
+**Status:** Annex — planning **FROZEN** in [`version-3-master-plan.md`](./version-3-master-plan.md)
+**Role:** Unified Connection Management product
 **Evidence baseline:** [Version 2 Connection Management Audit](../version-2-connection-management-audit.md)
 
 This is a **product facade** over existing owners (Exchange Adapter, Live Market Data, Notification Delivery, AI Gateway). It does not become Source of Truth for orders, fills, narratives, or market state.

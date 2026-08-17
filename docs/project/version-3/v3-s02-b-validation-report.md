@@ -1,9 +1,9 @@
 # V3-S02-b Validation Report
 
-**Package:** V3-S02 RBAC Product  
-**Slice:** S02-b — Surface Coverage  
-**Date:** 2026-08-16  
-**Nature:** Slice validation evidence. Not package Close. Not an RC. Not an ADR.  
+**Package:** V3-S02 RBAC Product
+**Slice:** S02-b — Surface Coverage
+**Date:** 2026-08-16
+**Nature:** Slice validation evidence. Not package Close. Not an RC. Not an ADR.
 **Plan:** [`v3-s02-validation-plan.md`](./v3-s02-validation-plan.md) (unmodified; executed only for S02-b rows)
 
 ---
@@ -146,28 +146,28 @@ Typecheck previously failed on `import.meta` in `permission-matrix.spec.ts` unde
 
 These answers are for **this slice**. They are not a V3-S02 Close.
 
-1. **What customer value was added?**  
+1. **What customer value was added?**
    The platform consistently enforces permissions on customer HTTP. Unauthorized operators are denied before business logic. Allow-by-omission is gone.
 
-2. **Which product surfaces are now protected?**  
+2. **Which product surfaces are now protected?**
    Authentication administration (admin probe C6; self C1); workspace administration (C2); paper trading commands (C5); research actions (C4); reporting reads (C3); notification reads (C3) and preference upsert (C2); Knowledge Lake reads (C3) and knowledge writes (C4); AI Analytics generate (C4); cluster reads (C3) and cluster writes (C4); qualification; market profile; market state; command center; and remaining Version 2 customer HTTP listed in the implementation report.
 
-3. **Which surfaces intentionally remain public?**  
+3. **Which surfaces intentionally remain public?**
    Register, login, refresh, logout, CSRF, recovery, forgot-password, reset-password; `GET /`; `GET /health`; `GET /v1/metrics`.
 
-4. **Were any missing permissions discovered?**  
+4. **Were any missing permissions discovered?**
    Yes — deferred, not invented: notification-channel/Telegram bind as its own class; cluster-admin distinct from research; risk-policy-admin distinct from paper command; C8 unused on existing V2 Telegram so the shipped product is not hidden. No C10+.
 
-5. **What remains before S02-c?**  
+5. **What remains before S02-c?**
    Product Owner review of this slice. Then S02-c Role assignment API (Admin-only assign, last-Admin protection, no self-escalation). Not People UI (S02-d). Not V3-S03.
 
-6. **Was the Master Plan respected?**  
+6. **Was the Master Plan respected?**
    **Yes.** Surface coverage only. No new bounded context. No People product. No live capital. No Master Plan edit.
 
-7. **Were Product Principles respected?**  
+7. **Were Product Principles respected?**
    **Yes.** Security Before Convenience, One Source of Truth, Honest Product, Live Must Be Earned, and Architecture Is a Constraint were applied.
 
-8. **Were any architectural deviations introduced?**  
+8. **Were any architectural deviations introduced?**
    **No.**
 
 ---

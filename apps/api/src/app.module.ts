@@ -2,9 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { resolveNestThrottlerOptions } from './security-platform';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
+import { SecretVaultModule } from './modules/secret-vault';
+import { SecurityAuditModule, SecurityAuditTimelineApiModule } from './modules/security-audit';
 import { AuthCsrfGuard } from './modules/auth/auth-csrf.guard';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/roles.guard';
@@ -94,6 +97,7 @@ import { WorkflowModule } from './modules/workflow/workflow.module';
 import { PrismaModule } from './storage/prisma/prisma.module';
 import { LoggingModule } from './logging/logging.module';
 import { MetricsModule } from './metrics/metrics.module';
+import { SecurityPlatformModule } from './security-platform';
 import { ValidationModule } from './validation/validation.module';
 
 @Module({
@@ -102,15 +106,11 @@ import { ValidationModule } from './validation/validation.module';
       isGlobal: true,
       envFilePath: ['.env', '../../.env'],
     }),
-    ThrottlerModule.forRoot([
-      {
-        ttl: Number(process.env.API_THROTTLE_TTL_MS ?? 60_000),
-        limit: Number(process.env.API_THROTTLE_LIMIT ?? 200),
-      },
-    ]),
+    ThrottlerModule.forRoot([resolveNestThrottlerOptions()]),
     LoggingModule,
     MetricsModule,
     ValidationModule,
+    SecurityPlatformModule,
     PrismaModule,
     EventsModule,
     EventProcessingModule,
@@ -126,6 +126,9 @@ import { ValidationModule } from './validation/validation.module';
     StrategyTradingPipelineModule,
     PositionsModule,
     AuthModule,
+    SecretVaultModule,
+    SecurityAuditModule,
+    SecurityAuditTimelineApiModule,
     IdentityModule,
     WorkspaceModule,
     StrategiesModule,

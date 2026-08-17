@@ -16,6 +16,7 @@ import type { Logger } from '../../logging/logger';
 import { LOGGER } from '../../logging/logger.token';
 import { AssignRoleBodyDto, PeopleUserIdParamDto, VALIDATION_PIPE_OPTIONS } from '../../validation';
 import type { AuthUser } from '../auth/jwt.strategy';
+import { SecurityAuditService } from '../security-audit/security-audit.service';
 import { recordRoleChange, type RoleChangeReason } from '../auth/authorization-events';
 import { RequirePermission } from '../auth/decorators/require-permission.decorator';
 import { PermissionClass } from '../auth/permission-catalog';
@@ -50,6 +51,7 @@ export class PeopleController {
     // Explicit tokens — vitest (esbuild) emits no design:paramtypes metadata.
     @Inject(UserDomainService) private readonly users: UserDomainService,
     @Inject(LOGGER) logger: Logger,
+    @Inject(SecurityAuditService) private readonly audit: SecurityAuditService,
   ) {
     this.logger = logger.child('PeopleController');
   }
@@ -117,7 +119,7 @@ export class PeopleController {
     toRole?: string;
     reason?: RoleChangeReason;
   }): void {
-    recordRoleChange(this.logger, payload);
+    recordRoleChange(this.logger, payload, this.audit);
   }
 }
 

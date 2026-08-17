@@ -1,13 +1,13 @@
 # V3-S02-c Product Review
 
-**Package:** V3-S02 RBAC Product  
-**Slice:** S02-c — Role Assignment API  
-**Wave:** 1 — Security Foundation  
-**Date:** 2026-08-16  
-**Stage:** Post-implementation slice review — **not** package Close  
-**Master Plan outcomes owned by S02:** Admin assigns a role; operator cannot perform another role’s actions; J3-02  
-**Outcomes owned by this slice:** authorized administrators can change a user's role through the product API; the platform applies the new role immediately  
-**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)  
+**Package:** V3-S02 RBAC Product
+**Slice:** S02-c — Role Assignment API
+**Wave:** 1 — Security Foundation
+**Date:** 2026-08-16
+**Stage:** Post-implementation slice review — **not** package Close
+**Master Plan outcomes owned by S02:** Admin assigns a role; operator cannot perform another role’s actions; J3-02
+**Outcomes owned by this slice:** authorized administrators can change a user's role through the product API; the platform applies the new role immediately
+**Checklist:** [`version-3-product-checklist.md`](./version-3-product-checklist.md)
 **Nature:** Product review. Not an RC. Not an ADR.
 
 Package Close requires the full RBAC Walkthrough (J3-02) in the People UI. This slice does not claim it. No visible UI changes shipped.
@@ -20,7 +20,7 @@ Package Close requires the full RBAC Walkthrough (J3-02) in the People UI. This 
 - How they do it: no new UI in this slice. The signed-in Admin calls the People role API (the same API S02-d will project). No SSH, customer `.env`, or SQL.
 - Master Plan: Wave 1 / SEC-02, **partial** (assignment API). J3-02 People path completes in **S02-d**.
 
-**Verdict (this slice):** **PASS**  
+**Verdict (this slice):** **PASS**
 **Verdict (package Close):** **REQUIRES ACTION** — People UI and remaining S02 outcomes not shipped.
 
 ## 2. Customer does NOT receive
