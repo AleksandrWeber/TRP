@@ -4,7 +4,8 @@
 **Date:** 2026-08-17
 **Nature:** Planning resolution only. Not implementation. Not code. Not tests.
 **Not a Master Plan edit. Not a Version 2 edit. Not a commit.**
-**Status:** Awaiting Product Owner approval before any further S06 slice.
+**Status:** **APPROVED** — 2026-08-17. S06-f evidence alignment and V3-S06 Close
+recorded in [`v3-s06-close-report.md`](./v3-s06-close-report.md).
 
 **Canon:** [`version-3-master-plan.md`](./version-3-master-plan.md)
 **Matrix:** [`wave-1-isolation-matrix.md`](./wave-1-isolation-matrix.md)
@@ -412,24 +413,32 @@ That slice must not redesign Auth, Identity, Vault, Audit, or Platform.
 
 ### Can S06 Close after these decisions?
 
-**Yes — after Product Owner approval and the evidence/governance follow-up
-above.** Decisions alone do not Close S06; matrix honesty must be updated to
-match the approved PASS / NOT APPLICABLE outcomes with named reasons and
-evidence references.
+**Yes — CLOSED 2026-08-17.** Product Owner approved these resolutions; S06-f
+applied the PASS / NOT APPLICABLE statuses; Close is recorded in
+[`v3-s06-close-report.md`](./v3-s06-close-report.md).
 
 ### Can Wave 1 Certification Audit begin?
 
-**Not yet.** It may begin only after **V3-S06 Close**.
-If Product Owner approves these resolutions and the evidence follow-up
-completes, S06 can Close and the independent Certification Audit may then be
-commissioned. Wave 1 COMPLETE remains unclaimed until that audit is accepted.
+**Yes — after Product Owner commissions it.** V3-S06 is CLOSED. The independent
+Wave 1 Certification Audit may begin when Product Owner approves opening it. It
+has **NOT started**. Wave 1 COMPLETE remains unclaimed until that audit is
+accepted.
+
+---
+
+## Product Owner approval record
+
+| Field                                  | Value                                                               |
+| -------------------------------------- | ------------------------------------------------------------------- |
+| Resolution approved                    | **Yes** — 2026-08-17                                                |
+| S06-f evidence alignment               | **Approved**                                                        |
+| V3-S06 Close                           | **Recorded** — [`v3-s06-close-report.md`](./v3-s06-close-report.md) |
+| Independent Wave 1 Certification Audit | **Not started** — awaits Product Owner commission                   |
 
 ---
 
 ## STOP
 
-**Wait for Product Owner approval** before opening any additional S06
-implementation or evidence slice.
-
-Do not change matrix statuses, executable contract statuses, Master Plan,
-Version 2, or Close claims until that approval is recorded.
+This resolution is approved and applied. Do not reopen S06 implementation.
+Do not claim Wave 1 COMPLETE or open the independent Certification Audit without
+Product Owner commission.

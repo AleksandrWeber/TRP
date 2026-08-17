@@ -553,18 +553,18 @@ Companion: [`v3-s06-validation-plan.md`](./v3-s06-validation-plan.md).
 
 A package may be marked **CLOSED** only after **all** of the following are true.
 
-| #   | Gate                                                                                                  | Verdict         |
-| --- | ----------------------------------------------------------------------------------------------------- | --------------- |
-| 1   | Implementation Review — slices done; Implementation Report written; honest limitations recorded       | PASS / NOT DONE |
-| 2   | Architecture Review — no ownership drift; no new bounded context; no duplicate SoT                    | PASS / NOT DONE |
-| 3   | Security Review — checklist + STRIDE + Verification Standard + Regression Suite; zero REQUIRES ACTION | PASS / NOT DONE |
-| 4   | Product Review — checklist + Isolation Proof Walkthrough PASS                                         | PASS / NOT DONE |
-| 5   | Validation — Isolation Matrix all rows PASS or explicitly NOT APPLICABLE; validation plan executed    | PASS / NOT DONE |
-| 6   | All mandatory reports present and consistent                                                          | PASS / NOT DONE |
-| 7   | Master Plan compliance — no invented scope; SEC-11 Wave 1 only                                        | PASS / NOT DONE |
-| 8   | Product Principles compliance                                                                         | PASS / NOT DONE |
-| 9   | Customer walkthrough — no SSH / customer `.env` / manual DB as the proof path                         | PASS / NOT DONE |
-| 10  | Explicit non-claim recorded: Wave 1 COMPLETE still requires Certification Audit                       | PASS / NOT DONE |
+| #   | Gate                                                                                                  | Verdict  |
+| --- | ----------------------------------------------------------------------------------------------------- | -------- |
+| 1   | Implementation Review — slices done; Implementation Report written; honest limitations recorded       | **PASS** |
+| 2   | Architecture Review — no ownership drift; no new bounded context; no duplicate SoT                    | **PASS** |
+| 3   | Security Review — checklist + STRIDE + Verification Standard + Regression Suite; zero REQUIRES ACTION | **PASS** |
+| 4   | Product Review — checklist + Isolation Proof Walkthrough PASS                                         | **PASS** |
+| 5   | Validation — Isolation Matrix all rows PASS or explicitly NOT APPLICABLE; validation plan executed    | **PASS** |
+| 6   | All mandatory reports present and consistent                                                          | **PASS** |
+| 7   | Master Plan compliance — no invented scope; SEC-11 Wave 1 only                                        | **PASS** |
+| 8   | Product Principles compliance                                                                         | **PASS** |
+| 9   | Customer walkthrough — no SSH / customer `.env` / manual DB as the proof path                         | **PASS** |
+| 10  | Explicit non-claim recorded: Wave 1 COMPLETE still requires Certification Audit                       | **PASS** |
 
 If any row is **NOT DONE**, the package is **not Closed**. Wave 2 must not open.
 
@@ -593,28 +593,30 @@ Do not claim wave exit unless Exit Checklist + Certification Audit + PO declarat
 
 ## Lessons Learned
 
-**Fill at Close.** Process, reuse, and honesty only. Not a backlog of new product.
+Process, reuse, and honesty only. Harness-first isolation proof under existing
+module owners avoided duplicate SoT. Matrix and executable contract must stay
+aligned at Close.
 
 ---
 
-## Package Summary Standard (answers at Close — planning placeholders)
+## Package Summary Standard (answers at Close)
 
 1. What did the customer receive?
-   _Pending Close — expected: isolation proof + exit evidence inputs._
+   Isolation proof across Wave 1 security boundaries and Close/certification evidence inputs.
 2. What did the customer NOT receive?
-   _Pending Close — expected: Connections, live, monitoring, billing, Wave 1 COMPLETE without audit._
+   Connections, live trading, monitoring, billing, Wave 1 COMPLETE, or a new Isolation product surface.
 3. What business problem was solved?
-   _Pending Close — expected: unproved tenancy blocking honest Wave 1 exit._
+   Unproved tenancy no longer blocks honest Wave 1 exit evidence for SEC-11.
 4. What remains for later packages?
-   _Certification Audit → Wave 2+; Wave 9 SEC-11 remainder._
+   Independent Wave 1 Certification Audit → Wave 1 COMPLETE → Wave 2 Connection Management; Wave 9 SEC-11 remainder.
 5. Which package becomes available next?
-   _After COMPLETE: Wave 2 Connection Management at Implementation Package._
+   Independent Wave 1 Certification Audit when commissioned by Product Owner.
 6. Was the Master Plan followed?
-   _Required: Yes._
+   **Yes.**
 7. Were Product Principles respected?
-   _Required: Yes._
+   **Yes.**
 8. Were any architectural deviations introduced?
-   _Required: No._
+   **No.**
 
 ---
 
@@ -633,10 +635,9 @@ Do not claim wave exit unless Exit Checklist + Certification Audit + PO declarat
 
 ## STOP
 
-**Planning only. No code. No implementation.**
+**V3-S06 is CLOSED.** See [`v3-s06-close-report.md`](./v3-s06-close-report.md).
 
-Wait for **Product Owner review** before approving V3-S06 implementation.
-
-Do **not** claim Wave 1 Exit.
+Do **not** claim Wave 1 COMPLETE.
+Do **not** open the independent Wave 1 Certification Audit without Product Owner commission.
 Do **not** start Wave 2.
 Do **not** edit the Master Plan or Version 2 artifacts from this package.
