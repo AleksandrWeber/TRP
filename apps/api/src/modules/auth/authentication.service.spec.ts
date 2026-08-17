@@ -39,6 +39,8 @@ import {
 } from './password-reset';
 import { PasswordResetStore } from './password-reset.store';
 import type { LogContext, Logger } from '../../logging/logger';
+import type { SecurityAuditService } from '../security-audit/security-audit.service';
+import type { SecurityAuditWrite } from '../security-audit/security-audit-record';
 
 const TEST_PASSWORD = 'password-123';
 const WRONG_PASSWORD = 'wrong-pass-1';
@@ -80,10 +82,20 @@ class RecordingLogger implements Logger {
   }
 }
 
+class RecordingSecurityAuditService {
+  readonly writes: SecurityAuditWrite[] = [];
+
+  async record(write: SecurityAuditWrite): Promise<{ id: string }> {
+    this.writes.push(write);
+    return { id: `audit-${this.writes.length}` };
+  }
+}
+
 function createAuthentication(options?: {
   clock?: Clock;
   logger?: Logger;
   mail?: CapturingHostMail;
+  audit?: SecurityAuditService;
 }) {
   const users = new UserDomainService(new InMemoryUserRepository());
   const credentialRepository = new InMemoryPasswordCredentialRepository();
@@ -114,6 +126,7 @@ function createAuthentication(options?: {
     resets,
     mail,
     logger,
+    options?.audit,
   );
   return {
     users,
@@ -649,6 +662,40 @@ describe('AuthenticationService (US106, US107, V3-S01-c)', () => {
     });
     const signedIn = await authentication.login('reset@example.com', NEXT_PASSWORD);
     expect(signedIn.user.email).toBe('reset@example.com');
+  });
+
+  it('allows one concurrent reset and records one successful recovery audit event', async () => {
+    const mail = new CapturingHostMail(true);
+    const audit = new RecordingSecurityAuditService();
+    const { authentication } = createAuthentication({
+      mail,
+      audit: audit as unknown as SecurityAuditService,
+    });
+    await authentication.register('concurrent@example.com', 'Concurrent', TEST_PASSWORD);
+    await authentication.requestPasswordReset('concurrent@example.com');
+    const token = new URL(mail.messages[0]!.resetUrl).searchParams.get('token')!;
+
+    const attempts = await Promise.allSettled([
+      authentication.resetPassword(token, NEXT_PASSWORD),
+      authentication.resetPassword(token, NEXT_PASSWORD),
+    ]);
+
+    expect(attempts.filter((attempt) => attempt.status === 'fulfilled')).toHaveLength(1);
+    expect(
+      audit.writes.filter(
+        (write) => write.eventType === 'auth.recover' && write.outcome === 'completed',
+      ),
+    ).toHaveLength(1);
+    await expect(
+      authentication.login('concurrent@example.com', TEST_PASSWORD),
+    ).rejects.toMatchObject({
+      message: INVALID_LOGIN_MESSAGE,
+    });
+    await expect(
+      authentication.login('concurrent@example.com', NEXT_PASSWORD),
+    ).resolves.toMatchObject({
+      user: { email: 'concurrent@example.com' },
+    });
   });
 
   it('rejects an expired recovery token', async () => {

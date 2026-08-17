@@ -6,6 +6,7 @@ import type { PasswordResetRecord } from './password-reset';
 export interface PasswordResetRepository {
   save(record: PasswordResetRecord): Promise<void>;
   findByTokenHash(tokenHash: string): Promise<PasswordResetRecord | null>;
-  consume(id: string, consumedAt: Date): Promise<void>;
+  /** Claims an unconsumed, unexpired token exactly once. */
+  consumeIfActive(id: string, consumedAt: Date): Promise<boolean>;
   consumeAllForUser(userId: string, consumedAt: Date): Promise<void>;
 }

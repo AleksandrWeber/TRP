@@ -27,11 +27,12 @@ export class PrismaPasswordResetRepository implements PasswordResetRepository {
     return row ? this.toRecord(row) : null;
   }
 
-  async consume(id: string, consumedAt: Date): Promise<void> {
-    await this.prisma.authPasswordReset.updateMany({
-      where: { id, consumedAt: null },
+  async consumeIfActive(id: string, consumedAt: Date): Promise<boolean> {
+    const consumed = await this.prisma.authPasswordReset.updateMany({
+      where: { id, consumedAt: null, expiresAt: { gt: consumedAt } },
       data: { consumedAt },
     });
+    return consumed.count === 1;
   }
 
   async consumeAllForUser(userId: string, consumedAt: Date): Promise<void> {

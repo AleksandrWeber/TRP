@@ -54,7 +54,9 @@ export class PasswordResetStore {
     if (!current || current.consumedAt !== null || current.expiresAt <= now) {
       return null;
     }
-    await this.repository.consume(current.id, now);
+    if (!(await this.repository.consumeIfActive(current.id, now))) {
+      return null;
+    }
     return { userId: current.userId };
   }
 

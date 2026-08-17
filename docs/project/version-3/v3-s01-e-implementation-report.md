@@ -13,6 +13,17 @@ This report covers **S01-e only**. V3-S02 was not started. V3-S01 is not Closed 
 
 ---
 
+## F-11 Certification Remediation
+
+**Date:** 2026-08-17
+**Scope:** Authentication-owned password-reset token consumption only.
+
+Reset consumption now uses one conditional persistence update: the token must match, be unconsumed, and remain unexpired for the update to claim it. The repository reports whether exactly one row was claimed; only that caller may continue to change the password, revoke sessions, and emit the successful recovery audit event. Concurrent and reused attempts receive the existing invalid-link outcome.
+
+Authentication remains the sole owner of reset tokens, credentials, and reset lifecycle. No session-rotation, Identity, Security Audit, Vault, Master Plan, or product-scope behavior changed.
+
+---
+
 ## What shipped
 
 Operators can recover a forgotten password when host mail is configured, see an honest unavailable state when it is not, and change a password while signed in. Auth remains the only owner. Reset tokens are hashed, single-use, and time-limited. Notification Delivery is not used.

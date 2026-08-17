@@ -20,10 +20,11 @@ export class InMemoryPasswordResetRepository implements PasswordResetRepository 
     return null;
   }
 
-  async consume(id: string, consumedAt: Date): Promise<void> {
+  async consumeIfActive(id: string, consumedAt: Date): Promise<boolean> {
     const record = this.records.get(id);
-    if (!record || record.consumedAt) return;
+    if (!record || record.consumedAt || record.expiresAt <= consumedAt) return false;
     this.records.set(id, { ...record, consumedAt });
+    return true;
   }
 
   async consumeAllForUser(userId: string, consumedAt: Date): Promise<void> {

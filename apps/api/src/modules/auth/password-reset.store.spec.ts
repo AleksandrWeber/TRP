@@ -25,6 +25,20 @@ describe('PasswordResetStore (V3-S01-e)', () => {
     expect(await store.consume(issued.token)).toBeNull();
   });
 
+  it('allows exactly one concurrent consumer of a valid token', async () => {
+    const store = new PasswordResetStore(new InMemoryPasswordResetRepository());
+    const issued = await store.issue('user-1');
+
+    const attempts = await Promise.all([
+      store.consume(issued.token),
+      store.consume(issued.token),
+      store.consume(issued.token),
+    ]);
+
+    expect(attempts.filter((attempt) => attempt !== null)).toEqual([{ userId: 'user-1' }]);
+    expect(await store.consume(issued.token)).toBeNull();
+  });
+
   it('rejects an expired token', async () => {
     const clock = new ManualClock();
     const store = new PasswordResetStore(new InMemoryPasswordResetRepository(), clock);
