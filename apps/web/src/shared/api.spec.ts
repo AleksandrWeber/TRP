@@ -68,6 +68,39 @@ describe('runCampaign', () => {
   });
 });
 
+describe('Connection command requests', () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => ({}),
+        text: async () => '{}',
+      }),
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.clearAllMocks();
+  });
+
+  it('sends an empty JSON object for bodyless lifecycle commands', async () => {
+    await api.validateConnection('connection-1');
+    await api.disconnectConnection('connection-1');
+    await api.disableConnection('connection-1');
+    await api.revokeConnection('connection-1');
+
+    const connectionCalls = vi
+      .mocked(fetch)
+      .mock.calls.filter(([url]) => String(url).includes('/v1/connections/connection-1/'));
+
+    expect(connectionCalls).toHaveLength(4);
+    expect(connectionCalls.map(([, init]) => init?.body)).toEqual(['{}', '{}', '{}', '{}']);
+  });
+});
+
 describe('shared api error mapping', () => {
   afterEach(() => {
     vi.unstubAllGlobals();

@@ -2909,18 +2909,22 @@ export const api = {
   validateConnection: (id: string) =>
     request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}/validate`, {
       method: 'POST',
+      body: '{}',
     }),
   disconnectConnection: (id: string) =>
     request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}/disconnect`, {
       method: 'POST',
+      body: '{}',
     }),
   disableConnection: (id: string) =>
     request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}/disable`, {
       method: 'POST',
+      body: '{}',
     }),
   revokeConnection: (id: string) =>
     request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}/revoke`, {
       method: 'POST',
+      body: '{}',
     }),
   listStrategyLibrary: (query: LibraryListQuery = {}) => {
     const params = new URLSearchParams();

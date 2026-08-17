@@ -16,7 +16,7 @@ W2-S01 delivered a workspace-scoped Connection Management foundation: offered pr
 
 ## Validation summary
 
-Ordinary tests cover metadata creation, credential storage and replacement, validation success/failure, disconnect, disable, revoke, cross-workspace denial, C8 mutation guards, and non-disclosure of secrets. The live operator walkthrough was executed on 2026-08-17, but credential storage returned an operator-safe input error; dependent mandatory steps were not completed. See [`w2-s01-live-product-walkthrough.md`](./w2-s01-live-product-walkthrough.md).
+Ordinary tests cover metadata creation, credential storage and replacement, validation success/failure, disconnect, disable, revoke, cross-workspace denial, C8 mutation guards, and non-disclosure of secrets. The repeated live operator walkthrough now passes credential store/replace, Pending Validation to Connected, disconnect, disable, revoke, secret non-disclosure, and honest product copy. Workspace-isolation and non-C8-role sessions remain unrecorded. See [`w2-s01-live-product-walkthrough.md`](./w2-s01-live-product-walkthrough.md).
 
 ## Known intentional deferrals
 
@@ -26,4 +26,4 @@ TD-W2-001 records an intermittent `market-state.module.spec.ts` timeout as non-b
 
 ## Recommendation
 
-W2-S01 requires action before Product Owner Close: the live walkthrough did not pass every mandatory step. Product Owner review is required before any declaration that W2-S01 is Closed.
+W2-S01 requires action before Product Owner Close: the live walkthrough still needs workspace-isolation and non-C8 authorization-denial sessions. Product Owner review is required before any declaration that W2-S01 is Closed.
