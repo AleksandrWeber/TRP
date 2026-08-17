@@ -75,8 +75,10 @@ export function ConnectionsView({
         <p className="mt-2 max-w-3xl text-slate-400">
           Store provider credentials and validate that the configured connection satisfies the
           current contract. Exchange connections run an authenticated handshake with the selected
-          exchange. Connected means the exchange accepted authenticated communication. Connected
-          does not indicate live trading, delivery, balances, orders, or AI execution.
+          exchange. Connected means the exchange accepted authenticated communication. Connection
+          health reflects only the observed authenticated session. Reconnect is advisory; the
+          product does not reconnect automatically. Connected does not indicate live trading,
+          delivery, balances, orders, market data, or execution.
         </p>
       </div>
 
@@ -185,6 +187,16 @@ export function ConnectionsView({
                     {connection.exchangeProvider.capabilities.map(capabilityLabel).join(' · ')}
                   </p>
                 ) : null}
+                {connection.session ? (
+                  <p className="text-sm text-slate-400">
+                    Session {sessionStateLabel(connection.session.state)} · Health{' '}
+                    {healthLabel(connection.session.health)} ·{' '}
+                    {connection.session.reconnectRequired
+                      ? 'Reconnect required'
+                      : 'Reconnect not required'}{' '}
+                    · Provider {availabilityLabel(connection.session.providerAvailability)}
+                  </p>
+                ) : null}
               </div>
               <div className="flex items-center gap-3">
                 <span className="rounded bg-slate-700 px-2 py-1 text-xs">
@@ -214,7 +226,9 @@ export function ConnectionsView({
                     {connection.status === 'DISCONNECTED' ? 'Run Validate' : 'Retry validation'}
                   </button>
                 ) : null}
-                {connection.status === 'CONNECTED' ? (
+                {connection.status === 'CONNECTED' ||
+                connection.status === 'SESSION_EXPIRED' ||
+                connection.status === 'CONNECTION_LOST' ? (
                   <button
                     type="button"
                     onClick={() => onDisconnect(connection)}
@@ -373,6 +387,10 @@ function statusLabel(status: ConnectionMetadataView['status']): string {
       return 'Provider Unavailable';
     case 'AUTHENTICATION_FAILED':
       return 'Authentication Failed';
+    case 'SESSION_EXPIRED':
+      return 'Session Expired';
+    case 'CONNECTION_LOST':
+      return 'Connection Lost';
     case 'DISABLED':
       return 'Disabled';
     case 'REVOKED':
@@ -388,7 +406,9 @@ function canRunValidate(status: ConnectionMetadataView['status']): boolean {
     status === 'VALIDATION_FAILED' ||
     status === 'HANDSHAKE_TIMEOUT' ||
     status === 'PROVIDER_UNAVAILABLE' ||
-    status === 'AUTHENTICATION_FAILED'
+    status === 'AUTHENTICATION_FAILED' ||
+    status === 'SESSION_EXPIRED' ||
+    status === 'CONNECTION_LOST'
   );
 }
 
@@ -399,6 +419,59 @@ function canDisable(status: ConnectionMetadataView['status']): boolean {
     status === 'VALIDATION_FAILED' ||
     status === 'HANDSHAKE_TIMEOUT' ||
     status === 'PROVIDER_UNAVAILABLE' ||
-    status === 'AUTHENTICATION_FAILED'
+    status === 'AUTHENTICATION_FAILED' ||
+    status === 'SESSION_EXPIRED' ||
+    status === 'CONNECTION_LOST'
   );
+}
+
+function sessionStateLabel(state: NonNullable<ConnectionMetadataView['session']>['state']): string {
+  switch (state) {
+    case 'PENDING_VALIDATION':
+      return 'Pending Validation';
+    case 'CONNECTED':
+      return 'Connected';
+    case 'SESSION_EXPIRED':
+      return 'Session Expired';
+    case 'CONNECTION_LOST':
+      return 'Connection Lost';
+    case 'PROVIDER_UNAVAILABLE':
+      return 'Provider Unavailable';
+    case 'VALIDATION_FAILED':
+      return 'Validation Failed';
+    case 'AUTHENTICATION_FAILED':
+      return 'Authentication Failed';
+    default:
+      return 'Disconnected';
+  }
+}
+
+function healthLabel(health: NonNullable<ConnectionMetadataView['session']>['health']): string {
+  switch (health) {
+    case 'HEALTHY':
+      return 'Healthy';
+    case 'UNAVAILABLE':
+      return 'Unavailable';
+    case 'EXPIRED':
+      return 'Expired';
+    case 'AUTHENTICATION_FAILED':
+      return 'Authentication Failed';
+    case 'CONNECTION_LOST':
+      return 'Connection Lost';
+    default:
+      return 'Not observed';
+  }
+}
+
+function availabilityLabel(
+  availability: NonNullable<ConnectionMetadataView['session']>['providerAvailability'],
+): string {
+  switch (availability) {
+    case 'AVAILABLE':
+      return 'Available';
+    case 'UNAVAILABLE':
+      return 'Unavailable';
+    default:
+      return 'Unknown';
+  }
 }

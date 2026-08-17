@@ -28,9 +28,10 @@ import type { ConnectionCatalogView } from './connection-catalog';
 type RequestWithUser = { user: AuthUser };
 
 /**
- * W2-S01-b transport plus W2-S01-c validation and W2-S02-b exchange handshake.
- * Credentials are passed write-only to Vault and never returned. Handshake for
- * Exchange connections is delegated to Exchange Connectivity.
+ * W2-S01-b transport plus W2-S01-c validation, W2-S02-b exchange handshake,
+ * and W2-S02-c session health projection. Credentials are passed write-only to
+ * Vault and never returned. Handshake and session state for Exchange
+ * connections are delegated to Exchange Connectivity.
  */
 @Controller({ path: 'connections', version: '1' })
 @RequirePermission(PermissionClass.Projection)

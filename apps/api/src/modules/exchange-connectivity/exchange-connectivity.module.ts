@@ -5,6 +5,8 @@ import { BinanceHandshakeAdapter } from './binance-handshake.adapter';
 import { ExchangeHandshakeAudit } from './exchange-handshake.audit';
 import { FetchHandshakeHttpClient } from './exchange-handshake.http';
 import { ExchangeHandshakeService } from './exchange-handshake.service';
+import { ExchangeSessionAudit } from './exchange-session.audit';
+import { ExchangeSessionService } from './exchange-session.service';
 import {
   DEFAULT_HANDSHAKE_TIMEOUT_MS,
   HANDSHAKE_CLOCK,
@@ -21,6 +23,7 @@ import { PlannedExchangeHandshakeAdapter } from './planned-handshake.adapter';
  *
  * W2-S02-a: provider catalog, capability model, registry, connectivity contract.
  * W2-S02-b: authenticated handshake service and provider adapters.
+ * W2-S02-c: authenticated session lifecycle, health projection, reconnect eligibility.
  * Connection Management remains the operator facade. Vault remains the secret owner.
  */
 @Module({
@@ -55,7 +58,9 @@ import { PlannedExchangeHandshakeAdapter } from './planned-handshake.adapter';
     },
     ExchangeHandshakeAudit,
     ExchangeHandshakeService,
+    ExchangeSessionAudit,
+    ExchangeSessionService,
   ],
-  exports: [ExchangeProviderRegistry, ExchangeHandshakeService],
+  exports: [ExchangeProviderRegistry, ExchangeHandshakeService, ExchangeSessionService],
 })
 export class ExchangeConnectivityModule {}

@@ -37,3 +37,23 @@ describe('Connection lifecycle handshake outcomes (W2-S02-b)', () => {
     );
   });
 });
+
+describe('Connection lifecycle session observations (W2-S02-c)', () => {
+  it('allows observed session expiry and loss from Connected without automatic reconnect', () => {
+    expect(canTransitionConnection('CONNECTED', 'SESSION_EXPIRED')).toBe(true);
+    expect(canTransitionConnection('CONNECTED', 'CONNECTION_LOST')).toBe(true);
+    expect(canTransitionConnection('CONNECTED', 'PROVIDER_UNAVAILABLE')).toBe(true);
+    expect(canTransitionConnection('SESSION_EXPIRED', 'PENDING_VALIDATION')).toBe(true);
+    expect(canTransitionConnection('CONNECTION_LOST', 'DISCONNECTED')).toBe(true);
+    expect(canStartConnectionValidation('SESSION_EXPIRED')).toBe(true);
+    expect(canStartConnectionValidation('CONNECTION_LOST')).toBe(true);
+    expect(canStartConnectionValidation('CONNECTED')).toBe(false);
+    expect(canDisableConnection('SESSION_EXPIRED')).toBe(true);
+    expect(() => assertConnectionTransition('DISCONNECTED', 'SESSION_EXPIRED')).toThrow(
+      'Connection cannot transition',
+    );
+    expect(() => assertConnectionTransition('CONNECTED', 'PENDING_VALIDATION')).toThrow(
+      'Connection cannot transition',
+    );
+  });
+});

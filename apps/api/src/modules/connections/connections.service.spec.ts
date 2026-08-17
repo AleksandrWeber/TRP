@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { ExchangeSessionAudit, ExchangeSessionService } from '../exchange-connectivity';
 import { Role } from '../identity/role';
 import { ConnectionsService } from './connections.service';
 
@@ -155,6 +156,14 @@ function handshakeStub(
   };
 }
 
+function sessionService() {
+  return new ExchangeSessionService(
+    new ExchangeSessionAudit({
+      record: async () => undefined,
+    } as never),
+  );
+}
+
 describe('ConnectionsService (W2-S01)', () => {
   it('creates metadata only with the provider type and disconnected default', async () => {
     const service = new ConnectionsService(
@@ -164,6 +173,7 @@ describe('ConnectionsService (W2-S01)', () => {
       validationAudit() as never,
       lifecycleAudit() as never,
       handshakeStub() as never,
+      sessionService() as never,
     );
     const connection = await service.create({
       workspaceId: 'workspace-a',
@@ -203,6 +213,7 @@ describe('ConnectionsService (W2-S01)', () => {
       validationAudit() as never,
       lifecycleAudit() as never,
       handshakeStub() as never,
+      sessionService() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -233,6 +244,7 @@ describe('ConnectionsService (W2-S01)', () => {
       validationAudit() as never,
       audit as never,
       handshakeStub() as never,
+      sessionService() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -277,6 +289,7 @@ describe('ConnectionsService (W2-S01)', () => {
       audit as never,
       lifecycleAudit() as never,
       handshake as never,
+      sessionService() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -325,6 +338,7 @@ describe('ConnectionsService (W2-S01)', () => {
       audit as never,
       lifecycleAudit() as never,
       handshakeStub() as never,
+      sessionService() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -368,6 +382,7 @@ describe('ConnectionsService (W2-S01)', () => {
       validationAudit() as never,
       audit as never,
       handshakeStub() as never,
+      sessionService() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -443,6 +458,7 @@ describe('ConnectionsService exchange provider reference (W2-S02-a)', () => {
       validationAudit() as never,
       lifecycleAudit() as never,
       handshakeStub() as never,
+      sessionService() as never,
     );
 
     const catalog = service.catalog();
@@ -466,6 +482,7 @@ describe('ConnectionsService exchange provider reference (W2-S02-a)', () => {
       validationAudit() as never,
       lifecycleAudit() as never,
       handshakeStub() as never,
+      sessionService() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -495,6 +512,7 @@ describe('ConnectionsService exchange handshake (W2-S02-b)', () => {
       validationAudit() as never,
       lifecycleAudit() as never,
       handshake as never,
+      sessionService() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -567,5 +585,213 @@ describe('ConnectionsService exchange handshake (W2-S02-b)', () => {
       }),
     ).rejects.toThrow('Connection not found');
     expect(handshake.calls).toEqual([]);
+  });
+});
+
+describe('ConnectionsService exchange session health (W2-S02-c)', () => {
+  function sessionWithAudit() {
+    const events: Array<{ outcome: string; workspaceId: string; connectionId: string }> = [];
+    const service = new ExchangeSessionService(
+      new ExchangeSessionAudit({
+        record: async (write: {
+          outcome: string;
+          attribution: { workspaceId: string; resourceId: string };
+        }) => {
+          events.push({
+            outcome: write.outcome,
+            workspaceId: write.attribution.workspaceId,
+            connectionId: write.attribution.resourceId,
+          });
+        },
+      } as never),
+    );
+    return { events, service };
+  }
+
+  async function credentialedWithSession(
+    handshake: ReturnType<typeof handshakeStub> = handshakeStub('CONNECTED'),
+  ) {
+    const sessions = sessionWithAudit();
+    const vault = memoryVault();
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      vault as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+      handshake as never,
+      sessions.service,
+    );
+    const created = await service.create({
+      workspaceId: 'workspace-a',
+      displayName: 'Primary Binance',
+      provider: 'BINANCE',
+    });
+    await service.storeCredentials({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+      credentials: { apiKey: 'key-one', apiSecret: 'secret-one' },
+    });
+    return { service, vault, created, handshake, sessions };
+  }
+
+  it('projects a healthy session only after authenticated handshake succeeds', async () => {
+    const { service, vault, created, sessions } = await credentialedWithSession();
+
+    const validated = await service.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+    });
+
+    expect(validated.status).toBe('CONNECTED');
+    expect(validated.session).toEqual({
+      state: 'CONNECTED',
+      health: 'HEALTHY',
+      reconnectRequired: false,
+      reconnectAllowed: false,
+      providerAvailability: 'AVAILABLE',
+    });
+    expect(sessions.events.map((event) => event.outcome)).toEqual(['session_established']);
+    expect(vault.retrieveCalls).toEqual([]);
+    expect(JSON.stringify(validated)).not.toMatch(/apiKey|apiSecret|key-one|secret-one/i);
+    expect(JSON.stringify(validated)).not.toContain('Trading enabled');
+  });
+
+  it('observes session expiry and lost connection as reconnect-required health states', async () => {
+    const expiredCase = await credentialedWithSession();
+    await expiredCase.service.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: expiredCase.created.id,
+    });
+    const expired = await expiredCase.service.observeSession({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      id: expiredCase.created.id,
+      observation: 'SESSION_EXPIRED',
+    });
+    expect(expired).toMatchObject({
+      status: 'SESSION_EXPIRED',
+      session: {
+        state: 'SESSION_EXPIRED',
+        health: 'EXPIRED',
+        reconnectRequired: true,
+        providerAvailability: 'UNKNOWN',
+      },
+    });
+    expect(expiredCase.sessions.events.map((event) => event.outcome)).toEqual([
+      'session_established',
+      'session_expired',
+      'reconnect_required',
+    ]);
+
+    const lostCase = await credentialedWithSession();
+    await lostCase.service.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: lostCase.created.id,
+    });
+    const lost = await lostCase.service.observeSession({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      id: lostCase.created.id,
+      observation: 'CONNECTION_LOST',
+    });
+    expect(lost.session).toMatchObject({
+      state: 'CONNECTION_LOST',
+      health: 'CONNECTION_LOST',
+      reconnectRequired: true,
+    });
+    expect(lostCase.vault.retrieveCalls).toEqual([]);
+  });
+
+  it('observes provider unavailability from a connected session', async () => {
+    const { service, created } = await credentialedWithSession();
+    await service.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+    });
+    const unavailable = await service.observeSession({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      id: created.id,
+      observation: 'PROVIDER_UNAVAILABLE',
+    });
+    expect(unavailable.session).toEqual({
+      state: 'PROVIDER_UNAVAILABLE',
+      health: 'UNAVAILABLE',
+      reconnectRequired: true,
+      reconnectAllowed: true,
+      providerAvailability: 'UNAVAILABLE',
+    });
+  });
+
+  it('keeps session observation inside the owning workspace and rejects illegal transitions', async () => {
+    const { service, created } = await credentialedWithSession();
+    await service.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: created.id,
+    });
+
+    await expect(
+      service.observeSession({
+        workspaceId: 'workspace-b',
+        actorUserId: 'operator-b',
+        id: created.id,
+        observation: 'CONNECTION_LOST',
+      }),
+    ).rejects.toThrow('Connection not found');
+
+    const disconnected = await service.disconnect({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      id: created.id,
+    });
+    expect(disconnected.session?.state).toBe('DISCONNECTED');
+    expect(disconnected.session?.reconnectRequired).toBe(false);
+    await expect(
+      service.observeSession({
+        workspaceId: 'workspace-a',
+        actorUserId: 'operator-a',
+        id: created.id,
+        observation: 'SESSION_EXPIRED',
+      }),
+    ).rejects.toThrow('Exchange session cannot transition');
+  });
+
+  it('does not project or observe an exchange session for notification connections', async () => {
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      memoryVault() as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+      handshakeStub() as never,
+      sessionService() as never,
+    );
+    const created = await service.create({
+      workspaceId: 'workspace-a',
+      displayName: 'Telegram alerts',
+      provider: 'TELEGRAM',
+    });
+    expect(created.session).toBeNull();
+    await expect(
+      service.observeSession({
+        workspaceId: 'workspace-a',
+        actorUserId: 'operator-a',
+        id: created.id,
+        observation: 'CONNECTION_LOST',
+      }),
+    ).rejects.toThrow('Session observations apply only to Exchange connections.');
   });
 });

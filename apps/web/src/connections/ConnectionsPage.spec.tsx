@@ -80,6 +80,14 @@ const catalog: ConnectionCatalogView = {
   ],
 };
 
+const disconnectedSession = {
+  state: 'DISCONNECTED' as const,
+  health: null,
+  reconnectRequired: false,
+  reconnectAllowed: false,
+  providerAvailability: 'UNKNOWN' as const,
+};
+
 const connection: ConnectionMetadataView = {
   id: 'connection-1',
   workspaceId: 'workspace-a',
@@ -89,6 +97,7 @@ const connection: ConnectionMetadataView = {
   status: 'DISCONNECTED',
   credentialsStored: true,
   exchangeProvider: catalog.exchangeProviders[0] ?? null,
+  session: disconnectedSession,
   createdAt: '2026-08-17T16:00:00.000Z',
   updatedAt: '2026-08-17T16:00:00.000Z',
 };
@@ -234,5 +243,85 @@ describe('Connections UI exchange handshake (W2-S02-b)', () => {
     expect(html).not.toContain('stack');
     expect(html).not.toContain('/sapi/v1/account/apiRestrictions');
     expect(html).not.toContain('Invalid API-key');
+  });
+});
+
+describe('Connections UI exchange session health (W2-S02-c)', () => {
+  it('renders session state, health, reconnect, and provider availability without trading claims', () => {
+    const html = renderToStaticMarkup(
+      <ConnectionsView
+        {...viewProps}
+        provider="BINANCE"
+        connections={[
+          {
+            ...connection,
+            id: 'healthy',
+            status: 'CONNECTED',
+            session: {
+              state: 'CONNECTED',
+              health: 'HEALTHY',
+              reconnectRequired: false,
+              reconnectAllowed: false,
+              providerAvailability: 'AVAILABLE',
+            },
+          },
+          {
+            ...connection,
+            id: 'expired',
+            status: 'SESSION_EXPIRED',
+            session: {
+              state: 'SESSION_EXPIRED',
+              health: 'EXPIRED',
+              reconnectRequired: true,
+              reconnectAllowed: true,
+              providerAvailability: 'UNKNOWN',
+            },
+          },
+          {
+            ...connection,
+            id: 'lost',
+            status: 'CONNECTION_LOST',
+            session: {
+              state: 'CONNECTION_LOST',
+              health: 'CONNECTION_LOST',
+              reconnectRequired: true,
+              reconnectAllowed: true,
+              providerAvailability: 'UNKNOWN',
+            },
+          },
+          {
+            ...connection,
+            id: 'unavailable',
+            status: 'PROVIDER_UNAVAILABLE',
+            session: {
+              state: 'PROVIDER_UNAVAILABLE',
+              health: 'UNAVAILABLE',
+              reconnectRequired: true,
+              reconnectAllowed: true,
+              providerAvailability: 'UNAVAILABLE',
+            },
+          },
+        ]}
+      />,
+    );
+
+    expect(html).toContain('Session Connected');
+    expect(html).toContain('Health Healthy');
+    expect(html).toContain('Reconnect not required');
+    expect(html).toContain('Provider Available');
+    expect(html).toContain('Session Expired');
+    expect(html).toContain('Health Expired');
+    expect(html).toContain('Reconnect required');
+    expect(html).toContain('Connection Lost');
+    expect(html).toContain('Health Connection Lost');
+    expect(html).toContain('Health Unavailable');
+    expect(html).toContain('Provider Unavailable');
+    expect(html).toContain('does not reconnect automatically');
+    expect(html).not.toContain('Trading enabled');
+    expect(html).not.toContain('Balances available');
+    expect(html).not.toContain('Market data available');
+    expect(html).not.toContain('Execution ready');
+    expect(html).not.toContain('apiKey');
+    expect(html).not.toContain('apiSecret');
   });
 });

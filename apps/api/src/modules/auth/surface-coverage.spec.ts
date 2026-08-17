@@ -228,6 +228,8 @@ describe('HTTP surface coverage (V3-S02-b)', () => {
     expect(catalog?.permission).toBe(PermissionClass.Projection);
     expect(handlers.some((handler) => handler.handler === 'connect')).toBe(false);
     expect(handlers.some((handler) => handler.handler === 'authenticate')).toBe(false);
+    expect(handlers.some((handler) => handler.handler === 'observeSession')).toBe(false);
+    expect(handlers.some((handler) => handler.handler === 'reconnect')).toBe(false);
   });
 
   it('classifies People list and role assignment as C6', () => {

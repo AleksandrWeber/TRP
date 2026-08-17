@@ -28,6 +28,25 @@ export {
   type ExchangeProviderIdentity,
 } from './exchange-connectivity.contract';
 export { ExchangeConnectivityModule } from './exchange-connectivity.module';
+export { projectExchangeSession, type ExchangeSessionView } from './exchange-session.projection';
+export {
+  EXCHANGE_HEALTH_PROJECTIONS,
+  EXCHANGE_PROVIDER_AVAILABILITY_OBSERVATIONS,
+  canAutomaticallyReconnect,
+  type ExchangeHealthProjection,
+  type ExchangeProviderAvailabilityObservation,
+} from './exchange-session.health';
+export {
+  EXCHANGE_SESSION_STATES,
+  IllegalExchangeSessionTransitionError,
+  isExchangeSessionState,
+  type ExchangeSessionState,
+} from './exchange-session.state';
+export {
+  ExchangeSessionService,
+  type ExchangeSessionObservation,
+} from './exchange-session.service';
+export { ExchangeSessionAudit } from './exchange-session.audit';
 export {
   EXCHANGE_HANDSHAKE_FAILURE_OUTCOMES,
   EXCHANGE_HANDSHAKE_OUTCOMES,

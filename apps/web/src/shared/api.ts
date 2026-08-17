@@ -17,6 +17,26 @@ export type ConnectionProvider = 'BINANCE' | 'BYBIT' | 'OKX' | 'TELEGRAM' | 'SMT
 export type ExchangeProviderCapability =
   'SPOT' | 'FUTURES' | 'TESTNET' | 'MARGIN' | 'WEBSOCKET' | 'REST';
 export type ExchangeProviderAvailability = 'AVAILABLE' | 'UNAVAILABLE';
+export type ExchangeSessionState =
+  | 'DISCONNECTED'
+  | 'PENDING_VALIDATION'
+  | 'CONNECTED'
+  | 'SESSION_EXPIRED'
+  | 'CONNECTION_LOST'
+  | 'PROVIDER_UNAVAILABLE'
+  | 'VALIDATION_FAILED'
+  | 'AUTHENTICATION_FAILED';
+export type ExchangeHealthProjection =
+  'HEALTHY' | 'UNAVAILABLE' | 'EXPIRED' | 'AUTHENTICATION_FAILED' | 'CONNECTION_LOST';
+export type ExchangeProviderAvailabilityObservation = 'AVAILABLE' | 'UNAVAILABLE' | 'UNKNOWN';
+
+export type ExchangeSessionView = {
+  state: ExchangeSessionState;
+  health: ExchangeHealthProjection | null;
+  reconnectRequired: boolean;
+  reconnectAllowed: boolean;
+  providerAvailability: ExchangeProviderAvailabilityObservation;
+};
 
 export type ExchangeProviderMetadata = {
   id: string;
@@ -56,10 +76,13 @@ export type ConnectionMetadataView = {
     | 'HANDSHAKE_TIMEOUT'
     | 'PROVIDER_UNAVAILABLE'
     | 'AUTHENTICATION_FAILED'
+    | 'SESSION_EXPIRED'
+    | 'CONNECTION_LOST'
     | 'DISABLED'
     | 'REVOKED';
   credentialsStored: boolean;
   exchangeProvider: ExchangeProviderMetadata | null;
+  session: ExchangeSessionView | null;
   createdAt: string;
   updatedAt: string;
 };

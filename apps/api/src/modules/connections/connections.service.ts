@@ -3,8 +3,13 @@ import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../storage/prisma/prisma.module';
 import {
   ExchangeHandshakeService,
+  ExchangeSessionService,
+  IllegalExchangeSessionTransitionError,
   lookupExchangeProvider,
+  projectExchangeSession,
   type ExchangeProviderMetadata,
+  type ExchangeSessionObservation,
+  type ExchangeSessionView,
 } from '../exchange-connectivity';
 import type { Role } from '../identity/role';
 import { SecretVaultService } from '../secret-vault';
@@ -29,6 +34,8 @@ export type ConnectionStatus =
   | 'HANDSHAKE_TIMEOUT'
   | 'PROVIDER_UNAVAILABLE'
   | 'AUTHENTICATION_FAILED'
+  | 'SESSION_EXPIRED'
+  | 'CONNECTION_LOST'
   | 'DISABLED'
   | 'REVOKED';
 
@@ -41,6 +48,7 @@ export type ConnectionMetadataView = {
   status: ConnectionStatus;
   credentialsStored: boolean;
   exchangeProvider: ExchangeProviderMetadata | null;
+  session: ExchangeSessionView | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -55,6 +63,7 @@ export class ConnectionsService {
     private readonly validationAudit: ConnectionValidationAudit,
     private readonly lifecycleAudit: ConnectionLifecycleAudit,
     private readonly handshake: ExchangeHandshakeService,
+    private readonly sessions: ExchangeSessionService,
   ) {}
 
   catalog(): ConnectionCatalogView {
@@ -270,6 +279,46 @@ export class ConnectionsService {
     return this.completeLocalValidation(input, pending);
   }
 
+  async observeSession(input: {
+    workspaceId: string;
+    actorUserId: string;
+    id: string;
+    observation: ExchangeSessionObservation;
+  }): Promise<ConnectionMetadataView> {
+    const connection = await this.getRow(input.workspaceId, input.id);
+    if (connection.connectionType !== 'EXCHANGE') {
+      throw new ConflictException('Session observations apply only to Exchange connections.');
+    }
+    const current = connectionStatus(connection.status);
+    const session = this.sessions.projection(connection.connectionType, current);
+    if (session === null) {
+      throw new ConflictException('Exchange session cannot transition to the requested state.');
+    }
+    try {
+      const next = this.sessions.observe(session.state, input.observation);
+      const row = await this.transitionStatus(connection, next);
+      const actor = {
+        workspaceId: input.workspaceId,
+        actorUserId: input.actorUserId,
+        connectionId: row.id,
+        provider: row.provider,
+      };
+      if (input.observation === 'SESSION_EXPIRED') {
+        await this.sessions.expired(actor);
+      } else if (input.observation === 'CONNECTION_LOST') {
+        await this.sessions.connectionLost(actor);
+      } else {
+        await this.sessions.reconnectRequired(actor);
+      }
+      return toView(row);
+    } catch (error) {
+      if (error instanceof IllegalExchangeSessionTransitionError) {
+        throw new ConflictException(error.message);
+      }
+      throw error;
+    }
+  }
+
   private async completeExchangeHandshake(
     input: {
       workspaceId: string;
@@ -287,7 +336,18 @@ export class ConnectionsService {
         provider: pending.provider,
         vaultSecretId: pending.vaultSecretId as string,
       });
-      return this.finishValidation(pending, result.outcome);
+      const completed = await this.finishValidation(pending, result.outcome);
+      if (result.outcome === 'CONNECTED') {
+        await this.sessions
+          .established({
+            workspaceId: input.workspaceId,
+            actorUserId: input.actorUserId,
+            connectionId: pending.id,
+            provider: pending.provider,
+          })
+          .catch(() => undefined);
+      }
+      return completed;
     } catch {
       return this.finishValidation(pending, 'VALIDATION_FAILED');
     }
@@ -464,6 +524,7 @@ function toView(row: ConnectionRow): ConnectionMetadataView {
     credentialsStored: row.vaultSecretId !== null && connectionStatus(row.status) !== 'REVOKED',
     exchangeProvider:
       row.connectionType === 'EXCHANGE' ? (lookupExchangeProvider(row.provider) ?? null) : null,
+    session: projectExchangeSession(row.connectionType, connectionStatus(row.status)),
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
@@ -478,6 +539,8 @@ function connectionStatus(status: string): ConnectionStatus {
     status === 'HANDSHAKE_TIMEOUT' ||
     status === 'PROVIDER_UNAVAILABLE' ||
     status === 'AUTHENTICATION_FAILED' ||
+    status === 'SESSION_EXPIRED' ||
+    status === 'CONNECTION_LOST' ||
     status === 'DISABLED' ||
     status === 'REVOKED'
   ) {

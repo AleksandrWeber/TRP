@@ -2,11 +2,23 @@
 
 **Document:** Version 3 Exchange Connectivity Overview
 **Date:** 2026-08-17
-**Status:** W2-S02-b implemented. Remaining W2-S02 slices await Product Owner review before W2-S02-c.
+**Status:** W2-S02-c implemented. Remaining W2-S02 slices await Product Owner review before W2-S02-d.
 **Product:** Exchange Connectivity Foundation
 **Nature:** Customer description. Not an RC. Not an ADR. Not a Master Plan revision.
 
 This is what an ordinary operator experiences. It is not an internal design note.
+
+---
+
+## W2-S02-c delivered foundation
+
+Operators can see the state of an authenticated exchange session on **Connections**. For an Exchange connection the row shows **Session State**, **Connection Health**, **Reconnect Required**, and **Provider Availability**.
+
+Session states are Disconnected, Pending Validation, Connected, Session Expired, Connection Lost, Provider Unavailable, Validation Failed, and Authentication Failed. Health is Healthy, Unavailable, Expired, Authentication Failed, or Connection Lost — or not observed when no authenticated session health applies.
+
+Health is the current observed session only. The product does not poll the exchange, run a heartbeat, or reconnect automatically. Reconnect required means the operator may run Validate again. It does not mean the product retried on its own.
+
+**Connected** / **Healthy** still mean only that authenticated communication was observed. They do not mean trading is enabled, balances are loaded, market data is available, or execution is ready.
 
 ---
 
@@ -52,7 +64,7 @@ Connected does NOT mean Trading enabled.
 
 Connection Management is **CLOSED**. The operator can already create an Exchange connection, store credentials securely, and manage lifecycle without editing a server file.
 
-W2-S02-b is the Binance handshake proof. Health and later providers remain later slices.
+W2-S02-b is the Binance handshake proof. W2-S02-c is session health. Remaining status projection stays a later slice.
 
 ---
 
@@ -119,9 +131,23 @@ The operator can disconnect. The connection is no longer Connected. The product 
 | **Authentication Failed** | The exchange rejected authenticated communication   |
 | **Handshake Timeout**     | The exchange did not complete the handshake in time |
 | **Provider Unavailable**  | The exchange could not be reached                   |
+| **Session Expired**       | The authenticated session is no longer valid        |
+| **Connection Lost**       | The authenticated session was lost                  |
 | **Disconnected**          | Not connected; previous session is not claimed      |
 
-Connected is not Trading enabled.
+### Session health (what the operator sees)
+
+| Fact                              | What it means to the operator                                    |
+| --------------------------------- | ---------------------------------------------------------------- |
+| **Health: Healthy**               | The current authenticated session was observed as connected      |
+| **Health: Unavailable**           | The provider could not be reached                                |
+| **Health: Expired**               | The authenticated session expired                                |
+| **Health: Authentication Failed** | The exchange rejected authenticated communication                |
+| **Health: Connection Lost**       | The authenticated session was lost                               |
+| **Reconnect required**            | A new Validate is allowed; the product does not reconnect itself |
+| **Provider availability**         | Available, Unavailable, or Unknown from the observed session     |
+
+Connected is not Trading enabled. Healthy is not execution ready.
 
 ---
 
@@ -230,7 +256,7 @@ After Exchange Connectivity Foundation ships its product outcomes:
 Wave 1 Security Foundation is **CERTIFIED COMPLETE** and is consumed, not reopened.
 W2-S01 Connection Management is **CLOSED** and is consumed, not redesigned.
 
-W2-S02-b is implemented. Wait for Product Owner review before W2-S02-c.
+W2-S02-c is implemented. Wait for Product Owner review before W2-S02-d.
 
 ---
 
@@ -259,4 +285,4 @@ This product does **not** include:
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S02-c. Health, availability polling, and remaining handshake providers remain later slices.
+**STOP.** Wait for Product Owner review before W2-S02-d. Remaining handshake providers and capability projection remain later slices.

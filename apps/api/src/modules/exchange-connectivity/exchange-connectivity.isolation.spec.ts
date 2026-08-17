@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 const directory = join(process.cwd(), 'src/modules/exchange-connectivity');
 
-describe('Exchange connectivity isolation (W2-S02-b)', () => {
+describe('Exchange connectivity isolation (W2-S02-c)', () => {
   it('keeps HTTP in the handshake client and never imports trading or SDK owners', async () => {
     const files = (await readdir(directory)).filter(
       (name) => name.endsWith('.ts') && !name.endsWith('.spec.ts'),
@@ -27,6 +27,15 @@ describe('Exchange connectivity isolation (W2-S02-b)', () => {
     expect(joined).not.toMatch(/\/api\/v3\/account\b/);
     expect(joined).not.toMatch(/\/api\/v3\/order/);
     expect(joined).not.toMatch(/\/api\/v3\/ticker/);
+    expect(joined).not.toMatch(/\bsetInterval\s*\(/);
+    expect(joined).not.toMatch(/\bcron\b/i);
+
+    const sessionSources = sources.filter((file) => file.name.startsWith('exchange-session.'));
+    for (const file of sessionSources) {
+      expect(file.source).not.toMatch(/\bsetTimeout\s*\(/);
+      expect(file.source).not.toMatch(/\bfetch\s*\(/);
+      expect(file.source).not.toMatch(/from ['"]\.\.\/secret-vault['"]/);
+    }
 
     const fetchFiles = sources
       .filter((file) => /\bfetch\s*\(/.test(file.source))
