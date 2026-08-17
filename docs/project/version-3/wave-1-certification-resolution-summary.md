@@ -28,19 +28,19 @@ F-14 required both executable production-composition regressions and this focuse
 
 ## Governance resolution
 
-**F-05 recommendation: Option D — Product Owner decision record.**
+**F-05:** ~~Option D — Product Owner decision record.~~ **RESOLVED** — [`wave-1-f05-product-owner-decision-record.md`](./wave-1-f05-product-owner-decision-record.md).
 
-The record should confirm the accepted Wave 1 S05 foundation boundary and defer search/filter/customer download as later Security Audit work. This resolves package-document conflict without changing the Master Plan or ownership.
+Wave 1 certifies Security Audit Foundation, not Customer Security Audit Product. Search, advanced filtering, operator history UI, download/export UI, analytics, monitoring, and dashboards remain outside Wave 1 unless explicitly delivered. Master Plan, ownership, architecture, and Wave 2 are unchanged.
 
 ## Required next step
 
-Authorize Certification Remediation for F-02, F-10, F-11, F-12, F-06–F-08, F-14, and F-05. After remediation, commission **Independent Certification Validation**. The independent audit has already been completed; Wave 1 does not require a second full audit. The existing audit verdict must not be changed by this resolution alone.
+Commission **Independent Certification Validation**. The independent audit has already been completed; Wave 1 does not require a second full audit. The existing audit verdict must not be changed by remediation alone.
 
 ## Final answers
 
 1. Implementation defects remaining: **0** (F-02, F-10, F-11, F-12 closed by prior remediation commits)
 2. Certification-document defects remaining: **0** (**F-06, F-07, F-08, and F-14 resolved**)
-3. Governance conflict remaining: **Yes — F-05**
+3. Governance conflict remaining: **No — F-05 resolved by Product Owner Decision Record**
 4. After resolving them: **Independent Certification Validation is still required before certification.**
 
 Wave 1 is not declared COMPLETE.

@@ -118,17 +118,16 @@ This is not a Master Plan revision, package redesign, ownership change, or Wave 
 
 **Cause:** An unrevised S05 Product Scope and Validation Plan require search/filter UI and walkthrough. The Product Owner accepted a foundation-only S05 Close that explicitly excludes that UI. The Master Plan Wave 1 customer outcomes do not independently require searchable audit UI.
 
-**Exactly one recommended resolution: D — Product Owner decision record.**
+**Resolution:** Option D — Product Owner Decision Record.
 
-A Product Owner decision record should:
-
-1. Confirm that the accepted S05 gate is **Security Audit Product Foundation** for Wave 1;
-2. State that the S05 Close and readiness delta are authoritative for the foundation boundary;
-3. State that search/filter/customer download remain Security Audit-owned later work;
-4. State that this decision resolves the S05 package-document conflict without changing Master Plan scope, ownership, or Wave 1 customer outcomes; and
-5. Link the unchanged scope/validation plans as historical planning inputs, not rewritten evidence.
-
-This is the narrowest option. It neither revises the Master Plan nor silently edits approved planning/validation text.
+| Item                                            | Resolution                                                                                             |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Authoritative record                            | [`wave-1-f05-product-owner-decision-record.md`](./wave-1-f05-product-owner-decision-record.md)         |
+| Wave 1 certification boundary                   | **Security Audit Foundation**, not Customer Security Audit Product                                     |
+| Planning documents                              | Remain historical inputs; original search/filter/UI wording no longer governs certification            |
+| Outside Wave 1                                  | Search, advanced filtering, operator history UI, download/export UI, analytics, monitoring, dashboards |
+| Master Plan / ownership / architecture / Wave 2 | Unchanged                                                                                              |
+| Remediation status                              | **RESOLVED** — governance only; S05 not reopened; no implementation change                             |
 
 ## Recommended actions and work estimate
 
@@ -148,7 +147,7 @@ This is the narrowest option. It neither revises the Master Plan nor silently ed
 
 1. **How many implementation defects remain?** Four: F-02, F-10, F-11, F-12.
 2. **How many certification-document defects remain?** None: F-06, F-07, F-08, and F-14 are remediated. Independent Certification Validation remains required before any certification verdict.
-3. **Does any governance conflict remain?** Yes: F-05, resolved by one Product Owner decision record (option D).
+3. **Does any governance conflict remain?** No: F-05 is resolved by [`wave-1-f05-product-owner-decision-record.md`](./wave-1-f05-product-owner-decision-record.md). Independent Certification Validation remains required.
 4. **After resolving only those items, will Wave 1 become CERTIFIED or is Independent Certification Validation still required?** **Independent Certification Validation** is required. The present audit verdict cannot be silently converted after implementation fixes, new proof, and governance resolution. Independent Certification Validation must verify that all confirmed blockers have been resolved before any certification verdict.
 
 ## STOP
