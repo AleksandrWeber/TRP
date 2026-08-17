@@ -33,11 +33,13 @@ implementation-ready, with Product Owner Close approval still required.
 | §19 Security Regression Suite     | PASS     |
 | Any REQUIRES ACTION               | **None** |
 
-The worksheet distinguishes S05's delivered audit foundation from later owners:
-monitoring, analytics, dashboards, alerting, customer history UI, search/filter,
-customer download, automated retention execution, Connections, live financial
-logging, and Wave 2 capabilities are **NOT APPLICABLE**. It records the
-integrity foundation's stated limit: changed surviving records are detected; an
-external tamper-proof ledger is not claimed.
+The worksheet distinguishes S05's delivered audit foundation from later owners.
+The Admin timeline HTTP route
+(`GET /v1/security-audit/workspaces/:workspaceId/timeline`) is in scope as
+foundation transport. Monitoring, analytics, dashboards, alerting, customer
+history UI, search/filter, customer download, automated retention execution,
+Connections, live financial logging, and Wave 2 capabilities remain
+**NOT APPLICABLE**. It records the integrity foundation's stated limit: changed
+surviving records are detected; an external tamper-proof ledger is not claimed.
 
 **STOP.** F-07 worksheet complete. Do not implement F-08. Await Product Owner review.

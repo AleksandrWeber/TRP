@@ -12,7 +12,7 @@ Permitted verdicts: PASS | NOT APPLICABLE | REQUIRES ACTION
 Blank rows are forbidden.
 ```
 
-**Scope boundary:** S05 owns the Security Audit foundation: classified append-only events, record-integrity foundation, Incident→Event investigation, timeline foundation, deterministic internal export rendering, and retention eligibility. Monitoring, analytics, dashboards, alerting, customer history UI, search/filter, customer download, automated retention execution, Connections, live financial logging, and Wave 2 capabilities are not S05-delivered controls.
+**Scope boundary:** S05 owns the Security Audit foundation: classified append-only events, record-integrity foundation, Incident→Event investigation, Admin timeline HTTP foundation (`GET /v1/security-audit/workspaces/:workspaceId/timeline`), deterministic internal export rendering, and retention eligibility. Monitoring, analytics, dashboards, alerting, customer history UI, search/filter, customer download, automated retention execution, Connections, live financial logging, and Wave 2 capabilities are not S05-delivered controls.
 
 ---
 
@@ -70,7 +70,7 @@ Blank rows are forbidden.
 | 4.1 | Horizontal privilege escalation | PASS           | Timeline and Incident evidence are workspace-scoped; cross-workspace evidence is refused — `security-audit-timeline.service.spec.ts`; `security-audit-incident.service.spec.ts`                   |
 | 4.2 | Vertical privilege escalation   | PASS           | Timeline reads require existing administrator permission and active workspace membership — `v3-s05-b-security-review.md`                                                                          |
 | 4.3 | IDOR                            | PASS           | Timeline cursor and Incident evidence are workspace-validated; missing/cross-workspace evidence is refused — `security-audit-timeline.service.spec.ts`; `security-audit-incident.service.spec.ts` |
-| 4.4 | Forced browsing                 | NOT APPLICABLE | No S05 customer HTTP/UI surface is delivered; future route protection remains a later product concern                                                                                             |
+| 4.4 | Forced browsing                 | PASS           | Timeline HTTP is `@RequirePermission(RoleAdmin)` plus workspace membership; unauthenticated/hidden use is refused — `security-audit-timeline.controller.ts`; `v3-s05-b-security-review.md`        |
 | 4.5 | Mass assignment                 | PASS           | Internal S05 services build/link approved evidence rather than accepting privileged client fields — `security-audit-incident.service.spec.ts`; `security-audit.service.spec.ts`                   |
 | 4.6 | Default deny                    | PASS           | Unknown audit event types and invalid evidence are refused; authorization matrix remains V3-S02 — `security-audit.service.spec.ts`; `security-audit-retention.spec.ts`                            |
 | 4.7 | Unknown permission              | NOT APPLICABLE | V3-S02 owns permission identifiers                                                                                                                                                                |
@@ -79,22 +79,22 @@ Blank rows are forbidden.
 
 ## 8. API security
 
-| #    | Item                           | Verdict        | Evidence or owner                                                                                                                                                     |
-| ---- | ------------------------------ | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 5.1  | Input validation               | PASS           | Internal append refuses unclassified event types and secret-shaped payloads — `security-audit.service.spec.ts`                                                        |
-| 5.2  | Output encoding                | PASS           | Internal export is deterministic non-secret JSON from linked evidence — `security-audit-export.service.spec.ts`; `v3-s05-e-validation-report.md`                      |
-| 5.3  | JSON validation                | NOT APPLICABLE | No S05 public JSON request endpoint is delivered                                                                                                                      |
-| 5.4  | Unexpected fields              | PASS           | Classified event construction and emitter adapters allow only approved structured fields — `security-audit.service.spec.ts`; `security-audit-emitter.adapter.spec.ts` |
-| 5.5  | Parameter pollution            | NOT APPLICABLE | No S05-owned query-parameter HTTP surface; V3-S04 owns normalization                                                                                                  |
-| 5.6  | HTTP verb confusion            | NOT APPLICABLE | No S05 customer mutation route is delivered                                                                                                                           |
-| 5.7  | Rate limiting                  | NOT APPLICABLE | No S05 public endpoint is delivered; V3-S04 owns platform quotas                                                                                                      |
-| 5.8  | Pagination abuse               | PASS           | Timeline rejects malformed cursors and invalid page sizes rather than broadening history — `security-audit-timeline.service.spec.ts`                                  |
-| 5.9  | Error leakage                  | NOT APPLICABLE | S05 adds no public error surface; V3-S04 owns platform response protection                                                                                            |
-| 5.10 | Version leakage                | NOT APPLICABLE | S05 adds no public response surface; V3-S04 owns platform response protection                                                                                         |
-| 5.11 | Stack trace leakage            | NOT APPLICABLE | S05 adds no public error surface; V3-S04 owns platform response protection                                                                                            |
-| 5.12 | Framework leakage              | NOT APPLICABLE | S05 adds no public error surface; V3-S04 owns platform response protection                                                                                            |
-| 5.13 | Server header leakage          | NOT APPLICABLE | S05 adds no public header surface; V3-S04 owns platform response protection                                                                                           |
-| 5.14 | Technology fingerprint leakage | NOT APPLICABLE | S05 adds no public response surface; V3-S04 owns platform response protection                                                                                         |
+| #    | Item                           | Verdict        | Evidence or owner                                                                                                                                                                      |
+| ---- | ------------------------------ | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 5.1  | Input validation               | PASS           | Internal append refuses unclassified/secret-shaped payloads; timeline `pageSize`/`cursor` fail closed — `security-audit.service.spec.ts`; `security-audit-timeline.controller.ts`      |
+| 5.2  | Output encoding                | PASS           | Internal export is deterministic non-secret JSON from linked evidence — `security-audit-export.service.spec.ts`; `v3-s05-e-validation-report.md`                                       |
+| 5.3  | JSON validation                | NOT APPLICABLE | Timeline foundation uses query parameters, not a JSON body; malformed JSON body is not an S05-owned surface                                                                            |
+| 5.4  | Unexpected fields              | PASS           | Classified event construction and emitter adapters allow only approved structured fields — `security-audit.service.spec.ts`; `security-audit-emitter.adapter.spec.ts`                  |
+| 5.5  | Parameter pollution            | PASS           | Timeline `cursor`/`pageSize` query values are parsed fail-closed; conflicting duplicates inherit V3-S04 HPP — `security-audit-timeline.controller.ts`; `request-normalization.spec.ts` |
+| 5.6  | HTTP verb confusion            | PASS           | Timeline controller exposes GET only; no mutation verbs — `security-audit-timeline.controller.ts`                                                                                      |
+| 5.7  | Rate limiting                  | NOT APPLICABLE | V3-S04 owns platform quotas; the Admin timeline route inherits them and does not add a separate limiter                                                                                |
+| 5.8  | Pagination abuse               | PASS           | Timeline rejects malformed cursors and invalid page sizes rather than broadening history — `security-audit-timeline.service.spec.ts`                                                   |
+| 5.9  | Error leakage                  | NOT APPLICABLE | Timeline returns generic Forbidden/BadRequest; V3-S04 owns platform error sanitization — `security-audit-timeline.controller.ts`; `security-error.spec.ts`                             |
+| 5.10 | Version leakage                | NOT APPLICABLE | V3-S04 owns platform disclosure/header removal                                                                                                                                         |
+| 5.11 | Stack trace leakage            | NOT APPLICABLE | V3-S04 owns platform error sanitization                                                                                                                                                |
+| 5.12 | Framework leakage              | NOT APPLICABLE | V3-S04 owns platform error sanitization                                                                                                                                                |
+| 5.13 | Server header leakage          | NOT APPLICABLE | V3-S04 owns platform header removal                                                                                                                                                    |
+| 5.14 | Technology fingerprint leakage | NOT APPLICABLE | V3-S04 owns platform fingerprint/disclosure controls                                                                                                                                   |
 
 ## 9. URL security
 
@@ -103,23 +103,23 @@ Blank rows are forbidden.
 | 6.1 | Predictable identifiers    | PASS           | Evidence identifiers are re-scoped to the workspace before timeline/Incident use — `security-audit-timeline.service.spec.ts`; `security-audit-incident.service.spec.ts`      |
 | 6.2 | Sequential identifiers     | PASS           | Evidence identifiers are re-scoped to the workspace before timeline/Incident use — `security-audit-timeline.service.spec.ts`; `security-audit-incident.service.spec.ts`      |
 | 6.3 | Guessable resources        | NOT APPLICABLE | S05 creates no capability URL                                                                                                                                                |
-| 6.4 | Hidden endpoints           | NOT APPLICABLE | No S05 customer endpoint is delivered                                                                                                                                        |
+| 6.4 | Hidden endpoints           | PASS           | Admin timeline route is inventoried and remains Admin + membership protected — `wave-1-security-route-ownership-inventory.md`; `security-audit-timeline.controller.ts`       |
 | 6.5 | Enumeration                | PASS           | Invalid cursors/evidence fail closed without broadening the security history returned — `security-audit-timeline.service.spec.ts`; `security-audit-incident.service.spec.ts` |
-| 6.6 | Sensitive query parameters | NOT APPLICABLE | No S05 URL input or customer download surface is delivered                                                                                                                   |
-| 6.7 | Secrets in URL             | NOT APPLICABLE | No S05 URL input or customer download surface is delivered                                                                                                                   |
+| 6.6 | Sensitive query parameters | PASS           | Timeline query carries only `cursor`/`pageSize`; no secrets — `security-audit-timeline.controller.ts`                                                                        |
+| 6.7 | Secrets in URL             | PASS           | Path carries workspace id only; passwords/tokens/vault material are not placed in URLs — `security-audit-timeline.controller.ts`; `v3-s05-e-implementation-report.md`        |
 
 ## 10. Transport
 
-| #   | Item                            | Verdict        | Evidence or owner                                                                                                    |
-| --- | ------------------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------- |
-| 7.1 | HTTPS only                      | NOT APPLICABLE | Host / V3-S04 platform transport ownership; S05 introduces no public product path                                    |
-| 7.2 | Secure cookies                  | NOT APPLICABLE | V3-S01 owns credential cookies; S05 sets none                                                                        |
-| 7.3 | HttpOnly                        | NOT APPLICABLE | V3-S01 owns credential cookies; S05 sets none                                                                        |
-| 7.4 | SameSite                        | NOT APPLICABLE | V3-S01 owns credential cookies; S05 sets none                                                                        |
-| 7.5 | HSTS                            | NOT APPLICABLE | V3-S04 owns browser and transport headers                                                                            |
-| 7.6 | TLS configuration               | NOT APPLICABLE | Host infrastructure owns TLS termination                                                                             |
-| 7.7 | No secrets in GET               | PASS           | No secret-bearing S05 URL/GET surface; export is internal linked evidence only — `v3-s05-e-implementation-report.md` |
-| 7.8 | Sensitive actions not cacheable | NOT APPLICABLE | No S05 customer response surface; V3-S04 owns platform cache defaults                                                |
+| #   | Item                            | Verdict        | Evidence or owner                                                                                                                                               |
+| --- | ------------------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 7.1 | HTTPS only                      | NOT APPLICABLE | Host / V3-S04 own transport; S05 does not introduce insecure HTTP                                                                                               |
+| 7.2 | Secure cookies                  | NOT APPLICABLE | V3-S01 owns credential cookies; S05 sets none                                                                                                                   |
+| 7.3 | HttpOnly                        | NOT APPLICABLE | V3-S01 owns credential cookies; S05 sets none                                                                                                                   |
+| 7.4 | SameSite                        | NOT APPLICABLE | V3-S01 owns credential cookies; S05 sets none                                                                                                                   |
+| 7.5 | HSTS                            | NOT APPLICABLE | V3-S04 owns browser and transport headers                                                                                                                       |
+| 7.6 | TLS configuration               | NOT APPLICABLE | Host infrastructure owns TLS termination                                                                                                                        |
+| 7.7 | No secrets in GET               | PASS           | Timeline GET carries workspace id, cursor, and pageSize only; export is internal — `security-audit-timeline.controller.ts`; `v3-s05-e-implementation-report.md` |
+| 7.8 | Sensitive actions not cacheable | PASS           | Platform `Cache-Control: no-store` applies to API responses, including the Admin timeline — `v3-s04-b-security-review.md`; `security-platform.http.spec.ts`     |
 
 ## 11. Secrets
 
@@ -150,7 +150,7 @@ Blank rows are forbidden.
 
 | #    | Item                 | Verdict        | Evidence or owner                                                                                                                                                                                          |
 | ---- | -------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 10.1 | Rate limiting        | NOT APPLICABLE | No S05 public endpoint; V3-S04 owns platform quotas                                                                                                                                                        |
+| 10.1 | Rate limiting        | NOT APPLICABLE | V3-S04 owns platform quotas; the Admin timeline route inherits them                                                                                                                                        |
 | 10.2 | Resource exhaustion  | PASS           | Timeline bounds page sizes and rejects malformed cursors; canonical ordering makes investigation/export deterministic — `security-audit-timeline.service.spec.ts`; `security-audit-export.service.spec.ts` |
 | 10.3 | Queue flooding       | NOT APPLICABLE | No queue producer surface in S05                                                                                                                                                                           |
 | 10.4 | Replay               | NOT APPLICABLE | Session replay is V3-S01; financial order replay is V3-L05                                                                                                                                                 |
@@ -227,10 +227,10 @@ Blank rows are forbidden.
 | Broken object property level authorization      | PASS           | Approved event shape only; secret-shaped and unclassified fields refused — `security-audit.service.spec.ts`; `security-audit-emitter.adapter.spec.ts`                 |
 | Unrestricted resource consumption               | PASS           | Timeline cursor/page bounds and deterministic internal render — `security-audit-timeline.service.spec.ts`; `security-audit-export.service.spec.ts`                    |
 | Broken function level authorization             | PASS           | Timeline requires existing administrator permission and active workspace membership — `v3-s05-b-security-review.md`                                                   |
-| Unrestricted access to sensitive business flows | NOT APPLICABLE | No S05 public sensitive-business-flow endpoint; live flows remain later owners                                                                                        |
+| Unrestricted access to sensitive business flows | NOT APPLICABLE | Timeline is a read-only investigation foundation; live/export/mutation business flows remain later owners                                                             |
 | Server side request forgery                     | NOT APPLICABLE | No S05 outbound API consumption                                                                                                                                       |
 | Security misconfiguration                       | PASS           | No public export/retention execution and fail-closed admission — `v3-s05-e-architecture-review.md`; `security-audit.service.spec.ts`                                  |
-| Improper inventory management                   | NOT APPLICABLE | No S05 public API inventory is introduced; internal foundation only                                                                                                   |
+| Improper inventory management                   | PASS           | Admin timeline HTTP is listed as V3-S05; Incident/export remain internal with no customer HTTP — `wave-1-security-route-ownership-inventory.md`                       |
 | Unsafe consumption of APIs                      | NOT APPLICABLE | No external API client in S05                                                                                                                                         |
 
 ## 19. Security Regression Suite
@@ -258,17 +258,17 @@ All listed regressions run in the ordinary test suite; the focused S05 suite pas
 
 ## Required S05 foundation verification
 
-| S05-specific control                  | Verdict | Existing evidence                                                                                                                                                   |
-| ------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Append-only Security Audit foundation | PASS    | `security-audit.service.spec.ts`; `v3-s05-a-validation-report.md`                                                                                                   |
-| Integrity foundation                  | PASS    | `security-audit-integrity.spec.ts`; `security-audit-integrity.service.spec.ts`; `v3-s05-c-validation-report.md`                                                     |
-| Immutable audit records               | PASS    | Database-level update/delete rejection — `v3-s05-c-security-review.md`; `v3-s05-c-validation-report.md`                                                             |
-| Incident→Event model                  | PASS    | Incidents link immutable Events without copying facts — `security-audit-incident.service.spec.ts`; `v3-s05-d-implementation-report.md`                              |
-| Timeline foundation                   | PASS    | Workspace-scoped chronological navigation — `security-audit-timeline.service.spec.ts`; `v3-s05-b-validation-report.md`                                              |
-| Event Minimalism                      | PASS    | Only approved classifications admitted; routine refresh excluded; Incidents do not duplicate Events — `security-audit-emitter.adapter.spec.ts`; certification audit |
-| Retention foundation                  | PASS    | Deterministic eligibility only, with no deletion/archive path — `security-audit-retention.spec.ts`; `v3-s05-e-implementation-report.md`                             |
-| Export foundation                     | PASS    | Deterministic internal non-secret rendering from linked evidence, not customer download — `security-audit-export.service.spec.ts`; `v3-s05-e-validation-report.md`  |
-| Security Audit ownership              | PASS    | Security Audit owns security-history metadata; Ledger/Vault remain their respective sources of truth — `v3-s05-e-architecture-review.md`                            |
+| S05-specific control                  | Verdict | Existing evidence                                                                                                                                                                            |
+| ------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Append-only Security Audit foundation | PASS    | `security-audit.service.spec.ts`; `v3-s05-a-validation-report.md`                                                                                                                            |
+| Integrity foundation                  | PASS    | `security-audit-integrity.spec.ts`; `security-audit-integrity.service.spec.ts`; `v3-s05-c-validation-report.md`                                                                              |
+| Immutable audit records               | PASS    | Database-level update/delete rejection — `v3-s05-c-security-review.md`; `v3-s05-c-validation-report.md`                                                                                      |
+| Incident→Event model                  | PASS    | Incidents link immutable Events without copying facts — `security-audit-incident.service.spec.ts`; `v3-s05-d-implementation-report.md`                                                       |
+| Timeline foundation                   | PASS    | Workspace-scoped chronological HTTP read with Admin + membership gates — `security-audit-timeline.controller.ts`; `security-audit-timeline.service.spec.ts`; `v3-s05-b-validation-report.md` |
+| Event Minimalism                      | PASS    | Only approved classifications admitted; routine refresh excluded; Incidents do not duplicate Events — `security-audit-emitter.adapter.spec.ts`; certification audit                          |
+| Retention foundation                  | PASS    | Deterministic eligibility only, with no deletion/archive path — `security-audit-retention.spec.ts`; `v3-s05-e-implementation-report.md`                                                      |
+| Export foundation                     | PASS    | Deterministic internal non-secret rendering from linked evidence, not customer download — `security-audit-export.service.spec.ts`; `v3-s05-e-validation-report.md`                           |
+| Security Audit ownership              | PASS    | Security Audit owns security-history metadata; Ledger/Vault remain their respective sources of truth — `v3-s05-e-architecture-review.md`                                                     |
 
 ## Intentional NOT APPLICABLE capabilities
 
