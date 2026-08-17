@@ -24,27 +24,44 @@
 | Oversized bodies        | PASS    | S04-b 413 regressions                  |
 | SSRF probe (foundation) | PASS    | `ssrf-allowlist.spec.ts`               |
 
-## Security Verification Standard (S04-owned rows)
+## Security Verification Standard (mandatory Close worksheet)
 
-| §     | Category                       | Verdict                     | Evidence or owner                                          |
-| ----- | ------------------------------ | --------------------------- | ---------------------------------------------------------- |
-| 4     | Injection (platform HTTP)      | PASS                        | Prisma-only SQL; CRLF/header rejection; validation pipe    |
-| 5     | Cross-site (CSRF/CSP/redirect) | PASS                        | CSRF guard + cookies; CSP/HSTS/frame; open-redirect helper |
-| 6     | Authentication                 | NOT APPLICABLE              | S01 owns passwords/sessions; S04 complements with quotas   |
-| 7     | Authorization / IDOR           | NOT APPLICABLE              | S02/S03; S04 adds deny shape only                          |
-| 8     | Cryptographic failures         | NOT APPLICABLE              | S01/S03                                                    |
-| 9     | Data exposure                  | PASS                        | Sanitized errors; anti-enumeration; no vault plaintext     |
-| 10    | Misconfiguration               | PASS                        | Production fail-closed boot; browser policy guard          |
-| 11    | Resource consumption           | PASS                        | Body limit, timeout, rate quotas                           |
-| 12    | SSRF                           | PASS (foundation)           | `validateOutboundSsrfTarget`; no webhook product           |
-| 13    | Logging / monitoring           | PASS (emit) / S05 (product) | `emitPlatformSecurityEvent`; no audit UI                   |
-| 14–17 | Remaining platform rows        | PASS or NOT APPLICABLE      | See certification audit for full row list                  |
-| 18    | OWASP mapping                  | PASS (intent)               | Coverage matrix updated                                    |
-| 19    | Regression suite               | PASS                        | All S04 specs in ordinary `pnpm test`                      |
+**Completed worksheet (every §4–§19 row):** [`v3-s04-security-verification-worksheet.md`](./v3-s04-security-verification-worksheet.md)
 
-Blank rows are not PASS. Rows owned by S05/S06/host are NOT APPLICABLE with owner named in `security-foundation-certification-audit.md`.
+| Gate                              | Verdict  |
+| --------------------------------- | -------- |
+| Every §4–§17 category row present | PASS     |
+| §18.1 OWASP Top 10 mapping        | PASS     |
+| §18.2 OWASP API Top 10 mapping    | PASS     |
+| §19 Security Regression Suite     | PASS     |
+| Any REQUIRES ACTION               | **None** |
+
+Category rollup (detail and evidence live only in the worksheet):
+
+| §   | Category                  | Rollup                     |
+| --- | ------------------------- | -------------------------- |
+| 4   | Injection                 | PASS / NOT APPLICABLE      |
+| 5   | Cross-site                | PASS                       |
+| 6   | Authentication            | PASS (flood) / N/A (S01)   |
+| 7   | Authorization             | PASS (mass assign) / N/A   |
+| 8   | API security              | PASS / N/A (pagination)    |
+| 9   | URL security              | PASS / N/A (object IDs)    |
+| 10  | Transport                 | PASS / N/A (host TLS)      |
+| 11  | Secrets                   | PASS (logging) / N/A (S03) |
+| 12  | File upload               | NOT APPLICABLE             |
+| 13  | Availability              | PASS / N/A (queues/replay) |
+| 14  | Financial integrity       | PASS / N/A (L05/reports)   |
+| 15  | AI                        | NOT APPLICABLE             |
+| 16  | Privacy                   | PASS / N/A (S06)           |
+| 17  | Secure headers            | PASS                       |
+| 18  | OWASP Top 10 + API Top 10 | PASS / NOT APPLICABLE      |
+| 19  | Regression suite          | PASS / NOT APPLICABLE      |
+
+Blank rows are not PASS. Rows owned by S05/S06/host/L05 are NOT APPLICABLE with owner named in the worksheet and `security-foundation-certification-audit.md`.
 
 ## Regression suite (S04)
+
+Full §19 table: [`v3-s04-security-verification-worksheet.md`](./v3-s04-security-verification-worksheet.md) §19.
 
 | Fix class             | Test file                                              |
 | --------------------- | ------------------------------------------------------ |
