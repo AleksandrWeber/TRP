@@ -7,7 +7,7 @@
 
 - Package-level evidence linking W2-S01-a through W2-S01-d delivery to the approved planning package.
 - Completed security verification worksheet, OWASP mappings, regression evidence, readiness delta, certification readiness, and Close report.
-- Executed validation-command evidence and an evidence-backed operator walkthrough record.
+- Executed validation-command evidence. Walkthrough steps are covered by ordinary tests; a live operator session was not recorded.
 
 ## Not delivered
 

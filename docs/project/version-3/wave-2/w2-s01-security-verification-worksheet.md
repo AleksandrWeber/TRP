@@ -52,17 +52,17 @@
 
 ## 4. Authorization
 
-| Rows                                | Verdict | Evidence or owner                                                    |
-| ----------------------------------- | ------- | -------------------------------------------------------------------- |
-| 4.1 Horizontal privilege escalation | PASS    | Workspace-scoped connection lookup and foreign-workspace denial test |
-| 4.2 Vertical privilege escalation   | PASS    | `VaultConnections` (C8) guard                                        |
-| 4.3 IDOR                            | PASS    | Identifier is resolved with workspace ownership                      |
-| 4.4 Forced browsing                 | PASS    | Lifecycle and credential routes retain C8 guard                      |
-| 4.5 Mass assignment                 | PASS    | No client status DTO; state transitions are service-owned            |
-| 4.6 Default deny                    | PASS    | Existing permission framework denies absent permission               |
-| 4.7 Unknown permission              | PASS    | Existing authorization owner                                         |
-| 4.8 Unknown role                    | PASS    | Existing authorization owner                                         |
-| 4.9 Unknown action                  | PASS    | No generic lifecycle/status action endpoint                          |
+| Rows                                | Verdict | Evidence or owner                                                                                                       |
+| ----------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------- |
+| 4.1 Horizontal privilege escalation | PASS    | Workspace-scoped connection lookup and foreign-workspace denial test                                                    |
+| 4.2 Vertical privilege escalation   | PASS    | C8 decorator on mutate routes; `surface-coverage.spec.ts` currently names catalog, create, and rename                   |
+| 4.3 IDOR                            | PASS    | Identifier is resolved with workspace ownership                                                                         |
+| 4.4 Forced browsing                 | PASS    | Lifecycle and credential routes retain C8 guard; HTTP mutation matrix is not fully listed in `surface-coverage.spec.ts` |
+| 4.5 Mass assignment                 | PASS    | No client status DTO; state transitions are service-owned                                                               |
+| 4.6 Default deny                    | PASS    | Existing permission framework denies absent permission                                                                  |
+| 4.7 Unknown permission              | PASS    | Existing authorization owner                                                                                            |
+| 4.8 Unknown role                    | PASS    | Existing authorization owner                                                                                            |
+| 4.9 Unknown action                  | PASS    | No generic lifecycle/status action endpoint                                                                             |
 
 ## 5. API security
 
@@ -74,7 +74,7 @@
 | 5.4 Unexpected fields               | PASS           | No writable status or Vault-reference field in API DTOs                                |
 | 5.5 Parameter pollution             | PASS           | Path id and workspace header are independently checked                                 |
 | 5.6 HTTP verb confusion             | PASS           | Explicit controller methods and C8 guards                                              |
-| 5.7 Rate limiting                   | PASS           | Security Platform abuse controls remain in force                                       |
+| 5.7 Rate limiting                   | NOT APPLICABLE | Security Platform (V3-S04) owns quota/abuse product; Connections adds none             |
 | 5.8 Pagination abuse                | PASS           | Workspace-local connection metadata collection only; no unbounded export/query surface |
 | 5.9 Error leakage                   | PASS           | Validation/lifecycle errors are generic and secret-free                                |
 | 5.10 Version leakage                | NOT APPLICABLE | No version banner added                                                                |
@@ -135,14 +135,14 @@
 
 ## 10. Availability
 
-| Rows                      | Verdict        | Evidence or owner                                                 |
-| ------------------------- | -------------- | ----------------------------------------------------------------- |
-| 10.1 Rate limiting        | PASS           | Security Platform owns abuse controls for request surfaces        |
-| 10.2 Resource exhaustion  | PASS           | No provider call, scheduler, queue, or background work added      |
-| 10.3 Queue flooding       | NOT APPLICABLE | No queue producer                                                 |
-| 10.4 Replay               | PASS           | Lifecycle state machine rejects illegal repeat transitions        |
-| 10.5 DoS resilience       | PASS           | Validation is deterministic local work; provider I/O absent       |
-| 10.6 Graceful degradation | PASS           | Vault/validation failures fail closed to safe non-Connected state |
+| Rows                      | Verdict        | Evidence or owner                                                             |
+| ------------------------- | -------------- | ----------------------------------------------------------------------------- |
+| 10.1 Rate limiting        | NOT APPLICABLE | Security Platform (V3-S04) owns abuse controls; validate/replace inherit them |
+| 10.2 Resource exhaustion  | PASS           | No provider call, scheduler, queue, or background work added                  |
+| 10.3 Queue flooding       | NOT APPLICABLE | No queue producer                                                             |
+| 10.4 Replay               | PASS           | Lifecycle state machine rejects illegal repeat transitions                    |
+| 10.5 DoS resilience       | PASS           | Validation is deterministic local work; provider I/O absent                   |
+| 10.6 Graceful degradation | PASS           | Vault/validation failures fail closed to safe non-Connected state             |
 
 ## 11. Financial integrity
 
@@ -190,33 +190,33 @@
 
 ## OWASP Top 10
 
-| Class                                      | Verdict        | Connection Management mapping                                       |
-| ------------------------------------------ | -------------- | ------------------------------------------------------------------- |
-| Broken access control                      | PASS           | C8 plus workspace-scoped resource resolution                        |
-| Cryptographic failures                     | PASS           | Vault-only secret ownership; no plaintext projection                |
-| Injection                                  | PASS           | Prisma access and no command/provider runtime                       |
-| Insecure design                            | PASS           | Server-owned lifecycle state machine; Connected is validation-gated |
-| Security misconfiguration                  | PASS           | No security-platform setting is weakened                            |
-| Vulnerable and outdated components         | NOT APPLICABLE | Dependency governance is platform/release ownership                 |
-| Identification and authentication failures | NOT APPLICABLE | Authentication is Wave 1 ownership                                  |
-| Software and data integrity failures       | PASS           | Vault integrity and service-controlled transitions fail closed      |
-| Security logging and monitoring failures   | PASS           | Classified validation and lifecycle audit records                   |
-| Server-side request forgery                | NOT APPLICABLE | No outbound provider request is made                                |
+| Class                                      | Verdict        | Connection Management mapping                                                                                |
+| ------------------------------------------ | -------------- | ------------------------------------------------------------------------------------------------------------ |
+| Broken access control                      | PASS           | C8 plus workspace-scoped resource resolution                                                                 |
+| Cryptographic failures                     | PASS           | Vault-only secret ownership; no plaintext projection                                                         |
+| Injection                                  | PASS           | Prisma access and no command/provider runtime                                                                |
+| Insecure design                            | PASS           | Server-owned lifecycle state machine; Connected is validation-gated                                          |
+| Security misconfiguration                  | PASS           | No security-platform setting is weakened                                                                     |
+| Vulnerable and outdated components         | NOT APPLICABLE | Dependency governance is platform/release ownership                                                          |
+| Identification and authentication failures | NOT APPLICABLE | Authentication is Wave 1 ownership                                                                           |
+| Software and data integrity failures       | PASS           | Vault integrity and service-controlled transitions fail closed                                               |
+| Security logging and monitoring failures   | PASS           | Validation and lifecycle emits; metadata-only create is not a Connections audit event; dashboards are Wave 3 |
+| Server-side request forgery                | NOT APPLICABLE | No outbound provider request is made                                                                         |
 
 ## OWASP API Top 10
 
-| Class                                           | Verdict        | Connection Management mapping                                    |
-| ----------------------------------------------- | -------------- | ---------------------------------------------------------------- |
-| Broken object level authorization               | PASS           | Workspace predicate prevents cross-workspace object access       |
-| Broken authentication                           | NOT APPLICABLE | Authentication is Wave 1 ownership                               |
-| Broken object property level authorization      | PASS           | No client-writable status or Vault reference                     |
-| Unrestricted resource consumption               | PASS           | Local deterministic validation; Security Platform abuse controls |
-| Broken function level authorization             | PASS           | C8 guard covers mutations                                        |
-| Unrestricted access to sensitive business flows | PASS           | State machine and C8 gate lifecycle/validation                   |
-| Server side request forgery                     | NOT APPLICABLE | No provider/outbound request                                     |
-| Security misconfiguration                       | PASS           | No platform configuration is changed                             |
-| Improper inventory management                   | PASS           | Versioned Connections controller and offered catalog only        |
-| Unsafe consumption of APIs                      | NOT APPLICABLE | No third-party API consumption                                   |
+| Class                                           | Verdict        | Connection Management mapping                                                                         |
+| ----------------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------- |
+| Broken object level authorization               | PASS           | Workspace predicate prevents cross-workspace object access                                            |
+| Broken authentication                           | NOT APPLICABLE | Authentication is Wave 1 ownership                                                                    |
+| Broken object property level authorization      | PASS           | No client-writable status or Vault reference                                                          |
+| Unrestricted resource consumption               | NOT APPLICABLE | Validate/replace inherit Security Platform (V3-S04) quotas; Connections adds no quota product         |
+| Broken function level authorization             | PASS           | C8 decorator on mutate routes; `surface-coverage.spec.ts` currently names catalog, create, and rename |
+| Unrestricted access to sensitive business flows | PASS           | State machine and C8 gate lifecycle/validation                                                        |
+| Server side request forgery                     | NOT APPLICABLE | No provider/outbound request                                                                          |
+| Security misconfiguration                       | PASS           | No platform configuration is changed                                                                  |
+| Improper inventory management                   | PASS           | Versioned Connections controller and offered catalog only                                             |
+| Unsafe consumption of APIs                      | NOT APPLICABLE | No third-party API consumption                                                                        |
 
 ## Security regression suite
 

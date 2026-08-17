@@ -16,7 +16,7 @@ W2-S01 delivered a workspace-scoped Connection Management foundation: offered pr
 
 ## Validation summary
 
-The recorded walkthrough covers metadata creation, credential storage and replacement, validation success/failure, disconnect, disable, revoke, cross-workspace denial, authorization denial, and non-disclosure of secrets.
+Ordinary tests cover metadata creation, credential storage and replacement, validation success/failure, disconnect, disable, revoke, cross-workspace denial, C8 mutation guards, and non-disclosure of secrets. A live operator walkthrough in the running product was not recorded.
 
 ## Known intentional deferrals
 
@@ -26,4 +26,4 @@ TD-W2-001 records an intermittent `market-state.module.spec.ts` timeout as non-b
 
 ## Recommendation
 
-W2-S01 is ready for Product Owner Close Review. Product Owner review is required before any declaration that W2-S01 is Closed.
+W2-S01 is ready for Product Owner Close Review. The live operator walkthrough remains outstanding; Product Owner may accept automated step evidence or require an in-product session before Close. Product Owner review is required before any declaration that W2-S01 is Closed.

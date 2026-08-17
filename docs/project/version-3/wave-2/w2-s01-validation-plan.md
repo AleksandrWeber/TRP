@@ -113,7 +113,7 @@ Evidence: [`w2-s01-d-validation-report.md`](./w2-s01-d-validation-report.md).
 | --------------------------------------------------------------------------------- | ------------------------------------ |
 | Implementation, architecture, security, product, and validation reviews           | PASS                                 |
 | Security Verification Standard worksheet, OWASP mappings, and regression evidence | PASS                                 |
-| Evidence-backed product walkthrough                                               | PASS                                 |
+| Automated walkthrough-step evidence; live operator session not recorded           | RECORDED                             |
 | Lint, typecheck, full tests, web build, and diff check                            | PASS                                 |
 | Readiness Delta and Certification Readiness                                       | Ready for Product Owner Close Review |
 | Product Owner Close decision                                                      | PENDING                              |
@@ -186,11 +186,11 @@ PASS / REQUIRES ACTION
 
 Automated tests do **not** replace this walkthrough.
 
-| Field                   | Value (at execution)              |
-| ----------------------- | --------------------------------- |
-| Walkthrough name        | Connection Management Walkthrough |
-| Executed in the product | PENDING                           |
-| Overall                 | PENDING                           |
+| Field                   | Value (at execution)                                              |
+| ----------------------- | ----------------------------------------------------------------- |
+| Walkthrough name        | Connection Management Walkthrough                                 |
+| Executed in the product | No live session recorded; ordinary tests cover each required step |
+| Overall                 | Ready for Product Owner Close Review                              |
 
 ---
 

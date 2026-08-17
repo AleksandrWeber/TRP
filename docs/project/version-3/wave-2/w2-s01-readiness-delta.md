@@ -1,14 +1,14 @@
 # W2-S01 Readiness Delta
 
-| Area                        | Before W2-S01                                                 | After W2-S01                                                                      |
-| --------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| Connection catalog          | No workspace connection product surface                       | Offered Exchange, Notification, and AI catalog with workspace metadata            |
-| Credentials                 | No Connection Management secret journey                       | Write-only Vault-backed store and replace                                         |
-| Validation                  | No honest Connected state                                     | Deterministic local validation: Pending Validation, Connected, Validation Failed  |
-| Lifecycle                   | No operator lifecycle controls                                | Disconnect, disable, revoke, and revalidation after replacement                   |
-| Isolation and authorization | Wave 1 capabilities available but not consumed by Connections | C8-gated, workspace-scoped connection actions                                     |
-| Audit                       | Wave 1 audit capability available                             | Validation and lifecycle events attributed to actor/workspace/connection          |
-| Security evidence           | Planning intent only                                          | Verification worksheet, OWASP mapping, regression evidence, and validation report |
+| Area                        | Before W2-S01                                                 | After W2-S01                                                                                     |
+| --------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Connection catalog          | No workspace connection product surface                       | Offered Exchange, Notification, and AI catalog with workspace metadata                           |
+| Credentials                 | No Connection Management secret journey                       | Write-only Vault-backed store and replace                                                        |
+| Validation                  | No honest Connected state                                     | Deterministic local validation: Pending Validation, Connected, Validation Failed                 |
+| Lifecycle                   | No operator lifecycle controls                                | Disconnect, disable, revoke, and revalidation after replacement                                  |
+| Isolation and authorization | Wave 1 capabilities available but not consumed by Connections | C8-gated, workspace-scoped connection actions                                                    |
+| Audit                       | Wave 1 audit capability available                             | Validation and lifecycle events attributed to actor/workspace/connection                         |
+| Security evidence           | Planning intent only                                          | Verification worksheet, OWASP mapping, STRIDE/Timing/Abuse Close evidence, and validation report |
 
 ## Remaining Wave 2 work
 
