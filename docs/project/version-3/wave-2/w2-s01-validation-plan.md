@@ -44,6 +44,21 @@ Do not validate exchange adapter I/O completion, Telegram send, SMTP send, OpenR
 
 ---
 
+## W2-S01-a execution record
+
+| Slice assertion                                                                                           | Result |
+| --------------------------------------------------------------------------------------------------------- | ------ |
+| Operator-visible catalog exposes Exchange, Notification, and AI only                                      | PASS   |
+| Catalog exposes Binance, Bybit, OKX, Telegram, SMTP, and OpenRouter only                                  | PASS   |
+| Metadata records are scoped to one workspace and require existing membership checks                       | PASS   |
+| Create and rename require the existing own-workspace permission                                           | PASS   |
+| New metadata records project only Disconnected                                                            | PASS   |
+| Credentials, Vault integration, provider I/O, validation, delete, and other status transitions are absent | PASS   |
+
+Evidence: [`w2-s01-a-validation-report.md`](./w2-s01-a-validation-report.md).
+
+---
+
 ## 2. Unit tests
 
 | Area                       | Must prove                                                     |

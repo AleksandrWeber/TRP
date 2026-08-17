@@ -12,6 +12,28 @@ const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 /** Nest URI versioning prefix (US114). Health remains unversioned. */
 const API_PREFIX = '/v1';
 
+export type ConnectionType = 'EXCHANGE' | 'NOTIFICATION' | 'AI';
+export type ConnectionProvider = 'BINANCE' | 'BYBIT' | 'OKX' | 'TELEGRAM' | 'SMTP' | 'OPENROUTER';
+
+export type ConnectionCatalogView = {
+  connectionTypes: Array<{
+    id: ConnectionType;
+    displayName: string;
+    providers: Array<{ id: ConnectionProvider; displayName: string }>;
+  }>;
+};
+
+export type ConnectionMetadataView = {
+  id: string;
+  workspaceId: string;
+  displayName: string;
+  provider: ConnectionProvider;
+  connectionType: ConnectionType;
+  status: 'DISCONNECTED';
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type Dataset = {
   id: string;
   symbol: string;
@@ -2848,6 +2870,20 @@ export const api = {
     request<WorkspaceView>(`/workspaces/${id}/archive`, {
       method: 'POST',
       body: '{}',
+    }),
+  getConnectionCatalog: () => request<ConnectionCatalogView>('/connections/catalog'),
+  listConnections: () => request<ConnectionMetadataView[]>('/connections'),
+  getConnection: (id: string) =>
+    request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}`),
+  createConnection: (body: { displayName: string; provider: ConnectionProvider }) =>
+    request<ConnectionMetadataView>('/connections', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  renameConnection: (id: string, displayName: string) =>
+    request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ displayName }),
     }),
   listStrategyLibrary: (query: LibraryListQuery = {}) => {
     const params = new URLSearchParams();

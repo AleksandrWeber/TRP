@@ -299,6 +299,13 @@ export const PRODUCT_CHROME: readonly ProductChrome[] = [
     loadingLabel: 'Loading notification channels…',
   },
   {
+    id: 'connections',
+    label: 'Connections',
+    path: '/connections',
+    band: 'administration',
+    loadingLabel: 'Loading connections…',
+  },
+  {
     id: 'settings',
     label: 'Settings',
     path: '/settings',
@@ -424,6 +431,7 @@ export const NAV_BANDS: readonly NavBand[] = [
           { to: '/ai-analytics', label: 'AI Analytics' },
           { to: '/notifications', label: 'Notifications' },
           { to: '/notifications/channels', label: 'Notification Channels' },
+          { to: '/connections', label: 'Connections' },
         ],
       },
       {

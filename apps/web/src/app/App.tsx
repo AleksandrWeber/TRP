@@ -66,6 +66,7 @@ import {
   NotificationHistoryPage,
   NotificationSettingsPage,
 } from '../notifications';
+import { ConnectionsPage } from '../connections/ConnectionsPage';
 import { WorkflowsPage } from '../pages/WorkflowsPage';
 import {
   LazyAnalyticsPage,
@@ -177,6 +178,7 @@ export function App() {
             <Route path="notifications/channels" element={<NotificationChannelsPage />} />
             <Route path="notifications/:deliveryId" element={<NotificationDetailPage />} />
             <Route path="notifications" element={<NotificationSettingsPage />} />
+            <Route path="connections" element={<ConnectionsPage />} />
             <Route
               path="telegram/history"
               element={<Navigate to="/notifications/channels/telegram/history" replace />}

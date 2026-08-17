@@ -10,6 +10,14 @@ This is what an ordinary operator experiences. It is not an internal design note
 
 ---
 
+## W2-S01-a delivered foundation
+
+The first implementation slice now offers a workspace-scoped Connections page. Operators can view the Exchange, Notification, and AI provider catalog; create a metadata-only connection entry; view existing metadata; and rename an entry.
+
+Every entry shows **Disconnected**. This slice does not collect credentials, call providers, validate a connection, or claim Connected. Connection lifecycle actions beyond metadata creation and rename remain for later approved slices.
+
+---
+
 ## Purpose
 
 Connection Management is the place in the product where an operator manages connections to external services — exchanges, Telegram, email (SMTP), and OpenRouter — without editing a server file.

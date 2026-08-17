@@ -174,6 +174,23 @@ model WorkspaceRecord {
   @@map("workspace_records")
 }
 
+/// Connection Management-owned workspace metadata (W2-S01-a).
+/// Credentials, ciphertext, and provider protocol state are deliberately excluded.
+model ConnectionRecord {
+  id             String   @id
+  workspaceId    String   @map("workspace_id")
+  displayName    String   @map("display_name")
+  provider       String
+  connectionType String   @map("connection_type")
+  status         String   @default("DISCONNECTED")
+  createdAt      DateTime @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@index([workspaceId, createdAt])
+  @@index([workspaceId, provider])
+  @@map("connection_records")
+}
+
 /// Workspace-owned Strategy definition (US004) with trading configuration (US005).
 model StrategyRecord {
   id                String   @id

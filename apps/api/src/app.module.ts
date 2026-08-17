@@ -28,6 +28,7 @@ import { ReportingModule } from './modules/reporting';
 import { ReportingProductModule } from './modules/reporting-product';
 import { NotificationProductModule } from './modules/notification-product';
 import { TelegramProductModule } from './modules/telegram-product';
+import { ConnectionsModule } from './modules/connections/connections.module';
 import { AiAnalyticsModule } from './modules/ai-analytics';
 import { AiAnalyticsProductModule } from './modules/ai-analytics-product';
 import { NotificationDeliveryModule } from './modules/notification-delivery';
@@ -173,6 +174,7 @@ import { ValidationModule } from './validation/validation.module';
     ReportingProductModule,
     NotificationProductModule,
     TelegramProductModule,
+    ConnectionsModule,
     AiAnalyticsModule,
     AiAnalyticsProductModule,
     NotificationDeliveryModule,
