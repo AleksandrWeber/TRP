@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { CommandAuthorizationService } from '../auth/command-authorization.service';
 import { SESSION_NOT_FOUND_MESSAGE } from '../auth/auth-session';
 import { Role } from '../identity/role';
-import { createIsolationAuthentication, ISOLATION_TEST_PASSWORD } from './auth-isolation.fixture';
+import { createIsolationAuthentication, ISOLATION_TEST_CREDENTIAL } from './auth-isolation.fixture';
 import { createDualWorkspaceIsolationFixture } from './dual-workspace.fixture';
 import { IsolationMatrixRowId, matrixRow } from './isolation-matrix-contract';
 import { expectNoForeignPayload } from './negative-proof';
@@ -25,12 +25,12 @@ describe('Workspace isolation identity coverage (V3-S06-b)', () => {
     const operatorA = await authentication.register(
       'operator-a@example.com',
       'Operator A',
-      ISOLATION_TEST_PASSWORD,
+      ISOLATION_TEST_CREDENTIAL,
     );
     const operatorB = await authentication.register(
       'operator-b@example.com',
       'Operator B',
-      ISOLATION_TEST_PASSWORD,
+      ISOLATION_TEST_CREDENTIAL,
     );
 
     const authUserA = await authentication.validateToken(operatorA.accessToken);
@@ -47,12 +47,12 @@ describe('Workspace isolation identity coverage (V3-S06-b)', () => {
     const operatorA = await authentication.register(
       'session-a@example.com',
       'Session A',
-      ISOLATION_TEST_PASSWORD,
+      ISOLATION_TEST_CREDENTIAL,
     );
     const operatorB = await authentication.register(
       'session-b@example.com',
       'Session B',
-      ISOLATION_TEST_PASSWORD,
+      ISOLATION_TEST_CREDENTIAL,
     );
 
     const listed = await authentication.listSessions(operatorA.user.id, operatorA.sessionId);
@@ -72,12 +72,12 @@ describe('Workspace isolation identity coverage (V3-S06-b)', () => {
     const operatorA = await authentication.register(
       'revoke-a@example.com',
       'Revoke A',
-      ISOLATION_TEST_PASSWORD,
+      ISOLATION_TEST_CREDENTIAL,
     );
     const operatorB = await authentication.register(
       'revoke-b@example.com',
       'Revoke B',
-      ISOLATION_TEST_PASSWORD,
+      ISOLATION_TEST_CREDENTIAL,
     );
 
     await expect(

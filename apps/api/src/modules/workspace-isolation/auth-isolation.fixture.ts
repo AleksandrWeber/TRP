@@ -14,7 +14,7 @@ import { LoginLockoutStore } from '../auth/login-lockout.store';
 import { PasswordCredentialStore } from '../auth/password-credential.store';
 import { PasswordResetStore } from '../auth/password-reset.store';
 
-export const ISOLATION_TEST_PASSWORD = 'password-123';
+export const ISOLATION_TEST_CREDENTIAL = 'isolation-fixture-credential-1';
 
 /** Minimal Authentication stack for S06 isolation regressions. */
 export function createIsolationAuthentication() {
