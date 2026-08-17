@@ -27,6 +27,32 @@ issues real JWT sessions; Vault writes real encrypted records through Prisma;
 Vault lifecycle and denial events use the Security Audit store; Timeline is
 read through the protected production HTTP route.
 
+## Isolation Matrix mapping
+
+The executable proof is
+[`production-composition-proof.integration.spec.ts`](../../../apps/api/src/modules/workspace-isolation/production-composition-proof.integration.spec.ts).
+It maps to the applicable Isolation Matrix PASS rows as follows. Vault has no
+customer HTTP route in the Wave 1 inventory; its production entry point is the
+real Nest `SecretVaultService` composition.
+
+| Isolation Matrix row              | Product                  | Production entry point                                    | A→B deny claim                                                               | Result |
+| --------------------------------- | ------------------------ | --------------------------------------------------------- | ---------------------------------------------------------------------------- | ------ |
+| Authentication / identity binding | Authentication, Identity | `AuthenticationService.register` / `login` and signed JWT | A's token cannot act as B; unauthenticated Timeline is 401                   | PASS   |
+| Session                           | Authentication           | Production JWT + `JwtAuthGuard`                           | A's session authorizes only A's Timeline; B's secret material is absent      | PASS   |
+| RBAC / People / role assignment   | Identity                 | `UserDomainService.assignRole` plus `RolesGuard`          | Admin on A does not grant membership in B                                    | PASS   |
+| Workspace membership / boundary   | Workspace                | `WorkspaceDomainService` + `WorkspaceAccessService`       | A is a member of A and is denied as a member of B                            | PASS   |
+| Vault secrets                     | Vault                    | `SecretVaultService` through `SecretVaultModule`          | A cannot list, get, retrieve, store, replace, revoke, or delete B            | PASS   |
+| Security Audit store              | Security Audit           | `SecurityAuditService` Prisma append                      | B vault lifecycle records persist on B; A's Timeline does not enumerate them | PASS   |
+| Timeline                          | Timeline                 | `GET /v1/security-audit/workspaces/:workspaceId/timeline` | Unauthenticated 401; A→B 403; owner 200; no foreign secret payload           | PASS   |
+
+Explicit non-claims for this proof form:
+
+| Isolation Matrix row         | Verdict        | Note                                                                                                   |
+| ---------------------------- | -------------- | ------------------------------------------------------------------------------------------------------ |
+| Incident / investigation     | NOT APPLICABLE | No customer Incident HTTP in Wave 1; mixed-evidence denial remains the existing in-memory domain suite |
+| Security Platform tenancy    | NOT APPLICABLE | Platform hardening, not workspace-scoped tenant state                                                  |
+| Future Connection Management | NOT APPLICABLE | Wave 2; F-14 explicit out                                                                              |
+
 ## Executable proof
 
 | F-14 requirement                     | Executed proof                                                                                                                                                     | Result |

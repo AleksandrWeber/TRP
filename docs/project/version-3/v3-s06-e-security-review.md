@@ -33,8 +33,9 @@ may be commissioned, but has not started.
 
 The worksheet certifies implemented isolation evidence (Isolation Matrix Static /
 Runtime / Regression and the ordinary `workspace-isolation/` suite). It does
-**not** certify Production Composition Proof; that remains certification finding
-**F-14**. Connection Management, monitoring, billing, live trading, and Wave 2
+**not** itself certify Production Composition Proof; that proof is recorded in
+[`wave-1-production-composition-proof.md`](./wave-1-production-composition-proof.md)
+(F-14). Connection Management, monitoring, billing, live trading, and Wave 2
 products remain **NOT APPLICABLE**.
 
-**STOP.** F-08 worksheet complete. Do not implement F-14. Await Product Owner review.
+**STOP.** F-08 worksheet complete. Await Product Owner review of F-05 and Independent Certification Validation.

@@ -14,7 +14,7 @@ Blank rows are forbidden.
 
 **Scope boundary:** S06 proves Wave 1 SEC-11 workspace isolation across Authentication, Session, Identity/People (`role ≠ membership`), Vault, Security Audit, Timeline, Incident, and Workspace membership. Security Platform tenancy and future Connection Management are **NOT APPLICABLE**. Monitoring, billing, live trading, and Wave 2 products are outside Wave 1.
 
-**Proof-form boundary (binding):** This worksheet certifies **implemented isolation evidence** as recorded in [`wave-1-isolation-matrix.md`](./wave-1-isolation-matrix.md) (Static / Runtime / Regression) and the ordinary `workspace-isolation/` suite. It does **not** certify **Production Composition Proof**. That proof form remains certification finding **F-14** and is unresolved by this document.
+**Proof-form boundary (binding):** This worksheet certifies **implemented isolation evidence** as recorded in [`wave-1-isolation-matrix.md`](./wave-1-isolation-matrix.md) (Static / Runtime / Regression) and the ordinary `workspace-isolation/` suite. It does **not** itself certify **Production Composition Proof**. That proof form is recorded separately in [`wave-1-production-composition-proof.md`](./wave-1-production-composition-proof.md) (F-14).
 
 ---
 
@@ -274,15 +274,15 @@ All listed regressions run in the ordinary test suite (`v3-s06-e-validation-repo
 
 ## Explicit non-claims
 
-| Capability / claim                                       | Verdict        | Owner / note                                        |
-| -------------------------------------------------------- | -------------- | --------------------------------------------------- |
-| Production Composition Proof                             | NOT CLAIMED    | Remains **F-14**; not satisfied by this worksheet   |
-| Connection Management / Wave 2 products                  | NOT APPLICABLE | Wave 2; Isolation Matrix N/A row                    |
-| Monitoring, analytics, dashboards, alerting              | NOT APPLICABLE | Later monitoring product                            |
-| Billing                                                  | NOT APPLICABLE | Outside Wave 1                                      |
-| Live trading                                             | NOT APPLICABLE | Later waves                                         |
-| Customer products outside Wave 1                         | NOT APPLICABLE | Master Plan later owners                            |
-| Future isolation guarantees beyond evidenced Wave 1 rows | NOT APPLICABLE | Wave 9 teams / later products remain deferred       |
-| Wave 1 COMPLETE / certification verdict                  | NOT CLAIMED    | Independent Certification Validation still required |
+| Capability / claim                                       | Verdict        | Owner / note                                                                                                                   |
+| -------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Production Composition Proof                             | NOT CLAIMED    | Not satisfied by this F-08 worksheet; see [`wave-1-production-composition-proof.md`](./wave-1-production-composition-proof.md) |
+| Connection Management / Wave 2 products                  | NOT APPLICABLE | Wave 2; Isolation Matrix N/A row                                                                                               |
+| Monitoring, analytics, dashboards, alerting              | NOT APPLICABLE | Later monitoring product                                                                                                       |
+| Billing                                                  | NOT APPLICABLE | Outside Wave 1                                                                                                                 |
+| Live trading                                             | NOT APPLICABLE | Later waves                                                                                                                    |
+| Customer products outside Wave 1                         | NOT APPLICABLE | Master Plan later owners                                                                                                       |
+| Future isolation guarantees beyond evidenced Wave 1 rows | NOT APPLICABLE | Wave 9 teams / later products remain deferred                                                                                  |
+| Wave 1 COMPLETE / certification verdict                  | NOT CLAIMED    | Independent Certification Validation still required                                                                            |
 
-**STOP.** F-08 worksheet complete. Do not implement F-14. Await Product Owner review.
+**STOP.** F-08 worksheet complete. Production Composition Proof is recorded in F-14, not here. Await Product Owner review of F-05 and Independent Certification Validation.
