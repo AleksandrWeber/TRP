@@ -17,3 +17,24 @@ regression. The Product Owner Resolution aligned the former open rows:
 
 Wave 1 COMPLETE remains unclaimed. The independent Wave 1 Certification Audit
 may be commissioned, but has not started.
+
+## Security Verification Standard (mandatory Close worksheet)
+
+**Completed worksheet (every §4–§19 row):**
+[`v3-s06-security-verification-worksheet.md`](./v3-s06-security-verification-worksheet.md)
+
+| Gate                              | Verdict  |
+| --------------------------------- | -------- |
+| Every §4–§17 category row present | PASS     |
+| §18.1 OWASP Top 10 mapping        | PASS     |
+| §18.2 OWASP API Top 10 mapping    | PASS     |
+| §19 Security Regression Suite     | PASS     |
+| Any REQUIRES ACTION               | **None** |
+
+The worksheet certifies implemented isolation evidence (Isolation Matrix Static /
+Runtime / Regression and the ordinary `workspace-isolation/` suite). It does
+**not** certify Production Composition Proof; that remains certification finding
+**F-14**. Connection Management, monitoring, billing, live trading, and Wave 2
+products remain **NOT APPLICABLE**.
+
+**STOP.** F-08 worksheet complete. Do not implement F-14. Await Product Owner review.
