@@ -48,6 +48,8 @@ export function recordVaultAccessDenied(
     outcome: 'denied',
     actorUserId: payload.actorUserId,
     workspaceId: payload.workspaceId,
+    type: 'unknown',
+    purpose: 'unknown',
   };
   logger.warn(VAULT_ACCESS_DENIED_EVENT, context);
   void persistSecurityAuditEvent(audit, VAULT_ACCESS_DENIED_EVENT, context, 'vault');

@@ -98,6 +98,7 @@ export class SecretVaultService {
     private readonly clock: Clock,
     @Inject(VAULT_WRAPPING_KEY_SOURCE)
     private readonly wrappingKeySource: WrappingKeySource,
+    @Inject(VaultAccessControl)
     private readonly accessControl: Pick<VaultAccessControl, 'assertCanAccess'>,
     @Optional() @Inject(LOGGER) logger?: Logger,
     @Optional() @Inject(SecurityAuditService) private readonly audit?: SecurityAuditService,
