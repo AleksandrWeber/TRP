@@ -1,17 +1,16 @@
-# W2-S02 Security Review (planning)
+# W2-S02 Security Review
 
 **Package:** W2-S02 Exchange Connectivity Foundation
 **Wave:** 2 — Connection Management
-**Status:** Planning **COMPLETE**. Not implementation. Awaiting Product Owner Approval. Close evidence later.
-**Date:** 2026-08-17
+**Status:** Close evidence **COMPLETE** for Product Owner Close Review. Not Closed.
+**Date:** 2026-08-21 (Close evidence). Planning baseline 2026-08-17.
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md) · [`../v3-security-vision.md`](../v3-security-vision.md)
 **Checklist:** [`../version-3-security-checklist.md`](../version-3-security-checklist.md)
 **Verification Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md) — **mandatory**
+**Worksheet:** [`w2-s02-security-verification-worksheet.md`](./w2-s02-security-verification-worksheet.md) — **PASS** (zero REQUIRES ACTION)
 **Default Policy:** [`../security-default-policy.md`](../security-default-policy.md)
 **Umbrella:** [`w2-s02-implementation-package.md`](./w2-s02-implementation-package.md)
 **Scope:** [`w2-s02-product-scope.md`](./w2-s02-product-scope.md)
-
-This review describes **required security outcomes** for W2-S02. It does not describe how to implement them. It does **not** redefine Wave 1 security products. It does **not** redesign Connection Management. It references them.
 
 ```text
 Exchange Connectivity uses Wave 1 security and W2-S01 Connection Management.
@@ -19,9 +18,28 @@ It does not replace Vault, Auth, Authz, Isolation, Platform, or Audit.
 Secrets never leave Vault into a local store.
 Connected is earned by authenticated exchange communication — never simulated.
 Connected is not Trading enabled.
+Verified capabilities are informational only and are not used.
 ```
 
-**Planning intent:** rows marked **PASS** mean this package is designed to satisfy the control when implemented. Close requires evidence. **NOT APPLICABLE** names the real owner.
+## Close evidence verdict
+
+| Gate                         | Verdict |
+| ---------------------------- | ------- |
+| Vault-only secret usage      | PASS    |
+| Workspace Isolation          | PASS    |
+| Authorization (no new roles) | PASS    |
+| Security Audit ownership     | PASS    |
+| Handshake honesty            | PASS    |
+| Health honesty               | PASS    |
+| Capability honesty           | PASS    |
+| No plaintext secret exposure | PASS    |
+| No Wave 1 regression         | PASS    |
+| STRIDE                       | PASS    |
+| Verification Standard §4–§19 | PASS    |
+
+Full itemized rows: [`w2-s02-security-verification-worksheet.md`](./w2-s02-security-verification-worksheet.md).
+
+Planning baseline below remains the approved control intent. Close rows are evidenced, not intent-only.
 
 ---
 
@@ -188,14 +206,14 @@ Live trading, order injection, and financial integrity beyond connectivity proof
 
 ## Threat Review (STRIDE) — planning intent
 
-| Category                   | Threat example                                                      | Required outcome                                          | Verdict       |
-| -------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------- | ------------- |
-| **Spoofing**               | Act as another operator to Connect an exchange                      | Authentication binding required                           | PASS (intent) |
-| **Tampering**              | Set Connected without a handshake; replay an old proof              | Server-side status; replay protection                     | PASS (intent) |
-| **Repudiation**            | Deny having Connected or Disconnected                               | Audit events for Connect / Failure / Disconnect           | PASS (intent) |
-| **Information Disclosure** | Read another workspace’s connection or secrets; dump venue payloads | Isolation + Vault deny; no secret echo; no inventory leak | PASS (intent) |
-| **Denial of Service**      | Connect spam against platform or venue                              | Inherit platform abuse controls; rate-limit awareness     | PASS (intent) |
-| **Elevation of Privilege** | Reader Connects; connectivity used as trading enablement            | Authorization + isolation; no Trading enabled             | PASS (intent) |
+| Category                   | Threat example                                                      | Required outcome                                          | Verdict |
+| -------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------- | ------- |
+| **Spoofing**               | Act as another operator to Connect an exchange                      | Authentication binding required                           | PASS    |
+| **Tampering**              | Set Connected without a handshake; replay an old proof              | Server-side status; replay protection                     | PASS    |
+| **Repudiation**            | Deny having Connected or Disconnected                               | Audit events for Connect / Failure / Disconnect           | PASS    |
+| **Information Disclosure** | Read another workspace’s connection or secrets; dump venue payloads | Isolation + Vault deny; no secret echo; no inventory leak | PASS    |
+| **Denial of Service**      | Connect spam against platform or venue                              | Inherit platform abuse controls; rate-limit awareness     | PASS    |
+| **Elevation of Privilege** | Reader Connects; connectivity used as trading enablement            | Authorization + isolation; no Trading enabled             | PASS    |
 
 A package cannot Close while any Threat Review row is **REQUIRES ACTION**.
 
@@ -288,4 +306,4 @@ Planning worksheet expectation (complete at implementation Close, not now):
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S02 implementation begins. Re-run this Security Review with evidence at Close.
+**STOP.** Security Close evidence is complete. Wait for Product Owner Close Review. Only the Product Owner may declare W2-S02 Closed.

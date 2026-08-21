@@ -2,7 +2,7 @@
 
 **Package:** W2-S02 Exchange Connectivity Foundation
 **Wave:** 2 — Connection Management
-**Status:** W2-S02-a, W2-S02-b, W2-S02-c, and W2-S02-d executed. Remaining slices are not executed. Close remains pending.
+**Status:** W2-S02-a through W2-S02-e executed for Close evidence. Close remains pending Product Owner decision.
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w2-s02-product-scope.md`](./w2-s02-product-scope.md)
 **Security:** [`w2-s02-security-review.md`](./w2-s02-security-review.md)
@@ -40,7 +40,7 @@ Do not validate order placement, balances, positions, leverage, market-data engi
 | **W2-S02-b** | Connect establishes a real authenticated exchange session via Vault credentials | Handshake — **executed** (see below)           |
 | **W2-S02-c** | Health and provider availability are honest                                     | Health — **executed** (see below)              |
 | **W2-S02-d** | Connected means authenticated communication succeeded; never Trading enabled    | Status / projection — **executed** (see below) |
-| **W2-S02-e** | Verification Standard + regressions + full walkthrough                          | Close evidence                                 |
+| **W2-S02-e** | Verification Standard + regressions + full walkthrough                          | Close evidence — **executed** (see below)      |
 
 ### W2-S02-a execution evidence
 
@@ -111,7 +111,24 @@ Recorded in [`w2-s02-d-validation-report.md`](./w2-s02-d-validation-report.md).
 | No balances, orders, market data, WebSockets, or live trading                    | PASS   |
 | Wave 1, Connection Management, handshake, and health smoke                       | PASS   |
 
-W2-S02-d does **not** Close W2-S02. Close evidence (W2-S02-e), remaining handshake providers, and the full Exchange Connectivity Walkthrough remain later slices.
+W2-S02-d does **not** Close W2-S02. Close evidence (W2-S02-e) is recorded below.
+
+### W2-S02-e execution evidence
+
+Recorded in [`w2-s02-close-report.md`](./w2-s02-close-report.md), [`w2-s02-security-verification-worksheet.md`](./w2-s02-security-verification-worksheet.md), and [`w2-s02-live-product-walkthrough.md`](./w2-s02-live-product-walkthrough.md).
+
+| Proof                                                                  | Result |
+| ---------------------------------------------------------------------- | ------ |
+| Planning Package outcomes implemented across slices a–d                | PASS   |
+| Architecture / ownership drift check                                   | PASS   |
+| Security Verification Worksheet §4–§19; zero REQUIRES ACTION           | PASS   |
+| Security Review Close evidence                                         | PASS   |
+| Product Walkthrough PASS                                               | PASS   |
+| Regression suite green in ordinary tests                               | PASS   |
+| Wave 1 / Connection Management / handshake / health / capability smoke | PASS   |
+| No production code changes in Close package                            | PASS   |
+
+W2-S02-e prepares Product Owner Close Review. It does **not** declare W2-S02 Closed.
 
 ---
 
@@ -185,11 +202,11 @@ PASS / REQUIRES ACTION
 
 Automated tests do **not** replace this walkthrough.
 
-| Field                   | Value (at execution)              |
-| ----------------------- | --------------------------------- |
-| Walkthrough name        | Exchange Connectivity Walkthrough |
-| Executed in the product | PENDING                           |
-| Overall                 | PENDING APPROVAL                  |
+| Field                   | Value (at execution)                                                               |
+| ----------------------- | ---------------------------------------------------------------------------------- |
+| Walkthrough name        | Exchange Connectivity Walkthrough                                                  |
+| Executed in the product | Yes — [`w2-s02-live-product-walkthrough.md`](./w2-s02-live-product-walkthrough.md) |
+| Overall                 | PASS                                                                               |
 
 ---
 
@@ -221,16 +238,16 @@ W2-S02 may Close only when all are true:
 
 | #   | Criterion                                                                   | Verdict (at Close) |
 | --- | --------------------------------------------------------------------------- | ------------------ |
-| 1   | All in-scope slices done; Implementation Report written                     | PENDING            |
-| 2   | Architecture checklist PASS; no ownership drift                             | PENDING            |
-| 3   | Security checklist + STRIDE + Verification Standard + Regression Suite PASS | PENDING            |
-| 4   | Product checklist PASS; Walkthrough PASS                                    | PENDING            |
-| 5   | Validation plan executed; evidence recorded                                 | PENDING            |
-| 6   | Mandatory reports present and consistent                                    | PENDING            |
-| 7   | Master Plan compliance (no invented scope; no Master Plan edit)             | PENDING            |
-| 8   | Product Principles respected                                                | PENDING            |
-| 9   | No SSH / customer `.env` / local secrets / manual SQL in customer journeys  | PENDING            |
-| 10  | No orders, balances, live trading, execution, monitoring, or billing        | PENDING            |
+| 1   | All in-scope slices done; Implementation Report written                     | PASS               |
+| 2   | Architecture checklist PASS; no ownership drift                             | PASS               |
+| 3   | Security checklist + STRIDE + Verification Standard + Regression Suite PASS | PASS               |
+| 4   | Product checklist PASS; Walkthrough PASS                                    | PASS               |
+| 5   | Validation plan executed; evidence recorded                                 | PASS               |
+| 6   | Mandatory reports present and consistent                                    | PASS               |
+| 7   | Master Plan compliance (no invented scope; no Master Plan edit)             | PASS               |
+| 8   | Product Principles respected                                                | PASS               |
+| 9   | No SSH / customer `.env` / local secrets / manual SQL in customer journeys  | PASS               |
+| 10  | No orders, balances, live trading, execution, monitoring, or billing        | PASS               |
 
 ---
 
@@ -318,4 +335,4 @@ Do not treat the following as W2-S02 Close evidence:
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S02-e. Execute remaining slices only after Product Owner review of W2-S02-d.
+**STOP.** Close evidence is assembled. Wait for Product Owner Close Review. Only the Product Owner may declare W2-S02 Closed.

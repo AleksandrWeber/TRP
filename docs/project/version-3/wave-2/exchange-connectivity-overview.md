@@ -2,7 +2,7 @@
 
 **Document:** Version 3 Exchange Connectivity Overview
 **Date:** 2026-08-17
-**Status:** W2-S02-d implemented. Remaining W2-S02 slices await Product Owner review before W2-S02-e.
+**Status:** W2-S02 Close package prepared for Product Owner review. Not Closed.
 **Product:** Exchange Connectivity Foundation
 **Nature:** Customer description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -74,7 +74,7 @@ Connected does NOT mean Trading enabled.
 
 Connection Management is **CLOSED**. The operator can already create an Exchange connection, store credentials securely, and manage lifecycle without editing a server file.
 
-W2-S02-b is the Binance handshake proof. W2-S02-c is session health. W2-S02-d is capability verification. Close evidence stays a later slice.
+W2-S02-b is the Binance handshake proof. W2-S02-c is session health. W2-S02-d is capability verification. Close evidence is prepared for Product Owner review.
 
 ---
 
@@ -278,7 +278,7 @@ After Exchange Connectivity Foundation ships its product outcomes:
 Wave 1 Security Foundation is **CERTIFIED COMPLETE** and is consumed, not reopened.
 W2-S01 Connection Management is **CLOSED** and is consumed, not redesigned.
 
-W2-S02-d is implemented. Wait for Product Owner review before W2-S02-e.
+W2-S02 Close evidence is prepared. Wait for Product Owner Close Review. Only the Product Owner may declare W2-S02 Closed.
 
 ---
 
@@ -307,4 +307,4 @@ This product does **not** include:
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S02-e. Remaining handshake providers and Close evidence remain later slices.
+**STOP.** Wait for Product Owner Close Review. Only the Product Owner may declare W2-S02 Closed. Remaining handshake providers stay later slices.
