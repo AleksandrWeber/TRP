@@ -9,8 +9,8 @@ Master Plan map:    V3-O01 Durable analytical stores (IN-01, TD-048).
                     Wave 3 exit: certified V2 analytical artifacts operators rely on
                     survive API restart (or honestly labeled ephemeral — default: survive).
 Date:               2026-08-26
-Status:             Implementation Package — Planning APPROVED. Implementation Readiness FINALIZED. Not implementation. Slices not opened.
-Nature:             Implementation package. Not an RC. Not an ADR. Not a Master Plan revision. Not implementation.
+Status:             Implementation Package — Planning APPROVED. Implementation Readiness FINALIZED. Slices a–d APPROVED; e Close Evidence assembled. Package NOT declared CLOSED.
+Nature:             Implementation package. Not an RC. Not an ADR. Not a Master Plan revision.
 Canon:              version-3-master-plan.md
 ```
 
@@ -59,7 +59,7 @@ Survive-restart does NOT mean production restart-safety Complete (needs O03 amon
 STOP — Do not create W3-O01-a until Product Owner writes the implementation task.
 ```
 
-**Planning status:** **APPROVED.** Implementation Readiness **FINALIZED.** Slices remain **not opened**.
+**Planning status:** **APPROVED.** Implementation Readiness **FINALIZED.** Slices a–d **APPROVED**; W3-O01-e Close Evidence **assembled**. Package **NOT declared CLOSED**.
 
 **Naming clarity:** Operational package ID `W3-O01` maps 1:1 to Master Plan / Execution Roadmap package **V3-O01**. This planning does not invent a new Master Plan ID. Residual name `durable-persistence-product` is TD-048 debt vocabulary only — not a new SoT.
 
@@ -414,13 +414,19 @@ Tests that mock “persisted” without proving restart survival do **not** coun
 **Done when:** Restart walkthrough/tests PASS for survive surfaces; ephemeral path honest if any.
 **Must not:** Claim O03 restart-safety Complete; claim O05 monitoring.
 
-### W3-O01-d — Security verification + package Close evidence
+### W3-O01-d — Operational Continuity Foundation
 
-**Goal:** Verification Standard worksheets + walkthrough + Close evidence.
-**Done when:** Security / Product / Validation Close records PASS; package ready for Product Owner Close.
-**Must not:** Start W3-O02 without PO sequencing; claim Wave 3 COMPLETE.
+**Goal:** Owner readiness, platform readiness projection, graceful degradation, Operational State Matrix, readiness API/UI.
+**Done when:** Continuity foundation PASS; matrix authoritative; no BC/HA/Monitoring.
+**Must not:** Expand into Monitoring / HA / DR / Incident Management.
 
-**These slices are named for planning only. They are not opened. Do not start them.**
+### W3-O01-e — Package Validation, Operational Verification & Close Evidence
+
+**Goal:** Validation / walkthrough / integrity / Close Evidence only.
+**Done when:** Close Evidence assembled for Product Owner Package Review.
+**Must not:** Declare W3-O01 CLOSED; start W3-O02; claim Wave 3 COMPLETE; add new customer functionality.
+
+**Historical planning note:** Slice names above supersede earlier planning labels where they differed. Current stage: Close Evidence assembled; package NOT CLOSED.
 
 ---
 
@@ -437,8 +443,7 @@ Tests that mock “persisted” without proving restart survival do **not** coun
 - No Version 2 architecture changes
 - No Wave 1 or Wave 2 modifications
 - No ownership changes
-- No implementation before Approval
-- No implementation slices started in this planning open
+- No W3-O01 CLOSED declaration without Product Owner Package Review
 - No Wave 3 COMPLETE
 
 ---
