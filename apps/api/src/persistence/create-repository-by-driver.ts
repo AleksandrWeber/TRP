@@ -4,6 +4,7 @@ import { resolvePersistenceDriver } from './persistence-driver';
 /**
  * Nest factory helper: pick InMemory or Prisma repository by PERSISTENCE_DRIVER (US104).
  * No Nest PrismaService injection required (keeps isolated module DI tests green).
+ * When driver=prisma, hydrate is W3-O01-c owner restart recovery.
  */
 export async function createRepositoryByDriver<
   TMemory,

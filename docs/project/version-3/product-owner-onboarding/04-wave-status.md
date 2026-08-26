@@ -50,9 +50,9 @@ Wave 2 progress (historical): [`../wave-2/wave-2-progress.md`](../wave-2/wave-2-
 | **Wave**                       | **3 — Durability, Operations & Continuity**                           |
 | **Wave Planning**              | **APPROVED**                                                          |
 | **Wave COMPLETE claimed?**     | **No**                                                                |
-| **Implementation authorized?** | **Partial** — W3-O01-a APPROVED; W3-O01-b implemented; c…d not opened |
+| **Implementation authorized?** | **Partial** — W3-O01-a/b APPROVED; W3-O01-c implemented; d not opened |
 | **Live Trading claimed?**      | **No**                                                                |
-| **Next**                       | Product Owner reviews W3-O01-b before authorizing W3-O01-c            |
+| **Next**                       | Product Owner reviews W3-O01-c before authorizing W3-O01-d            |
 
 ---
 
@@ -61,9 +61,9 @@ Wave 2 progress (historical): [`../wave-2/wave-2-progress.md`](../wave-2/wave-2-
 | Field                     | Value                                                         |
 | ------------------------- | ------------------------------------------------------------- |
 | **Package**               | **W3-O01 Durable Analytical Stores** (Master Plan **V3-O01**) |
-| **Stage**                 | W3-O01-b **IMPLEMENTED** — awaiting PO review                 |
+| **Stage**                 | W3-O01-c **IMPLEMENTED** — awaiting PO review                 |
 | **Persistence stance**    | Extends existing owners only — **no new persistence owner**   |
-| **Implementation slices** | **a APPROVED**; **b done**; c…d **not started**               |
+| **Implementation slices** | **a/b APPROVED**; **c done**; d **not started**               |
 | **Previous**              | Wave 2 COMPLETE (W2-S01…W2-S05 CLOSED)                        |
 
 Companions under [`../wave-3/`](../wave-3/):
@@ -77,14 +77,14 @@ Companions under [`../wave-3/`](../wave-3/):
 - `wave-3-progress.md`
 - `implementation-readiness-checklist.md`
 - `w3-o01-a-analytical-inventory.md`
-- `w3-o01-b-implementation-report.md`
+- `w3-o01-c-implementation-report.md`
 
 ---
 
 ## STOP
 
-Do **not** open W3-O01-c until Product Owner reviews W3-O01-b.
-Do **not** implement restart recovery / automatic restore / monitoring / Kill Switch.
+Do **not** open W3-O01-d until Product Owner reviews W3-O01-c.
+Do **not** implement Business Continuity / HA / Disaster Recovery / monitoring / Kill Switch.
 Do **not** claim Live Trading.
 Do **not** claim Wave 7 AI Platform Complete.
 Do **not** modify the Master Plan.

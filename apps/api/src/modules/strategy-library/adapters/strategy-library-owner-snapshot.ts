@@ -12,8 +12,11 @@ export type StrategyLibraryOwnerSnapshot = Readonly<{
 }>;
 
 export function asStrategyLibraryOwnerSnapshot(payload: unknown): StrategyLibraryOwnerSnapshot {
-  if (!payload || typeof payload !== 'object') {
+  if (payload === null || payload === undefined) {
     return Object.freeze({});
+  }
+  if (typeof payload !== 'object' || Array.isArray(payload)) {
+    throw new Error('Strategy Library owner snapshot must be a plain object');
   }
   return payload as StrategyLibraryOwnerSnapshot;
 }

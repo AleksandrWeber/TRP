@@ -4,10 +4,8 @@
  */
 
 import type { PrismaClient } from '@prisma/client';
-import {
-  loadOwnerStoreSnapshot,
-  persistOwnerStoreSnapshot,
-} from '../../../persistence/analytical-owner-store-snapshot';
+import { persistOwnerStoreSnapshot } from '../../../persistence/analytical-owner-store-snapshot';
+import { loadRecoverableOwnerSnapshot } from '../../../persistence/analytical-restart-recovery';
 import type { MarketProfile } from '../domain/market-profile';
 import {
   InMemoryMarketProfileStore,
@@ -20,8 +18,8 @@ export class DurableMarketProfileStore extends InMemoryMarketProfileStore {
   }
 
   async hydrate(): Promise<void> {
-    const payload = await loadOwnerStoreSnapshot(this.prisma, 'market-profile');
-    if (payload && typeof payload === 'object') {
+    const payload = await loadRecoverableOwnerSnapshot(this.prisma, 'market-profile');
+    if (payload) {
       this.importDurableState(payload as MarketProfileStoreDurableState);
     }
   }

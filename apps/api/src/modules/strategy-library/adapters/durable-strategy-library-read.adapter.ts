@@ -8,6 +8,7 @@ import {
   loadOwnerStoreSnapshot,
   saveOwnerStoreSnapshot,
 } from '../../../persistence/analytical-owner-store-snapshot';
+import { loadRecoverableOwnerSnapshot } from '../../../persistence/analytical-restart-recovery';
 import type { Strategy } from '../domain/strategy';
 import type { StrategyCertification } from '../domain/strategy-certification';
 import type { StrategyEligibility } from '../domain/strategy-eligibility';
@@ -25,7 +26,7 @@ export class DurableStrategyLibraryReadAdapter extends InMemoryStrategyLibraryRe
   }
 
   async hydrate(): Promise<void> {
-    const payload = await loadOwnerStoreSnapshot(this.prisma, 'strategy-library');
+    const payload = await loadRecoverableOwnerSnapshot(this.prisma, 'strategy-library');
     const snapshot = asStrategyLibraryOwnerSnapshot(payload);
     if (snapshot.read && typeof snapshot.read === 'object') {
       this.importDurableState(snapshot.read as StrategyLibraryReadDurableState);

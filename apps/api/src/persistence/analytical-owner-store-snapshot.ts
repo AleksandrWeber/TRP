@@ -4,7 +4,8 @@
  * Physical storage for extending existing V2 analytical owners only.
  * Each Nest owner adapter reads/writes only its own `owner` row.
  * Not a new bounded context, Source of Truth, Lake, Outbox, or persistence product.
- * Not restart recovery / automatic restore orchestration (W3-O01-c+).
+ * W3-O01-c uses these snapshots for analytical restart recovery
+ * (via loadRecoverableOwnerSnapshot); this module remains storage only.
  */
 
 import type { Prisma, PrismaClient } from '@prisma/client';

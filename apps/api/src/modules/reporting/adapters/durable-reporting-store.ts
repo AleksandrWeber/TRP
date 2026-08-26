@@ -4,10 +4,8 @@
  */
 
 import type { PrismaClient } from '@prisma/client';
-import {
-  loadOwnerStoreSnapshot,
-  persistOwnerStoreSnapshot,
-} from '../../../persistence/analytical-owner-store-snapshot';
+import { persistOwnerStoreSnapshot } from '../../../persistence/analytical-owner-store-snapshot';
+import { loadRecoverableOwnerSnapshot } from '../../../persistence/analytical-restart-recovery';
 import type { AggregationSlice } from '../domain/aggregation-slice';
 import type { ReportDefinition } from '../domain/report-definition';
 import type { ReportRun } from '../domain/report-run';
@@ -22,8 +20,8 @@ export class DurableReportingStore extends InMemoryReportingStore {
   }
 
   async hydrate(): Promise<void> {
-    const payload = await loadOwnerStoreSnapshot(this.prisma, 'reporting');
-    if (payload && typeof payload === 'object') {
+    const payload = await loadRecoverableOwnerSnapshot(this.prisma, 'reporting');
+    if (payload) {
       this.importDurableState(payload as ReportingStoreDurableState);
     }
   }

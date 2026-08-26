@@ -79,11 +79,11 @@ describe('W3-O01-a analytical inventory — unit', () => {
     }
   });
 
-  it('classification consistency: operator-relied SURVIVE rows remain non-surviving until restart proof', () => {
+  it('classification consistency: operator-relied SURVIVE rows restore after normal restart', () => {
     for (const row of rowsRequiringSurvive()) {
       if (!row.operatorRelied) continue;
-      expect(row.restartSurvivability).toBe('does-not-survive-today');
-      expect(['W3-O01-b', 'W3-O01-c']).toContain(row.futureSlice);
+      expect(row.restartSurvivability).toBe('restored-after-normal-restart');
+      expect(['W3-O01-c', 'W3-O01-d']).toContain(row.futureSlice);
     }
   });
 });

@@ -5,10 +5,8 @@
  */
 
 import type { PrismaClient } from '@prisma/client';
-import {
-  loadOwnerStoreSnapshot,
-  persistOwnerStoreSnapshot,
-} from '../../../persistence/analytical-owner-store-snapshot';
+import { persistOwnerStoreSnapshot } from '../../../persistence/analytical-owner-store-snapshot';
+import { loadRecoverableOwnerSnapshot } from '../../../persistence/analytical-restart-recovery';
 import {
   OrchestrationCoordinationStore,
   type OrchestrationStoreDurableState,
@@ -24,8 +22,8 @@ export class DurableOrchestrationCoordinationStore extends OrchestrationCoordina
   }
 
   async hydrate(): Promise<void> {
-    const payload = await loadOwnerStoreSnapshot(this.prisma, 'trading-orchestrator');
-    if (payload && typeof payload === 'object') {
+    const payload = await loadRecoverableOwnerSnapshot(this.prisma, 'trading-orchestrator');
+    if (payload) {
       this.importDurableState(payload as OrchestrationStoreDurableState);
     }
   }

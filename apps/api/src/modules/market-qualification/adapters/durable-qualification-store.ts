@@ -4,10 +4,8 @@
  */
 
 import type { PrismaClient } from '@prisma/client';
-import {
-  loadOwnerStoreSnapshot,
-  persistOwnerStoreSnapshot,
-} from '../../../persistence/analytical-owner-store-snapshot';
+import { persistOwnerStoreSnapshot } from '../../../persistence/analytical-owner-store-snapshot';
+import { loadRecoverableOwnerSnapshot } from '../../../persistence/analytical-restart-recovery';
 import type { MarketConfidence } from '../domain/market-confidence';
 import type { MarketHealth } from '../domain/market-health';
 import type { QualificationRun } from '../domain/qualification-run';
@@ -24,8 +22,8 @@ export class DurableQualificationStore extends InMemoryQualificationStore {
   }
 
   async hydrate(): Promise<void> {
-    const payload = await loadOwnerStoreSnapshot(this.prisma, 'market-qualification');
-    if (payload && typeof payload === 'object') {
+    const payload = await loadRecoverableOwnerSnapshot(this.prisma, 'market-qualification');
+    if (payload) {
       this.importDurableState(payload as QualificationStoreDurableState);
     }
   }

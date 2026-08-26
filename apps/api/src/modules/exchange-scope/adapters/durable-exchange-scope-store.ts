@@ -4,10 +4,8 @@
  */
 
 import type { PrismaClient } from '@prisma/client';
-import {
-  loadOwnerStoreSnapshot,
-  persistOwnerStoreSnapshot,
-} from '../../../persistence/analytical-owner-store-snapshot';
+import { persistOwnerStoreSnapshot } from '../../../persistence/analytical-owner-store-snapshot';
+import { loadRecoverableOwnerSnapshot } from '../../../persistence/analytical-restart-recovery';
 import type { AdapterBindingContext } from '../domain/adapter-binding-context';
 import type { ExchangeScope } from '../domain/exchange-scope';
 import type { ExchangeRiskPolicy } from '../domain/exchange-risk-policy';
@@ -23,8 +21,8 @@ export class DurableExchangeScopeStore extends InMemoryExchangeScopeStore {
   }
 
   async hydrate(): Promise<void> {
-    const payload = await loadOwnerStoreSnapshot(this.prisma, 'exchange-scope');
-    if (payload && typeof payload === 'object') {
+    const payload = await loadRecoverableOwnerSnapshot(this.prisma, 'exchange-scope');
+    if (payload) {
       this.importDurableState(payload as ExchangeScopeStoreDurableState);
     }
   }

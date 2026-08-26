@@ -8,6 +8,7 @@ import {
   loadOwnerStoreSnapshot,
   saveOwnerStoreSnapshot,
 } from '../../../persistence/analytical-owner-store-snapshot';
+import { loadRecoverableOwnerSnapshot } from '../../../persistence/analytical-restart-recovery';
 import type {
   CertifyResult,
   CertifyStrategyVersionCommand,
@@ -28,7 +29,7 @@ export class DurableStrategyLibraryCertificationAdapter extends InMemoryStrategy
   }
 
   async hydrate(): Promise<void> {
-    const payload = await loadOwnerStoreSnapshot(this.prisma, 'strategy-library');
+    const payload = await loadRecoverableOwnerSnapshot(this.prisma, 'strategy-library');
     const snapshot = asStrategyLibraryOwnerSnapshot(payload);
     if (snapshot.certification && typeof snapshot.certification === 'object') {
       this.importDurableState(snapshot.certification as StrategyLibraryCertificationDurableState);

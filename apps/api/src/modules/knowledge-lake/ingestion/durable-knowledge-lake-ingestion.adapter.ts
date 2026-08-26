@@ -4,10 +4,8 @@
  */
 
 import type { PrismaClient } from '@prisma/client';
-import {
-  loadOwnerStoreSnapshot,
-  persistOwnerStoreSnapshot,
-} from '../../../persistence/analytical-owner-store-snapshot';
+import { persistOwnerStoreSnapshot } from '../../../persistence/analytical-owner-store-snapshot';
+import { loadRecoverableOwnerSnapshot } from '../../../persistence/analytical-restart-recovery';
 import type { AdmitResult, AnalyticalFactAdmission } from '../domain/analytical-fact-admission';
 import {
   InMemoryKnowledgeLakeIngestionAdapter,
@@ -20,8 +18,8 @@ export class DurableKnowledgeLakeIngestionAdapter extends InMemoryKnowledgeLakeI
   }
 
   async hydrate(): Promise<void> {
-    const payload = await loadOwnerStoreSnapshot(this.prisma, 'knowledge-lake');
-    if (payload && typeof payload === 'object') {
+    const payload = await loadRecoverableOwnerSnapshot(this.prisma, 'knowledge-lake');
+    if (payload) {
       this.importDurableState(payload as KnowledgeLakeIngestionDurableState);
     }
   }

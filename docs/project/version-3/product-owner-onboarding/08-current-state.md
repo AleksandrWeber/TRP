@@ -19,7 +19,7 @@
 | Current Package       | **W3-O01 Durable Analytical Stores** (Planning APPROVED)                  |
 | Wave 3 Planning       | **APPROVED**                                                              |
 | W3-O01 Readiness      | **FINALIZED** (planning quality)                                          |
-| Wave 3 Implementation | **In progress** — W3-O01-a APPROVED; W3-O01-b implemented; c…d not opened |
+| Wave 3 Implementation | **In progress** — W3-O01-a/b APPROVED; W3-O01-c implemented; d not opened |
 | Live Trading          | **Not claimed / unauthorized** until Wave 6 ADR                           |
 
 ---
@@ -37,7 +37,8 @@
 - No Monitoring Complete (O05)
 - No Kill Switch product (O04)
 - **W3-O01-a inventory foundation APPROVED**
-- **W3-O01-b durable persistence foundation done** — automatic recovery / operational continuity **not** claimed
+- **W3-O01-b durable persistence foundation APPROVED**
+- **W3-O01-c restart recovery foundation done** — Business Continuity / High Availability **not** claimed
 
 Companions (under `../wave-3/`):
 
@@ -56,11 +57,12 @@ Companions (under `../wave-3/`):
 
 ## Current slice
 
-| Slice        | Documented operational status                                        |
-| ------------ | -------------------------------------------------------------------- |
-| **W3-O01-a** | **APPROVED** — inventory & honesty baseline                          |
-| **W3-O01-b** | **IMPLEMENTED** — durable persistence foundation; awaiting PO review |
-| W3-O01-c…d   | **Not started**                                                      |
+| Slice        | Documented operational status                                     |
+| ------------ | ----------------------------------------------------------------- |
+| **W3-O01-a** | **APPROVED** — inventory & honesty baseline                       |
+| **W3-O01-b** | **APPROVED** — durable persistence foundation                     |
+| **W3-O01-c** | **IMPLEMENTED** — restart recovery foundation; awaiting PO review |
+| W3-O01-d     | **Not started**                                                   |
 
 ---
 

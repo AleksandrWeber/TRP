@@ -4,10 +4,8 @@
  */
 
 import type { PrismaClient } from '@prisma/client';
-import {
-  loadOwnerStoreSnapshot,
-  persistOwnerStoreSnapshot,
-} from '../../../persistence/analytical-owner-store-snapshot';
+import { persistOwnerStoreSnapshot } from '../../../persistence/analytical-owner-store-snapshot';
+import { loadRecoverableOwnerSnapshot } from '../../../persistence/analytical-restart-recovery';
 import type { DeliveryResult } from '../domain/delivery';
 import type { TelegramConnection } from '../domain/telegram-connection';
 import type { UserNotificationPreferences } from '../domain/user-notification-preferences';
@@ -22,8 +20,8 @@ export class DurableNotificationStore extends InMemoryNotificationStore {
   }
 
   async hydrate(): Promise<void> {
-    const payload = await loadOwnerStoreSnapshot(this.prisma, 'notification-delivery');
-    if (payload && typeof payload === 'object') {
+    const payload = await loadRecoverableOwnerSnapshot(this.prisma, 'notification-delivery');
+    if (payload) {
       this.importDurableState(payload as NotificationStoreDurableState);
     }
   }

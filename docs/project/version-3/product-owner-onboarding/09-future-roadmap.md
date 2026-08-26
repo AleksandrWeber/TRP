@@ -14,19 +14,20 @@ This document restates **approved** Version 3 roadmap content. It does not add p
 
 ## Waves remaining
 
-Wave 1 is **CERTIFIED COMPLETE**. Wave 2 is **COMPLETE**. Wave 3 Planning is **APPROVED**; W3-O01-a is **APPROVED**; W3-O01-b durable persistence is **IMPLEMENTED** (awaiting PO review before W3-O01-c). Waves 4–10 remain not started.
+Wave 1 is **CERTIFIED COMPLETE**. Wave 2 is **COMPLETE**. Wave 3 Planning is **APPROVED**; W3-O01-a/b are **APPROVED**; W3-O01-c restart recovery is **IMPLEMENTED** (awaiting PO review before W3-O01-d). Waves 4–10 remain not started.
 
-| Wave            | Name                               | Business value (Master Plan)                | Packages                                                                                               |
-| --------------- | ---------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| **2**           | Connection Management              | Customers connect from the UI               | Roadmap IDs **V3-C01…C04**; operational packages **W2-S01…S05 CLOSED**; Wave **COMPLETE**              |
-| **3** (current) | Durability, operations, continuity | Restart, kill switch, visibility            | V3-O01…O05; **W3-O01-a APPROVED**; **W3-O01-b IMPLEMENTED**; c…d not opened; no automatic recovery yet |
-| **4**           | Exchange Connectivity              | Real venue handshake; paper still default   | V3-E01…E05                                                                                             |
-| **5**           | Notification Platform              | Real alerts                                 | V3-N01…N04                                                                                             |
-| **6**           | Live Trading                       | Earned live capital on the canonical path   | V3-L01…L05 + **live-capital ADR**                                                                      |
-| **7**           | AI & Knowledge                     | Customer keys, durable knowledge, exporters | V3-A01…A04                                                                                             |
-| **8**           | Portfolio, Risk, Analytics         | Productize existing engines                 | V3-P01…P04                                                                                             |
-| **9**           | Workspace SaaS                     | Teams, admin, billing, APIs                 | V3-W01…W04 (W05 stretch)                                                                               |
-| **10**          | Closeout                           | Compliance, E2E, performance, runbooks      | V3-X01…X04                                                                                             |
+| Wave            | Name                               | Business value (Master Plan)     | Packages                                                                                  |
+| --------------- | ---------------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------- |
+| **2**           | Connection Management              | Customers connect from the UI    | Roadmap IDs **V3-C01…C04**; operational packages **W2-S01…S05 CLOSED**; Wave **COMPLETE** |
+| **3** (current) | Durability, operations, continuity | Restart, kill switch, visibility | V3-O01…O05; **W3-O01-a/b APPROVED**; **W3-O01-c IMPLEMENTED**; d not opened; no BC/HA yet |
+
+| **4** | Exchange Connectivity | Real venue handshake; paper still default | V3-E01…E05 |
+| **5** | Notification Platform | Real alerts | V3-N01…N04 |
+| **6** | Live Trading | Earned live capital on the canonical path | V3-L01…L05 + **live-capital ADR** |
+| **7** | AI & Knowledge | Customer keys, durable knowledge, exporters | V3-A01…A04 |
+| **8** | Portfolio, Risk, Analytics | Productize existing engines | V3-P01…P04 |
+| **9** | Workspace SaaS | Teams, admin, billing, APIs | V3-W01…W04 (W05 stretch) |
+| **10** | Closeout | Compliance, E2E, performance, runbooks | V3-X01…X04 |
 
 **Live gate:** Waves **1 + 2 + 3 + 4** complete **and** live-capital ADR before Wave 6.
 
@@ -44,7 +45,7 @@ Products / outcomes include durable analytical stores, durable notification queu
 
 Packages: V3-O01…O05 (Infrastructure, Monitoring, Business Continuity, Disaster Recovery residual, related ops).
 
-Operational note: **W3-O01 Durable Analytical Stores** Planning is **APPROVED**. **W3-O01-a** is **APPROVED**. **W3-O01-b** (durable persistence foundation) is **IMPLEMENTED** under [`../wave-3/`](../wave-3/). W3-O01 extends existing owners only (no new persistence owner). Do **not** open W3-O01-c until Product Owner review. Automatic restart recovery and operational continuity are **not** claimed from O01-b alone.
+Operational note: **W3-O01 Durable Analytical Stores** Planning is **APPROVED**. **W3-O01-a/b** are **APPROVED**. **W3-O01-c** (restart recovery foundation) is **IMPLEMENTED** under [`../wave-3/`](../wave-3/). W3-O01 extends existing owners only (no new persistence owner). Do **not** open W3-O01-d until Product Owner review. Business Continuity and High Availability are **not** claimed from O01-c alone.
 
 ### Wave 4 — Exchange Connectivity
 
