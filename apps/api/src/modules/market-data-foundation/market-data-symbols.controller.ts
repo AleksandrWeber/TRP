@@ -16,6 +16,14 @@ import { RequirePermission } from '../auth/decorators/require-permission.decorat
 import { PermissionClass } from '../auth/permission-catalog';
 import { WorkspaceAccessService } from '../workspace';
 import { listMarketDataProviders } from './market-data-provider-catalog';
+import { isMarketCandleInterval } from './market-candle';
+import type { MarketCandleRetrievalView } from './market-candle.projection';
+import { MarketCandleRetrievalService } from './market-candle.service';
+import {
+  MarketCandleInvalidIntervalError,
+  MarketCandleInvalidRangeError,
+  MarketCandleInvalidSymbolError,
+} from './market-candle.validate';
 import type { MarketSymbolDiscoveryView } from './market-symbol.projection';
 import { MarketSymbolDiscoveryService } from './market-symbol.service';
 import type { MarketTickerRetrievalView } from './market-ticker.projection';
@@ -38,10 +46,18 @@ export type MarketTickerRetrieveBody = Readonly<{
   normalizedSymbol?: string;
 }>;
 
+export type MarketCandleRetrieveBody = Readonly<{
+  exchangeSymbol?: string;
+  normalizedSymbol?: string;
+  interval?: string;
+  rangeStart?: string;
+  rangeEnd?: string;
+}>;
+
 /**
- * Market Data HTTP surface (W2-S03-b symbols, W2-S03-c ticker).
+ * Market Data HTTP surface (W2-S03-b symbols, W2-S03-c ticker, W2-S03-d candles).
  *
- * Projection permission only. No candles, order book, trades, or trading.
+ * Projection permission only. No order book, trades, or trading.
  */
 @Controller({ path: 'market-data', version: '1' })
 @RequirePermission(PermissionClass.Projection)
@@ -49,6 +65,7 @@ export class MarketDataSymbolsController {
   constructor(
     private readonly symbols: MarketSymbolDiscoveryService,
     private readonly tickers: MarketTickerRetrievalService,
+    private readonly candles: MarketCandleRetrievalService,
     private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
@@ -149,6 +166,91 @@ export class MarketDataSymbolsController {
         throw new BadRequestException(error.message);
       }
       throw new BadRequestException('Ticker retrieval could not be completed.');
+    }
+  }
+
+  @Get('connections/:connectionId/candles')
+  cachedCandles(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('connectionId') connectionId: string,
+    @Query('exchangeSymbol') exchangeSymbol: string | undefined,
+    @Query('interval') interval: string | undefined,
+    @Query('rangeStart') rangeStart: string | undefined,
+    @Query('rangeEnd') rangeEnd: string | undefined,
+  ): MarketCandleRetrievalView {
+    const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
+    const symbol = exchangeSymbol?.trim();
+    const candleInterval = interval?.trim();
+    const start = rangeStart?.trim();
+    const end = rangeEnd?.trim();
+    if (!symbol || !candleInterval || !start || !end) {
+      throw new BadRequestException(
+        'exchangeSymbol, interval, rangeStart, and rangeEnd query parameters are required',
+      );
+    }
+    if (!isMarketCandleInterval(candleInterval)) {
+      throw new BadRequestException('Unsupported candlestick interval');
+    }
+    const startMs = Date.parse(start);
+    const endMs = Date.parse(end);
+    if (!Number.isFinite(startMs) || !Number.isFinite(endMs)) {
+      throw new BadRequestException('Invalid candlestick range');
+    }
+    const view = this.candles.cached(
+      workspaceId,
+      connectionId,
+      symbol,
+      candleInterval,
+      new Date(startMs).toISOString(),
+      new Date(endMs).toISOString(),
+    );
+    if (!view) {
+      throw new NotFoundException('No cached candles for this connection request');
+    }
+    return view;
+  }
+
+  @Post('connections/:connectionId/candles/retrieve')
+  async retrieveCandles(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('connectionId') connectionId: string,
+    @Body() body: MarketCandleRetrieveBody,
+  ): Promise<MarketCandleRetrievalView> {
+    const exchangeSymbol = body?.exchangeSymbol?.trim() ?? '';
+    const normalizedSymbol = body?.normalizedSymbol?.trim() ?? '';
+    const interval = body?.interval?.trim() ?? '';
+    const rangeStart = body?.rangeStart?.trim() ?? '';
+    const rangeEnd = body?.rangeEnd?.trim() ?? '';
+    if (!exchangeSymbol || !normalizedSymbol || !interval || !rangeStart || !rangeEnd) {
+      throw new BadRequestException(
+        'exchangeSymbol, normalizedSymbol, interval, rangeStart, and rangeEnd are required',
+      );
+    }
+    try {
+      return await this.candles.retrieve({
+        workspaceId: requireWorkspace(this.workspaceAccess, request.user, workspaceHeader),
+        actorUserId: request.user.userId,
+        connectionId,
+        exchangeSymbol,
+        normalizedSymbol,
+        interval,
+        rangeStart,
+        rangeEnd,
+      });
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      if (
+        error instanceof MarketCandleInvalidSymbolError ||
+        error instanceof MarketCandleInvalidIntervalError ||
+        error instanceof MarketCandleInvalidRangeError
+      ) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException('Candlestick retrieval could not be completed.');
     }
   }
 }

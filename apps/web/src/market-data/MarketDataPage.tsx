@@ -3,6 +3,8 @@ import { useWorkspace } from '../app/WorkspaceContext';
 import {
   api,
   type ConnectionMetadataView,
+  type MarketCandleInterval,
+  type MarketCandleRetrievalView,
   type MarketDataProviderCatalogView,
   type MarketSymbolDiscoveryView,
   type MarketSymbolView,
@@ -10,6 +12,29 @@ import {
 } from '../shared/api';
 import { toUserFacingError } from '../shared/mapApiError';
 import { MarketDataView } from './MarketDataView';
+
+function defaultCandleRange(interval: MarketCandleInterval): {
+  rangeStart: string;
+  rangeEnd: string;
+} {
+  const endMs = Date.now();
+  const spanMs =
+    interval === '1m'
+      ? 2 * 60 * 60 * 1000
+      : interval === '5m'
+        ? 6 * 60 * 60 * 1000
+        : interval === '15m'
+          ? 12 * 60 * 60 * 1000
+          : interval === '1h'
+            ? 2 * 24 * 60 * 60 * 1000
+            : interval === '4h'
+              ? 7 * 24 * 60 * 60 * 1000
+              : 30 * 24 * 60 * 60 * 1000;
+  return {
+    rangeStart: new Date(endMs - spanMs).toISOString(),
+    rangeEnd: new Date(endMs).toISOString(),
+  };
+}
 
 export function MarketDataPage() {
   const { activeWorkspace } = useWorkspace();
@@ -19,9 +44,12 @@ export function MarketDataPage() {
   const [discovery, setDiscovery] = useState<MarketSymbolDiscoveryView | null>(null);
   const [selectedSymbol, setSelectedSymbol] = useState<MarketSymbolView | null>(null);
   const [ticker, setTicker] = useState<MarketTickerRetrievalView | null>(null);
+  const [selectedInterval, setSelectedInterval] = useState<MarketCandleInterval>('1h');
+  const [candles, setCandles] = useState<MarketCandleRetrievalView | null>(null);
   const [loading, setLoading] = useState(true);
   const [discovering, setDiscovering] = useState(false);
   const [retrievingTicker, setRetrievingTicker] = useState(false);
+  const [retrievingCandles, setRetrievingCandles] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -31,6 +59,7 @@ export function MarketDataPage() {
     setDiscovery(null);
     setSelectedSymbol(null);
     setTicker(null);
+    setCandles(null);
     Promise.all([api.getMarketDataProviders(), api.listConnections()])
       .then(([providerCatalog, connectionViews]) => {
         if (cancelled) return;
@@ -56,6 +85,7 @@ export function MarketDataPage() {
     setError(null);
     setSelectedSymbol(null);
     setTicker(null);
+    setCandles(null);
     try {
       const view = await api.discoverMarketDataSymbols(selectedConnectionId);
       setDiscovery(view);
@@ -85,6 +115,28 @@ export function MarketDataPage() {
     }
   }
 
+  async function retrieveCandles() {
+    if (!selectedConnectionId || !selectedSymbol) return;
+    setRetrievingCandles(true);
+    setError(null);
+    try {
+      const range = defaultCandleRange(selectedInterval);
+      const view = await api.retrieveMarketDataCandles(selectedConnectionId, {
+        exchangeSymbol: selectedSymbol.exchangeSymbol,
+        normalizedSymbol: selectedSymbol.normalizedSymbol,
+        interval: selectedInterval,
+        rangeStart: range.rangeStart,
+        rangeEnd: range.rangeEnd,
+      });
+      setCandles(view);
+    } catch (reason) {
+      setCandles(null);
+      setError(toUserFacingError(reason, 'Candlestick retrieval could not be completed.'));
+    } finally {
+      setRetrievingCandles(false);
+    }
+  }
+
   return (
     <MarketDataView
       providers={providers}
@@ -93,22 +145,32 @@ export function MarketDataPage() {
       discovery={discovery}
       selectedSymbol={selectedSymbol}
       ticker={ticker}
+      selectedInterval={selectedInterval}
+      candles={candles}
       loading={loading}
       discovering={discovering}
       retrievingTicker={retrievingTicker}
+      retrievingCandles={retrievingCandles}
       error={error}
       onSelectConnection={(connectionId) => {
         setSelectedConnectionId(connectionId);
         setDiscovery(null);
         setSelectedSymbol(null);
         setTicker(null);
+        setCandles(null);
       }}
       onDiscover={discover}
       onSelectSymbol={(symbol) => {
         setSelectedSymbol(symbol);
         setTicker(null);
+        setCandles(null);
       }}
       onRetrieveTicker={retrieveTicker}
+      onSelectInterval={(interval) => {
+        setSelectedInterval(interval);
+        setCandles(null);
+      }}
+      onRetrieveCandles={retrieveCandles}
     />
   );
 }

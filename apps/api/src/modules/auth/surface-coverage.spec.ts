@@ -235,19 +235,20 @@ describe('HTTP surface coverage (V3-S02-b)', () => {
     expect(handlers.some((handler) => handler.handler === 'verifyCapabilities')).toBe(false);
   });
 
-  it('classifies Market Data symbols and ticker as C3 Projection', () => {
+  it('classifies Market Data symbols, ticker, and candles as C3 Projection', () => {
     const handlers = collectControllerHandlers(MarketDataSymbolsController);
     expect(handlers.map((handler) => handler.handler).sort()).toEqual([
       'cached',
+      'cachedCandles',
       'cachedTicker',
       'discover',
       'providers',
+      'retrieveCandles',
       'retrieveTicker',
     ]);
     expect(handlers.every((handler) => handler.permission === PermissionClass.Projection)).toBe(
       true,
     );
-    expect(handlers.some((handler) => handler.handler === 'getCandles')).toBe(false);
     expect(handlers.some((handler) => handler.handler === 'getOrderBook')).toBe(false);
   });
 

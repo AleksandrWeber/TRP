@@ -1,11 +1,23 @@
 import { Module } from '@nestjs/common';
 import { SecurityAuditModule } from '../security-audit';
 import { WorkspaceModule } from '../workspace';
+import { BinanceCandleRetrievalAdapter } from './binance-candle.adapter';
 import { BinanceSymbolDiscoveryAdapter } from './binance-symbol.adapter';
 import { BinanceTickerRetrievalAdapter } from './binance-ticker.adapter';
 import { MarketDataAdapterFactory } from './market-data-adapter.factory';
 import { MarketDataAdapterRegistry } from './market-data-adapter.registry';
 import { MarketDataSymbolsController } from './market-data-symbols.controller';
+import { MarketCandleCache } from './market-candle.cache';
+import { MarketCandleRetrievalAudit } from './market-candle.audit';
+import {
+  CANDLE_RETRIEVAL_HTTP_CLIENT,
+  CANDLE_RETRIEVAL_TIMEOUT_MS,
+  DEFAULT_CANDLE_RETRIEVAL_TIMEOUT_MS,
+  FetchCandleRetrievalHttpClient,
+} from './market-candle.http';
+import { MARKET_DATA_CANDLE_RETRIEVAL_ADAPTERS } from './market-candle.retrieval';
+import { MarketCandleRetrievalService } from './market-candle.service';
+import { PlannedCandleRetrievalAdapter } from './planned-candle.adapter';
 import { MarketSymbolCache } from './market-symbol.cache';
 import { MarketSymbolDiscoveryAudit } from './market-symbol.audit';
 import { MARKET_DATA_SYMBOL_DISCOVERY_ADAPTERS } from './market-symbol.discovery';
@@ -37,7 +49,9 @@ import { PlannedTickerRetrievalAdapter } from './planned-ticker.adapter';
  * W2-S03-b: exchange symbol discovery, normalization, validation, cache,
  * and projection.
  * W2-S03-c: ticker retrieval, normalization, validation, freshness, cache,
- * and projection. Candles and order book remain later slices.
+ * and projection.
+ * W2-S03-d: candlestick retrieval, OHLCV normalization, validation, freshness,
+ * cache, and projection. Order book remains a later slice.
  */
 @Module({
   imports: [WorkspaceModule, SecurityAuditModule],
@@ -96,6 +110,28 @@ import { PlannedTickerRetrievalAdapter } from './planned-ticker.adapter';
     MarketTickerCache,
     MarketTickerRetrievalAudit,
     MarketTickerRetrievalService,
+    FetchCandleRetrievalHttpClient,
+    {
+      provide: CANDLE_RETRIEVAL_HTTP_CLIENT,
+      useExisting: FetchCandleRetrievalHttpClient,
+    },
+    {
+      provide: CANDLE_RETRIEVAL_TIMEOUT_MS,
+      useValue: DEFAULT_CANDLE_RETRIEVAL_TIMEOUT_MS,
+    },
+    BinanceCandleRetrievalAdapter,
+    {
+      provide: MARKET_DATA_CANDLE_RETRIEVAL_ADAPTERS,
+      useFactory: (binance: BinanceCandleRetrievalAdapter) => [
+        binance,
+        new PlannedCandleRetrievalAdapter('BYBIT'),
+        new PlannedCandleRetrievalAdapter('OKX'),
+      ],
+      inject: [BinanceCandleRetrievalAdapter],
+    },
+    MarketCandleCache,
+    MarketCandleRetrievalAudit,
+    MarketCandleRetrievalService,
   ],
   exports: [
     MarketDataAdapterRegistry,
@@ -104,6 +140,8 @@ import { PlannedTickerRetrievalAdapter } from './planned-ticker.adapter';
     MarketSymbolCache,
     MarketTickerRetrievalService,
     MarketTickerCache,
+    MarketCandleRetrievalService,
+    MarketCandleCache,
   ],
 })
 export class MarketDataFoundationModule {}

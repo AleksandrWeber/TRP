@@ -108,3 +108,47 @@ export { MarketTickerRetrievalService } from './market-ticker.service';
 export { MarketTickerRetrievalAudit } from './market-ticker.audit';
 export { BinanceTickerRetrievalAdapter, parseBinanceTicker24hr } from './binance-ticker.adapter';
 export { PlannedTickerRetrievalAdapter } from './planned-ticker.adapter';
+export {
+  MARKET_CANDLE_FRESHNESS,
+  MARKET_CANDLE_INTERVALS,
+  isMarketCandleFreshness,
+  isMarketCandleInterval,
+  type MarketCandleFreshness,
+  type MarketCandleInterval,
+  type NormalizedMarketCandle,
+  type ProviderCandleObservation,
+} from './market-candle';
+export {
+  MARKET_CANDLE_FRESH_MAX_AGE_MS,
+  MARKET_CANDLE_FRESHNESS_CLOCK_SKEW_MS,
+  calculateCandleFreshness,
+} from './market-candle.freshness';
+export { MARKET_CANDLE_CLOCK_SKEW_MS, normalizeProviderCandle } from './market-candle.normalize';
+export {
+  MarketCandleDuplicateTimestampError,
+  MarketCandleInvalidIntervalError,
+  MarketCandleInvalidRangeError,
+  MarketCandleInvalidSymbolError,
+  MarketCandleMalformedPayloadError,
+  MarketCandleValidationError,
+  validateAndNormalizeCandles,
+  validateCandleRetrievalRequest,
+} from './market-candle.validate';
+export {
+  projectCandleRetrieval,
+  projectMarketCandle,
+  type MarketCandleFieldsView,
+  type MarketCandleRetrievalView,
+} from './market-candle.projection';
+export { MarketCandleCache, type MarketCandleCacheEntry } from './market-candle.cache';
+export {
+  MARKET_DATA_CANDLE_RETRIEVAL_ADAPTERS,
+  type MarketCandleRetrievalAdapter,
+  type MarketCandleRetrievalAdapterKind,
+  type MarketCandleRetrievalAdapterRequest,
+  type MarketCandleRetrievalAdapterResult,
+} from './market-candle.retrieval';
+export { MarketCandleRetrievalService } from './market-candle.service';
+export { MarketCandleRetrievalAudit } from './market-candle.audit';
+export { BinanceCandleRetrievalAdapter, parseBinanceKlines } from './binance-candle.adapter';
+export { PlannedCandleRetrievalAdapter } from './planned-candle.adapter';

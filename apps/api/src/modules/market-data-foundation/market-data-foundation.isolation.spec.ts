@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 const directory = join(process.cwd(), 'src/modules/market-data-foundation');
 
-describe('Market Data foundation isolation (W2-S03-c)', () => {
+describe('Market Data foundation isolation (W2-S03-d)', () => {
   it('keeps transport in HTTP clients and never imports trading owners', async () => {
     const files = (await readdir(directory)).filter(
       (name) => name.endsWith('.ts') && !name.endsWith('.spec.ts'),
@@ -21,7 +21,6 @@ describe('Market Data foundation isolation (W2-S03-c)', () => {
     expect(joined).not.toMatch(/\bWebSocket\b/);
     expect(joined).not.toMatch(/wss:\/\//);
     expect(joined).not.toMatch(/\bsetInterval\s*\(/);
-    expect(joined).not.toMatch(/\bgetCandles\s*\(/);
     expect(joined).not.toMatch(/\bgetOrderBook\s*\(/);
     expect(joined).not.toMatch(/from ['"]\.\.\/live-trading-engine/);
     expect(joined).not.toMatch(/from ['"]\.\.\/orders/);
@@ -38,7 +37,11 @@ describe('Market Data foundation isolation (W2-S03-c)', () => {
       .filter((file) => /\bfetch\s*\(/.test(file.source))
       .map((file) => file.name)
       .sort();
-    expect(fetchFiles).toEqual(['market-symbol.http.ts', 'market-ticker.http.ts']);
+    expect(fetchFiles).toEqual([
+      'market-candle.http.ts',
+      'market-symbol.http.ts',
+      'market-ticker.http.ts',
+    ]);
 
     const capabilitySource = sources.find(
       (file) => file.name === 'market-data-provider-capabilities.ts',
@@ -51,17 +54,16 @@ describe('Market Data foundation isolation (W2-S03-c)', () => {
     expect(contractSource?.source).not.toMatch(/\bREST\b/);
     expect(contractSource?.source).not.toMatch(/\bWebSocket\b/);
 
-    const discoverySource = sources.find((file) => file.name === 'market-symbol.discovery.ts');
-    expect(discoverySource?.source).not.toMatch(/\bfetch\s*\(/);
-    expect(discoverySource?.source).not.toMatch(/\bWebSocket\b/);
-    expect(discoverySource?.source).not.toMatch(/\burl\b/);
-
-    const tickerRetrievalSource = sources.find(
-      (file) => file.name === 'market-ticker.retrieval.ts',
-    );
-    expect(tickerRetrievalSource?.source).not.toMatch(/\bfetch\s*\(/);
-    expect(tickerRetrievalSource?.source).not.toMatch(/\bWebSocket\b/);
-    expect(tickerRetrievalSource?.source).not.toMatch(/\burl\b/);
+    for (const retrieval of [
+      'market-symbol.discovery.ts',
+      'market-ticker.retrieval.ts',
+      'market-candle.retrieval.ts',
+    ]) {
+      const source = sources.find((file) => file.name === retrieval);
+      expect(source?.source).not.toMatch(/\bfetch\s*\(/);
+      expect(source?.source).not.toMatch(/\bWebSocket\b/);
+      expect(source?.source).not.toMatch(/\burl\b/);
+    }
 
     for (const adapter of sources.filter(
       (file) => file.name.endsWith('adapter.ts') && file.name !== 'market-data-adapter.ts',
@@ -77,7 +79,11 @@ describe('Market Data foundation isolation (W2-S03-c)', () => {
       .map((file) => file.name);
     expect(tickerPathFiles).toEqual(['binance-ticker.adapter.ts']);
 
-    expect(joined).not.toMatch(/\/api\/v3\/klines/);
+    const klinesPathFiles = sources
+      .filter((file) => /\/api\/v3\/klines/.test(file.source))
+      .map((file) => file.name);
+    expect(klinesPathFiles).toEqual(['binance-candle.adapter.ts']);
+
     expect(joined).not.toMatch(/\/api\/v3\/depth/);
     expect(joined).not.toMatch(/\/api\/v3\/account\b/);
     expect(joined).not.toMatch(/\/api\/v3\/order/);

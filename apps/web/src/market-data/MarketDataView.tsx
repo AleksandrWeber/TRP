@@ -1,10 +1,21 @@
 import type {
   ConnectionMetadataView,
+  MarketCandleInterval,
+  MarketCandleRetrievalView,
   MarketDataProviderCatalogView,
   MarketSymbolDiscoveryView,
   MarketSymbolView,
   MarketTickerRetrievalView,
 } from '../shared/api';
+
+export const MARKET_DATA_CANDLE_INTERVALS: readonly MarketCandleInterval[] = [
+  '1m',
+  '5m',
+  '15m',
+  '1h',
+  '4h',
+  '1d',
+];
 
 export type MarketDataViewProps = {
   providers: MarketDataProviderCatalogView | null;
@@ -13,14 +24,19 @@ export type MarketDataViewProps = {
   discovery: MarketSymbolDiscoveryView | null;
   selectedSymbol: MarketSymbolView | null;
   ticker: MarketTickerRetrievalView | null;
+  selectedInterval: MarketCandleInterval;
+  candles: MarketCandleRetrievalView | null;
   loading: boolean;
   discovering: boolean;
   retrievingTicker: boolean;
+  retrievingCandles: boolean;
   error: string | null;
   onSelectConnection: (connectionId: string) => void;
   onDiscover: () => void;
   onSelectSymbol: (symbol: MarketSymbolView | null) => void;
   onRetrieveTicker: () => void;
+  onSelectInterval: (interval: MarketCandleInterval) => void;
+  onRetrieveCandles: () => void;
 };
 
 export function MarketDataView({
@@ -30,14 +46,19 @@ export function MarketDataView({
   discovery,
   selectedSymbol,
   ticker,
+  selectedInterval,
+  candles,
   loading,
   discovering,
   retrievingTicker,
+  retrievingCandles,
   error,
   onSelectConnection,
   onDiscover,
   onSelectSymbol,
   onRetrieveTicker,
+  onSelectInterval,
+  onRetrieveCandles,
 }: MarketDataViewProps) {
   const exchangeConnections = connections.filter((item) => item.connectionType === 'EXCHANGE');
   const selected = exchangeConnections.find((item) => item.id === selectedConnectionId) ?? null;
@@ -48,9 +69,9 @@ export function MarketDataView({
         <p className="text-sm uppercase tracking-[0.2em] text-slate-400">Market Data</p>
         <h2 className="mt-1 text-3xl font-semibold">Market Data</h2>
         <p className="mt-2 max-w-3xl text-slate-400">
-          Load tradable symbols and the current ticker from a supported exchange connection. Data is
-          normalized into one product model. This surface does not show candles, order book,
-          balances, positions, or trading controls.
+          Load tradable symbols, the current ticker, and historical OHLCV candles from a supported
+          exchange connection. Data is normalized into one product model. This surface does not show
+          order book, trades, balances, positions, or trading controls.
         </p>
       </div>
 
@@ -72,8 +93,8 @@ export function MarketDataView({
                   {provider.availability === 'AVAILABLE' ? 'Available' : 'Unavailable'}
                   {' · '}
                   {provider.id === 'BINANCE'
-                    ? 'Symbols and ticker supported'
-                    : 'Symbols and ticker not implemented'}
+                    ? 'Symbols, ticker, and candles supported'
+                    : 'Symbols, ticker, and candles not implemented'}
                 </p>
               </div>
             ))}
@@ -242,6 +263,90 @@ export function MarketDataView({
             </p>
             {ticker.failureReason ? (
               <p className="mt-2 text-sm text-slate-400">{ticker.failureReason}</p>
+            ) : null}
+          </div>
+        ) : null}
+      </section>
+
+      <section className="rounded border border-white/10 p-5">
+        <h3 className="text-lg font-medium">Candles</h3>
+        <p className="mt-2 text-sm text-slate-400">
+          Load historical OHLCV candles for the selected symbol and interval. Freshness reflects the
+          latest observed candle close versus retrieval time.
+        </p>
+        <label className="mt-4 block text-sm text-slate-300">
+          Select Interval
+          <select
+            className="mt-2 w-full max-w-xs rounded border border-white/10 bg-slate-950 px-3 py-2"
+            value={selectedInterval}
+            onChange={(event) => onSelectInterval(event.target.value as MarketCandleInterval)}
+          >
+            {MARKET_DATA_CANDLE_INTERVALS.map((interval) => (
+              <option key={interval} value={interval}>
+                {interval}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button
+          type="button"
+          className="mt-4 rounded bg-sky-700 px-4 py-2 text-sm font-medium disabled:opacity-50"
+          onClick={onRetrieveCandles}
+          disabled={!selected || !selectedSymbol || retrievingCandles || loading}
+        >
+          {retrievingCandles ? 'Loading candles…' : 'Load Candles'}
+        </button>
+
+        {!candles ? (
+          <p className="mt-4 text-slate-400">Select a symbol and interval, then load candles.</p>
+        ) : null}
+
+        {candles?.outcome === 'COMPLETED' ? (
+          <div className="mt-4 space-y-3 text-sm" data-testid="candles-panel">
+            <p>
+              <span className="text-slate-400">Freshness</span>{' '}
+              <span className="font-medium" data-testid="candles-freshness">
+                {formatFreshness(candles.freshness)}
+              </span>
+              <span className="ml-3 text-slate-400">
+                {candles.candles.length} candles · {candles.interval}
+              </span>
+            </p>
+            <p className="text-slate-500">
+              Range {candles.rangeStart} → {candles.rangeEnd}
+            </p>
+            <ul className="max-h-80 space-y-2 overflow-auto">
+              {candles.candles.map((candle) => (
+                <li
+                  key={candle.openTime}
+                  className="border-b border-white/5 py-2 font-mono text-xs"
+                >
+                  <span className="font-medium">{candle.openTime}</span>
+                  <span className="ml-2 text-slate-400">
+                    O {candle.open} H {candle.high} L {candle.low} C {candle.close} V{' '}
+                    {candle.volume}
+                    {candle.tradeCount !== null ? ` T ${candle.tradeCount}` : ''}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        {candles && candles.outcome !== 'COMPLETED' ? (
+          <div className="mt-4" role="status">
+            <p className="font-medium text-amber-200">
+              {candles.outcome === 'PROVIDER_UNAVAILABLE'
+                ? 'Provider Unavailable'
+                : candles.outcome === 'NOT_IMPLEMENTED'
+                  ? 'Provider unavailable — candlestick retrieval not implemented'
+                  : 'Candlestick retrieval failed'}
+            </p>
+            <p className="mt-2 text-sm text-slate-400">
+              Freshness: {formatFreshness(candles.freshness)}
+            </p>
+            {candles.failureReason ? (
+              <p className="mt-2 text-sm text-slate-400">{candles.failureReason}</p>
             ) : null}
           </div>
         ) : null}

@@ -157,6 +157,38 @@ export type MarketTickerRetrievalView = {
   failureReason: string | null;
 };
 
+export type MarketCandleInterval = '1m' | '5m' | '15m' | '1h' | '4h' | '1d';
+export type MarketCandleFreshness = 'FRESH' | 'STALE' | 'UNAVAILABLE' | 'UNKNOWN';
+
+export type MarketCandleFieldsView = {
+  normalizedSymbol: string;
+  interval: MarketCandleInterval;
+  openTime: string;
+  closeTime: string;
+  open: string;
+  high: string;
+  low: string;
+  close: string;
+  volume: string;
+  tradeCount: number | null;
+  exchangeTimestamp: string;
+  retrievalTimestamp: string;
+  providerId: string;
+};
+
+export type MarketCandleRetrievalView = {
+  connectionId: string;
+  providerId: string;
+  exchangeSymbol: string;
+  interval: MarketCandleInterval | string;
+  rangeStart: string;
+  rangeEnd: string;
+  candles: MarketCandleFieldsView[];
+  freshness: MarketCandleFreshness;
+  outcome: 'COMPLETED' | 'FAILED' | 'PROVIDER_UNAVAILABLE' | 'NOT_IMPLEMENTED';
+  failureReason: string | null;
+};
+
 export type Dataset = {
   id: string;
   symbol: string;
@@ -3018,6 +3050,23 @@ export const api = {
   ) =>
     request<MarketTickerRetrievalView>(
       `/market-data/connections/${encodeURIComponent(connectionId)}/ticker/retrieve`,
+      {
+        method: 'POST',
+        body: JSON.stringify(body),
+      },
+    ),
+  retrieveMarketDataCandles: (
+    connectionId: string,
+    body: {
+      exchangeSymbol: string;
+      normalizedSymbol: string;
+      interval: MarketCandleInterval;
+      rangeStart: string;
+      rangeEnd: string;
+    },
+  ) =>
+    request<MarketCandleRetrievalView>(
+      `/market-data/connections/${encodeURIComponent(connectionId)}/candles/retrieve`,
       {
         method: 'POST',
         body: JSON.stringify(body),

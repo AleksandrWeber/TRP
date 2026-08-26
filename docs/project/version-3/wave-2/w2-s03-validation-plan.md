@@ -2,7 +2,7 @@
 
 **Package:** W2-S03 Market Data Foundation
 **Wave:** 2 — Connection Management
-**Status:** W2-S03-a, W2-S03-b, and W2-S03-c executed for slice review. Remaining slices not executed. Close remains pending Product Owner decision.
+**Status:** W2-S03-a, W2-S03-b, W2-S03-c, and W2-S03-d executed for slice review. Remaining slices not executed. Close remains pending Product Owner decision.
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w2-s03-product-scope.md`](./w2-s03-product-scope.md)
 **Security:** [`w2-s03-security-review.md`](./w2-s03-security-review.md)
@@ -39,7 +39,7 @@ Do not validate order placement, execution, portfolio, balances, positions, WebS
 | **W2-S03-a** | One Market Data adapter contract for Binance, Bybit, OKX; additional providers allowed | Adapters — **executed** (see below)            |
 | **W2-S03-b** | Provider payloads normalize; symbols are provider-scoped and selectable                | Normalize / symbols — **executed** (see below) |
 | **W2-S03-c** | Ticker foundation is an honest product projection (candles / order book remain later)  | Ticker projection — **executed** (see below)   |
-| **W2-S03-d** | Health, provider metadata, Provider Unavailable, and stale handling are honest         | Health / honesty                               |
+| **W2-S03-d** | Candlestick foundation is an honest historical OHLCV product projection                | Candles — **executed** (see below)             |
 | **W2-S03-e** | Verification Standard + regressions + full walkthrough                                 | Close evidence                                 |
 
 ### W2-S03-a execution evidence
@@ -92,6 +92,28 @@ Recorded in [`w2-s03-c-validation-report.md`](./w2-s03-c-validation-report.md).
 | No candles, order book, trades, historical data, WebSockets, or polling | PASS   |
 
 W2-S03-c does **not** Close W2-S03. Candles, order-book projections, health product Close, and the full Market Data Walkthrough remain later slices.
+
+### W2-S03-d execution evidence
+
+Recorded in [`w2-s03-d-validation-report.md`](./w2-s03-d-validation-report.md).
+
+| Proof                                                                  | Result |
+| ---------------------------------------------------------------------- | ------ |
+| Binance candlestick retrieval returns normalized historical OHLCV      | PASS   |
+| Provider-independent candle model with required fields only            | PASS   |
+| Supported intervals only: 1m, 5m, 15m, 1h, 4h, 1d                      | PASS   |
+| Unsupported intervals rejected honestly                                | PASS   |
+| Deterministic normalization; unknown fields not guessed                | PASS   |
+| Malformed payloads, invalid OHLC, negative volume, duplicates rejected | PASS   |
+| Caller-specified historical range; no fixed history window assumption  | PASS   |
+| Freshness projected as Fresh / Stale / Unavailable / Unknown honestly  | PASS   |
+| Session-safe candle cache stores normalized OHLCV only                 | PASS   |
+| Workspace isolation and Connected connection prerequisite              | PASS   |
+| Bybit / OKX report not implemented                                     | PASS   |
+| Operator UI: interval selector, load candles, freshness, failure       | PASS   |
+| No order book, trades stream, WebSockets, or polling                   | PASS   |
+
+W2-S03-d does **not** Close W2-S03. Order-book projections, health product Close, and the full Market Data Walkthrough remain later slices.
 
 ---
 
@@ -322,4 +344,4 @@ Do not treat the following as W2-S03 Close evidence:
 
 ---
 
-**STOP.** W2-S03-c is implemented for Product Owner review. Do not begin W2-S03-d automatically.
+**STOP.** W2-S03-d is implemented for Product Owner review. Do not begin W2-S03-e automatically.
