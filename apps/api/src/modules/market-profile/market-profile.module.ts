@@ -37,6 +37,7 @@ import {
         createRepositoryByDriver({
           createMemory: () => new InMemoryMarketProfileStore(),
           createPrisma: (client) => new DurableMarketProfileStore(client),
+          owner: 'market-profile',
         }),
     },
     MarketProfileVersioningService,

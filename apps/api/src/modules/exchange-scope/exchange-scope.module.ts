@@ -34,6 +34,7 @@ import {
         createRepositoryByDriver({
           createMemory: () => new InMemoryExchangeScopeStore(),
           createPrisma: (client) => new DurableExchangeScopeStore(client),
+          owner: 'exchange-scope',
         }),
     },
     ExchangeScopeLifecycleService,

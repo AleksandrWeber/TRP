@@ -44,6 +44,7 @@ import { TradingOrchestratorBoundaryService } from './trading-orchestrator-bound
         createRepositoryByDriver({
           createMemory: () => new OrchestrationCoordinationStore(),
           createPrisma: (client) => new DurableOrchestrationCoordinationStore(client),
+          owner: 'trading-orchestrator',
         }),
     },
     OrchestrationWorkflowCoordinator,

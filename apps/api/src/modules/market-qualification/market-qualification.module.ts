@@ -45,6 +45,7 @@ import {
         createRepositoryByDriver({
           createMemory: () => new InMemoryQualificationStore(),
           createPrisma: (client) => new DurableQualificationStore(client),
+          owner: 'market-qualification',
         }),
     },
     MarketQualificationLifecycleService,

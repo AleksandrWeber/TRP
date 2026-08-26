@@ -67,6 +67,7 @@ import {
   NotificationSettingsPage,
 } from '../notifications';
 import { ConnectionsPage } from '../connections/ConnectionsPage';
+import { OperationalContinuityPage } from '../operational-continuity/OperationalContinuityPage';
 import { MarketDataPage } from '../market-data/MarketDataPage';
 import { PaperTradingFoundationPage } from '../paper-trading/PaperTradingFoundationPage';
 import { WorkflowsPage } from '../pages/WorkflowsPage';
@@ -181,6 +182,7 @@ export function App() {
             <Route path="notifications/:deliveryId" element={<NotificationDetailPage />} />
             <Route path="notifications" element={<NotificationSettingsPage />} />
             <Route path="connections" element={<ConnectionsPage />} />
+            <Route path="operational-continuity" element={<OperationalContinuityPage />} />
             <Route path="market-data" element={<MarketDataPage />} />
             <Route path="paper-trading" element={<PaperTradingFoundationPage />} />
             <Route

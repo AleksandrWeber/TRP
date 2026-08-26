@@ -38,6 +38,7 @@ import { ReportingQueryService } from './reporting-query.service';
         createRepositoryByDriver({
           createMemory: () => new InMemoryReportingStore(),
           createPrisma: (client) => new DurableReportingStore(client),
+          owner: 'reporting',
         }),
     },
     ReportingGenerationService,

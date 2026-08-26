@@ -104,6 +104,7 @@ import { LoggingModule } from './logging/logging.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { SecurityPlatformModule } from './security-platform';
 import { ValidationModule } from './validation/validation.module';
+import { OperationalContinuityModule } from './modules/operational-continuity';
 
 @Module({
   imports: [
@@ -209,6 +210,7 @@ import { ValidationModule } from './validation/validation.module';
     WorkflowModule,
     ProductionModule,
     AiModule,
+    OperationalContinuityModule,
   ],
   controllers: [AppController],
   providers: [

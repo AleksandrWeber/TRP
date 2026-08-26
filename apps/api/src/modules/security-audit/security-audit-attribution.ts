@@ -44,6 +44,19 @@ const ATTRIBUTION_RULES: Readonly<Record<string, AttributionRule>> = Object.free
   },
   'platform.abuse.throttled': {},
   'platform.deny.shaped': {},
+  'continuity.recovery-completed': {},
+  'continuity.owner-ready': {
+    resourceType: true,
+    resourceId: true,
+  },
+  'continuity.owner-degraded': {
+    resourceType: true,
+    resourceId: true,
+  },
+  'continuity.owner-unavailable': {
+    resourceType: true,
+    resourceId: true,
+  },
 });
 
 /** Normalizes attribution and enforces required investigation fields per event type. */

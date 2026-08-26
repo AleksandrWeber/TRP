@@ -1,0 +1,88 @@
+import type { OperationalContinuityReadinessView } from '../shared/api';
+
+type Props = {
+  readiness: OperationalContinuityReadinessView;
+};
+
+function formatDuration(ms: number | null): string {
+  if (ms === null) return '—';
+  if (ms < 1000) return `${ms} ms`;
+  return `${(ms / 1000).toFixed(2)} s`;
+}
+
+export function OperationalContinuityView({ readiness }: Props) {
+  return (
+    <div className="mt-6 space-y-8">
+      <section>
+        <h2 className="text-lg font-semibold text-slate-100">Platform state</h2>
+        <p className="mt-2 text-2xl font-medium text-slate-50" data-testid="platform-state">
+          {readiness.platformState}
+        </p>
+        <dl className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div>
+            <dt className="text-sm text-slate-400">Recovery timestamp</dt>
+            <dd className="text-slate-100" data-testid="recovery-timestamp">
+              {readiness.recoveryTimestamp ?? '—'}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-sm text-slate-400">Recovery duration</dt>
+            <dd className="text-slate-100" data-testid="recovery-duration">
+              {formatDuration(readiness.recoveryDurationMs)}
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold text-slate-100">Degraded owners</h2>
+        {readiness.degradedOwners.length === 0 ? (
+          <p className="mt-2 text-slate-400">None</p>
+        ) : (
+          <ul className="mt-2 list-disc pl-5 text-slate-200" data-testid="degraded-owners">
+            {readiness.degradedOwners.map((owner) => (
+              <li key={owner}>{owner}</li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold text-slate-100">Unavailable owners</h2>
+        {readiness.unavailableOwners.length === 0 ? (
+          <p className="mt-2 text-slate-400">None</p>
+        ) : (
+          <ul className="mt-2 list-disc pl-5 text-slate-200" data-testid="unavailable-owners">
+            {readiness.unavailableOwners.map((owner) => (
+              <li key={owner}>{owner}</li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold text-slate-100">Owner operational state</h2>
+        <table className="mt-3 w-full text-left text-sm text-slate-200">
+          <thead className="text-slate-400">
+            <tr>
+              <th className="py-2 pr-4 font-medium">Owner</th>
+              <th className="py-2 pr-4 font-medium">State</th>
+              <th className="py-2 font-medium">Dependencies</th>
+            </tr>
+          </thead>
+          <tbody data-testid="owner-states">
+            {readiness.ownerStates.map((owner) => (
+              <tr key={owner.owner} className="border-t border-slate-800">
+                <td className="py-2 pr-4">{owner.owner}</td>
+                <td className="py-2 pr-4">{owner.state}</td>
+                <td className="py-2">
+                  {owner.dependencyOwners.length === 0 ? '—' : owner.dependencyOwners.join(', ')}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    </div>
+  );
+}

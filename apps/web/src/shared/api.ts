@@ -1017,6 +1017,25 @@ export type ReportRunPageView = {
   ledgerSoT: false;
 };
 
+export type OperationalContinuityState = 'Recovering' | 'Ready' | 'Degraded' | 'Unavailable';
+
+export type OperationalContinuityOwnerView = {
+  owner: string;
+  state: OperationalContinuityState;
+  recoveryRequired: true;
+  dependencyOwners: readonly string[];
+  reason?: string;
+};
+
+export type OperationalContinuityReadinessView = {
+  platformState: OperationalContinuityState;
+  ownerStates: readonly OperationalContinuityOwnerView[];
+  unavailableOwners: readonly string[];
+  degradedOwners: readonly string[];
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+};
+
 export type ReportAggregationView = {
   sliceId: string;
   reportRunId: string;
@@ -3395,6 +3414,8 @@ export const api = {
       },
     ),
   listConnections: () => request<ConnectionMetadataView[]>('/connections'),
+  getOperationalContinuityReadiness: () =>
+    request<OperationalContinuityReadinessView>('/operational-continuity/readiness'),
   getConnection: (id: string) =>
     request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}`),
   createConnection: (body: { displayName: string; provider: ConnectionProvider }) =>

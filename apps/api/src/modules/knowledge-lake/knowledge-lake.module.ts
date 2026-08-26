@@ -46,6 +46,7 @@ import { KNOWLEDGE_LAKE_QUERY_PORT } from './ports/knowledge-lake-query.port';
         createRepositoryByDriver({
           createMemory: () => new InMemoryKnowledgeLakeIngestionAdapter(),
           createPrisma: (client) => new DurableKnowledgeLakeIngestionAdapter(client),
+          owner: 'knowledge-lake',
         }),
     },
     {

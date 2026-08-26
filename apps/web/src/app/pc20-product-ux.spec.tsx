@@ -41,6 +41,7 @@ describe('PC-20 Product UX Polish', () => {
     expect(paths).toContain('/notifications');
     expect(paths).toContain('/notifications/channels');
     expect(paths).toContain('/connections');
+    expect(paths).toContain('/operational-continuity');
     expect(paths).toContain('/market-data');
     expect(paths).toContain('/knowledge');
     expect(paths).toContain('/ai');

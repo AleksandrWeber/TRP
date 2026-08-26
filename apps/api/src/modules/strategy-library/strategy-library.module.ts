@@ -32,6 +32,7 @@ import { StrategyLibraryBoundaryService } from './strategy-library-boundary.serv
         createRepositoryByDriver({
           createMemory: () => new InMemoryStrategyLibraryReadAdapter(),
           createPrisma: (client) => new DurableStrategyLibraryReadAdapter(client),
+          owner: 'strategy-library',
         }),
     },
     {
@@ -40,6 +41,7 @@ import { StrategyLibraryBoundaryService } from './strategy-library-boundary.serv
         createRepositoryByDriver({
           createMemory: () => new InMemoryStrategyLibraryCertificationAdapter(library),
           createPrisma: (client) => new DurableStrategyLibraryCertificationAdapter(client, library),
+          owner: 'strategy-library',
         }),
       inject: [InMemoryStrategyLibraryReadAdapter],
     },

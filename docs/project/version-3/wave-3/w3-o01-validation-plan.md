@@ -3,7 +3,7 @@
 **Package:** W3-O01 Durable Analytical Stores
 **Wave:** 3 — Durability, Operations & Continuity
 **Master Plan / Roadmap:** V3-O01 · IN-01 · TD-048
-**Status:** Planning **APPROVED**. W3-O01-a **APPROVED**. W3-O01-b **APPROVED**. W3-O01-c **IMPLEMENTED** (restart recovery). W3-O01-d **not started**.
+**Status:** Planning **APPROVED**. W3-O01-a/b/c **APPROVED**. W3-O01-d **IMPLEMENTED** (Operational Continuity Foundation). W3-O01-e **not started**.
 **Date:** 2026-08-26
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w3-o01-product-scope.md`](./w3-o01-product-scope.md)
@@ -11,6 +11,7 @@
 **Umbrella:** [`w3-o01-implementation-package.md`](./w3-o01-implementation-package.md)
 **Overview:** [`durability-overview.md`](./durability-overview.md)
 **Inventory:** [`w3-o01-a-analytical-inventory.md`](./w3-o01-a-analytical-inventory.md)
+**Operational State Matrix:** [`operational-state-matrix.md`](./operational-state-matrix.md)
 **Readiness:** [`implementation-readiness-checklist.md`](./implementation-readiness-checklist.md)
 **Checklists:** [`../version-3-product-checklist.md`](../version-3-product-checklist.md) · [`../version-3-architecture-checklist.md`](../version-3-architecture-checklist.md) · [`../version-3-security-checklist.md`](../version-3-security-checklist.md)
 **Verification Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md)
@@ -28,7 +29,8 @@ Do not validate Notification durable queue (O02), US295 Complete (O03), Kill Swi
 | W3-O01-a | Analytical store inventory & honesty baseline         | [`w3-o01-a-validation-report.md`](./w3-o01-a-validation-report.md) — **complete** |
 | W3-O01-b | Durable persistence for priority analytical artifacts | [`w3-o01-b-validation-report.md`](./w3-o01-b-validation-report.md) — **complete** |
 | W3-O01-c | Restart-survival proof & degraded honesty             | [`w3-o01-c-validation-report.md`](./w3-o01-c-validation-report.md) — **complete** |
-| W3-O01-d | Security verification + package Close evidence        | Not started                                                                       |
+| W3-O01-d | Operational Continuity Foundation                     | [`w3-o01-d-validation-report.md`](./w3-o01-d-validation-report.md) — **complete** |
+| W3-O01-e | Package Close evidence                                | Not started                                                                       |
 
 ---
 
@@ -230,11 +232,12 @@ W3-O01-a command validation (required for this slice):
 | -------- | ----------------------------------- |
 | W3-O01-a | **APPROVED**                        |
 | W3-O01-b | **APPROVED**                        |
-| W3-O01-c | **Authorized and implemented**      |
-| W3-O01-d | **Not opened** — wait for PO review |
+| W3-O01-c | **APPROVED**                        |
+| W3-O01-d | **Authorized and implemented**      |
+| W3-O01-e | **Not opened** — wait for PO review |
 
-Do not treat W3-O01-c validation as package Close, Business Continuity, or High Availability.
+Do not treat W3-O01-d validation as package Close, Business Continuity, High Availability, or Monitoring.
 
 ---
 
-**STOP.** Wait for Product Owner review before W3-O01-d. Do not implement Business Continuity. Do not implement High Availability.
+**STOP.** Wait for Product Owner review before W3-O01-e. Do not implement Business Continuity. Do not implement High Availability. Do not implement Monitoring.

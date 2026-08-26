@@ -42,6 +42,7 @@ import {
         createRepositoryByDriver({
           createMemory: () => new MarketStateProjectionStore(),
           createPrisma: (client) => new DurableMarketStateProjectionStore(client),
+          owner: 'market-state',
         }),
     },
     MarketStateConsumerReadAdapter,

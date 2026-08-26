@@ -126,6 +126,42 @@ const CATALOG: Readonly<Record<string, SecurityAuditClassification>> = Object.fr
     financialIntegrityValue: 'medium',
     retention: 'medium-long',
   },
+  'continuity.recovery-completed': {
+    eventClass: 'security-platform',
+    criticality: 'high',
+    investigationValue: 'Did operational recovery after normal process restart complete?',
+    customerTrustValue: 'high',
+    securityImpact: 'high',
+    financialIntegrityValue: 'medium',
+    retention: 'medium-long',
+  },
+  'continuity.owner-ready': {
+    eventClass: 'security-platform',
+    criticality: 'high',
+    investigationValue: 'Did an analytical owner become Ready after recovery?',
+    customerTrustValue: 'high',
+    securityImpact: 'medium',
+    financialIntegrityValue: 'medium',
+    retention: 'medium-long',
+  },
+  'continuity.owner-degraded': {
+    eventClass: 'security-platform',
+    criticality: 'high',
+    investigationValue: 'Did an analytical owner enter Degraded operational state?',
+    customerTrustValue: 'high',
+    securityImpact: 'high',
+    financialIntegrityValue: 'medium',
+    retention: 'medium-long',
+  },
+  'continuity.owner-unavailable': {
+    eventClass: 'security-platform',
+    criticality: 'high',
+    investigationValue: 'Did an analytical owner become Unavailable without fabricating data?',
+    customerTrustValue: 'high',
+    securityImpact: 'high',
+    financialIntegrityValue: 'medium',
+    retention: 'medium-long',
+  },
 });
 
 export function securityAuditClassificationFor(

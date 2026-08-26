@@ -314,6 +314,13 @@ export const PRODUCT_CHROME: readonly ProductChrome[] = [
     loadingLabel: 'Loading connections…',
   },
   {
+    id: 'operational-continuity',
+    label: 'Platform readiness',
+    path: '/operational-continuity',
+    band: 'administration',
+    loadingLabel: 'Loading platform readiness…',
+  },
+  {
     id: 'market-data',
     label: 'Market Data',
     path: '/market-data',
@@ -449,6 +456,7 @@ export const NAV_BANDS: readonly NavBand[] = [
           { to: '/notifications/channels', label: 'Notification Channels' },
           { to: '/connections', label: 'Connections' },
           { to: '/connections#ai-connectivity', label: 'AI Connectivity' },
+          { to: '/operational-continuity', label: 'Platform readiness' },
           { to: '/market-data', label: 'Market Data' },
         ],
       },

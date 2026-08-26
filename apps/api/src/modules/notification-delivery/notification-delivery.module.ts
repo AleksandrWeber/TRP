@@ -24,6 +24,7 @@ import { NOTIFICATION_SERVICE_PORT, TELEGRAM_CHANNEL_ADAPTER } from './ports/not
         createRepositoryByDriver({
           createMemory: () => new InMemoryNotificationStore(),
           createPrisma: (client) => new DurableNotificationStore(client),
+          owner: 'notification-delivery',
         }),
     },
     InMemoryTelegramAdapter,

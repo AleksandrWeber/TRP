@@ -23,6 +23,7 @@ import { RuntimeValidationService } from './runtime-validation.service';
         createRepositoryByDriver({
           createMemory: () => new InMemoryRuntimeValidationStore(),
           createPrisma: (client) => new DurableRuntimeValidationStore(client),
+          owner: 'runtime-enforcement',
         }),
     },
     RuntimeValidationService,
