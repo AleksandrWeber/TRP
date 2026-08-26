@@ -12,19 +12,20 @@
 
 ## Authority
 
-| Item                                    | Status                                     |
-| --------------------------------------- | ------------------------------------------ |
-| Version 3                               | In progress                                |
-| Wave 1 Security Foundation              | **CERTIFIED COMPLETE**                     |
-| W2-S01 Connection Management            | **CLOSED**                                 |
-| W2-S02 Exchange Connectivity Foundation | **CLOSED**                                 |
-| W2-S03 Market Data Foundation           | **CLOSED**                                 |
-| W2-S04 Paper Trading Foundation         | **CLOSED**                                 |
-| W2-S05 AI Connectivity Foundation       | **CLOSED**                                 |
-| Wave 2 COMPLETE                         | **COMPLETE**                               |
-| Wave 3 Planning                         | **Not opened** (may open after Final Seal) |
-| Live Trading                            | **Not claimed**                            |
-| Wave 7 AI Platform Complete             | **Not claimed**                            |
+| Item                                    | Status                                                                        |
+| --------------------------------------- | ----------------------------------------------------------------------------- |
+| Version 3                               | In progress                                                                   |
+| Wave 1 Security Foundation              | **CERTIFIED COMPLETE**                                                        |
+| W2-S01 Connection Management            | **CLOSED**                                                                    |
+| W2-S02 Exchange Connectivity Foundation | **CLOSED**                                                                    |
+| W2-S03 Market Data Foundation           | **CLOSED**                                                                    |
+| W2-S04 Paper Trading Foundation         | **CLOSED**                                                                    |
+| W2-S05 AI Connectivity Foundation       | **CLOSED**                                                                    |
+| Wave 2 COMPLETE                         | **COMPLETE**                                                                  |
+| Wave 3 Planning                         | **OPEN** — see [`../wave-3/wave-3-progress.md`](../wave-3/wave-3-progress.md) |
+| Wave 3 Implementation                   | **Not started**                                                               |
+| Live Trading                            | **Not claimed**                                                               |
+| Wave 7 AI Platform Complete             | **Not claimed**                                                               |
 
 ---
 
@@ -65,7 +66,9 @@ W2-S05 CLOSED
         ↓
 Wave 2 COMPLETE
         ↓
-STOP — Product Owner Final Seal / Wave 3 Planning may open
+Wave 3 Planning OPEN
+        ↓
+STOP — Wait for Product Owner Planning Review
 (Wave 3 implementation not started)
 ```
 
@@ -74,6 +77,7 @@ STOP — Product Owner Final Seal / Wave 3 Planning may open
 ## STOP
 
 Wave 2 Completion Report is recorded.
+Wave 3 Planning Package is open under [`../wave-3/`](../wave-3/).
 Do **not** begin Wave 3 implementation until Wave 3 Planning is Approved.
 Do **not** claim Live Trading.
 Do **not** claim Wave 7 AI Platform Complete.

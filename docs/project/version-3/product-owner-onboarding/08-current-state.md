@@ -9,50 +9,49 @@
 
 ## Where we are
 
-| Field              | Value                                           |
-| ------------------ | ----------------------------------------------- |
-| Version 2          | **CERTIFIED** (`v2.0.1`)                        |
-| Version 3 planning | **FROZEN** (Master Plan)                        |
-| Wave 1             | **CERTIFIED COMPLETE**                          |
-| Current Wave       | **2 — Connection Management**                   |
-| Current Package    | **W2-S04 Paper Trading Foundation**             |
-| Wave 2 COMPLETE    | **Not claimed**                                 |
-| Live Trading       | **Not claimed / unauthorized** until Wave 6 ADR |
+| Field                 | Value                                                |
+| --------------------- | ---------------------------------------------------- |
+| Version 2             | **CERTIFIED** (`v2.0.1`)                             |
+| Version 3 planning    | **FROZEN** (Master Plan)                             |
+| Wave 1                | **CERTIFIED COMPLETE**                               |
+| Wave 2                | **COMPLETE**                                         |
+| Current Wave          | **3 — Durability, Operations & Continuity**          |
+| Current Package       | **W3-O01 Durable Analytical Stores** (planning only) |
+| Wave 3 Planning       | **OPEN** — awaiting Product Owner Planning Review    |
+| Wave 3 Implementation | **Not started** / **Not authorized**                 |
+| Live Trading          | **Not claimed / unauthorized** until Wave 6 ADR      |
 
 ---
 
 ## Current package
 
-**W2-S04 Paper Trading Foundation**
+**W3-O01 Durable Analytical Stores** (Master Plan / Roadmap **V3-O01** · IN-01 · TD-048)
 
-- Simulates order execution using Market Data
-- No real exchange orders
-- No real capital
-- Mandatory foundation before Live Trading
+- Operator-relied analytical artifacts survive API restart (default)
+- Or honest ephemeral labeling when survival is not delivered
+- Persistence on existing aggregates only
+- No second Lake / Outbox
+- No Live Trading
+- No Monitoring Complete (O05)
+- No Kill Switch product (O04)
 
-Planning companions (under `../wave-2/`):
+Planning companions (under `../wave-3/`):
 
-- `w2-s04-implementation-package.md`
-- `w2-s04-product-scope.md`
-- `w2-s04-security-review.md`
-- `w2-s04-validation-plan.md`
-- `paper-trading-overview.md`
-- `w2-s04-planning-summary.md`
+- `w3-o01-implementation-package.md`
+- `w3-o01-product-scope.md`
+- `w3-o01-security-review.md`
+- `w3-o01-validation-plan.md`
+- `durability-overview.md`
+- `wave-3-planning-summary.md`
+- `wave-3-progress.md`
 
 ---
 
 ## Current slice
 
-| Slice        | Documented operational status                                                                                      |
-| ------------ | ------------------------------------------------------------------------------------------------------------------ |
-| **W2-S04-b** | Paper Order Foundation implemented; reviews/validation recorded; **awaiting Product Owner review** before W2-S04-c |
-
-What W2-S04-b delivers (per overview):
-
-- Create / list / review / cancel Paper Orders (Limit / Market / Stop / Stop Limit)
-- Statuses: Draft, Pending, Cancelled, Rejected
-- **Pending** = accepted intent — not executed, not filled
-- No fills, positions, balance changes, or PnL
+| Slice    | Documented operational status                                                       |
+| -------- | ----------------------------------------------------------------------------------- |
+| **None** | Implementation slices W3-O01-a…d are **named in planning only** and **not started** |
 
 ---
 
@@ -76,63 +75,46 @@ What W2-S04-b delivers (per overview):
 | W2-S01 Connection Management            | CLOSED |
 | W2-S02 Exchange Connectivity Foundation | CLOSED |
 | W2-S03 Market Data Foundation           | CLOSED |
+| W2-S04 Paper Trading Foundation         | CLOSED |
+| W2-S05 AI Connectivity Foundation       | CLOSED |
 
----
+### Wave 3
 
-## Approved slices (current package)
-
-Per [`../wave-2/paper-trading-overview.md`](../wave-2/paper-trading-overview.md) and [`../wave-2/w2-s04-validation-plan.md`](../wave-2/w2-s04-validation-plan.md):
-
-| Item                              | Status   |
-| --------------------------------- | -------- |
-| W2-S04 planning                   | APPROVED |
-| W2-S04-a Paper Account Foundation | APPROVED |
-
-**Reconciliation note:** [`../wave-2/wave-2-progress.md`](../wave-2/wave-2-progress.md) still describes W2-S04 as planning awaiting Approval. Product Owner should reconcile progress vs overview before further declarations. See [`04-wave-status.md`](./04-wave-status.md).
-
----
-
-## Pending slices
-
-| Slice    | Role                                                      | Pending on                 |
-| -------- | --------------------------------------------------------- | -------------------------- |
-| W2-S04-b | Paper orders (no fills)                                   | Product Owner slice review |
-| W2-S04-c | Matching / fills / execution simulation                   | PO go-ahead after b        |
-| W2-S04-d | Positions, balances, portfolio, PnL, history              | Later sequencing           |
-| W2-S04-e | Security verification + full walkthrough / Close evidence | Later sequencing           |
+| Package                          | Status                                          |
+| -------------------------------- | ----------------------------------------------- |
+| W3-O01 Durable Analytical Stores | Planning COMPLETE — awaiting PO Planning Review |
+| W3-O02…O05                       | Not opened                                      |
 
 ---
 
 ## Known constraints (documented)
 
-| Constraint                                  | Source / meaning                                                     |
-| ------------------------------------------- | -------------------------------------------------------------------- |
-| Live capital unauthorized                   | Until Wave 6 live-capital ADR; Waves 1–4 also required before Wave 6 |
-| AI never controls capital                   | Binding principle                                                    |
-| Telegram never a control plane              | Binding principle                                                    |
-| Customer vendor secrets not via `.env`      | Vault + Connections path                                             |
-| Vault Customer Complete open                | Operator Vault UI intentionally deferred under Vault ownership       |
-| Customer Security Audit UX deferred         | F-05 — search/filter/download etc. outside Wave 1 certification      |
-| Bybit/OKX handshake not implemented         | Cataloged; honest Validation Failed until later work                 |
-| Bybit/OKX market data not fully implemented | Cataloged; Binance implemented in W2-S03                             |
-| No Market Data streaming product            | W2-S03 out of scope                                                  |
-| Paper Trading through b                     | Account + order intent only; no matching/fills/PnL yet               |
-| Wave 2 Exit not claimed                     | W2-S01…S03 Close ≠ Wave COMPLETE                                     |
-| Architecture Spec v2.0 frozen               | No redesign; ADRs only where justified                               |
-| Master Plan frozen                          | Package-local planning must not silently revise it                   |
+| Constraint                             | Source / meaning                                                     |
+| -------------------------------------- | -------------------------------------------------------------------- |
+| Live capital unauthorized              | Until Wave 6 live-capital ADR; Waves 1–4 also required before Wave 6 |
+| AI never controls capital              | Binding principle                                                    |
+| Telegram never a control plane         | Binding principle                                                    |
+| Customer vendor secrets not via `.env` | Vault + Connections path                                             |
+| Vault Customer Complete open           | Operator Vault UI intentionally deferred under Vault ownership       |
+| Customer Security Audit UX deferred    | F-05 — search/filter/download etc. outside Wave 1 certification      |
+| Process-local V2 analytical stores     | TD-048 — addressed by Wave 3 W3-O01 planning                         |
+| Production restart-safety Complete     | Not claimed until Wave 3 O03 stance among other exits                |
+| Wave 3 Implementation                  | Not authorized until Planning Approved                               |
+| Architecture Spec v2.0 frozen          | No redesign; ADRs only where justified                               |
+| Master Plan frozen                     | Package-local planning must not silently revise it                   |
 
 ---
 
 ## Known future work (approved planning only)
 
-| Work                                                                | Stance                                                                          |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| Remaining W2-S04 slices c–e → W2-S04 Close                          | Approved package outcomes; slices pending PO sequencing                         |
-| Remaining Wave 2 Master Plan outcomes (V3-C02…C04 capability names) | As Product Owner sequences after/around current packages; Wave Exit not claimed |
-| Waves 3–10                                                          | Master Plan / Execution Roadmap — not started                                   |
-| Vault Customer Complete                                             | Remains under Vault ownership                                                   |
-| Customer Security Audit Product                                     | Later Security Audit-owned work (F-05)                                          |
-| Live Trading                                                        | Wave 6 only after gate + ADR                                                    |
+| Work                            | Stance                                                    |
+| ------------------------------- | --------------------------------------------------------- |
+| W3-O01 after Planning Approval  | Implementation only after PO Approval + slice sequencing  |
+| W3-O02…O05                      | Execution Roadmap order after prior Close / PO sequencing |
+| Waves 4–10                      | Master Plan / Execution Roadmap — not started             |
+| Vault Customer Complete         | Remains under Vault ownership                             |
+| Customer Security Audit Product | Later Security Audit-owned work (F-05)                    |
+| Live Trading                    | Wave 6 only after gate + ADR                              |
 
 Do not invent additional products beyond Master Plan / approved package scopes.
 
@@ -140,7 +122,7 @@ Do not invent additional products beyond Master Plan / approved package scopes.
 
 ## What an operator can do today (honest)
 
-Through Closed Wave 1–2 packages and delivered W2-S04 slices (a, b as implemented):
+Through Closed Wave 1–2 packages:
 
 1. Register / sign in / manage sessions / recover when host mail available
 2. Receive roles via People (Reader / Researcher / Trader / Administrator)
@@ -150,20 +132,22 @@ Through Closed Wave 1–2 packages and delivered W2-S04 slices (a, b as implemen
 6. Manage Connections (catalog, credentials via Vault, validate, lifecycle)
 7. Prove Binance authenticated session (Connected ≠ trading)
 8. View Market Data (Binance symbols/ticker/candles/book; honest unavailable/stale)
-9. Create a Paper Account; create/review/list/cancel Paper Orders as **intent**
+9. Use Paper Trading Foundation (paper-only)
+10. Use AI Connectivity Foundation (vaulted OpenRouter; Sessions; Request History — not AI Platform)
 
-Not available as finished Version 3 claims today: Live Trading, paper fills/positions/PnL (until later W2-S04 slices), Wave 2 COMPLETE, production restart-safety claims (Wave 3), real notification delivery product (Wave 5), etc.
+Not available as finished Version 3 claims today: Live Trading, Wave 3 durability/ops Complete, production restart-safety Complete, real notification delivery product (Wave 5), Monitoring product, durable Kill Switch product, etc.
 
 ---
 
 ## Immediate Product Owner queue
 
-1. Reconcile `wave-2-progress.md` with W2-S04 overview/validation status if needed.
-2. Review **W2-S04-b** evidence; approve or REQUIRES ACTION before W2-S04-c.
-3. Do **not** Close W2-S04 until slices through Close evidence complete.
-4. Do **not** declare Wave 2 COMPLETE.
-5. Do **not** open Wave 3 from this package.
+1. Review **Wave 3 Planning Package** (`wave-3-planning-summary.md` + W3-O01 companions).
+2. Approve or REQUIRES ACTION — **before any implementation**.
+3. Do **not** open W3-O01 implementation slices until Planning is Approved and slices are sequenced.
+4. Do **not** declare Wave 3 COMPLETE.
+5. Do **not** claim Live Trading.
+6. Do **not** modify the Master Plan.
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S04-c or any implementation tasks based on this onboarding package.
+**STOP.** Wait for Product Owner Planning Review before any Wave 3 implementation.

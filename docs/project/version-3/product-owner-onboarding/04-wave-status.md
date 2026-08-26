@@ -5,8 +5,10 @@
 **As-of:** 2026-08-26
 **Do not:** predict implementation outcomes beyond approved planning
 
-Primary PO progress file: [`../wave-2/wave-2-progress.md`](../wave-2/wave-2-progress.md)
+Primary PO progress file: [`../wave-3/wave-3-progress.md`](../wave-3/wave-3-progress.md)
+Wave 3 planning summary: [`../wave-3/wave-3-planning-summary.md`](../wave-3/wave-3-planning-summary.md)
 Wave 2 completion: [`../wave-2-completion-report.md`](../wave-2-completion-report.md)
+Wave 2 progress (historical): [`../wave-2/wave-2-progress.md`](../wave-2/wave-2-progress.md)
 
 ---
 
@@ -42,26 +44,42 @@ Wave 2 completion: [`../wave-2-completion-report.md`](../wave-2-completion-repor
 
 ## Current Wave
 
-| Field                      | Value                                  |
-| -------------------------- | -------------------------------------- |
-| **Wave**                   | **2 — Connection Management**          |
-| **Wave COMPLETE claimed?** | **Yes — COMPLETE**                     |
-| **Live Trading claimed?**  | **No**                                 |
-| **Next**                   | Wave 3 Planning may open (not started) |
+| Field                          | Value                                                                          |
+| ------------------------------ | ------------------------------------------------------------------------------ |
+| **Wave**                       | **3 — Durability, Operations & Continuity**                                    |
+| **Wave Planning**              | **OPEN** — Planning Package complete; awaiting Product Owner Planning Review   |
+| **Wave COMPLETE claimed?**     | **No**                                                                         |
+| **Implementation authorized?** | **No**                                                                         |
+| **Live Trading claimed?**      | **No**                                                                         |
+| **Next**                       | Product Owner Planning Review → Approval → then slice sequencing (not started) |
 
 ---
 
 ## Current Package
 
-| Field        | Value                       |
-| ------------ | --------------------------- |
-| **Package**  | None open — Wave 2 COMPLETE |
-| **Previous** | W2-S01…W2-S05 **CLOSED**    |
+| Field                     | Value                                                         |
+| ------------------------- | ------------------------------------------------------------- |
+| **Package**               | **W3-O01 Durable Analytical Stores** (Master Plan **V3-O01**) |
+| **Stage**                 | Planning COMPLETE — awaiting Planning Review / Approval       |
+| **Implementation slices** | Named only — **not started**                                  |
+| **Previous**              | Wave 2 COMPLETE (W2-S01…W2-S05 CLOSED)                        |
+
+Companions under [`../wave-3/`](../wave-3/):
+
+- `w3-o01-implementation-package.md`
+- `w3-o01-product-scope.md`
+- `w3-o01-security-review.md`
+- `w3-o01-validation-plan.md`
+- `durability-overview.md`
+- `wave-3-planning-summary.md`
+- `wave-3-progress.md`
 
 ---
 
 ## STOP
 
 Do **not** begin Wave 3 implementation until Wave 3 Planning is Approved.
+Do **not** open implementation slices until Product Owner sequences them after Approval.
 Do **not** claim Live Trading.
 Do **not** claim Wave 7 AI Platform Complete.
+Do **not** modify the Master Plan.

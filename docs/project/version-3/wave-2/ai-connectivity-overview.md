@@ -118,8 +118,8 @@ Open History → list / filter / open entry / navigate to request
 
 ## What's Next
 
-- Wave 2 Completion Report recorded — Product Owner Final Seal
-- Wave 3 Planning may open after Final Seal
+- Wave 2 Completion Report recorded — Wave 2 COMPLETE
+- Wave 3 Planning Package open — see [`../wave-3/wave-3-progress.md`](../wave-3/wave-3-progress.md)
 - Wave 7 AI Platform stays later
 - Live Trading stays later
 - Wave 3 implementation is not started
