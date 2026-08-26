@@ -68,6 +68,7 @@ import {
 } from '../notifications';
 import { ConnectionsPage } from '../connections/ConnectionsPage';
 import { MarketDataPage } from '../market-data/MarketDataPage';
+import { PaperTradingFoundationPage } from '../paper-trading/PaperTradingFoundationPage';
 import { WorkflowsPage } from '../pages/WorkflowsPage';
 import {
   LazyAnalyticsPage,
@@ -181,6 +182,7 @@ export function App() {
             <Route path="notifications" element={<NotificationSettingsPage />} />
             <Route path="connections" element={<ConnectionsPage />} />
             <Route path="market-data" element={<MarketDataPage />} />
+            <Route path="paper-trading" element={<PaperTradingFoundationPage />} />
             <Route
               path="telegram/history"
               element={<Navigate to="/notifications/channels/telegram/history" replace />}

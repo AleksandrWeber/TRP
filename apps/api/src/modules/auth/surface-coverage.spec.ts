@@ -80,6 +80,7 @@ import type { AuthUser } from './jwt.strategy';
 import { PeopleController } from '../identity/people.controller';
 import { ConnectionsController } from '../connections/connections.controller';
 import { MarketDataSymbolsController } from '../market-data-foundation/market-data-symbols.controller';
+import { PaperTradingFoundationController } from '../paper-trading-foundation/paper-trading-foundation.controller';
 
 const CUSTOMER_CONTROLLERS: readonly Type<object>[] = [
   AppController,
@@ -152,6 +153,7 @@ const CUSTOMER_CONTROLLERS: readonly Type<object>[] = [
   PeopleController,
   ConnectionsController,
   MarketDataSymbolsController,
+  PaperTradingFoundationController,
 ];
 
 const PUBLIC_HANDLERS = new Set([

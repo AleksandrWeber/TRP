@@ -78,6 +78,8 @@ describe('PC-19 Operator Shell', () => {
     expect(html).toContain('href="/clusters"');
     expect(html).toContain('Cluster');
     expect(html).toContain('href="/trading/paper"');
+    expect(html).toContain('href="/paper-trading"');
+    expect(html).toContain('Paper Trading');
     expect(html).toContain('href="/settings"');
     expect(html).toContain('href="/account/sessions"');
     expect(html).toContain('Sign-in sessions');

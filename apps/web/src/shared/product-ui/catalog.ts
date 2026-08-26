@@ -203,6 +203,14 @@ export const PRODUCT_CHROME: readonly ProductChrome[] = [
     loadingLabel: 'Loading Knowledge Lake…',
   },
   {
+    id: 'paper-trading-foundation',
+    label: 'Paper Trading',
+    path: '/paper-trading',
+    band: 'paper-trading',
+    next: { to: '/trading/paper', label: 'Paper Bots' },
+    loadingLabel: 'Loading Paper Trading…',
+  },
+  {
     id: 'certification',
     label: 'Certification',
     path: '/strategy-library/certify',
@@ -413,6 +421,7 @@ export const NAV_BANDS: readonly NavBand[] = [
         id: 'operate',
         label: 'Operate',
         links: [
+          { to: '/paper-trading', label: 'Paper Trading' },
           { to: '/command-center', label: 'Command Center' },
           { to: '/clusters', label: 'Cluster' },
           { to: '/trading/paper', label: 'Paper Bots' },

@@ -2,11 +2,29 @@
 
 **Document:** Version 3 Paper Trading Overview
 **Date:** 2026-08-26
-**Status:** W2-S04 Paper Trading Foundation planning **COMPLETE**. Awaiting Product Owner review. Not implementation. Not Approval. Not Close.
+**Status:** W2-S04 planning **APPROVED**. W2-S04-a Paper Account Foundation implemented. Awaiting Product Owner slice review before W2-S04-b. Not Close.
 **Product:** Paper Trading Foundation
 **Nature:** Customer description. Not an RC. Not an ADR. Not a Master Plan revision.
+**Slice evidence:** [`w2-s04-a-implementation-report.md`](./w2-s04-a-implementation-report.md) · [`w2-s04-a-validation-report.md`](./w2-s04-a-validation-report.md)
 
 This is what an ordinary operator experiences. It is not an internal design note.
+
+---
+
+## W2-S04-a delivered foundation
+
+The product can create and view a workspace-owned Paper Account.
+
+- Operators can open **Paper Trading**, create exactly one Paper Account per workspace, view Status, Currency (USD), Starting Balance, Current Balance, and Owner, and disable or activate the account.
+- Statuses: Not Created, Active, Disabled.
+- Paper balances are informational only. They never represent real money.
+- The account exists independently of Exchange Connections.
+- The product does not show orders, positions, portfolio, PnL, or trading controls from this slice.
+
+```text
+Paper Account Active means a simulated workspace account exists.
+Paper Account Active does NOT mean Orders, Positions, PnL, or Live Trading.
+```
 
 ---
 
@@ -16,7 +34,8 @@ Paper Trading Foundation is the product that lets a workspace **safely test stra
 
 The operator already manages Exchange connections in **Connections**, proves connectivity in Exchange Connectivity, and views honest market data in **Market Data**. This package does not replace those places. It adds **Paper Trading**: paper accounts, simulated buy and sell, fills, positions, PnL, and portfolio — without placing real exchange orders and without real capital.
 
-- The operator can (after implementation and Close): open Paper Trading, create a Paper Account, select Exchange and Symbol, place Buy and Sell, observe Fill, Position, PnL, and Portfolio, and cancel a paper order.
+- The operator can today: open Paper Trading, create a Paper Account, view currency, starting balance, current balance, and status, and disable or activate the account.
+- The operator cannot yet: select Exchange/Symbol for paper execution, place Buy/Sell, observe fills, positions, PnL, or portfolio, or cancel paper orders (later slices).
 - The operator cannot: place live exchange orders, move real capital, enable Live Trading, use leverage or margin, open a risk or strategy engine, stream trading WebSockets, or claim exchange balances or exchange positions from this package.
 
 ```text
@@ -41,7 +60,7 @@ Paper Trading consumes those products. It does not redesign them.
 
 ---
 
-## Customer Journey (planned)
+## Customer Journey (current through W2-S04-a)
 
 ```text
 Sign in
@@ -50,22 +69,12 @@ Open Paper Trading
   ↓
 Create Paper Account
   ↓
-Select Exchange
+View Status / Currency / Balances
   ↓
-Select Symbol
-  ↓
-Place Buy / Place Sell
-  ↓
-Observe Fill
-  ↓
-Observe Position
-  ↓
-Observe PnL
-  ↓
-Observe Portfolio
-  ↓
-Cancel Order (when open)
+Disable or Activate (optional)
 ```
+
+Later slices add Select Exchange / Symbol, Place Buy / Sell, Fill, Position, PnL, Portfolio, and Cancel Order.
 
 ### Sign in
 
@@ -129,10 +138,10 @@ Workspace A cannot use Workspace B’s paper accounts. A role without Paper Trad
 
 ## What's Next
 
-- Product Owner review of W2-S04 planning
-- Approval required before any implementation
+- Product Owner review of W2-S04-a
+- W2-S04-b only after approval (simulators)
 - Live Trading stays later (Wave 6 / Order Path)
-- Wave 2 COMPLETE is not claimed by opening this package
+- Wave 2 COMPLETE is not claimed
 
 Wave 1 Security Foundation is **CERTIFIED COMPLETE** and is consumed, not reopened.
 W2-S01 Connection Management is **CLOSED** and is consumed, not redesigned.
@@ -163,4 +172,4 @@ This product does **not** include:
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S04 implementation planning is approved.
+**STOP.** Wait for Product Owner review before W2-S04-b.

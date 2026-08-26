@@ -2,13 +2,14 @@
 
 **Package:** W2-S04 Paper Trading Foundation
 **Wave:** 2 — Connection Management
-**Status:** Planning **COMPLETE**. Awaiting Product Owner review. Not implementation. Not Close evidence.
+**Status:** W2-S04 planning **APPROVED**. W2-S04-a slice evidence recorded. Not Close.
 **Date:** 2026-08-26
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w2-s04-product-scope.md`](./w2-s04-product-scope.md)
 **Security:** [`w2-s04-security-review.md`](./w2-s04-security-review.md)
 **Umbrella:** [`w2-s04-implementation-package.md`](./w2-s04-implementation-package.md)
 **Overview:** [`paper-trading-overview.md`](./paper-trading-overview.md)
+**W2-S04-a evidence:** [`w2-s04-a-validation-report.md`](./w2-s04-a-validation-report.md)
 **Checklists:** [`../version-3-product-checklist.md`](../version-3-product-checklist.md) · [`../version-3-architecture-checklist.md`](../version-3-architecture-checklist.md) · [`../version-3-security-checklist.md`](../version-3-security-checklist.md)
 **Verification Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md)
 
@@ -36,15 +37,32 @@ Do not validate real exchange execution, exchange order APIs, exchange balances,
 
 ## 1. Implementation slices (validation mapping)
 
-| Slice        | Must prove at slice review                                                       | Close contribution       |
-| ------------ | -------------------------------------------------------------------------------- | ------------------------ |
-| **W2-S04-a** | Paper account state exists; workspace-scoped create / ownership                  | Paper account foundation |
-| **W2-S04-b** | Execution simulator and order matching simulator consume Market Data snapshots   | Simulators               |
-| **W2-S04-c** | Paper orders, fills, cancel; no exchange order APIs; no venue-acceptance theater | Orders / fills           |
-| **W2-S04-d** | Paper positions, balances, portfolio, PnL, execution history                     | Portfolio / PnL          |
-| **W2-S04-e** | Security verification + regressions + full Paper Trading Walkthrough             | Close evidence           |
+| Slice        | Must prove at slice review                                                       | Close contribution                                  |
+| ------------ | -------------------------------------------------------------------------------- | --------------------------------------------------- |
+| **W2-S04-a** | Paper account state exists; workspace-scoped create / ownership                  | Paper account foundation — **executed** (see below) |
+| **W2-S04-b** | Execution simulator and order matching simulator consume Market Data snapshots   | Simulators                                          |
+| **W2-S04-c** | Paper orders, fills, cancel; no exchange order APIs; no venue-acceptance theater | Orders / fills                                      |
+| **W2-S04-d** | Paper positions, balances, portfolio, PnL, execution history                     | Portfolio / PnL                                     |
+| **W2-S04-e** | Security verification + regressions + full Paper Trading Walkthrough             | Close evidence                                      |
 
-Slice names are planning sequence only. They are not approval to implement.
+Slice names are planning sequence only. They are not approval to implement later slices.
+
+### W2-S04-a execution evidence
+
+Recorded in [`w2-s04-a-validation-report.md`](./w2-s04-a-validation-report.md).
+
+| Proof                                                                                    | Result |
+| ---------------------------------------------------------------------------------------- | ------ |
+| Paper Account model, status, and currency validation                                     | PASS   |
+| Create Paper Account; Active with starting = current balance                             | PASS   |
+| Duplicate account rejection (one per workspace)                                          | PASS   |
+| Workspace isolation (A↛B)                                                                | PASS   |
+| Authorization (Projection read / PaperCommand mutate)                                    | PASS   |
+| Disable / Activate lifecycle + audit outcomes                                            | PASS   |
+| Operator UI: create, view fields, disabled state; no orders/positions/portfolio/PnL      | PASS   |
+| No Matching Engine, Execution Simulator, Orders, Positions, Portfolio, PnL, Live Trading | PASS   |
+
+W2-S04-a does **not** Close W2-S04. Simulators, orders, fills, positions, PnL, and the full Paper Trading Walkthrough remain later slices.
 
 ---
 
@@ -299,4 +317,4 @@ Do not treat the following as W2-S04 Close evidence:
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S04 implementation planning is approved.
+**STOP.** Wait for Product Owner review before W2-S04-b.

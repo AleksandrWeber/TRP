@@ -2011,6 +2011,24 @@ export type PaperAccountView = {
   recordedAt: string;
 };
 
+/** W2-S04-a Paper Trading Foundation account projection. */
+export type PaperTradingAccountView = {
+  id: string;
+  workspaceId: string;
+  status: 'ACTIVE' | 'DISABLED';
+  baseCurrency: string;
+  startingBalance: string;
+  currentBalance: string;
+  ownerId: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PaperTradingAccountProjection = {
+  status: 'NOT_CREATED' | 'ACTIVE' | 'DISABLED';
+  account: PaperTradingAccountView | null;
+};
+
 export type ExchangeScopeOverviewView = {
   id: string;
   exchangeCode: string;
@@ -3058,6 +3076,23 @@ export const api = {
     }),
   getConnectionCatalog: () => request<ConnectionCatalogView>('/connections/catalog'),
   getMarketDataProviders: () => request<MarketDataProviderCatalogView>('/market-data/providers'),
+  getPaperTradingAccount: () =>
+    request<PaperTradingAccountProjection>('/paper-trading-foundation/account'),
+  createPaperTradingAccount: (body?: { baseCurrency?: string; startingBalance?: string }) =>
+    request<PaperTradingAccountProjection>('/paper-trading-foundation/account', {
+      method: 'POST',
+      body: JSON.stringify(body ?? {}),
+    }),
+  disablePaperTradingAccount: () =>
+    request<PaperTradingAccountProjection>('/paper-trading-foundation/account/disable', {
+      method: 'POST',
+      body: '{}',
+    }),
+  activatePaperTradingAccount: () =>
+    request<PaperTradingAccountProjection>('/paper-trading-foundation/account/activate', {
+      method: 'POST',
+      body: '{}',
+    }),
   getMarketDataSymbols: (connectionId: string) =>
     request<MarketSymbolDiscoveryView>(
       `/market-data/connections/${encodeURIComponent(connectionId)}/symbols`,
