@@ -4,21 +4,21 @@
 **Audience:** Product Owner
 **Date:** 2026-08-26
 **Wave:** 2 — Connection Management
-**Nature:** Simple Product Owner status. Not an RC. Not an ADR. Not implementation. Not a Master Plan revision.
+**Nature:** Simple Product Owner status. Not an RC. Not an ADR. Not a Master Plan revision.
 
 ---
 
 ## Authority
 
-| Item                                    | Status                 |
-| --------------------------------------- | ---------------------- |
-| Version 3                               | In progress            |
-| Wave 1 Security Foundation              | **CERTIFIED COMPLETE** |
-| W2-S01 Connection Management            | **CLOSED**             |
-| W2-S02 Exchange Connectivity Foundation | **CLOSED**             |
-| W2-S03 Market Data Foundation           | **CLOSED**             |
-| W2-S04 Paper Trading Foundation         | Planning opened        |
-| Wave 2 COMPLETE                         | **Not claimed**        |
+| Item                                    | Status                                |
+| --------------------------------------- | ------------------------------------- |
+| Version 3                               | In progress                           |
+| Wave 1 Security Foundation              | **CERTIFIED COMPLETE**                |
+| W2-S01 Connection Management            | **CLOSED**                            |
+| W2-S02 Exchange Connectivity Foundation | **CLOSED**                            |
+| W2-S03 Market Data Foundation           | **CLOSED**                            |
+| W2-S04 Paper Trading Foundation         | Close evidence ready (Package Review) |
+| Wave 2 COMPLETE                         | **Not claimed**                       |
 
 ---
 
@@ -38,24 +38,23 @@ W2-S03 delivered Market Data Foundation: adapter contract for Binance, Bybit, an
 
 ---
 
-## Open for Product Owner Review
+## Open for Product Owner Package Review
 
-| Package    | Name                     | Status                                                                |
-| ---------- | ------------------------ | --------------------------------------------------------------------- |
-| **W2-S04** | Paper Trading Foundation | Planning package opened. Awaiting Product Owner review. Not approved. |
+| Package    | Name                     | Status                                                                                        |
+| ---------- | ------------------------ | --------------------------------------------------------------------------------------------- |
+| **W2-S04** | Paper Trading Foundation | Close evidence assembled (a–e). Ready for Product Owner Package Close Review. **Not Closed.** |
 
-W2-S04 planning defines how the product simulates order execution using Market Data without placing real exchange orders and without real capital. Paper Trading becomes the mandatory foundation before Live Trading.
+W2-S04 delivered Paper Trading Foundation: Paper Account; Paper Orders; Market Data–driven matching and Paper Fills; Positions; Portfolio; Paper Balance; Realized/Unrealized PnL; Execution History. Paper-only. No exchange order APIs. No real capital. No Live Trading.
 
-Planning package:
+Close package:
 
-| Document                                                                 | Role                       |
-| ------------------------------------------------------------------------ | -------------------------- |
-| [`w2-s04-implementation-package.md`](./w2-s04-implementation-package.md) | Implementation package     |
-| [`w2-s04-product-scope.md`](./w2-s04-product-scope.md)                   | Product scope              |
-| [`w2-s04-security-review.md`](./w2-s04-security-review.md)               | Security review (planning) |
-| [`w2-s04-validation-plan.md`](./w2-s04-validation-plan.md)               | Validation plan            |
-| [`paper-trading-overview.md`](./paper-trading-overview.md)               | Operator overview          |
-| [`w2-s04-planning-summary.md`](./w2-s04-planning-summary.md)             | Planning open record       |
+| Document                                                                     | Role                 |
+| ---------------------------------------------------------------------------- | -------------------- |
+| [`w2-s04-close-package-report.md`](./w2-s04-close-package-report.md)         | Close package report |
+| [`w2-s04-package-summary.md`](./w2-s04-package-summary.md)                   | Package summary      |
+| [`w2-s04-live-product-walkthrough.md`](./w2-s04-live-product-walkthrough.md) | Walkthrough evidence |
+| [`w2-s04-e-validation-report.md`](./w2-s04-e-validation-report.md)           | e validation         |
+| [`paper-trading-overview.md`](./paper-trading-overview.md)                   | Operator overview    |
 
 ---
 
@@ -70,16 +69,17 @@ W2-S03 CLOSED
         ↓
 W2-S04 Paper Trading Foundation
         ↓
-Product Owner planning review (before Approval / implementation)
+Product Owner Package Close Review
 ```
 
-Today: W2-S01, W2-S02, and W2-S03 are closed. W2-S04 planning is open for Product Owner review. Implementation must not begin. Wave 2 Exit is **not** claimed. Live Trading is **not** claimed.
+Today: W2-S01, W2-S02, and W2-S03 are closed. W2-S04 Close evidence is ready for Product Owner Package Review. W2-S04 is **not** declared CLOSED by engineering. Wave 2 Exit is **not** claimed. Live Trading is **not** claimed.
 
 ---
 
 ## STOP
 
-Wait for Product Owner review before W2-S04 implementation planning is approved.
-Do **not** begin W2-S04 implementation.
+Wait for Product Owner Package Review.
+Do **not** declare W2-S04 CLOSED without Product Owner authority.
 Do **not** declare Wave 2 COMPLETE.
 Do **not** claim Live Trading.
+Do **not** begin W2-S05 unless Product Owner directs.

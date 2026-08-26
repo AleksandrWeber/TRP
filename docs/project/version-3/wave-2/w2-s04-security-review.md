@@ -2,24 +2,36 @@
 
 **Package:** W2-S04 Paper Trading Foundation
 **Wave:** 2 — Connection Management
-**Status:** Planning **COMPLETE**. Awaiting Product Owner review. Not implementation. Not Close evidence.
-**Date:** 2026-08-26
+**Status:** Close evidence **COMPLETE** for Product Owner Package Close Review. Not Closed.
+**Date:** 2026-08-26 (Close evidence). Planning baseline 2026-08-26.
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md) · [`../v3-security-vision.md`](../v3-security-vision.md)
 **Checklist:** [`../version-3-security-checklist.md`](../version-3-security-checklist.md)
-**Verification Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md) — **mandatory**
+**Verification Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md)
 **Default Policy:** [`../security-default-policy.md`](../security-default-policy.md)
 **Umbrella:** [`w2-s04-implementation-package.md`](./w2-s04-implementation-package.md)
 **Scope:** [`w2-s04-product-scope.md`](./w2-s04-product-scope.md)
+**Close evidence:** [`w2-s04-e-security-review.md`](./w2-s04-e-security-review.md) · [`w2-s04-close-package-report.md`](./w2-s04-close-package-report.md)
 
 ```text
 Paper Trading uses Wave 1 security, Connection Management, Exchange Connectivity, and Market Data.
 It does not replace Vault, Auth, Authz, Isolation, Platform, or Audit.
 Paper fills are simulated against Market Data — never exchange order placement.
 Paper trading is not Live Trading enabled.
-No real capital. No fabricated market prices. No simulated “exchange accepted” venue theater.
+No real capital. No invented market prices. No simulated “exchange accepted” venue theater.
 ```
 
-This document is **planning intent**. Close evidence worksheets are produced after implementation.
+## Close evidence verdict
+
+| Area                                        | Verdict |
+| ------------------------------------------- | ------- |
+| Authentication / Authorization              | PASS    |
+| Workspace Isolation                         | PASS    |
+| Security Platform / Audit consumed          | PASS    |
+| Paper-only execution; no exchange orders    | PASS    |
+| No real capital; fail closed                | PASS    |
+| Zero REQUIRES ACTION for package-owned rows | PASS    |
+
+Planning intent below remains the baseline. Slice and package Close evidence is recorded in W2-S04-a..e security reviews and the Close package report.
 
 ---
 

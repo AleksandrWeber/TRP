@@ -498,25 +498,29 @@ Companion: [`w2-s04-validation-plan.md`](./w2-s04-validation-plan.md).
 
 ## Package Close Checklist
 
-| #   | Gate                          | Verdict                |
-| --- | ----------------------------- | ---------------------- |
-| 1   | Implementation Review         | NOT DONE (planning)    |
-| 2   | Architecture Review           | NOT DONE (planning)    |
-| 3   | Security Review               | NOT DONE (planning)    |
-| 4   | Product Review                | NOT DONE (planning)    |
-| 5   | Validation                    | NOT DONE (planning)    |
-| 6   | All mandatory reports         | NOT DONE (planning)    |
-| 7   | Master Plan compliance        | PASS (planning intent) |
-| 8   | Product Principles compliance | PASS (planning intent) |
-| 9   | Customer walkthrough          | NOT DONE (planning)    |
+| #   | Gate                          | Verdict                               |
+| --- | ----------------------------- | ------------------------------------- |
+| 1   | Implementation Review         | PASS (slices a–d; e = Close evidence) |
+| 2   | Architecture Review           | PASS                                  |
+| 3   | Security Review               | PASS                                  |
+| 4   | Product Review                | PASS                                  |
+| 5   | Validation                    | PASS                                  |
+| 6   | All mandatory reports         | PASS                                  |
+| 7   | Master Plan compliance        | PASS                                  |
+| 8   | Product Principles compliance | PASS                                  |
+| 9   | Customer walkthrough          | PASS                                  |
 
----
+**Note:** Package Close remains Product Owner authority. Engineering must not declare W2-S04 CLOSED.
 
 ## Customer-visible Changes
 
-**Fill at Close.**
+**At Close evidence (2026-08-26):**
 
--
+- Paper Account create / view / disable / activate
+- Paper Orders create / review / list / cancel
+- Execute Matching; Paper Fill
+- Paper Positions, Portfolio, Balance, Realized/Unrealized PnL, Execution History
+- Honesty: paper-only; not Live Trading; not exchange acceptance
 
 What the UI / copy must **not** claim:
 

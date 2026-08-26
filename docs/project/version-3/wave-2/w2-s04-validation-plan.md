@@ -2,17 +2,21 @@
 
 **Package:** W2-S04 Paper Trading Foundation
 **Wave:** 2 — Connection Management
-**Status:** W2-S04 planning **APPROVED**. W2-S04-a **APPROVED**. W2-S04-b **APPROVED**. W2-S04-c **APPROVED**. W2-S04-d slice evidence recorded. Not Close.
+**Status:** Close evidence **COMPLETE** for Product Owner Package Close Review. Not Closed.
+**Close evidence date:** 2026-08-26
 **Date:** 2026-08-26
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w2-s04-product-scope.md`](./w2-s04-product-scope.md)
 **Security:** [`w2-s04-security-review.md`](./w2-s04-security-review.md)
 **Umbrella:** [`w2-s04-implementation-package.md`](./w2-s04-implementation-package.md)
 **Overview:** [`paper-trading-overview.md`](./paper-trading-overview.md)
+**Close package:** [`w2-s04-close-package-report.md`](./w2-s04-close-package-report.md)
+**Walkthrough:** [`w2-s04-live-product-walkthrough.md`](./w2-s04-live-product-walkthrough.md)
 **W2-S04-a evidence:** [`w2-s04-a-validation-report.md`](./w2-s04-a-validation-report.md)
 **W2-S04-b evidence:** [`w2-s04-b-validation-report.md`](./w2-s04-b-validation-report.md)
 **W2-S04-c evidence:** [`w2-s04-c-validation-report.md`](./w2-s04-c-validation-report.md)
 **W2-S04-d evidence:** [`w2-s04-d-validation-report.md`](./w2-s04-d-validation-report.md)
+**W2-S04-e evidence:** [`w2-s04-e-validation-report.md`](./w2-s04-e-validation-report.md)
 **Checklists:** [`../version-3-product-checklist.md`](../version-3-product-checklist.md) · [`../version-3-architecture-checklist.md`](../version-3-architecture-checklist.md) · [`../version-3-security-checklist.md`](../version-3-security-checklist.md)
 **Verification Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md)
 
@@ -46,7 +50,7 @@ Do not validate real exchange execution, exchange order APIs, exchange balances,
 | **W2-S04-b** | Paper orders create/list/review/cancel; no positions / PnL           | Paper order foundation — **executed** (see below)   |
 | **W2-S04-c** | Matching / fills / execution simulation from Market Data             | Matching / fills — **executed** (see below)         |
 | **W2-S04-d** | Paper positions, balances, portfolio, PnL, execution history         | Portfolio / PnL — **executed** (see below)          |
-| **W2-S04-e** | Security verification + regressions + full Paper Trading Walkthrough | Close evidence                                      |
+| **W2-S04-e** | Security verification + regressions + full Paper Trading Walkthrough | Close evidence — **executed** (see below)           |
 
 Slice names follow Product Owner sequencing. They are not approval to implement later slices.
 
@@ -112,6 +116,22 @@ Recorded in [`w2-s04-d-validation-report.md`](./w2-s04-d-validation-report.md).
 | No exchange inventory; no Ledger; no Live Trading; Version 2 Trading Core unchanged | PASS   |
 
 W2-S04-d does **not** Close W2-S04. Full Paper Trading Walkthrough and security close remain W2-S04-e.
+
+### W2-S04-e execution evidence
+
+Recorded in [`w2-s04-e-validation-report.md`](./w2-s04-e-validation-report.md) · [`w2-s04-live-product-walkthrough.md`](./w2-s04-live-product-walkthrough.md) · [`w2-s04-close-package-report.md`](./w2-s04-close-package-report.md).
+
+| Proof                                                                      | Result |
+| -------------------------------------------------------------------------- | ------ |
+| Full package gates: lint / typecheck / test / web build / diff check       | PASS   |
+| End-to-end Paper Trading Walkthrough                                       | PASS   |
+| Architecture verification (no second Ledger / COP / V2 redesign)           | PASS   |
+| Security verification (authn/authz/isolation/audit/paper-only/fail closed) | PASS   |
+| Product verification (honesty; no Live Trading / exchange inventory)       | PASS   |
+| Documentation reconciliation (with honest slice-sequencing delta recorded) | PASS   |
+| Regressions: Wave 1 / W2-S01 / W2-S02 / W2-S03                             | PASS   |
+
+W2-S04-e assembles Close evidence for Product Owner Package Review. It does **not** declare W2-S04 CLOSED.
 
 ---
 
@@ -366,4 +386,4 @@ Do not treat the following as W2-S04 Close evidence:
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S04-c.
+**STOP.** Close evidence is complete for Product Owner Package Close Review. Do **not** declare W2-S04 CLOSED. Do **not** declare Wave 2 COMPLETE. Do **not** declare Live Trading.
