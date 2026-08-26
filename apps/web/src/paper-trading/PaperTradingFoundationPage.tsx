@@ -1,26 +1,44 @@
 import { useEffect, useState } from 'react';
 import { useWorkspace } from '../app/WorkspaceContext';
-import { api, type PaperTradingAccountProjection } from '../shared/api';
+import { api, type PaperOrderView, type PaperTradingAccountProjection } from '../shared/api';
 import { toUserFacingError } from '../shared/mapApiError';
-import { PaperTradingView } from './PaperTradingView';
+import { PaperTradingView, type PaperOrderFormState } from './PaperTradingView';
+
+const defaultOrderForm: PaperOrderFormState = {
+  exchange: 'BINANCE',
+  symbol: '',
+  side: 'BUY',
+  orderType: 'LIMIT',
+  quantity: '1',
+  limitPrice: '',
+  stopPrice: '',
+};
 
 export function PaperTradingFoundationPage() {
   const { activeWorkspace } = useWorkspace();
   const [projection, setProjection] = useState<PaperTradingAccountProjection | null>(null);
+  const [orders, setOrders] = useState<PaperOrderView[]>([]);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [orderForm, setOrderForm] = useState<PaperOrderFormState>(defaultOrderForm);
   const [startingBalance, setStartingBalance] = useState('100000');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function load() {
-    const view = await api.getPaperTradingAccount();
-    setProjection(view);
+    const [account, orderList] = await Promise.all([
+      api.getPaperTradingAccount(),
+      api.listPaperOrders().catch(() => ({ orders: [] as PaperOrderView[] })),
+    ]);
+    setProjection(account);
+    setOrders(orderList.orders);
   }
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
     setError(null);
+    setSelectedOrderId(null);
     load()
       .catch((reason: unknown) => {
         if (!cancelled) setError(toUserFacingError(reason, 'Could not load Paper Trading.'));
@@ -33,7 +51,7 @@ export function PaperTradingFoundationPage() {
     };
   }, [activeWorkspace.id]);
 
-  async function create() {
+  async function createAccount() {
     setSaving(true);
     setError(null);
     try {
@@ -49,7 +67,7 @@ export function PaperTradingFoundationPage() {
     }
   }
 
-  async function disable() {
+  async function disableAccount() {
     setSaving(true);
     setError(null);
     try {
@@ -62,7 +80,7 @@ export function PaperTradingFoundationPage() {
     }
   }
 
-  async function activate() {
+  async function activateAccount() {
     setSaving(true);
     setError(null);
     try {
@@ -75,22 +93,79 @@ export function PaperTradingFoundationPage() {
     }
   }
 
+  async function createOrder() {
+    setSaving(true);
+    setError(null);
+    try {
+      const needsLimit = orderForm.orderType === 'LIMIT' || orderForm.orderType === 'STOP_LIMIT';
+      const needsStop = orderForm.orderType === 'STOP' || orderForm.orderType === 'STOP_LIMIT';
+      const created = await api.createPaperOrder({
+        paperAccountId: projection?.account?.id,
+        exchange: orderForm.exchange,
+        symbol: orderForm.symbol.trim(),
+        side: orderForm.side,
+        orderType: orderForm.orderType,
+        quantity: orderForm.quantity.trim(),
+        limitPrice: needsLimit ? orderForm.limitPrice.trim() : null,
+        stopPrice: needsStop ? orderForm.stopPrice.trim() : null,
+      });
+      setOrders((items) => [...items, created]);
+      setSelectedOrderId(created.id);
+      setOrderForm((form) => ({
+        ...form,
+        symbol: '',
+        quantity: '1',
+        limitPrice: '',
+        stopPrice: '',
+      }));
+    } catch (reason) {
+      setError(toUserFacingError(reason, 'Could not create the Paper Order.'));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function cancelOrder(orderId: string) {
+    setSaving(true);
+    setError(null);
+    try {
+      const cancelled = await api.cancelPaperOrder(orderId);
+      setOrders((items) => items.map((item) => (item.id === cancelled.id ? cancelled : item)));
+      setSelectedOrderId(cancelled.id);
+    } catch (reason) {
+      setError(toUserFacingError(reason, 'Could not cancel the Paper Order.'));
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <PaperTradingView
       projection={projection}
+      orders={orders}
+      selectedOrderId={selectedOrderId}
+      orderForm={orderForm}
       loading={loading}
       saving={saving}
       error={error}
       startingBalance={startingBalance}
       onStartingBalanceChange={setStartingBalance}
-      onCreate={() => {
-        void create();
+      onCreateAccount={() => {
+        void createAccount();
       }}
-      onDisable={() => {
-        void disable();
+      onDisableAccount={() => {
+        void disableAccount();
       }}
-      onActivate={() => {
-        void activate();
+      onActivateAccount={() => {
+        void activateAccount();
+      }}
+      onOrderFormChange={(patch) => setOrderForm((form) => ({ ...form, ...patch }))}
+      onCreateOrder={() => {
+        void createOrder();
+      }}
+      onSelectOrder={setSelectedOrderId}
+      onCancelOrder={(orderId) => {
+        void cancelOrder(orderId);
       }}
     />
   );

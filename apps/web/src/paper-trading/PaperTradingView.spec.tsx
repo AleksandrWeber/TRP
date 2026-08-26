@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import type { PaperTradingAccountProjection } from '../shared/api';
-import { PaperTradingView } from './PaperTradingView';
+import type { PaperOrderView, PaperTradingAccountProjection } from '../shared/api';
+import { PaperTradingView, type PaperOrderFormState } from './PaperTradingView';
 
 const notCreated: PaperTradingAccountProjection = {
   status: 'NOT_CREATED',
@@ -23,75 +23,104 @@ const active: PaperTradingAccountProjection = {
   },
 };
 
-const disabled: PaperTradingAccountProjection = {
-  status: 'DISABLED',
-  account: {
-    ...active.account!,
-    status: 'DISABLED',
-  },
+const pendingOrder: PaperOrderView = {
+  id: 'o-1',
+  workspaceId: 'workspace-a',
+  paperAccountId: 'pa-1',
+  exchange: 'BINANCE',
+  symbol: 'BTC-USDT',
+  side: 'BUY',
+  orderType: 'LIMIT',
+  quantity: '1',
+  limitPrice: '50000',
+  stopPrice: null,
+  status: 'PENDING',
+  createdAt: '2026-08-26T00:00:00.000Z',
+  updatedAt: '2026-08-26T00:00:00.000Z',
 };
 
-describe('Paper Trading UI (W2-S04-a)', () => {
+const form: PaperOrderFormState = {
+  exchange: 'BINANCE',
+  symbol: 'BTC-USDT',
+  side: 'BUY',
+  orderType: 'LIMIT',
+  quantity: '1',
+  limitPrice: '50000',
+  stopPrice: '',
+};
+
+const baseHandlers = {
+  onStartingBalanceChange: () => undefined,
+  onCreateAccount: () => undefined,
+  onDisableAccount: () => undefined,
+  onActivateAccount: () => undefined,
+  onOrderFormChange: () => undefined,
+  onCreateOrder: () => undefined,
+  onSelectOrder: () => undefined,
+  onCancelOrder: () => undefined,
+};
+
+describe('Paper Trading UI (W2-S04-b)', () => {
   it('renders create Paper Account when Not Created', () => {
     const html = renderToStaticMarkup(
       <PaperTradingView
         projection={notCreated}
+        orders={[]}
+        selectedOrderId={null}
+        orderForm={form}
         loading={false}
         saving={false}
         error={null}
         startingBalance="100000"
-        onStartingBalanceChange={() => undefined}
-        onCreate={() => undefined}
-        onDisable={() => undefined}
-        onActivate={() => undefined}
+        {...baseHandlers}
       />,
     );
     expect(html).toContain('Create Paper Account');
     expect(html).toContain('Not Created');
-    expect(html).not.toContain('Place Buy');
-    expect(html).not.toContain('Place Sell');
-    expect(html).not.toMatch(/>Orders</);
-    expect(html).not.toMatch(/>Positions</);
-    expect(html).not.toMatch(/>Portfolio</);
-    expect(html).toContain('No orders. No positions. No portfolio. No PnL. No Live Trading.');
+    expect(html).not.toContain('Create Order');
   });
 
-  it('renders Active account fields without trading controls', () => {
+  it('renders create order, order list, cancel, and review without fills or PnL theater', () => {
     const html = renderToStaticMarkup(
       <PaperTradingView
         projection={active}
+        orders={[pendingOrder]}
+        selectedOrderId="o-1"
+        orderForm={form}
         loading={false}
         saving={false}
         error={null}
         startingBalance="100000"
-        onStartingBalanceChange={() => undefined}
-        onCreate={() => undefined}
-        onDisable={() => undefined}
-        onActivate={() => undefined}
+        {...baseHandlers}
       />,
     );
-    expect(html).toContain('Active');
-    expect(html).toContain('USD');
-    expect(html).toContain('100000');
-    expect(html).toContain('Disable Paper Account');
-    expect(html).toContain('No orders. No positions. No portfolio. No PnL. No Live Trading.');
+    expect(html).toContain('Create Order');
+    expect(html).toContain('Order List');
+    expect(html).toContain('Cancel Order');
+    expect(html).toContain('Review Order');
+    expect(html).toContain('Pending');
+    expect(html).toContain('Not filled. Not executed.');
+    expect(html).toContain('No fills. No positions. No portfolio. No PnL. No balance change.');
+    expect(html).not.toMatch(/>Filled</);
+    expect(html).not.toMatch(/>Executed</);
+    expect(html).not.toMatch(/>Position</);
+    expect(html).not.toMatch(/>Portfolio</);
   });
 
-  it('renders Disabled account state', () => {
+  it('renders validation errors', () => {
     const html = renderToStaticMarkup(
       <PaperTradingView
-        projection={disabled}
+        projection={active}
+        orders={[]}
+        selectedOrderId={null}
+        orderForm={form}
         loading={false}
         saving={false}
-        error={null}
+        error="unknown symbol: DOGE-USDT"
         startingBalance="100000"
-        onStartingBalanceChange={() => undefined}
-        onCreate={() => undefined}
-        onDisable={() => undefined}
-        onActivate={() => undefined}
+        {...baseHandlers}
       />,
     );
-    expect(html).toContain('Disabled');
-    expect(html).toContain('Activate Paper Account');
+    expect(html).toContain('unknown symbol: DOGE-USDT');
   });
 });

@@ -35,6 +35,30 @@ export class MarketSymbolCache {
   clear(workspaceId: string, connectionId: string): void {
     this.entries.delete(cacheKey(workspaceId, connectionId));
   }
+
+  /**
+   * Lookup a known symbol for an offered Market Data provider in a workspace.
+   * Used by Paper Orders (W2-S04-b) without exposing transport or prices.
+   */
+  findByProviderAndSymbol(
+    workspaceId: string,
+    providerId: string,
+    symbol: string,
+  ): NormalizedMarketSymbol | null {
+    const needle = symbol.trim().toUpperCase();
+    if (!needle) return null;
+    for (const [key, entry] of this.entries) {
+      if (!key.startsWith(`${workspaceId}:`)) continue;
+      if (entry.providerId !== providerId) continue;
+      const match = entry.symbols.find(
+        (item) =>
+          item.exchangeSymbol.toUpperCase() === needle ||
+          item.normalizedSymbol.toUpperCase() === needle,
+      );
+      if (match) return match;
+    }
+    return null;
+  }
 }
 
 function cacheKey(workspaceId: string, connectionId: string): string {

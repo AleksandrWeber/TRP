@@ -13,8 +13,9 @@ import { PaperTradingAccountService } from './paper-trading-account.service';
 import { InMemoryPaperTradingAccountStore } from './paper-trading-account.store';
 import { PaperTradingFoundationController } from './paper-trading-foundation.controller';
 
-describe('PaperTradingFoundationController (W2-S04-a)', () => {
+describe('PaperTradingFoundationController orders (W2-S04-b)', () => {
   let controller: PaperTradingFoundationController;
+  let symbols: MarketSymbolCache;
   let workspaceAccess: { assertMember: ReturnType<typeof vi.fn> };
 
   const trader: AuthUser = {
@@ -27,6 +28,7 @@ describe('PaperTradingFoundationController (W2-S04-a)', () => {
   beforeEach(() => {
     const accounts = new InMemoryPaperTradingAccountStore();
     const orders = new InMemoryPaperOrderStore();
+    symbols = new MarketSymbolCache();
     const accountAudit = { record: vi.fn().mockResolvedValue(undefined) };
     const orderAudit = { record: vi.fn().mockResolvedValue(undefined) };
     const accountService = new PaperTradingAccountService(
@@ -36,7 +38,7 @@ describe('PaperTradingFoundationController (W2-S04-a)', () => {
     const orderService = new PaperOrderService(
       orders,
       accounts,
-      new PaperOrderMarketDataGateway(new MarketSymbolCache()),
+      new PaperOrderMarketDataGateway(symbols),
       orderAudit as unknown as PaperOrderAudit,
     );
     workspaceAccess = {
@@ -53,35 +55,60 @@ describe('PaperTradingFoundationController (W2-S04-a)', () => {
     );
   });
 
-  it('creates and returns the workspace Paper Account projection', async () => {
-    const created = await controller.createAccount({ user: trader }, 'workspace-a', {
-      startingBalance: '100000',
-    });
-    expect(created.status).toBe('ACTIVE');
-    expect(created.account?.baseCurrency).toBe('USD');
-    expect(created.account?.startingBalance).toBe('100000');
-
-    const viewed = await controller.getAccount({ user: trader }, 'workspace-a');
-    expect(viewed.account?.id).toBe(created.account?.id);
-  });
-
-  it('rejects duplicate create for the same workspace', async () => {
+  async function seed() {
     await controller.createAccount({ user: trader }, 'workspace-a', {});
-    await expect(controller.createAccount({ user: trader }, 'workspace-a', {})).rejects.toThrow(
-      /already exists/,
-    );
+    symbols.set('workspace-a', 'connection-1', {
+      providerId: 'BINANCE',
+      discoveredAt: '2026-08-26T12:00:00.000Z',
+      symbols: [
+        {
+          exchangeSymbol: 'ETHUSDT',
+          normalizedSymbol: 'ETH-USDT',
+          baseAsset: 'ETH',
+          quoteAsset: 'USDT',
+          tradingStatus: 'TRADING',
+          providerId: 'BINANCE',
+        },
+      ],
+    });
+  }
+
+  it('creates, lists, reviews, and cancels Paper Orders', async () => {
+    await seed();
+    const created = await controller.createOrder({ user: trader }, 'workspace-a', {
+      exchange: 'BINANCE',
+      symbol: 'ETH-USDT',
+      side: 'BUY',
+      orderType: 'LIMIT',
+      quantity: '3',
+      limitPrice: '2000',
+    });
+    expect(created.status).toBe('PENDING');
+
+    const listed = await controller.listOrders({ user: trader }, 'workspace-a');
+    expect(listed.orders).toHaveLength(1);
+
+    const reviewed = await controller.getOrder({ user: trader }, 'workspace-a', created.id);
+    expect(reviewed.id).toBe(created.id);
+
+    const cancelled = await controller.cancelOrder({ user: trader }, 'workspace-a', created.id);
+    expect(cancelled.status).toBe('CANCELLED');
   });
 
-  it('denies foreign workspace access', async () => {
-    await expect(controller.getAccount({ user: trader }, 'workspace-b')).rejects.toBeInstanceOf(
+  it('returns validation errors for unknown symbols and denies foreign workspace', async () => {
+    await seed();
+    await expect(
+      controller.createOrder({ user: trader }, 'workspace-a', {
+        exchange: 'BINANCE',
+        symbol: 'UNKNOWN',
+        side: 'BUY',
+        orderType: 'MARKET',
+        quantity: '1',
+      }),
+    ).rejects.toThrow(/unknown symbol/);
+
+    await expect(controller.listOrders({ user: trader }, 'workspace-b')).rejects.toBeInstanceOf(
       ForbiddenException,
     );
-  });
-
-  it('disables an account for Disabled UI state', async () => {
-    await controller.createAccount({ user: trader }, 'workspace-a', {});
-    const disabled = await controller.disableAccount({ user: trader }, 'workspace-a');
-    expect(disabled.status).toBe('DISABLED');
-    expect(disabled.account?.status).toBe('DISABLED');
   });
 });

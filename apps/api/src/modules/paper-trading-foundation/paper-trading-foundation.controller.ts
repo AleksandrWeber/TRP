@@ -7,6 +7,8 @@ import {
   Get,
   Headers,
   NotFoundException,
+  Param,
+  Patch,
   Post,
   Req,
 } from '@nestjs/common';
@@ -14,6 +16,12 @@ import type { AuthUser } from '../auth/jwt.strategy';
 import { RequirePermission } from '../auth/decorators/require-permission.decorator';
 import { PermissionClass } from '../auth/permission-catalog';
 import { WorkspaceAccessService } from '../workspace';
+import {
+  PaperOrderNotFoundError,
+  PaperOrderService,
+  PaperOrderValidationError,
+} from './paper-order.service';
+import type { PaperOrderListView, PaperOrderView } from './paper-order.projection';
 import {
   toPaperTradingAccountProjection,
   type PaperTradingAccountProjection,
@@ -31,16 +39,39 @@ export type CreatePaperTradingAccountBody = Readonly<{
   startingBalance?: string;
 }>;
 
+export type CreatePaperOrderBody = Readonly<{
+  paperAccountId?: string;
+  exchange?: string;
+  symbol?: string;
+  side?: string;
+  orderType?: string;
+  quantity?: string;
+  limitPrice?: string | null;
+  stopPrice?: string | null;
+  asDraft?: boolean;
+}>;
+
+export type UpdatePaperOrderBody = Readonly<{
+  exchange?: string;
+  symbol?: string;
+  side?: string;
+  orderType?: string;
+  quantity?: string;
+  limitPrice?: string | null;
+  stopPrice?: string | null;
+}>;
+
 /**
- * Paper Trading Foundation HTTP surface (W2-S04-a).
+ * Paper Trading Foundation HTTP surface (W2-S04-a/b).
  *
- * Paper Account only. No orders, positions, portfolio, PnL, or trading controls.
+ * Paper Account + Paper Orders. No fills, positions, portfolio, PnL, or execution.
  */
 @Controller({ path: 'paper-trading-foundation', version: '1' })
 @RequirePermission(PermissionClass.Projection)
 export class PaperTradingFoundationController {
   constructor(
     private readonly accounts: PaperTradingAccountService,
+    private readonly orders: PaperOrderService,
     private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
@@ -70,7 +101,7 @@ export class PaperTradingFoundationController {
       });
       return toPaperTradingAccountProjection(account);
     } catch (error) {
-      throw mapCreateError(error);
+      throw mapAccountCreateError(error);
     }
   }
 
@@ -85,7 +116,7 @@ export class PaperTradingFoundationController {
       const account = await this.accounts.disable(workspaceId, request.user.userId);
       return toPaperTradingAccountProjection(account);
     } catch (error) {
-      throw mapLifecycleError(error);
+      throw mapAccountLifecycleError(error);
     }
   }
 
@@ -100,7 +131,99 @@ export class PaperTradingFoundationController {
       const account = await this.accounts.activate(workspaceId, request.user.userId);
       return toPaperTradingAccountProjection(account);
     } catch (error) {
-      throw mapLifecycleError(error);
+      throw mapAccountLifecycleError(error);
+    }
+  }
+
+  @Get('orders')
+  async listOrders(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+  ): Promise<PaperOrderListView> {
+    const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
+    return this.orders.list(workspaceId);
+  }
+
+  @Get('orders/:orderId')
+  async getOrder(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('orderId') orderId: string,
+  ): Promise<PaperOrderView> {
+    const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
+    try {
+      return await this.orders.get(workspaceId, orderId);
+    } catch (error) {
+      throw mapOrderError(error);
+    }
+  }
+
+  @RequirePermission(PermissionClass.PaperCommand)
+  @Post('orders')
+  async createOrder(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Body() body: CreatePaperOrderBody,
+  ): Promise<PaperOrderView> {
+    const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
+    try {
+      return await this.orders.create({
+        workspaceId,
+        actorUserId: request.user.userId,
+        paperAccountId: body?.paperAccountId,
+        exchange: body?.exchange ?? '',
+        symbol: body?.symbol ?? '',
+        side: body?.side ?? '',
+        orderType: body?.orderType ?? '',
+        quantity: body?.quantity ?? '',
+        limitPrice: body?.limitPrice,
+        stopPrice: body?.stopPrice,
+        asDraft: body?.asDraft,
+      });
+    } catch (error) {
+      throw mapOrderError(error);
+    }
+  }
+
+  @RequirePermission(PermissionClass.PaperCommand)
+  @Patch('orders/:orderId')
+  async updateOrder(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('orderId') orderId: string,
+    @Body() body: UpdatePaperOrderBody,
+  ): Promise<PaperOrderView> {
+    const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
+    try {
+      return await this.orders.update({
+        workspaceId,
+        actorUserId: request.user.userId,
+        orderId,
+        exchange: body?.exchange,
+        symbol: body?.symbol,
+        side: body?.side,
+        orderType: body?.orderType,
+        quantity: body?.quantity,
+        limitPrice: body?.limitPrice,
+        stopPrice: body?.stopPrice,
+      });
+    } catch (error) {
+      throw mapOrderError(error);
+    }
+  }
+
+  @RequirePermission(PermissionClass.PaperCommand)
+  @Post('orders/:orderId/cancel')
+  async cancelOrder(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('orderId') orderId: string,
+  ): Promise<PaperOrderView> {
+    const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
+    try {
+      return await this.orders.cancel(workspaceId, orderId, request.user.userId);
+    } catch (error) {
+      throw mapOrderError(error);
     }
   }
 }
@@ -122,7 +245,7 @@ function requireWorkspace(
   return workspaceId;
 }
 
-function mapCreateError(error: unknown): Error {
+function mapAccountCreateError(error: unknown): Error {
   if (error instanceof PaperTradingAccountDuplicateError) {
     return new ConflictException('Paper Account already exists for this workspace');
   }
@@ -133,7 +256,7 @@ function mapCreateError(error: unknown): Error {
   return new BadRequestException('Paper Account could not be created.');
 }
 
-function mapLifecycleError(error: unknown): Error {
+function mapAccountLifecycleError(error: unknown): Error {
   if (error instanceof PaperTradingAccountNotFoundError) {
     return new NotFoundException('Paper Account not found');
   }
@@ -142,4 +265,15 @@ function mapLifecycleError(error: unknown): Error {
     return new BadRequestException(text);
   }
   return new BadRequestException('Paper Account could not be updated.');
+}
+
+function mapOrderError(error: unknown): Error {
+  if (error instanceof PaperOrderNotFoundError) {
+    return new NotFoundException('Paper Order not found');
+  }
+  if (error instanceof PaperOrderValidationError) {
+    return new BadRequestException(error.message);
+  }
+  const text = error instanceof Error ? error.message : 'paper order failed';
+  return new BadRequestException(text);
 }

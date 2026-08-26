@@ -2029,6 +2029,27 @@ export type PaperTradingAccountProjection = {
   account: PaperTradingAccountView | null;
 };
 
+/** W2-S04-b Paper Order projection (intent only). */
+export type PaperOrderView = {
+  id: string;
+  workspaceId: string;
+  paperAccountId: string;
+  exchange: string;
+  symbol: string;
+  side: string;
+  orderType: string;
+  quantity: string;
+  limitPrice: string | null;
+  stopPrice: string | null;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PaperOrderListView = {
+  orders: PaperOrderView[];
+};
+
 export type ExchangeScopeOverviewView = {
   id: string;
   exchangeCode: string;
@@ -3093,6 +3114,48 @@ export const api = {
       method: 'POST',
       body: '{}',
     }),
+  listPaperOrders: () => request<PaperOrderListView>('/paper-trading-foundation/orders'),
+  getPaperOrder: (orderId: string) =>
+    request<PaperOrderView>(`/paper-trading-foundation/orders/${encodeURIComponent(orderId)}`),
+  createPaperOrder: (body: {
+    paperAccountId?: string;
+    exchange: string;
+    symbol: string;
+    side: string;
+    orderType: string;
+    quantity: string;
+    limitPrice?: string | null;
+    stopPrice?: string | null;
+    asDraft?: boolean;
+  }) =>
+    request<PaperOrderView>('/paper-trading-foundation/orders', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  updatePaperOrder: (
+    orderId: string,
+    body: {
+      exchange?: string;
+      symbol?: string;
+      side?: string;
+      orderType?: string;
+      quantity?: string;
+      limitPrice?: string | null;
+      stopPrice?: string | null;
+    },
+  ) =>
+    request<PaperOrderView>(`/paper-trading-foundation/orders/${encodeURIComponent(orderId)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    }),
+  cancelPaperOrder: (orderId: string) =>
+    request<PaperOrderView>(
+      `/paper-trading-foundation/orders/${encodeURIComponent(orderId)}/cancel`,
+      {
+        method: 'POST',
+        body: '{}',
+      },
+    ),
   getMarketDataSymbols: (connectionId: string) =>
     request<MarketSymbolDiscoveryView>(
       `/market-data/connections/${encodeURIComponent(connectionId)}/symbols`,

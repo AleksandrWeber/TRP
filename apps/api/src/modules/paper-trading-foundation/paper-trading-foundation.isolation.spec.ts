@@ -4,8 +4,8 @@ import { describe, expect, it } from 'vitest';
 
 const directory = join(process.cwd(), 'src/modules/paper-trading-foundation');
 
-describe('Paper Trading foundation isolation (W2-S04-a)', () => {
-  it('never references exchange venues, Market Data transport, orders, or Live Trading', async () => {
+describe('Paper Trading foundation isolation (W2-S04-b)', () => {
+  it('consumes abstract Market Data only and never executes or fills', async () => {
     const files = (await readdir(directory)).filter(
       (name) => name.endsWith('.ts') && !name.endsWith('.spec.ts'),
     );
@@ -14,14 +14,10 @@ describe('Paper Trading foundation isolation (W2-S04-a)', () => {
     );
     const joined = sources.map((file) => file.source).join('\n');
 
-    expect(joined).not.toMatch(/\bBinance\b/);
-    expect(joined).not.toMatch(/\bBybit\b/);
-    expect(joined).not.toMatch(/\bOKX\b/);
     expect(joined).not.toMatch(/Ticker API|Candlestick API|Order Book API/i);
     expect(joined).not.toMatch(/from ['"]axios['"]/);
     expect(joined).not.toMatch(/\bWebSocket\b/);
     expect(joined).not.toMatch(/wss:\/\//);
-    expect(joined).not.toMatch(/from ['"]\.\.\/market-data-foundation/);
     expect(joined).not.toMatch(/from ['"]\.\.\/market-data-domain/);
     expect(joined).not.toMatch(/from ['"]\.\.\/live-market-data/);
     expect(joined).not.toMatch(/from ['"]\.\.\/connections/);
@@ -33,6 +29,11 @@ describe('Paper Trading foundation isolation (W2-S04-a)', () => {
     expect(joined).not.toMatch(/from ['"]\.\.\/paper-trading['"]/);
     expect(joined).not.toMatch(/from ['"]\.\.\/paper-trading-engine/);
     expect(joined).not.toMatch(/from ['"]\.\.\/secret-vault['"]/);
-    expect(joined).not.toMatch(/matching engine|execution simulator|realized PnL|unrealized PnL/i);
+    expect(joined).not.toMatch(/execution simulator|realized PnL|unrealized PnL/i);
+    expect(joined).not.toMatch(/binance-api|bybit-api|okx-api|ccxt/i);
+    expect(joined).not.toMatch(/market-ticker|market-candle|market-order-book\.http/i);
+
+    // May import Market Data catalog/cache only — never matching/fill logic.
+    expect(joined).not.toMatch(/MatchingEngine|matchOrder|createFill|applyFill/i);
   });
 });

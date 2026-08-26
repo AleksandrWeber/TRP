@@ -2,10 +2,10 @@
 
 **Document:** Version 3 Paper Trading Overview
 **Date:** 2026-08-26
-**Status:** W2-S04 planning **APPROVED**. W2-S04-a Paper Account Foundation implemented. Awaiting Product Owner slice review before W2-S04-b. Not Close.
+**Status:** W2-S04 planning **APPROVED**. W2-S04-a **APPROVED**. W2-S04-b Paper Order Foundation implemented. Awaiting Product Owner slice review before W2-S04-c. Not Close.
 **Product:** Paper Trading Foundation
 **Nature:** Customer description. Not an RC. Not an ADR. Not a Master Plan revision.
-**Slice evidence:** [`w2-s04-a-implementation-report.md`](./w2-s04-a-implementation-report.md) · [`w2-s04-a-validation-report.md`](./w2-s04-a-validation-report.md)
+**Slice evidence:** [`w2-s04-a-implementation-report.md`](./w2-s04-a-implementation-report.md) · [`w2-s04-b-implementation-report.md`](./w2-s04-b-implementation-report.md) · [`w2-s04-b-validation-report.md`](./w2-s04-b-validation-report.md)
 
 This is what an ordinary operator experiences. It is not an internal design note.
 
@@ -19,11 +19,28 @@ The product can create and view a workspace-owned Paper Account.
 - Statuses: Not Created, Active, Disabled.
 - Paper balances are informational only. They never represent real money.
 - The account exists independently of Exchange Connections.
-- The product does not show orders, positions, portfolio, PnL, or trading controls from this slice.
+- The product does not show fills, positions, portfolio, or PnL from this slice.
 
 ```text
 Paper Account Active means a simulated workspace account exists.
-Paper Account Active does NOT mean Orders, Positions, PnL, or Live Trading.
+Paper Account Active does NOT mean fills, Positions, PnL, or Live Trading.
+```
+
+---
+
+## W2-S04-b delivered foundation
+
+The product can create and manage Paper Orders as trading intent.
+
+- Operators can create Limit / Market / Stop / Stop Limit Buy or Sell orders, list them, review them, and cancel Draft or Pending orders.
+- Statuses: Draft, Pending, Cancelled, Rejected.
+- **Pending** means accepted by Paper Trading as intent — not executed and not filled.
+- Symbols must be known from Market Data for the selected offered exchange.
+- The product does not fill orders, create positions, change balances, or show PnL.
+
+```text
+Paper Order Pending means trading intent was accepted.
+Paper Order Pending does NOT mean filled, executed, or Live Trading.
 ```
 
 ---
@@ -34,8 +51,8 @@ Paper Trading Foundation is the product that lets a workspace **safely test stra
 
 The operator already manages Exchange connections in **Connections**, proves connectivity in Exchange Connectivity, and views honest market data in **Market Data**. This package does not replace those places. It adds **Paper Trading**: paper accounts, simulated buy and sell, fills, positions, PnL, and portfolio — without placing real exchange orders and without real capital.
 
-- The operator can today: open Paper Trading, create a Paper Account, view currency, starting balance, current balance, and status, and disable or activate the account.
-- The operator cannot yet: select Exchange/Symbol for paper execution, place Buy/Sell, observe fills, positions, PnL, or portfolio, or cancel paper orders (later slices).
+- The operator can today: open Paper Trading, create a Paper Account, create/review/list/cancel Paper Orders (Pending = intent only).
+- The operator cannot yet: observe fills, positions, PnL, or portfolio updates from matching/execution (later slices).
 - The operator cannot: place live exchange orders, move real capital, enable Live Trading, use leverage or margin, open a risk or strategy engine, stream trading WebSockets, or claim exchange balances or exchange positions from this package.
 
 ```text
@@ -60,7 +77,7 @@ Paper Trading consumes those products. It does not redesign them.
 
 ---
 
-## Customer Journey (current through W2-S04-a)
+## Customer Journey (current through W2-S04-b)
 
 ```text
 Sign in
@@ -69,12 +86,14 @@ Open Paper Trading
   ↓
 Create Paper Account
   ↓
-View Status / Currency / Balances
+Create Paper Order
   ↓
-Disable or Activate (optional)
+Review / List Orders
+  ↓
+Cancel Order (optional)
 ```
 
-Later slices add Select Exchange / Symbol, Place Buy / Sell, Fill, Position, PnL, Portfolio, and Cancel Order.
+Later slices add matching, fills, positions, PnL, and portfolio.
 
 ### Sign in
 
@@ -138,8 +157,8 @@ Workspace A cannot use Workspace B’s paper accounts. A role without Paper Trad
 
 ## What's Next
 
-- Product Owner review of W2-S04-a
-- W2-S04-b only after approval (simulators)
+- Product Owner review of W2-S04-b
+- W2-S04-c only after approval
 - Live Trading stays later (Wave 6 / Order Path)
 - Wave 2 COMPLETE is not claimed
 
@@ -172,4 +191,4 @@ This product does **not** include:
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S04-b.
+**STOP.** Wait for Product Owner review before W2-S04-c.
