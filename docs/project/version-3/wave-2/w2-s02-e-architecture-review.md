@@ -1,6 +1,6 @@
 # W2-S02-e Architecture Review
 
-**Verdict:** PASS  
+**Verdict:** PASS
 **Scope:** Close evidence only. No architectural changes.
 
 | Check                                | Verdict |

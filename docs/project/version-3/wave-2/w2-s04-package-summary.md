@@ -1,8 +1,8 @@
 # W2-S04 Package Summary
 
-**Package:** W2-S04 Paper Trading Foundation  
-**Wave:** 2 — Connection Management  
-**Status:** Ready for Product Owner Package Close Review (not Closed)  
+**Package:** W2-S04 Paper Trading Foundation
+**Wave:** 2 — Connection Management
+**Status:** Ready for Product Owner Package Close Review (not Closed)
 **Close record:** [`w2-s04-close-package-report.md`](./w2-s04-close-package-report.md)
 
 ## Customer outcome

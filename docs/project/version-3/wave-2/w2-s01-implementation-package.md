@@ -210,19 +210,20 @@ This package does **not** depend on:
 
 ### IN Scope
 
-| Item                        | Customer meaning                                              | Notes / owner inside existing domain        |
-| --------------------------- | ------------------------------------------------------------- | ------------------------------------------- |
-| Connection lifecycle        | Create, validate, replace, disconnect, review                 | Connection Management                       |
-| Connection state model      | Disconnected → … → Connected / failed / revoked / disabled    | Connection Management                       |
-| Workspace ownership         | Connections belong to a workspace                             | Consumes Workspace Isolation                |
-| Vault integration           | Secrets written/read via Vault; never customer `.env`         | Consumes Vault                              |
-| Connection validation flow  | Operator-triggered validation with honest outcomes            | Connection Management orchestrates          |
-| Supported provider families | Crypto Exchanges, Telegram, SMTP, OpenRouter (planning)       | Catalog ownership only                      |
-| Customer workflows          | Operator journeys for connections                             | Product Walkthrough                         |
-| Security boundaries         | Authn / Authz / Isolation / Vault / Audit / Platform consumed | Does not redefine                           |
-| Audit interaction           | Connection lifecycle events attributable                      | Emits to Security Audit; does not own store |
-| Failure philosophy          | Fail closed; honest unavailable / failed; no fake Connected   | Security Default Policy                     |
-| Validation strategy         | Slices, Close criteria, evidence, regressions                 | This package + validation plan              |
+| Item                       | Customer meaning                                              | Notes / owner inside existing domain        |
+| -------------------------- | ------------------------------------------------------------- | ------------------------------------------- |
+| Connection lifecycle       | Create, validate, replace, disconnect, review                 | Connection Management                       |
+| Connection state model     | Disconnected → … → Connected / failed / revoked / disabled    | Connection Management                       |
+| Workspace ownership        | Connections belong to a workspace                             | Consumes Workspace Isolation                |
+| Vault integration          | Secrets written/read via Vault; never customer `.env`         | Consumes Vault                              |
+| Connection validation flow | Operator-triggered validation with honest outcomes            | Connection Management orchestrates          |
+| Connection Type catalog    | Exchange, Notification, AI, Storage (planning model)          | Catalog ownership only                      |
+| Supported providers        | Under types: Binance/Bybit/OKX; Telegram/SMTP; OpenRouter     | Catalog ownership only                      |
+| Customer workflows         | Operator journeys for connections                             | Product Walkthrough                         |
+| Security boundaries        | Authn / Authz / Isolation / Vault / Audit / Platform consumed | Does not redefine                           |
+| Audit interaction          | Connection lifecycle events attributable                      | Emits to Security Audit; does not own store |
+| Failure philosophy         | Fail closed; honest unavailable / failed; no fake Connected   | Security Default Policy                     |
+| Validation strategy        | Slices, Close criteria, evidence, regressions                 | This package + validation plan              |
 
 ### OUT OF Scope
 
@@ -250,7 +251,7 @@ Nothing in IN Scope may be invented. If a desired item is not in the Master Plan
 
 | #   | Outcome                                                                                                 | Fail if                                                          |
 | --- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| 1   | Operator opens Connections and sees offered provider families with honest status                        | Scattered env-only story; simulated Connected as default success |
+| 1   | Operator opens Connections and sees Connection Types and offered providers with honest status           | Scattered env-only story; simulated Connected as default success |
 | 2   | Operator creates a connection; secret goes to Vault; metadata owned by Connections                      | Secret in `.env` or plaintext connection columns                 |
 | 3   | Operator runs validation; state becomes Connected or Validation Failed honestly                         | Fake success; live-trading claim from validation                 |
 | 4   | Operator replaces credentials; old material invalidated via Vault; connection id retained where planned | SSH / host file edit required                                    |
@@ -387,16 +388,42 @@ Vault owns whether ciphertext exists, is revoked, or is deleted. Connection Mana
 
 ---
 
-## Supported providers (planning)
+## Connection Type model (planning recommendation)
 
-| Provider family      | Wave 2 role                                             | Owns protocol I/O later        | Connection Management owns           |
-| -------------------- | ------------------------------------------------------- | ------------------------------ | ------------------------------------ |
-| **Crypto Exchanges** | Catalog + credential collect + validation product rules | Exchange Adapter (Wave 4)      | Metadata, lifecycle, status, honesty |
-| **Telegram**         | Catalog + credential collect; delivery later            | Notification Delivery (Wave 5) | Same                                 |
-| **SMTP**             | Catalog + credential collect; send later                | Notification Delivery (Wave 5) | Same                                 |
-| **OpenRouter**       | Catalog + credential collect; runtime use gated         | AI Gateway (Wave 2/7)          | Same                                 |
+Product Owner recommendation for the catalog model. **Does not change ownership. Does not revise the Master Plan.** It only structures how Connections scales from Wave 2 into Waves 5–7.
 
-Do not implement provider adapters in this planning package. Do not claim reserved channels are offered until the Master Plan wave ships them.
+```text
+Connection Type
+  ├── Exchange
+  │     ├── Binance
+  │     ├── Bybit
+  │     └── OKX
+  ├── Notification
+  │     ├── Telegram
+  │     └── SMTP
+  ├── AI
+  │     └── OpenRouter
+  └── Storage
+        └── (none offered in Wave 2)
+```
+
+| Layer               | Meaning                                                                | Owner                         |
+| ------------------- | ---------------------------------------------------------------------- | ----------------------------- |
+| **Connection Type** | Category of external integration (Exchange, Notification, AI, Storage) | Connection Management catalog |
+| **Provider**        | Concrete vendor inside a type (Binance, Telegram, OpenRouter, …)       | Connection Management catalog |
+| **Connection**      | Workspace instance of a provider (lifecycle + state)                   | Connection Management         |
+| **Secret**          | Credential material for that connection                                | Vault                         |
+
+| Connection Type  | Wave 2 offered providers | Wave 2 role                                       | Protocol I/O later                |
+| ---------------- | ------------------------ | ------------------------------------------------- | --------------------------------- |
+| **Exchange**     | Binance, Bybit, OKX      | Catalog + credential collect + validation honesty | Exchange Adapter (Wave 4+)        |
+| **Notification** | Telegram, SMTP           | Catalog + credential collect + validation honesty | Notification Delivery (Wave 5+)   |
+| **AI**           | OpenRouter               | Catalog + credential collect + validation honesty | AI Gateway (Wave 2/7 rules)       |
+| **Storage**      | None                     | Type reserved for later scaling                   | Later wave / Master Plan deferral |
+
+Why this model: adding Slack under **Notification**, Anthropic under **AI**, or a future object store under **Storage** extends the catalog without inventing a new Connections product or changing Vault / adapter ownership.
+
+Do not implement provider adapters in this planning package. Do not claim reserved providers or the Storage type as offered until the Master Plan wave ships them.
 
 ---
 
@@ -404,10 +431,10 @@ Do not implement provider adapters in this planning package. Do not claim reserv
 
 ### W2-S01-a — Connections catalog & metadata foundation
 
-**Goal:** Workspace-scoped connection records and offered provider catalog without vendor I/O.
+**Goal:** Workspace-scoped connection records and offered catalog modeled as **Connection Type → Provider** without vendor I/O.
 **Touch (expected):** Connection Management product surface + metadata persistence ports (existing domains only).
-**Done when:** Operator can list offered providers and see Disconnected / not-yet-validated honesty.
-**Must not:** Real API calls; secret plaintext columns; Wave 1 reopen.
+**Done when:** Operator can list Connection Types and offered providers (Exchange / Notification / AI; Storage empty) and see Disconnected / not-yet-validated honesty.
+**Must not:** Real API calls; secret plaintext columns; Wave 1 reopen; treat Storage as offered.
 
 ### W2-S01-b — Vault-backed create & replace
 
@@ -553,7 +580,7 @@ Customer secrets (Vault), identity/authentication, authorization, workspace memb
 
 ### 5. Which providers are planned?
 
-Initial provider families: **Crypto Exchanges**, **Telegram**, **SMTP**, **OpenRouter**. Planning only in this package.
+Catalog model: **Connection Type → Provider**. Types: **Exchange**, **Notification**, **AI**, **Storage**. Wave 2 offered providers: Exchange — Binance, Bybit, OKX; Notification — Telegram, SMTP; AI — OpenRouter; Storage — none. Planning only in this package.
 
 ### 6. What remains outside Wave 2?
 

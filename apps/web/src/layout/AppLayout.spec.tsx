@@ -89,6 +89,8 @@ describe('PC-19 Operator Shell', () => {
     expect(html).toContain('People');
     expect(html).toContain('href="/connections"');
     expect(html).toContain('Connections');
+    expect(html).toContain('href="/connections#ai-connectivity"');
+    expect(html).toContain('AI Connectivity');
     expect(html).toContain('href="/market-data"');
     expect(html).toContain('Market Data');
     expect(html).toContain('Logout');

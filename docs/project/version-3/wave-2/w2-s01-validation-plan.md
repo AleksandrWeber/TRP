@@ -124,13 +124,13 @@ Evidence: [`w2-s01-close-report.md`](./w2-s01-close-report.md), [`w2-s01-certifi
 
 ## 2. Unit tests
 
-| Area                       | Must prove                                                     |
-| -------------------------- | -------------------------------------------------------------- |
-| State transitions          | Illegal jumps to Connected without validation success rejected |
-| Provider catalog rules     | Reserved vs offered honesty helpers                            |
-| Workspace scope predicates | Missing/wrong workspace fails closed                           |
-| Secret field shaping       | Responses never include raw secret material                    |
-| Status projection          | Vault-revoked secret cannot project as Connected               |
+| Area                       | Must prove                                                                   |
+| -------------------------- | ---------------------------------------------------------------------------- |
+| State transitions          | Illegal jumps to Connected without validation success rejected               |
+| Provider catalog rules     | Connection Type → Provider honesty; reserved vs offered; Storage not offered |
+| Workspace scope predicates | Missing/wrong workspace fails closed                                         |
+| Secret field shaping       | Responses never include raw secret material                                  |
+| Status projection          | Vault-revoked secret cannot project as Connected                             |
 
 ---
 

@@ -1,9 +1,9 @@
 # W2-S03 Security Verification Worksheet
 
-**Package:** W2-S03 Market Data Foundation  
-**Verdict:** PASS — every row is PASS or NOT APPLICABLE; zero REQUIRES ACTION  
-**Scope:** Market Data Foundation only. Wave 1, W2-S01, and W2-S02 are consumed, not re-certified.  
-**Evidence date:** 2026-08-26  
+**Package:** W2-S03 Market Data Foundation
+**Verdict:** PASS — every row is PASS or NOT APPLICABLE; zero REQUIRES ACTION
+**Scope:** Market Data Foundation only. Wave 1, W2-S01, and W2-S02 are consumed, not re-certified.
+**Evidence date:** 2026-08-26
 **Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md) §4–§19
 
 ---

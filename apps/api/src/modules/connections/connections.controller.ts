@@ -29,10 +29,12 @@ type RequestWithUser = { user: AuthUser };
 
 /**
  * W2-S01-b transport plus W2-S01-c validation, W2-S02-b exchange handshake,
- * W2-S02-c session health projection, and W2-S02-d capability verification
- * projection. Credentials are passed write-only to Vault and never returned.
+ * W2-S02-c session health projection, W2-S02-d capability verification
+ * projection, and W2-S05-a OpenRouter connectivity test projection.
+ * Credentials are passed write-only to Vault and never returned.
  * Handshake, session state, and verified capabilities for Exchange connections
- * are delegated to Exchange Connectivity.
+ * are delegated to Exchange Connectivity. OpenRouter connectivity tests are
+ * delegated to AI Connectivity.
  */
 @Controller({ path: 'connections', version: '1' })
 @RequirePermission(PermissionClass.Projection)
@@ -86,6 +88,7 @@ export class ConnectionsController {
   ): Promise<ConnectionMetadataView> {
     return this.connections.create({
       workspaceId: requireWorkspace(this.workspaceAccess, request.user, workspaceHeader),
+      actorUserId: request.user.userId,
       displayName: body.displayName,
       provider: body.provider,
     });

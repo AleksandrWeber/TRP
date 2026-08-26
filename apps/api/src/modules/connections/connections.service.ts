@@ -2,6 +2,13 @@ import { ConflictException, Inject, Injectable, NotFoundException } from '@nestj
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../storage/prisma/prisma.module';
 import {
+  OpenRouterAiRequestService,
+  OpenRouterConnectionTestService,
+  OpenRouterConnectivityAudit,
+  OpenRouterConnectivityService,
+  type OpenRouterConnectivityView,
+} from '../ai-connectivity';
+import {
   ExchangeCapabilityService,
   ExchangeHandshakeService,
   ExchangeSessionService,
@@ -52,6 +59,7 @@ export type ConnectionMetadataView = {
   exchangeProvider: ExchangeProviderMetadata | null;
   session: ExchangeSessionView | null;
   capabilities: ExchangeCapabilityView | null;
+  openRouterConnectivity: OpenRouterConnectivityView | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -68,6 +76,10 @@ export class ConnectionsService {
     private readonly handshake: ExchangeHandshakeService,
     private readonly sessions: ExchangeSessionService,
     private readonly capabilities: ExchangeCapabilityService,
+    private readonly openRouterTests: OpenRouterConnectionTestService,
+    private readonly openRouterConnectivity: OpenRouterConnectivityService,
+    private readonly openRouterAudit: OpenRouterConnectivityAudit,
+    private readonly openRouterAiRequests: OpenRouterAiRequestService,
   ) {}
 
   catalog(): ConnectionCatalogView {
@@ -88,6 +100,7 @@ export class ConnectionsService {
 
   async create(input: {
     workspaceId: string;
+    actorUserId: string;
     displayName: string;
     provider: string;
   }): Promise<ConnectionMetadataView> {
@@ -110,6 +123,15 @@ export class ConnectionsService {
         createdAt: now,
       },
     });
+    if (row.provider === 'OPENROUTER') {
+      await this.openRouterAudit
+        .created({
+          workspaceId: input.workspaceId,
+          actorUserId: input.actorUserId,
+          connectionId: row.id,
+        })
+        .catch(() => undefined);
+    }
     return this.view(row);
   }
 
@@ -165,6 +187,17 @@ export class ConnectionsService {
       data: { vaultSecretId: stored.metadata.id, status: 'DISCONNECTED' },
     });
     this.capabilities.clear(input.workspaceId, connection.id);
+    this.openRouterConnectivity.clear(input.workspaceId, connection.id);
+    this.openRouterAiRequests.clear(input.workspaceId, connection.id);
+    if (row.provider === 'OPENROUTER') {
+      await this.openRouterAudit
+        .updated({
+          workspaceId: input.workspaceId,
+          actorUserId: input.actorUserId,
+          connectionId: row.id,
+        })
+        .catch(() => undefined);
+    }
     return this.view(row);
   }
 
@@ -198,6 +231,8 @@ export class ConnectionsService {
       data: { vaultSecretId: stored.metadata.id, status: 'DISCONNECTED' },
     });
     this.capabilities.clear(input.workspaceId, connection.id);
+    this.openRouterConnectivity.clear(input.workspaceId, connection.id);
+    this.openRouterAiRequests.clear(input.workspaceId, connection.id);
     await this.lifecycleAudit.record({
       outcome: 'credentials_replaced',
       workspaceId: input.workspaceId,
@@ -205,6 +240,15 @@ export class ConnectionsService {
       connectionId: row.id,
       provider: row.provider as ConnectionProvider,
     });
+    if (row.provider === 'OPENROUTER') {
+      await this.openRouterAudit
+        .updated({
+          workspaceId: input.workspaceId,
+          actorUserId: input.actorUserId,
+          connectionId: row.id,
+        })
+        .catch(() => undefined);
+    }
     return this.view(row);
   }
 
@@ -254,6 +298,8 @@ export class ConnectionsService {
     });
     const row = await this.updateStatus(connection.id, 'REVOKED');
     this.capabilities.clear(input.workspaceId, connection.id);
+    this.openRouterConnectivity.clear(input.workspaceId, connection.id);
+    this.openRouterAiRequests.clear(input.workspaceId, connection.id);
     await this.lifecycleAudit.record({
       outcome: 'revoked',
       workspaceId: input.workspaceId,
@@ -280,9 +326,14 @@ export class ConnectionsService {
     }
 
     this.capabilities.clear(input.workspaceId, connection.id);
+    this.openRouterConnectivity.clear(input.workspaceId, connection.id);
+    this.openRouterAiRequests.clear(input.workspaceId, connection.id);
     const pending = await this.transitionStatus(connection, 'PENDING_VALIDATION');
     if (connection.connectionType === 'EXCHANGE') {
       return this.completeExchangeHandshake(input, pending);
+    }
+    if (connection.connectionType === 'AI' && connection.provider === 'OPENROUTER') {
+      return this.completeOpenRouterConnectionTest(input, pending);
     }
     return this.completeLocalValidation(input, pending);
   }
@@ -374,6 +425,28 @@ export class ConnectionsService {
     }
   }
 
+  private async completeOpenRouterConnectionTest(
+    input: {
+      workspaceId: string;
+      actorUserId: string;
+      actorRole: Role;
+    },
+    pending: ConnectionRow,
+  ): Promise<ConnectionMetadataView> {
+    try {
+      const result = await this.openRouterTests.perform({
+        workspaceId: input.workspaceId,
+        actorUserId: input.actorUserId,
+        actorRole: input.actorRole,
+        connectionId: pending.id,
+        vaultSecretId: pending.vaultSecretId as string,
+      });
+      return this.finishValidation(pending, result.outcome);
+    } catch {
+      return this.finishValidation(pending, 'VALIDATION_FAILED');
+    }
+  }
+
   private async completeLocalValidation(
     input: {
       workspaceId: string;
@@ -445,6 +518,8 @@ export class ConnectionsService {
     const connection = await this.getRow(input.workspaceId, input.id);
     const row = await this.transitionStatus(connection, status);
     this.capabilities.clear(input.workspaceId, row.id);
+    this.openRouterConnectivity.clear(input.workspaceId, row.id);
+    this.openRouterAiRequests.clear(input.workspaceId, row.id);
     await this.lifecycleAudit.record({
       outcome,
       workspaceId: input.workspaceId,
@@ -452,6 +527,15 @@ export class ConnectionsService {
       connectionId: row.id,
       provider: row.provider as ConnectionProvider,
     });
+    if (status === 'DISABLED' && row.provider === 'OPENROUTER') {
+      await this.openRouterAudit
+        .disabled({
+          workspaceId: input.workspaceId,
+          actorUserId: input.actorUserId,
+          connectionId: row.id,
+        })
+        .catch(() => undefined);
+    }
     return this.view(row);
   }
 
@@ -524,6 +608,7 @@ export class ConnectionsService {
 
   private view(row: ConnectionRow): ConnectionMetadataView {
     const status = connectionStatus(row.status);
+    const credentialsStored = row.vaultSecretId !== null && status !== 'REVOKED';
     return {
       id: row.id,
       workspaceId: row.workspaceId,
@@ -531,7 +616,7 @@ export class ConnectionsService {
       provider: row.provider as ConnectionProvider,
       connectionType: row.connectionType as ConnectionType,
       status,
-      credentialsStored: row.vaultSecretId !== null && status !== 'REVOKED',
+      credentialsStored,
       exchangeProvider:
         row.connectionType === 'EXCHANGE' ? (lookupExchangeProvider(row.provider) ?? null) : null,
       session: projectExchangeSession(row.connectionType, status),
@@ -540,6 +625,14 @@ export class ConnectionsService {
         row.id,
         row.connectionType,
         status,
+      ),
+      openRouterConnectivity: this.openRouterConnectivity.projection(
+        row.workspaceId,
+        row.id,
+        row.connectionType,
+        row.provider,
+        status,
+        credentialsStored,
       ),
       createdAt: row.createdAt.toISOString(),
       updatedAt: row.updatedAt.toISOString(),

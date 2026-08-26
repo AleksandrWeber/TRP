@@ -1,8 +1,8 @@
 # Wave 1 Workspace Isolation — Production Composition Proof
 
-**Finding:** F-14  
-**Date:** 2026-08-17  
-**Scope:** Authentication, Identity, Workspace, Vault, Security Audit, and Timeline only.  
+**Finding:** F-14
+**Date:** 2026-08-17
+**Scope:** Authentication, Identity, Workspace, Vault, Security Audit, and Timeline only.
 **Regression:** [`production-composition-proof.integration.spec.ts`](../../../apps/api/src/modules/workspace-isolation/production-composition-proof.integration.spec.ts)
 
 ## Claim and execution boundary

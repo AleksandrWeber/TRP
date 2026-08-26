@@ -448,6 +448,7 @@ export const NAV_BANDS: readonly NavBand[] = [
           { to: '/notifications', label: 'Notifications' },
           { to: '/notifications/channels', label: 'Notification Channels' },
           { to: '/connections', label: 'Connections' },
+          { to: '/connections#ai-connectivity', label: 'AI Connectivity' },
           { to: '/market-data', label: 'Market Data' },
         ],
       },

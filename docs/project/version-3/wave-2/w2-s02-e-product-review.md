@@ -1,6 +1,6 @@
 # W2-S02-e Product Review
 
-**Verdict:** PASS  
+**Verdict:** PASS
 **Walkthrough:** [`w2-s02-live-product-walkthrough.md`](./w2-s02-live-product-walkthrough.md)
 
 ## Acceptance Review

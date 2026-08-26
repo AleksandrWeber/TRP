@@ -1,9 +1,9 @@
 # Wave 1 Product Owner Decision Record — F-05
 
-**Finding:** F-05  
-**Date:** 2026-08-17  
-**Nature:** Certification governance only. Not implementation. Not a Master Plan revision. Not a package reopen.  
-**Status:** **APPROVED** — authoritative Product Owner interpretation for Wave 1 certification  
+**Finding:** F-05
+**Date:** 2026-08-17
+**Nature:** Certification governance only. Not implementation. Not a Master Plan revision. Not a package reopen.
+**Status:** **APPROVED** — authoritative Product Owner interpretation for Wave 1 certification
 **Resolution authority:** [`wave-1-certification-resolution.md`](./wave-1-certification-resolution.md) (Option D)
 
 ---
@@ -103,5 +103,5 @@ Independent Certification Validation remains required before any certification v
 
 ## STOP
 
-F-05 governance conflict is recorded as resolved by this Decision Record.  
+F-05 governance conflict is recorded as resolved by this Decision Record.
 Await Product Owner review before Independent Certification Validation.

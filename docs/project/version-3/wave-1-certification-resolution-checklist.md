@@ -1,6 +1,6 @@
 # Wave 1 Certification Resolution Checklist
 
-**Status:** **Product Owner Approved — Finalized.**  
+**Status:** **Product Owner Approved — Finalized.**
 **Status key:** OPEN = action not started; READY = existing evidence can be assembled; RESOLVED = accepted evidence and validation complete.
 
 | Finding                              | Required minimum action                                                                                                              | Status                                                                                                                                                          |

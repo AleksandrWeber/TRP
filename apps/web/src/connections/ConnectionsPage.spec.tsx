@@ -99,6 +99,7 @@ const connection: ConnectionMetadataView = {
   exchangeProvider: catalog.exchangeProviders[0] ?? null,
   session: disconnectedSession,
   capabilities: null,
+  openRouterConnectivity: null,
   createdAt: '2026-08-17T16:00:00.000Z',
   updatedAt: '2026-08-17T16:00:00.000Z',
 };
@@ -128,6 +129,38 @@ const viewProps: Omit<ConnectionsViewProps, 'connections' | 'provider'> = {
   onDisconnect: () => undefined,
   onDisable: () => undefined,
   onRevoke: () => undefined,
+  aiRequestConnectionId: null,
+  aiRequestPrompt: '',
+  aiRequestResult: null,
+  onAiRequestConnectionId: () => undefined,
+  onAiRequestPrompt: () => undefined,
+  onSubmitAiRequest: (event) => event.preventDefault(),
+  aiSessions: [],
+  aiSessionName: '',
+  aiSessionRenameId: null,
+  aiSessionRenameValue: '',
+  openAiSessionId: null,
+  aiRequestSessionId: null,
+  onAiSessionName: () => undefined,
+  onCreateAiSession: (event) => event.preventDefault(),
+  onOpenAiSession: () => undefined,
+  onStartAiSessionRename: () => undefined,
+  onAiSessionRenameValue: () => undefined,
+  onRenameAiSession: (event) => event.preventDefault(),
+  onCancelAiSessionRename: () => undefined,
+  onCloseAiSession: () => undefined,
+  onAiRequestSessionId: () => undefined,
+  aiHistoryOpen: false,
+  aiHistoryEntries: [],
+  aiHistoryFilterSessionId: '',
+  aiHistoryFilterStatus: '',
+  openAiHistoryId: null,
+  onOpenAiHistory: () => undefined,
+  onAiHistoryFilterSessionId: () => undefined,
+  onAiHistoryFilterStatus: () => undefined,
+  onApplyAiHistoryFilter: (event) => event.preventDefault(),
+  onOpenAiHistoryEntry: () => undefined,
+  onNavigateToAiRequest: () => undefined,
 };
 
 describe('Connections UI (W2-S01-d)', () => {
@@ -403,5 +436,241 @@ describe('Connections UI exchange capability verification (W2-S02-d)', () => {
     expect(html).not.toContain('Market data available');
     expect(html).not.toContain('apiKey');
     expect(html).not.toContain('apiSecret');
+  });
+});
+
+describe('Connections UI OpenRouter connectivity (W2-S05-a)', () => {
+  const openRouter: ConnectionMetadataView = {
+    id: 'connection-or-1',
+    workspaceId: 'workspace-a',
+    displayName: 'Workspace OpenRouter',
+    provider: 'OPENROUTER',
+    connectionType: 'AI',
+    status: 'DISCONNECTED',
+    credentialsStored: true,
+    exchangeProvider: null,
+    session: null,
+    capabilities: null,
+    openRouterConnectivity: {
+      status: 'CONFIGURED',
+      lastTestResult: null,
+    },
+    createdAt: '2026-08-26T12:00:00.000Z',
+    updatedAt: '2026-08-26T12:00:00.000Z',
+  };
+
+  it('renders AI Connectivity configure, test, and honest status', () => {
+    const html = renderToStaticMarkup(
+      <ConnectionsView
+        {...viewProps}
+        provider="OPENROUTER"
+        credentialConnection={openRouter}
+        credentialValues={{ apiKey: '' }}
+        connections={[
+          openRouter,
+          {
+            ...openRouter,
+            id: 'connection-or-2',
+            status: 'CONNECTED',
+            openRouterConnectivity: {
+              status: 'CONNECTED',
+              lastTestResult: {
+                outcome: 'succeeded',
+                failureReason: null,
+                vendorVisibleMessage: 'OpenRouter accepted the workspace API key.',
+                testedAt: '2026-08-26T12:05:00.000Z',
+              },
+            },
+          },
+          {
+            ...openRouter,
+            id: 'connection-or-3',
+            status: 'AUTHENTICATION_FAILED',
+            openRouterConnectivity: {
+              status: 'CONNECTION_FAILED',
+              lastTestResult: {
+                outcome: 'failed',
+                failureReason: 'AUTHENTICATION_FAILED',
+                vendorVisibleMessage: 'OpenRouter rejected the API key.',
+                testedAt: '2026-08-26T12:06:00.000Z',
+              },
+            },
+          },
+        ]}
+      />,
+    );
+
+    expect(html).toContain('AI Connectivity');
+    expect(html).toContain('Configure OpenRouter');
+    expect(html).toContain('Replace OpenRouter API Key');
+    expect(html).toContain('Save API Key');
+    expect(html).toContain('Test Connection');
+    expect(html).toContain('Configured');
+    expect(html).toContain('Connected');
+    expect(html).toContain('Connection Failed');
+    expect(html).toContain('OpenRouter accepted the workspace API key.');
+    expect(html).toContain('OpenRouter rejected the API key.');
+    expect(html).toContain('does not require editing .env');
+    expect(html).toContain('Workspace AI Request');
+    expect(html).toContain('Submit AI Request');
+    expect(html).toContain(
+      'does not keep conversations, conversation continuation, prompt replay, or AI memory',
+    );
+    expect(html).toContain('Workspace AI Session');
+    expect(html).toContain('Create Session');
+    expect(html).toContain('Workspace AI Request History');
+    expect(html).toContain('Open History');
+    expect(html).not.toContain('Knowledge Lake');
+    expect(html).not.toContain('Start conversation');
+  });
+
+  it('submits one AI request and shows one response without conversation history', () => {
+    const connected: ConnectionMetadataView = {
+      ...openRouter,
+      status: 'CONNECTED',
+      openRouterConnectivity: {
+        status: 'CONNECTED',
+        lastTestResult: {
+          outcome: 'succeeded',
+          failureReason: null,
+          vendorVisibleMessage: 'OpenRouter accepted the workspace API key.',
+          testedAt: '2026-08-26T12:05:00.000Z',
+        },
+      },
+    };
+    const html = renderToStaticMarkup(
+      <ConnectionsView
+        {...viewProps}
+        provider="OPENROUTER"
+        credentialConnection={null}
+        aiRequestConnectionId={connected.id}
+        aiRequestPrompt="Summarize connectivity."
+        aiRequestResult={{
+          requestId: 'req-1',
+          status: 'SUCCEEDED',
+          content: 'One workspace response.',
+          model: 'openai/gpt-4o-mini',
+          failureReason: null,
+          vendorVisibleMessage: 'OpenRouter returned a response for this request.',
+          requestedAt: '2026-08-26T18:00:00.000Z',
+          connectionId: connected.id,
+          workspaceId: 'workspace-a',
+          sessionId: null,
+        }}
+        connections={[connected]}
+      />,
+    );
+
+    expect(html).toContain('Workspace AI Request');
+    expect(html).toContain('Submit AI Request');
+    expect(html).toContain('Request status: Succeeded');
+    expect(html).toContain('One workspace response.');
+    expect(html).toContain('does not send previous requests to the model');
+    expect(html).not.toContain('Conversation history');
+    expect(html).not.toContain('Chat history');
+    expect(html).not.toContain('AI Agents');
+    expect(html).not.toContain('Model comparison');
+  });
+});
+
+describe('Connections UI Workspace AI Session (W2-S05-c)', () => {
+  const openSession = {
+    id: 'session-1',
+    workspaceId: 'workspace-a',
+    displayName: 'Ops Session',
+    status: 'OPEN' as const,
+    createdBy: 'user-a',
+    createdAt: '2026-08-26T19:00:00.000Z',
+    closedAt: null,
+    updatedAt: '2026-08-26T19:00:00.000Z',
+    requests: [
+      {
+        requestId: 'req-1',
+        connectionId: 'connection-or-1',
+        status: 'SUCCEEDED',
+        requestedAt: '2026-08-26T19:05:00.000Z',
+      },
+    ],
+  };
+
+  it('creates, opens, renames, and closes sessions without conversation UI', () => {
+    const html = renderToStaticMarkup(
+      <ConnectionsView
+        {...viewProps}
+        provider="OPENROUTER"
+        aiSessions={[openSession]}
+        aiSessionName="New Session"
+        aiSessionRenameId={openSession.id}
+        aiSessionRenameValue="Renamed Session"
+        openAiSessionId={openSession.id}
+        aiRequestSessionId={openSession.id}
+        connections={[]}
+      />,
+    );
+
+    expect(html).toContain('Workspace AI Session');
+    expect(html).toContain('Create Session');
+    expect(html).toContain('Open Session');
+    expect(html).toContain('Rename Session');
+    expect(html).toContain('Close Session');
+    expect(html).toContain('Opened Session: Ops Session');
+    expect(html).toContain('Request ID: req-1');
+    expect(html).toContain('membership identities only');
+    expect(html).toContain('does not create conversational AI');
+    expect(html).toContain('does not implement AI memory');
+    expect(html).not.toContain('Conversation history');
+    expect(html).not.toContain('Prompt history');
+    expect(html).not.toContain('AI Memory');
+    expect(html).not.toContain('Knowledge Lake');
+    expect(html).not.toContain('Agent execution');
+    expect(html).not.toContain('Streaming');
+    expect(html).not.toContain('Prompt continuation');
+  });
+});
+
+describe('Connections UI Workspace AI Request History (W2-S05-d)', () => {
+  const historyEntry = {
+    id: 'hist-1',
+    workspaceId: 'workspace-a',
+    sessionId: 'session-1',
+    requestId: 'req-1',
+    connectionId: 'connection-or-1',
+    executedAt: '2026-08-26T19:40:00.000Z',
+    status: 'SUCCEEDED',
+    model: 'openai/gpt-4o-mini',
+    durationMs: 210,
+  };
+
+  it('lists, filters, and opens history without conversation or replay UI', () => {
+    const html = renderToStaticMarkup(
+      <ConnectionsView
+        {...viewProps}
+        provider="OPENROUTER"
+        aiHistoryOpen
+        aiHistoryEntries={[historyEntry]}
+        aiHistoryFilterSessionId="session-1"
+        aiHistoryFilterStatus="SUCCEEDED"
+        openAiHistoryId={historyEntry.id}
+        connections={[]}
+      />,
+    );
+
+    expect(html).toContain('Workspace AI Request History');
+    expect(html).toContain('Open History');
+    expect(html).toContain('Filter History');
+    expect(html).toContain('Open History Entry');
+    expect(html).toContain('Navigate to Request');
+    expect(html).toContain('History Entry');
+    expect(html).toContain('History ID: hist-1');
+    expect(html).toContain('Request: req-1');
+    expect(html).toContain('Duration: 210 ms');
+    expect(html).toContain('does not influence future AI requests');
+    expect(html).toContain('Viewing History does not change AI behaviour');
+    expect(html).toContain('prompt replay');
+    expect(html).not.toContain('Continue conversation');
+    expect(html).not.toContain('Prompt editing');
+    expect(html).not.toContain('Knowledge Lake');
+    expect(html).not.toContain('Agent execution');
+    expect(html).not.toContain('Start streaming');
   });
 });

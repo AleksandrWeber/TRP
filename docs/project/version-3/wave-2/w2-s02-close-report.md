@@ -1,6 +1,6 @@
 # W2-S02 Close Report — Exchange Connectivity Foundation
 
-**Recommendation:** Ready for Product Owner Close Review  
+**Recommendation:** Ready for Product Owner Close Review
 **Status:** Not Closed; only Product Owner may declare Close.
 
 ## Package summary

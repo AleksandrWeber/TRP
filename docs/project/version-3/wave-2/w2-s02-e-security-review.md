@@ -1,7 +1,7 @@
 # W2-S02-e Security Review
 
-**Verdict:** PASS  
-**Worksheet:** [`w2-s02-security-verification-worksheet.md`](./w2-s02-security-verification-worksheet.md)  
+**Verdict:** PASS
+**Worksheet:** [`w2-s02-security-verification-worksheet.md`](./w2-s02-security-verification-worksheet.md)
 **Package review:** [`w2-s02-security-review.md`](./w2-s02-security-review.md)
 
 | Check                        | Verdict |

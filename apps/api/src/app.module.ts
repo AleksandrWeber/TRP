@@ -30,6 +30,7 @@ import { NotificationProductModule } from './modules/notification-product';
 import { TelegramProductModule } from './modules/telegram-product';
 import { ExchangeConnectivityModule } from './modules/exchange-connectivity';
 import { ConnectionsModule } from './modules/connections/connections.module';
+import { AiConnectivityModule } from './modules/ai-connectivity';
 import { AiAnalyticsModule } from './modules/ai-analytics';
 import { AiAnalyticsProductModule } from './modules/ai-analytics-product';
 import { NotificationDeliveryModule } from './modules/notification-delivery';
@@ -181,6 +182,7 @@ import { ValidationModule } from './validation/validation.module';
     TelegramProductModule,
     ExchangeConnectivityModule,
     ConnectionsModule,
+    AiConnectivityModule,
     AiAnalyticsModule,
     AiAnalyticsProductModule,
     NotificationDeliveryModule,

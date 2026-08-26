@@ -1,10 +1,10 @@
 # V3-S04 Security Verification Standard — Close Worksheet
 
-**Package:** V3-S04 OWASP & API Hardening  
-**Authority:** [`version-3-security-verification-standard.md`](./version-3-security-verification-standard.md)  
-**Close Security Review:** [`v3-s04-e-security-review.md`](./v3-s04-e-security-review.md)  
-**Certification finding:** F-06  
-**Date:** 2026-08-17  
+**Package:** V3-S04 OWASP & API Hardening
+**Authority:** [`version-3-security-verification-standard.md`](./version-3-security-verification-standard.md)
+**Close Security Review:** [`v3-s04-e-security-review.md`](./v3-s04-e-security-review.md)
+**Certification finding:** F-06
+**Date:** 2026-08-17
 **Nature:** Certification Close evidence only. No implementation change. Reuses existing S04 regressions and reviews.
 
 ```text

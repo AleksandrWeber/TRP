@@ -1,7 +1,7 @@
 # W2-S04-e Validation Report — Package Close Evidence
 
-**Status:** PASS (package)  
-**Scope:** W2-S04-e only  
+**Status:** PASS (package)
+**Scope:** W2-S04-e only
 **Date:** 2026-08-26
 
 ## Automated gates

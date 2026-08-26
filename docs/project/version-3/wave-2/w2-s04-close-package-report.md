@@ -1,7 +1,7 @@
 # W2-S04 Close Package Report — Paper Trading Foundation
 
-**Recommendation:** Ready for Product Owner Package Close Review  
-**Status:** Not Closed; only Product Owner may declare Close.  
+**Recommendation:** Ready for Product Owner Package Close Review
+**Status:** Not Closed; only Product Owner may declare Close.
 **Date:** 2026-08-26
 
 ## Package summary

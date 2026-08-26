@@ -228,6 +228,115 @@ function capabilityStub(
   };
 }
 
+function openRouterTestStub(
+  outcome:
+    | 'CONNECTED'
+    | 'VALIDATION_FAILED'
+    | 'HANDSHAKE_TIMEOUT'
+    | 'PROVIDER_UNAVAILABLE'
+    | 'AUTHENTICATION_FAILED' = 'CONNECTED',
+) {
+  const calls: Array<{ workspaceId: string; connectionId: string; vaultSecretId: string }> = [];
+  return {
+    calls,
+    perform: async (request: {
+      workspaceId: string;
+      connectionId: string;
+      vaultSecretId: string;
+    }) => {
+      calls.push({
+        workspaceId: request.workspaceId,
+        connectionId: request.connectionId,
+        vaultSecretId: request.vaultSecretId,
+      });
+      return {
+        outcome,
+        vendorVisibleMessage:
+          outcome === 'CONNECTED'
+            ? 'OpenRouter accepted the workspace API key.'
+            : 'OpenRouter connectivity test failed.',
+      };
+    },
+  };
+}
+
+function openRouterConnectivityStub() {
+  const cleared: Array<{ workspaceId: string; connectionId: string }> = [];
+  return {
+    cleared,
+    projection: (
+      _workspaceId: string,
+      _connectionId: string,
+      connectionType: string,
+      provider: string,
+      status: string,
+      credentialsStored: boolean,
+    ) => {
+      if (connectionType !== 'AI' || provider !== 'OPENROUTER') return null;
+      if (status === 'DISABLED') return { status: 'DISABLED', lastTestResult: null };
+      if (status === 'CONNECTED') return { status: 'CONNECTED', lastTestResult: null };
+      if (
+        status === 'VALIDATION_FAILED' ||
+        status === 'AUTHENTICATION_FAILED' ||
+        status === 'HANDSHAKE_TIMEOUT' ||
+        status === 'PROVIDER_UNAVAILABLE'
+      ) {
+        return { status: 'CONNECTION_FAILED', lastTestResult: null };
+      }
+      return {
+        status: credentialsStored ? 'CONFIGURED' : 'NOT_CONFIGURED',
+        lastTestResult: null,
+      };
+    },
+    clear: (workspaceId: string, connectionId: string) => {
+      cleared.push({ workspaceId, connectionId });
+    },
+  };
+}
+
+function openRouterAuditStub() {
+  const events: Array<{ kind: string; workspaceId: string; connectionId: string }> = [];
+  return {
+    events,
+    created: async (input: { workspaceId: string; connectionId: string }) => {
+      events.push({
+        kind: 'created',
+        workspaceId: input.workspaceId,
+        connectionId: input.connectionId,
+      });
+    },
+    updated: async (input: { workspaceId: string; connectionId: string }) => {
+      events.push({
+        kind: 'updated',
+        workspaceId: input.workspaceId,
+        connectionId: input.connectionId,
+      });
+    },
+    disabled: async (input: { workspaceId: string; connectionId: string }) => {
+      events.push({
+        kind: 'disabled',
+        workspaceId: input.workspaceId,
+        connectionId: input.connectionId,
+      });
+    },
+    tested: async () => undefined,
+  };
+}
+
+function openRouterAiRequestStub() {
+  const cleared: Array<{ workspaceId: string; connectionId: string }> = [];
+  return {
+    cleared,
+    clear: (workspaceId: string, connectionId: string) => {
+      cleared.push({ workspaceId, connectionId });
+    },
+    execute: async () => {
+      throw new Error('AI request stub should not execute in ConnectionsService tests');
+    },
+    lastResult: () => null,
+  };
+}
+
 describe('ConnectionsService (W2-S01)', () => {
   it('creates metadata only with the provider type and disconnected default', async () => {
     const service = new ConnectionsService(
@@ -239,9 +348,14 @@ describe('ConnectionsService (W2-S01)', () => {
       handshakeStub() as never,
       sessionService() as never,
       capabilityStub() as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
     );
     const connection = await service.create({
       workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
       displayName: ' Primary Binance ',
       provider: 'BINANCE',
     });
@@ -280,9 +394,14 @@ describe('ConnectionsService (W2-S01)', () => {
       handshakeStub() as never,
       sessionService() as never,
       capabilityStub() as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
       displayName: 'Telegram alerts',
       provider: 'TELEGRAM',
     });
@@ -312,9 +431,14 @@ describe('ConnectionsService (W2-S01)', () => {
       handshakeStub() as never,
       sessionService() as never,
       capabilityStub() as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
       displayName: 'Primary Binance',
       provider: 'BINANCE',
     });
@@ -358,9 +482,14 @@ describe('ConnectionsService (W2-S01)', () => {
       handshake as never,
       sessionService() as never,
       capabilityStub() as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
       displayName: 'Workspace Telegram',
       provider: 'TELEGRAM',
     });
@@ -408,9 +537,14 @@ describe('ConnectionsService (W2-S01)', () => {
       handshakeStub() as never,
       sessionService() as never,
       capabilityStub() as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
       displayName: 'Workspace Telegram',
       provider: 'TELEGRAM',
     });
@@ -453,9 +587,14 @@ describe('ConnectionsService (W2-S01)', () => {
       handshakeStub() as never,
       sessionService() as never,
       capabilityStub() as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
       displayName: 'Primary Binance',
       provider: 'BINANCE',
     });
@@ -530,6 +669,10 @@ describe('ConnectionsService exchange provider reference (W2-S02-a)', () => {
       handshakeStub() as never,
       sessionService() as never,
       capabilityStub() as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
     );
 
     const catalog = service.catalog();
@@ -555,9 +698,14 @@ describe('ConnectionsService exchange provider reference (W2-S02-a)', () => {
       handshakeStub() as never,
       sessionService() as never,
       capabilityStub() as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
       displayName: 'Primary Binance',
       provider: 'BINANCE',
     });
@@ -586,9 +734,14 @@ describe('ConnectionsService exchange handshake (W2-S02-b)', () => {
       handshake as never,
       sessionService() as never,
       capabilityStub() as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
       displayName: `${provider} connection`,
       provider,
     });
@@ -696,9 +849,14 @@ describe('ConnectionsService exchange session health (W2-S02-c)', () => {
       handshake as never,
       sessions.service,
       capabilities as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
       displayName: 'Primary Binance',
       provider: 'BINANCE',
     });
@@ -854,9 +1012,14 @@ describe('ConnectionsService exchange session health (W2-S02-c)', () => {
       handshakeStub() as never,
       sessionService() as never,
       capabilityStub() as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
       displayName: 'Telegram alerts',
       provider: 'TELEGRAM',
     });
@@ -889,9 +1052,14 @@ describe('ConnectionsService exchange capability verification (W2-S02-d)', () =>
       handshakeStub('CONNECTED') as never,
       sessions as never,
       capabilities as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
     );
     const created = await connected.create({
       workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
       displayName: 'Primary Binance',
       provider: 'BINANCE',
     });
@@ -944,9 +1112,14 @@ describe('ConnectionsService exchange capability verification (W2-S02-d)', () =>
       handshakeStub('AUTHENTICATION_FAILED') as never,
       sessionService() as never,
       capabilities as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
       displayName: 'Primary Binance',
       provider: 'BINANCE',
     });
@@ -992,9 +1165,14 @@ describe('ConnectionsService exchange capability verification (W2-S02-d)', () =>
       handshakeStub('CONNECTED') as never,
       sessionService() as never,
       capabilities as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
       displayName: 'Primary Binance',
       provider: 'BINANCE',
     });
@@ -1030,9 +1208,14 @@ describe('ConnectionsService exchange capability verification (W2-S02-d)', () =>
       handshakeStub('CONNECTED') as never,
       sessionService() as never,
       capabilities as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
       displayName: 'Primary Binance',
       provider: 'BINANCE',
     });
@@ -1062,5 +1245,186 @@ describe('ConnectionsService exchange capability verification (W2-S02-d)', () =>
     expect(capabilities.cleared).toEqual(
       expect.arrayContaining([{ workspaceId: 'workspace-a', connectionId: created.id }]),
     );
+  });
+});
+
+describe('ConnectionsService OpenRouter connectivity (W2-S05-a)', () => {
+  it('projects OpenRouter connectivity and runs a vendor connection test', async () => {
+    const openRouterTests = openRouterTestStub('CONNECTED');
+    const openRouterAudit = openRouterAuditStub();
+    const vault = memoryVault();
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      vault as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+      handshakeStub() as never,
+      sessionService() as never,
+      capabilityStub() as never,
+      openRouterTests as never,
+      openRouterConnectivityStub() as never,
+      openRouterAudit as never,
+      openRouterAiRequestStub() as never,
+    );
+
+    const created = await service.create({
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      displayName: 'Workspace OpenRouter',
+      provider: 'OPENROUTER',
+    });
+    expect(created.openRouterConnectivity).toEqual({
+      status: 'NOT_CONFIGURED',
+      lastTestResult: null,
+    });
+    expect(openRouterAudit.events).toEqual([
+      { kind: 'created', workspaceId: 'workspace-a', connectionId: created.id },
+    ]);
+
+    const stored = await service.storeCredentials({
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      actorRole: Role.Admin,
+      id: created.id,
+      credentials: { apiKey: 'sk-or-workspace-a' },
+    });
+    expect(stored.openRouterConnectivity?.status).toBe('CONFIGURED');
+    expect(openRouterAudit.events).toContainEqual({
+      kind: 'updated',
+      workspaceId: 'workspace-a',
+      connectionId: created.id,
+    });
+
+    const validated = await service.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      actorRole: Role.Admin,
+      id: created.id,
+    });
+    expect(validated.status).toBe('CONNECTED');
+    expect(validated.openRouterConnectivity?.status).toBe('CONNECTED');
+    expect(openRouterTests.calls).toEqual([
+      {
+        workspaceId: 'workspace-a',
+        connectionId: created.id,
+        vaultSecretId: 'vault-secret-1',
+      },
+    ]);
+    expect(vault.retrieveCalls).toEqual([]);
+  });
+
+  it('maps OpenRouter authentication failure to Connection Failed', async () => {
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      memoryVault() as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+      handshakeStub() as never,
+      sessionService() as never,
+      capabilityStub() as never,
+      openRouterTestStub('AUTHENTICATION_FAILED') as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
+    );
+    const created = await service.create({
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      displayName: 'Workspace OpenRouter',
+      provider: 'OPENROUTER',
+    });
+    await service.storeCredentials({
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      actorRole: Role.Admin,
+      id: created.id,
+      credentials: { apiKey: 'sk-or-bad' },
+    });
+    const failed = await service.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      actorRole: Role.Admin,
+      id: created.id,
+    });
+    expect(failed.status).toBe('AUTHENTICATION_FAILED');
+    expect(failed.openRouterConnectivity?.status).toBe('CONNECTION_FAILED');
+  });
+
+  it('keeps OpenRouter connection test inside the owning workspace', async () => {
+    const openRouterTests = openRouterTestStub('CONNECTED');
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      memoryVault() as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+      handshakeStub() as never,
+      sessionService() as never,
+      capabilityStub() as never,
+      openRouterTests as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
+    );
+    const created = await service.create({
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      displayName: 'Workspace OpenRouter',
+      provider: 'OPENROUTER',
+    });
+    await service.storeCredentials({
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      actorRole: Role.Admin,
+      id: created.id,
+      credentials: { apiKey: 'sk-or-workspace-a' },
+    });
+
+    await expect(
+      service.validate({
+        workspaceId: 'workspace-b',
+        actorUserId: 'user-a',
+        actorRole: Role.Admin,
+        id: created.id,
+      }),
+    ).rejects.toThrow('Connection not found');
+    expect(openRouterTests.calls).toEqual([]);
+  });
+
+  it('emits OpenRouter disabled audit and projects Disabled', async () => {
+    const openRouterAudit = openRouterAuditStub();
+    const service = new ConnectionsService(
+      memoryPrisma() as never,
+      memoryVault() as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+      handshakeStub() as never,
+      sessionService() as never,
+      capabilityStub() as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAudit as never,
+      openRouterAiRequestStub() as never,
+    );
+    const created = await service.create({
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      displayName: 'Workspace OpenRouter',
+      provider: 'OPENROUTER',
+    });
+    const disabled = await service.disable({
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      id: created.id,
+    });
+    expect(disabled.openRouterConnectivity?.status).toBe('DISABLED');
+    expect(openRouterAudit.events).toContainEqual({
+      kind: 'disabled',
+      workspaceId: 'workspace-a',
+      connectionId: created.id,
+    });
   });
 });

@@ -6,6 +6,6 @@ import { OpenRouterProvider } from './providers/openrouter.provider';
 @Module({
   controllers: [AiController],
   providers: [OpenRouterProvider, AiGatewayService],
-  exports: [AiGatewayService],
+  exports: [AiGatewayService, OpenRouterProvider],
 })
 export class AiModule {}

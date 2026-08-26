@@ -5,6 +5,10 @@ import type {
   ConnectionProvider,
   ExchangeCapabilityState,
   ExchangeSessionCapability,
+  OpenRouterConnectivityStatus,
+  WorkspaceAiRequestHistoryView,
+  WorkspaceAiRequestView,
+  WorkspaceAiSessionView,
 } from '../shared/api';
 
 export type ConnectionsViewProps = {
@@ -16,6 +20,20 @@ export type ConnectionsViewProps = {
   renameValue: string;
   credentialConnection: ConnectionMetadataView | null;
   credentialValues: Record<string, string>;
+  aiRequestConnectionId: string | null;
+  aiRequestPrompt: string;
+  aiRequestResult: WorkspaceAiRequestView | null;
+  aiSessions: WorkspaceAiSessionView[];
+  aiSessionName: string;
+  aiSessionRenameId: string | null;
+  aiSessionRenameValue: string;
+  openAiSessionId: string | null;
+  aiRequestSessionId: string | null;
+  aiHistoryOpen: boolean;
+  aiHistoryEntries: WorkspaceAiRequestHistoryView[];
+  aiHistoryFilterSessionId: string;
+  aiHistoryFilterStatus: string;
+  openAiHistoryId: string | null;
   loading: boolean;
   saving: boolean;
   error: string | null;
@@ -34,6 +52,24 @@ export type ConnectionsViewProps = {
   onDisconnect: (connection: ConnectionMetadataView) => void;
   onDisable: (connection: ConnectionMetadataView) => void;
   onRevoke: (connection: ConnectionMetadataView) => void;
+  onAiRequestConnectionId: (connectionId: string) => void;
+  onAiRequestPrompt: (value: string) => void;
+  onSubmitAiRequest: (event: FormEvent<HTMLFormElement>) => void;
+  onAiSessionName: (value: string) => void;
+  onCreateAiSession: (event: FormEvent<HTMLFormElement>) => void;
+  onOpenAiSession: (sessionId: string) => void;
+  onStartAiSessionRename: (session: WorkspaceAiSessionView) => void;
+  onAiSessionRenameValue: (value: string) => void;
+  onRenameAiSession: (event: FormEvent<HTMLFormElement>) => void;
+  onCancelAiSessionRename: () => void;
+  onCloseAiSession: (sessionId: string) => void;
+  onAiRequestSessionId: (sessionId: string | null) => void;
+  onOpenAiHistory: () => void;
+  onAiHistoryFilterSessionId: (sessionId: string) => void;
+  onAiHistoryFilterStatus: (status: string) => void;
+  onApplyAiHistoryFilter: (event: FormEvent<HTMLFormElement>) => void;
+  onOpenAiHistoryEntry: (historyId: string) => void;
+  onNavigateToAiRequest: (entry: WorkspaceAiRequestHistoryView) => void;
 };
 
 export function ConnectionsView({
@@ -45,6 +81,20 @@ export function ConnectionsView({
   renameValue,
   credentialConnection,
   credentialValues,
+  aiRequestConnectionId,
+  aiRequestPrompt,
+  aiRequestResult,
+  aiSessions,
+  aiSessionName,
+  aiSessionRenameId,
+  aiSessionRenameValue,
+  openAiSessionId,
+  aiRequestSessionId,
+  aiHistoryOpen,
+  aiHistoryEntries,
+  aiHistoryFilterSessionId,
+  aiHistoryFilterStatus,
+  openAiHistoryId,
   loading,
   saving,
   error,
@@ -63,11 +113,38 @@ export function ConnectionsView({
   onDisconnect,
   onDisable,
   onRevoke,
+  onAiRequestConnectionId,
+  onAiRequestPrompt,
+  onSubmitAiRequest,
+  onAiSessionName,
+  onCreateAiSession,
+  onOpenAiSession,
+  onStartAiSessionRename,
+  onAiSessionRenameValue,
+  onRenameAiSession,
+  onCancelAiSessionRename,
+  onCloseAiSession,
+  onAiRequestSessionId,
+  onOpenAiHistory,
+  onAiHistoryFilterSessionId,
+  onAiHistoryFilterStatus,
+  onApplyAiHistoryFilter,
+  onOpenAiHistoryEntry,
+  onNavigateToAiRequest,
 }: ConnectionsViewProps) {
   const credentialProvider = catalog?.connectionTypes
     .flatMap((type) => type.providers)
     .find((providerItem) => providerItem.id === credentialConnection?.provider);
   const selectedExchange = catalog?.exchangeProviders.find((item) => item.id === provider);
+  const openRouterConnections = connections.filter(
+    (connection) => connection.provider === 'OPENROUTER',
+  );
+  const connectedOpenRouter = openRouterConnections.filter(
+    (connection) => connection.openRouterConnectivity?.status === 'CONNECTED',
+  );
+  const openAiSessions = aiSessions.filter((session) => session.status === 'OPEN');
+  const openedSession = aiSessions.find((session) => session.id === openAiSessionId) ?? null;
+  const openedHistoryEntry = aiHistoryEntries.find((entry) => entry.id === openAiHistoryId) ?? null;
 
   return (
     <section className="space-y-8">
@@ -83,6 +160,13 @@ export function ConnectionsView({
           authenticated session was observed to allow. They are not used. Connected does not
           indicate live trading, delivery, balances, orders, market data, or execution.
         </p>
+        <p className="mt-2 max-w-3xl text-slate-400">
+          AI Connectivity lets a workspace configure an OpenRouter API key, test connectivity,
+          submit independent AI requests, organize those requests into Workspace AI Sessions, and
+          review read-only Request History. Connected means OpenRouter accepted the workspace key. A
+          successful request means only this response. A Session groups request identities. History
+          is an operational record only. It is not conversation, chat, AI memory, or an AI Platform.
+        </p>
       </div>
 
       {error ? (
@@ -90,6 +174,431 @@ export function ConnectionsView({
           {error}
         </p>
       ) : null}
+
+      <section
+        id="ai-connectivity"
+        aria-labelledby="ai-connectivity-heading"
+        className="rounded border border-white/10 p-5"
+      >
+        <h3 id="ai-connectivity-heading" className="text-lg font-medium">
+          AI Connectivity
+        </h3>
+        <p className="mt-2 text-sm text-slate-400">
+          Configure OpenRouter, save the API key, test the connection, submit independent AI
+          requests, organize them in Workspace AI Sessions, and review Request History. This surface
+          does not keep conversations, conversation continuation, prompt replay, or AI memory.
+        </p>
+        <ul className="mt-4 divide-y divide-white/10">
+          {openRouterConnections.map((connection) => (
+            <li
+              key={`ai-${connection.id}`}
+              className="flex items-center justify-between gap-4 py-4"
+            >
+              <div>
+                <p className="font-medium">{connection.displayName}</p>
+                <p className="text-sm text-slate-400">OpenRouter</p>
+                {connection.openRouterConnectivity ? (
+                  <div className="mt-1 text-sm text-slate-400">
+                    <p>
+                      Connection status:{' '}
+                      {openRouterConnectivityLabel(connection.openRouterConnectivity.status)}
+                    </p>
+                    {connection.openRouterConnectivity.lastTestResult ? (
+                      <p>
+                        Last test:{' '}
+                        {connection.openRouterConnectivity.lastTestResult.outcome === 'succeeded'
+                          ? 'Succeeded'
+                          : 'Failed'}{' '}
+                        — {connection.openRouterConnectivity.lastTestResult.vendorVisibleMessage} (
+                        {connection.openRouterConnectivity.lastTestResult.testedAt})
+                      </p>
+                    ) : (
+                      <p>Last test: Not run</p>
+                    )}
+                  </div>
+                ) : null}
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                {connection.status !== 'DISABLED' ? (
+                  <button
+                    type="button"
+                    onClick={() => onStartCredentials(connection)}
+                    className="text-sm text-sky-300 underline"
+                  >
+                    {connection.credentialsStored ? 'Replace API Key' : 'Save API Key'}
+                  </button>
+                ) : null}
+                {connection.credentialsStored && canRunValidate(connection.status) ? (
+                  <button
+                    type="button"
+                    onClick={() => onValidate(connection)}
+                    disabled={saving}
+                    className="text-sm text-sky-300 underline disabled:opacity-50"
+                  >
+                    Test Connection
+                  </button>
+                ) : null}
+                {canDisable(connection.status) ? (
+                  <button
+                    type="button"
+                    onClick={() => onDisable(connection)}
+                    disabled={saving}
+                    className="text-sm text-sky-300 underline disabled:opacity-50"
+                  >
+                    Disable
+                  </button>
+                ) : null}
+              </div>
+            </li>
+          ))}
+        </ul>
+        {!loading && openRouterConnections.length === 0 ? (
+          <p className="mt-3 text-slate-400">
+            Create an OpenRouter connection below to configure AI Connectivity for this workspace.
+          </p>
+        ) : null}
+
+        <form onSubmit={onCreateAiSession} className="mt-6 border-t border-white/10 pt-5">
+          <h4 className="font-medium">Workspace AI Session</h4>
+          <p className="mt-2 text-sm text-slate-400">
+            Create a Session to group independent AI request identities for operations. A Session
+            does not remember previous requests for the model, does not create conversational AI,
+            and does not implement AI memory.
+          </p>
+          <label className="mt-4 block text-sm">
+            Session name
+            <input
+              value={aiSessionName}
+              onChange={(event) => onAiSessionName(event.target.value)}
+              maxLength={120}
+              required
+              className="mt-1 w-full rounded border border-white/20 bg-slate-950 px-3 py-2"
+              placeholder="Operational session name"
+            />
+          </label>
+          <button
+            type="submit"
+            disabled={saving || !aiSessionName.trim()}
+            className="mt-4 rounded bg-sky-500 px-4 py-2 font-medium text-slate-950 disabled:opacity-50"
+          >
+            Create Session
+          </button>
+        </form>
+
+        <ul className="mt-4 divide-y divide-white/10">
+          {aiSessions.map((session) => (
+            <li key={session.id} className="flex flex-wrap items-center justify-between gap-4 py-4">
+              <div>
+                <p className="font-medium">{session.displayName}</p>
+                <p className="text-sm text-slate-400">
+                  Status: {session.status === 'OPEN' ? 'Open' : 'Closed'} · Requests:{' '}
+                  {session.requests.length}
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => onOpenAiSession(session.id)}
+                  className="text-sm text-sky-300 underline"
+                >
+                  Open Session
+                </button>
+                {session.status === 'OPEN' ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => onStartAiSessionRename(session)}
+                      className="text-sm text-sky-300 underline"
+                    >
+                      Rename Session
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onCloseAiSession(session.id)}
+                      disabled={saving}
+                      className="text-sm text-sky-300 underline disabled:opacity-50"
+                    >
+                      Close Session
+                    </button>
+                  </>
+                ) : null}
+              </div>
+            </li>
+          ))}
+        </ul>
+        {!loading && aiSessions.length === 0 ? (
+          <p className="mt-3 text-slate-400">No Workspace AI Sessions yet.</p>
+        ) : null}
+
+        {aiSessionRenameId ? (
+          <form onSubmit={onRenameAiSession} className="mt-4 rounded border border-white/10 p-4">
+            <label className="block text-sm">
+              Rename Session
+              <input
+                value={aiSessionRenameValue}
+                onChange={(event) => onAiSessionRenameValue(event.target.value)}
+                maxLength={120}
+                required
+                className="mt-1 w-full rounded border border-white/20 bg-slate-950 px-3 py-2"
+              />
+            </label>
+            <div className="mt-3 flex gap-3">
+              <button
+                type="submit"
+                disabled={saving || !aiSessionRenameValue.trim()}
+                className="rounded bg-sky-500 px-3 py-1.5 text-sm font-medium text-slate-950 disabled:opacity-50"
+              >
+                Save name
+              </button>
+              <button
+                type="button"
+                onClick={onCancelAiSessionRename}
+                className="text-sm text-slate-300 underline"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        ) : null}
+
+        {openedSession ? (
+          <div className="mt-4 rounded border border-white/10 p-4" aria-live="polite">
+            <h5 className="font-medium">Opened Session: {openedSession.displayName}</h5>
+            <p className="mt-1 text-sm text-slate-400">
+              Status: {openedSession.status === 'OPEN' ? 'Open' : 'Closed'}. Requests below are
+              membership identities only. Prompt bodies and model responses are not shown here.
+            </p>
+            {openedSession.requests.length === 0 ? (
+              <p className="mt-3 text-sm text-slate-400">
+                No requests grouped in this Session yet.
+              </p>
+            ) : (
+              <ul className="mt-3 space-y-2 text-sm">
+                {openedSession.requests.map((membership) => (
+                  <li key={membership.requestId} className="rounded border border-white/5 p-3">
+                    <p>Request ID: {membership.requestId}</p>
+                    <p className="text-slate-400">
+                      Status: {membership.status} · Connection: {membership.connectionId}
+                    </p>
+                    <p className="text-xs text-slate-500">Requested at {membership.requestedAt}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ) : null}
+
+        <form
+          id="workspace-ai-request"
+          onSubmit={onSubmitAiRequest}
+          className="mt-6 border-t border-white/10 pt-5"
+        >
+          <h4 className="font-medium">Workspace AI Request</h4>
+          <p className="mt-2 text-sm text-slate-400">
+            Submit one AI request using the Connected OpenRouter key for this workspace. Optionally
+            group the request identity under an open Session. The response is only for this request.
+            The Session does not send previous requests to the model. History never influences this
+            request.
+          </p>
+          <label className="mt-4 block text-sm">
+            OpenRouter connection
+            <select
+              value={aiRequestConnectionId ?? ''}
+              onChange={(event) => onAiRequestConnectionId(event.target.value)}
+              className="mt-1 w-full rounded border border-white/20 bg-slate-950 px-3 py-2"
+              required
+            >
+              <option value="" disabled>
+                {connectedOpenRouter.length === 0
+                  ? 'No Connected OpenRouter connection'
+                  : 'Select connection'}
+              </option>
+              {connectedOpenRouter.map((connection) => (
+                <option key={connection.id} value={connection.id}>
+                  {connection.displayName}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="mt-4 block text-sm">
+            Session (optional grouping)
+            <select
+              value={aiRequestSessionId ?? ''}
+              onChange={(event) =>
+                onAiRequestSessionId(event.target.value ? event.target.value : null)
+              }
+              className="mt-1 w-full rounded border border-white/20 bg-slate-950 px-3 py-2"
+            >
+              <option value="">No Session</option>
+              {openAiSessions.map((session) => (
+                <option key={session.id} value={session.id}>
+                  {session.displayName}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="mt-4 block text-sm">
+            Request
+            <textarea
+              value={aiRequestPrompt}
+              onChange={(event) => onAiRequestPrompt(event.target.value)}
+              maxLength={4000}
+              rows={4}
+              required
+              className="mt-1 w-full rounded border border-white/20 bg-slate-950 px-3 py-2"
+              placeholder="Enter one AI request…"
+            />
+          </label>
+          <button
+            type="submit"
+            disabled={saving || connectedOpenRouter.length === 0}
+            className="mt-4 rounded bg-sky-500 px-4 py-2 font-medium text-slate-950 disabled:opacity-50"
+          >
+            Submit AI Request
+          </button>
+          {aiRequestResult ? (
+            <div className="mt-4 rounded border border-white/10 p-4 text-sm" aria-live="polite">
+              <p>Request status: {workspaceAiRequestStatusLabel(aiRequestResult.status)}</p>
+              <p className="mt-1 text-slate-400">{aiRequestResult.vendorVisibleMessage}</p>
+              {aiRequestResult.sessionId ? (
+                <p className="mt-1 text-slate-400">Session ID: {aiRequestResult.sessionId}</p>
+              ) : null}
+              {aiRequestResult.model ? (
+                <p className="mt-1 text-slate-400">Model: {aiRequestResult.model}</p>
+              ) : null}
+              {aiRequestResult.content ? (
+                <pre className="mt-3 whitespace-pre-wrap text-slate-200">
+                  {aiRequestResult.content}
+                </pre>
+              ) : null}
+              <p className="mt-2 text-xs text-slate-500">
+                Requested at {aiRequestResult.requestedAt}
+              </p>
+            </div>
+          ) : null}
+        </form>
+
+        <div className="mt-6 border-t border-white/10 pt-5">
+          <h4 className="font-medium">Workspace AI Request History</h4>
+          <p className="mt-2 text-sm text-slate-400">
+            Review a read-only operational record of independently executed AI requests that were
+            grouped under a Session. History is not a conversation, does not reconstruct context,
+            and does not influence future AI requests.
+          </p>
+          <button
+            type="button"
+            onClick={onOpenAiHistory}
+            disabled={saving}
+            className="mt-4 rounded bg-sky-500 px-4 py-2 font-medium text-slate-950 disabled:opacity-50"
+          >
+            Open History
+          </button>
+
+          {aiHistoryOpen ? (
+            <div className="mt-4">
+              <form
+                onSubmit={onApplyAiHistoryFilter}
+                className="grid gap-3 md:grid-cols-3 md:items-end"
+              >
+                <label className="block text-sm">
+                  Filter by Session
+                  <select
+                    value={aiHistoryFilterSessionId}
+                    onChange={(event) => onAiHistoryFilterSessionId(event.target.value)}
+                    className="mt-1 w-full rounded border border-white/20 bg-slate-950 px-3 py-2"
+                  >
+                    <option value="">All Sessions</option>
+                    {aiSessions.map((session) => (
+                      <option key={session.id} value={session.id}>
+                        {session.displayName}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block text-sm">
+                  Filter by Status
+                  <select
+                    value={aiHistoryFilterStatus}
+                    onChange={(event) => onAiHistoryFilterStatus(event.target.value)}
+                    className="mt-1 w-full rounded border border-white/20 bg-slate-950 px-3 py-2"
+                  >
+                    <option value="">All statuses</option>
+                    <option value="SUCCEEDED">Succeeded</option>
+                    <option value="FAILED">Failed</option>
+                    <option value="UNAVAILABLE">Unavailable</option>
+                  </select>
+                </label>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="rounded border border-sky-400 px-4 py-2 text-sm text-sky-200 disabled:opacity-50"
+                >
+                  Filter History
+                </button>
+              </form>
+
+              <ul className="mt-4 divide-y divide-white/10">
+                {aiHistoryEntries.map((entry) => (
+                  <li
+                    key={entry.id}
+                    className="flex flex-wrap items-center justify-between gap-4 py-3 text-sm"
+                  >
+                    <div>
+                      <p className="font-medium">Request {entry.requestId}</p>
+                      <p className="text-slate-400">
+                        Status: {entry.status} · Duration: {entry.durationMs} ms ·{' '}
+                        {entry.executedAt}
+                      </p>
+                      {entry.model ? <p className="text-slate-400">Model: {entry.model}</p> : null}
+                    </div>
+                    <div className="flex flex-wrap gap-3">
+                      <button
+                        type="button"
+                        onClick={() => onOpenAiHistoryEntry(entry.id)}
+                        className="text-sky-300 underline"
+                      >
+                        Open History Entry
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onNavigateToAiRequest(entry)}
+                        className="text-sky-300 underline"
+                      >
+                        Navigate to Request
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              {aiHistoryEntries.length === 0 ? (
+                <p className="mt-3 text-slate-400">No history entries for the current filter.</p>
+              ) : null}
+
+              {openedHistoryEntry ? (
+                <div className="mt-4 rounded border border-white/10 p-4 text-sm" aria-live="polite">
+                  <h5 className="font-medium">History Entry</h5>
+                  <p className="mt-2">History ID: {openedHistoryEntry.id}</p>
+                  <p className="text-slate-400">Workspace: {openedHistoryEntry.workspaceId}</p>
+                  <p className="text-slate-400">Session: {openedHistoryEntry.sessionId}</p>
+                  <p className="text-slate-400">Request: {openedHistoryEntry.requestId}</p>
+                  <p className="text-slate-400">Status: {openedHistoryEntry.status}</p>
+                  <p className="text-slate-400">
+                    Executed at: {openedHistoryEntry.executedAt} · Duration:{' '}
+                    {openedHistoryEntry.durationMs} ms
+                  </p>
+                  {openedHistoryEntry.model ? (
+                    <p className="text-slate-400">Model: {openedHistoryEntry.model}</p>
+                  ) : null}
+                  <p className="mt-2 text-xs text-slate-500">
+                    Read-only metadata. Prompt and response bodies are owned by AI Request, not
+                    History. Viewing History does not change AI behaviour.
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      </section>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="rounded border border-white/10 p-5">
@@ -220,10 +729,26 @@ export function ConnectionsView({
                     {connection.capabilities.verificationFailed ? <p>Verification failed</p> : null}
                   </div>
                 ) : null}
+                {connection.openRouterConnectivity ? (
+                  <div className="mt-1 text-sm text-slate-400">
+                    <p>
+                      AI Connectivity:{' '}
+                      {openRouterConnectivityLabel(connection.openRouterConnectivity.status)}
+                    </p>
+                    {connection.openRouterConnectivity.lastTestResult ? (
+                      <p>
+                        Last test result:{' '}
+                        {connection.openRouterConnectivity.lastTestResult.vendorVisibleMessage}
+                      </p>
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
               <div className="flex items-center gap-3">
                 <span className="rounded bg-slate-700 px-2 py-1 text-xs">
-                  {statusLabel(connection.status)}
+                  {connection.openRouterConnectivity
+                    ? openRouterConnectivityLabel(connection.openRouterConnectivity.status)
+                    : statusLabel(connection.status)}
                 </span>
                 <span className="text-xs text-slate-400">
                   {connection.credentialsStored
@@ -236,7 +761,13 @@ export function ConnectionsView({
                     onClick={() => onStartCredentials(connection)}
                     className="text-sm text-sky-300 underline"
                   >
-                    {connection.credentialsStored ? 'Replace credentials' : 'Store credentials'}
+                    {connection.provider === 'OPENROUTER'
+                      ? connection.credentialsStored
+                        ? 'Replace API Key'
+                        : 'Save API Key'
+                      : connection.credentialsStored
+                        ? 'Replace credentials'
+                        : 'Store credentials'}
                   </button>
                 ) : null}
                 {connection.credentialsStored && canRunValidate(connection.status) ? (
@@ -246,7 +777,11 @@ export function ConnectionsView({
                     disabled={saving}
                     className="text-sm text-sky-300 underline disabled:opacity-50"
                   >
-                    {connection.status === 'DISCONNECTED' ? 'Run Validate' : 'Retry validation'}
+                    {connection.provider === 'OPENROUTER'
+                      ? 'Test Connection'
+                      : connection.status === 'DISCONNECTED'
+                        ? 'Run Validate'
+                        : 'Retry validation'}
                   </button>
                 ) : null}
                 {connection.status === 'CONNECTED' ||
@@ -332,15 +867,24 @@ export function ConnectionsView({
       {credentialConnection && credentialProvider ? (
         <form onSubmit={onStoreCredentials} className="rounded border border-white/10 p-5">
           <h3 className="text-lg font-medium">
-            {credentialConnection.credentialsStored ? 'Replace credentials' : 'Store credentials'}
+            {credentialConnection.provider === 'OPENROUTER'
+              ? credentialConnection.credentialsStored
+                ? 'Replace OpenRouter API Key'
+                : 'Save OpenRouter API Key'
+              : credentialConnection.credentialsStored
+                ? 'Replace credentials'
+                : 'Store credentials'}
           </h3>
           <p className="mt-2 text-sm text-slate-400">
-            Credentials are stored securely and cannot be viewed after saving. This does not
-            validate or connect the provider.
+            {credentialConnection.provider === 'OPENROUTER'
+              ? 'The API key is stored securely and cannot be viewed after saving. Saving does not require editing .env or restarting the product. This does not execute prompts or open chat.'
+              : 'Credentials are stored securely and cannot be viewed after saving. This does not validate or connect the provider.'}
           </p>
           {credentialProvider.credentialFields.map((field) => (
             <label key={field} className="mt-4 block text-sm">
-              {fieldLabel(field)}
+              {credentialConnection.provider === 'OPENROUTER' && field === 'apiKey'
+                ? 'OpenRouter API Key'
+                : fieldLabel(field)}
               <input
                 type="password"
                 value={credentialValues[field] ?? ''}
@@ -357,7 +901,7 @@ export function ConnectionsView({
               disabled={saving}
               className="rounded bg-sky-500 px-4 py-2 font-medium text-slate-950 disabled:opacity-50"
             >
-              Save credentials
+              {credentialConnection.provider === 'OPENROUTER' ? 'Save API Key' : 'Save credentials'}
             </button>
             <button
               type="button"
@@ -375,6 +919,32 @@ export function ConnectionsView({
 
 function fieldLabel(field: string): string {
   return field.replace(/([A-Z])/g, ' $1').replace(/^./, (value) => value.toUpperCase());
+}
+
+function openRouterConnectivityLabel(status: OpenRouterConnectivityStatus): string {
+  switch (status) {
+    case 'NOT_CONFIGURED':
+      return 'Not Configured';
+    case 'CONFIGURED':
+      return 'Configured';
+    case 'CONNECTED':
+      return 'Connected';
+    case 'CONNECTION_FAILED':
+      return 'Connection Failed';
+    case 'DISABLED':
+      return 'Disabled';
+  }
+}
+
+function workspaceAiRequestStatusLabel(status: WorkspaceAiRequestView['status']): string {
+  switch (status) {
+    case 'SUCCEEDED':
+      return 'Succeeded';
+    case 'FAILED':
+      return 'Failed';
+    case 'UNAVAILABLE':
+      return 'Unavailable';
+  }
 }
 
 function capabilityLabel(capability: string): string {

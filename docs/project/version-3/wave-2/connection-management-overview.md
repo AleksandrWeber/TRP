@@ -50,7 +50,7 @@ The Connection Management package now has its validation, security verification,
 
 ## Purpose
 
-Connection Management is the place in the product where an operator manages connections to external services — exchanges, Telegram, email (SMTP), and OpenRouter — without editing a server file.
+Connection Management is the place in the product where an operator manages connections to external services — grouped by type (Exchange, Notification, AI, and later Storage) — without editing a server file.
 
 - The operator can: open Connections, create a connection, validate it, replace credentials, disconnect, and review status for the workspace they belong to.
 - The operator cannot (yet): place live orders, receive production Telegram or email delivery as a finished notification product, run AI chat as a finished AI platform journey, open monitoring or billing products, or treat a validated connection as live trading.
@@ -85,11 +85,11 @@ The operator signs in as usual and works inside one workspace. Connection action
 
 ### Open Connections
 
-Under the product navigation, open **Connections**. The page lists offered provider families (Crypto Exchanges, Telegram, SMTP, OpenRouter) and each connection’s status.
+Under the product navigation, open **Connections**. The page groups connections by **type** (Exchange, Notification, AI; Storage reserved for later) and lists offered providers under each type with status.
 
 ### Create a connection
 
-The operator chooses a provider, enters only the required fields, and saves. The secret is stored securely. The form does not keep showing the secret after a successful save. The operator does not edit a server file and does not restart the product to save the connection.
+The operator chooses a type and a provider, enters only the required fields, and saves. The secret is stored securely. The form does not keep showing the secret after a successful save. The operator does not edit a server file and does not restart the product to save the connection.
 
 ### Validate
 
@@ -135,14 +135,16 @@ The operator can review status and recent outcomes without reading secrets back 
 
 ---
 
-## Provider families (what the operator can manage)
+## Connection Types (what the operator can manage)
 
-| Family               | What the operator manages here                     | What comes later                          |
-| -------------------- | -------------------------------------------------- | ----------------------------------------- |
-| **Crypto Exchanges** | Connection + credentials + validation honesty      | Real venue trading handshake (later wave) |
-| **Telegram**         | Connection + bot credentials + validation honesty  | Message delivery (later wave)             |
-| **SMTP**             | Connection + mail credentials + validation honesty | Email sending (later wave)                |
-| **OpenRouter**       | Connection + API key + validation honesty          | Full AI platform use (later rules/waves)  |
+Connections are grouped by type. Providers live under a type. This keeps later waves simple: add Slack under Notification, Anthropic under AI, or a future store under Storage — same Connections product.
+
+| Connection Type  | Providers offered now | What the operator manages here                | What comes later                          |
+| ---------------- | --------------------- | --------------------------------------------- | ----------------------------------------- |
+| **Exchange**     | Binance, Bybit, OKX   | Connection + credentials + validation honesty | Real venue trading handshake (later wave) |
+| **Notification** | Telegram, SMTP        | Connection + credentials + validation honesty | Message / email delivery (later wave)     |
+| **AI**           | OpenRouter            | Connection + API key + validation honesty     | Full AI platform use (later rules/waves)  |
+| **Storage**      | None yet              | Type reserved — not offered in Wave 2         | Later wave when Master Plan names it      |
 
 ---
 
@@ -175,7 +177,7 @@ No control catalogs. No STRIDE tables. Those live in Security Review.
 ```text
 □ Sign in
 □ Open Connections
-□ Choose provider
+□ Choose type and provider
 □ Enter required fields
 □ Save — secret hidden after success
 □ Status is not Connected until Validate succeeds
@@ -234,7 +236,7 @@ Wave 1 Security Foundation is **CERTIFIED COMPLETE** and is consumed, not reopen
 2. **Wave 1 consumed:** Vault, Authentication, Authorization, Workspace Isolation, Security Platform, Security Audit.
 3. **Owns:** Connection metadata, lifecycle, state, validation, provider product behavior.
 4. **Does not own:** Secrets, identity, authn/authz, workspace, security platform, audit persistence, adapters, delivery, AI execution, orders.
-5. **Providers planned:** Crypto Exchanges, Telegram, SMTP, OpenRouter.
+5. **Providers planned:** Types Exchange / Notification / AI / Storage; Wave 2 providers Binance, Bybit, OKX, Telegram, SMTP, OpenRouter (Storage empty).
 6. **Outside Wave 2:** Monitoring, real venue I/O completion, delivery, live trading, analytics, billing, dashboards, Wave 3+.
 
 ---

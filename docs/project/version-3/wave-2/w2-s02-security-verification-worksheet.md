@@ -1,9 +1,9 @@
 # W2-S02 Security Verification Worksheet
 
-**Package:** W2-S02 Exchange Connectivity Foundation  
-**Verdict:** PASS — every row is PASS or NOT APPLICABLE; zero REQUIRES ACTION  
-**Scope:** Exchange Connectivity Foundation only. Wave 1 and W2-S01 are consumed, not re-certified.  
-**Evidence date:** 2026-08-21  
+**Package:** W2-S02 Exchange Connectivity Foundation
+**Verdict:** PASS — every row is PASS or NOT APPLICABLE; zero REQUIRES ACTION
+**Scope:** Exchange Connectivity Foundation only. Wave 1 and W2-S01 are consumed, not re-certified.
+**Evidence date:** 2026-08-21
 **Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md) §4–§19
 
 ---

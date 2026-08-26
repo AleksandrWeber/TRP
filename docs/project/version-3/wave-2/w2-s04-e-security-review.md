@@ -1,7 +1,7 @@
 # W2-S04-e Security Review — Package Close Evidence
 
-**Status:** PASS (package Close evidence)  
-**Scope:** Close evidence only. No security product redesign.  
+**Status:** PASS (package Close evidence)
+**Scope:** Close evidence only. No security product redesign.
 **Date:** 2026-08-26
 
 ## Coverage

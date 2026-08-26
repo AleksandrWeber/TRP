@@ -29,6 +29,7 @@ const connection: ConnectionMetadataView = {
   exchangeProvider: null,
   session: null,
   capabilities: null,
+  openRouterConnectivity: null,
   createdAt: '2026-08-26T00:00:00.000Z',
   updatedAt: '2026-08-26T00:00:00.000Z',
 };

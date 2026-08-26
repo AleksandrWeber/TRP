@@ -26,16 +26,16 @@ Connected is earned by validation — never simulated.
 
 ## Boundary (binding)
 
-| In                                                 | Out                                              |
-| -------------------------------------------------- | ------------------------------------------------ |
-| Connection metadata lifecycle security             | Owning customer secret ciphertext                |
-| Validation-gated Connected state                   | Exchange adapter protocol security redesign      |
-| Workspace-scoped connection access                 | Reopening Wave 1 packages                        |
-| Authn/Authz gates on connection actions            | Identity / RBAC matrix rewrite                   |
-| Audit emit for connection lifecycle                | Audit store / timeline / incidents redesign      |
-| Honest failure when Vault / validation unavailable | Live trading enablement                          |
-| Provider catalog honesty (offered vs reserved)     | Telegram / SMTP delivery security product        |
-| Verification Standard + regression expectations    | Monitoring / analytics / billing security scopes |
+| In                                                                         | Out                                              |
+| -------------------------------------------------------------------------- | ------------------------------------------------ |
+| Connection metadata lifecycle security                                     | Owning customer secret ciphertext                |
+| Validation-gated Connected state                                           | Exchange adapter protocol security redesign      |
+| Workspace-scoped connection access                                         | Reopening Wave 1 packages                        |
+| Authn/Authz gates on connection actions                                    | Identity / RBAC matrix rewrite                   |
+| Audit emit for connection lifecycle                                        | Audit store / timeline / incidents redesign      |
+| Honest failure when Vault / validation unavailable                         | Live trading enablement                          |
+| Provider catalog honesty (offered vs reserved; Connection Type → Provider) | Telegram / SMTP delivery security product        |
+| Verification Standard + regression expectations                            | Monitoring / analytics / billing security scopes |
 
 ---
 

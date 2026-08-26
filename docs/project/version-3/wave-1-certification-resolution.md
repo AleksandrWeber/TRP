@@ -1,8 +1,8 @@
 # Version 3 Wave 1 Certification Resolution
 
-**Date:** 2026-08-17  
-**Nature:** Certification Resolution. No implementation is performed by this document.  
-**Status:** **Product Owner Approved — Finalized**  
+**Date:** 2026-08-17
+**Nature:** Certification Resolution. No implementation is performed by this document.
+**Status:** **Product Owner Approved — Finalized**
 **Authority:** Product Owner blocker classification and editorial decisions below are authoritative and supersede earlier wording in these Resolution documents where conflicts exist.
 
 - Implementation: F-02, F-10, F-11, F-12
@@ -154,5 +154,5 @@ This is not a Master Plan revision, package redesign, ownership change, or Wave 
 
 No production code, package scope, Master Plan, ownership, certification verdict, commit, or push was changed.
 
-**The Product Owner Resolution is now authoritative.**  
+**The Product Owner Resolution is now authoritative.**
 **Implementation remediation may begin** only after Product Owner authorization of the remediation stage.

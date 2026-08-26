@@ -1,7 +1,7 @@
 # W2-S04-e Architecture Review — Package Close Evidence
 
-**Status:** PASS (package)  
-**Scope:** Close evidence only. No architectural changes.  
+**Status:** PASS (package)
+**Scope:** Close evidence only. No architectural changes.
 **Date:** 2026-08-26
 
 ## Verdict

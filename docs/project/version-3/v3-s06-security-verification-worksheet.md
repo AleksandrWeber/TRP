@@ -1,10 +1,10 @@
 # V3-S06 Security Verification Standard — Close Worksheet
 
-**Package:** V3-S06 Workspace Isolation Hardening  
-**Authority:** [`version-3-security-verification-standard.md`](./version-3-security-verification-standard.md)  
-**Close Security Review:** [`v3-s06-e-security-review.md`](./v3-s06-e-security-review.md)  
-**Certification finding:** F-08  
-**Date:** 2026-08-17  
+**Package:** V3-S06 Workspace Isolation Hardening
+**Authority:** [`version-3-security-verification-standard.md`](./version-3-security-verification-standard.md)
+**Close Security Review:** [`v3-s06-e-security-review.md`](./v3-s06-e-security-review.md)
+**Certification finding:** F-08
+**Date:** 2026-08-17
 **Nature:** Certification evidence only. Reuses existing S06 isolation matrix, route inventory, reviews, and `workspace-isolation/` regressions. No implementation change.
 
 ```text

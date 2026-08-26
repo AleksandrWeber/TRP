@@ -1,10 +1,10 @@
 # V3-S05 Security Verification Standard — Close Worksheet
 
-**Package:** V3-S05 Security Audit  
-**Authority:** [`version-3-security-verification-standard.md`](./version-3-security-verification-standard.md)  
-**Close Security Review:** [`v3-s05-e-security-review.md`](./v3-s05-e-security-review.md)  
-**Certification finding:** F-07  
-**Date:** 2026-08-17  
+**Package:** V3-S05 Security Audit
+**Authority:** [`version-3-security-verification-standard.md`](./version-3-security-verification-standard.md)
+**Close Security Review:** [`v3-s05-e-security-review.md`](./v3-s05-e-security-review.md)
+**Certification finding:** F-07
+**Date:** 2026-08-17
 **Nature:** Certification evidence only. This worksheet reuses existing S05 implementation, validation, review, and regression evidence; it changes no implementation.
 
 ```text

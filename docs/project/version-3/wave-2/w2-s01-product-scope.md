@@ -8,7 +8,7 @@
 **Vision (read-only):** [`../v3-connection-management-vision.md`](../v3-connection-management-vision.md)
 **Baseline (read-only):** [`../../version-2-connection-management-audit.md`](../../version-2-connection-management-audit.md)
 
-This document freezes **IN / OUT**, **ownership**, **connection states**, **provider families**, **customer workflows**, **failure philosophy**, and **acceptance** for W2-S01. It does not add journeys the Master Plan did not already name. It does not redesign Version 2. It does not reopen Wave 1.
+This document freezes **IN / OUT**, **ownership**, **connection states**, **Connection Type → Provider catalog**, **customer workflows**, **failure philosophy**, and **acceptance** for W2-S01. It does not add journeys the Master Plan did not already name. It does not redesign Version 2. It does not reopen Wave 1.
 
 ---
 
@@ -88,7 +88,8 @@ This package does **not** own “Binance trading handshake complete” (Wave 4),
 | Workspace ownership        | Every connection belongs to exactly one workspace                                 |
 | Vault integration          | Create/replace writes secrets only through Vault                                  |
 | Connection validation flow | Operator-triggered validation with honest outcomes                                |
-| Supported providers        | Crypto Exchanges, Telegram, SMTP, OpenRouter (families planned)                   |
+| Connection Type catalog    | Exchange, Notification, AI, Storage (planning model)                              |
+| Supported providers        | Exchange: Binance, Bybit, OKX; Notification: Telegram, SMTP; AI: OpenRouter       |
 | Customer workflows         | Operator journeys in product language                                             |
 | Operator walkthroughs      | Manual Connection Management Walkthrough                                          |
 | Security boundaries        | Consume Wave 1 controls; do not redefine                                          |
@@ -205,24 +206,48 @@ Plan only. No implementation in this document.
 - **Connected** never means Telegram delivered or email sent.
 - **Connected** never means AI chat is running.
 - Simulated ping success from Version 2 is not a Wave 2 customer Connected.
-- If vendor I/O is not yet offered for a family, validation must say so honestly (configured / pending later handshake) — never fake Connected for deferred I/O.
+- If vendor I/O is not yet offered for a type or provider, validation must say so honestly (configured / pending later handshake) — never fake Connected for deferred I/O.
 
 ---
 
-## Supported providers (planning)
+## Connection Type model (planning)
 
-Initial provider families for Wave 2 Connection Management planning:
+Product Owner recommendation for catalog scaling. **Does not change ownership. Does not revise the Master Plan.**
 
-| Family               | Collect in Wave 2 | Validate product in Wave 2 | Real I/O / delivery / spend  |
-| -------------------- | ----------------- | -------------------------- | ---------------------------- |
-| **Crypto Exchanges** | Yes               | Yes (honest scope)         | Handshake I/O → Wave 4       |
-| **Telegram**         | Yes (token)       | Yes (honest scope)         | Delivery → Wave 5            |
-| **SMTP**             | Yes               | Yes (honest scope)         | Send → Wave 5                |
-| **OpenRouter**       | Yes               | Yes (honest scope)         | Runtime use → Wave 2/7 rules |
+```text
+Connection Type
+  ├── Exchange
+  │     ├── Binance
+  │     ├── Bybit
+  │     └── OKX
+  ├── Notification
+  │     ├── Telegram
+  │     └── SMTP
+  ├── AI
+  │     └── OpenRouter
+  └── Storage
+        └── (none offered in Wave 2)
+```
 
-**Ownership:** Connection Management owns catalog rows and connection records for these families. Vault owns their secrets. Protocol owners remain Exchange Adapter, Notification Delivery, and AI Gateway.
+| Layer               | Meaning                                       | Owner                         |
+| ------------------- | --------------------------------------------- | ----------------------------- |
+| **Connection Type** | Category: Exchange, Notification, AI, Storage | Connection Management catalog |
+| **Provider**        | Concrete vendor inside a type                 | Connection Management catalog |
+| **Connection**      | Workspace instance (lifecycle + state)        | Connection Management         |
+| **Secret**          | Credential material                           | Vault                         |
 
-Do not implement provider logic in this planning package. Do not invent Coinbase / Slack / Discord / Teams / Push as Wave 2 Core unless already offered by Master Plan wave timing (they remain later / reserved per Vision).
+### Supported providers under each type (Wave 2)
+
+| Connection Type  | Providers (Wave 2 offered) | Collect | Validate (honest scope) | Real I/O / delivery / spend       |
+| ---------------- | -------------------------- | ------- | ----------------------- | --------------------------------- |
+| **Exchange**     | Binance, Bybit, OKX        | Yes     | Yes                     | Handshake I/O → Wave 4            |
+| **Notification** | Telegram, SMTP             | Yes     | Yes                     | Delivery / send → Wave 5          |
+| **AI**           | OpenRouter                 | Yes     | Yes                     | Runtime use → Wave 2/7 rules      |
+| **Storage**      | None                       | No      | No                      | Later wave / Master Plan deferral |
+
+**Ownership:** Connection Management owns Connection Type and provider catalog rows and connection records. Vault owns secrets. Protocol owners remain Exchange Adapter (**Exchange**), Notification Delivery (**Notification**), and AI Gateway (**AI**). **Storage** has no Wave 2 protocol owner until Master Plan names one.
+
+Do not implement provider logic in this planning package. Do not invent Coinbase / Slack / Discord / Teams / Push / Anthropic as Wave 2 Core — they may appear later under the same Connection Types without a new Connections product. Do not offer **Storage** providers in Wave 2.
 
 ---
 
@@ -230,7 +255,7 @@ Do not implement provider logic in this planning package. Do not invent Coinbase
 
 ### Create
 
-Operator opens Connections → chooses a provider → enters required fields → product stores secret in Vault → connection metadata created → state Disconnected or Pending Validation — **not** Connected until validation succeeds.
+Operator opens Connections → chooses a **Connection Type** and **provider** → enters required fields → product stores secret in Vault → connection metadata created → state Disconnected or Pending Validation — **not** Connected until validation succeeds.
 
 ### Validate
 
@@ -276,16 +301,16 @@ Security Audit **persists** them. This package does not redesign the audit store
 
 ## Product Acceptance Criteria
 
-| #   | Outcome                                                 | Fail if                                  |
-| --- | ------------------------------------------------------- | ---------------------------------------- |
-| 1   | One Connections product lists offered provider families | Env-only or simulated-only story remains |
-| 2   | Create uses Vault; secret not readable back             | `.env` or plaintext echo                 |
-| 3   | Validate yields Connected or Validation Failed honestly | Fake Connected                           |
-| 4   | Replace keeps metadata; rotates secret via Vault        | SSH required                             |
-| 5   | Disconnect / revoke / disable stops Connected use       | Stale Connected after disconnect         |
-| 6   | Review shows status without secrets                     | Secret disclosure                        |
-| 7   | Cross-workspace connection access denied                | Tenant leak                              |
-| 8   | Unauthorized roles cannot mutate connections            | Privilege bypass                         |
+| #   | Outcome                                                              | Fail if                                  |
+| --- | -------------------------------------------------------------------- | ---------------------------------------- |
+| 1   | One Connections product lists Connection Types and offered providers | Env-only or simulated-only story remains |
+| 2   | Create uses Vault; secret not readable back                          | `.env` or plaintext echo                 |
+| 3   | Validate yields Connected or Validation Failed honestly              | Fake Connected                           |
+| 4   | Replace keeps metadata; rotates secret via Vault                     | SSH required                             |
+| 5   | Disconnect / revoke / disable stops Connected use                    | Stale Connected after disconnect         |
+| 6   | Review shows status without secrets                                  | Secret disclosure                        |
+| 7   | Cross-workspace connection access denied                             | Tenant leak                              |
+| 8   | Unauthorized roles cannot mutate connections                         | Privilege bypass                         |
 
 ---
 
@@ -325,7 +350,7 @@ PASS / NOT APPLICABLE / REQUIRES ACTION
    Secrets, identity, authentication, authorization, workspace, security platform, audit persistence, protocol I/O, delivery, AI execution, orders.
 
 5. **Which providers are planned?**
-   Crypto Exchanges, Telegram, SMTP, OpenRouter.
+   Connection Types: Exchange, Notification, AI, Storage. Wave 2 providers: Binance, Bybit, OKX; Telegram, SMTP; OpenRouter. Storage has none yet.
 
 6. **What remains outside Wave 2?**
    Wave 3+ monitoring/ops, Wave 4 venue I/O completion, Wave 5 delivery, Wave 6 live trading, Wave 7+ AI platform breadth, analytics, billing, customer dashboards.

@@ -53,6 +53,84 @@ export type ExchangeCapabilityView = {
   verificationFailed: boolean;
 };
 
+export type OpenRouterConnectivityStatus =
+  'NOT_CONFIGURED' | 'CONFIGURED' | 'CONNECTED' | 'CONNECTION_FAILED' | 'DISABLED';
+
+export type OpenRouterLastTestResult = {
+  outcome: 'succeeded' | 'failed';
+  failureReason:
+    'AUTHENTICATION_FAILED' | 'PROVIDER_UNAVAILABLE' | 'TIMEOUT' | 'VALIDATION_FAILED' | null;
+  vendorVisibleMessage: string;
+  testedAt: string;
+};
+
+export type OpenRouterConnectivityView = {
+  status: OpenRouterConnectivityStatus;
+  lastTestResult: OpenRouterLastTestResult | null;
+};
+
+export type WorkspaceAiRequestStatus = 'SUCCEEDED' | 'FAILED' | 'UNAVAILABLE';
+export type WorkspaceAiRequestFailureReason =
+  | 'NOT_CONFIGURED'
+  | 'CONNECTION_UNAVAILABLE'
+  | 'AUTHENTICATION_FAILED'
+  | 'PROVIDER_UNAVAILABLE'
+  | 'TIMEOUT'
+  | 'VALIDATION_FAILED'
+  | 'REQUEST_FAILED';
+
+export type WorkspaceAiRequestView = {
+  requestId: string;
+  status: WorkspaceAiRequestStatus;
+  content: string | null;
+  model: string | null;
+  failureReason: WorkspaceAiRequestFailureReason | null;
+  vendorVisibleMessage: string;
+  requestedAt: string;
+  connectionId: string;
+  workspaceId: string;
+  sessionId: string | null;
+};
+
+export type WorkspaceAiSessionStatus = 'OPEN' | 'CLOSED';
+
+export type WorkspaceAiSessionRequestMembershipView = {
+  requestId: string;
+  connectionId: string;
+  status: string;
+  requestedAt: string;
+};
+
+export type WorkspaceAiSessionView = {
+  id: string;
+  workspaceId: string;
+  displayName: string;
+  status: WorkspaceAiSessionStatus;
+  createdBy: string;
+  createdAt: string;
+  closedAt: string | null;
+  updatedAt: string;
+  requests: WorkspaceAiSessionRequestMembershipView[];
+};
+
+export type WorkspaceAiRequestHistoryView = {
+  id: string;
+  workspaceId: string;
+  sessionId: string;
+  requestId: string;
+  connectionId: string;
+  executedAt: string;
+  status: string;
+  model: string | null;
+  durationMs: number;
+};
+
+export type WorkspaceAiRequestHistoryFilter = {
+  sessionId?: string;
+  status?: string;
+  requestId?: string;
+};
+
 export type ExchangeProviderMetadata = {
   id: string;
   displayName: string;
@@ -99,6 +177,7 @@ export type ConnectionMetadataView = {
   exchangeProvider: ExchangeProviderMetadata | null;
   session: ExchangeSessionView | null;
   capabilities: ExchangeCapabilityView | null;
+  openRouterConnectivity: OpenRouterConnectivityView | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -3343,6 +3422,61 @@ export const api = {
       method: 'POST',
       body: '{}',
     }),
+  executeWorkspaceAiRequest: (connectionId: string, prompt: string, sessionId?: string | null) =>
+    request<WorkspaceAiRequestView>(
+      `/ai-connectivity/connections/${encodeURIComponent(connectionId)}/request`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          prompt,
+          ...(sessionId ? { sessionId } : {}),
+        }),
+      },
+    ),
+  getWorkspaceAiRequest: (connectionId: string) =>
+    request<WorkspaceAiRequestView | { status: 'NONE' }>(
+      `/ai-connectivity/connections/${encodeURIComponent(connectionId)}/request`,
+    ),
+  listWorkspaceAiSessions: () => request<WorkspaceAiSessionView[]>('/ai-connectivity/ai-sessions'),
+  getWorkspaceAiSession: (sessionId: string) =>
+    request<WorkspaceAiSessionView>(
+      `/ai-connectivity/ai-sessions/${encodeURIComponent(sessionId)}`,
+    ),
+  createWorkspaceAiSession: (displayName: string) =>
+    request<WorkspaceAiSessionView>('/ai-connectivity/ai-sessions', {
+      method: 'POST',
+      body: JSON.stringify({ displayName }),
+    }),
+  renameWorkspaceAiSession: (sessionId: string, displayName: string) =>
+    request<WorkspaceAiSessionView>(
+      `/ai-connectivity/ai-sessions/${encodeURIComponent(sessionId)}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({ displayName }),
+      },
+    ),
+  closeWorkspaceAiSession: (sessionId: string) =>
+    request<WorkspaceAiSessionView>(
+      `/ai-connectivity/ai-sessions/${encodeURIComponent(sessionId)}/close`,
+      {
+        method: 'POST',
+        body: '{}',
+      },
+    ),
+  listWorkspaceAiRequestHistory: (filter: WorkspaceAiRequestHistoryFilter = {}) => {
+    const params = new URLSearchParams();
+    if (filter.sessionId) params.set('sessionId', filter.sessionId);
+    if (filter.status) params.set('status', filter.status);
+    if (filter.requestId) params.set('requestId', filter.requestId);
+    const query = params.toString();
+    return request<WorkspaceAiRequestHistoryView[]>(
+      `/ai-connectivity/ai-request-history${query ? `?${query}` : ''}`,
+    );
+  },
+  getWorkspaceAiRequestHistoryEntry: (historyId: string) =>
+    request<WorkspaceAiRequestHistoryView>(
+      `/ai-connectivity/ai-request-history/${encodeURIComponent(historyId)}`,
+    ),
   disconnectConnection: (id: string) =>
     request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}/disconnect`, {
       method: 'POST',

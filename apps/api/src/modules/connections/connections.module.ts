@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AiConnectivityModule } from '../ai-connectivity';
 import { ExchangeConnectivityModule } from '../exchange-connectivity';
 import { SecretVaultModule } from '../secret-vault';
 import { SecurityAuditModule } from '../security-audit';
@@ -10,7 +11,13 @@ import { CONNECTION_VALIDATOR, DeterministicConnectionValidator } from './connec
 import { ConnectionsService } from './connections.service';
 
 @Module({
-  imports: [WorkspaceModule, SecretVaultModule, SecurityAuditModule, ExchangeConnectivityModule],
+  imports: [
+    WorkspaceModule,
+    SecretVaultModule,
+    SecurityAuditModule,
+    ExchangeConnectivityModule,
+    AiConnectivityModule,
+  ],
   controllers: [ConnectionsController],
   providers: [
     DeterministicConnectionValidator,

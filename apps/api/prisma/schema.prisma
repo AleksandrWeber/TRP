@@ -193,6 +193,69 @@ model ConnectionRecord {
   @@map("connection_records")
 }
 
+/// Workspace AI Session — metadata-only execution context (W2-S05-c).
+/// Groups independent AI request identities for operators.
+/// Does not store prompts, responses, conversation, or memory.
+/// Does not influence AI Gateway / OpenRouter request content.
+model WorkspaceAiSession {
+  id          String    @id
+  workspaceId String    @map("workspace_id")
+  displayName String    @map("display_name")
+  status      String
+  createdBy   String    @map("created_by")
+  createdAt   DateTime  @map("created_at")
+  closedAt    DateTime? @map("closed_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  memberships WorkspaceAiSessionRequest[]
+
+  @@index([workspaceId, status, createdAt])
+  @@map("workspace_ai_sessions")
+}
+
+/// Session request membership — identity and status only (W2-S05-c).
+/// Never stores prompt text or model response content.
+model WorkspaceAiSessionRequest {
+  id           String   @id
+  sessionId    String   @map("session_id")
+  workspaceId  String   @map("workspace_id")
+  connectionId String   @map("connection_id")
+  requestId    String   @map("request_id")
+  status       String
+  requestedAt  DateTime @map("requested_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  session WorkspaceAiSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, requestId])
+  @@index([sessionId, requestedAt])
+  @@index([workspaceId, sessionId])
+  @@map("workspace_ai_session_requests")
+}
+
+/// Workspace AI Request History — read-only operational record (W2-S05-d).
+/// Audit-style metadata only. Does not store prompts or responses.
+/// Does not reconstruct conversation, memory, or context for AI.
+/// History never influences future AI requests.
+model WorkspaceAiRequestHistory {
+  id                 String   @id
+  workspaceId        String   @map("workspace_id")
+  sessionId          String   @map("session_id")
+  requestId          String   @map("request_id")
+  connectionId       String   @map("connection_id")
+  executedAt         DateTime @map("executed_at")
+  status             String
+  model              String?
+  durationMs         Int      @map("duration_ms")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  @@unique([workspaceId, requestId])
+  @@index([workspaceId, executedAt])
+  @@index([workspaceId, sessionId, executedAt])
+  @@index([workspaceId, status, executedAt])
+  @@map("workspace_ai_request_history")
+}
+
 /// Workspace-owned Strategy definition (US004) with trading configuration (US005).
 model StrategyRecord {
   id                String   @id

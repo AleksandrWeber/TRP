@@ -1,6 +1,6 @@
 # W2-S02-e Validation Report
 
-**Verdict:** PASS  
+**Verdict:** PASS
 **Plan:** [`w2-s02-validation-plan.md`](./w2-s02-validation-plan.md)
 
 | Check                                   | Verdict |

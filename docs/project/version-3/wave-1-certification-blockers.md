@@ -1,7 +1,7 @@
 # Wave 1 Certification Blockers
 
-**Triage date:** 2026-08-17  
-**Source:** `wave-1-certification-findings-triage.md`  
+**Triage date:** 2026-08-17
+**Source:** `wave-1-certification-findings-triage.md`
 **Status:** Product Owner decision input; no remediation is included.
 
 ## CERTIFICATION BLOCKERS

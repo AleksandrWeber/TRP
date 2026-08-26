@@ -1,8 +1,8 @@
 # W2-S02 Package Summary
 
-**Package:** W2-S02 Exchange Connectivity Foundation  
-**Wave:** 2 — Connection Management  
-**Status:** Ready for Product Owner Close Review (not Closed)  
+**Package:** W2-S02 Exchange Connectivity Foundation
+**Wave:** 2 — Connection Management
+**Status:** Ready for Product Owner Close Review (not Closed)
 **Close record:** [`w2-s02-close-report.md`](./w2-s02-close-report.md)
 
 ## Customer outcome
