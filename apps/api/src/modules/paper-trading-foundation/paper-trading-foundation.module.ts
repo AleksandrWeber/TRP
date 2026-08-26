@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
 import { MarketDataFoundationModule } from '../market-data-foundation';
 import { MarketSymbolCache } from '../market-data-foundation/market-symbol.cache';
+import { MarketTickerCache } from '../market-data-foundation/market-ticker.cache';
 import { SecurityAuditModule } from '../security-audit';
 import { WorkspaceModule } from '../workspace';
+import { PaperExecutionAudit } from './paper-execution.audit';
+import { PaperExecutionService } from './paper-execution.service';
+import { InMemoryPaperFillStore, PAPER_FILL_STORE } from './paper-fill.store';
 import { PaperOrderAudit } from './paper-order.audit';
 import { PaperOrderMarketDataGateway } from './paper-order-market-data';
 import { PaperOrderService } from './paper-order.service';
@@ -19,7 +23,8 @@ import { PaperTradingFoundationController } from './paper-trading-foundation.con
  * Paper Trading Foundation module.
  *
  * W2-S04-a: Paper Account foundation.
- * W2-S04-b: Paper Order foundation (intent only — no execution or fills).
+ * W2-S04-b: Paper Order foundation (intent only).
+ * W2-S04-c: Paper Execution & Matching (fills from Market Data snapshots).
  */
 @Module({
   imports: [WorkspaceModule, SecurityAuditModule, MarketDataFoundationModule],
@@ -33,16 +38,23 @@ import { PaperTradingFoundationController } from './paper-trading-foundation.con
       provide: PAPER_ORDER_STORE,
       useClass: InMemoryPaperOrderStore,
     },
+    {
+      provide: PAPER_FILL_STORE,
+      useClass: InMemoryPaperFillStore,
+    },
     PaperTradingAccountAudit,
     PaperTradingAccountService,
     PaperOrderAudit,
     {
       provide: PaperOrderMarketDataGateway,
-      useFactory: (symbols: MarketSymbolCache) => new PaperOrderMarketDataGateway(symbols),
-      inject: [MarketSymbolCache],
+      useFactory: (symbols: MarketSymbolCache, tickers: MarketTickerCache) =>
+        new PaperOrderMarketDataGateway(symbols, tickers),
+      inject: [MarketSymbolCache, MarketTickerCache],
     },
     PaperOrderService,
+    PaperExecutionAudit,
+    PaperExecutionService,
   ],
-  exports: [PaperTradingAccountService, PaperOrderService],
+  exports: [PaperTradingAccountService, PaperOrderService, PaperExecutionService],
 })
 export class PaperTradingFoundationModule {}

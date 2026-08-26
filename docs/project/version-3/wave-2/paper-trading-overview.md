@@ -2,10 +2,10 @@
 
 **Document:** Version 3 Paper Trading Overview
 **Date:** 2026-08-26
-**Status:** W2-S04 planning **APPROVED**. W2-S04-a **APPROVED**. W2-S04-b Paper Order Foundation implemented. Awaiting Product Owner slice review before W2-S04-c. Not Close.
+**Status:** W2-S04 planning **APPROVED**. W2-S04-a **APPROVED**. W2-S04-b **APPROVED**. W2-S04-c Paper Execution & Matching Foundation implemented. Awaiting Product Owner slice review before W2-S04-d. Not Close.
 **Product:** Paper Trading Foundation
 **Nature:** Customer description. Not an RC. Not an ADR. Not a Master Plan revision.
-**Slice evidence:** [`w2-s04-a-implementation-report.md`](./w2-s04-a-implementation-report.md) · [`w2-s04-b-implementation-report.md`](./w2-s04-b-implementation-report.md) · [`w2-s04-b-validation-report.md`](./w2-s04-b-validation-report.md)
+**Slice evidence:** [`w2-s04-a-implementation-report.md`](./w2-s04-a-implementation-report.md) · [`w2-s04-b-implementation-report.md`](./w2-s04-b-implementation-report.md) · [`w2-s04-c-implementation-report.md`](./w2-s04-c-implementation-report.md) · [`w2-s04-c-validation-report.md`](./w2-s04-c-validation-report.md)
 
 This is what an ordinary operator experiences. It is not an internal design note.
 
@@ -19,7 +19,6 @@ The product can create and view a workspace-owned Paper Account.
 - Statuses: Not Created, Active, Disabled.
 - Paper balances are informational only. They never represent real money.
 - The account exists independently of Exchange Connections.
-- The product does not show fills, positions, portfolio, or PnL from this slice.
 
 ```text
 Paper Account Active means a simulated workspace account exists.
@@ -33,14 +32,31 @@ Paper Account Active does NOT mean fills, Positions, PnL, or Live Trading.
 The product can create and manage Paper Orders as trading intent.
 
 - Operators can create Limit / Market / Stop / Stop Limit Buy or Sell orders, list them, review them, and cancel Draft or Pending orders.
-- Statuses: Draft, Pending, Cancelled, Rejected.
-- **Pending** means accepted by Paper Trading as intent — not executed and not filled.
+- Statuses: Draft, Pending, Cancelled, Rejected (Filled added in W2-S04-c).
+- **Pending** means accepted by Paper Trading as intent — not yet matched.
 - Symbols must be known from Market Data for the selected offered exchange.
-- The product does not fill orders, create positions, change balances, or show PnL.
 
 ```text
 Paper Order Pending means trading intent was accepted.
-Paper Order Pending does NOT mean filled, executed, or Live Trading.
+Paper Order Pending does NOT mean exchange acceptance or Live Trading.
+```
+
+---
+
+## W2-S04-c delivered foundation
+
+The product can simulate execution of Pending Paper Orders using Market Data.
+
+- Operators can review Pending Orders, run **Execute Matching**, and **View Paper Fill**.
+- Matching uses Market Data ticker snapshots only (FRESH bid/ask/last). No replay. No streaming. No fabricated or interpolated prices.
+- A Paper Fill records local simulated execution. It does not claim exchange acceptance.
+- Status **Filled** means a Paper Fill was created from Market Data — nothing more.
+- The product does not show Positions, Portfolio, PnL, or balance changes from this slice.
+
+```text
+Paper Fill means local simulated execution based on Market Data.
+Paper Fill does NOT mean the exchange accepted an order.
+Paper Fill does NOT mean Positions, Portfolio, PnL, or Live Trading.
 ```
 
 ---
@@ -49,10 +65,10 @@ Paper Order Pending does NOT mean filled, executed, or Live Trading.
 
 Paper Trading Foundation is the product that lets a workspace **safely test strategies, signals, and workflows** using simulated execution driven by real Market Data.
 
-The operator already manages Exchange connections in **Connections**, proves connectivity in Exchange Connectivity, and views honest market data in **Market Data**. This package does not replace those places. It adds **Paper Trading**: paper accounts, simulated buy and sell, fills, positions, PnL, and portfolio — without placing real exchange orders and without real capital.
+The operator already manages Exchange connections in **Connections**, proves connectivity in Exchange Connectivity, and views honest market data in **Market Data**. This package does not replace those places. It adds **Paper Trading**: paper accounts, simulated buy and sell, fills, and later positions, PnL, and portfolio — without placing real exchange orders and without real capital.
 
-- The operator can today: open Paper Trading, create a Paper Account, create/review/list/cancel Paper Orders (Pending = intent only).
-- The operator cannot yet: observe fills, positions, PnL, or portfolio updates from matching/execution (later slices).
+- The operator can today: open Paper Trading, create a Paper Account, create/review/list/cancel Paper Orders, execute matching, and view Paper Fills.
+- The operator cannot yet: observe Positions, Portfolio, or PnL from paper fills (later slices).
 - The operator cannot: place live exchange orders, move real capital, enable Live Trading, use leverage or margin, open a risk or strategy engine, stream trading WebSockets, or claim exchange balances or exchange positions from this package.
 
 ```text
@@ -77,7 +93,7 @@ Paper Trading consumes those products. It does not redesign them.
 
 ---
 
-## Customer Journey (current through W2-S04-b)
+## Customer Journey (current through W2-S04-c)
 
 ```text
 Sign in
@@ -90,10 +106,14 @@ Create Paper Order
   ↓
 Review / List Orders
   ↓
-Cancel Order (optional)
+Execute Matching (Pending)
+  ↓
+View Paper Fill
+  ↓
+Cancel Order (optional, before fill)
 ```
 
-Later slices add matching, fills, positions, PnL, and portfolio.
+Later slices add positions, PnL, and portfolio.
 
 ### Sign in
 
@@ -105,7 +125,7 @@ The operator opens **Paper Trading**. This is not Connections, not Market Data, 
 
 ### Create Paper Account
 
-The operator creates a Paper Account in the current workspace. Paper balances and portfolio state belong to that paper account. They are not exchange balances.
+The operator creates a Paper Account in the current workspace. Paper balances belong to that paper account. They are not exchange balances. Balance does not change on fill in this slice.
 
 ### Select Exchange
 
@@ -117,23 +137,23 @@ The operator selects a symbol offered through Market Data for that exchange. Sym
 
 ### Place Buy / Place Sell
 
-The operator places a paper Buy or Sell. The product simulates execution using Market Data snapshots. No real exchange order API is called. No “exchange accepted” message is simulated as if the venue took the order.
+The operator places a paper Buy or Sell. Pending means intent accepted. No real exchange order API is called.
 
-### Observe Fill
+### Execute Matching / Observe Fill
 
-When the simulator matches against Market Data, the operator sees a paper fill. A fill is local simulation evidence — not venue confirmation.
+The operator runs Execute Matching. The product matches against a Market Data ticker snapshot. When matched, the operator sees a Paper Fill. A fill is local simulation evidence — not venue confirmation.
 
 ### Observe Position / PnL / Portfolio
 
-The operator sees paper position, PnL, and portfolio derived from paper fills and paper account state.
+Not available yet (W2-S04-d).
 
 ### Cancel Order
 
-The operator can cancel an open paper order. Cancel does not cancel anything on an exchange.
+The operator can cancel a Draft or Pending paper order. Cancel does not cancel anything on an exchange. Filled orders are not cancelled.
 
 ### Workspace isolation and authorization
 
-Workspace A cannot use Workspace B’s paper accounts. A role without Paper Trading permission is denied.
+Workspace A cannot use Workspace B’s paper accounts, orders, or fills. A role without Paper Trading permission is denied.
 
 ---
 
@@ -141,24 +161,25 @@ Workspace A cannot use Workspace B’s paper accounts. A role without Paper Trad
 
 - Not shown: live exchange order tickets, real capital moves, exchange balances, exchange positions, leverage, margin, liquidation, WebSocket trading streams, strategy engine controls, monitoring product, analytics product, billing.
 - Not offered: **Live Trading enabled**, **Exchange order placed**, **Real capital committed**, **Exchange accepted**.
+- Not yet from this foundation: Positions, Portfolio, PnL (later slices).
 
 ---
 
-## Security Guarantees (planned)
+## Security Guarantees
 
-- Paper accounts are workspace-owned. Cross-workspace paper use is denied.
-- Only authorized roles may open Paper Trading or mutate paper orders.
-- Market prices come from Market Data. Client-supplied prices are rejected.
-- Replay of old market snapshots or forged fills cannot rewrite paper integrity.
-- Audit attributes who created accounts, placed, filled, cancelled, and failed.
+- Paper accounts, orders, and fills are workspace-owned. Cross-workspace use is denied.
+- Only authorized roles may open Paper Trading or mutate paper orders / execute matching.
+- Market prices come from Market Data. Client-supplied fill prices are rejected.
+- Unavailable or stale Market Data fails honestly — no fabricated prices.
+- Audit attributes who created fills and who completed or rejected execution.
 - No real capital. No exchange order placement from this product.
 
 ---
 
 ## What's Next
 
-- Product Owner review of W2-S04-b
-- W2-S04-c only after approval
+- Product Owner review of W2-S04-c
+- W2-S04-d only after approval (Positions / Portfolio / PnL — not started)
 - Live Trading stays later (Wave 6 / Order Path)
 - Wave 2 COMPLETE is not claimed
 
@@ -191,4 +212,4 @@ This product does **not** include:
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S04-c.
+**STOP.** Wait for Product Owner review before W2-S04-d.

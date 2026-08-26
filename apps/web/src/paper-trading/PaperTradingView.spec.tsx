@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import type { PaperOrderView, PaperTradingAccountProjection } from '../shared/api';
+import type { PaperFillView, PaperOrderView, PaperTradingAccountProjection } from '../shared/api';
 import { PaperTradingView, type PaperOrderFormState } from './PaperTradingView';
 
 const notCreated: PaperTradingAccountProjection = {
@@ -39,6 +39,20 @@ const pendingOrder: PaperOrderView = {
   updatedAt: '2026-08-26T00:00:00.000Z',
 };
 
+const fill: PaperFillView = {
+  id: 'f-1',
+  workspaceId: 'workspace-a',
+  paperAccountId: 'pa-1',
+  paperOrderId: 'o-1',
+  exchange: 'BINANCE',
+  symbol: 'BTC-USDT',
+  side: 'BUY',
+  quantity: '1',
+  executionPrice: '49900',
+  executionTime: '2026-08-26T01:00:00.000Z',
+  createdAt: '2026-08-26T01:00:00.000Z',
+};
+
 const form: PaperOrderFormState = {
   exchange: 'BINANCE',
   symbol: 'BTC-USDT',
@@ -58,15 +72,19 @@ const baseHandlers = {
   onCreateOrder: () => undefined,
   onSelectOrder: () => undefined,
   onCancelOrder: () => undefined,
+  onExecuteOrder: () => undefined,
+  onSelectFill: () => undefined,
 };
 
-describe('Paper Trading UI (W2-S04-b)', () => {
+describe('Paper Trading UI (W2-S04-c)', () => {
   it('renders create Paper Account when Not Created', () => {
     const html = renderToStaticMarkup(
       <PaperTradingView
         projection={notCreated}
         orders={[]}
+        fills={[]}
         selectedOrderId={null}
+        selectedFillId={null}
         orderForm={form}
         loading={false}
         saving={false}
@@ -80,12 +98,14 @@ describe('Paper Trading UI (W2-S04-b)', () => {
     expect(html).not.toContain('Create Order');
   });
 
-  it('renders create order, order list, cancel, and review without fills or PnL theater', () => {
+  it('renders Execute Matching for Pending orders and View Paper Fill', () => {
     const html = renderToStaticMarkup(
       <PaperTradingView
         projection={active}
         orders={[pendingOrder]}
+        fills={[fill]}
         selectedOrderId="o-1"
+        selectedFillId="f-1"
         orderForm={form}
         loading={false}
         saving={false}
@@ -94,17 +114,15 @@ describe('Paper Trading UI (W2-S04-b)', () => {
         {...baseHandlers}
       />,
     );
-    expect(html).toContain('Create Order');
-    expect(html).toContain('Order List');
-    expect(html).toContain('Cancel Order');
-    expect(html).toContain('Review Order');
-    expect(html).toContain('Pending');
-    expect(html).toContain('Not filled. Not executed.');
-    expect(html).toContain('No fills. No positions. No portfolio. No PnL. No balance change.');
-    expect(html).not.toMatch(/>Filled</);
-    expect(html).not.toMatch(/>Executed</);
+    expect(html).toContain('Execute Matching');
+    expect(html).toContain('Paper Fills');
+    expect(html).toContain('View Paper Fill');
+    expect(html).toContain('49900');
+    expect(html).toContain('Local simulated execution based on Market Data');
+    expect(html).toContain('No positions. No portfolio. No PnL.');
     expect(html).not.toMatch(/>Position</);
     expect(html).not.toMatch(/>Portfolio</);
+    expect(html).not.toMatch(/>PnL</);
   });
 
   it('renders validation errors', () => {
@@ -112,15 +130,17 @@ describe('Paper Trading UI (W2-S04-b)', () => {
       <PaperTradingView
         projection={active}
         orders={[]}
+        fills={[]}
         selectedOrderId={null}
+        selectedFillId={null}
         orderForm={form}
         loading={false}
         saving={false}
-        error="unknown symbol: DOGE-USDT"
+        error="market data unavailable for BINANCE BTC-USDT"
         startingBalance="100000"
         {...baseHandlers}
       />,
     );
-    expect(html).toContain('unknown symbol: DOGE-USDT');
+    expect(html).toContain('market data unavailable for BINANCE BTC-USDT');
   });
 });

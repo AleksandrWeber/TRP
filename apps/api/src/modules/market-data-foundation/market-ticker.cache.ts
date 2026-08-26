@@ -47,6 +47,29 @@ export class MarketTickerCache {
   clear(workspaceId: string, connectionId: string, exchangeSymbol: string): void {
     this.entries.delete(cacheKey(workspaceId, connectionId, exchangeSymbol));
   }
+
+  /**
+   * Lookup a cached ticker snapshot for an offered Market Data provider + symbol.
+   * Used by Paper Execution (W2-S04-c) without exposing transport or fabricating prices.
+   */
+  findByProviderAndSymbol(
+    workspaceId: string,
+    providerId: string,
+    symbol: string,
+  ): MarketTickerCacheEntry | null {
+    const needle = symbol.trim().toUpperCase();
+    if (!needle) return null;
+    for (const [key, entry] of this.entries) {
+      if (!key.startsWith(`${workspaceId}:`)) continue;
+      if (entry.providerId !== providerId) continue;
+      const tickerSymbol = entry.ticker.normalizedSymbol.toUpperCase();
+      const exchangeSymbol = entry.exchangeSymbol.toUpperCase();
+      if (exchangeSymbol === needle || tickerSymbol === needle) {
+        return entry;
+      }
+    }
+    return null;
+  }
 }
 
 function cacheKey(workspaceId: string, connectionId: string, exchangeSymbol: string): string {

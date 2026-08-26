@@ -10,7 +10,13 @@ export type PaperOrderSide = (typeof PAPER_ORDER_SIDES)[number];
 export const PAPER_ORDER_TYPES = ['LIMIT', 'MARKET', 'STOP', 'STOP_LIMIT'] as const;
 export type PaperOrderType = (typeof PAPER_ORDER_TYPES)[number];
 
-export const PAPER_ORDER_STATUSES = ['DRAFT', 'PENDING', 'CANCELLED', 'REJECTED'] as const;
+export const PAPER_ORDER_STATUSES = [
+  'DRAFT',
+  'PENDING',
+  'CANCELLED',
+  'REJECTED',
+  'FILLED',
+] as const;
 export type PaperOrderStatus = (typeof PAPER_ORDER_STATUSES)[number];
 
 export type PaperOrder = Readonly<{
@@ -141,6 +147,22 @@ export function cancelPaperOrder(order: PaperOrder, updatedAt: string): PaperOrd
   return Object.freeze({
     ...order,
     status: 'CANCELLED',
+    updatedAt,
+  });
+}
+
+/**
+ * Local paper fill completion (W2-S04-c).
+ * FILLED means a Paper Fill was created from Market Data — not exchange acceptance.
+ */
+export function markPaperOrderFilled(order: PaperOrder, updatedAt: string): PaperOrder {
+  if (order.status !== 'PENDING') {
+    throw new Error(`paper order cannot fill from ${order.status}`);
+  }
+  assertIso(updatedAt, 'updatedAt');
+  return Object.freeze({
+    ...order,
+    status: 'FILLED',
     updatedAt,
   });
 }

@@ -4,12 +4,13 @@ import {
   createPaperOrder,
   isPaperOrderStatus,
   isPaperOrderType,
+  markPaperOrderFilled,
   updatePaperOrder,
 } from './paper-order';
 
 const now = '2026-08-26T15:00:00.000Z';
 
-describe('Paper Order model (W2-S04-b)', () => {
+describe('Paper Order model (W2-S04-b/c)', () => {
   it('creates Limit Buy with required limit price', () => {
     const order = createPaperOrder({
       id: 'o-1',
@@ -34,7 +35,8 @@ describe('Paper Order model (W2-S04-b)', () => {
     expect(isPaperOrderType('STOP_LIMIT')).toBe(true);
     expect(isPaperOrderType('TRAILING')).toBe(false);
     expect(isPaperOrderStatus('PENDING')).toBe(true);
-    expect(isPaperOrderStatus('FILLED')).toBe(false);
+    expect(isPaperOrderStatus('FILLED')).toBe(true);
+    expect(isPaperOrderStatus('EXCHANGE_ACCEPTED')).toBe(false);
 
     expect(() =>
       createPaperOrder({
@@ -102,5 +104,23 @@ describe('Paper Order model (W2-S04-b)', () => {
     const cancelled = cancelPaperOrder(updated, '2026-08-26T15:02:00.000Z');
     expect(cancelled.status).toBe('CANCELLED');
     expect(() => cancelPaperOrder(cancelled, '2026-08-26T15:03:00.000Z')).toThrow(/cannot cancel/);
+  });
+
+  it('marks Pending as FILLED only via local paper fill completion', () => {
+    const pending = createPaperOrder({
+      id: 'o-1',
+      workspaceId: 'workspace-a',
+      paperAccountId: 'pa-1',
+      exchange: 'BINANCE',
+      symbol: 'BTC-USDT',
+      side: 'BUY',
+      orderType: 'MARKET',
+      quantity: '1',
+      status: 'PENDING',
+      createdAt: now,
+    });
+    const filled = markPaperOrderFilled(pending, '2026-08-26T15:04:00.000Z');
+    expect(filled.status).toBe('FILLED');
+    expect(() => markPaperOrderFilled(filled, '2026-08-26T15:05:00.000Z')).toThrow(/cannot fill/);
   });
 });

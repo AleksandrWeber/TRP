@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useWorkspace } from '../app/WorkspaceContext';
-import { api, type PaperOrderView, type PaperTradingAccountProjection } from '../shared/api';
+import {
+  api,
+  type PaperFillView,
+  type PaperOrderView,
+  type PaperTradingAccountProjection,
+} from '../shared/api';
 import { toUserFacingError } from '../shared/mapApiError';
 import { PaperTradingView, type PaperOrderFormState } from './PaperTradingView';
 
@@ -18,7 +23,9 @@ export function PaperTradingFoundationPage() {
   const { activeWorkspace } = useWorkspace();
   const [projection, setProjection] = useState<PaperTradingAccountProjection | null>(null);
   const [orders, setOrders] = useState<PaperOrderView[]>([]);
+  const [fills, setFills] = useState<PaperFillView[]>([]);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [selectedFillId, setSelectedFillId] = useState<string | null>(null);
   const [orderForm, setOrderForm] = useState<PaperOrderFormState>(defaultOrderForm);
   const [startingBalance, setStartingBalance] = useState('100000');
   const [loading, setLoading] = useState(true);
@@ -26,12 +33,14 @@ export function PaperTradingFoundationPage() {
   const [error, setError] = useState<string | null>(null);
 
   async function load() {
-    const [account, orderList] = await Promise.all([
+    const [account, orderList, fillList] = await Promise.all([
       api.getPaperTradingAccount(),
       api.listPaperOrders().catch(() => ({ orders: [] as PaperOrderView[] })),
+      api.listPaperFills().catch(() => ({ fills: [] as PaperFillView[] })),
     ]);
     setProjection(account);
     setOrders(orderList.orders);
+    setFills(fillList.fills);
   }
 
   useEffect(() => {
@@ -39,6 +48,7 @@ export function PaperTradingFoundationPage() {
     setLoading(true);
     setError(null);
     setSelectedOrderId(null);
+    setSelectedFillId(null);
     load()
       .catch((reason: unknown) => {
         if (!cancelled) setError(toUserFacingError(reason, 'Could not load Paper Trading.'));
@@ -139,11 +149,33 @@ export function PaperTradingFoundationPage() {
     }
   }
 
+  async function executeOrder(orderId: string) {
+    setSaving(true);
+    setError(null);
+    try {
+      const result = await api.executePaperOrder(orderId);
+      setOrders((items) =>
+        items.map((item) =>
+          item.id === result.orderId ? { ...item, status: result.status } : item,
+        ),
+      );
+      setFills((items) => [result.fill, ...items.filter((fill) => fill.id !== result.fill.id)]);
+      setSelectedOrderId(result.orderId);
+      setSelectedFillId(result.fill.id);
+    } catch (reason) {
+      setError(toUserFacingError(reason, 'Could not execute Paper Order matching.'));
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <PaperTradingView
       projection={projection}
       orders={orders}
+      fills={fills}
       selectedOrderId={selectedOrderId}
+      selectedFillId={selectedFillId}
       orderForm={orderForm}
       loading={loading}
       saving={saving}
@@ -167,6 +199,10 @@ export function PaperTradingFoundationPage() {
       onCancelOrder={(orderId) => {
         void cancelOrder(orderId);
       }}
+      onExecuteOrder={(orderId) => {
+        void executeOrder(orderId);
+      }}
+      onSelectFill={setSelectedFillId}
     />
   );
 }

@@ -23,6 +23,12 @@ import {
 } from './paper-order.service';
 import type { PaperOrderListView, PaperOrderView } from './paper-order.projection';
 import {
+  PaperExecutionNotFoundError,
+  PaperExecutionRejectedError,
+  PaperExecutionService,
+} from './paper-execution.service';
+import type { PaperExecutionView, PaperFillListView, PaperFillView } from './paper-fill.projection';
+import {
   toPaperTradingAccountProjection,
   type PaperTradingAccountProjection,
 } from './paper-trading-account.projection';
@@ -62,9 +68,10 @@ export type UpdatePaperOrderBody = Readonly<{
 }>;
 
 /**
- * Paper Trading Foundation HTTP surface (W2-S04-a/b).
+ * Paper Trading Foundation HTTP surface (W2-S04-a/b/c).
  *
- * Paper Account + Paper Orders. No fills, positions, portfolio, PnL, or execution.
+ * Paper Account + Paper Orders + Paper Execution/Fills.
+ * No positions, portfolio, PnL, balance changes, or Live Trading.
  */
 @Controller({ path: 'paper-trading-foundation', version: '1' })
 @RequirePermission(PermissionClass.Projection)
@@ -72,6 +79,7 @@ export class PaperTradingFoundationController {
   constructor(
     private readonly accounts: PaperTradingAccountService,
     private readonly orders: PaperOrderService,
+    private readonly execution: PaperExecutionService,
     private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
@@ -226,6 +234,48 @@ export class PaperTradingFoundationController {
       throw mapOrderError(error);
     }
   }
+
+  @RequirePermission(PermissionClass.PaperCommand)
+  @Post('orders/:orderId/execute')
+  async executeOrder(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('orderId') orderId: string,
+  ): Promise<PaperExecutionView> {
+    const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
+    try {
+      return await this.execution.execute({
+        workspaceId,
+        actorUserId: request.user.userId,
+        orderId,
+      });
+    } catch (error) {
+      throw mapExecutionError(error);
+    }
+  }
+
+  @Get('fills')
+  async listFills(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+  ): Promise<PaperFillListView> {
+    const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
+    return this.execution.listFills(workspaceId);
+  }
+
+  @Get('fills/:fillId')
+  async getFill(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('fillId') fillId: string,
+  ): Promise<PaperFillView> {
+    const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
+    try {
+      return await this.execution.getFill(workspaceId, fillId);
+    } catch (error) {
+      throw mapExecutionError(error);
+    }
+  }
 }
 
 function requireWorkspace(
@@ -275,5 +325,16 @@ function mapOrderError(error: unknown): Error {
     return new BadRequestException(error.message);
   }
   const text = error instanceof Error ? error.message : 'paper order failed';
+  return new BadRequestException(text);
+}
+
+function mapExecutionError(error: unknown): Error {
+  if (error instanceof PaperExecutionNotFoundError) {
+    return new NotFoundException(error.message);
+  }
+  if (error instanceof PaperExecutionRejectedError) {
+    return new BadRequestException(error.message);
+  }
+  const text = error instanceof Error ? error.message : 'paper execution failed';
   return new BadRequestException(text);
 }

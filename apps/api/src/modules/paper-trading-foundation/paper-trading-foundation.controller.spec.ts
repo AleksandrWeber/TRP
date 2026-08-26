@@ -1,56 +1,17 @@
 import { ForbiddenException } from '@nestjs/common';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { AuthUser } from '../auth/jwt.strategy';
-import { Role } from '../identity/role';
-import { MarketSymbolCache } from '../market-data-foundation/market-symbol.cache';
-import type { WorkspaceAccessService } from '../workspace';
-import { PaperOrderAudit } from './paper-order.audit';
-import { PaperOrderMarketDataGateway } from './paper-order-market-data';
-import { PaperOrderService } from './paper-order.service';
-import { InMemoryPaperOrderStore } from './paper-order.store';
-import { PaperTradingAccountAudit } from './paper-trading-account.audit';
-import { PaperTradingAccountService } from './paper-trading-account.service';
-import { InMemoryPaperTradingAccountStore } from './paper-trading-account.store';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { buildPaperTradingTestStack, seedKnownSymbolAndTicker } from './paper-trading-test-helpers';
 import { PaperTradingFoundationController } from './paper-trading-foundation.controller';
+import type { AuthUser } from '../auth/jwt.strategy';
 
 describe('PaperTradingFoundationController (W2-S04-a)', () => {
   let controller: PaperTradingFoundationController;
-  let workspaceAccess: { assertMember: ReturnType<typeof vi.fn> };
-
-  const trader: AuthUser = {
-    userId: 'trader-1',
-    email: 'trader@example.com',
-    displayName: 'Trader',
-    role: Role.Trader,
-  };
+  let trader: AuthUser;
 
   beforeEach(() => {
-    const accounts = new InMemoryPaperTradingAccountStore();
-    const orders = new InMemoryPaperOrderStore();
-    const accountAudit = { record: vi.fn().mockResolvedValue(undefined) };
-    const orderAudit = { record: vi.fn().mockResolvedValue(undefined) };
-    const accountService = new PaperTradingAccountService(
-      accounts,
-      accountAudit as unknown as PaperTradingAccountAudit,
-    );
-    const orderService = new PaperOrderService(
-      orders,
-      accounts,
-      new PaperOrderMarketDataGateway(new MarketSymbolCache()),
-      orderAudit as unknown as PaperOrderAudit,
-    );
-    workspaceAccess = {
-      assertMember: vi.fn((workspaceId: string, userId: string) => {
-        if (workspaceId === 'workspace-b' && userId === trader.userId) {
-          throw new Error('not a member');
-        }
-      }),
-    };
-    controller = new PaperTradingFoundationController(
-      accountService,
-      orderService,
-      workspaceAccess as unknown as WorkspaceAccessService,
-    );
+    const stack = buildPaperTradingTestStack();
+    controller = stack.controller;
+    trader = stack.trader;
   });
 
   it('creates and returns the workspace Paper Account projection', async () => {
@@ -83,5 +44,55 @@ describe('PaperTradingFoundationController (W2-S04-a)', () => {
     const disabled = await controller.disableAccount({ user: trader }, 'workspace-a');
     expect(disabled.status).toBe('DISABLED');
     expect(disabled.account?.status).toBe('DISABLED');
+  });
+});
+
+describe('PaperTradingFoundationController orders (W2-S04-b)', () => {
+  let stack: ReturnType<typeof buildPaperTradingTestStack>;
+
+  beforeEach(() => {
+    stack = buildPaperTradingTestStack();
+  });
+
+  async function seed() {
+    await stack.controller.createAccount({ user: stack.trader }, 'workspace-a', {});
+    seedKnownSymbolAndTicker(stack.symbols, stack.tickers, 'workspace-a');
+  }
+
+  it('creates, lists, reviews, and cancels Paper Orders', async () => {
+    await seed();
+    const created = await stack.controller.createOrder({ user: stack.trader }, 'workspace-a', {
+      exchange: 'BINANCE',
+      symbol: 'BTC-USDT',
+      side: 'BUY',
+      orderType: 'LIMIT',
+      quantity: '3',
+      limitPrice: '60000',
+    });
+    expect(created.status).toBe('PENDING');
+    const listed = await stack.controller.listOrders({ user: stack.trader }, 'workspace-a');
+    expect(listed.orders).toHaveLength(1);
+    const cancelled = await stack.controller.cancelOrder(
+      { user: stack.trader },
+      'workspace-a',
+      created.id,
+    );
+    expect(cancelled.status).toBe('CANCELLED');
+  });
+
+  it('returns validation errors for unknown symbols and denies foreign workspace', async () => {
+    await seed();
+    await expect(
+      stack.controller.createOrder({ user: stack.trader }, 'workspace-a', {
+        exchange: 'BINANCE',
+        symbol: 'UNKNOWN',
+        side: 'BUY',
+        orderType: 'MARKET',
+        quantity: '1',
+      }),
+    ).rejects.toThrow(/unknown symbol/);
+    await expect(
+      stack.controller.listOrders({ user: stack.trader }, 'workspace-b'),
+    ).rejects.toBeInstanceOf(ForbiddenException);
   });
 });

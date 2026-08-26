@@ -2050,6 +2050,32 @@ export type PaperOrderListView = {
   orders: PaperOrderView[];
 };
 
+/** W2-S04-c Paper Fill projection (local Market Data simulation only). */
+export type PaperFillView = {
+  id: string;
+  workspaceId: string;
+  paperAccountId: string;
+  paperOrderId: string;
+  exchange: string;
+  symbol: string;
+  side: string;
+  quantity: string;
+  executionPrice: string;
+  executionTime: string;
+  createdAt: string;
+};
+
+export type PaperFillListView = {
+  fills: PaperFillView[];
+};
+
+/** W2-S04-c local matching result (distinct from Version 2 paper session execution). */
+export type PaperTradingFoundationExecutionView = {
+  orderId: string;
+  status: string;
+  fill: PaperFillView;
+};
+
 export type ExchangeScopeOverviewView = {
   id: string;
   exchangeCode: string;
@@ -3156,6 +3182,17 @@ export const api = {
         body: '{}',
       },
     ),
+  executePaperOrder: (orderId: string) =>
+    request<PaperTradingFoundationExecutionView>(
+      `/paper-trading-foundation/orders/${encodeURIComponent(orderId)}/execute`,
+      {
+        method: 'POST',
+        body: '{}',
+      },
+    ),
+  listPaperFills: () => request<PaperFillListView>('/paper-trading-foundation/fills'),
+  getPaperFill: (fillId: string) =>
+    request<PaperFillView>(`/paper-trading-foundation/fills/${encodeURIComponent(fillId)}`),
   getMarketDataSymbols: (connectionId: string) =>
     request<MarketSymbolDiscoveryView>(
       `/market-data/connections/${encodeURIComponent(connectionId)}/symbols`,
