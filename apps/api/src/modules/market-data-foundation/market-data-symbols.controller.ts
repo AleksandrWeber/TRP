@@ -24,6 +24,13 @@ import {
   MarketCandleInvalidRangeError,
   MarketCandleInvalidSymbolError,
 } from './market-candle.validate';
+import { isMarketOrderBookDepth } from './market-order-book';
+import type { MarketOrderBookRetrievalView } from './market-order-book.projection';
+import { MarketOrderBookRetrievalService } from './market-order-book.service';
+import {
+  MarketOrderBookInvalidDepthError,
+  MarketOrderBookInvalidSymbolError,
+} from './market-order-book.validate';
 import type { MarketSymbolDiscoveryView } from './market-symbol.projection';
 import { MarketSymbolDiscoveryService } from './market-symbol.service';
 import type { MarketTickerRetrievalView } from './market-ticker.projection';
@@ -54,10 +61,16 @@ export type MarketCandleRetrieveBody = Readonly<{
   rangeEnd?: string;
 }>;
 
+export type MarketOrderBookRetrieveBody = Readonly<{
+  exchangeSymbol?: string;
+  normalizedSymbol?: string;
+  depthLimit?: number;
+}>;
+
 /**
- * Market Data HTTP surface (W2-S03-b symbols, W2-S03-c ticker, W2-S03-d candles).
+ * Market Data HTTP surface (W2-S03-b..e: symbols, ticker, candles, order book).
  *
- * Projection permission only. No order book, trades, or trading.
+ * Projection permission only. No trades, streaming, or trading.
  */
 @Controller({ path: 'market-data', version: '1' })
 @RequirePermission(PermissionClass.Projection)
@@ -66,6 +79,7 @@ export class MarketDataSymbolsController {
     private readonly symbols: MarketSymbolDiscoveryService,
     private readonly tickers: MarketTickerRetrievalService,
     private readonly candles: MarketCandleRetrievalService,
+    private readonly orderBooks: MarketOrderBookRetrievalService,
     private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
@@ -251,6 +265,68 @@ export class MarketDataSymbolsController {
         throw new BadRequestException(error.message);
       }
       throw new BadRequestException('Candlestick retrieval could not be completed.');
+    }
+  }
+
+  @Get('connections/:connectionId/order-book')
+  cachedOrderBook(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('connectionId') connectionId: string,
+    @Query('exchangeSymbol') exchangeSymbol: string | undefined,
+    @Query('depthLimit') depthLimitRaw: string | undefined,
+  ): MarketOrderBookRetrievalView {
+    const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
+    const symbol = exchangeSymbol?.trim();
+    const depthLimit = Number(depthLimitRaw);
+    if (!symbol || !Number.isInteger(depthLimit)) {
+      throw new BadRequestException('exchangeSymbol and depthLimit query parameters are required');
+    }
+    if (!isMarketOrderBookDepth(depthLimit)) {
+      throw new BadRequestException('Unsupported order book depth');
+    }
+    const view = this.orderBooks.cached(workspaceId, connectionId, symbol, depthLimit);
+    if (!view) {
+      throw new NotFoundException('No cached order book for this connection request');
+    }
+    return view;
+  }
+
+  @Post('connections/:connectionId/order-book/retrieve')
+  async retrieveOrderBook(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('connectionId') connectionId: string,
+    @Body() body: MarketOrderBookRetrieveBody,
+  ): Promise<MarketOrderBookRetrievalView> {
+    const exchangeSymbol = body?.exchangeSymbol?.trim() ?? '';
+    const normalizedSymbol = body?.normalizedSymbol?.trim() ?? '';
+    const depthLimit = body?.depthLimit;
+    if (!exchangeSymbol || !normalizedSymbol || depthLimit === undefined) {
+      throw new BadRequestException(
+        'exchangeSymbol, normalizedSymbol, and depthLimit are required',
+      );
+    }
+    try {
+      return await this.orderBooks.retrieve({
+        workspaceId: requireWorkspace(this.workspaceAccess, request.user, workspaceHeader),
+        actorUserId: request.user.userId,
+        connectionId,
+        exchangeSymbol,
+        normalizedSymbol,
+        depthLimit,
+      });
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      if (
+        error instanceof MarketOrderBookInvalidSymbolError ||
+        error instanceof MarketOrderBookInvalidDepthError
+      ) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException('Order book retrieval could not be completed.');
     }
   }
 }

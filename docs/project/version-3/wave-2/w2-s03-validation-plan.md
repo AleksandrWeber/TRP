@@ -2,7 +2,7 @@
 
 **Package:** W2-S03 Market Data Foundation
 **Wave:** 2 — Connection Management
-**Status:** W2-S03-a, W2-S03-b, W2-S03-c, and W2-S03-d executed for slice review. Remaining slices not executed. Close remains pending Product Owner decision.
+**Status:** W2-S03-a through W2-S03-e executed for slice review. Remaining Close evidence pending Product Owner decision.
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w2-s03-product-scope.md`](./w2-s03-product-scope.md)
 **Security:** [`w2-s03-security-review.md`](./w2-s03-security-review.md)
@@ -40,7 +40,8 @@ Do not validate order placement, execution, portfolio, balances, positions, WebS
 | **W2-S03-b** | Provider payloads normalize; symbols are provider-scoped and selectable                | Normalize / symbols — **executed** (see below) |
 | **W2-S03-c** | Ticker foundation is an honest product projection (candles / order book remain later)  | Ticker projection — **executed** (see below)   |
 | **W2-S03-d** | Candlestick foundation is an honest historical OHLCV product projection                | Candles — **executed** (see below)             |
-| **W2-S03-e** | Verification Standard + regressions + full walkthrough                                 | Close evidence                                 |
+| **W2-S03-e** | Order book snapshot foundation is an honest product projection                         | Order book — **executed** (see below)          |
+| **W2-S03-f** | Verification Standard + regressions + full walkthrough                                 | Close evidence                                 |
 
 ### W2-S03-a execution evidence
 
@@ -114,6 +115,27 @@ Recorded in [`w2-s03-d-validation-report.md`](./w2-s03-d-validation-report.md).
 | No order book, trades stream, WebSockets, or polling                   | PASS   |
 
 W2-S03-d does **not** Close W2-S03. Order-book projections, health product Close, and the full Market Data Walkthrough remain later slices.
+
+### W2-S03-e execution evidence
+
+Recorded in [`w2-s03-e-validation-report.md`](./w2-s03-e-validation-report.md).
+
+| Proof                                                                 | Result |
+| --------------------------------------------------------------------- | ------ |
+| Binance order book snapshot returns normalized bids and asks          | PASS   |
+| Provider-independent order book model with required fields only       | PASS   |
+| Supported depths only: 10, 20, 50, 100                                | PASS   |
+| Unsupported depths rejected honestly                                  | PASS   |
+| Deterministic normalization; unknown fields not guessed               | PASS   |
+| Malformed payloads, negative prices/quantities, duplicates rejected   | PASS   |
+| Freshness projected as Fresh / Stale / Unavailable / Unknown honestly | PASS   |
+| Session-safe order book cache stores normalized snapshots only        | PASS   |
+| Workspace isolation and Connected connection prerequisite             | PASS   |
+| Bybit / OKX report not implemented                                    | PASS   |
+| Operator UI: depth selector, load order book, freshness, failure      | PASS   |
+| No trades stream, WebSockets, incremental updates, or polling         | PASS   |
+
+W2-S03-e does **not** Close W2-S03. Full Market Data Walkthrough Close remains a later Product Owner decision.
 
 ---
 
@@ -344,4 +366,4 @@ Do not treat the following as W2-S03 Close evidence:
 
 ---
 
-**STOP.** W2-S03-d is implemented for Product Owner review. Do not begin W2-S03-e automatically.
+**STOP.** W2-S03-e is implemented for Product Owner review. Do not begin W2-S03-f automatically.

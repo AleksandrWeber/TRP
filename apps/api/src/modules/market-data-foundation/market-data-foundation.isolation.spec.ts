@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 const directory = join(process.cwd(), 'src/modules/market-data-foundation');
 
-describe('Market Data foundation isolation (W2-S03-d)', () => {
+describe('Market Data foundation isolation (W2-S03-e)', () => {
   it('keeps transport in HTTP clients and never imports trading owners', async () => {
     const files = (await readdir(directory)).filter(
       (name) => name.endsWith('.ts') && !name.endsWith('.spec.ts'),
@@ -21,7 +21,6 @@ describe('Market Data foundation isolation (W2-S03-d)', () => {
     expect(joined).not.toMatch(/\bWebSocket\b/);
     expect(joined).not.toMatch(/wss:\/\//);
     expect(joined).not.toMatch(/\bsetInterval\s*\(/);
-    expect(joined).not.toMatch(/\bgetOrderBook\s*\(/);
     expect(joined).not.toMatch(/from ['"]\.\.\/live-trading-engine/);
     expect(joined).not.toMatch(/from ['"]\.\.\/orders/);
     expect(joined).not.toMatch(/from ['"]\.\.\/positions/);
@@ -39,6 +38,7 @@ describe('Market Data foundation isolation (W2-S03-d)', () => {
       .sort();
     expect(fetchFiles).toEqual([
       'market-candle.http.ts',
+      'market-order-book.http.ts',
       'market-symbol.http.ts',
       'market-ticker.http.ts',
     ]);
@@ -58,6 +58,7 @@ describe('Market Data foundation isolation (W2-S03-d)', () => {
       'market-symbol.discovery.ts',
       'market-ticker.retrieval.ts',
       'market-candle.retrieval.ts',
+      'market-order-book.retrieval.ts',
     ]) {
       const source = sources.find((file) => file.name === retrieval);
       expect(source?.source).not.toMatch(/\bfetch\s*\(/);
@@ -74,17 +75,16 @@ describe('Market Data foundation isolation (W2-S03-d)', () => {
       expect(adapter.source).not.toMatch(/from ['"]\.\.\/auth['"]/);
     }
 
-    const tickerPathFiles = sources
-      .filter((file) => /\/api\/v3\/ticker/.test(file.source))
-      .map((file) => file.name);
-    expect(tickerPathFiles).toEqual(['binance-ticker.adapter.ts']);
+    expect(
+      sources.filter((file) => /\/api\/v3\/ticker/.test(file.source)).map((file) => file.name),
+    ).toEqual(['binance-ticker.adapter.ts']);
+    expect(
+      sources.filter((file) => /\/api\/v3\/klines/.test(file.source)).map((file) => file.name),
+    ).toEqual(['binance-candle.adapter.ts']);
+    expect(
+      sources.filter((file) => /\/api\/v3\/depth/.test(file.source)).map((file) => file.name),
+    ).toEqual(['binance-order-book.adapter.ts']);
 
-    const klinesPathFiles = sources
-      .filter((file) => /\/api\/v3\/klines/.test(file.source))
-      .map((file) => file.name);
-    expect(klinesPathFiles).toEqual(['binance-candle.adapter.ts']);
-
-    expect(joined).not.toMatch(/\/api\/v3\/depth/);
     expect(joined).not.toMatch(/\/api\/v3\/account\b/);
     expect(joined).not.toMatch(/\/api\/v3\/order/);
   });

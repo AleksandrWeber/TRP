@@ -2,7 +2,7 @@
 
 **Document:** Version 3 Market Data Overview
 **Date:** 2026-08-26
-**Status:** W2-S03-a through W2-S03-d implemented. Remaining Market Data slices not started. Awaiting Product Owner review of W2-S03-d. Not Closed.
+**Status:** W2-S03-a through W2-S03-e implemented. Awaiting Product Owner review of W2-S03-e. Not Closed.
 **Product:** Market Data Foundation
 **Nature:** Customer description. Not an RC. Not an ADR. Not implementation. Not a Master Plan revision.
 
@@ -10,15 +10,24 @@ This is what an ordinary operator experiences. It is not an internal design note
 
 ---
 
+## W2-S03-e delivered foundation
+
+The product can retrieve, normalize, validate, cache, and expose the current Order Book snapshot for a selected symbol and depth.
+
+- Operators can open **Market Data**, select an Exchange connection, load symbols, select a symbol, select depth, load the order book, and observe freshness.
+- Supported depths: 10, 20, 50, 100. Unsupported depths are rejected honestly.
+- Binance supports order book snapshot retrieval. Bybit and OKX remain registered and report that order book retrieval is not implemented.
+- Retrieval failure and Provider Unavailable are honest.
+- The product does not show trades, streaming state, balances, positions, or trading controls.
+
+---
+
 ## W2-S03-d delivered foundation
 
 The product can retrieve, normalize, validate, cache, and expose historical OHLCV candlesticks for a selected symbol and interval.
 
-- Operators can open **Market Data**, select an Exchange connection, load symbols, select a symbol, select an interval, load historical candles, and observe freshness.
-- Supported intervals: 1m, 5m, 15m, 1h, 4h, 1d. Unsupported intervals are rejected honestly.
-- Binance supports candlestick retrieval. Bybit and OKX remain registered and report that candlestick retrieval is not implemented.
-- Retrieval failure and Provider Unavailable are honest.
-- The product does not show order book, trades, balances, positions, or trading controls.
+- Supported intervals: 1m, 5m, 15m, 1h, 4h, 1d.
+- Binance supports candlestick retrieval. Bybit and OKX remain registered and report not implemented.
 
 ---
 
@@ -26,23 +35,17 @@ The product can retrieve, normalize, validate, cache, and expose historical OHLC
 
 The product can retrieve, normalize, validate, and expose the current ticker for a selected exchange symbol.
 
-- Operators can open **Market Data**, select an Exchange connection, load symbols, select a symbol, load the current ticker, and observe freshness.
-- Binance supports ticker retrieval. Bybit and OKX remain registered and report that ticker retrieval is not implemented.
-
 ---
 
 ## W2-S03-b delivered foundation
 
 The product can retrieve, normalize, validate, and expose tradable symbols from a supported exchange connection.
 
-- Operators can open **Market Data**, select an Exchange connection, load symbols, and browse normalized symbols.
-- Binance supports symbol discovery. Bybit and OKX remain registered and report that symbol discovery is not implemented.
-
 ---
 
 ## W2-S03-a delivered foundation
 
-The product has one Market Data adapter contract for **Binance**, **Bybit**, and **OKX**. Later Market Data features consume that contract. Additional exchanges can be registered later without changing existing adapters.
+The product has one Market Data adapter contract for **Binance**, **Bybit**, and **OKX**.
 
 ---
 
@@ -50,27 +53,16 @@ The product has one Market Data adapter contract for **Binance**, **Bybit**, and
 
 Market Data Foundation is the product that lets a workspace **see honest market data** from a supported exchange after Exchange Connectivity has succeeded.
 
-The operator already manages the connection in **Connections**. This package does not replace that place. It adds **Market Data**: receive, normalize, validate, and expose symbols, ticker, and historical candles now; order book later.
+The operator already manages the connection in **Connections**. This package does not replace that place. It adds **Market Data**: receive, normalize, validate, and expose symbols, ticker, historical candles, and order book snapshots.
 
-- The operator can today: open Market Data, select Binance / Bybit / OKX connection, load symbols, select a symbol, load ticker, select interval, load historical candles, see freshness, see discovery or retrieval failure, and see provider unavailable.
-- The operator cannot yet: view order book from this product journey.
-- The operator cannot: place orders, enable trading, run execution, open portfolio, view balances, view positions, open monitoring, or see billing from this package.
+- The operator can today: open Market Data, select Binance / Bybit / OKX connection, load symbols, select a symbol, load ticker, select interval, load candles, select depth, load order book, see freshness, and see honest failure or provider unavailable.
+- The operator cannot: place orders, enable trading, run execution, open portfolio, view balances, view positions, open monitoring, see billing, stream depth, or view trades from this package.
 
 ```text
-Candles available means historical OHLCV was normalized and validated.
-Candles available does NOT mean Trading enabled.
-Candles available does NOT mean order book is available.
+Order book available means a snapshot was normalized and validated.
+Order book available does NOT mean Trading enabled.
+Order book available does NOT mean streaming or trades are available.
 ```
-
----
-
-## What the operator already has
-
-Connection Management is **CLOSED**. The operator can already create an Exchange connection, store credentials securely, and manage lifecycle without editing a server file.
-
-Exchange Connectivity is **CLOSED**. The operator can already prove that an offered exchange accepted an authenticated session. **Connected** means authenticated exchange communication succeeded. It does not mean market data is available.
-
-W2-S03-a is the adapter foundation. W2-S03-b adds symbol discovery. W2-S03-c adds ticker retrieval. W2-S03-d adds historical candlesticks.
 
 ---
 
@@ -89,64 +81,28 @@ Select Symbol
   ↓
 Load Ticker
   ↓
-Select Interval
+Select Interval → Load Candles
   ↓
-Load Candles
+Select Depth → Load Order Book
   ↓
 Observe freshness
 ```
-
-Later slices add View Order Book.
-
-### Open Market Data
-
-The operator signs in and opens **Market Data**. Exchange connections still live in **Connections**.
-
-### Select Exchange
-
-The operator selects an offered Exchange connection (Binance, Bybit, or OKX). Selection uses existing Connections. The operator does not paste secrets.
-
-### Load Symbols, Ticker, and Candles
-
-The operator loads symbols, selects a symbol, loads ticker, selects an interval, and loads historical candles. The product does not invent prices or intervals.
-
----
-
-## Customer Experience
-
-- Happy path: open Market Data, select a Connected Binance connection, load symbols, select a symbol, load ticker, select interval, load candles, see Fresh or Stale honestly.
-- If something fails: retrieval failed, Provider Unavailable, unsupported interval, or not implemented for Bybit / OKX. Never fake candles. Never “Trading enabled.”
-- What they never have to do: edit `.env`, store keys in a local file, or SSH to a server.
-
----
-
-## Market Data status (what the operator sees)
-
-| Status                   | What it means to the operator                       |
-| ------------------------ | --------------------------------------------------- |
-| **Symbols available**    | Tradable symbols were normalized and validated      |
-| **Ticker available**     | Current ticker was normalized and validated         |
-| **Candles available**    | Historical OHLCV was normalized and validated       |
-| **Fresh / Stale**        | Observed exchange age relative to retrieval time    |
-| **Provider Unavailable** | The exchange could not supply market data           |
-| **Not implemented**      | This provider does not yet support the requested op |
-| **Denied**               | Permission or workspace boundary blocked the action |
 
 ---
 
 ## Providers offered now
 
-| Provider | What the operator can see here                   | What does not happen here   |
-| -------- | ------------------------------------------------ | --------------------------- |
-| Binance  | Normalized symbols, ticker, and historical OHLCV | Order book, orders, trading |
-| Bybit    | Not implemented for symbols / ticker / candles   | Order book, orders, trading |
-| OKX      | Not implemented for symbols / ticker / candles   | Order book, orders, trading |
+| Provider | What the operator can see here                              | What does not happen here      |
+| -------- | ----------------------------------------------------------- | ------------------------------ |
+| Binance  | Symbols, ticker, historical OHLCV, order book snapshot      | Trades stream, orders, trading |
+| Bybit    | Not implemented for symbols / ticker / candles / order book | Trades stream, orders, trading |
+| OKX      | Not implemented for symbols / ticker / candles / order book | Trades stream, orders, trading |
 
 ---
 
 ## Customer Never Sees
 
-- Not shown: order book, trades stream, order tickets, balances, positions, leverage, live trading controls, WebSocket trading, strategy execution, monitoring, analytics, billing.
+- Not shown: trades stream, streaming state, order tickets, balances, positions, leverage, live trading controls, WebSocket trading, strategy execution, monitoring, analytics, billing.
 - Not offered: **Trading enabled**, **Order placed**, **Balance loaded**, **Position opened**.
 
 ---
@@ -161,7 +117,7 @@ The operator loads symbols, selects a symbol, loads ticker, selects an interval,
 
 ## What's Next
 
-- W2-S03-e remaining Market Data Close outcomes as sequenced by Product Owner
+- Remaining Market Data Close outcomes as sequenced by Product Owner (W2-S03-f and beyond)
 - Trading stays later
 
 Wave 1 Security Foundation is **CERTIFIED COMPLETE** and is consumed, not reopened.
@@ -187,4 +143,4 @@ This product does **not** include:
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S03-e.
+**STOP.** Wait for Product Owner review before W2-S03-f.

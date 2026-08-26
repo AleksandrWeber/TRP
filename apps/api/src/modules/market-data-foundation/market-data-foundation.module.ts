@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { SecurityAuditModule } from '../security-audit';
 import { WorkspaceModule } from '../workspace';
 import { BinanceCandleRetrievalAdapter } from './binance-candle.adapter';
+import { BinanceOrderBookRetrievalAdapter } from './binance-order-book.adapter';
 import { BinanceSymbolDiscoveryAdapter } from './binance-symbol.adapter';
 import { BinanceTickerRetrievalAdapter } from './binance-ticker.adapter';
 import { MarketDataAdapterFactory } from './market-data-adapter.factory';
@@ -18,6 +19,17 @@ import {
 import { MARKET_DATA_CANDLE_RETRIEVAL_ADAPTERS } from './market-candle.retrieval';
 import { MarketCandleRetrievalService } from './market-candle.service';
 import { PlannedCandleRetrievalAdapter } from './planned-candle.adapter';
+import { MarketOrderBookCache } from './market-order-book.cache';
+import { MarketOrderBookRetrievalAudit } from './market-order-book.audit';
+import {
+  DEFAULT_ORDER_BOOK_RETRIEVAL_TIMEOUT_MS,
+  FetchOrderBookRetrievalHttpClient,
+  ORDER_BOOK_RETRIEVAL_HTTP_CLIENT,
+  ORDER_BOOK_RETRIEVAL_TIMEOUT_MS,
+} from './market-order-book.http';
+import { MARKET_DATA_ORDER_BOOK_RETRIEVAL_ADAPTERS } from './market-order-book.retrieval';
+import { MarketOrderBookRetrievalService } from './market-order-book.service';
+import { PlannedOrderBookRetrievalAdapter } from './planned-order-book.adapter';
 import { MarketSymbolCache } from './market-symbol.cache';
 import { MarketSymbolDiscoveryAudit } from './market-symbol.audit';
 import { MARKET_DATA_SYMBOL_DISCOVERY_ADAPTERS } from './market-symbol.discovery';
@@ -51,7 +63,9 @@ import { PlannedTickerRetrievalAdapter } from './planned-ticker.adapter';
  * W2-S03-c: ticker retrieval, normalization, validation, freshness, cache,
  * and projection.
  * W2-S03-d: candlestick retrieval, OHLCV normalization, validation, freshness,
- * cache, and projection. Order book remains a later slice.
+ * cache, and projection.
+ * W2-S03-e: order book snapshot retrieval, normalization, validation,
+ * freshness, cache, and projection.
  */
 @Module({
   imports: [WorkspaceModule, SecurityAuditModule],
@@ -132,6 +146,28 @@ import { PlannedTickerRetrievalAdapter } from './planned-ticker.adapter';
     MarketCandleCache,
     MarketCandleRetrievalAudit,
     MarketCandleRetrievalService,
+    FetchOrderBookRetrievalHttpClient,
+    {
+      provide: ORDER_BOOK_RETRIEVAL_HTTP_CLIENT,
+      useExisting: FetchOrderBookRetrievalHttpClient,
+    },
+    {
+      provide: ORDER_BOOK_RETRIEVAL_TIMEOUT_MS,
+      useValue: DEFAULT_ORDER_BOOK_RETRIEVAL_TIMEOUT_MS,
+    },
+    BinanceOrderBookRetrievalAdapter,
+    {
+      provide: MARKET_DATA_ORDER_BOOK_RETRIEVAL_ADAPTERS,
+      useFactory: (binance: BinanceOrderBookRetrievalAdapter) => [
+        binance,
+        new PlannedOrderBookRetrievalAdapter('BYBIT'),
+        new PlannedOrderBookRetrievalAdapter('OKX'),
+      ],
+      inject: [BinanceOrderBookRetrievalAdapter],
+    },
+    MarketOrderBookCache,
+    MarketOrderBookRetrievalAudit,
+    MarketOrderBookRetrievalService,
   ],
   exports: [
     MarketDataAdapterRegistry,
@@ -142,6 +178,8 @@ import { PlannedTickerRetrievalAdapter } from './planned-ticker.adapter';
     MarketTickerCache,
     MarketCandleRetrievalService,
     MarketCandleCache,
+    MarketOrderBookRetrievalService,
+    MarketOrderBookCache,
   ],
 })
 export class MarketDataFoundationModule {}

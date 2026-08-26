@@ -6,6 +6,8 @@ import {
   type MarketCandleInterval,
   type MarketCandleRetrievalView,
   type MarketDataProviderCatalogView,
+  type MarketOrderBookDepth,
+  type MarketOrderBookRetrievalView,
   type MarketSymbolDiscoveryView,
   type MarketSymbolView,
   type MarketTickerRetrievalView,
@@ -46,10 +48,13 @@ export function MarketDataPage() {
   const [ticker, setTicker] = useState<MarketTickerRetrievalView | null>(null);
   const [selectedInterval, setSelectedInterval] = useState<MarketCandleInterval>('1h');
   const [candles, setCandles] = useState<MarketCandleRetrievalView | null>(null);
+  const [selectedDepth, setSelectedDepth] = useState<MarketOrderBookDepth>(20);
+  const [orderBook, setOrderBook] = useState<MarketOrderBookRetrievalView | null>(null);
   const [loading, setLoading] = useState(true);
   const [discovering, setDiscovering] = useState(false);
   const [retrievingTicker, setRetrievingTicker] = useState(false);
   const [retrievingCandles, setRetrievingCandles] = useState(false);
+  const [retrievingOrderBook, setRetrievingOrderBook] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -60,6 +65,7 @@ export function MarketDataPage() {
     setSelectedSymbol(null);
     setTicker(null);
     setCandles(null);
+    setOrderBook(null);
     Promise.all([api.getMarketDataProviders(), api.listConnections()])
       .then(([providerCatalog, connectionViews]) => {
         if (cancelled) return;
@@ -86,6 +92,7 @@ export function MarketDataPage() {
     setSelectedSymbol(null);
     setTicker(null);
     setCandles(null);
+    setOrderBook(null);
     try {
       const view = await api.discoverMarketDataSymbols(selectedConnectionId);
       setDiscovery(view);
@@ -137,6 +144,25 @@ export function MarketDataPage() {
     }
   }
 
+  async function retrieveOrderBook() {
+    if (!selectedConnectionId || !selectedSymbol) return;
+    setRetrievingOrderBook(true);
+    setError(null);
+    try {
+      const view = await api.retrieveMarketDataOrderBook(selectedConnectionId, {
+        exchangeSymbol: selectedSymbol.exchangeSymbol,
+        normalizedSymbol: selectedSymbol.normalizedSymbol,
+        depthLimit: selectedDepth,
+      });
+      setOrderBook(view);
+    } catch (reason) {
+      setOrderBook(null);
+      setError(toUserFacingError(reason, 'Order book retrieval could not be completed.'));
+    } finally {
+      setRetrievingOrderBook(false);
+    }
+  }
+
   return (
     <MarketDataView
       providers={providers}
@@ -147,10 +173,13 @@ export function MarketDataPage() {
       ticker={ticker}
       selectedInterval={selectedInterval}
       candles={candles}
+      selectedDepth={selectedDepth}
+      orderBook={orderBook}
       loading={loading}
       discovering={discovering}
       retrievingTicker={retrievingTicker}
       retrievingCandles={retrievingCandles}
+      retrievingOrderBook={retrievingOrderBook}
       error={error}
       onSelectConnection={(connectionId) => {
         setSelectedConnectionId(connectionId);
@@ -158,12 +187,14 @@ export function MarketDataPage() {
         setSelectedSymbol(null);
         setTicker(null);
         setCandles(null);
+        setOrderBook(null);
       }}
       onDiscover={discover}
       onSelectSymbol={(symbol) => {
         setSelectedSymbol(symbol);
         setTicker(null);
         setCandles(null);
+        setOrderBook(null);
       }}
       onRetrieveTicker={retrieveTicker}
       onSelectInterval={(interval) => {
@@ -171,6 +202,11 @@ export function MarketDataPage() {
         setCandles(null);
       }}
       onRetrieveCandles={retrieveCandles}
+      onSelectDepth={(depth) => {
+        setSelectedDepth(depth);
+        setOrderBook(null);
+      }}
+      onRetrieveOrderBook={retrieveOrderBook}
     />
   );
 }

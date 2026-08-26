@@ -15,18 +15,6 @@ const providers: MarketDataProviderCatalogView = {
       capabilities: ['SYMBOLS', 'TICKER', 'CANDLES', 'ORDER_BOOK'],
       availability: 'AVAILABLE',
     },
-    {
-      id: 'BYBIT',
-      displayName: 'Bybit',
-      capabilities: ['SYMBOLS', 'TICKER', 'CANDLES', 'ORDER_BOOK'],
-      availability: 'AVAILABLE',
-    },
-    {
-      id: 'OKX',
-      displayName: 'OKX',
-      capabilities: ['SYMBOLS', 'TICKER', 'CANDLES', 'ORDER_BOOK'],
-      availability: 'AVAILABLE',
-    },
   ],
 };
 
@@ -56,7 +44,13 @@ const symbol: MarketSymbolView = {
 
 const baseProps: Omit<
   MarketDataViewProps,
-  'discovery' | 'selectedSymbol' | 'ticker' | 'candles' | 'selectedInterval'
+  | 'discovery'
+  | 'selectedSymbol'
+  | 'ticker'
+  | 'candles'
+  | 'selectedInterval'
+  | 'orderBook'
+  | 'selectedDepth'
 > = {
   providers,
   connections: [connection],
@@ -65,6 +59,7 @@ const baseProps: Omit<
   discovering: false,
   retrievingTicker: false,
   retrievingCandles: false,
+  retrievingOrderBook: false,
   error: null,
   onSelectConnection: () => undefined,
   onDiscover: () => undefined,
@@ -72,15 +67,18 @@ const baseProps: Omit<
   onRetrieveTicker: () => undefined,
   onSelectInterval: () => undefined,
   onRetrieveCandles: () => undefined,
+  onSelectDepth: () => undefined,
+  onRetrieveOrderBook: () => undefined,
 };
 
-describe('Market Data UI (W2-S03-d)', () => {
-  it('renders interval selector, candles, and freshness without order book or trading', () => {
+describe('Market Data UI (W2-S03-e)', () => {
+  it('renders depth selector, order book, and freshness without trades or trading', () => {
     const html = renderToStaticMarkup(
       <MarketDataView
         {...baseProps}
         selectedSymbol={symbol}
         selectedInterval="1h"
+        selectedDepth={20}
         discovery={{
           connectionId: 'connection-1',
           providerId: 'BINANCE',
@@ -90,53 +88,46 @@ describe('Market Data UI (W2-S03-d)', () => {
           symbols: [symbol],
         }}
         ticker={null}
-        candles={{
+        candles={null}
+        orderBook={{
           connectionId: 'connection-1',
           providerId: 'BINANCE',
           exchangeSymbol: 'BTCUSDT',
-          interval: '1h',
-          rangeStart: '2026-08-26T00:00:00.000Z',
-          rangeEnd: '2026-08-26T12:00:00.000Z',
-          freshness: 'STALE',
+          depthLimit: 20,
+          freshness: 'UNKNOWN',
           outcome: 'COMPLETED',
           failureReason: null,
-          candles: [
-            {
-              normalizedSymbol: 'BTC-USDT',
-              interval: '1h',
-              openTime: '2026-08-26T10:00:00.000Z',
-              closeTime: '2026-08-26T10:59:59.999Z',
-              open: '100',
-              high: '110',
-              low: '90',
-              close: '105',
-              volume: '12.5',
-              tradeCount: 42,
-              exchangeTimestamp: '2026-08-26T10:59:59.999Z',
-              retrievalTimestamp: '2026-08-26T12:00:00.000Z',
-              providerId: 'BINANCE',
-            },
-          ],
+          orderBook: {
+            normalizedSymbol: 'BTC-USDT',
+            depthLimit: 20,
+            bids: [{ price: '100.0', quantity: '2.0' }],
+            asks: [{ price: '101.0', quantity: '3.0' }],
+            exchangeTimestamp: null,
+            retrievalTimestamp: '2026-08-26T12:00:00.000Z',
+            providerId: 'BINANCE',
+            freshness: 'UNKNOWN',
+          },
         }}
       />,
     );
 
-    expect(html).toContain('Select Interval');
-    expect(html).toContain('Load Candles');
-    expect(html).toContain('105');
-    expect(html).toContain('Stale');
-    expect(html).not.toContain('Order Book');
+    expect(html).toContain('Select Depth');
+    expect(html).toContain('Load Order Book');
+    expect(html).toContain('100.0');
+    expect(html).toContain('Unknown');
     expect(html).not.toContain('Place order');
     expect(html).not.toContain('Balances');
     expect(html).not.toContain('Positions');
+    expect(html).not.toContain('Streaming');
   });
 
-  it('shows candlestick failure and provider unavailable honestly', () => {
+  it('shows order book failure and provider unavailable honestly', () => {
     const failed = renderToStaticMarkup(
       <MarketDataView
         {...baseProps}
         selectedSymbol={symbol}
         selectedInterval="1h"
+        selectedDepth={20}
         discovery={{
           connectionId: 'connection-1',
           providerId: 'BINANCE',
@@ -146,52 +137,20 @@ describe('Market Data UI (W2-S03-d)', () => {
           symbols: [symbol],
         }}
         ticker={null}
-        candles={{
+        candles={null}
+        orderBook={{
           connectionId: 'connection-1',
           providerId: 'BINANCE',
           exchangeSymbol: 'BTCUSDT',
-          interval: '1h',
-          rangeStart: '2026-08-26T00:00:00.000Z',
-          rangeEnd: '2026-08-26T12:00:00.000Z',
+          depthLimit: 20,
           freshness: 'UNKNOWN',
           outcome: 'FAILED',
-          failureReason: 'Malformed provider candlestick payload',
-          candles: [],
+          failureReason: 'Malformed provider order book payload',
+          orderBook: null,
         }}
       />,
     );
-    expect(failed).toContain('Candlestick retrieval failed');
-    expect(failed).toContain('Malformed provider candlestick payload');
-
-    const unavailable = renderToStaticMarkup(
-      <MarketDataView
-        {...baseProps}
-        selectedSymbol={symbol}
-        selectedInterval="1h"
-        discovery={{
-          connectionId: 'connection-1',
-          providerId: 'BYBIT',
-          discoveredAt: '2026-08-26T00:00:00.000Z',
-          outcome: 'COMPLETED',
-          failureReason: null,
-          symbols: [{ ...symbol, providerId: 'BYBIT' }],
-        }}
-        ticker={null}
-        candles={{
-          connectionId: 'connection-1',
-          providerId: 'BYBIT',
-          exchangeSymbol: 'BTCUSDT',
-          interval: '1h',
-          rangeStart: '2026-08-26T00:00:00.000Z',
-          rangeEnd: '2026-08-26T12:00:00.000Z',
-          freshness: 'UNAVAILABLE',
-          outcome: 'NOT_IMPLEMENTED',
-          failureReason: 'Candlestick retrieval is not implemented for this provider',
-          candles: [],
-        }}
-      />,
-    );
-    expect(unavailable).toContain('not implemented');
-    expect(unavailable).toContain('Unavailable');
+    expect(failed).toContain('Order book retrieval failed');
+    expect(failed).toContain('Malformed provider order book payload');
   });
 });

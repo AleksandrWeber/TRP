@@ -189,6 +189,36 @@ export type MarketCandleRetrievalView = {
   failureReason: string | null;
 };
 
+export type MarketOrderBookDepth = 10 | 20 | 50 | 100;
+export type MarketOrderBookFreshness = 'FRESH' | 'STALE' | 'UNAVAILABLE' | 'UNKNOWN';
+
+export type MarketOrderBookLevelView = {
+  price: string;
+  quantity: string;
+};
+
+export type MarketOrderBookFieldsView = {
+  normalizedSymbol: string;
+  depthLimit: MarketOrderBookDepth;
+  bids: MarketOrderBookLevelView[];
+  asks: MarketOrderBookLevelView[];
+  exchangeTimestamp: string | null;
+  retrievalTimestamp: string;
+  providerId: string;
+  freshness: MarketOrderBookFreshness;
+};
+
+export type MarketOrderBookRetrievalView = {
+  connectionId: string;
+  providerId: string;
+  exchangeSymbol: string;
+  depthLimit: MarketOrderBookDepth | number;
+  orderBook: MarketOrderBookFieldsView | null;
+  freshness: MarketOrderBookFreshness;
+  outcome: 'COMPLETED' | 'FAILED' | 'PROVIDER_UNAVAILABLE' | 'NOT_IMPLEMENTED';
+  failureReason: string | null;
+};
+
 export type Dataset = {
   id: string;
   symbol: string;
@@ -3067,6 +3097,21 @@ export const api = {
   ) =>
     request<MarketCandleRetrievalView>(
       `/market-data/connections/${encodeURIComponent(connectionId)}/candles/retrieve`,
+      {
+        method: 'POST',
+        body: JSON.stringify(body),
+      },
+    ),
+  retrieveMarketDataOrderBook: (
+    connectionId: string,
+    body: {
+      exchangeSymbol: string;
+      normalizedSymbol: string;
+      depthLimit: MarketOrderBookDepth;
+    },
+  ) =>
+    request<MarketOrderBookRetrievalView>(
+      `/market-data/connections/${encodeURIComponent(connectionId)}/order-book/retrieve`,
       {
         method: 'POST',
         body: JSON.stringify(body),

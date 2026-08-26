@@ -3,6 +3,8 @@ import type {
   MarketCandleInterval,
   MarketCandleRetrievalView,
   MarketDataProviderCatalogView,
+  MarketOrderBookDepth,
+  MarketOrderBookRetrievalView,
   MarketSymbolDiscoveryView,
   MarketSymbolView,
   MarketTickerRetrievalView,
@@ -17,6 +19,8 @@ export const MARKET_DATA_CANDLE_INTERVALS: readonly MarketCandleInterval[] = [
   '1d',
 ];
 
+export const MARKET_DATA_ORDER_BOOK_DEPTHS: readonly MarketOrderBookDepth[] = [10, 20, 50, 100];
+
 export type MarketDataViewProps = {
   providers: MarketDataProviderCatalogView | null;
   connections: ConnectionMetadataView[];
@@ -26,10 +30,13 @@ export type MarketDataViewProps = {
   ticker: MarketTickerRetrievalView | null;
   selectedInterval: MarketCandleInterval;
   candles: MarketCandleRetrievalView | null;
+  selectedDepth: MarketOrderBookDepth;
+  orderBook: MarketOrderBookRetrievalView | null;
   loading: boolean;
   discovering: boolean;
   retrievingTicker: boolean;
   retrievingCandles: boolean;
+  retrievingOrderBook: boolean;
   error: string | null;
   onSelectConnection: (connectionId: string) => void;
   onDiscover: () => void;
@@ -37,6 +44,8 @@ export type MarketDataViewProps = {
   onRetrieveTicker: () => void;
   onSelectInterval: (interval: MarketCandleInterval) => void;
   onRetrieveCandles: () => void;
+  onSelectDepth: (depth: MarketOrderBookDepth) => void;
+  onRetrieveOrderBook: () => void;
 };
 
 export function MarketDataView({
@@ -48,10 +57,13 @@ export function MarketDataView({
   ticker,
   selectedInterval,
   candles,
+  selectedDepth,
+  orderBook,
   loading,
   discovering,
   retrievingTicker,
   retrievingCandles,
+  retrievingOrderBook,
   error,
   onSelectConnection,
   onDiscover,
@@ -59,6 +71,8 @@ export function MarketDataView({
   onRetrieveTicker,
   onSelectInterval,
   onRetrieveCandles,
+  onSelectDepth,
+  onRetrieveOrderBook,
 }: MarketDataViewProps) {
   const exchangeConnections = connections.filter((item) => item.connectionType === 'EXCHANGE');
   const selected = exchangeConnections.find((item) => item.id === selectedConnectionId) ?? null;
@@ -69,9 +83,10 @@ export function MarketDataView({
         <p className="text-sm uppercase tracking-[0.2em] text-slate-400">Market Data</p>
         <h2 className="mt-1 text-3xl font-semibold">Market Data</h2>
         <p className="mt-2 max-w-3xl text-slate-400">
-          Load tradable symbols, the current ticker, and historical OHLCV candles from a supported
-          exchange connection. Data is normalized into one product model. This surface does not show
-          order book, trades, balances, positions, or trading controls.
+          Load tradable symbols, the current ticker, historical OHLCV candles, and order book
+          snapshots from a supported exchange connection. Data is normalized into one product model.
+          This surface does not show trades, streaming state, balances, positions, or trading
+          controls.
         </p>
       </div>
 
@@ -93,8 +108,8 @@ export function MarketDataView({
                   {provider.availability === 'AVAILABLE' ? 'Available' : 'Unavailable'}
                   {' · '}
                   {provider.id === 'BINANCE'
-                    ? 'Symbols, ticker, and candles supported'
-                    : 'Symbols, ticker, and candles not implemented'}
+                    ? 'Symbols, ticker, candles, and order book supported'
+                    : 'Symbols, ticker, candles, and order book not implemented'}
                 </p>
               </div>
             ))}
@@ -347,6 +362,94 @@ export function MarketDataView({
             </p>
             {candles.failureReason ? (
               <p className="mt-2 text-sm text-slate-400">{candles.failureReason}</p>
+            ) : null}
+          </div>
+        ) : null}
+      </section>
+
+      <section className="rounded border border-white/10 p-5">
+        <h3 className="text-lg font-medium">Order Book</h3>
+        <p className="mt-2 text-sm text-slate-400">
+          Load the current order book snapshot for the selected symbol and depth. Freshness reflects
+          observed exchange timestamps only; missing exchange timestamps remain Unknown.
+        </p>
+        <label className="mt-4 block text-sm text-slate-300">
+          Select Depth
+          <select
+            className="mt-2 w-full max-w-xs rounded border border-white/10 bg-slate-950 px-3 py-2"
+            value={selectedDepth}
+            onChange={(event) => onSelectDepth(Number(event.target.value) as MarketOrderBookDepth)}
+          >
+            {MARKET_DATA_ORDER_BOOK_DEPTHS.map((depth) => (
+              <option key={depth} value={depth}>
+                {depth}
+              </option>
+            ))}
+          </select>
+        </label>
+        <button
+          type="button"
+          className="mt-4 rounded bg-sky-700 px-4 py-2 text-sm font-medium disabled:opacity-50"
+          onClick={onRetrieveOrderBook}
+          disabled={!selected || !selectedSymbol || retrievingOrderBook || loading}
+        >
+          {retrievingOrderBook ? 'Loading order book…' : 'Load Order Book'}
+        </button>
+
+        {!orderBook ? (
+          <p className="mt-4 text-slate-400">
+            Select a symbol and depth, then load the order book.
+          </p>
+        ) : null}
+
+        {orderBook?.outcome === 'COMPLETED' && orderBook.orderBook ? (
+          <div className="mt-4 space-y-3 text-sm" data-testid="order-book-panel">
+            <p>
+              <span className="text-slate-400">Freshness</span>{' '}
+              <span className="font-medium" data-testid="order-book-freshness">
+                {formatFreshness(orderBook.freshness)}
+              </span>
+              <span className="ml-3 text-slate-400">Depth {orderBook.depthLimit}</span>
+            </p>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <h4 className="font-medium">Bids</h4>
+                <ul className="mt-2 max-h-64 space-y-1 overflow-auto font-mono text-xs">
+                  {orderBook.orderBook.bids.map((level) => (
+                    <li key={`bid-${level.price}`}>
+                      {level.price} × {level.quantity}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium">Asks</h4>
+                <ul className="mt-2 max-h-64 space-y-1 overflow-auto font-mono text-xs">
+                  {orderBook.orderBook.asks.map((level) => (
+                    <li key={`ask-${level.price}`}>
+                      {level.price} × {level.quantity}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {orderBook && orderBook.outcome !== 'COMPLETED' ? (
+          <div className="mt-4" role="status">
+            <p className="font-medium text-amber-200">
+              {orderBook.outcome === 'PROVIDER_UNAVAILABLE'
+                ? 'Provider Unavailable'
+                : orderBook.outcome === 'NOT_IMPLEMENTED'
+                  ? 'Provider unavailable — order book retrieval not implemented'
+                  : 'Order book retrieval failed'}
+            </p>
+            <p className="mt-2 text-sm text-slate-400">
+              Freshness: {formatFreshness(orderBook.freshness)}
+            </p>
+            {orderBook.failureReason ? (
+              <p className="mt-2 text-sm text-slate-400">{orderBook.failureReason}</p>
             ) : null}
           </div>
         ) : null}

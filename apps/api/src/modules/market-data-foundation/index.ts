@@ -152,3 +152,53 @@ export { MarketCandleRetrievalService } from './market-candle.service';
 export { MarketCandleRetrievalAudit } from './market-candle.audit';
 export { BinanceCandleRetrievalAdapter, parseBinanceKlines } from './binance-candle.adapter';
 export { PlannedCandleRetrievalAdapter } from './planned-candle.adapter';
+export {
+  MARKET_ORDER_BOOK_DEPTHS,
+  MARKET_ORDER_BOOK_FRESHNESS,
+  isMarketOrderBookDepth,
+  isMarketOrderBookFreshness,
+  type MarketOrderBookDepth,
+  type MarketOrderBookFreshness,
+  type NormalizedMarketOrderBook,
+  type NormalizedOrderBookLevel,
+  type ProviderOrderBookLevel,
+  type ProviderOrderBookSnapshot,
+} from './market-order-book';
+export {
+  MARKET_ORDER_BOOK_FRESH_MAX_AGE_MS,
+  MARKET_ORDER_BOOK_FRESHNESS_CLOCK_SKEW_MS,
+  calculateOrderBookFreshness,
+} from './market-order-book.freshness';
+export {
+  MARKET_ORDER_BOOK_CLOCK_SKEW_MS,
+  normalizeProviderOrderBook,
+} from './market-order-book.normalize';
+export {
+  MarketOrderBookDuplicatePriceError,
+  MarketOrderBookInvalidDepthError,
+  MarketOrderBookInvalidSymbolError,
+  MarketOrderBookMalformedPayloadError,
+  MarketOrderBookValidationError,
+  validateAndNormalizeOrderBook,
+  validateOrderBookRetrievalRequest,
+} from './market-order-book.validate';
+export {
+  projectMarketOrderBook,
+  projectOrderBookLevel,
+  projectOrderBookRetrieval,
+  type MarketOrderBookFieldsView,
+  type MarketOrderBookLevelView,
+  type MarketOrderBookRetrievalView,
+} from './market-order-book.projection';
+export { MarketOrderBookCache, type MarketOrderBookCacheEntry } from './market-order-book.cache';
+export {
+  MARKET_DATA_ORDER_BOOK_RETRIEVAL_ADAPTERS,
+  type MarketOrderBookRetrievalAdapter,
+  type MarketOrderBookRetrievalAdapterKind,
+  type MarketOrderBookRetrievalAdapterRequest,
+  type MarketOrderBookRetrievalAdapterResult,
+} from './market-order-book.retrieval';
+export { MarketOrderBookRetrievalService } from './market-order-book.service';
+export { MarketOrderBookRetrievalAudit } from './market-order-book.audit';
+export { BinanceOrderBookRetrievalAdapter, parseBinanceDepth } from './binance-order-book.adapter';
+export { PlannedOrderBookRetrievalAdapter } from './planned-order-book.adapter';
