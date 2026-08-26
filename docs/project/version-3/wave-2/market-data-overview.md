@@ -2,9 +2,10 @@
 
 **Document:** Version 3 Market Data Overview
 **Date:** 2026-08-26
-**Status:** W2-S03-a through W2-S03-e implemented. Awaiting Product Owner review of W2-S03-e. Not Closed.
+**Status:** W2-S03 Market Data Foundation implemented through W2-S03-e. Close package prepared. Ready for Product Owner Close Review. Not Closed.
 **Product:** Market Data Foundation
 **Nature:** Customer description. Not an RC. Not an ADR. Not implementation. Not a Master Plan revision.
+**Close evidence:** [`w2-s03-close-report.md`](./w2-s03-close-report.md) · [`w2-s03-live-product-walkthrough.md`](./w2-s03-live-product-walkthrough.md)
 
 This is what an ordinary operator experiences. It is not an internal design note.
 
@@ -117,7 +118,8 @@ Observe freshness
 
 ## What's Next
 
-- Remaining Market Data Close outcomes as sequenced by Product Owner (W2-S03-f and beyond)
+- Product Owner Close Review for W2-S03 (only the Product Owner may declare Closed)
+- Remaining Wave 2 sequencing after Close
 - Trading stays later
 
 Wave 1 Security Foundation is **CERTIFIED COMPLETE** and is consumed, not reopened.
@@ -143,4 +145,4 @@ This product does **not** include:
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S03-f.
+**STOP.** Wait for Product Owner Close Review. Do not declare W2-S03 CLOSED. Do not declare Wave 2 COMPLETE.

@@ -2,7 +2,11 @@
 
 **Package:** W2-S03 Market Data Foundation
 **Wave:** 2 — Connection Management
-**Status:** W2-S03-a through W2-S03-e executed for slice review. Remaining Close evidence pending Product Owner decision.
+**Status:** Close evidence **COMPLETE** for Product Owner Close Review. Not Closed.
+**Close evidence date:** 2026-08-26
+**Walkthrough:** [`w2-s03-live-product-walkthrough.md`](./w2-s03-live-product-walkthrough.md) — **PASS**
+**Worksheet:** [`v3-w2-s03-security-verification-worksheet.md`](./v3-w2-s03-security-verification-worksheet.md) — **PASS**
+**Close report:** [`w2-s03-close-report.md`](./w2-s03-close-report.md)
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w2-s03-product-scope.md`](./w2-s03-product-scope.md)
 **Security:** [`w2-s03-security-review.md`](./w2-s03-security-review.md)
@@ -41,7 +45,7 @@ Do not validate order placement, execution, portfolio, balances, positions, WebS
 | **W2-S03-c** | Ticker foundation is an honest product projection (candles / order book remain later)  | Ticker projection — **executed** (see below)   |
 | **W2-S03-d** | Candlestick foundation is an honest historical OHLCV product projection                | Candles — **executed** (see below)             |
 | **W2-S03-e** | Order book snapshot foundation is an honest product projection                         | Order book — **executed** (see below)          |
-| **W2-S03-f** | Verification Standard + regressions + full walkthrough                                 | Close evidence                                 |
+| **Close**    | Verification Standard + regressions + full walkthrough (this Close package)            | Close evidence — **executed** (see below)      |
 
 ### W2-S03-a execution evidence
 
@@ -135,7 +139,21 @@ Recorded in [`w2-s03-e-validation-report.md`](./w2-s03-e-validation-report.md).
 | Operator UI: depth selector, load order book, freshness, failure      | PASS   |
 | No trades stream, WebSockets, incremental updates, or polling         | PASS   |
 
-W2-S03-e does **not** Close W2-S03. Full Market Data Walkthrough Close remains a later Product Owner decision.
+W2-S03-e does **not** Close W2-S03 by itself. Full Market Data Walkthrough and Close evidence are recorded in this Close package for Product Owner Close Review.
+
+### Close package execution evidence (2026-08-26)
+
+| Proof                                                                                                                              | Result |
+| ---------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| `pnpm lint`                                                                                                                        | PASS   |
+| `pnpm typecheck`                                                                                                                   | PASS   |
+| `pnpm test`                                                                                                                        | PASS   |
+| `pnpm --filter @trp/web build`                                                                                                     | PASS   |
+| `git diff --check`                                                                                                                 | PASS   |
+| Market Data Walkthrough ([`w2-s03-live-product-walkthrough.md`](./w2-s03-live-product-walkthrough.md))                             | PASS   |
+| Security Verification Worksheet ([`v3-w2-s03-security-verification-worksheet.md`](./v3-w2-s03-security-verification-worksheet.md)) | PASS   |
+| Wave 1 / W2-S01 / W2-S02 regression (full suite green; no ownership reopen)                                                        | PASS   |
+| Honest non-claim (no Trading / streaming / inventory claims on Market Data)                                                        | PASS   |
 
 ---
 
@@ -220,11 +238,11 @@ PASS / REQUIRES ACTION
 
 Automated tests do **not** replace this walkthrough.
 
-| Field                   | Value (at execution)    |
-| ----------------------- | ----------------------- |
-| Walkthrough name        | Market Data Walkthrough |
-| Executed in the product | PENDING APPROVAL        |
-| Overall                 | PENDING APPROVAL        |
+| Field                   | Value (at execution)                                                               |
+| ----------------------- | ---------------------------------------------------------------------------------- |
+| Walkthrough name        | Market Data Walkthrough                                                            |
+| Executed in the product | Yes — [`w2-s03-live-product-walkthrough.md`](./w2-s03-live-product-walkthrough.md) |
+| Overall                 | PASS                                                                               |
 
 ---
 
@@ -251,24 +269,26 @@ Market Data Security Walkthrough
 PASS / REQUIRES ACTION
 ```
 
+Security walkthrough overall **PASS**. Evidence: live walkthrough, isolation/authorization suites, and [`v3-w2-s03-security-verification-worksheet.md`](./v3-w2-s03-security-verification-worksheet.md).
+
 ---
 
 ## 7. Close criteria
 
 W2-S03 may Close only when all are true:
 
-| #   | Criterion                                                                             | Verdict (at Close)     |
-| --- | ------------------------------------------------------------------------------------- | ---------------------- |
-| 1   | All in-scope slices done; Implementation Report written                               | PENDING (planning)     |
-| 2   | Architecture checklist PASS; no ownership drift                                       | PENDING (planning)     |
-| 3   | Security checklist + STRIDE + Verification Standard + Regression Suite PASS           | PENDING (planning)     |
-| 4   | Product checklist PASS; Walkthrough PASS                                              | PENDING (planning)     |
-| 5   | Validation plan executed; evidence recorded                                           | PENDING (planning)     |
-| 6   | Mandatory reports present and consistent                                              | PENDING (planning)     |
-| 7   | Master Plan compliance (no invented scope; no Master Plan edit)                       | PASS (planning intent) |
-| 8   | Product Principles respected                                                          | PASS (planning intent) |
-| 9   | No SSH / customer `.env` / local secrets / manual SQL in customer journeys            | PENDING (planning)     |
-| 10  | No orders, trading, execution, portfolio, balances, positions, monitoring, or billing | PENDING (planning)     |
+| #   | Criterion                                                                             | Verdict (at Close) |
+| --- | ------------------------------------------------------------------------------------- | ------------------ |
+| 1   | All in-scope slices done; Implementation Report written                               | PASS               |
+| 2   | Architecture checklist PASS; no ownership drift                                       | PASS               |
+| 3   | Security checklist + STRIDE + Verification Standard + Regression Suite PASS           | PASS               |
+| 4   | Product checklist PASS; Walkthrough PASS                                              | PASS               |
+| 5   | Validation plan executed; evidence recorded                                           | PASS               |
+| 6   | Mandatory reports present and consistent                                              | PASS               |
+| 7   | Master Plan compliance (no invented scope; no Master Plan edit)                       | PASS               |
+| 8   | Product Principles respected                                                          | PASS               |
+| 9   | No SSH / customer `.env` / local secrets / manual SQL in customer journeys            | PASS               |
+| 10  | No orders, trading, execution, portfolio, balances, positions, monitoring, or billing | PASS               |
 
 ---
 
@@ -366,4 +386,4 @@ Do not treat the following as W2-S03 Close evidence:
 
 ---
 
-**STOP.** W2-S03-e is implemented for Product Owner review. Do not begin W2-S03-f automatically.
+**STOP.** Close evidence is complete for Product Owner Close Review. Do **not** declare W2-S03 CLOSED. Do **not** declare Wave 2 COMPLETE.

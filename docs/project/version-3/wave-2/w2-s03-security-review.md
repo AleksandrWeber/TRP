@@ -1,17 +1,16 @@
-# W2-S03 Security Review (planning)
+# W2-S03 Security Review
 
 **Package:** W2-S03 Market Data Foundation
 **Wave:** 2 — Connection Management
-**Status:** Planning **COMPLETE**. Not implementation. Awaiting Product Owner Approval. Close evidence later.
-**Date:** 2026-08-21
+**Status:** Close evidence **COMPLETE** for Product Owner Close Review. Not Closed.
+**Date:** 2026-08-26 (Close evidence). Planning baseline 2026-08-21.
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md) · [`../v3-security-vision.md`](../v3-security-vision.md)
 **Checklist:** [`../version-3-security-checklist.md`](../version-3-security-checklist.md)
 **Verification Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md) — **mandatory**
+**Worksheet:** [`v3-w2-s03-security-verification-worksheet.md`](./v3-w2-s03-security-verification-worksheet.md) — **PASS** (zero REQUIRES ACTION)
 **Default Policy:** [`../security-default-policy.md`](../security-default-policy.md)
 **Umbrella:** [`w2-s03-implementation-package.md`](./w2-s03-implementation-package.md)
 **Scope:** [`w2-s03-product-scope.md`](./w2-s03-product-scope.md)
-
-This review describes **required security outcomes** for W2-S03. It does not describe how to implement them. It does **not** redefine Wave 1 security products. It references them.
 
 ```text
 Market Data uses Wave 1 security, Connection Management, and Exchange Connectivity.
@@ -21,7 +20,25 @@ Market data is earned by receive / normalize / validate — never simulated.
 Market data is not Trading enabled.
 ```
 
-**Planning intent:** rows marked **PASS** mean this package is designed to satisfy the control when implemented. Close requires evidence. **NOT APPLICABLE** names the real owner.
+## Close evidence verdict
+
+| Gate                                   | Verdict |
+| -------------------------------------- | ------- |
+| Vault-only secret usage                | PASS    |
+| Workspace Isolation                    | PASS    |
+| Authorization (no new roles)           | PASS    |
+| Security Audit ownership               | PASS    |
+| Projection honesty                     | PASS    |
+| Freshness honesty                      | PASS    |
+| Provider Unavailable honesty           | PASS    |
+| No plaintext secret exposure           | PASS    |
+| No Wave 1 / W2-S01 / W2-S02 regression | PASS    |
+| STRIDE                                 | PASS    |
+| Verification Standard §4–§19           | PASS    |
+
+Full itemized rows: [`v3-w2-s03-security-verification-worksheet.md`](./v3-w2-s03-security-verification-worksheet.md).
+
+Planning baseline below remains the approved control intent. Close rows are evidenced, not intent-only.
 
 ---
 
@@ -189,16 +206,16 @@ Live trading, order injection, and financial integrity beyond market-data projec
 
 ---
 
-## Threat Review (STRIDE) — planning intent
+## Threat Review (STRIDE) — Close evidence
 
-| Category                   | Threat example                                                       | Required outcome                                          | Verdict       |
-| -------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------- | ------------- |
-| **Spoofing**               | Act as another operator to open Market Data                          | Authentication binding required                           | PASS (intent) |
-| **Tampering**              | Set ticker / candles / book without validate; replay an old snapshot | Server-side projection; replay protection                 | PASS (intent) |
-| **Repudiation**            | Deny having requested market data                                    | Audit events for read / fail / unavailable                | PASS (intent) |
-| **Information Disclosure** | Read another workspace’s Market Data; dump venue payloads or secrets | Isolation + Vault deny; no secret echo; no inventory leak | PASS (intent) |
-| **Denial of Service**      | Refresh spam against platform or venue                               | Inherit platform abuse controls; rate-limit awareness     | PASS (intent) |
-| **Elevation of Privilege** | Unauthorized role opens Market Data; data used as trading enablement | Authorization + isolation; no Trading enabled             | PASS (intent) |
+| Category                   | Threat example                                                       | Required outcome                                          | Verdict |
+| -------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------- | ------- |
+| **Spoofing**               | Act as another operator to open Market Data                          | Authentication binding required                           | PASS    |
+| **Tampering**              | Set ticker / candles / book without validate; replay an old snapshot | Server-side projection; replay protection                 | PASS    |
+| **Repudiation**            | Deny having requested market data                                    | Audit events for read / fail / unavailable                | PASS    |
+| **Information Disclosure** | Read another workspace’s Market Data; dump venue payloads or secrets | Isolation + Vault deny; no secret echo; no inventory leak | PASS    |
+| **Denial of Service**      | Refresh spam against platform or venue                               | Inherit platform abuse controls; rate-limit awareness     | PASS    |
+| **Elevation of Privilege** | Unauthorized role opens Market Data; data used as trading enablement | Authorization + isolation; no Trading enabled             | PASS    |
 
 A package cannot Close while any Threat Review row is **REQUIRES ACTION**.
 
@@ -251,20 +268,20 @@ Must include:
 4. Timing/Abuse rows where Market Data refresh could be spammed or used to hammer a venue
 5. Explicit **NOT APPLICABLE** with named owners for trading, orders, balances, positions, execution, monitoring, analytics, and billing
 
-Planning worksheet expectation (complete at implementation Close, not now):
+Planning worksheet expectation was completed at Close. Worksheet: [`v3-w2-s03-security-verification-worksheet.md`](./v3-w2-s03-security-verification-worksheet.md).
 
-| Area                  | Expectation                                                |
-| --------------------- | ---------------------------------------------------------- |
-| Market Data read      | Authn + Authz + workspace checked                          |
-| Secret fields         | Never returned; never logged                               |
-| Projection updates    | Server-side only after validate                            |
-| Cross-tenant tests    | A↛B for open / select / view                               |
-| Audit emit            | Read attempted / succeeded / failed / unavailable          |
-| Honest error bodies   | No ciphertext, no venue dump, no foreign ids beyond policy |
-| Replay                | Stale snapshot cannot become current                       |
-| Rate limit            | Throttled is not current data                              |
-| Integrity             | Malformed payload cannot become ticker, candles, or book   |
-| Capability projection | Cannot be toggled into Trading enabled by client           |
+| Area                  | Expectation                                                | Close |
+| --------------------- | ---------------------------------------------------------- | ----- |
+| Market Data read      | Authn + Authz + workspace checked                          | PASS  |
+| Secret fields         | Never returned; never logged                               | PASS  |
+| Projection updates    | Server-side only after validate                            | PASS  |
+| Cross-tenant tests    | A↛B for open / select / view                               | PASS  |
+| Audit emit            | Read attempted / succeeded / failed / unavailable          | PASS  |
+| Honest error bodies   | No ciphertext, no venue dump, no foreign ids beyond policy | PASS  |
+| Replay                | Stale snapshot cannot become current                       | PASS  |
+| Rate limit            | Throttled is not current data                              | PASS  |
+| Integrity             | Malformed payload cannot become ticker, candles, or book   | PASS  |
+| Capability projection | Cannot be toggled into Trading enabled by client           | PASS  |
 
 ---
 
@@ -298,4 +315,4 @@ Planning worksheet expectation (complete at implementation Close, not now):
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S03 implementation planning is approved. Re-run this Security Review with evidence at Close.
+**STOP.** Close security evidence supports Product Owner Close Review. Do **not** declare W2-S03 CLOSED. Do **not** declare Wave 2 COMPLETE.
