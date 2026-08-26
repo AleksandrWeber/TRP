@@ -13,12 +13,11 @@ W3-O01 did not become Monitoring, Incident Management, Business Continuity, HA, 
 
 ## Close decision
 
-Close Evidence is assembled for Product Owner Package Review.
+W3-O01 is **APPROVED** and **CLOSED** by Product Owner.
 
-- Do **not** declare W3-O01 CLOSED in this slice.
 - Do **not** declare Wave 3 COMPLETE.
-- Do **not** open W3-O02.
+- Do **not** open W3-O02 until Product Owner authorizes Planning.
 
 ## Verdict
 
-**Ready for Product Owner Package Review.**
+**CLOSED** by Product Owner. Wait before W3-O02 Planning Package.

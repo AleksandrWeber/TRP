@@ -3,7 +3,7 @@
 **Package:** W3-O01 Durable Analytical Stores
 **Wave:** 3 — Durability, Operations & Continuity
 **Master Plan / Roadmap:** V3-O01 · IN-01 · TD-048
-**Status:** Planning **APPROVED**. W3-O01-a/b/c/d **APPROVED**. W3-O01-e Close Evidence **assembled**. Package **NOT declared CLOSED**.
+**Status:** Planning **APPROVED**. W3-O01-a/b/c/d/e **APPROVED**. Package **CLOSED** by Product Owner.
 **Date:** 2026-08-26
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w3-o01-product-scope.md`](./w3-o01-product-scope.md)
@@ -229,16 +229,17 @@ W3-O01-a command validation (required for this slice):
 
 ## 10. Slice note
 
-| Slice    | Authorization                |
-| -------- | ---------------------------- |
-| W3-O01-a | **APPROVED**                 |
-| W3-O01-b | **APPROVED**                 |
-| W3-O01-c | **APPROVED**                 |
-| W3-O01-d | **APPROVED**                 |
-| W3-O01-e | **Close Evidence assembled** |
+| Slice    | Authorization               |
+| -------- | --------------------------- |
+| W3-O01-a | **APPROVED**                |
+| W3-O01-b | **APPROVED**                |
+| W3-O01-c | **APPROVED**                |
+| W3-O01-d | **APPROVED**                |
+| W3-O01-e | **APPROVED**                |
+| W3-O01   | **CLOSED** by Product Owner |
 
-Do not treat W3-O01-e Close Evidence as a Product Owner declaration that W3-O01 is CLOSED, Wave 3 COMPLETE, or authorization to open W3-O02.
+W3-O01 is **CLOSED** by Product Owner. Do not treat Close as Wave 3 COMPLETE or authorization to open W3-O02 without a separate Product Owner act.
 
 ---
 
-**STOP.** Wait for Product Owner Package Review. Do not declare W3-O01 CLOSED. Do not declare Wave 3 COMPLETE. Do not open W3-O02. Do not implement Business Continuity. Do not implement High Availability. Do not implement Monitoring.
+**STOP.** Wait for the Product Owner before opening the W3-O02 Planning Package. Do not declare Wave 3 COMPLETE. Do not open W3-O02.

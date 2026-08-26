@@ -2,7 +2,7 @@
 
 **Document:** Version 3 Durability, Operations & Continuity Overview
 **Date:** 2026-08-26
-**Status:** Product-facing record. Wave 3 Planning **APPROVED**. W3-O01-a/b/c/d **APPROVED**. W3-O01-e Close Evidence **assembled**. Package **NOT declared CLOSED**. Business Continuity / HA / Monitoring **not** delivered.
+**Status:** Product-facing record. Wave 3 Planning **APPROVED**. W3-O01 **APPROVED** and **CLOSED** by Product Owner. Business Continuity / HA / Monitoring **not** delivered.
 **Product:** Wave 3 — Durability, Operations & Continuity
 **First package:** W3-O01 Durable Analytical Stores (V3-O01)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
@@ -37,30 +37,30 @@ It does NOT mean Business Continuity, High Availability, or Monitoring Complete.
 
 ## Wave packages (honest sequence)
 
-| Package                                    | Operator meaning                                                     | Status                                                                               |
-| ------------------------------------------ | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| **W3-O01** Durable Analytical Stores       | Relied-on analytical artifacts survive restart (or honest ephemeral) | Planning APPROVED; **a/b/c/d APPROVED**; **e Close Evidence assembled** (NOT CLOSED) |
-| W3-O02 Notification Durable Queue          | In-flight notification delivery not lost on process restart          | Not opened                                                                           |
-| W3-O03 Recovery Residual (US295 / ADL-008) | Accept or write live-claim limitation — no silent PASS               | Not opened                                                                           |
-| W3-O04 Durable Kill Switch Product         | Arm Kill Switch; sessions stop; durable across restart               | Not opened                                                                           |
-| W3-O05 Monitoring & Security Health        | Health and recent incidents without server login; honest degradation | Not opened                                                                           |
+| Package                                    | Operator meaning                                                     | Status                                                                      |
+| ------------------------------------------ | -------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| **W3-O01** Durable Analytical Stores       | Relied-on analytical artifacts survive restart (or honest ephemeral) | Planning APPROVED; slices a–e APPROVED; package **CLOSED** by Product Owner |
+| W3-O02 Notification Durable Queue          | In-flight notification delivery not lost on process restart          | Not opened                                                                  |
+| W3-O03 Recovery Residual (US295 / ADL-008) | Accept or write live-claim limitation — no silent PASS               | Not opened                                                                  |
+| W3-O04 Durable Kill Switch Product         | Arm Kill Switch; sessions stop; durable across restart               | Not opened                                                                  |
+| W3-O05 Monitoring & Security Health        | Health and recent incidents without server login; honest degradation | Not opened                                                                  |
 
 ---
 
 ## Current package (W3-O01)
 
-| Capability                                            | Status                              |
-| ----------------------------------------------------- | ----------------------------------- |
-| Inventory of process-local analytical stores          | **W3-O01-a DONE**                   |
-| Durable persistence for approved analytical artifacts | **W3-O01-b DONE**                   |
-| Normal process restart recovery                       | **W3-O01-c DONE**                   |
-| Operational Continuity Foundation                     | **W3-O01-d DONE**                   |
-| Honest ephemeral labels where survival not delivered  | Baseline documented (W3-O01-a)      |
-| Package Close evidence                                | **W3-O01-e assembled** (NOT CLOSED) |
-| Notification durable queue                            | Out (O02)                           |
-| Kill Switch product                                   | Out (O04)                           |
-| Monitoring / health dashboard                         | Out (O05)                           |
-| Live Trading                                          | Out (Wave 6)                        |
+| Capability                                            | Status                                                  |
+| ----------------------------------------------------- | ------------------------------------------------------- |
+| Inventory of process-local analytical stores          | **W3-O01-a DONE**                                       |
+| Durable persistence for approved analytical artifacts | **W3-O01-b DONE**                                       |
+| Normal process restart recovery                       | **W3-O01-c DONE**                                       |
+| Operational Continuity Foundation                     | **W3-O01-d DONE**                                       |
+| Honest ephemeral labels where survival not delivered  | Baseline documented (W3-O01-a)                          |
+| Package Close evidence                                | **W3-O01-e DONE** — package **CLOSED** by Product Owner |
+| Notification durable queue                            | Out (O02)                                               |
+| Kill Switch product                                   | Out (O04)                                               |
+| Monitoring / health dashboard                         | Out (O05)                                               |
+| Live Trading                                          | Out (Wave 6)                                            |
 
 ---
 
@@ -101,7 +101,7 @@ Those artifacts are still present
   Product honestly shows they were ephemeral (exception path)
 ```
 
-### After W3-O01-e (Close Evidence — now)
+### After W3-O01 CLOSED (now)
 
 ```text
 Sign in
@@ -115,18 +115,18 @@ Open Administration → Platform readiness
 See platform state, owner states, degraded/unavailable owners,
 recovery timestamp and duration
   ↓
-Close Evidence package available for Product Owner Package Review
-  ↓
-W3-O01 NOT declared CLOSED by implementation alone
+W3-O01 APPROVED and CLOSED by Product Owner
   ↓
 No Business Continuity / High Availability / Monitoring claim
+  ↓
+W3-O02 not opened
 ```
 
 ---
 
 ## Operator-visible functionality
 
-| Surface                                        | Wave 3 role                                              | W3-O01              | After W3-O01-e                                                       |
+| Surface                                        | Wave 3 role                                              | W3-O01              | After W3-O01 CLOSED                                                  |
 | ---------------------------------------------- | -------------------------------------------------------- | ------------------- | -------------------------------------------------------------------- |
 | Analytical / reporting artifacts after restart | Survive (default)                                        | **In**              | Restored after normal restart                                        |
 | Platform readiness / operational state         | Continuity honesty after recovery                        | **W3-O01-d**        | Operator UI + readiness API                                          |
@@ -149,7 +149,7 @@ No Business Continuity / High Availability / Monitoring claim
 - Another workspace’s analytical artifacts
 - Plaintext secrets
 - Claims of Business Continuity / High Availability / Disaster Recovery / Monitoring from W3-O01
-- A silent declaration that W3-O01 is CLOSED without Product Owner Package Review
+- Wave 3 COMPLETE from W3-O01 alone
 
 ---
 
@@ -166,11 +166,10 @@ No Business Continuity / High Availability / Monitoring claim
 
 ## What's Next
 
-1. Product Owner Package Review of W3-O01 Close Evidence
-2. Do **not** declare W3-O01 CLOSED until Product Owner decides
-3. Do **not** open W3-O02 until Product Owner authorizes after Close
-4. Do **not** claim Business Continuity, High Availability, Monitoring, or Wave 3 COMPLETE
+1. Wait for Product Owner before opening the W3-O02 Planning Package
+2. Do **not** open W3-O02 until Product Owner authorizes
+3. Do **not** claim Business Continuity, High Availability, Monitoring, or Wave 3 COMPLETE
 
 ---
 
-**STOP.** Wait for Product Owner Package Review. Do not declare W3-O01 CLOSED. Do not declare Wave 3 COMPLETE. Do not open W3-O02.
+**STOP.** Wait for the Product Owner before opening the W3-O02 Planning Package. Do not declare Wave 3 COMPLETE. Do not open W3-O02.

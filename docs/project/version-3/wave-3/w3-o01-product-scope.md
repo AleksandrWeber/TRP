@@ -3,7 +3,7 @@
 **Package:** W3-O01 Durable Analytical Stores
 **Wave:** 3 — Durability, Operations & Continuity
 **Master Plan / Roadmap:** V3-O01 · IN-01 · TD-048
-**Status:** Planning **APPROVED**. Implementation Readiness **FINALIZED**. Slices a–d **APPROVED**; W3-O01-e Close Evidence **assembled**. Package **NOT declared CLOSED**.
+**Status:** Planning **APPROVED**. Implementation Readiness **FINALIZED**. Slices a–e **APPROVED**. Package **CLOSED** by Product Owner.
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Umbrella:** [`w3-o01-implementation-package.md`](./w3-o01-implementation-package.md)
 **Overview:** [`durability-overview.md`](./durability-overview.md)

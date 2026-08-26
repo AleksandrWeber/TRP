@@ -91,4 +91,4 @@ Matrix owners and dependency columns match `W3_O01_C_RECOVERY_ORDER` / `W3_O01_C
 
 ---
 
-**STOP.** Walkthrough evidences package readiness for Product Owner Close decision — it does not itself declare CLOSED.
+**STOP.** Walkthrough remains Close Evidence. W3-O01 is **CLOSED** by Product Owner. Wait before opening W3-O02 Planning Package.

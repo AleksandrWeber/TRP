@@ -3,13 +3,13 @@
 **Package:** W3-O01 Durable Analytical Stores  
 **Evidence slice:** W3-O01-e  
 **Date:** 2026-08-26  
-**Decision status:** Close Evidence **complete**. Package **NOT declared CLOSED**.
+**Decision status:** Close Evidence complete. Package CLOSED by Product Owner.
 
 ---
 
 ## Purpose
 
-This report assembles Product Owner Close Evidence for W3-O01. It does **not** declare the package CLOSED. Declaration remains a Product Owner act after Package Review.
+This report records Product Owner Close of W3-O01 after Package Review. Close Evidence was assembled in W3-O01-e; Close is a Product Owner act.
 
 ---
 
@@ -47,30 +47,30 @@ This report assembles Product Owner Close Evidence for W3-O01. It does **not** d
 
 ## Close checklist (evidence)
 
-| Criterion                                              | Status      |
-| ------------------------------------------------------ | ----------- |
-| Every approved slice validated (a–d PASS)              | **Met**     |
-| Operational walkthrough completed                      | **Met**     |
-| Operational State Matrix verified                      | **Met**     |
-| Restart Recovery verified                              | **Met**     |
-| Platform Readiness verified                            | **Met**     |
-| Graceful Degradation verified                          | **Met**     |
-| Security Verification PASS                             | **Met**     |
-| Architecture Verification PASS                         | **Met**     |
-| Documentation consistency verified                     | **Met**     |
-| Package Summary completed                              | **Met**     |
-| No new functionality in e                              | **Met**     |
-| No ownership / architecture / Master Plan changes in e | **Met**     |
-| Product Owner declares CLOSED                          | **Pending** |
+| Criterion                                              | Status                  |
+| ------------------------------------------------------ | ----------------------- |
+| Every approved slice validated (a–d PASS)              | **Met**                 |
+| Operational walkthrough completed                      | **Met**                 |
+| Operational State Matrix verified                      | **Met**                 |
+| Restart Recovery verified                              | **Met**                 |
+| Platform Readiness verified                            | **Met**                 |
+| Graceful Degradation verified                          | **Met**                 |
+| Security Verification PASS                             | **Met**                 |
+| Architecture Verification PASS                         | **Met**                 |
+| Documentation consistency verified                     | **Met**                 |
+| Package Summary completed                              | **Met**                 |
+| No new functionality in e                              | **Met**                 |
+| No ownership / architecture / Master Plan changes in e | **Met**                 |
+| Product Owner declares CLOSED                          | **Met** (Product Owner) |
 
 ---
 
 ## Explicit non-declarations
 
-- W3-O01 is **NOT** declared CLOSED by this report.
+- W3-O01 is **CLOSED** by Product Owner.
 - Wave 3 is **NOT** declared COMPLETE.
 - W3-O02 is **NOT** opened.
 
 ---
 
-**STOP.** Wait for Product Owner Package Review.
+**STOP.** Wait for the Product Owner before opening the W3-O02 Planning Package.

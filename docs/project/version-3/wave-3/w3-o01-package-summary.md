@@ -5,7 +5,7 @@
 **Master Plan / Roadmap:** V3-O01 · IN-01 · TD-048  
 **Evidence slice:** W3-O01-e  
 **Date:** 2026-08-26  
-**Status:** Close Evidence assembled. **W3-O01 NOT declared CLOSED** (Product Owner decision).
+**Status:** **APPROVED** and **CLOSED** by Product Owner.
 
 ---
 
@@ -45,8 +45,9 @@
 | W3-O01-b | Durable Persistence    | APPROVED  |
 | W3-O01-c | Restart Recovery       | APPROVED  |
 | W3-O01-d | Operational Continuity | APPROVED  |
-| W3-O01-e | Close Evidence         | Assembled |
+| W3-O01-e | Close Evidence         | APPROVED  |
+| W3-O01   | Package                | CLOSED    |
 
 ---
 
-**STOP.** Product Owner Package Review required before declaring W3-O01 CLOSED.
+**STOP.** Wait for the Product Owner before opening the W3-O02 Planning Package. Do not declare Wave 3 COMPLETE.

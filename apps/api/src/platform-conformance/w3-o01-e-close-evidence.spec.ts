@@ -66,6 +66,8 @@ describe('W3-O01-e package close evidence', () => {
     expect(answers.noNewRecoveryOwners).toBe(true);
     expect(answers.noDuplicateOperationalEngine).toBe(true);
     expect(answers.packageNotDeclaredClosed).toBe(true);
+    expect(answers.wave3NotDeclaredComplete).toBe(true);
+    expect(answers.w3O02NotOpened).toBe(true);
     for (const claims of [
       W3_O01_A_ARCHITECTURE_CLAIMS,
       W3_O01_B_ARCHITECTURE_CLAIMS,
@@ -138,17 +140,22 @@ describe('W3-O01-e package close evidence', () => {
     expect(view).not.toMatch(/Incident management|Cluster state|Replication/i);
   });
 
-  it('status docs do not declare CLOSED or Wave 3 COMPLETE or open O02', () => {
+  it('status docs: W3-O01 CLOSED by Product Owner; Wave 3 COMPLETE and O02 not opened', () => {
     const progress = readWave3('wave-3-progress.md');
     const overview = readWave3('durability-overview.md');
     const close = readWave3('w3-o01-close-package-report.md');
-    expect(progress).toMatch(/Not claimed/);
-    expect(progress).toMatch(/W3-O01 Closed/);
-    expect(progress).toMatch(/NOT CLOSED|Not claimed/);
+    expect(progress).toMatch(/CLOSED by Product Owner|Package \*\*CLOSED\*\*/);
+    expect(progress).toMatch(/Wave 3 COMPLETE[\s\S]*Not claimed|Not claimed[\s\S]*Wave 3 COMPLETE/);
     expect(progress).toMatch(/W3-O02/);
     expect(progress).toMatch(/Not opened/);
-    expect(overview).toMatch(/NOT declared CLOSED|NOT CLOSED/i);
-    expect(close).toMatch(/NOT declared CLOSED|not declare.*CLOSED|awaiting Product Owner/i);
+    expect(overview).toMatch(/CLOSED by Product Owner/);
+    expect(close).toMatch(/Package CLOSED by Product Owner/);
+    expect(close).toMatch(/W3-O02 is \*\*NOT\*\* opened/);
     expect(W3_O01_E_ARCHITECTURE_CLAIMS.packageCloseEvidenceAssembled).toBe(true);
+    // W3-O01-e registry still records that the e slice itself did not declare Close;
+    // Product Owner Close is recorded in status docs.
+    expect(W3_O01_E_ARCHITECTURE_CLAIMS.packageDeclaredClosed).toBe(false);
+    expect(W3_O01_E_ARCHITECTURE_CLAIMS.wave3DeclaredComplete).toBe(false);
+    expect(W3_O01_E_ARCHITECTURE_CLAIMS.w3O02Opened).toBe(false);
   });
 });

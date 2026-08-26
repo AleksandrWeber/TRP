@@ -9,7 +9,7 @@ Master Plan map:    V3-O01 Durable analytical stores (IN-01, TD-048).
                     Wave 3 exit: certified V2 analytical artifacts operators rely on
                     survive API restart (or honestly labeled ephemeral — default: survive).
 Date:               2026-08-26
-Status:             Implementation Package — Planning APPROVED. Implementation Readiness FINALIZED. Slices a–d APPROVED; e Close Evidence assembled. Package NOT declared CLOSED.
+Status:             Implementation Package — Planning APPROVED. Implementation Readiness FINALIZED. Slices a–e APPROVED. Package CLOSED by Product Owner.
 Nature:             Implementation package. Not an RC. Not an ADR. Not a Master Plan revision.
 Canon:              version-3-master-plan.md
 ```
@@ -59,7 +59,7 @@ Survive-restart does NOT mean production restart-safety Complete (needs O03 amon
 STOP — Do not create W3-O01-a until Product Owner writes the implementation task.
 ```
 
-**Planning status:** **APPROVED.** Implementation Readiness **FINALIZED.** Slices a–d **APPROVED**; W3-O01-e Close Evidence **assembled**. Package **NOT declared CLOSED**.
+**Planning status:** **APPROVED.** Implementation Readiness **FINALIZED.** Slices a–e **APPROVED**. Package **CLOSED** by Product Owner.
 
 **Naming clarity:** Operational package ID `W3-O01` maps 1:1 to Master Plan / Execution Roadmap package **V3-O01**. This planning does not invent a new Master Plan ID. Residual name `durable-persistence-product` is TD-048 debt vocabulary only — not a new SoT.
 
@@ -426,7 +426,7 @@ Tests that mock “persisted” without proving restart survival do **not** coun
 **Done when:** Close Evidence assembled for Product Owner Package Review.
 **Must not:** Declare W3-O01 CLOSED; start W3-O02; claim Wave 3 COMPLETE; add new customer functionality.
 
-**Historical planning note:** Slice names above supersede earlier planning labels where they differed. Current stage: Close Evidence assembled; package NOT CLOSED.
+**Historical planning note:** Slice names above supersede earlier planning labels where they differed. Current stage: package **CLOSED** by Product Owner; W3-O02 **not opened**.
 
 ---
 
