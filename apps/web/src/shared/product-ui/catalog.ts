@@ -306,6 +306,13 @@ export const PRODUCT_CHROME: readonly ProductChrome[] = [
     loadingLabel: 'Loading connections…',
   },
   {
+    id: 'market-data',
+    label: 'Market Data',
+    path: '/market-data',
+    band: 'administration',
+    loadingLabel: 'Loading Market Data…',
+  },
+  {
     id: 'settings',
     label: 'Settings',
     path: '/settings',
@@ -432,6 +439,7 @@ export const NAV_BANDS: readonly NavBand[] = [
           { to: '/notifications', label: 'Notifications' },
           { to: '/notifications/channels', label: 'Notification Channels' },
           { to: '/connections', label: 'Connections' },
+          { to: '/market-data', label: 'Market Data' },
         ],
       },
       {

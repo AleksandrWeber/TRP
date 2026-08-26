@@ -74,6 +74,7 @@ import { StrategiesModule } from './modules/strategies';
 import { StrategyDeploymentModule } from './modules/strategy-deployment';
 import { StrategyRuntimeModule } from './modules/strategy-runtime';
 import { MarketDataDomainModule } from './modules/market-data-domain';
+import { MarketDataFoundationModule } from './modules/market-data-foundation';
 import { SignalEngineModule } from './modules/signal-engine';
 import { TechnicalIndicatorsModule } from './modules/technical-indicators';
 import { StrategyEvaluatorsModule } from './modules/strategy-evaluators';
@@ -137,6 +138,7 @@ import { ValidationModule } from './validation/validation.module';
     StrategyDeploymentModule,
     StrategyRuntimeModule,
     MarketDataDomainModule,
+    MarketDataFoundationModule,
     SignalEngineModule,
     TechnicalIndicatorsModule,
     StrategyEvaluatorsModule,

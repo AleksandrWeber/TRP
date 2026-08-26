@@ -1,8 +1,8 @@
 # Market Data Overview
 
 **Document:** Version 3 Market Data Overview
-**Date:** 2026-08-21
-**Status:** Product-facing record of W2-S03 Implementation Package — Planning **COMPLETE**. Not implementation. Awaiting Product Owner Approval.
+**Date:** 2026-08-26
+**Status:** W2-S03-a adapter foundation and W2-S03-b symbol discovery implemented. Remaining Market Data slices not started. Awaiting Product Owner review of W2-S03-b. Not Closed.
 **Product:** Market Data Foundation
 **Nature:** Customer description. Not an RC. Not an ADR. Not implementation. Not a Master Plan revision.
 
@@ -10,20 +10,37 @@ This is what an ordinary operator experiences. It is not an internal design note
 
 ---
 
+## W2-S03-b delivered foundation
+
+The product can retrieve, normalize, validate, and expose tradable symbols from a supported exchange connection.
+
+- Operators can open **Market Data**, select an Exchange connection, load symbols, and browse normalized symbols.
+- Binance supports symbol discovery. Bybit and OKX remain registered and report that symbol discovery is not implemented.
+- Discovery failure and Provider Unavailable are honest.
+- The product does not show ticker, candles, order book, balances, positions, or trading controls.
+
+---
+
+## W2-S03-a delivered foundation
+
+The product has one Market Data adapter contract for **Binance**, **Bybit**, and **OKX**. Later Market Data features consume that contract. Additional exchanges can be registered later without changing existing adapters.
+
+---
+
 ## Purpose
 
 Market Data Foundation is the product that lets a workspace **see honest market data** from a supported exchange after Exchange Connectivity has succeeded.
 
-The operator already manages the connection in **Connections**. This package does not replace that place. It adds **Market Data**: receive, normalize, validate, and expose symbols, ticker, candles, and order book.
+The operator already manages the connection in **Connections**. This package does not replace that place. It adds **Market Data**: receive, normalize, validate, and expose symbols now; ticker, candles, and order book later.
 
-- The operator can: open Market Data, select Binance, Bybit, or OKX, choose a symbol, view ticker, view candles, view order book, see Provider Unavailable, and see stale handling.
+- The operator can today: open Market Data, select Binance / Bybit / OKX connection, load symbols, browse normalized symbols, see discovery failure, and see provider unavailable.
+- The operator cannot yet: view ticker, candles, or order book from this product journey.
 - The operator cannot: place orders, enable trading, run execution, open portfolio, view balances, view positions, open monitoring, or see billing from this package.
-- Why it exists, in business language: Connected is not prices. Paying customers and later product features need honest market data.
-- If market data cannot run: the rest of the product does not pretend ticker, candles, or an order book are available. Trading remains unavailable here.
 
 ```text
-Market data available means ticker, candles, and order book were validated.
-Market data available does NOT mean Trading enabled.
+Symbols available means tradable symbols were normalized and validated.
+Symbols available does NOT mean Trading enabled.
+Symbols available does NOT mean ticker, candles, or order book are available.
 ```
 
 ---
@@ -34,190 +51,93 @@ Connection Management is **CLOSED**. The operator can already create an Exchange
 
 Exchange Connectivity is **CLOSED**. The operator can already prove that an offered exchange accepted an authenticated session. **Connected** means authenticated exchange communication succeeded. It does not mean market data is available.
 
-W2-S03 is planning. Implementation has not started.
+W2-S03-a is the adapter foundation. W2-S03-b adds symbol discovery.
 
 ---
 
-## Customer Journey
+## Customer Journey (current)
 
 ```text
 Sign in
   ↓
 Open Market Data
   ↓
-Select Exchange
+Select Exchange connection
   ↓
-Choose Symbol
+Load Symbols
   ↓
-View Ticker
-  ↓
-View Candles
-  ↓
-View Order Book
+Browse normalized symbols
 ```
+
+Later slices add Choose Symbol → View Ticker → View Candles → View Order Book.
 
 ### Open Market Data
 
-The operator signs in and opens **Market Data**. Exchange connections still live in **Connections**. There is no second Connections product to learn.
+The operator signs in and opens **Market Data**. Exchange connections still live in **Connections**.
 
 ### Select Exchange
 
-The operator selects one offered provider: **Binance**, **Bybit**, or **OKX**. Additional exchanges may be added later without a new Connections product and without redesigning Market Data.
+The operator selects an offered Exchange connection (Binance, Bybit, or OKX). Selection uses existing Connections. The operator does not paste secrets.
 
-### Choose Symbol
+### Load Symbols
 
-The operator chooses a market symbol offered by that exchange. The product does not invent symbols and does not mix one exchange’s symbols with another’s.
+The operator loads symbols for that connection. Symbols are provider-scoped and normalized. The product does not invent symbols and does not mix venues.
 
-### View Ticker
+### Browse normalized symbols
 
-The operator views the ticker for the chosen symbol. That is a validated projection. It is **not** a trade. It is **not** Trading enabled.
-
-### View Candles
-
-The operator views candles for the chosen symbol. That is a validated projection. It is **not** strategy execution.
-
-### View Order Book
-
-The operator views the order book for the chosen symbol. That is a validated projection. It is **not** order placement.
+The operator sees exchange symbol, normalized symbol, base asset, quote asset, trading status, and provider. No prices.
 
 ---
 
 ## Customer Experience
 
-- Happy path (plain language): open Market Data, select Binance, Bybit, or OKX, choose a symbol, view ticker, candles, and order book.
-- If something fails, what they see (honest; no fake success): Provider Unavailable if the exchange cannot supply data; stale if the last validated data is not current; deny if the role or workspace is wrong. Never “Trading enabled.” Never “order sent.” Never “balances loaded.”
-- What they never have to do: edit `.env`, store keys in a local file, SSH to a server, or ask an engineer to scrape a venue.
-- Paper remains the default: Market Data does not turn on trading.
+- Happy path: open Market Data, select a Connected Binance connection, load symbols, browse the list.
+- If something fails: discovery failed, Provider Unavailable, or not implemented for Bybit / OKX. Never fake symbols. Never “Trading enabled.”
+- What they never have to do: edit `.env`, store keys in a local file, or SSH to a server.
 
 ---
 
 ## Market Data status (what the operator sees)
 
-| Status                    | What it means to the operator                       |
-| ------------------------- | --------------------------------------------------- |
-| **Market data available** | Ticker, candles, and order book were validated      |
-| **Provider Unavailable**  | The exchange could not supply market data           |
-| **Stale**                 | Last validated data is not current                  |
-| **Denied**                | Permission or workspace boundary blocked the action |
-
-Market data available is not Trading enabled. A ticker is not an order. Candles are not a strategy. An order book is not execution.
+| Status                   | What it means to the operator                       |
+| ------------------------ | --------------------------------------------------- |
+| **Symbols available**    | Tradable symbols were normalized and validated      |
+| **Provider Unavailable** | The exchange could not supply symbols               |
+| **Not implemented**      | This provider does not yet support symbol discovery |
+| **Denied**               | Permission or workspace boundary blocked the action |
 
 ---
 
 ## Providers offered now
 
-| Provider | What the operator can see here                 | What does not happen here            |
-| -------- | ---------------------------------------------- | ------------------------------------ |
-| Binance  | Symbols, ticker, candles, order book (planned) | Orders, trading, balances, positions |
-| Bybit    | Symbols, ticker, candles, order book (planned) | Orders, trading, balances, positions |
-| OKX      | Symbols, ticker, candles, order book (planned) | Orders, trading, balances, positions |
-
-Later providers can use the same receive / normalize / project meaning. They are not offered as Core in this package.
+| Provider | What the operator can see here | What does not happen here              |
+| -------- | ------------------------------ | -------------------------------------- |
+| Binance  | Normalized symbols             | Ticker, candles, book, orders, trading |
+| Bybit    | Not implemented for symbols    | Ticker, candles, book, orders, trading |
+| OKX      | Not implemented for symbols    | Ticker, candles, book, orders, trading |
 
 ---
 
 ## Customer Never Sees
 
-- Not shown as finished products here: order tickets, balances, positions, leverage, live trading controls, WebSocket trading, strategy execution, paper-trading changes, monitoring walls, analytics, billing.
-- Not offered as a button or implied state: **Trading enabled**, **Order placed**, **Balance loaded**, **Position opened**, **Live trading connected**, **Execution ready**.
-- Owner later: Trading; Order Path; Portfolio; Monitoring; Analytics; Billing; WebSocket streaming product.
-
-Do not list internal types, routes, or table names here.
+- Not shown: ticker, candles, order book, order tickets, balances, positions, leverage, live trading controls, WebSocket trading, strategy execution, monitoring, analytics, billing.
+- Not offered: **Trading enabled**, **Order placed**, **Balance loaded**, **Position opened**.
 
 ---
 
 ## Security Guarantees
 
-- What stays private: exchange secrets are not shown after Market Data, not offered as export, and not stored in a local file. Public market data does not invent a trading key.
-- What stops working when it should: a signed-out person cannot open Market Data. One workspace cannot use another workspace’s market-data context. A role that is not allowed cannot open Market Data. Provider Unavailable is not filled with fake data. Stale is not shown as current.
-- What the product will not pretend: market data is not trading; it is not balances; it is not live capital.
-- What this overview does **not** claim: Wave 3 monitoring, Wave 4 complete venue I/O exit, Wave 6 live capital, billing.
-- What still works if Market Data cannot run: sign-in, Connection Management, Exchange Connectivity, paper trading, and research.
-
-No control catalogs. No STRIDE tables. Those live in Security Review.
-
----
-
-## Operator walkthroughs
-
-### Open Market Data
-
-```text
-□ Sign in
-□ Open Market Data
-```
-
-### Select Exchange
-
-```text
-□ Choose Binance, Bybit, or OKX
-```
-
-### Choose Symbol
-
-```text
-□ Choose a symbol offered by that exchange
-```
-
-### View Ticker
-
-```text
-□ See ticker
-□ Confirm it does not say Trading enabled
-```
-
-### View Candles
-
-```text
-□ See candles
-□ Confirm it is not strategy execution
-```
-
-### View Order Book
-
-```text
-□ See order book
-□ Confirm it is not order placement
-```
-
-### Observe Provider Unavailable
-
-```text
-□ Provider cannot supply data
-□ Status is Provider Unavailable
-□ Fake ticker, candles, or book are not shown
-□ Secret is not shown
-```
-
-### Observe stale data handling
-
-```text
-□ Last validated data is not current
-□ Status is stale
-□ Stale is not presented as current
-```
-
-### Workspace isolation
-
-```text
-□ Workspace A Market Data is not usable from Workspace B
-```
-
-### Authorization
-
-```text
-□ Role without permission cannot open Market Data
-```
+- Exchange secrets are not shown after Market Data and are not stored locally by this product.
+- A signed-out person cannot open Market Data. One workspace cannot use another workspace’s connection. A role without Projection permission cannot open Market Data.
+- Market data is not trading.
 
 ---
 
 ## What's Next
 
-After Market Data Foundation ships its product outcomes:
-
-- Remaining Wave 2 work as sequenced by Product Owner
-- Later named Exchange Connectivity and market-data streaming outcomes stay later
-- Trading stays later and is not introduced here
+- W2-S03-c ticker, candles, and order-book projections (after Product Owner review)
+- Remaining Market Data slices as sequenced by Product Owner
+- Trading stays later
 
 Wave 1 Security Foundation is **CERTIFIED COMPLETE** and is consumed, not reopened.
 W2-S01 Connection Management is **CLOSED** and is consumed, not redesigned.
@@ -242,16 +162,4 @@ This product does **not** include:
 
 ---
 
-## Mandatory Questions (short)
-
-1. **Problem solved:** After Exchange Connectivity, honestly provide market data — symbols, ticker, candles, and order book.
-2. **Consumed:** Exchange Connectivity, Connection Management, Vault, Authentication, Authorization, Workspace Isolation, Security Platform, Security Audit.
-3. **Owns:** Adapters, normalization, symbols, ticker, candles, order book, health, provider metadata.
-4. **Does not own:** Orders, trading, execution, portfolio, balances, positions, risk, strategy, paper trading, monitoring, analytics.
-5. **Providers planned:** Binance, Bybit, OKX. Architecture remains provider-independent.
-6. **Trading:** No.
-7. **Wave 1 modified:** No.
-
----
-
-**STOP.** Wait for Product Owner review before W2-S03 implementation planning is approved.
+**STOP.** Wait for Product Owner review before W2-S03-c.

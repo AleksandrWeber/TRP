@@ -103,6 +103,33 @@ export type ConnectionMetadataView = {
   updatedAt: string;
 };
 
+export type MarketDataProviderCatalogView = {
+  providers: Array<{
+    id: string;
+    displayName: string;
+    capabilities: string[];
+    availability: string;
+  }>;
+};
+
+export type MarketSymbolView = {
+  exchangeSymbol: string;
+  normalizedSymbol: string;
+  baseAsset: string;
+  quoteAsset: string;
+  tradingStatus: string;
+  providerId: string;
+};
+
+export type MarketSymbolDiscoveryView = {
+  connectionId: string;
+  providerId: string;
+  discoveredAt: string;
+  symbols: MarketSymbolView[];
+  outcome: 'COMPLETED' | 'FAILED' | 'PROVIDER_UNAVAILABLE' | 'NOT_IMPLEMENTED';
+  failureReason: string | null;
+};
+
 export type Dataset = {
   id: string;
   symbol: string;
@@ -2941,6 +2968,19 @@ export const api = {
       body: '{}',
     }),
   getConnectionCatalog: () => request<ConnectionCatalogView>('/connections/catalog'),
+  getMarketDataProviders: () => request<MarketDataProviderCatalogView>('/market-data/providers'),
+  getMarketDataSymbols: (connectionId: string) =>
+    request<MarketSymbolDiscoveryView>(
+      `/market-data/connections/${encodeURIComponent(connectionId)}/symbols`,
+    ),
+  discoverMarketDataSymbols: (connectionId: string) =>
+    request<MarketSymbolDiscoveryView>(
+      `/market-data/connections/${encodeURIComponent(connectionId)}/symbols/discover`,
+      {
+        method: 'POST',
+        body: '{}',
+      },
+    ),
   listConnections: () => request<ConnectionMetadataView[]>('/connections'),
   getConnection: (id: string) =>
     request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}`),

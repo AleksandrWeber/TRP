@@ -40,6 +40,8 @@ describe('PC-20 Product UX Polish', () => {
     expect(paths).toContain('/knowledge-lake');
     expect(paths).toContain('/notifications');
     expect(paths).toContain('/notifications/channels');
+    expect(paths).toContain('/connections');
+    expect(paths).toContain('/market-data');
     expect(paths).toContain('/knowledge');
     expect(paths).toContain('/ai');
     expect(paths).toContain('/account/password');
@@ -58,6 +60,7 @@ describe('PC-20 Product UX Polish', () => {
     expect(labels).toContain('Sign-in sessions');
     expect(labels).toContain('Password');
     expect(labels).toContain('People');
+    expect(labels).toContain('Market Data');
     expect(labels).not.toContain('Certify');
     expect(labels).not.toContain('Orchestrator');
     expect(labels).not.toContain('Profile');

@@ -2,7 +2,7 @@
 
 **Package:** W2-S03 Market Data Foundation
 **Wave:** 2 — Connection Management
-**Status:** Planning **COMPLETE**. Not executed. Awaiting Product Owner Approval, then implementation, then validation.
+**Status:** W2-S03-a and W2-S03-b executed for slice review. Remaining slices not executed. Close remains pending Product Owner decision.
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w2-s03-product-scope.md`](./w2-s03-product-scope.md)
 **Security:** [`w2-s03-security-review.md`](./w2-s03-security-review.md)
@@ -34,13 +34,45 @@ Do not validate order placement, execution, portfolio, balances, positions, WebS
 
 ## 1. Implementation slices (validation mapping)
 
-| Slice        | Must prove at slice review                                                             | Close contribution  |
-| ------------ | -------------------------------------------------------------------------------------- | ------------------- |
-| **W2-S03-a** | One Market Data adapter contract for Binance, Bybit, OKX; additional providers allowed | Adapters            |
-| **W2-S03-b** | Provider payloads normalize; symbols are provider-scoped and selectable                | Normalize / symbols |
-| **W2-S03-c** | Ticker, candles, and order book are honest product projections                         | Projections         |
-| **W2-S03-d** | Health, provider metadata, Provider Unavailable, and stale handling are honest         | Health / honesty    |
-| **W2-S03-e** | Verification Standard + regressions + full walkthrough                                 | Close evidence      |
+| Slice        | Must prove at slice review                                                             | Close contribution                             |
+| ------------ | -------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| **W2-S03-a** | One Market Data adapter contract for Binance, Bybit, OKX; additional providers allowed | Adapters — **executed** (see below)            |
+| **W2-S03-b** | Provider payloads normalize; symbols are provider-scoped and selectable                | Normalize / symbols — **executed** (see below) |
+| **W2-S03-c** | Ticker, candles, and order book are honest product projections                         | Projections                                    |
+| **W2-S03-d** | Health, provider metadata, Provider Unavailable, and stale handling are honest         | Health / honesty                               |
+| **W2-S03-e** | Verification Standard + regressions + full walkthrough                                 | Close evidence                                 |
+
+### W2-S03-a execution evidence
+
+Recorded in [`w2-s03-a-validation-report.md`](./w2-s03-a-validation-report.md).
+
+| Proof                                                                           | Result |
+| ------------------------------------------------------------------------------- | ------ |
+| Provider registry, lookup, registration, and discovery for Binance, Bybit, OKX  | PASS   |
+| Capability model is metadata only and excludes transport and trading            | PASS   |
+| Adapter factory / resolver returns the same contract for every offered provider | PASS   |
+| Additional providers register without modifying existing adapters               | PASS   |
+| No HTTP, SDK, WebSocket, ticker, candles, or order-book projection              | PASS   |
+
+W2-S03-a does **not** Close W2-S03. Normalization, symbols, projections, health, and the full Market Data Walkthrough remain later slices.
+
+### W2-S03-b execution evidence
+
+Recorded in [`w2-s03-b-validation-report.md`](./w2-s03-b-validation-report.md).
+
+| Proof                                                               | Result |
+| ------------------------------------------------------------------- | ------ |
+| Binance symbol discovery returns normalized tradable symbols        | PASS   |
+| Provider-independent symbol model with metadata only                | PASS   |
+| Deterministic normalization; unknown fields not guessed             | PASS   |
+| Malformed payloads and duplicate normalized symbols rejected        | PASS   |
+| Session-safe symbol cache stores normalized symbols only            | PASS   |
+| Workspace isolation and Connected connection prerequisite           | PASS   |
+| Bybit / OKX report not implemented                                  | PASS   |
+| Operator UI: select exchange, load symbols, browse, observe failure | PASS   |
+| No ticker, candles, order book, prices, WebSockets, or polling      | PASS   |
+
+W2-S03-b does **not** Close W2-S03. Ticker / candles / order-book projections, health, and the full Market Data Walkthrough remain later slices.
 
 ---
 
@@ -271,4 +303,4 @@ Do not treat the following as W2-S03 Close evidence:
 
 ---
 
-**STOP.** Wait for Product Owner review before W2-S03 implementation planning is approved.
+**STOP.** W2-S03-b is implemented for Product Owner review. Do not begin W2-S03-c automatically.

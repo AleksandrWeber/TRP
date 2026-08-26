@@ -79,6 +79,7 @@ import { RolesGuard } from './roles.guard';
 import type { AuthUser } from './jwt.strategy';
 import { PeopleController } from '../identity/people.controller';
 import { ConnectionsController } from '../connections/connections.controller';
+import { MarketDataSymbolsController } from '../market-data-foundation/market-data-symbols.controller';
 
 const CUSTOMER_CONTROLLERS: readonly Type<object>[] = [
   AppController,
@@ -150,6 +151,7 @@ const CUSTOMER_CONTROLLERS: readonly Type<object>[] = [
   WorkspaceController,
   PeopleController,
   ConnectionsController,
+  MarketDataSymbolsController,
 ];
 
 const PUBLIC_HANDLERS = new Set([
@@ -231,6 +233,21 @@ describe('HTTP surface coverage (V3-S02-b)', () => {
     expect(handlers.some((handler) => handler.handler === 'observeSession')).toBe(false);
     expect(handlers.some((handler) => handler.handler === 'reconnect')).toBe(false);
     expect(handlers.some((handler) => handler.handler === 'verifyCapabilities')).toBe(false);
+  });
+
+  it('classifies Market Data symbol discovery as C3 Projection', () => {
+    const handlers = collectControllerHandlers(MarketDataSymbolsController);
+    expect(handlers.map((handler) => handler.handler).sort()).toEqual([
+      'cached',
+      'discover',
+      'providers',
+    ]);
+    expect(handlers.every((handler) => handler.permission === PermissionClass.Projection)).toBe(
+      true,
+    );
+    expect(handlers.some((handler) => handler.handler === 'getTicker')).toBe(false);
+    expect(handlers.some((handler) => handler.handler === 'getCandles')).toBe(false);
+    expect(handlers.some((handler) => handler.handler === 'getOrderBook')).toBe(false);
   });
 
   it('classifies People list and role assignment as C6', () => {
@@ -338,6 +355,12 @@ describe('Surface coverage walkthrough (V3-S02-b)', () => {
       true,
     );
     expect(guard.canActivate(contextFor(AuthController, 'me', user(Role.Reader)))).toBe(true);
+    expect(
+      guard.canActivate(contextFor(MarketDataSymbolsController, 'providers', user(Role.Reader))),
+    ).toBe(true);
+    expect(
+      guard.canActivate(contextFor(MarketDataSymbolsController, 'discover', user(Role.Reader))),
+    ).toBe(true);
   });
 
   it('denies missing permission and unknown permission on classified routes', () => {
