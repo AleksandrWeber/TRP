@@ -19,7 +19,7 @@
 | Current Package       | **W3-O01 Durable Analytical Stores** (Planning APPROVED) |
 | Wave 3 Planning       | **APPROVED**                                             |
 | W3-O01 Readiness      | **FINALIZED** (planning quality)                         |
-| Wave 3 Implementation | **Not started** / **Not authorized**                     |
+| Wave 3 Implementation | **In progress** — W3-O01-a implemented; b…d not opened   |
 | Live Trading          | **Not claimed / unauthorized** until Wave 6 ADR          |
 
 ---
@@ -36,8 +36,9 @@
 - No Live Trading
 - No Monitoring Complete (O05)
 - No Kill Switch product (O04)
+- **W3-O01-a inventory foundation done** — platform still **not** restart-safe
 
-Planning companions (under `../wave-3/`):
+Companions (under `../wave-3/`):
 
 - `w3-o01-implementation-package.md`
 - `w3-o01-product-scope.md`
@@ -47,14 +48,17 @@ Planning companions (under `../wave-3/`):
 - `wave-3-planning-summary.md`
 - `wave-3-progress.md`
 - `implementation-readiness-checklist.md`
+- `w3-o01-a-analytical-inventory.md`
+- `w3-o01-a-implementation-report.md`
 
 ---
 
 ## Current slice
 
-| Slice    | Documented operational status                                                       |
-| -------- | ----------------------------------------------------------------------------------- |
-| **None** | Implementation slices W3-O01-a…d are **named in planning only** and **not started** |
+| Slice        | Documented operational status                                      |
+| ------------ | ------------------------------------------------------------------ |
+| **W3-O01-a** | **IMPLEMENTED** — inventory & honesty baseline; awaiting PO review |
+| W3-O01-b…d   | **Not started**                                                    |
 
 ---
 

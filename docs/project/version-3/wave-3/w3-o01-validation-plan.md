@@ -3,13 +3,14 @@
 **Package:** W3-O01 Durable Analytical Stores
 **Wave:** 3 — Durability, Operations & Continuity
 **Master Plan / Roadmap:** V3-O01 · IN-01 · TD-048
-**Status:** Planning **APPROVED**. Implementation Readiness **FINALIZED**. Not implementation. Slices not opened.
+**Status:** Planning **APPROVED**. W3-O01-a **IMPLEMENTED** (inventory foundation). Persistence / restart proof slices **not started**.
 **Date:** 2026-08-26
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w3-o01-product-scope.md`](./w3-o01-product-scope.md)
 **Security:** [`w3-o01-security-review.md`](./w3-o01-security-review.md)
 **Umbrella:** [`w3-o01-implementation-package.md`](./w3-o01-implementation-package.md)
 **Overview:** [`durability-overview.md`](./durability-overview.md)
+**Inventory:** [`w3-o01-a-analytical-inventory.md`](./w3-o01-a-analytical-inventory.md)
 **Readiness:** [`implementation-readiness-checklist.md`](./implementation-readiness-checklist.md)
 **Checklists:** [`../version-3-product-checklist.md`](../version-3-product-checklist.md) · [`../version-3-architecture-checklist.md`](../version-3-architecture-checklist.md) · [`../version-3-security-checklist.md`](../version-3-security-checklist.md)
 **Verification Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md)
@@ -20,16 +21,14 @@ Tests that mock the customer outcome (for example: assert a helper wrote a row w
 
 Do not validate Notification durable queue (O02), US295 Complete (O03), Kill Switch product (O04), Monitoring product (O05), Live Trading, Wave 4 venue I/O, or Wave 5 transports. Validate **Durable Analytical Stores** product outcomes only.
 
-**Implementation slices:** Named in planning only. **Not started.** Do not open until Product Owner writes and sequences an implementation task.
+### Slice progress
 
-### Slice progress (planning — not started)
-
-| Slice    | Name                                                  | Validation record |
-| -------- | ----------------------------------------------------- | ----------------- |
-| W3-O01-a | Analytical store inventory & honesty baseline         | Not started       |
-| W3-O01-b | Durable persistence for priority analytical artifacts | Not started       |
-| W3-O01-c | Restart-survival proof & degraded honesty             | Not started       |
-| W3-O01-d | Security verification + package Close evidence        | Not started       |
+| Slice    | Name                                                  | Validation record                                                                 |
+| -------- | ----------------------------------------------------- | --------------------------------------------------------------------------------- |
+| W3-O01-a | Analytical store inventory & honesty baseline         | [`w3-o01-a-validation-report.md`](./w3-o01-a-validation-report.md) — **complete** |
+| W3-O01-b | Durable persistence for priority analytical artifacts | Not started                                                                       |
+| W3-O01-c | Restart-survival proof & degraded honesty             | Not started                                                                       |
+| W3-O01-d | Security verification + package Close evidence        | Not started                                                                       |
 
 ---
 
@@ -43,6 +42,7 @@ Do not validate Notification durable queue (O02), US295 Complete (O03), Kill Swi
 | **Not claimed**     | Monitoring product                                             | V3-O05                                                    |
 | **Not claimed**     | Kill Switch product                                            | V3-O04                                                    |
 | **Not claimed**     | Live Trading                                                   | Wave 6 / Order Path                                       |
+| **Not claimed**     | Restart-safe from W3-O01-a alone                               | Requires W3-O01-b/c                                       |
 
 ---
 
@@ -59,11 +59,14 @@ Do not validate Notification durable queue (O02), US295 Complete (O03), Kill Swi
 | Security validation           | Verification Standard + isolation + authz + fail closed                |
 | Package acceptance validation | Acceptance criteria table; Close checklist                             |
 
-Planning-package validation (this open):
+### W3-O01-a validation (this slice)
 
-- Documentation-only change set
-- `git diff --check` PASS
-- No production code introduced by this planning open
+| Layer       | Purpose                                                                                            |
+| ----------- | -------------------------------------------------------------------------------------------------- |
+| Unit        | Inventory completeness; ownership consistency; classification consistency                          |
+| Integration | Planning consistency; Master Plan consistency; architecture consistency                            |
+| Regression  | Wave 1 / Wave 2 unchanged (no production redesign); conformance suite still green                  |
+| Commands    | `pnpm lint` · `pnpm typecheck` · `pnpm test` · `pnpm --filter @trp/web build` · `git diff --check` |
 
 ---
 
@@ -77,6 +80,14 @@ Planning-package validation (this open):
 | Workspace binding        | Missing/wrong workspace fails closed                 |
 | No capital side effect   | Durability helpers never invoke live order placement |
 | No second SoT helpers    | No parallel Lake/Outbox invent helpers               |
+
+### W3-O01-a unit focus
+
+| Area                       | Must prove                                                        |
+| -------------------------- | ----------------------------------------------------------------- |
+| Inventory completeness     | Every required analytical owner appears; artifact ids unique      |
+| Ownership consistency      | Exactly one allowed existing owner per artifact                   |
+| Classification consistency | SURVIVE or EPHEMERAL; EPHEMERAL has honesty note; default SURVIVE |
 
 ---
 
@@ -92,6 +103,14 @@ Planning-package validation (this open):
 | Wave 2 untouched              | Connections / Paper / AI Connectivity not redesigned |
 | Outbox/Lake unchanged as SoT  | No second Outbox / Lake                              |
 
+### W3-O01-a integration focus
+
+| Area                     | Must prove                                                                 |
+| ------------------------ | -------------------------------------------------------------------------- |
+| Planning consistency     | Slice claims align with approved package (no new persistence owner)        |
+| Master Plan consistency  | Master Plan / V2 / Wave 1 / Wave 2 modification flags remain false         |
+| Architecture consistency | Evidence paths exist; no second SoT/Lake/Outbox; platform not restart-safe |
+
 ---
 
 ## 4. UI validation
@@ -103,6 +122,10 @@ Planning-package validation (this open):
 | Ephemeral labeling      | Exception path is honest and visible                                                     |
 | No dishonest claims     | UI never claims Live Trading, Monitoring Complete, Kill Switch Complete, Wave 3 COMPLETE |
 | Unauthorized UX         | Denied roles see unavailable / deny — not foreign empty run                              |
+
+### W3-O01-a UI note
+
+No UI change. Must not imply restart-safe / durable / recoverable from inventory alone.
 
 ---
 
@@ -137,6 +160,8 @@ Planning-package validation (this open):
 ```
 
 Overall verdict for Package Review (fill at Close): **PENDING**. Only Product Owner may declare W3-O01 CLOSED.
+
+**W3-O01-a:** Walkthrough N/A — inventory foundation only; no restart survival claimed.
 
 ---
 
@@ -181,7 +206,7 @@ Overall verdict for Package Review (fill at Close): **PENDING**. Only Product Ow
 | 7   | No plaintext secret exposure                                        | Security review             |
 | 8   | No second Lake / Outbox                                             | Architecture review         |
 
-Close command validation (to be executed at package Close — not in this planning open):
+Close command validation (to be executed at package Close — not claimed by W3-O01-a alone):
 
 - `pnpm lint`
 - `pnpm typecheck`
@@ -189,21 +214,27 @@ Close command validation (to be executed at package Close — not in this planni
 - `pnpm --filter @trp/web build` (if UI touched)
 - `git diff --check`
 
-Planning open command validation:
+W3-O01-a command validation (required for this slice):
 
-- `git diff --check` — required PASS for this documentation package
+- `pnpm lint`
+- `pnpm typecheck`
+- `pnpm test`
+- `pnpm --filter @trp/web build`
+- `git diff --check`
 
 ---
 
 ## 10. Slice note
 
-Implementation slices W3-O01-a…d are **planning names only**. They must not be started until:
+| Slice    | Authorization                       |
+| -------- | ----------------------------------- |
+| W3-O01-a | **Authorized and implemented**      |
+| W3-O01-b | **Not opened** — wait for PO review |
+| W3-O01-c | Not opened                          |
+| W3-O01-d | Not opened                          |
 
-1. Product Owner writes and authorizes an implementation task (Planning already **APPROVED**)
-2. Product Owner explicitly sequences the slice
-
-Do not treat this validation plan as authorization to implement.
+Do not treat W3-O01-a validation as package Close.
 
 ---
 
-**STOP.** Wait for Product Owner review. Do not create W3-O01-a. Do not begin Wave 3 implementation.
+**STOP.** Wait for Product Owner review before W3-O01-b. Do not implement persistence. Do not implement restart recovery.

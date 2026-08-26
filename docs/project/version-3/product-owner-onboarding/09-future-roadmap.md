@@ -14,12 +14,12 @@ This document restates **approved** Version 3 roadmap content. It does not add p
 
 ## Waves remaining
 
-Wave 1 is **CERTIFIED COMPLETE**. Wave 2 is **COMPLETE**. Wave 3 Planning is **APPROVED**; Implementation Readiness for W3-O01 is **FINALIZED** (implementation not authorized until PO writes a task). Waves 4–10 remain not started.
+Wave 1 is **CERTIFIED COMPLETE**. Wave 2 is **COMPLETE**. Wave 3 Planning is **APPROVED**; W3-O01-a inventory foundation is **IMPLEMENTED** (awaiting PO review before W3-O01-b). Waves 4–10 remain not started.
 
 | Wave            | Name                               | Business value (Master Plan)                | Packages                                                                                  |
 | --------------- | ---------------------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | **2**           | Connection Management              | Customers connect from the UI               | Roadmap IDs **V3-C01…C04**; operational packages **W2-S01…S05 CLOSED**; Wave **COMPLETE** |
-| **3** (current) | Durability, operations, continuity | Restart, kill switch, visibility            | V3-O01…O05; operational **W3-O01** Planning **APPROVED** / Readiness **FINALIZED**        |
+| **3** (current) | Durability, operations, continuity | Restart, kill switch, visibility            | V3-O01…O05; **W3-O01-a IMPLEMENTED**; b…d not opened; platform not restart-safe yet       |
 | **4**           | Exchange Connectivity              | Real venue handshake; paper still default   | V3-E01…E05                                                                                |
 | **5**           | Notification Platform              | Real alerts                                 | V3-N01…N04                                                                                |
 | **6**           | Live Trading                       | Earned live capital on the canonical path   | V3-L01…L05 + **live-capital ADR**                                                         |
@@ -44,7 +44,7 @@ Products / outcomes include durable analytical stores, durable notification queu
 
 Packages: V3-O01…O05 (Infrastructure, Monitoring, Business Continuity, Disaster Recovery residual, related ops).
 
-Operational note: **W3-O01 Durable Analytical Stores** Planning is **APPROVED** and Implementation Readiness is **FINALIZED** under [`../wave-3/`](../wave-3/). W3-O01 extends existing owners only (no new persistence owner). Implementation slices remain **not opened** until Product Owner writes and sequences a task.
+Operational note: **W3-O01 Durable Analytical Stores** Planning is **APPROVED**. **W3-O01-a** (inventory foundation) is **IMPLEMENTED** under [`../wave-3/`](../wave-3/). W3-O01 extends existing owners only (no new persistence owner). Do **not** open W3-O01-b until Product Owner review. Platform is **not** restart-safe from O01-a alone.
 
 ### Wave 4 — Exchange Connectivity
 

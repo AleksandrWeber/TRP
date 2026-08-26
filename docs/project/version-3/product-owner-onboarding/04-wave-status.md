@@ -45,26 +45,26 @@ Wave 2 progress (historical): [`../wave-2/wave-2-progress.md`](../wave-2/wave-2-
 
 ## Current Wave
 
-| Field                          | Value                                                             |
-| ------------------------------ | ----------------------------------------------------------------- |
-| **Wave**                       | **3 — Durability, Operations & Continuity**                       |
-| **Wave Planning**              | **APPROVED**                                                      |
-| **Wave COMPLETE claimed?**     | **No**                                                            |
-| **Implementation authorized?** | **No** — Planning Ready; slices not opened                        |
-| **Live Trading claimed?**      | **No**                                                            |
-| **Next**                       | Product Owner writes / sequences first W3-O01 implementation task |
+| Field                          | Value                                                           |
+| ------------------------------ | --------------------------------------------------------------- |
+| **Wave**                       | **3 — Durability, Operations & Continuity**                     |
+| **Wave Planning**              | **APPROVED**                                                    |
+| **Wave COMPLETE claimed?**     | **No**                                                          |
+| **Implementation authorized?** | **Partial** — W3-O01-a authorized & implemented; b…d not opened |
+| **Live Trading claimed?**      | **No**                                                          |
+| **Next**                       | Product Owner reviews W3-O01-a before authorizing W3-O01-b      |
 
 ---
 
 ## Current Package
 
-| Field                     | Value                                                          |
-| ------------------------- | -------------------------------------------------------------- |
-| **Package**               | **W3-O01 Durable Analytical Stores** (Master Plan **V3-O01**)  |
-| **Stage**                 | Planning **APPROVED** · Implementation Readiness **FINALIZED** |
-| **Persistence stance**    | Extends existing owners only — **no new persistence owner**    |
-| **Implementation slices** | Named only — **not started** (do not create W3-O01-a yet)      |
-| **Previous**              | Wave 2 COMPLETE (W2-S01…W2-S05 CLOSED)                         |
+| Field                     | Value                                                         |
+| ------------------------- | ------------------------------------------------------------- |
+| **Package**               | **W3-O01 Durable Analytical Stores** (Master Plan **V3-O01**) |
+| **Stage**                 | W3-O01-a **IMPLEMENTED** — awaiting PO review                 |
+| **Persistence stance**    | Extends existing owners only — **no new persistence owner**   |
+| **Implementation slices** | **a done**; b…d **not started**                               |
+| **Previous**              | Wave 2 COMPLETE (W2-S01…W2-S05 CLOSED)                        |
 
 Companions under [`../wave-3/`](../wave-3/):
 
@@ -76,13 +76,15 @@ Companions under [`../wave-3/`](../wave-3/):
 - `wave-3-planning-summary.md`
 - `wave-3-progress.md`
 - `implementation-readiness-checklist.md`
+- `w3-o01-a-analytical-inventory.md`
+- `w3-o01-a-implementation-report.md`
 
 ---
 
 ## STOP
 
-Do **not** begin Wave 3 implementation until Product Owner writes and authorizes an implementation task.
-Do **not** create W3-O01-a from readiness review alone.
+Do **not** open W3-O01-b until Product Owner reviews W3-O01-a.
+Do **not** implement persistence / restart recovery / monitoring / Kill Switch.
 Do **not** claim Live Trading.
 Do **not** claim Wave 7 AI Platform Complete.
 Do **not** modify the Master Plan.
