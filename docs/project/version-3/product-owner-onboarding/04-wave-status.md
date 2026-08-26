@@ -7,6 +7,7 @@
 
 Primary PO progress file: [`../wave-3/wave-3-progress.md`](../wave-3/wave-3-progress.md)
 Wave 3 planning summary: [`../wave-3/wave-3-planning-summary.md`](../wave-3/wave-3-planning-summary.md)
+Implementation Readiness: [`../wave-3/implementation-readiness-checklist.md`](../wave-3/implementation-readiness-checklist.md)
 Wave 2 completion: [`../wave-2-completion-report.md`](../wave-2-completion-report.md)
 Wave 2 progress (historical): [`../wave-2/wave-2-progress.md`](../wave-2/wave-2-progress.md)
 
@@ -44,25 +45,26 @@ Wave 2 progress (historical): [`../wave-2/wave-2-progress.md`](../wave-2/wave-2-
 
 ## Current Wave
 
-| Field                          | Value                                                                          |
-| ------------------------------ | ------------------------------------------------------------------------------ |
-| **Wave**                       | **3 — Durability, Operations & Continuity**                                    |
-| **Wave Planning**              | **OPEN** — Planning Package complete; awaiting Product Owner Planning Review   |
-| **Wave COMPLETE claimed?**     | **No**                                                                         |
-| **Implementation authorized?** | **No**                                                                         |
-| **Live Trading claimed?**      | **No**                                                                         |
-| **Next**                       | Product Owner Planning Review → Approval → then slice sequencing (not started) |
+| Field                          | Value                                                             |
+| ------------------------------ | ----------------------------------------------------------------- |
+| **Wave**                       | **3 — Durability, Operations & Continuity**                       |
+| **Wave Planning**              | **APPROVED**                                                      |
+| **Wave COMPLETE claimed?**     | **No**                                                            |
+| **Implementation authorized?** | **No** — Planning Ready; slices not opened                        |
+| **Live Trading claimed?**      | **No**                                                            |
+| **Next**                       | Product Owner writes / sequences first W3-O01 implementation task |
 
 ---
 
 ## Current Package
 
-| Field                     | Value                                                         |
-| ------------------------- | ------------------------------------------------------------- |
-| **Package**               | **W3-O01 Durable Analytical Stores** (Master Plan **V3-O01**) |
-| **Stage**                 | Planning COMPLETE — awaiting Planning Review / Approval       |
-| **Implementation slices** | Named only — **not started**                                  |
-| **Previous**              | Wave 2 COMPLETE (W2-S01…W2-S05 CLOSED)                        |
+| Field                     | Value                                                          |
+| ------------------------- | -------------------------------------------------------------- |
+| **Package**               | **W3-O01 Durable Analytical Stores** (Master Plan **V3-O01**)  |
+| **Stage**                 | Planning **APPROVED** · Implementation Readiness **FINALIZED** |
+| **Persistence stance**    | Extends existing owners only — **no new persistence owner**    |
+| **Implementation slices** | Named only — **not started** (do not create W3-O01-a yet)      |
+| **Previous**              | Wave 2 COMPLETE (W2-S01…W2-S05 CLOSED)                         |
 
 Companions under [`../wave-3/`](../wave-3/):
 
@@ -73,13 +75,15 @@ Companions under [`../wave-3/`](../wave-3/):
 - `durability-overview.md`
 - `wave-3-planning-summary.md`
 - `wave-3-progress.md`
+- `implementation-readiness-checklist.md`
 
 ---
 
 ## STOP
 
-Do **not** begin Wave 3 implementation until Wave 3 Planning is Approved.
-Do **not** open implementation slices until Product Owner sequences them after Approval.
+Do **not** begin Wave 3 implementation until Product Owner writes and authorizes an implementation task.
+Do **not** create W3-O01-a from readiness review alone.
 Do **not** claim Live Trading.
 Do **not** claim Wave 7 AI Platform Complete.
 Do **not** modify the Master Plan.
+Do **not** introduce a new persistence owner.

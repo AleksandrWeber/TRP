@@ -12,20 +12,21 @@
 
 ## Authority
 
-| Item                                    | Status                                                                        |
-| --------------------------------------- | ----------------------------------------------------------------------------- |
-| Version 3                               | In progress                                                                   |
-| Wave 1 Security Foundation              | **CERTIFIED COMPLETE**                                                        |
-| W2-S01 Connection Management            | **CLOSED**                                                                    |
-| W2-S02 Exchange Connectivity Foundation | **CLOSED**                                                                    |
-| W2-S03 Market Data Foundation           | **CLOSED**                                                                    |
-| W2-S04 Paper Trading Foundation         | **CLOSED**                                                                    |
-| W2-S05 AI Connectivity Foundation       | **CLOSED**                                                                    |
-| Wave 2 COMPLETE                         | **COMPLETE**                                                                  |
-| Wave 3 Planning                         | **OPEN** — see [`../wave-3/wave-3-progress.md`](../wave-3/wave-3-progress.md) |
-| Wave 3 Implementation                   | **Not started**                                                               |
-| Live Trading                            | **Not claimed**                                                               |
-| Wave 7 AI Platform Complete             | **Not claimed**                                                               |
+| Item                                    | Status                                                                                                                   |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Version 3                               | In progress                                                                                                              |
+| Wave 1 Security Foundation              | **CERTIFIED COMPLETE**                                                                                                   |
+| W2-S01 Connection Management            | **CLOSED**                                                                                                               |
+| W2-S02 Exchange Connectivity Foundation | **CLOSED**                                                                                                               |
+| W2-S03 Market Data Foundation           | **CLOSED**                                                                                                               |
+| W2-S04 Paper Trading Foundation         | **CLOSED**                                                                                                               |
+| W2-S05 AI Connectivity Foundation       | **CLOSED**                                                                                                               |
+| Wave 2 COMPLETE                         | **COMPLETE**                                                                                                             |
+| Wave 3 Planning                         | **APPROVED** — see [`../wave-3/wave-3-progress.md`](../wave-3/wave-3-progress.md)                                        |
+| W3-O01 Implementation Readiness         | **FINALIZED** — see [`../wave-3/implementation-readiness-checklist.md`](../wave-3/implementation-readiness-checklist.md) |
+| Wave 3 Implementation                   | **Not started**                                                                                                          |
+| Live Trading                            | **Not claimed**                                                                                                          |
+| Wave 7 AI Platform Complete             | **Not claimed**                                                                                                          |
 
 ---
 

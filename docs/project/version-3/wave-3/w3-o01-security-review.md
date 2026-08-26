@@ -3,7 +3,7 @@
 **Package:** W3-O01 Durable Analytical Stores
 **Wave:** 3 — Durability, Operations & Continuity
 **Master Plan / Roadmap:** V3-O01 · IN-01 · TD-048
-**Status:** Planning **COMPLETE**. Not implementation. Awaiting Product Owner Planning Review and Approval.
+**Status:** Planning **APPROVED**. Implementation Readiness **FINALIZED**. Not implementation. Slices not opened.
 **Date:** 2026-08-26
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md) · [`../v3-security-vision.md`](../v3-security-vision.md)
 **Checklist:** [`../version-3-security-checklist.md`](../version-3-security-checklist.md)
@@ -11,12 +11,14 @@
 **Default Policy:** [`../security-default-policy.md`](../security-default-policy.md)
 **Umbrella:** [`w3-o01-implementation-package.md`](./w3-o01-implementation-package.md)
 **Scope:** [`w3-o01-product-scope.md`](./w3-o01-product-scope.md)
+**Readiness:** [`implementation-readiness-checklist.md`](./implementation-readiness-checklist.md)
 
 ```text
 Durable Analytical Stores use Wave 1 security and existing aggregates.
 They do not replace Vault, Auth, Authz, Isolation, Platform, or Audit.
+They extend existing durability mechanisms only — no new persistence owner.
 Survive-restart is not Live Trading and not Monitoring Complete.
-No plaintext secret echo. No second Lake / Outbox.
+No plaintext secret echo. No second Lake / Outbox / Inbox / Event Store / Projection Store.
 No new security ownership.
 Fail Closed.
 ```
@@ -189,4 +191,4 @@ Regression suite must include:
 
 ---
 
-**STOP.** Wait for Product Owner Planning Review before W3-O01 implementation begins. This document is planning intent only.
+**STOP.** Planning APPROVED. Wait for Product Owner to write / sequence an implementation task. Do not create W3-O01-a. This document is planning intent only.

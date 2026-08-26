@@ -2,10 +2,11 @@
 
 **Document:** Version 3 Durability, Operations & Continuity Overview
 **Date:** 2026-08-26
-**Status:** Product-facing planning record. Wave 3 Planning **OPEN**. Awaiting Product Owner Planning Review. Not implementation.
+**Status:** Product-facing planning record. Wave 3 Planning **APPROVED**. W3-O01 Implementation Ready (planning). Not implementation.
 **Product:** Wave 3 — Durability, Operations & Continuity
 **First package:** W3-O01 Durable Analytical Stores (V3-O01)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
+**Readiness:** [`implementation-readiness-checklist.md`](./implementation-readiness-checklist.md)
 
 This is what an ordinary operator should understand. It is not an internal design note.
 
@@ -18,6 +19,7 @@ Wave 3 makes the product **durable and operable**: restarts must not silently er
 ```text
 Durable analytical stores mean operator-relied analytical artifacts survive API restart
 (or the product honestly says what does not survive — default: it survives).
+W3-O01 extends existing owners only — it does NOT invent a new persistence product.
 It does NOT mean Live Trading enabled.
 It does NOT mean Monitoring Complete.
 It does NOT mean production restart-safety Complete from O01 alone.
@@ -28,13 +30,13 @@ It does NOT mean Notification delivery is production-real (Wave 5).
 
 ## Wave packages (honest sequence)
 
-| Package                                    | Operator meaning                                                     | Status        |
-| ------------------------------------------ | -------------------------------------------------------------------- | ------------- |
-| **W3-O01** Durable Analytical Stores       | Relied-on analytical artifacts survive restart (or honest ephemeral) | Planning only |
-| W3-O02 Notification Durable Queue          | In-flight notification delivery not lost on process restart          | Not opened    |
-| W3-O03 Recovery Residual (US295 / ADL-008) | Accept or write live-claim limitation — no silent PASS               | Not opened    |
-| W3-O04 Durable Kill Switch Product         | Arm Kill Switch; sessions stop; durable across restart               | Not opened    |
-| W3-O05 Monitoring & Security Health        | Health and recent incidents without server login; honest degradation | Not opened    |
+| Package                                    | Operator meaning                                                     | Status            |
+| ------------------------------------------ | -------------------------------------------------------------------- | ----------------- |
+| **W3-O01** Durable Analytical Stores       | Relied-on analytical artifacts survive restart (or honest ephemeral) | Planning APPROVED |
+| W3-O02 Notification Durable Queue          | In-flight notification delivery not lost on process restart          | Not opened        |
+| W3-O03 Recovery Residual (US295 / ADL-008) | Accept or write live-claim limitation — no silent PASS               | Not opened        |
+| W3-O04 Durable Kill Switch Product         | Arm Kill Switch; sessions stop; durable across restart               | Not opened        |
+| W3-O05 Monitoring & Security Health        | Health and recent incidents without server login; honest degradation | Not opened        |
 
 ---
 
@@ -128,12 +130,12 @@ Those artifacts are still present
 
 ## What's Next
 
-1. Product Owner Planning Review of this Wave 3 Planning Package
-2. Approval of W3-O01 planning (or REQUIRES ACTION)
-3. Only then: Product Owner may sequence W3-O01 implementation slices
+1. Product Owner reviews Implementation Readiness checklist
+2. Product Owner writes / sequences the first W3-O01 implementation task (when ready)
+3. Do **not** open W3-O01-a until that task is authorized
 4. Later packages O02…O05 open only after prior Close / PO sequencing
 5. Wave 3 implementation is **not** started by this document
 
 ---
 
-**STOP.** Wait for Product Owner Planning Review. Do not begin Wave 3 implementation.
+**STOP.** Wait for Product Owner review. Do not create W3-O01-a. Do not begin Wave 3 implementation.

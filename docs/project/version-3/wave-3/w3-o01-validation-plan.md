@@ -3,13 +3,14 @@
 **Package:** W3-O01 Durable Analytical Stores
 **Wave:** 3 — Durability, Operations & Continuity
 **Master Plan / Roadmap:** V3-O01 · IN-01 · TD-048
-**Status:** Planning **COMPLETE**. Not implementation. Awaiting Product Owner Planning Review and Approval.
+**Status:** Planning **APPROVED**. Implementation Readiness **FINALIZED**. Not implementation. Slices not opened.
 **Date:** 2026-08-26
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w3-o01-product-scope.md`](./w3-o01-product-scope.md)
 **Security:** [`w3-o01-security-review.md`](./w3-o01-security-review.md)
 **Umbrella:** [`w3-o01-implementation-package.md`](./w3-o01-implementation-package.md)
 **Overview:** [`durability-overview.md`](./durability-overview.md)
+**Readiness:** [`implementation-readiness-checklist.md`](./implementation-readiness-checklist.md)
 **Checklists:** [`../version-3-product-checklist.md`](../version-3-product-checklist.md) · [`../version-3-architecture-checklist.md`](../version-3-architecture-checklist.md) · [`../version-3-security-checklist.md`](../version-3-security-checklist.md)
 **Verification Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md)
 
@@ -19,7 +20,7 @@ Tests that mock the customer outcome (for example: assert a helper wrote a row w
 
 Do not validate Notification durable queue (O02), US295 Complete (O03), Kill Switch product (O04), Monitoring product (O05), Live Trading, Wave 4 venue I/O, or Wave 5 transports. Validate **Durable Analytical Stores** product outcomes only.
 
-**Implementation slices:** Named in planning only. **Not started.** Do not open until Product Owner Approves planning and sequences slices.
+**Implementation slices:** Named in planning only. **Not started.** Do not open until Product Owner writes and sequences an implementation task.
 
 ### Slice progress (planning — not started)
 
@@ -198,11 +199,11 @@ Planning open command validation:
 
 Implementation slices W3-O01-a…d are **planning names only**. They must not be started until:
 
-1. Product Owner Approves this Wave 3 / W3-O01 Planning Package
+1. Product Owner writes and authorizes an implementation task (Planning already **APPROVED**)
 2. Product Owner explicitly sequences the slice
 
 Do not treat this validation plan as authorization to implement.
 
 ---
 
-**STOP.** Wait for Product Owner Planning Review. Do not begin Wave 3 implementation. Do not open implementation slices.
+**STOP.** Wait for Product Owner review. Do not create W3-O01-a. Do not begin Wave 3 implementation.

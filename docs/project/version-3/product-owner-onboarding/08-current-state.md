@@ -9,17 +9,18 @@
 
 ## Where we are
 
-| Field                 | Value                                                |
-| --------------------- | ---------------------------------------------------- |
-| Version 2             | **CERTIFIED** (`v2.0.1`)                             |
-| Version 3 planning    | **FROZEN** (Master Plan)                             |
-| Wave 1                | **CERTIFIED COMPLETE**                               |
-| Wave 2                | **COMPLETE**                                         |
-| Current Wave          | **3 — Durability, Operations & Continuity**          |
-| Current Package       | **W3-O01 Durable Analytical Stores** (planning only) |
-| Wave 3 Planning       | **OPEN** — awaiting Product Owner Planning Review    |
-| Wave 3 Implementation | **Not started** / **Not authorized**                 |
-| Live Trading          | **Not claimed / unauthorized** until Wave 6 ADR      |
+| Field                 | Value                                                    |
+| --------------------- | -------------------------------------------------------- |
+| Version 2             | **CERTIFIED** (`v2.0.1`)                                 |
+| Version 3 planning    | **FROZEN** (Master Plan)                                 |
+| Wave 1                | **CERTIFIED COMPLETE**                                   |
+| Wave 2                | **COMPLETE**                                             |
+| Current Wave          | **3 — Durability, Operations & Continuity**              |
+| Current Package       | **W3-O01 Durable Analytical Stores** (Planning APPROVED) |
+| Wave 3 Planning       | **APPROVED**                                             |
+| W3-O01 Readiness      | **FINALIZED** (planning quality)                         |
+| Wave 3 Implementation | **Not started** / **Not authorized**                     |
+| Live Trading          | **Not claimed / unauthorized** until Wave 6 ADR          |
 
 ---
 
@@ -29,8 +30,9 @@
 
 - Operator-relied analytical artifacts survive API restart (default)
 - Or honest ephemeral labeling when survival is not delivered
+- **Extends existing owners only — no new persistence owner**
 - Persistence on existing aggregates only
-- No second Lake / Outbox
+- No second Lake / Outbox / Inbox / Event Store / Projection Store
 - No Live Trading
 - No Monitoring Complete (O05)
 - No Kill Switch product (O04)
@@ -44,6 +46,7 @@ Planning companions (under `../wave-3/`):
 - `durability-overview.md`
 - `wave-3-planning-summary.md`
 - `wave-3-progress.md`
+- `implementation-readiness-checklist.md`
 
 ---
 
@@ -80,10 +83,10 @@ Planning companions (under `../wave-3/`):
 
 ### Wave 3
 
-| Package                          | Status                                          |
-| -------------------------------- | ----------------------------------------------- |
-| W3-O01 Durable Analytical Stores | Planning COMPLETE — awaiting PO Planning Review |
-| W3-O02…O05                       | Not opened                                      |
+| Package                          | Status                                                              |
+| -------------------------------- | ------------------------------------------------------------------- |
+| W3-O01 Durable Analytical Stores | Planning **APPROVED** · Readiness **FINALIZED** · slices not opened |
+| W3-O02…O05                       | Not opened                                                          |
 
 ---
 
@@ -141,13 +144,14 @@ Not available as finished Version 3 claims today: Live Trading, Wave 3 durabilit
 
 ## Immediate Product Owner queue
 
-1. Review **Wave 3 Planning Package** (`wave-3-planning-summary.md` + W3-O01 companions).
-2. Approve or REQUIRES ACTION — **before any implementation**.
-3. Do **not** open W3-O01 implementation slices until Planning is Approved and slices are sequenced.
+1. Review **Implementation Readiness** (`implementation-readiness-checklist.md`).
+2. When ready: write / sequence the first W3-O01 implementation task.
+3. Do **not** create W3-O01-a until that task is authorized.
 4. Do **not** declare Wave 3 COMPLETE.
 5. Do **not** claim Live Trading.
 6. Do **not** modify the Master Plan.
+7. Do **not** introduce a new persistence owner.
 
 ---
 
-**STOP.** Wait for Product Owner Planning Review before any Wave 3 implementation.
+**STOP.** Wait for Product Owner review before any Wave 3 implementation.

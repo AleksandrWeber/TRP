@@ -4,8 +4,9 @@
 **Date:** 2026-08-26
 **Wave:** 3 — Durability, Operations & Continuity
 **First package:** W3-O01 Durable Analytical Stores (Master Plan / Roadmap **V3-O01**)
-**Status:** Planning **COMPLETE**. Awaiting Product Owner Planning Review and Approval. Not approved. Not implementation.
+**Status:** Planning **APPROVED**. Implementation Readiness finalized. Not implementation. Slices not opened.
 **Nature:** Planning open record. Not an RC. Not an ADR. Not a Master Plan revision.
+**Readiness:** [`implementation-readiness-checklist.md`](./implementation-readiness-checklist.md)
 
 ---
 
@@ -58,15 +59,16 @@ Make production durability and operations honest and restart-safe enough that op
 
 Under `docs/project/version-3/wave-3/`:
 
-| Document                                                                 | Role                              |
-| ------------------------------------------------------------------------ | --------------------------------- |
-| [`w3-o01-implementation-package.md`](./w3-o01-implementation-package.md) | Implementation package (planning) |
-| [`w3-o01-product-scope.md`](./w3-o01-product-scope.md)                   | Product scope                     |
-| [`w3-o01-security-review.md`](./w3-o01-security-review.md)               | Security review (planning)        |
-| [`w3-o01-validation-plan.md`](./w3-o01-validation-plan.md)               | Validation plan                   |
-| [`durability-overview.md`](./durability-overview.md)                     | Operator / PO language overview   |
-| [`wave-3-planning-summary.md`](./wave-3-planning-summary.md)             | This summary                      |
-| [`wave-3-progress.md`](./wave-3-progress.md)                             | Wave 3 progress                   |
+| Document                                                                           | Role                                |
+| ---------------------------------------------------------------------------------- | ----------------------------------- |
+| [`w3-o01-implementation-package.md`](./w3-o01-implementation-package.md)           | Implementation package (planning)   |
+| [`w3-o01-product-scope.md`](./w3-o01-product-scope.md)                             | Product scope                       |
+| [`w3-o01-security-review.md`](./w3-o01-security-review.md)                         | Security review (planning)          |
+| [`w3-o01-validation-plan.md`](./w3-o01-validation-plan.md)                         | Validation plan                     |
+| [`durability-overview.md`](./durability-overview.md)                               | Operator / PO language overview     |
+| [`wave-3-planning-summary.md`](./wave-3-planning-summary.md)                       | This summary                        |
+| [`wave-3-progress.md`](./wave-3-progress.md)                                       | Wave 3 progress                     |
+| [`implementation-readiness-checklist.md`](./implementation-readiness-checklist.md) | Implementation Readiness (planning) |
 
 Wave status documentation updated under `docs/project/version-3/product-owner-onboarding/` and `docs/project/version-3/wave-2/wave-2-progress.md`.
 
@@ -97,10 +99,12 @@ Wave status documentation updated under `docs/project/version-3/product-owner-on
 
 ### W3-O01 (this package)
 
-- Durable analytical store outcomes for certified V2 analytical artifacts operators rely on (IN-01 / TD-048)
+- Durable analytical store **outcomes** for certified V2 analytical artifacts operators rely on (IN-01 / TD-048)
 - Honest ephemeral labeling where survival is not delivered (exception path; default remains survive)
 - Restart-survival evidence for in-scope analytical artifacts
 - Attributable durability / persistence outcomes emitted to Security Audit where required by Verification Standard
+
+**Durability clarification (binding):** W3-O01 **extends existing durability mechanisms only**. It does **not** introduce a new persistence owner, store, or bounded context. Existing Version 2 analytical aggregate owners remain owners; Knowledge Lake / Outbox / Inbox / Ledger are not duplicated. Residual name `durable-persistence-product` is debt vocabulary, not a new SoT.
 
 ---
 
@@ -150,7 +154,7 @@ Vault, Authentication, Authorization, Workspace Isolation, Security Platform, Se
 | W3-O01-c | Restart-survival proof & degraded honesty             | Prove restart survival; no silent drop; no fake success                                                 |
 | W3-O01-d | Security verification + package Close evidence        | Verification Standard + walkthrough + Close                                                             |
 
-**STOP:** These slices are **named for planning only**. They are **not opened**. Implementation must not begin until Product Owner Approves this Planning Package and separately sequences slices.
+**STOP:** These slices are **named for planning only**. They are **not opened**. Planning is **APPROVED** and Implementation Ready (planning quality). Implementation must not begin until Product Owner writes and sequences an implementation task. Do **not** create W3-O01-a from this refinement.
 
 ---
 
@@ -166,7 +170,7 @@ Vault, Authentication, Authorization, Workspace Isolation, Security Platform, Se
    Authentication, Authorization, Workspace Isolation, Vault, Security Platform, Security Audit; Closed Wave 2 products; existing Version 2 analytical aggregates / Outbox / Inbox / Lake projection — without ownership change.
 
 4. **What does Wave 3 own?**
-   Durability, operations, and continuity outcomes for Master Plan packages V3-O01…O05 (durable analytical stores; notification durable queue; US295/ADL-008 recovery residual; durable Kill Switch product; monitoring & security health). W3-O01 specifically owns durable analytical store outcomes (IN-01 / TD-048).
+   Durability, operations, and continuity **outcomes** for Master Plan packages V3-O01…O05. W3-O01 specifically owns durable analytical store **outcomes** (IN-01 / TD-048) by extending existing owners only — no new persistence owner.
 
 5. **What is explicitly out of scope?**
    Live Trading; Wave 4–10 products not named for Wave 3; redesign of Wave 1/2 or Version 2 architecture; new bounded contexts; second Lake/Outbox; Master Plan changes; ownership changes; implementation before Approval; Wave 3 COMPLETE from planning alone.
@@ -184,11 +188,11 @@ Vault, Authentication, Authorization, Workspace Isolation, Security Platform, Se
 
 ## Planning verdict
 
-Planning Package for Wave 3 is complete for Product Owner Planning Review.
+Wave 3 Planning is **APPROVED**. W3-O01 Implementation Readiness is finalized — see [`implementation-readiness-checklist.md`](./implementation-readiness-checklist.md).
 
-Implementation must not begin.
+Implementation must not begin until Product Owner writes and sequences an implementation task.
 
-Implementation slices must not be opened.
+Implementation slices must not be opened from this document.
 
 Master Plan remains unchanged.
 
@@ -198,4 +202,4 @@ Live Trading must not be claimed.
 
 ---
 
-**STOP.** Wait for Product Owner Planning Review before any Wave 3 implementation.
+**STOP.** Wait for Product Owner review of Implementation Readiness. Do not create W3-O01-a. Do not begin implementation.

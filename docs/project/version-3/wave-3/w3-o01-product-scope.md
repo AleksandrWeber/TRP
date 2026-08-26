@@ -3,10 +3,11 @@
 **Package:** W3-O01 Durable Analytical Stores
 **Wave:** 3 — Durability, Operations & Continuity
 **Master Plan / Roadmap:** V3-O01 · IN-01 · TD-048
-**Status:** Implementation package — Planning **COMPLETE**. Not implementation. Awaiting Product Owner Planning Review and Approval.
+**Status:** Implementation package — Planning **APPROVED**. Implementation Readiness **FINALIZED**. Not implementation. Slices not opened.
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Umbrella:** [`w3-o01-implementation-package.md`](./w3-o01-implementation-package.md)
 **Overview:** [`durability-overview.md`](./durability-overview.md)
+**Readiness:** [`implementation-readiness-checklist.md`](./implementation-readiness-checklist.md)
 
 This document freezes **IN / OUT**, **ownership**, **honesty**, **customer workflows**, **failure philosophy**, and **acceptance** for W3-O01. It does not redesign Version 2 analytical domains. It does not invent a second Lake or Outbox. It does not reopen Wave 1 or Wave 2. It does not revise the Master Plan. It does not introduce Live Trading. It does not claim Wave 3 COMPLETE.
 
@@ -35,12 +36,23 @@ It does **not** own Notification durable queue (O02), US295 stance (O03), Kill S
 ```text
 Existing analytical domain owners own domain logic and aggregates.
 Durable Analytical Stores owns survive-restart / honest-ephemeral outcomes for IN-01.
+W3-O01 extends existing durability mechanisms only — no new persistence owner.
 Survive-restart does NOT mean Live Trading enabled.
 Survive-restart does NOT mean Monitoring Complete.
 Survive-restart does NOT mean production restart-safety Complete (O03+).
 Survive-restart does NOT mean Wave 3 COMPLETE.
 ```
 
+---
+
+## Durability Clarification (binding)
+
+| Question                                           | Answer  |
+| -------------------------------------------------- | ------- |
+| Does W3-O01 extend existing durability mechanisms? | **YES** |
+| Does W3-O01 introduce any new persistence owner?   | **NO**  |
+
+Existing owners are **extended only**. Residual `durable-persistence-product` is TD-048 debt vocabulary — not a new Source of Truth.
 ---
 
 ## Why Durable Analytical Stores exists (business language)
@@ -83,11 +95,13 @@ After this package Closes (post-implementation), an operator can:
 
 | Outcome                                         | Customer meaning                                             |
 | ----------------------------------------------- | ------------------------------------------------------------ |
-| Durable analytical store outcomes               | Operator-relied in-scope artifacts survive API restart       |
+| Durable analytical store **outcomes**           | Operator-relied in-scope artifacts survive API restart       |
 | Honest ephemeral labeling                       | Non-surviving surfaces are labeled honestly (exception path) |
 | Restart-survival honesty                        | No silent loss presented as success                          |
 | Workspace-scoped analytical durability outcomes | A cannot use B’s artifacts                                   |
 | Attributable durability outcomes                | Emit to Security Audit where required                        |
+
+**Does not own persistence as a new product.** Existing V2 analytical aggregate owners remain persistence owners.
 
 ---
 
@@ -243,7 +257,7 @@ Do not open these slices until Product Owner Approves planning and sequences imp
    Authn, Authz, Isolation, Vault, Security Platform, Security Audit; Closed Wave 2; existing V2 analytical aggregates / Outbox / Inbox / Lake projection.
 
 4. **What does Wave 3 own?**
-   V3-O01…O05 durability, operations, and continuity outcomes. W3-O01 owns IN-01 durable analytical store outcomes.
+   V3-O01…O05 durability, operations, and continuity **outcomes**. W3-O01 owns IN-01 durable analytical store **outcomes** by extending existing owners only — no new persistence owner.
 
 5. **What is explicitly out of scope?**
    Live Trading; O02–O05 from this package; second Lake/Outbox; Master Plan / Version 2 / Wave 1 / Wave 2 modifications; ownership changes; implementation before Approval; Wave 3 COMPLETE from planning.
@@ -259,4 +273,4 @@ Do not open these slices until Product Owner Approves planning and sequences imp
 
 ---
 
-**STOP.** Wait for Product Owner Planning Review before W3-O01 implementation begins.
+**STOP.** Planning APPROVED. Wait for Product Owner to write / sequence an implementation task. Do not create W3-O01-a from this document.
