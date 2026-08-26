@@ -2,6 +2,8 @@ import type {
   ConnectionMetadataView,
   MarketDataProviderCatalogView,
   MarketSymbolDiscoveryView,
+  MarketSymbolView,
+  MarketTickerRetrievalView,
 } from '../shared/api';
 
 export type MarketDataViewProps = {
@@ -9,11 +11,16 @@ export type MarketDataViewProps = {
   connections: ConnectionMetadataView[];
   selectedConnectionId: string;
   discovery: MarketSymbolDiscoveryView | null;
+  selectedSymbol: MarketSymbolView | null;
+  ticker: MarketTickerRetrievalView | null;
   loading: boolean;
   discovering: boolean;
+  retrievingTicker: boolean;
   error: string | null;
   onSelectConnection: (connectionId: string) => void;
   onDiscover: () => void;
+  onSelectSymbol: (symbol: MarketSymbolView | null) => void;
+  onRetrieveTicker: () => void;
 };
 
 export function MarketDataView({
@@ -21,11 +28,16 @@ export function MarketDataView({
   connections,
   selectedConnectionId,
   discovery,
+  selectedSymbol,
+  ticker,
   loading,
   discovering,
+  retrievingTicker,
   error,
   onSelectConnection,
   onDiscover,
+  onSelectSymbol,
+  onRetrieveTicker,
 }: MarketDataViewProps) {
   const exchangeConnections = connections.filter((item) => item.connectionType === 'EXCHANGE');
   const selected = exchangeConnections.find((item) => item.id === selectedConnectionId) ?? null;
@@ -36,9 +48,9 @@ export function MarketDataView({
         <p className="text-sm uppercase tracking-[0.2em] text-slate-400">Market Data</p>
         <h2 className="mt-1 text-3xl font-semibold">Market Data</h2>
         <p className="mt-2 max-w-3xl text-slate-400">
-          Load tradable symbols from a supported exchange connection. Symbols are normalized into
-          one product model. This surface does not show ticker, candles, order book, balances,
-          positions, or trading controls.
+          Load tradable symbols and the current ticker from a supported exchange connection. Data is
+          normalized into one product model. This surface does not show candles, order book,
+          balances, positions, or trading controls.
         </p>
       </div>
 
@@ -59,10 +71,9 @@ export function MarketDataView({
                 <p className="mt-1 text-sm text-slate-400">
                   {provider.availability === 'AVAILABLE' ? 'Available' : 'Unavailable'}
                   {' · '}
-                  Symbols
                   {provider.id === 'BINANCE'
-                    ? ' discovery supported'
-                    : ' discovery not implemented'}
+                    ? 'Symbols and ticker supported'
+                    : 'Symbols and ticker not implemented'}
                 </p>
               </div>
             ))}
@@ -105,7 +116,28 @@ export function MarketDataView({
               <p className="text-sm text-slate-400">
                 {discovery.symbols.length} symbols from {discovery.providerId}
               </p>
-              <ul className="mt-4 max-h-96 space-y-2 overflow-auto text-sm">
+              <label className="mt-4 block text-sm text-slate-300">
+                Select Symbol
+                <select
+                  className="mt-2 w-full rounded border border-white/10 bg-slate-950 px-3 py-2"
+                  value={selectedSymbol?.exchangeSymbol ?? ''}
+                  onChange={(event) => {
+                    const next =
+                      discovery.symbols.find(
+                        (symbol) => symbol.exchangeSymbol === event.target.value,
+                      ) ?? null;
+                    onSelectSymbol(next);
+                  }}
+                >
+                  <option value="">Select a symbol</option>
+                  {discovery.symbols.map((symbol) => (
+                    <option key={symbol.exchangeSymbol} value={symbol.exchangeSymbol}>
+                      {symbol.normalizedSymbol} ({symbol.exchangeSymbol})
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <ul className="mt-4 max-h-64 space-y-2 overflow-auto text-sm">
                 {discovery.symbols.map((symbol) => (
                   <li key={symbol.exchangeSymbol} className="border-b border-white/5 py-2">
                     <span className="font-medium">{symbol.normalizedSymbol}</span>
@@ -133,6 +165,100 @@ export function MarketDataView({
           ) : null}
         </section>
       </div>
+
+      <section className="rounded border border-white/10 p-5">
+        <h3 className="text-lg font-medium">Ticker</h3>
+        <p className="mt-2 text-sm text-slate-400">
+          Load the current ticker for the selected symbol. Freshness reflects observed exchange and
+          retrieval timestamps only.
+        </p>
+        <button
+          type="button"
+          className="mt-4 rounded bg-sky-700 px-4 py-2 text-sm font-medium disabled:opacity-50"
+          onClick={onRetrieveTicker}
+          disabled={!selected || !selectedSymbol || retrievingTicker || loading}
+        >
+          {retrievingTicker ? 'Loading ticker…' : 'Load Ticker'}
+        </button>
+
+        {!ticker ? (
+          <p className="mt-4 text-slate-400">Select a symbol and load the current ticker.</p>
+        ) : null}
+
+        {ticker?.outcome === 'COMPLETED' && ticker.ticker ? (
+          <div className="mt-4 space-y-2 text-sm" data-testid="ticker-panel">
+            <p>
+              <span className="text-slate-400">Symbol</span>{' '}
+              <span className="font-medium">{ticker.ticker.normalizedSymbol}</span>
+            </p>
+            <p>
+              <span className="text-slate-400">Last</span>{' '}
+              <span className="font-medium">{ticker.ticker.lastPrice}</span>
+            </p>
+            <p>
+              <span className="text-slate-400">Bid / Ask</span>{' '}
+              <span className="font-medium">
+                {ticker.ticker.bid} / {ticker.ticker.ask}
+              </span>
+            </p>
+            <p>
+              <span className="text-slate-400">24h change %</span>{' '}
+              <span className="font-medium">{ticker.ticker.changePercent24h}</span>
+            </p>
+            <p>
+              <span className="text-slate-400">24h high / low</span>{' '}
+              <span className="font-medium">
+                {ticker.ticker.high24h} / {ticker.ticker.low24h}
+              </span>
+            </p>
+            <p>
+              <span className="text-slate-400">24h volume</span>{' '}
+              <span className="font-medium">{ticker.ticker.volume24h}</span>
+            </p>
+            <p>
+              <span className="text-slate-400">Freshness</span>{' '}
+              <span className="font-medium" data-testid="ticker-freshness">
+                {formatFreshness(ticker.freshness)}
+              </span>
+            </p>
+            <p className="text-slate-500">
+              Exchange {ticker.ticker.exchangeTimestamp} · Retrieved{' '}
+              {ticker.ticker.retrievalTimestamp}
+            </p>
+          </div>
+        ) : null}
+
+        {ticker && ticker.outcome !== 'COMPLETED' ? (
+          <div className="mt-4" role="status">
+            <p className="font-medium text-amber-200">
+              {ticker.outcome === 'PROVIDER_UNAVAILABLE'
+                ? 'Provider Unavailable'
+                : ticker.outcome === 'NOT_IMPLEMENTED'
+                  ? 'Provider unavailable — ticker retrieval not implemented'
+                  : 'Ticker retrieval failed'}
+            </p>
+            <p className="mt-2 text-sm text-slate-400">
+              Freshness: {formatFreshness(ticker.freshness)}
+            </p>
+            {ticker.failureReason ? (
+              <p className="mt-2 text-sm text-slate-400">{ticker.failureReason}</p>
+            ) : null}
+          </div>
+        ) : null}
+      </section>
     </section>
   );
+}
+
+function formatFreshness(value: string): string {
+  switch (value) {
+    case 'FRESH':
+      return 'Fresh';
+    case 'STALE':
+      return 'Stale';
+    case 'UNAVAILABLE':
+      return 'Unavailable';
+    default:
+      return 'Unknown';
+  }
 }

@@ -4,8 +4,8 @@ import { describe, expect, it } from 'vitest';
 
 const directory = join(process.cwd(), 'src/modules/market-data-foundation');
 
-describe('Market Data foundation isolation (W2-S03-b)', () => {
-  it('keeps transport in the symbol HTTP client and never imports trading owners', async () => {
+describe('Market Data foundation isolation (W2-S03-c)', () => {
+  it('keeps transport in HTTP clients and never imports trading owners', async () => {
     const files = (await readdir(directory)).filter(
       (name) => name.endsWith('.ts') && !name.endsWith('.spec.ts'),
     );
@@ -21,10 +21,8 @@ describe('Market Data foundation isolation (W2-S03-b)', () => {
     expect(joined).not.toMatch(/\bWebSocket\b/);
     expect(joined).not.toMatch(/wss:\/\//);
     expect(joined).not.toMatch(/\bsetInterval\s*\(/);
-    expect(joined).not.toMatch(/\bgetTicker\s*\(/);
     expect(joined).not.toMatch(/\bgetCandles\s*\(/);
     expect(joined).not.toMatch(/\bgetOrderBook\s*\(/);
-    expect(joined).not.toMatch(/\bfetchTicker\s*\(/);
     expect(joined).not.toMatch(/from ['"]\.\.\/live-trading-engine/);
     expect(joined).not.toMatch(/from ['"]\.\.\/orders/);
     expect(joined).not.toMatch(/from ['"]\.\.\/positions/);
@@ -38,8 +36,9 @@ describe('Market Data foundation isolation (W2-S03-b)', () => {
 
     const fetchFiles = sources
       .filter((file) => /\bfetch\s*\(/.test(file.source))
-      .map((file) => file.name);
-    expect(fetchFiles).toEqual(['market-symbol.http.ts']);
+      .map((file) => file.name)
+      .sort();
+    expect(fetchFiles).toEqual(['market-symbol.http.ts', 'market-ticker.http.ts']);
 
     const capabilitySource = sources.find(
       (file) => file.name === 'market-data-provider-capabilities.ts',
@@ -57,6 +56,13 @@ describe('Market Data foundation isolation (W2-S03-b)', () => {
     expect(discoverySource?.source).not.toMatch(/\bWebSocket\b/);
     expect(discoverySource?.source).not.toMatch(/\burl\b/);
 
+    const tickerRetrievalSource = sources.find(
+      (file) => file.name === 'market-ticker.retrieval.ts',
+    );
+    expect(tickerRetrievalSource?.source).not.toMatch(/\bfetch\s*\(/);
+    expect(tickerRetrievalSource?.source).not.toMatch(/\bWebSocket\b/);
+    expect(tickerRetrievalSource?.source).not.toMatch(/\burl\b/);
+
     for (const adapter of sources.filter(
       (file) => file.name.endsWith('adapter.ts') && file.name !== 'market-data-adapter.ts',
     )) {
@@ -66,7 +72,11 @@ describe('Market Data foundation isolation (W2-S03-b)', () => {
       expect(adapter.source).not.toMatch(/from ['"]\.\.\/auth['"]/);
     }
 
-    expect(joined).not.toMatch(/\/api\/v3\/ticker/);
+    const tickerPathFiles = sources
+      .filter((file) => /\/api\/v3\/ticker/.test(file.source))
+      .map((file) => file.name);
+    expect(tickerPathFiles).toEqual(['binance-ticker.adapter.ts']);
+
     expect(joined).not.toMatch(/\/api\/v3\/klines/);
     expect(joined).not.toMatch(/\/api\/v3\/depth/);
     expect(joined).not.toMatch(/\/api\/v3\/account\b/);

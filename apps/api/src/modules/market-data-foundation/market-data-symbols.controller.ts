@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Body,
   Controller,
   ForbiddenException,
   Get,
@@ -7,6 +8,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Query,
   Req,
 } from '@nestjs/common';
 import type { AuthUser } from '../auth/jwt.strategy';
@@ -16,6 +18,9 @@ import { WorkspaceAccessService } from '../workspace';
 import { listMarketDataProviders } from './market-data-provider-catalog';
 import type { MarketSymbolDiscoveryView } from './market-symbol.projection';
 import { MarketSymbolDiscoveryService } from './market-symbol.service';
+import type { MarketTickerRetrievalView } from './market-ticker.projection';
+import { MarketTickerRetrievalService } from './market-ticker.service';
+import { MarketTickerInvalidSymbolError } from './market-ticker.validate';
 
 type RequestWithUser = { user: AuthUser };
 
@@ -28,16 +33,22 @@ export type MarketDataProviderCatalogView = Readonly<{
   }>;
 }>;
 
+export type MarketTickerRetrieveBody = Readonly<{
+  exchangeSymbol?: string;
+  normalizedSymbol?: string;
+}>;
+
 /**
- * Market Data symbol discovery HTTP surface (W2-S03-b).
+ * Market Data HTTP surface (W2-S03-b symbols, W2-S03-c ticker).
  *
- * Projection permission only. No trading, ticker, candles, or order book.
+ * Projection permission only. No candles, order book, trades, or trading.
  */
 @Controller({ path: 'market-data', version: '1' })
 @RequirePermission(PermissionClass.Projection)
 export class MarketDataSymbolsController {
   constructor(
     private readonly symbols: MarketSymbolDiscoveryService,
+    private readonly tickers: MarketTickerRetrievalService,
     private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
@@ -88,6 +99,56 @@ export class MarketDataSymbolsController {
         throw error;
       }
       throw new BadRequestException('Symbol discovery could not be completed.');
+    }
+  }
+
+  @Get('connections/:connectionId/ticker')
+  cachedTicker(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('connectionId') connectionId: string,
+    @Query('exchangeSymbol') exchangeSymbol: string | undefined,
+  ): MarketTickerRetrievalView {
+    const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
+    const symbol = exchangeSymbol?.trim();
+    if (!symbol) {
+      throw new BadRequestException('exchangeSymbol query parameter is required');
+    }
+    const view = this.tickers.cached(workspaceId, connectionId, symbol);
+    if (!view) {
+      throw new NotFoundException('No cached ticker for this connection symbol');
+    }
+    return view;
+  }
+
+  @Post('connections/:connectionId/ticker/retrieve')
+  async retrieveTicker(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Param('connectionId') connectionId: string,
+    @Body() body: MarketTickerRetrieveBody,
+  ): Promise<MarketTickerRetrievalView> {
+    const exchangeSymbol = body?.exchangeSymbol?.trim() ?? '';
+    const normalizedSymbol = body?.normalizedSymbol?.trim() ?? '';
+    if (!exchangeSymbol || !normalizedSymbol) {
+      throw new BadRequestException('exchangeSymbol and normalizedSymbol are required');
+    }
+    try {
+      return await this.tickers.retrieve({
+        workspaceId: requireWorkspace(this.workspaceAccess, request.user, workspaceHeader),
+        actorUserId: request.user.userId,
+        connectionId,
+        exchangeSymbol,
+        normalizedSymbol,
+      });
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      if (error instanceof MarketTickerInvalidSymbolError) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException('Ticker retrieval could not be completed.');
     }
   }
 }

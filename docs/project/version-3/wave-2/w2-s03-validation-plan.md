@@ -2,7 +2,7 @@
 
 **Package:** W2-S03 Market Data Foundation
 **Wave:** 2 — Connection Management
-**Status:** W2-S03-a and W2-S03-b executed for slice review. Remaining slices not executed. Close remains pending Product Owner decision.
+**Status:** W2-S03-a, W2-S03-b, and W2-S03-c executed for slice review. Remaining slices not executed. Close remains pending Product Owner decision.
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w2-s03-product-scope.md`](./w2-s03-product-scope.md)
 **Security:** [`w2-s03-security-review.md`](./w2-s03-security-review.md)
@@ -38,7 +38,7 @@ Do not validate order placement, execution, portfolio, balances, positions, WebS
 | ------------ | -------------------------------------------------------------------------------------- | ---------------------------------------------- |
 | **W2-S03-a** | One Market Data adapter contract for Binance, Bybit, OKX; additional providers allowed | Adapters — **executed** (see below)            |
 | **W2-S03-b** | Provider payloads normalize; symbols are provider-scoped and selectable                | Normalize / symbols — **executed** (see below) |
-| **W2-S03-c** | Ticker, candles, and order book are honest product projections                         | Projections                                    |
+| **W2-S03-c** | Ticker foundation is an honest product projection (candles / order book remain later)  | Ticker projection — **executed** (see below)   |
 | **W2-S03-d** | Health, provider metadata, Provider Unavailable, and stale handling are honest         | Health / honesty                               |
 | **W2-S03-e** | Verification Standard + regressions + full walkthrough                                 | Close evidence                                 |
 
@@ -73,6 +73,25 @@ Recorded in [`w2-s03-b-validation-report.md`](./w2-s03-b-validation-report.md).
 | No ticker, candles, order book, prices, WebSockets, or polling      | PASS   |
 
 W2-S03-b does **not** Close W2-S03. Ticker / candles / order-book projections, health, and the full Market Data Walkthrough remain later slices.
+
+### W2-S03-c execution evidence
+
+Recorded in [`w2-s03-c-validation-report.md`](./w2-s03-c-validation-report.md).
+
+| Proof                                                                   | Result |
+| ----------------------------------------------------------------------- | ------ |
+| Binance ticker retrieval returns a normalized current ticker            | PASS   |
+| Provider-independent ticker model with required fields only             | PASS   |
+| Deterministic normalization; unknown fields not guessed                 | PASS   |
+| Malformed payloads, invalid prices, inconsistent timestamps rejected    | PASS   |
+| Freshness projected as Fresh / Stale / Unavailable / Unknown honestly   | PASS   |
+| Session-safe ticker cache stores normalized ticker objects only         | PASS   |
+| Workspace isolation and Connected connection prerequisite               | PASS   |
+| Bybit / OKX report not implemented                                      | PASS   |
+| Operator UI: select exchange, select symbol, load ticker, freshness     | PASS   |
+| No candles, order book, trades, historical data, WebSockets, or polling | PASS   |
+
+W2-S03-c does **not** Close W2-S03. Candles, order-book projections, health product Close, and the full Market Data Walkthrough remain later slices.
 
 ---
 
@@ -303,4 +322,4 @@ Do not treat the following as W2-S03 Close evidence:
 
 ---
 
-**STOP.** W2-S03-b is implemented for Product Owner review. Do not begin W2-S03-c automatically.
+**STOP.** W2-S03-c is implemented for Product Owner review. Do not begin W2-S03-d automatically.

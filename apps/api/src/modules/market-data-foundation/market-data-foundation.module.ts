@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { SecurityAuditModule } from '../security-audit';
 import { WorkspaceModule } from '../workspace';
 import { BinanceSymbolDiscoveryAdapter } from './binance-symbol.adapter';
+import { BinanceTickerRetrievalAdapter } from './binance-ticker.adapter';
 import { MarketDataAdapterFactory } from './market-data-adapter.factory';
 import { MarketDataAdapterRegistry } from './market-data-adapter.registry';
 import { MarketDataSymbolsController } from './market-data-symbols.controller';
@@ -16,6 +17,17 @@ import {
 } from './market-symbol.http';
 import { MarketSymbolDiscoveryService } from './market-symbol.service';
 import { PlannedSymbolDiscoveryAdapter } from './planned-symbol.adapter';
+import { MarketTickerCache } from './market-ticker.cache';
+import { MarketTickerRetrievalAudit } from './market-ticker.audit';
+import {
+  DEFAULT_TICKER_RETRIEVAL_TIMEOUT_MS,
+  FetchTickerRetrievalHttpClient,
+  TICKER_RETRIEVAL_HTTP_CLIENT,
+  TICKER_RETRIEVAL_TIMEOUT_MS,
+} from './market-ticker.http';
+import { MARKET_DATA_TICKER_RETRIEVAL_ADAPTERS } from './market-ticker.retrieval';
+import { MarketTickerRetrievalService } from './market-ticker.service';
+import { PlannedTickerRetrievalAdapter } from './planned-ticker.adapter';
 
 /**
  * Market Data Foundation module.
@@ -23,7 +35,9 @@ import { PlannedSymbolDiscoveryAdapter } from './planned-symbol.adapter';
  * W2-S03-a: provider identity, capability metadata, static availability,
  * adapter contract, registry, and factory/resolver.
  * W2-S03-b: exchange symbol discovery, normalization, validation, cache,
- * and projection. Ticker, candles, and order book remain later slices.
+ * and projection.
+ * W2-S03-c: ticker retrieval, normalization, validation, freshness, cache,
+ * and projection. Candles and order book remain later slices.
  */
 @Module({
   imports: [WorkspaceModule, SecurityAuditModule],
@@ -60,12 +74,36 @@ import { PlannedSymbolDiscoveryAdapter } from './planned-symbol.adapter';
     MarketSymbolCache,
     MarketSymbolDiscoveryAudit,
     MarketSymbolDiscoveryService,
+    FetchTickerRetrievalHttpClient,
+    {
+      provide: TICKER_RETRIEVAL_HTTP_CLIENT,
+      useExisting: FetchTickerRetrievalHttpClient,
+    },
+    {
+      provide: TICKER_RETRIEVAL_TIMEOUT_MS,
+      useValue: DEFAULT_TICKER_RETRIEVAL_TIMEOUT_MS,
+    },
+    BinanceTickerRetrievalAdapter,
+    {
+      provide: MARKET_DATA_TICKER_RETRIEVAL_ADAPTERS,
+      useFactory: (binance: BinanceTickerRetrievalAdapter) => [
+        binance,
+        new PlannedTickerRetrievalAdapter('BYBIT'),
+        new PlannedTickerRetrievalAdapter('OKX'),
+      ],
+      inject: [BinanceTickerRetrievalAdapter],
+    },
+    MarketTickerCache,
+    MarketTickerRetrievalAudit,
+    MarketTickerRetrievalService,
   ],
   exports: [
     MarketDataAdapterRegistry,
     MarketDataAdapterFactory,
     MarketSymbolDiscoveryService,
     MarketSymbolCache,
+    MarketTickerRetrievalService,
+    MarketTickerCache,
   ],
 })
 export class MarketDataFoundationModule {}

@@ -1,6 +1,10 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import type { ConnectionMetadataView, MarketDataProviderCatalogView } from '../shared/api';
+import type {
+  ConnectionMetadataView,
+  MarketDataProviderCatalogView,
+  MarketSymbolView,
+} from '../shared/api';
 import { MarketDataView, type MarketDataViewProps } from './MarketDataView';
 
 const providers: MarketDataProviderCatalogView = {
@@ -41,49 +45,74 @@ const connection: ConnectionMetadataView = {
   updatedAt: '2026-08-26T00:00:00.000Z',
 };
 
-const baseProps: Omit<MarketDataViewProps, 'discovery'> = {
+const symbol: MarketSymbolView = {
+  exchangeSymbol: 'BTCUSDT',
+  normalizedSymbol: 'BTC-USDT',
+  baseAsset: 'BTC',
+  quoteAsset: 'USDT',
+  tradingStatus: 'TRADING',
+  providerId: 'BINANCE',
+};
+
+const baseProps: Omit<MarketDataViewProps, 'discovery' | 'selectedSymbol' | 'ticker'> = {
   providers,
   connections: [connection],
   selectedConnectionId: 'connection-1',
   loading: false,
   discovering: false,
+  retrievingTicker: false,
   error: null,
   onSelectConnection: () => undefined,
   onDiscover: () => undefined,
+  onSelectSymbol: () => undefined,
+  onRetrieveTicker: () => undefined,
 };
 
-describe('Market Data UI (W2-S03-b)', () => {
-  it('renders exchange selection and symbol list without ticker or trading controls', () => {
+describe('Market Data UI (W2-S03-c)', () => {
+  it('renders ticker with freshness and without candles or trading controls', () => {
     const html = renderToStaticMarkup(
       <MarketDataView
         {...baseProps}
+        selectedSymbol={symbol}
         discovery={{
           connectionId: 'connection-1',
           providerId: 'BINANCE',
           discoveredAt: '2026-08-26T00:00:00.000Z',
           outcome: 'COMPLETED',
           failureReason: null,
-          symbols: [
-            {
-              exchangeSymbol: 'BTCUSDT',
-              normalizedSymbol: 'BTC-USDT',
-              baseAsset: 'BTC',
-              quoteAsset: 'USDT',
-              tradingStatus: 'TRADING',
-              providerId: 'BINANCE',
-            },
-          ],
+          symbols: [symbol],
+        }}
+        ticker={{
+          connectionId: 'connection-1',
+          providerId: 'BINANCE',
+          exchangeSymbol: 'BTCUSDT',
+          freshness: 'FRESH',
+          outcome: 'COMPLETED',
+          failureReason: null,
+          ticker: {
+            normalizedSymbol: 'BTC-USDT',
+            lastPrice: '65000.12',
+            bid: '64999.00',
+            ask: '65001.00',
+            changePercent24h: '1.25',
+            high24h: '66000.00',
+            low24h: '64000.00',
+            volume24h: '1234.5',
+            exchangeTimestamp: '2026-08-26T11:59:55.000Z',
+            retrievalTimestamp: '2026-08-26T12:00:00.000Z',
+            providerId: 'BINANCE',
+            freshness: 'FRESH',
+          },
         }}
       />,
     );
 
     expect(html).toContain('Market Data');
     expect(html).toContain('Select Exchange');
-    expect(html).toContain('Binance');
-    expect(html).toContain('Load Symbols');
-    expect(html).toContain('BTC-USDT');
-    expect(html).toContain('Normalized symbols');
-    expect(html).not.toContain('Ticker');
+    expect(html).toContain('Select Symbol');
+    expect(html).toContain('Load Ticker');
+    expect(html).toContain('65000.12');
+    expect(html).toContain('Fresh');
     expect(html).not.toContain('Candles');
     expect(html).not.toContain('Order Book');
     expect(html).not.toContain('Place order');
@@ -91,36 +120,58 @@ describe('Market Data UI (W2-S03-b)', () => {
     expect(html).not.toContain('Positions');
   });
 
-  it('shows discovery failure and provider unavailable honestly', () => {
+  it('shows ticker failure and provider unavailable honestly', () => {
     const failed = renderToStaticMarkup(
       <MarketDataView
         {...baseProps}
+        selectedSymbol={symbol}
         discovery={{
           connectionId: 'connection-1',
           providerId: 'BINANCE',
           discoveredAt: '2026-08-26T00:00:00.000Z',
+          outcome: 'COMPLETED',
+          failureReason: null,
+          symbols: [symbol],
+        }}
+        ticker={{
+          connectionId: 'connection-1',
+          providerId: 'BINANCE',
+          exchangeSymbol: 'BTCUSDT',
+          freshness: 'UNKNOWN',
           outcome: 'FAILED',
-          failureReason: 'Malformed provider symbol payload',
-          symbols: [],
+          failureReason: 'Malformed provider ticker payload',
+          ticker: null,
         }}
       />,
     );
-    expect(failed).toContain('Symbol discovery failed');
-    expect(failed).toContain('Malformed provider symbol payload');
+    expect(failed).toContain('Ticker retrieval failed');
+    expect(failed).toContain('Malformed provider ticker payload');
+    expect(failed).toContain('Unknown');
 
     const unavailable = renderToStaticMarkup(
       <MarketDataView
         {...baseProps}
+        selectedSymbol={symbol}
         discovery={{
           connectionId: 'connection-1',
           providerId: 'BYBIT',
           discoveredAt: '2026-08-26T00:00:00.000Z',
+          outcome: 'COMPLETED',
+          failureReason: null,
+          symbols: [{ ...symbol, providerId: 'BYBIT' }],
+        }}
+        ticker={{
+          connectionId: 'connection-1',
+          providerId: 'BYBIT',
+          exchangeSymbol: 'BTCUSDT',
+          freshness: 'UNAVAILABLE',
           outcome: 'NOT_IMPLEMENTED',
-          failureReason: 'Symbol discovery is not implemented for this provider',
-          symbols: [],
+          failureReason: 'Ticker retrieval is not implemented for this provider',
+          ticker: null,
         }}
       />,
     );
     expect(unavailable).toContain('not implemented');
+    expect(unavailable).toContain('Unavailable');
   });
 });

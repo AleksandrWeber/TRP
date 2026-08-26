@@ -65,3 +65,46 @@ export { MarketSymbolDiscoveryService } from './market-symbol.service';
 export { MarketSymbolDiscoveryAudit } from './market-symbol.audit';
 export { BinanceSymbolDiscoveryAdapter, parseBinanceExchangeInfo } from './binance-symbol.adapter';
 export { PlannedSymbolDiscoveryAdapter } from './planned-symbol.adapter';
+export {
+  MARKET_TICKER_FRESHNESS,
+  isMarketTickerFreshness,
+  type MarketTickerFreshness,
+  type NormalizedMarketTicker,
+  type ProviderTickerObservation,
+} from './market-ticker';
+export {
+  MARKET_TICKER_FRESH_MAX_AGE_MS,
+  MARKET_TICKER_FRESHNESS_CLOCK_SKEW_MS,
+  calculateTickerFreshness,
+} from './market-ticker.freshness';
+export {
+  MARKET_TICKER_CLOCK_SKEW_MS,
+  isValidExchangeSymbol,
+  isValidNormalizedSymbol,
+  normalizeProviderTicker,
+} from './market-ticker.normalize';
+export {
+  MarketTickerInvalidSymbolError,
+  MarketTickerMalformedPayloadError,
+  MarketTickerValidationError,
+  validateAndNormalizeTicker,
+  validateTickerSymbolRequest,
+} from './market-ticker.validate';
+export {
+  projectMarketTicker,
+  projectTickerRetrieval,
+  type MarketTickerFieldsView,
+  type MarketTickerRetrievalView,
+} from './market-ticker.projection';
+export { MarketTickerCache, type MarketTickerCacheEntry } from './market-ticker.cache';
+export {
+  MARKET_DATA_TICKER_RETRIEVAL_ADAPTERS,
+  type MarketTickerRetrievalAdapter,
+  type MarketTickerRetrievalAdapterKind,
+  type MarketTickerRetrievalAdapterRequest,
+  type MarketTickerRetrievalAdapterResult,
+} from './market-ticker.retrieval';
+export { MarketTickerRetrievalService } from './market-ticker.service';
+export { MarketTickerRetrievalAudit } from './market-ticker.audit';
+export { BinanceTickerRetrievalAdapter, parseBinanceTicker24hr } from './binance-ticker.adapter';
+export { PlannedTickerRetrievalAdapter } from './planned-ticker.adapter';

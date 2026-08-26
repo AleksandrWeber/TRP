@@ -130,6 +130,33 @@ export type MarketSymbolDiscoveryView = {
   failureReason: string | null;
 };
 
+export type MarketTickerFreshness = 'FRESH' | 'STALE' | 'UNAVAILABLE' | 'UNKNOWN';
+
+export type MarketTickerFieldsView = {
+  normalizedSymbol: string;
+  lastPrice: string;
+  bid: string;
+  ask: string;
+  changePercent24h: string;
+  high24h: string;
+  low24h: string;
+  volume24h: string;
+  exchangeTimestamp: string;
+  retrievalTimestamp: string;
+  providerId: string;
+  freshness: MarketTickerFreshness;
+};
+
+export type MarketTickerRetrievalView = {
+  connectionId: string;
+  providerId: string;
+  exchangeSymbol: string;
+  ticker: MarketTickerFieldsView | null;
+  freshness: MarketTickerFreshness;
+  outcome: 'COMPLETED' | 'FAILED' | 'PROVIDER_UNAVAILABLE' | 'NOT_IMPLEMENTED';
+  failureReason: string | null;
+};
+
 export type Dataset = {
   id: string;
   symbol: string;
@@ -2979,6 +3006,21 @@ export const api = {
       {
         method: 'POST',
         body: '{}',
+      },
+    ),
+  getMarketDataTicker: (connectionId: string, exchangeSymbol: string) =>
+    request<MarketTickerRetrievalView>(
+      `/market-data/connections/${encodeURIComponent(connectionId)}/ticker?exchangeSymbol=${encodeURIComponent(exchangeSymbol)}`,
+    ),
+  retrieveMarketDataTicker: (
+    connectionId: string,
+    body: { exchangeSymbol: string; normalizedSymbol: string },
+  ) =>
+    request<MarketTickerRetrievalView>(
+      `/market-data/connections/${encodeURIComponent(connectionId)}/ticker/retrieve`,
+      {
+        method: 'POST',
+        body: JSON.stringify(body),
       },
     ),
   listConnections: () => request<ConnectionMetadataView[]>('/connections'),
