@@ -100,6 +100,23 @@ export function activatePaperTradingAccount(
   });
 }
 
+/**
+ * Persist derived paper cash after fills (W2-S04-d).
+ * Server-side only — never accepts client-supplied balances.
+ */
+export function setPaperAccountCurrentBalance(
+  account: PaperTradingAccount,
+  currentBalance: string,
+  updatedAt: string,
+): PaperTradingAccount {
+  assertIso(updatedAt, 'updatedAt');
+  return Object.freeze({
+    ...account,
+    currentBalance: normalizeBalance(currentBalance, 'current balance'),
+    updatedAt,
+  });
+}
+
 function normalizeCurrency(value: string): PaperAccountCurrency {
   const currency = required(value, 'base currency').toUpperCase();
   if (!isPaperAccountCurrency(currency)) {

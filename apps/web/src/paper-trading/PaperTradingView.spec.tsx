@@ -1,12 +1,15 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import type { PaperFillView, PaperOrderView, PaperTradingAccountProjection } from '../shared/api';
+import type {
+  PaperFillView,
+  PaperFoundationExecutionHistoryView,
+  PaperFoundationPnLView,
+  PaperFoundationPortfolioView,
+  PaperFoundationPositionView,
+  PaperOrderView,
+  PaperTradingAccountProjection,
+} from '../shared/api';
 import { PaperTradingView, type PaperOrderFormState } from './PaperTradingView';
-
-const notCreated: PaperTradingAccountProjection = {
-  status: 'NOT_CREATED',
-  account: null,
-};
 
 const active: PaperTradingAccountProjection = {
   status: 'ACTIVE',
@@ -16,10 +19,10 @@ const active: PaperTradingAccountProjection = {
     status: 'ACTIVE',
     baseCurrency: 'USD',
     startingBalance: '100000',
-    currentBalance: '100000',
+    currentBalance: '49990',
     ownerId: 'user-1',
     createdAt: '2026-08-26T00:00:00.000Z',
-    updatedAt: '2026-08-26T00:00:00.000Z',
+    updatedAt: '2026-08-26T01:00:00.000Z',
   },
 };
 
@@ -53,6 +56,59 @@ const fill: PaperFillView = {
   createdAt: '2026-08-26T01:00:00.000Z',
 };
 
+const positions: PaperFoundationPositionView[] = [
+  {
+    exchange: 'BINANCE',
+    symbol: 'BTC-USDT',
+    side: 'LONG',
+    quantity: '1',
+    averageEntryPrice: '49900',
+    markPrice: '50500',
+    realizedPnL: '0',
+    unrealizedPnL: '600',
+  },
+];
+
+const portfolio: PaperFoundationPortfolioView = {
+  paperAccountId: 'pa-1',
+  workspaceId: 'workspace-a',
+  baseCurrency: 'USD',
+  cashBalance: '50100',
+  equity: '100600',
+  realizedPnL: '0',
+  unrealizedPnL: '600',
+  totalPnL: '600',
+  positions,
+  honesty: 'paper only',
+};
+
+const pnl: PaperFoundationPnLView = {
+  paperAccountId: 'pa-1',
+  workspaceId: 'workspace-a',
+  realizedPnL: '0',
+  unrealizedPnL: '600',
+  totalPnL: '600',
+  honesty: 'paper only',
+};
+
+const history: PaperFoundationExecutionHistoryView = {
+  entries: [
+    {
+      id: 'fill:f-1',
+      kind: 'FILL',
+      paperOrderId: 'o-1',
+      paperFillId: 'f-1',
+      exchange: 'BINANCE',
+      symbol: 'BTC-USDT',
+      side: 'BUY',
+      quantity: '1',
+      executionPrice: '49900',
+      occurredAt: '2026-08-26T01:00:00.000Z',
+    },
+  ],
+  honesty: 'local only',
+};
+
 const form: PaperOrderFormState = {
   exchange: 'BINANCE',
   symbol: 'BTC-USDT',
@@ -76,34 +132,17 @@ const baseHandlers = {
   onSelectFill: () => undefined,
 };
 
-describe('Paper Trading UI (W2-S04-c)', () => {
-  it('renders create Paper Account when Not Created', () => {
-    const html = renderToStaticMarkup(
-      <PaperTradingView
-        projection={notCreated}
-        orders={[]}
-        fills={[]}
-        selectedOrderId={null}
-        selectedFillId={null}
-        orderForm={form}
-        loading={false}
-        saving={false}
-        error={null}
-        startingBalance="100000"
-        {...baseHandlers}
-      />,
-    );
-    expect(html).toContain('Create Paper Account');
-    expect(html).toContain('Not Created');
-    expect(html).not.toContain('Create Order');
-  });
-
-  it('renders Execute Matching for Pending orders and View Paper Fill', () => {
+describe('Paper Trading UI (W2-S04-d)', () => {
+  it('renders Positions, Portfolio, PnL, and Execution History', () => {
     const html = renderToStaticMarkup(
       <PaperTradingView
         projection={active}
         orders={[pendingOrder]}
         fills={[fill]}
+        positions={positions}
+        portfolio={portfolio}
+        pnl={pnl}
+        history={history}
         selectedOrderId="o-1"
         selectedFillId="f-1"
         orderForm={form}
@@ -114,15 +153,15 @@ describe('Paper Trading UI (W2-S04-c)', () => {
         {...baseHandlers}
       />,
     );
-    expect(html).toContain('Execute Matching');
-    expect(html).toContain('Paper Fills');
-    expect(html).toContain('View Paper Fill');
-    expect(html).toContain('49900');
-    expect(html).toContain('Local simulated execution based on Market Data');
-    expect(html).toContain('No positions. No portfolio. No PnL.');
-    expect(html).not.toMatch(/>Position</);
-    expect(html).not.toMatch(/>Portfolio</);
-    expect(html).not.toMatch(/>PnL</);
+    expect(html).toContain('Paper Positions');
+    expect(html).toContain('Paper Portfolio');
+    expect(html).toContain('Paper PnL');
+    expect(html).toContain('Execution History');
+    expect(html).toContain('Realized PnL');
+    expect(html).toContain('Unrealized PnL');
+    expect(html).toContain('Paper PnL is simulated. It is not exchange profit.');
+    expect(html).not.toMatch(/Exchange Positions/);
+    expect(html).toContain('No Live Trading');
   });
 
   it('renders validation errors', () => {
@@ -131,16 +170,20 @@ describe('Paper Trading UI (W2-S04-c)', () => {
         projection={active}
         orders={[]}
         fills={[]}
+        positions={[]}
+        portfolio={null}
+        pnl={null}
+        history={null}
         selectedOrderId={null}
         selectedFillId={null}
         orderForm={form}
         loading={false}
         saving={false}
-        error="market data unavailable for BINANCE BTC-USDT"
+        error="insufficient paper cash balance for fill"
         startingBalance="100000"
         {...baseHandlers}
       />,
     );
-    expect(html).toContain('market data unavailable for BINANCE BTC-USDT');
+    expect(html).toContain('insufficient paper cash balance for fill');
   });
 });

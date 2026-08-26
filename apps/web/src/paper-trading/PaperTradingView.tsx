@@ -1,5 +1,9 @@
 import type {
   PaperFillView,
+  PaperFoundationExecutionHistoryView,
+  PaperFoundationPnLView,
+  PaperFoundationPortfolioView,
+  PaperFoundationPositionView,
   PaperOrderView,
   PaperTradingAccountProjection,
   PaperTradingAccountView,
@@ -23,6 +27,10 @@ export type PaperTradingViewProps = {
   projection: PaperTradingAccountProjection | null;
   orders: PaperOrderView[];
   fills: PaperFillView[];
+  positions: PaperFoundationPositionView[];
+  portfolio: PaperFoundationPortfolioView | null;
+  pnl: PaperFoundationPnLView | null;
+  history: PaperFoundationExecutionHistoryView | null;
   selectedOrderId: string | null;
   selectedFillId: string | null;
   orderForm: PaperOrderFormState;
@@ -86,13 +94,18 @@ function AccountFields({ account }: { account: PaperTradingAccountView }) {
 }
 
 /**
- * Paper Trading Foundation UI (W2-S04-a/b/c).
- * Account + Orders + local Market Data fills. No portfolio, PnL, positions, or Live Trading.
+ * Paper Trading Foundation UI (W2-S04-a/b/c/d).
+ * Account + Orders + Fills + Positions / Portfolio / PnL / History.
+ * Paper projections only — not exchange inventory or Live Trading.
  */
 export function PaperTradingView({
   projection,
   orders,
   fills,
+  positions,
+  portfolio,
+  pnl,
+  history,
   selectedOrderId,
   selectedFillId,
   orderForm,
@@ -121,8 +134,9 @@ export function PaperTradingView({
       <header>
         <h1 id="paper-trading-title">Paper Trading</h1>
         <p>
-          Create Paper Orders and execute local matching against Market Data snapshots. A Paper Fill
-          is simulated execution only — not exchange acceptance and not Live Trading.
+          Create Paper Orders, execute local matching against Market Data, and observe paper
+          Positions, Portfolio, Balance, PnL, and Execution History. Simulated only — not exchange
+          assets and not Live Trading.
         </p>
       </header>
 
@@ -401,6 +415,88 @@ export function PaperTradingView({
                   </div>
                 ) : null}
               </div>
+
+              <div className="paper-trading-positions" data-testid="paper-position-list">
+                <h2>Paper Positions</h2>
+                {positions.length === 0 ? (
+                  <p>No open Paper Positions.</p>
+                ) : (
+                  <ul>
+                    {positions.map((position) => (
+                      <li key={`${position.exchange}-${position.symbol}`}>
+                        {position.side} {position.quantity} {position.symbol} @{' '}
+                        {position.averageEntryPrice}
+                        {position.unrealizedPnL !== null
+                          ? ` (unrealized ${position.unrealizedPnL})`
+                          : ' (mark unavailable)'}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="paper-trading-portfolio" data-testid="paper-portfolio">
+                <h2>Paper Portfolio</h2>
+                {portfolio ? (
+                  <dl>
+                    <div>
+                      <dt>Paper Balance (Cash)</dt>
+                      <dd data-testid="paper-cash-balance">{portfolio.cashBalance}</dd>
+                    </div>
+                    <div>
+                      <dt>Equity</dt>
+                      <dd>{portfolio.equity ?? 'Unavailable (mark missing)'}</dd>
+                    </div>
+                    <div>
+                      <dt>Total PnL</dt>
+                      <dd>{portfolio.totalPnL ?? 'Unavailable (mark missing)'}</dd>
+                    </div>
+                  </dl>
+                ) : (
+                  <p>Portfolio not available.</p>
+                )}
+              </div>
+
+              <div className="paper-trading-pnl" data-testid="paper-pnl">
+                <h2>Paper PnL</h2>
+                {pnl ? (
+                  <dl>
+                    <div>
+                      <dt>Realized PnL</dt>
+                      <dd data-testid="paper-realized-pnl">{pnl.realizedPnL}</dd>
+                    </div>
+                    <div>
+                      <dt>Unrealized PnL</dt>
+                      <dd data-testid="paper-unrealized-pnl">
+                        {pnl.unrealizedPnL ?? 'Unavailable (mark missing)'}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Total PnL</dt>
+                      <dd>{pnl.totalPnL ?? 'Unavailable (mark missing)'}</dd>
+                    </div>
+                  </dl>
+                ) : (
+                  <p>PnL not available.</p>
+                )}
+                <p>Paper PnL is simulated. It is not exchange profit.</p>
+              </div>
+
+              <div className="paper-trading-history" data-testid="paper-execution-history">
+                <h2>Execution History</h2>
+                {!history || history.entries.length === 0 ? (
+                  <p>No Paper Execution History yet.</p>
+                ) : (
+                  <ul>
+                    {history.entries.map((entry) => (
+                      <li key={entry.id}>
+                        {entry.side} {entry.quantity} {entry.symbol} @ {entry.executionPrice} (
+                        {entry.occurredAt})
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </>
           ) : null}
         </>
@@ -408,8 +504,8 @@ export function PaperTradingView({
 
       <aside className="paper-trading-honesty" aria-label="Paper Trading honesty">
         <p>
-          No positions. No portfolio. No PnL. No balance change. No Ledger. No Live Trading. No
-          exchange execution.
+          Paper Positions, Portfolio, Balance, and PnL are simulated projections only. No exchange
+          positions. No exchange balances. No exchange PnL. No Ledger. No Live Trading.
         </p>
       </aside>
     </section>

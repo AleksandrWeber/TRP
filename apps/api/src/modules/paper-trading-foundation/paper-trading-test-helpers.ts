@@ -11,6 +11,8 @@ import { PaperOrderAudit } from './paper-order.audit';
 import { PaperOrderMarketDataGateway } from './paper-order-market-data';
 import { PaperOrderService } from './paper-order.service';
 import { InMemoryPaperOrderStore } from './paper-order.store';
+import { PaperPortfolioAudit } from './paper-portfolio.audit';
+import { PaperPortfolioService } from './paper-portfolio.service';
 import { PaperTradingAccountAudit } from './paper-trading-account.audit';
 import { PaperTradingAccountService } from './paper-trading-account.service';
 import { InMemoryPaperTradingAccountStore } from './paper-trading-account.store';
@@ -67,6 +69,7 @@ export function buildPaperTradingTestStack(options?: { denyWorkspaceB?: boolean 
   const accountAudit = { record: vi.fn().mockResolvedValue(undefined) };
   const orderAudit = { record: vi.fn().mockResolvedValue(undefined) };
   const executionAudit = { record: vi.fn().mockResolvedValue(undefined) };
+  const portfolioAudit = { record: vi.fn().mockResolvedValue(undefined) };
   const accountService = new PaperTradingAccountService(
     accounts,
     accountAudit as unknown as PaperTradingAccountAudit,
@@ -77,10 +80,18 @@ export function buildPaperTradingTestStack(options?: { denyWorkspaceB?: boolean 
     gateway,
     orderAudit as unknown as PaperOrderAudit,
   );
+  const portfolioService = new PaperPortfolioService(
+    accounts,
+    fills,
+    gateway,
+    portfolioAudit as unknown as PaperPortfolioAudit,
+  );
   const executionService = new PaperExecutionService(
     orders,
     fills,
+    accounts,
     gateway,
+    portfolioService,
     executionAudit as unknown as PaperExecutionAudit,
   );
   const trader: AuthUser = {
@@ -104,6 +115,7 @@ export function buildPaperTradingTestStack(options?: { denyWorkspaceB?: boolean 
     accountService,
     orderService,
     executionService,
+    portfolioService,
     workspaceAccess as unknown as WorkspaceAccessService,
   );
   return {
@@ -116,6 +128,8 @@ export function buildPaperTradingTestStack(options?: { denyWorkspaceB?: boolean 
     accountService,
     orderService,
     executionService,
+    portfolioService,
+    portfolioAudit,
     executionAudit,
     controller,
     trader,

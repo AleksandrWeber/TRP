@@ -3,6 +3,10 @@ import { useWorkspace } from '../app/WorkspaceContext';
 import {
   api,
   type PaperFillView,
+  type PaperFoundationExecutionHistoryView,
+  type PaperFoundationPnLView,
+  type PaperFoundationPortfolioView,
+  type PaperFoundationPositionView,
   type PaperOrderView,
   type PaperTradingAccountProjection,
 } from '../shared/api';
@@ -24,6 +28,10 @@ export function PaperTradingFoundationPage() {
   const [projection, setProjection] = useState<PaperTradingAccountProjection | null>(null);
   const [orders, setOrders] = useState<PaperOrderView[]>([]);
   const [fills, setFills] = useState<PaperFillView[]>([]);
+  const [positions, setPositions] = useState<PaperFoundationPositionView[]>([]);
+  const [portfolio, setPortfolio] = useState<PaperFoundationPortfolioView | null>(null);
+  const [pnl, setPnl] = useState<PaperFoundationPnLView | null>(null);
+  const [history, setHistory] = useState<PaperFoundationExecutionHistoryView | null>(null);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [selectedFillId, setSelectedFillId] = useState<string | null>(null);
   const [orderForm, setOrderForm] = useState<PaperOrderFormState>(defaultOrderForm);
@@ -31,6 +39,21 @@ export function PaperTradingFoundationPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  async function loadPortfolioSlice() {
+    const [positionList, portfolioView, pnlView, historyView] = await Promise.all([
+      api.listPaperFoundationPositions().catch(() => ({
+        positions: [] as PaperFoundationPositionView[],
+      })),
+      api.getPaperFoundationPortfolio().catch(() => null),
+      api.getPaperFoundationPnL().catch(() => null),
+      api.getPaperFoundationExecutionHistory().catch(() => null),
+    ]);
+    setPositions(positionList.positions);
+    setPortfolio(portfolioView);
+    setPnl(pnlView);
+    setHistory(historyView);
+  }
 
   async function load() {
     const [account, orderList, fillList] = await Promise.all([
@@ -41,6 +64,14 @@ export function PaperTradingFoundationPage() {
     setProjection(account);
     setOrders(orderList.orders);
     setFills(fillList.fills);
+    if (account.status !== 'NOT_CREATED') {
+      await loadPortfolioSlice();
+    } else {
+      setPositions([]);
+      setPortfolio(null);
+      setPnl(null);
+      setHistory(null);
+    }
   }
 
   useEffect(() => {
@@ -70,6 +101,7 @@ export function PaperTradingFoundationPage() {
         startingBalance: startingBalance.trim() || '100000',
       });
       setProjection(view);
+      await loadPortfolioSlice();
     } catch (reason) {
       setError(toUserFacingError(reason, 'Could not create the Paper Account.'));
     } finally {
@@ -162,6 +194,9 @@ export function PaperTradingFoundationPage() {
       setFills((items) => [result.fill, ...items.filter((fill) => fill.id !== result.fill.id)]);
       setSelectedOrderId(result.orderId);
       setSelectedFillId(result.fill.id);
+      const account = await api.getPaperTradingAccount();
+      setProjection(account);
+      await loadPortfolioSlice();
     } catch (reason) {
       setError(toUserFacingError(reason, 'Could not execute Paper Order matching.'));
     } finally {
@@ -174,6 +209,10 @@ export function PaperTradingFoundationPage() {
       projection={projection}
       orders={orders}
       fills={fills}
+      positions={positions}
+      portfolio={portfolio}
+      pnl={pnl}
+      history={history}
       selectedOrderId={selectedOrderId}
       selectedFillId={selectedFillId}
       orderForm={orderForm}

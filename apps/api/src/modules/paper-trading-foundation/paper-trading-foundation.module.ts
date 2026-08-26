@@ -11,6 +11,8 @@ import { PaperOrderAudit } from './paper-order.audit';
 import { PaperOrderMarketDataGateway } from './paper-order-market-data';
 import { PaperOrderService } from './paper-order.service';
 import { InMemoryPaperOrderStore, PAPER_ORDER_STORE } from './paper-order.store';
+import { PaperPortfolioAudit } from './paper-portfolio.audit';
+import { PaperPortfolioService } from './paper-portfolio.service';
 import { PaperTradingAccountAudit } from './paper-trading-account.audit';
 import { PaperTradingAccountService } from './paper-trading-account.service';
 import {
@@ -25,6 +27,7 @@ import { PaperTradingFoundationController } from './paper-trading-foundation.con
  * W2-S04-a: Paper Account foundation.
  * W2-S04-b: Paper Order foundation (intent only).
  * W2-S04-c: Paper Execution & Matching (fills from Market Data snapshots).
+ * W2-S04-d: Paper Positions / Portfolio / PnL / Execution History.
  */
 @Module({
   imports: [WorkspaceModule, SecurityAuditModule, MarketDataFoundationModule],
@@ -52,9 +55,16 @@ import { PaperTradingFoundationController } from './paper-trading-foundation.con
       inject: [MarketSymbolCache, MarketTickerCache],
     },
     PaperOrderService,
+    PaperPortfolioAudit,
+    PaperPortfolioService,
     PaperExecutionAudit,
     PaperExecutionService,
   ],
-  exports: [PaperTradingAccountService, PaperOrderService, PaperExecutionService],
+  exports: [
+    PaperTradingAccountService,
+    PaperOrderService,
+    PaperExecutionService,
+    PaperPortfolioService,
+  ],
 })
 export class PaperTradingFoundationModule {}

@@ -2076,6 +2076,62 @@ export type PaperTradingFoundationExecutionView = {
   fill: PaperFillView;
 };
 
+/** W2-S04-d paper portfolio projections (not Version 2 /portfolio). */
+export type PaperFoundationPositionView = {
+  exchange: string;
+  symbol: string;
+  side: string;
+  quantity: string;
+  averageEntryPrice: string;
+  markPrice: string | null;
+  realizedPnL: string;
+  unrealizedPnL: string | null;
+};
+
+export type PaperFoundationPositionListView = {
+  positions: PaperFoundationPositionView[];
+};
+
+export type PaperFoundationPortfolioView = {
+  paperAccountId: string;
+  workspaceId: string;
+  baseCurrency: string;
+  cashBalance: string;
+  equity: string | null;
+  realizedPnL: string;
+  unrealizedPnL: string | null;
+  totalPnL: string | null;
+  positions: PaperFoundationPositionView[];
+  honesty: string;
+};
+
+export type PaperFoundationPnLView = {
+  paperAccountId: string;
+  workspaceId: string;
+  realizedPnL: string;
+  unrealizedPnL: string | null;
+  totalPnL: string | null;
+  honesty: string;
+};
+
+export type PaperFoundationExecutionHistoryEntryView = {
+  id: string;
+  kind: string;
+  paperOrderId: string;
+  paperFillId: string;
+  exchange: string;
+  symbol: string;
+  side: string;
+  quantity: string;
+  executionPrice: string;
+  occurredAt: string;
+};
+
+export type PaperFoundationExecutionHistoryView = {
+  entries: PaperFoundationExecutionHistoryEntryView[];
+  honesty: string;
+};
+
 export type ExchangeScopeOverviewView = {
   id: string;
   exchangeCode: string;
@@ -3193,6 +3249,13 @@ export const api = {
   listPaperFills: () => request<PaperFillListView>('/paper-trading-foundation/fills'),
   getPaperFill: (fillId: string) =>
     request<PaperFillView>(`/paper-trading-foundation/fills/${encodeURIComponent(fillId)}`),
+  listPaperFoundationPositions: () =>
+    request<PaperFoundationPositionListView>('/paper-trading-foundation/positions'),
+  getPaperFoundationPortfolio: () =>
+    request<PaperFoundationPortfolioView>('/paper-trading-foundation/portfolio'),
+  getPaperFoundationPnL: () => request<PaperFoundationPnLView>('/paper-trading-foundation/pnl'),
+  getPaperFoundationExecutionHistory: () =>
+    request<PaperFoundationExecutionHistoryView>('/paper-trading-foundation/execution-history'),
   getMarketDataSymbols: (connectionId: string) =>
     request<MarketSymbolDiscoveryView>(
       `/market-data/connections/${encodeURIComponent(connectionId)}/symbols`,

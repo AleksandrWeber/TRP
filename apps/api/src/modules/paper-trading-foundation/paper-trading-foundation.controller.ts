@@ -28,6 +28,13 @@ import {
   PaperExecutionService,
 } from './paper-execution.service';
 import type { PaperExecutionView, PaperFillListView, PaperFillView } from './paper-fill.projection';
+import { PaperPortfolioNotFoundError, PaperPortfolioService } from './paper-portfolio.service';
+import type {
+  PaperExecutionHistoryView,
+  PaperPnLView,
+  PaperPortfolioView,
+  PaperPositionListView,
+} from './paper-portfolio.projection';
 import {
   toPaperTradingAccountProjection,
   type PaperTradingAccountProjection,
@@ -68,10 +75,10 @@ export type UpdatePaperOrderBody = Readonly<{
 }>;
 
 /**
- * Paper Trading Foundation HTTP surface (W2-S04-a/b/c).
+ * Paper Trading Foundation HTTP surface (W2-S04-a/b/c/d).
  *
- * Paper Account + Paper Orders + Paper Execution/Fills.
- * No positions, portfolio, PnL, balance changes, or Live Trading.
+ * Paper Account + Orders + Execution/Fills + Positions/Portfolio/PnL/History.
+ * No Ledger, Live Trading, or exchange inventory.
  */
 @Controller({ path: 'paper-trading-foundation', version: '1' })
 @RequirePermission(PermissionClass.Projection)
@@ -80,6 +87,7 @@ export class PaperTradingFoundationController {
     private readonly accounts: PaperTradingAccountService,
     private readonly orders: PaperOrderService,
     private readonly execution: PaperExecutionService,
+    private readonly portfolio: PaperPortfolioService,
     private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
@@ -276,6 +284,58 @@ export class PaperTradingFoundationController {
       throw mapExecutionError(error);
     }
   }
+
+  @Get('positions')
+  async listPositions(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+  ): Promise<PaperPositionListView> {
+    const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
+    try {
+      return await this.portfolio.getPositions(workspaceId);
+    } catch (error) {
+      throw mapPortfolioError(error);
+    }
+  }
+
+  @Get('portfolio')
+  async getPortfolio(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+  ): Promise<PaperPortfolioView> {
+    const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
+    try {
+      return await this.portfolio.getPortfolio(workspaceId);
+    } catch (error) {
+      throw mapPortfolioError(error);
+    }
+  }
+
+  @Get('pnl')
+  async getPnL(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+  ): Promise<PaperPnLView> {
+    const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
+    try {
+      return await this.portfolio.getPnL(workspaceId);
+    } catch (error) {
+      throw mapPortfolioError(error);
+    }
+  }
+
+  @Get('execution-history')
+  async getExecutionHistory(
+    @Req() request: RequestWithUser,
+    @Headers('x-workspace-id') workspaceHeader: string | undefined,
+  ): Promise<PaperExecutionHistoryView> {
+    const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
+    try {
+      return await this.portfolio.getExecutionHistory(workspaceId);
+    } catch (error) {
+      throw mapPortfolioError(error);
+    }
+  }
 }
 
 function requireWorkspace(
@@ -336,5 +396,13 @@ function mapExecutionError(error: unknown): Error {
     return new BadRequestException(error.message);
   }
   const text = error instanceof Error ? error.message : 'paper execution failed';
+  return new BadRequestException(text);
+}
+
+function mapPortfolioError(error: unknown): Error {
+  if (error instanceof PaperPortfolioNotFoundError) {
+    return new NotFoundException(error.message);
+  }
+  const text = error instanceof Error ? error.message : 'paper portfolio failed';
   return new BadRequestException(text);
 }

@@ -14,6 +14,12 @@ import { matchPaperOrder } from './paper-matching';
 import { PaperOrderMarketDataGateway } from './paper-order-market-data';
 import { markPaperOrderFilled } from './paper-order';
 import { PAPER_ORDER_STORE, type PaperOrderStore } from './paper-order.store';
+import { derivePortfolioFromFills } from './paper-portfolio.math';
+import { PaperPortfolioService } from './paper-portfolio.service';
+import {
+  PAPER_TRADING_ACCOUNT_STORE,
+  type PaperTradingAccountStore,
+} from './paper-trading-account.store';
 
 export type ExecutePaperOrderCommand = Readonly<{
   workspaceId: string;
@@ -22,16 +28,19 @@ export type ExecutePaperOrderCommand = Readonly<{
 }>;
 
 /**
- * Paper Execution application boundary (W2-S04-c).
- * Matches Pending orders against Market Data snapshots and creates Paper Fills.
- * Does not update balances, positions, portfolio, PnL, or Ledger.
+ * Paper Execution application boundary (W2-S04-c/d).
+ * Matches Pending orders against Market Data snapshots, creates Paper Fills,
+ * then updates paper portfolio projections (cash / positions / PnL).
+ * Does not touch Ledger, Live Trading, or exchange order APIs.
  */
 @Injectable()
 export class PaperExecutionService {
   constructor(
     @Inject(PAPER_ORDER_STORE) private readonly orders: PaperOrderStore,
     @Inject(PAPER_FILL_STORE) private readonly fills: PaperFillStore,
+    @Inject(PAPER_TRADING_ACCOUNT_STORE) private readonly accounts: PaperTradingAccountStore,
     private readonly marketData: PaperOrderMarketDataGateway,
+    private readonly portfolio: PaperPortfolioService,
     private readonly audit: PaperExecutionAudit,
   ) {}
 
@@ -78,6 +87,13 @@ export class PaperExecutionService {
       throw new PaperExecutionRejectedError(match.reason);
     }
 
+    const account = await this.accounts.findByWorkspace(command.workspaceId);
+    if (!account) {
+      await this.reject(command, order.exchange, order.symbol, 'Paper Account not found');
+      throw new PaperExecutionRejectedError('Paper Account not found');
+    }
+
+    const priorFills = await this.fills.listByWorkspace(command.workspaceId);
     const now = new Date().toISOString();
     const fill = createPaperFill({
       id: randomUUID(),
@@ -92,9 +108,28 @@ export class PaperExecutionService {
       executionTime: now,
       createdAt: now,
     });
+
+    const projected = derivePortfolioFromFills(account.startingBalance, [...priorFills, fill]);
+    if (Number(projected.cashBalance) < 0) {
+      await this.reject(
+        command,
+        order.exchange,
+        order.symbol,
+        'insufficient paper cash balance for fill',
+      );
+      throw new PaperExecutionRejectedError('insufficient paper cash balance for fill');
+    }
+
     const created = await this.fills.create(fill);
     const filledOrder = markPaperOrderFilled(order, now);
     await this.orders.save(filledOrder);
+
+    await this.portfolio.applyFillEffects({
+      workspaceId: command.workspaceId,
+      actorUserId: command.actorUserId,
+      fill: created,
+      priorFills,
+    });
 
     await this.audit.record({
       outcome: 'paper_fill_created',

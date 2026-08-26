@@ -2,7 +2,7 @@
 
 **Package:** W2-S04 Paper Trading Foundation
 **Wave:** 2 — Connection Management
-**Status:** W2-S04 planning **APPROVED**. W2-S04-a **APPROVED**. W2-S04-b **APPROVED**. W2-S04-c slice evidence recorded. Not Close.
+**Status:** W2-S04 planning **APPROVED**. W2-S04-a **APPROVED**. W2-S04-b **APPROVED**. W2-S04-c **APPROVED**. W2-S04-d slice evidence recorded. Not Close.
 **Date:** 2026-08-26
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w2-s04-product-scope.md`](./w2-s04-product-scope.md)
@@ -12,6 +12,7 @@
 **W2-S04-a evidence:** [`w2-s04-a-validation-report.md`](./w2-s04-a-validation-report.md)
 **W2-S04-b evidence:** [`w2-s04-b-validation-report.md`](./w2-s04-b-validation-report.md)
 **W2-S04-c evidence:** [`w2-s04-c-validation-report.md`](./w2-s04-c-validation-report.md)
+**W2-S04-d evidence:** [`w2-s04-d-validation-report.md`](./w2-s04-d-validation-report.md)
 **Checklists:** [`../version-3-product-checklist.md`](../version-3-product-checklist.md) · [`../version-3-architecture-checklist.md`](../version-3-architecture-checklist.md) · [`../version-3-security-checklist.md`](../version-3-security-checklist.md)
 **Verification Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md)
 
@@ -44,7 +45,7 @@ Do not validate real exchange execution, exchange order APIs, exchange balances,
 | **W2-S04-a** | Paper account state exists; workspace-scoped create / ownership      | Paper account foundation — **executed** (see below) |
 | **W2-S04-b** | Paper orders create/list/review/cancel; no positions / PnL           | Paper order foundation — **executed** (see below)   |
 | **W2-S04-c** | Matching / fills / execution simulation from Market Data             | Matching / fills — **executed** (see below)         |
-| **W2-S04-d** | Paper positions, balances, portfolio, PnL, execution history         | Portfolio / PnL                                     |
+| **W2-S04-d** | Paper positions, balances, portfolio, PnL, execution history         | Portfolio / PnL — **executed** (see below)          |
 | **W2-S04-e** | Security verification + regressions + full Paper Trading Walkthrough | Close evidence                                      |
 
 Slice names follow Product Owner sequencing. They are not approval to implement later slices.
@@ -96,6 +97,21 @@ Recorded in [`w2-s04-c-validation-report.md`](./w2-s04-c-validation-report.md).
 | No Positions, Portfolio, PnL, balance/Ledger updates, Live Trading, exchange APIs | PASS   |
 
 W2-S04-c does **not** Close W2-S04. Positions, Portfolio, PnL, and the full Paper Trading Walkthrough remain later slices.
+
+### W2-S04-d execution evidence
+
+Recorded in [`w2-s04-d-validation-report.md`](./w2-s04-d-validation-report.md).
+
+| Proof                                                                               | Result |
+| ----------------------------------------------------------------------------------- | ------ |
+| Positions derived from Paper Fills (average-cost netting)                           | PASS   |
+| Portfolio / cash balance / realized + unrealized PnL from fills + Market Data marks | PASS   |
+| Execution History from Paper Fills                                                  | PASS   |
+| Workspace isolation and authorization                                               | PASS   |
+| Operator UI: Positions, Portfolio, Balance, PnL, Execution History                  | PASS   |
+| No exchange inventory; no Ledger; no Live Trading; Version 2 Trading Core unchanged | PASS   |
+
+W2-S04-d does **not** Close W2-S04. Full Paper Trading Walkthrough and security close remain W2-S04-e.
 
 ---
 

@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 const directory = join(process.cwd(), 'src/modules/paper-trading-foundation');
 
-describe('Paper Trading foundation isolation (W2-S04-c)', () => {
+describe('Paper Trading foundation isolation (W2-S04-d)', () => {
   it('consumes abstract Market Data only and never calls exchange or financial SoTs', async () => {
     const files = (await readdir(directory)).filter(
       (name) =>
@@ -32,7 +32,9 @@ describe('Paper Trading foundation isolation (W2-S04-c)', () => {
     expect(joined).not.toMatch(/from ['"]\.\.\/paper-trading['"]/);
     expect(joined).not.toMatch(/from ['"]\.\.\/paper-trading-engine/);
     expect(joined).not.toMatch(/from ['"]\.\.\/secret-vault['"]/);
-    expect(joined).not.toMatch(/realized PnL|unrealized PnL|fabricat/i);
+    expect(joined).not.toMatch(/from ['"]\.\.\/position-engine/);
+    expect(joined).not.toMatch(/from ['"]\.\.\/execution-engine/);
+    expect(joined).not.toMatch(/fabricat/i);
     expect(joined).not.toMatch(/market-ticker\.http|market-candle\.http|market-order-book\.http/);
   });
 });
