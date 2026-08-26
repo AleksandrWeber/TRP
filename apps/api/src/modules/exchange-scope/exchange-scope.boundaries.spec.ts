@@ -135,6 +135,7 @@ describe('RC-27 Epic 1 — Exchange Scope dependency direction', () => {
     expect(moduleSource).not.toMatch(/ReportingModule/);
     expect(moduleSource).not.toMatch(/LiveMarketDataModule/);
     expect(moduleSource).not.toMatch(/Controller/);
-    expect(moduleSource).not.toMatch(/Prisma/);
+    // W3-O01-b: analytical owner may wire Durable*/Prisma via createRepositoryByDriver.
+    expect(moduleSource).toMatch(/createRepositoryByDriver|DurableExchangeScopeStore|Prisma/);
   });
 });

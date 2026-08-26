@@ -211,6 +211,6 @@ export const MARKET_QUALIFICATION_PORTS_ACTIVE = Object.freeze({
   liveMarketDataConsumer: true,
   researchOutputConsumer: true,
   consumerRead: true,
-  persistence: false,
+  persistence: true,
   rest: false,
 } as const);

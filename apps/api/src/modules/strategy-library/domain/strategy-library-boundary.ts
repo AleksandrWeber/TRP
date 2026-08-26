@@ -135,7 +135,7 @@ export type StrategyLibraryBoundary = Readonly<{
     lookup: true;
     eligibility: true;
     lifecycle: false;
-    persistence: false;
+    persistence: true;
     strategyModel: true;
   }>;
   /** Knowledge Lake relationship: projection consumer only (never Library SoT). */
@@ -161,7 +161,7 @@ export const STRATEGY_LIBRARY_BOUNDARY: StrategyLibraryBoundary = Object.freeze(
     lookup: true,
     eligibility: true,
     lifecycle: false,
-    persistence: false,
+    persistence: true,
     strategyModel: true,
   }),
   knowledgeLakeRole: 'projection-consumer-only',

@@ -8,7 +8,7 @@ describe('RC-24 Epic 6 — Notification ports', () => {
     expect(NOTIFICATION_PORTS_ACTIVE.emailChannel).toBe(false);
     expect(NOTIFICATION_PORTS_ACTIVE.slackChannel).toBe(false);
     expect(NOTIFICATION_PORTS_ACTIVE.rest).toBe(false);
-    expect(NOTIFICATION_PORTS_ACTIVE.persistence).toBe(false);
+    expect(NOTIFICATION_PORTS_ACTIVE.persistence).toBe(true);
   });
 
   it('does not expose trading or report-generation methods on the port shape', () => {

@@ -110,7 +110,7 @@ describe('RC-23 Epic 6 — Authority conformance', () => {
       validateDeployment: true,
       libraryLookup: true,
       libraryEligibility: true,
-      persistence: false,
+      persistence: true,
       rest: true,
     });
   });

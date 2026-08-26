@@ -69,7 +69,7 @@ describe('RC-21 Epic 6 — Authority conformance', () => {
     expect(KNOWLEDGE_LAKE_BOUNDARY.activePorts).toEqual({
       ingestion: true,
       query: true,
-      persistence: false,
+      persistence: true,
       producers: true,
     });
   });

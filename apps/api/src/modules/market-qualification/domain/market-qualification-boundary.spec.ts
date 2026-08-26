@@ -32,7 +32,7 @@ describe('RC-25 Epic 2 — Market Qualification boundary', () => {
       liveMarketDataConsumer: true,
       researchOutputConsumer: true,
       consumerRead: true,
-      persistence: false,
+      persistence: true,
       rest: false,
     });
   });

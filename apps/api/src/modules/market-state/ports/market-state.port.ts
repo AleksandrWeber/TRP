@@ -114,6 +114,6 @@ export const MARKET_STATE_PORTS_ACTIVE = Object.freeze({
   qualificationConsumer: true,
   profileConsumer: true,
   consumerRead: true,
-  persistence: false,
+  persistence: true,
   rest: false,
 } as const);

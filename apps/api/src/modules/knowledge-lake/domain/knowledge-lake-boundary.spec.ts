@@ -95,7 +95,7 @@ describe('RC-21 Epic 1 — Knowledge Lake boundary', () => {
     expect(KNOWLEDGE_LAKE_BOUNDARY.activePorts).toEqual({
       ingestion: true,
       query: true,
-      persistence: false,
+      persistence: true,
       producers: true,
     });
   });

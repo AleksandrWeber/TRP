@@ -24,7 +24,7 @@ describe('RC-26 Epic 2/6 — Market State ports posture', () => {
       qualificationConsumer: true,
       profileConsumer: true,
       consumerRead: true,
-      persistence: false,
+      persistence: true,
       rest: false,
     });
   });

@@ -2,7 +2,7 @@
 
 **Document:** Version 3 Durability, Operations & Continuity Overview
 **Date:** 2026-08-26
-**Status:** Product-facing record. Wave 3 Planning **APPROVED**. W3-O01-a **IMPLEMENTED** (inventory foundation). Persistence / restart survival **not** delivered.
+**Status:** Product-facing record. Wave 3 Planning **APPROVED**. W3-O01-a **APPROVED**. W3-O01-b **IMPLEMENTED** (durable persistence foundation). Restart recovery / operational continuity **not** delivered.
 **Product:** Wave 3 — Durability, Operations & Continuity
 **First package:** W3-O01 Durable Analytical Stores (V3-O01)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
@@ -25,35 +25,38 @@ It does NOT mean Live Trading enabled.
 It does NOT mean Monitoring Complete.
 It does NOT mean production restart-safety Complete from O01 alone.
 It does NOT mean Notification delivery is production-real (Wave 5).
-W3-O01-a is inventory only — the platform is NOT restart-safe yet.
+W3-O01-a inventory is complete. W3-O01-b persists approved SURVIVE artifacts on existing owners.
+The platform does NOT automatically recover after restart.
+The platform does NOT guarantee operational continuity from O01-b alone.
 ```
 
 ---
 
 ## Wave packages (honest sequence)
 
-| Package                                    | Operator meaning                                                     | Status                                      |
-| ------------------------------------------ | -------------------------------------------------------------------- | ------------------------------------------- |
-| **W3-O01** Durable Analytical Stores       | Relied-on analytical artifacts survive restart (or honest ephemeral) | Planning APPROVED; **W3-O01-a implemented** |
-| W3-O02 Notification Durable Queue          | In-flight notification delivery not lost on process restart          | Not opened                                  |
-| W3-O03 Recovery Residual (US295 / ADL-008) | Accept or write live-claim limitation — no silent PASS               | Not opened                                  |
-| W3-O04 Durable Kill Switch Product         | Arm Kill Switch; sessions stop; durable across restart               | Not opened                                  |
-| W3-O05 Monitoring & Security Health        | Health and recent incidents without server login; honest degradation | Not opened                                  |
+| Package                                    | Operator meaning                                                     | Status                                               |
+| ------------------------------------------ | -------------------------------------------------------------------- | ---------------------------------------------------- |
+| **W3-O01** Durable Analytical Stores       | Relied-on analytical artifacts survive restart (or honest ephemeral) | Planning APPROVED; **a APPROVED**; **b implemented** |
+| W3-O02 Notification Durable Queue          | In-flight notification delivery not lost on process restart          | Not opened                                           |
+| W3-O03 Recovery Residual (US295 / ADL-008) | Accept or write live-claim limitation — no silent PASS               | Not opened                                           |
+| W3-O04 Durable Kill Switch Product         | Arm Kill Switch; sessions stop; durable across restart               | Not opened                                           |
+| W3-O05 Monitoring & Security Health        | Health and recent incidents without server login; honest degradation | Not opened                                           |
 
 ---
 
 ## Current package (W3-O01)
 
-| Capability                                               | Status                         |
-| -------------------------------------------------------- | ------------------------------ |
-| Inventory of process-local analytical stores             | **W3-O01-a DONE**              |
-| Survive-restart for operator-relied analytical artifacts | Not started (W3-O01-b)         |
-| Honest ephemeral labels where survival not delivered     | Baseline documented (W3-O01-a) |
-| Restart-survival proof                                   | Not started (W3-O01-c)         |
-| Notification durable queue                               | Out (O02)                      |
-| Kill Switch product                                      | Out (O04)                      |
-| Monitoring / health dashboard                            | Out (O05)                      |
-| Live Trading                                             | Out (Wave 6)                   |
+| Capability                                            | Status                         |
+| ----------------------------------------------------- | ------------------------------ |
+| Inventory of process-local analytical stores          | **W3-O01-a DONE**              |
+| Durable persistence for approved analytical artifacts | **W3-O01-b DONE**              |
+| Survive-restart proof for operator-relied artifacts   | Not started (W3-O01-c)         |
+| Honest ephemeral labels where survival not delivered  | Baseline documented (W3-O01-a) |
+| Restart-survival proof                                | Not started (W3-O01-c)         |
+| Notification durable queue                            | Out (O02)                      |
+| Kill Switch product                                   | Out (O04)                      |
+| Monitoring / health dashboard                         | Out (O05)                      |
+| Live Trading                                          | Out (Wave 6)                   |
 
 ---
 
@@ -94,7 +97,7 @@ Those artifacts are still present
   Product honestly shows they were ephemeral (exception path)
 ```
 
-### After W3-O01-a only (now)
+### After W3-O01-b only (now)
 
 ```text
 Sign in
@@ -103,23 +106,25 @@ Use existing analytical surfaces as before
   ↓
 No new UI capability
   ↓
-Platform foundation inventory exists for later durability work
+Approved analytical state can be persisted by existing owners
   ↓
-Artifacts still do NOT survive restart
+No automatic restart recovery yet
+  ↓
+No operational continuity guarantee yet
 ```
 
 ---
 
 ## Operator-visible functionality
 
-| Surface                                        | Wave 3 role                              | W3-O01                                   | After W3-O01-a |
-| ---------------------------------------------- | ---------------------------------------- | ---------------------------------------- | -------------- |
-| Analytical / reporting artifacts after restart | Survive (default)                        | **In** (later slices)                    | **Unchanged**  |
-| Honest “ephemeral” labeling                    | Allowed only when survival not delivered | Baseline documented                      | Doc only       |
-| Notification delivery durability               | O02 + Wave 5 transports                  | Out of O01                               | Out            |
-| Kill Switch arm / stop sessions                | O04                                      | Out of O01                               | Out            |
-| Health / incidents without SSH                 | O05                                      | Out of O01                               | Out            |
-| Dependency degraded / unavailable honesty      | Wave exit; O05 primary productization    | Out of O01 (no fake success still binds) | Unchanged      |
+| Surface                                        | Wave 3 role                              | W3-O01                                   | After W3-O01-b                  |
+| ---------------------------------------------- | ---------------------------------------- | ---------------------------------------- | ------------------------------- |
+| Analytical / reporting artifacts after restart | Survive (default)                        | **In** (proof in W3-O01-c)               | Persisted; recovery not claimed |
+| Honest “ephemeral” labeling                    | Allowed only when survival not delivered | Baseline documented                      | Doc only                        |
+| Notification delivery durability               | O02 + Wave 5 transports                  | Out of O01                               | Out                             |
+| Kill Switch arm / stop sessions                | O04                                      | Out of O01                               | Out                             |
+| Health / incidents without SSH                 | O05                                      | Out of O01                               | Out                             |
+| Dependency degraded / unavailable honesty      | Wave exit; O05 primary productization    | Out of O01 (no fake success still binds) | Unchanged                       |
 
 ---
 
@@ -131,7 +136,7 @@ Artifacts still do NOT survive restart
 - A second product inventing a parallel Lake or Outbox
 - Another workspace’s analytical artifacts
 - Plaintext secrets
-- Claims that W3-O01-a alone made the platform restart-safe
+- Claims that W3-O01-a/b alone made the platform restart-safe or operationally continuous
 
 ---
 
@@ -147,11 +152,11 @@ Artifacts still do NOT survive restart
 
 ## What's Next
 
-1. Product Owner reviews W3-O01-a reports
-2. Do **not** open W3-O01-b until Product Owner authorizes
-3. Later packages O02…O05 open only after prior Close / PO sequencing
-4. Do **not** claim W3-O01 Closed or Wave 3 COMPLETE from W3-O01-a
+1. Product Owner reviews W3-O01-b reports
+2. Do **not** open W3-O01-c until Product Owner authorizes
+3. Do **not** claim automatic recovery or operational continuity from W3-O01-b
+4. Do **not** claim W3-O01 Closed or Wave 3 COMPLETE
 
 ---
 
-**STOP.** Wait for Product Owner review before W3-O01-b. Do not implement persistence. Do not implement restart recovery.
+**STOP.** Wait for Product Owner review before W3-O01-c. Do not implement restart recovery. Do not implement automatic restore.

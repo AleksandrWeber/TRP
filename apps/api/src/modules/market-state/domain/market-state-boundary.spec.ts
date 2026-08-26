@@ -36,7 +36,7 @@ describe('RC-26 Epic 2 — Market State boundary', () => {
       qualificationConsumer: true,
       profileConsumer: true,
       consumerRead: true,
-      persistence: false,
+      persistence: true,
       rest: false,
     });
   });

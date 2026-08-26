@@ -106,7 +106,7 @@ describe('RC-25 Epic 5 — Market Profile Nest versioning wiring', () => {
     expect(boundary.getBoundary().activePorts.observationalInputReads).toBe(true);
     expect(boundary.getBoundary().activePorts.marketProfileService).toBe(true);
     expect(boundary.getBoundary().activePorts.marketProfileQuery).toBe(true);
-    expect(boundary.getBoundary().activePorts.persistence).toBe(false);
+    expect(boundary.getBoundary().activePorts.persistence).toBe(true);
     expect(boundary.getBoundary().activePorts.rest).toBe(false);
     expect(boundary.forcesTrade()).toBe(false);
     expect(boundary.expandsTacticalEnvelope()).toBe(false);

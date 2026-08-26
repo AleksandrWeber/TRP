@@ -30,7 +30,7 @@ describe('RC-26 Epic 6 — Trading Orchestrator Nest wiring', () => {
     expect(boundary.getBoundary().activePorts.tradingOrchestratorService).toBe(true);
     expect(boundary.getBoundary().activePorts.tradingOrchestratorQuery).toBe(true);
     expect(boundary.getBoundary().activePorts.consumerRead).toBe(true);
-    expect(boundary.getBoundary().activePorts.persistence).toBe(false);
+    expect(boundary.getBoundary().activePorts.persistence).toBe(true);
     expect(boundary.getBoundary().activePorts.rest).toBe(true);
     expect(boundary.approvesRisk()).toBe(false);
     expect(boundary.submitsOrders()).toBe(false);

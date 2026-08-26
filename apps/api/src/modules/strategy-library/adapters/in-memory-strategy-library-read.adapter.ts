@@ -3,6 +3,8 @@
  *
  * Implements Lookup + Eligibility application ports over an in-memory SoT buffer.
  * This is NOT a database / REST / queue product.
+ * W3-O01-b: snapshot export/import enables durable persistence on this owner
+ * via DurableStrategyLibraryReadAdapter.
  *
  * Seed helpers exist for tests and epic wiring only — they are NOT consumer write ports
  * (Registration / Certification / Lifecycle Nest ports remain deferred).
@@ -37,6 +39,10 @@ type LibraryEntryStore = Readonly<{
   version: StrategyVersion;
   certification: StrategyCertification | null;
   eligibility: StrategyEligibility | null;
+}>;
+
+export type StrategyLibraryReadDurableState = Readonly<{
+  entries: LibraryEntryStore[];
 }>;
 
 @Injectable()
@@ -111,6 +117,30 @@ export class InMemoryStrategyLibraryReadAdapter
   /** Test helper: entry count. */
   peekSize(): number {
     return this.entriesById.size;
+  }
+
+  exportDurableState(): StrategyLibraryReadDurableState {
+    return Object.freeze({
+      entries: [...this.entriesById.values()],
+    });
+  }
+
+  importDurableState(state: StrategyLibraryReadDurableState): void {
+    this.entriesById.clear();
+    this.entryIdByFamilyVersion.clear();
+    for (const entry of state.entries ?? []) {
+      const store = Object.freeze({
+        strategy: entry.strategy,
+        version: entry.version,
+        certification: entry.certification ?? null,
+        eligibility: entry.eligibility ?? null,
+      });
+      this.entriesById.set(entry.version.libraryEntryId, store);
+      this.entryIdByFamilyVersion.set(
+        familyVersionKey(entry.version.strategyFamilyId, entry.version.version),
+        entry.version.libraryEntryId,
+      );
+    }
   }
 
   getByLibraryEntryId(libraryEntryId: string): StrategyVersionRecord | null {

@@ -102,7 +102,7 @@ describe('RC-25 Epic 4 — Market Qualification Nest lifecycle wiring', () => {
     expect(boundary.getBoundary().activePorts.researchOutputConsumer).toBe(true);
     expect(boundary.getBoundary().activePorts.marketQualificationService).toBe(true);
     expect(boundary.getBoundary().activePorts.marketQualificationQuery).toBe(true);
-    expect(boundary.getBoundary().activePorts.persistence).toBe(false);
+    expect(boundary.getBoundary().activePorts.persistence).toBe(true);
     expect(boundary.getBoundary().activePorts.rest).toBe(false);
     expect(boundary.isExecutionSourceOfTruth()).toBe(false);
 

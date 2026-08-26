@@ -1,13 +1,20 @@
 /**
  * RC-24 Epic 4 — Process-local Reporting artifact store.
  *
- * Not a persistence product / DB schema. In-memory only (same pattern as Lake).
+ * W3-O01-b: snapshot export/import enables durable persistence on this owner
+ * via DurableReportingStore (PERSISTENCE_DRIVER=prisma). Not a new SoT.
  */
 
 import { Injectable } from '@nestjs/common';
 import type { AggregationSlice } from '../domain/aggregation-slice';
 import type { ReportDefinition } from '../domain/report-definition';
 import type { ReportRun } from '../domain/report-run';
+
+export type ReportingStoreDurableState = Readonly<{
+  definitions: ReportDefinition[];
+  runs: ReportRun[];
+  aggregations: Array<readonly [string, readonly AggregationSlice[]]>;
+}>;
 
 @Injectable()
 export class InMemoryReportingStore {
@@ -64,5 +71,30 @@ export class InMemoryReportingStore {
 
   listAggregations(reportRunId: string): readonly AggregationSlice[] {
     return this.aggregations.get(reportRunId) ?? Object.freeze([]);
+  }
+
+  exportDurableState(): ReportingStoreDurableState {
+    return Object.freeze({
+      definitions: [...this.definitions.values()],
+      runs: [...this.runs.values()],
+      aggregations: [...this.aggregations.entries()].map(([id, slices]) =>
+        Object.freeze([id, slices] as const),
+      ),
+    });
+  }
+
+  importDurableState(state: ReportingStoreDurableState): void {
+    this.definitions.clear();
+    this.runs.clear();
+    this.aggregations.clear();
+    for (const definition of state.definitions ?? []) {
+      this.definitions.set(definition.reportDefinitionId, definition);
+    }
+    for (const run of state.runs ?? []) {
+      this.runs.set(run.reportRunId, run);
+    }
+    for (const [reportRunId, slices] of state.aggregations ?? []) {
+      this.aggregations.set(reportRunId, slices);
+    }
   }
 }

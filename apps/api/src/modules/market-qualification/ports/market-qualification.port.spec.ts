@@ -19,7 +19,7 @@ describe('RC-25 Epic 4 — Market Qualification ports posture', () => {
       liveMarketDataConsumer: true,
       researchOutputConsumer: true,
       consumerRead: true,
-      persistence: false,
+      persistence: true,
       rest: false,
     });
   });

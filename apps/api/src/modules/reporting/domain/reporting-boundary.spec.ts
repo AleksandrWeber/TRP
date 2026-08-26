@@ -104,7 +104,7 @@ describe('RC-24 Epic 1 — Reporting boundary', () => {
       reportingQuery: true,
       knowledgeLakeConsumer: true,
       historyReads: false,
-      persistence: false,
+      persistence: true,
       rest: false,
     });
   });

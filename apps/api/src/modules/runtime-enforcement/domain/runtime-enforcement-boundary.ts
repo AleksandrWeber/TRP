@@ -120,7 +120,7 @@ export type RuntimeEnforcementBoundary = Readonly<{
     validateDeployment: true;
     libraryLookup: true;
     libraryEligibility: true;
-    persistence: false;
+    persistence: true;
     rest: true;
   }>;
   /** Strategy Library relationship: read-only consumer (activates Epic 2+). */
@@ -141,7 +141,7 @@ export const RUNTIME_ENFORCEMENT_BOUNDARY: RuntimeEnforcementBoundary = Object.f
     validateDeployment: true,
     libraryLookup: true,
     libraryEligibility: true,
-    persistence: false,
+    persistence: true,
     rest: true,
   }),
   strategyLibraryRole: 'read-only-consumer',

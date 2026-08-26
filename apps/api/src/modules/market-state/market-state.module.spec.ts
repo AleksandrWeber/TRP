@@ -112,7 +112,7 @@ describe('RC-26 Epic 2 — Market State Nest read wiring', () => {
     expect(boundary.getBoundary().activePorts.profileConsumer).toBe(true);
     expect(boundary.getBoundary().activePorts.marketStateService).toBe(false);
     expect(boundary.getBoundary().activePorts.marketStateQuery).toBe(false);
-    expect(boundary.getBoundary().activePorts.persistence).toBe(false);
+    expect(boundary.getBoundary().activePorts.persistence).toBe(true);
     expect(boundary.getBoundary().activePorts.rest).toBe(false);
     expect(boundary.isQualification()).toBe(false);
     expect(boundary.isProfile()).toBe(false);

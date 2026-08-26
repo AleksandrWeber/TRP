@@ -111,6 +111,6 @@ export const NOTIFICATION_PORTS_ACTIVE = Object.freeze({
   discordChannel: false,
   teamsChannel: false,
   pushChannel: false,
-  persistence: false,
+  persistence: true,
   rest: false,
 } as const);

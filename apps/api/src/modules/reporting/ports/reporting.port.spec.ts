@@ -16,7 +16,7 @@ describe('RC-24 Epic 4 — Reporting ports posture', () => {
       reportingQuery: true,
       knowledgeLakeConsumer: true,
       historyReads: false,
-      persistence: false,
+      persistence: true,
       rest: false,
     });
   });

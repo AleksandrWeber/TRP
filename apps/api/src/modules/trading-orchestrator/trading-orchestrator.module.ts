@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
+import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
 import { RuntimeEnforcementModule } from '../runtime-enforcement';
 import { StrategyLibraryModule } from '../strategy-library';
+import { DurableOrchestrationCoordinationStore } from './adapters/durable-orchestration-coordination.store';
 import { InMemoryOrchestratorMarketStateAdapter } from './adapters/in-memory-market-state.adapter';
 import { NullOrchestratorRiskPolicyReadAdapter } from './adapters/risk-policy-read.adapter';
 import { OrchestratorRuntimeEnforcementConsumerAdapter } from './adapters/runtime-enforcement-consumer.adapter';
@@ -25,6 +27,7 @@ import { TradingOrchestratorBoundaryService } from './trading-orchestrator-bound
  * RC-26 — Trading Orchestrator module.
  *
  * Epic 6: Consumer read port for Reporting / AI / Command Center.
+ * W3-O01-b: optional durable coordination store via PERSISTENCE_DRIVER=prisma.
  * Does not import Trading Session / Orders / Risk / Execution / Reporting / AI.
  */
 @Module({
@@ -35,7 +38,14 @@ import { TradingOrchestratorBoundaryService } from './trading-orchestrator-bound
     NullOrchestratorRiskPolicyReadAdapter,
     OrchestratorStrategyLibraryConsumerAdapter,
     OrchestratorRuntimeEnforcementConsumerAdapter,
-    OrchestrationCoordinationStore,
+    {
+      provide: OrchestrationCoordinationStore,
+      useFactory: async () =>
+        createRepositoryByDriver({
+          createMemory: () => new OrchestrationCoordinationStore(),
+          createPrisma: (client) => new DurableOrchestrationCoordinationStore(client),
+        }),
+    },
     OrchestrationWorkflowCoordinator,
     TradingOrchestratorService,
     TradingOrchestratorQueryService,

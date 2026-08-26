@@ -1654,3 +1654,14 @@ model LiveProcessedExecution {
   @@index([sessionId])
   @@map("live_trading_processed_executions")
 }
+
+/// W3-O01-b — Owner-scoped durable snapshots for certified V2 analytical stores (IN-01 / TD-048).
+/// Each existing analytical owner persists only its own row (`owner` = module id).
+/// Not a new bounded context / SoT / Lake / Outbox. Not restart-recovery orchestration.
+model AnalyticalOwnerStoreSnapshot {
+  owner     String   @id
+  payload   Json
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("analytical_owner_store_snapshots")
+}

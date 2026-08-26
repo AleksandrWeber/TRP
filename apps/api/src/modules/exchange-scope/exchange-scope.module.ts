@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
+import { DurableExchangeScopeStore } from './adapters/durable-exchange-scope-store';
 import { ExchangeScopeConsumerReadAdapter } from './adapters/exchange-scope-consumer-read.adapter';
 import { InMemoryExchangeScopeStore } from './adapters/in-memory-exchange-scope-store';
 import { ExchangeScopeBoundaryService } from './exchange-scope-boundary.service';
@@ -16,7 +18,7 @@ import {
  *
  * Epic 3: Application ports active (service / query).
  * Epic 5: Consumer-read Nest façade + query adapter (immutable projections).
- * Process-local in-memory store only — not a persistence product.
+ * W3-O01-b: optional durable store snapshot via PERSISTENCE_DRIVER=prisma.
  * No trading-path commands. No REST. No transport.
  *
  * Does not import Runtime, Orders, Execution, Session, Reporting,
@@ -26,7 +28,14 @@ import {
 @Module({
   providers: [
     ExchangeScopeBoundaryService,
-    InMemoryExchangeScopeStore,
+    {
+      provide: InMemoryExchangeScopeStore,
+      useFactory: async () =>
+        createRepositoryByDriver({
+          createMemory: () => new InMemoryExchangeScopeStore(),
+          createPrisma: (client) => new DurableExchangeScopeStore(client),
+        }),
+    },
     ExchangeScopeLifecycleService,
     ExchangeScopeQueryService,
     ExchangeScopeConsumerReadAdapter,

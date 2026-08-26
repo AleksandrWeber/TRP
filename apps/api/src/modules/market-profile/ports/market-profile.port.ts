@@ -121,6 +121,6 @@ export const MARKET_PROFILE_PORTS_ACTIVE = Object.freeze({
   marketProfileQuery: true,
   observationalInputReads: true,
   consumerRead: true,
-  persistence: false,
+  persistence: true,
   rest: false,
 } as const);

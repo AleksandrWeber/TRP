@@ -1,7 +1,9 @@
 /**
  * RC-25 Epic 4 — Process-local Qualification artifact store.
  *
- * Not a persistence product / DB schema. In-memory only (same pattern as Reporting).
+ * Not a persistence product / DB schema (same pattern as Reporting).
+ * W3-O01-b: snapshot export/import enables durable persistence on this owner
+ * via DurableQualificationStore.
  */
 
 import { Injectable } from '@nestjs/common';
@@ -10,6 +12,14 @@ import type { MarketHealth } from '../domain/market-health';
 import type { QualificationRun } from '../domain/qualification-run';
 import type { QualificationState } from '../domain/qualification-state';
 import type { QualificationTarget } from '../domain/qualification-target';
+
+export type QualificationStoreDurableState = Readonly<{
+  targets: QualificationTarget[];
+  states: QualificationState[];
+  runs: QualificationRun[];
+  confidence: MarketConfidence[];
+  health: MarketHealth[];
+}>;
 
 @Injectable()
 export class InMemoryQualificationStore {
@@ -109,5 +119,38 @@ export class InMemoryQualificationStore {
 
   getHealth(targetId: string): MarketHealth | null {
     return this.healthByTarget.get(targetId) ?? null;
+  }
+
+  exportDurableState(): QualificationStoreDurableState {
+    return Object.freeze({
+      targets: [...this.targets.values()],
+      states: [...this.states.values()],
+      runs: [...this.runs.values()],
+      confidence: [...this.confidenceByTarget.values()],
+      health: [...this.healthByTarget.values()],
+    });
+  }
+
+  importDurableState(state: QualificationStoreDurableState): void {
+    this.targets.clear();
+    this.states.clear();
+    this.runs.clear();
+    this.confidenceByTarget.clear();
+    this.healthByTarget.clear();
+    for (const target of state.targets ?? []) {
+      this.targets.set(target.targetId, target);
+    }
+    for (const row of state.states ?? []) {
+      this.states.set(row.targetId, row);
+    }
+    for (const run of state.runs ?? []) {
+      this.runs.set(run.qualificationRunId, run);
+    }
+    for (const confidence of state.confidence ?? []) {
+      this.confidenceByTarget.set(confidence.targetId, confidence);
+    }
+    for (const health of state.health ?? []) {
+      this.healthByTarget.set(health.targetId, health);
+    }
   }
 }

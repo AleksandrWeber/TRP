@@ -15,7 +15,7 @@ describe('RC-27 Epic 3 — Exchange Scope ports posture', () => {
       exchangeScopeService: true,
       exchangeScopeQuery: true,
       consumerRead: true,
-      persistence: false,
+      persistence: true,
       rest: false,
       transport: false,
     });

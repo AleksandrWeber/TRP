@@ -320,7 +320,7 @@ export const EXCHANGE_SCOPE_PORTS_ACTIVE = Object.freeze({
   exchangeScopeService: true,
   exchangeScopeQuery: true,
   consumerRead: true,
-  persistence: false,
+  persistence: true,
   rest: false,
   transport: false,
 } as const);

@@ -172,7 +172,7 @@ export type ExchangeScopeBoundary = Readonly<{
     exchangeScopeService: true;
     exchangeScopeQuery: true;
     consumerRead: true;
-    persistence: false;
+    persistence: true;
     rest: false;
     transport: false;
   }>;
@@ -212,7 +212,7 @@ export const EXCHANGE_SCOPE_BOUNDARY: ExchangeScopeBoundary = Object.freeze({
     exchangeScopeService: true,
     exchangeScopeQuery: true,
     consumerRead: true,
-    persistence: false,
+    persistence: true,
     rest: false,
     transport: false,
   }),

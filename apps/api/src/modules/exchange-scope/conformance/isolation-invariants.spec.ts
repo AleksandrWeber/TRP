@@ -175,7 +175,7 @@ describe('RC-27 Epic 6 — isolation invariants checklist (1–10)', () => {
 function EXCHANGE_SCOPE_PORTS_ACTIVE_rest_off(): boolean {
   return (
     EXCHANGE_SCOPE_BOUNDARY.activePorts.rest === false &&
-    EXCHANGE_SCOPE_BOUNDARY.activePorts.persistence === false &&
+    EXCHANGE_SCOPE_BOUNDARY.activePorts.persistence === true &&
     EXCHANGE_SCOPE_BOUNDARY.activePorts.transport === false
   );
 }

@@ -2,7 +2,8 @@
  * RC-26 Epic 6 — Process-local Market State projection store.
  *
  * Seedable buffer of immutable MarketState domain versions for consumer reads.
- * Not a persistence / REST / DB product.
+ * W3-O01-b: snapshot export/import enables durable persistence on this owner
+ * via DurableMarketStateProjectionStore. Not a persistence / REST / DB product.
  */
 
 import { Injectable } from '@nestjs/common';
@@ -18,6 +19,12 @@ export type MarketStateTransitionRecord = Readonly<{
   fromLifecycle?: string;
   toLifecycle: string;
   transitionedAt: string;
+}>;
+
+export type MarketStateProjectionDurableState = Readonly<{
+  states: MarketState[];
+  currentByTarget: Array<readonly [string, string]>;
+  transitions: MarketStateTransitionRecord[];
 }>;
 
 @Injectable()
@@ -159,6 +166,31 @@ export class MarketStateProjectionStore {
     );
     const limit = query.limit ?? 50;
     return Object.freeze(rows.slice(-limit));
+  }
+
+  exportDurableState(): MarketStateProjectionDurableState {
+    return Object.freeze({
+      states: [...this.byId.values()],
+      currentByTarget: [...this.currentByTarget.entries()].map(([k, v]) =>
+        Object.freeze([k, v] as const),
+      ),
+      transitions: [...this.transitions],
+    });
+  }
+
+  importDurableState(state: MarketStateProjectionDurableState): void {
+    this.byId.clear();
+    this.currentByTarget.clear();
+    this.transitions.length = 0;
+    for (const row of state.states ?? []) {
+      this.byId.set(row.marketStateId, row);
+    }
+    for (const [key, id] of state.currentByTarget ?? []) {
+      this.currentByTarget.set(key, id);
+    }
+    for (const transition of state.transitions ?? []) {
+      this.transitions.push(transition);
+    }
   }
 }
 

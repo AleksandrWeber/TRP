@@ -48,7 +48,7 @@ describe('RC-24 Epic 2/4 — ReportingModule Lake + generation wiring', () => {
     expect(boundary.getBoundary().activePorts.knowledgeLakeConsumer).toBe(true);
     expect(boundary.getBoundary().activePorts.reportingService).toBe(true);
     expect(boundary.getBoundary().activePorts.reportingQuery).toBe(true);
-    expect(boundary.getBoundary().activePorts.persistence).toBe(false);
+    expect(boundary.getBoundary().activePorts.persistence).toBe(true);
     expect(boundary.getBoundary().activePorts.rest).toBe(false);
     expect(boundary.isSourceOfTruth()).toBe(false);
 

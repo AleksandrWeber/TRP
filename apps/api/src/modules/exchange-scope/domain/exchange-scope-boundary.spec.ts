@@ -43,7 +43,7 @@ describe('RC-27 Epic 1 — Exchange Scope boundary', () => {
       exchangeScopeService: true,
       exchangeScopeQuery: true,
       consumerRead: true,
-      persistence: false,
+      persistence: true,
       rest: false,
       transport: false,
     });

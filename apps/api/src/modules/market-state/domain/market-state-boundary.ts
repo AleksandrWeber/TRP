@@ -139,7 +139,7 @@ export type MarketStateBoundary = Readonly<{
     qualificationConsumer: true;
     profileConsumer: true;
     consumerRead: true;
-    persistence: false;
+    persistence: true;
     rest: false;
   }>;
   /** Live Market Data ingress role (Epic 2+). */
@@ -170,7 +170,7 @@ export const MARKET_STATE_BOUNDARY: MarketStateBoundary = Object.freeze({
     qualificationConsumer: true,
     profileConsumer: true,
     consumerRead: true,
-    persistence: false,
+    persistence: true,
     rest: false,
   }),
   liveMarketDataRole: 'read-only-consumer',

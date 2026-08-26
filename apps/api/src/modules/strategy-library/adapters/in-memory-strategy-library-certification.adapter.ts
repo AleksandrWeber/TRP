@@ -3,6 +3,7 @@
  *
  * Implements StrategyLibraryCertificationPort over the existing Library SoT buffer.
  * Delegates admit rules to createStrategyCertification / eligibility domain.
+ * W3-O01-b: snapshot export/import for attempts (combined owner with read adapter).
  * Does not own strategies. Does not redesign Library, Runtime, or Deployment.
  */
 
@@ -25,6 +26,10 @@ import type {
 } from '../ports/strategy-library-certification.port';
 import { InMemoryStrategyLibraryReadAdapter } from './in-memory-strategy-library-read.adapter';
 
+export type StrategyLibraryCertificationDurableState = Readonly<{
+  attempts: CertificationAttemptRecord[];
+}>;
+
 @Injectable()
 export class InMemoryStrategyLibraryCertificationAdapter implements StrategyLibraryCertificationPort {
   private readonly attempts: CertificationAttemptRecord[] = [];
@@ -34,6 +39,19 @@ export class InMemoryStrategyLibraryCertificationAdapter implements StrategyLibr
   /** Test helper. */
   clear(): void {
     this.attempts.length = 0;
+  }
+
+  exportDurableState(): StrategyLibraryCertificationDurableState {
+    return Object.freeze({
+      attempts: [...this.attempts],
+    });
+  }
+
+  importDurableState(state: StrategyLibraryCertificationDurableState): void {
+    this.attempts.length = 0;
+    for (const attempt of state.attempts ?? []) {
+      this.attempts.push(attempt);
+    }
   }
 
   certify(cmd: CertifyStrategyVersionCommand): CertifyResult {

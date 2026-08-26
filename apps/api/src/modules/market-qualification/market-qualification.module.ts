@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
+import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
 import { KnowledgeLakeModule } from '../knowledge-lake';
 import { LiveMarketDataModule } from '../live-market-data';
+import { DurableQualificationStore } from './adapters/durable-qualification-store';
 import { InMemoryQualificationStore } from './adapters/in-memory-qualification-store';
 import { LiveMarketDataReadAdapter } from './adapters/live-market-data-read.adapter';
 import { MarketQualificationConsumerReadAdapter } from './adapters/market-qualification-consumer-read.adapter';
@@ -22,6 +24,7 @@ import {
  *
  * Epic 1–4: boundary, reads, domain, lifecycle/query.
  * Epic 6: consumer read ports for future Orchestrator / Reporting / AI.
+ * W3-O01-b: optional durable store snapshot via PERSISTENCE_DRIVER=prisma.
  *
  * Does not import Runtime Enforcement, Strategy Library, Trading Session,
  * Orders, Execution, Reporting, or AI.
@@ -36,7 +39,14 @@ import {
     LiveMarketDataReadAdapter,
     ResearchOutputReadAdapter,
     MarketQualificationObservationalReadService,
-    InMemoryQualificationStore,
+    {
+      provide: InMemoryQualificationStore,
+      useFactory: async () =>
+        createRepositoryByDriver({
+          createMemory: () => new InMemoryQualificationStore(),
+          createPrisma: (client) => new DurableQualificationStore(client),
+        }),
+    },
     MarketQualificationLifecycleService,
     MarketQualificationQueryService,
     MarketQualificationConsumerReadAdapter,

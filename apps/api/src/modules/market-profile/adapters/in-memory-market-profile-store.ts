@@ -1,7 +1,9 @@
 /**
  * RC-25 Epic 5 — Process-local Market Profile version registry / store.
  *
- * Not a persistence product / DB schema. In-memory only.
+ * Not a persistence product / DB schema.
+ * W3-O01-b: snapshot export/import enables durable persistence on this owner
+ * via DurableMarketProfileStore.
  * Enforces immutability: existing profile ids and (targetId, version) pairs
  * cannot be overwritten.
  */
@@ -9,6 +11,10 @@
 import { Injectable } from '@nestjs/common';
 import type { MarketProfile } from '../domain/market-profile';
 import type { MarketProfileVersion } from '../domain/market-profile-version';
+
+export type MarketProfileStoreDurableState = Readonly<{
+  profiles: MarketProfileVersion[];
+}>;
 
 @Injectable()
 export class InMemoryMarketProfileStore {
@@ -88,5 +94,22 @@ export class InMemoryMarketProfileStore {
   nextVersion(targetId: string): number {
     const latest = this.getLatest(targetId);
     return (latest?.version ?? 0) + 1;
+  }
+
+  exportDurableState(): MarketProfileStoreDurableState {
+    return Object.freeze({
+      profiles: [...this.byId.values()],
+    });
+  }
+
+  importDurableState(state: MarketProfileStoreDurableState): void {
+    this.byId.clear();
+    this.versionIndex.clear();
+    for (const profile of state.profiles ?? []) {
+      this.byId.set(profile.marketProfileId, profile);
+      const versions = this.versionIndex.get(profile.targetId) ?? new Map();
+      versions.set(profile.version, profile.marketProfileId);
+      this.versionIndex.set(profile.targetId, versions);
+    }
   }
 }

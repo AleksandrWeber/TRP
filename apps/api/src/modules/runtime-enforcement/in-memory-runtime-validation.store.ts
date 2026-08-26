@@ -2,6 +2,8 @@
  * PC-04 — process-local history of Runtime Enforcement Gate decisions.
  *
  * Command log only. Does not decide PASS/FAIL. Does not persist a new SoT.
+ * W3-O01-b: snapshot export/import enables durable persistence on this owner
+ * via DurableRuntimeValidationStore.
  */
 
 import { Injectable } from '@nestjs/common';
@@ -10,6 +12,10 @@ import type {
   RuntimeValidationHistoryQuery,
   RuntimeValidationRecord,
 } from './runtime-validation.record';
+
+export type RuntimeValidationStoreDurableState = Readonly<{
+  records: RuntimeValidationRecord[];
+}>;
 
 @Injectable()
 export class InMemoryRuntimeValidationStore {
@@ -47,5 +53,18 @@ export class InMemoryRuntimeValidationStore {
     return Object.freeze({
       items: Object.freeze(items.slice(0, limit)),
     });
+  }
+
+  exportDurableState(): RuntimeValidationStoreDurableState {
+    return Object.freeze({
+      records: [...this.records],
+    });
+  }
+
+  importDurableState(state: RuntimeValidationStoreDurableState): void {
+    this.records.length = 0;
+    for (const record of state.records ?? []) {
+      this.records.push(record);
+    }
   }
 }

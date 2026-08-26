@@ -115,6 +115,6 @@ export const REPORTING_PORTS_ACTIVE = Object.freeze({
   reportingQuery: true,
   knowledgeLakeConsumer: true,
   historyReads: false,
-  persistence: false,
+  persistence: true,
   rest: false,
 } as const);

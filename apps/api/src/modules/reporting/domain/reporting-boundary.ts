@@ -128,7 +128,7 @@ export type ReportingBoundary = Readonly<{
     reportingQuery: true;
     knowledgeLakeConsumer: true;
     historyReads: false;
-    persistence: false;
+    persistence: true;
     rest: false;
   }>;
   /** Knowledge Lake relationship: read-only consumer (active Epic 2+). */
@@ -150,7 +150,7 @@ export const REPORTING_BOUNDARY: ReportingBoundary = Object.freeze({
     reportingQuery: true,
     knowledgeLakeConsumer: true,
     historyReads: false,
-    persistence: false,
+    persistence: true,
     rest: false,
   }),
   knowledgeLakeRole: 'read-only-consumer',

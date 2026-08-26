@@ -3,7 +3,7 @@
 **Package:** W3-O01 Durable Analytical Stores
 **Wave:** 3 — Durability, Operations & Continuity
 **Master Plan / Roadmap:** V3-O01 · IN-01 · TD-048
-**Status:** Planning **APPROVED**. W3-O01-a **IMPLEMENTED** (inventory foundation). Persistence / restart proof slices **not started**.
+**Status:** Planning **APPROVED**. W3-O01-a **APPROVED**. W3-O01-b **IMPLEMENTED** (durable persistence). Restart proof **not started**.
 **Date:** 2026-08-26
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w3-o01-product-scope.md`](./w3-o01-product-scope.md)
@@ -26,7 +26,7 @@ Do not validate Notification durable queue (O02), US295 Complete (O03), Kill Swi
 | Slice    | Name                                                  | Validation record                                                                 |
 | -------- | ----------------------------------------------------- | --------------------------------------------------------------------------------- |
 | W3-O01-a | Analytical store inventory & honesty baseline         | [`w3-o01-a-validation-report.md`](./w3-o01-a-validation-report.md) — **complete** |
-| W3-O01-b | Durable persistence for priority analytical artifacts | Not started                                                                       |
+| W3-O01-b | Durable persistence for priority analytical artifacts | [`w3-o01-b-validation-report.md`](./w3-o01-b-validation-report.md) — **complete** |
 | W3-O01-c | Restart-survival proof & degraded honesty             | Not started                                                                       |
 | W3-O01-d | Security verification + package Close evidence        | Not started                                                                       |
 
@@ -228,13 +228,13 @@ W3-O01-a command validation (required for this slice):
 
 | Slice    | Authorization                       |
 | -------- | ----------------------------------- |
-| W3-O01-a | **Authorized and implemented**      |
-| W3-O01-b | **Not opened** — wait for PO review |
-| W3-O01-c | Not opened                          |
+| W3-O01-a | **APPROVED**                        |
+| W3-O01-b | **Authorized and implemented**      |
+| W3-O01-c | **Not opened** — wait for PO review |
 | W3-O01-d | Not opened                          |
 
-Do not treat W3-O01-a validation as package Close.
+Do not treat W3-O01-b validation as package Close or restart-recovery Complete.
 
 ---
 
-**STOP.** Wait for Product Owner review before W3-O01-b. Do not implement persistence. Do not implement restart recovery.
+**STOP.** Wait for Product Owner review before W3-O01-c. Do not implement restart recovery. Do not implement automatic restore.

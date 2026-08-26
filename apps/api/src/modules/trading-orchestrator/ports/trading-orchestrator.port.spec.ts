@@ -34,7 +34,7 @@ describe('RC-26 Epic 5 — Trading Orchestrator ports posture', () => {
       profileConsumer: false,
       sessionHandoff: true,
       consumerRead: true,
-      persistence: false,
+      persistence: true,
       rest: true,
     });
   });

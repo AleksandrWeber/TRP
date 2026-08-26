@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
+import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
 import { MarketQualificationModule } from '../market-qualification';
+import { DurableMarketProfileStore } from './adapters/durable-market-profile-store';
 import { InMemoryMarketProfileStore } from './adapters/in-memory-market-profile-store';
 import { MarketProfileConsumerReadAdapter } from './adapters/market-profile-consumer-read.adapter';
 import { MarketProfileBoundaryService } from './market-profile-boundary.service';
@@ -17,6 +19,7 @@ import {
  *
  * Epic 1–5: boundary, observational reads, domain, versioning.
  * Epic 6: consumer read ports for future Orchestrator / Reporting / AI.
+ * W3-O01-b: optional durable store snapshot via PERSISTENCE_DRIVER=prisma.
  *
  * Dependency direction: Qualification → Profile (one-way).
  * Does not import Live Market Data directly, Runtime Enforcement,
@@ -28,7 +31,14 @@ import {
   providers: [
     MarketProfileBoundaryService,
     MarketProfileObservationalReadService,
-    InMemoryMarketProfileStore,
+    {
+      provide: InMemoryMarketProfileStore,
+      useFactory: async () =>
+        createRepositoryByDriver({
+          createMemory: () => new InMemoryMarketProfileStore(),
+          createPrisma: (client) => new DurableMarketProfileStore(client),
+        }),
+    },
     MarketProfileVersioningService,
     MarketProfileQueryService,
     MarketProfileConsumerReadAdapter,

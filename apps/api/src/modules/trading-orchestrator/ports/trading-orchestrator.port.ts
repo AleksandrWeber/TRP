@@ -359,6 +359,6 @@ export const TRADING_ORCHESTRATOR_PORTS_ACTIVE = Object.freeze({
   profileConsumer: false,
   sessionHandoff: true,
   consumerRead: true,
-  persistence: false,
+  persistence: true,
   rest: true,
 } as const);

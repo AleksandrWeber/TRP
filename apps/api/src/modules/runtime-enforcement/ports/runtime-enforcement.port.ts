@@ -88,6 +88,6 @@ export const RUNTIME_ENFORCEMENT_PORTS_ACTIVE = Object.freeze({
   validateDeployment: true,
   libraryLookup: true,
   libraryEligibility: true,
-  persistence: false,
+  persistence: true,
   rest: true,
 } as const);

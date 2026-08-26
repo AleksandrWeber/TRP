@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
+import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
 import { KnowledgeLakeModule, KNOWLEDGE_LAKE_QUERY_PORT } from '../knowledge-lake';
+import { DurableReportingStore } from './adapters/durable-reporting-store';
 import { InMemoryReportingStore } from './adapters/in-memory-reporting-store';
 import {
   KNOWLEDGE_LAKE_QUERY_CONSUMER,
@@ -18,6 +20,7 @@ import { ReportingQueryService } from './reporting-query.service';
  * Epic 2: Knowledge Lake Query Port consumption (read-only).
  * Epic 3: immutable domain model.
  * Epic 4: deterministic report generation + query ports.
+ * W3-O01-b: optional durable store snapshot via PERSISTENCE_DRIVER=prisma.
  *
  * Does not expose persistence product, REST, UI, AI, or scheduled jobs.
  *
@@ -29,7 +32,14 @@ import { ReportingQueryService } from './reporting-query.service';
   providers: [
     ReportingBoundaryService,
     ReportingKnowledgeLakeReadService,
-    InMemoryReportingStore,
+    {
+      provide: InMemoryReportingStore,
+      useFactory: async () =>
+        createRepositoryByDriver({
+          createMemory: () => new InMemoryReportingStore(),
+          createPrisma: (client) => new DurableReportingStore(client),
+        }),
+    },
     ReportingGenerationService,
     ReportingQueryService,
     {

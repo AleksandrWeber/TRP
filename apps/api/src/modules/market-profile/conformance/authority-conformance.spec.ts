@@ -113,7 +113,7 @@ describe('RC-25 Epic 6 — Market Profile authority conformance', () => {
       marketProfileQuery: true,
       observationalInputReads: true,
       consumerRead: true,
-      persistence: false,
+      persistence: true,
       rest: false,
     });
     expect(MARKET_PROFILE_BOUNDARY.activePorts.consumerRead).toBe(true);

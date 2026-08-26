@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
+import { DurableNotificationStore } from './adapters/durable-notification-store';
 import { InMemoryNotificationStore } from './adapters/in-memory-notification-store';
 import { InMemoryTelegramAdapter } from './adapters/in-memory-telegram.adapter';
 import { NotificationDeliveryBoundaryService } from './notification-boundary.service';
@@ -9,13 +11,21 @@ import { NOTIFICATION_SERVICE_PORT, TELEGRAM_CHANNEL_ADAPTER } from './ports/not
  * RC-24 Epic 6 — Notification Delivery module.
  *
  * Delivery only through configured channels (Telegram active).
+ * W3-O01-b: optional durable store snapshot via PERSISTENCE_DRIVER=prisma.
  * Does not import Reporting / AI Analytics / Strategy Library / Runtime /
  * Trading Session / Orders / Ledger. Does not expose REST or trading commands.
  */
 @Module({
   providers: [
     NotificationDeliveryBoundaryService,
-    InMemoryNotificationStore,
+    {
+      provide: InMemoryNotificationStore,
+      useFactory: async () =>
+        createRepositoryByDriver({
+          createMemory: () => new InMemoryNotificationStore(),
+          createPrisma: (client) => new DurableNotificationStore(client),
+        }),
+    },
     InMemoryTelegramAdapter,
     {
       provide: TELEGRAM_CHANNEL_ADAPTER,

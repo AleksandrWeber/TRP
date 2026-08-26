@@ -2,7 +2,8 @@
  * RC-26 Epic 5 — Process-local coordination store.
  *
  * Product-visible history of existing plan / run / decision / intent records.
- * Not a new Source of Truth. Not a database product. Not Session ownership.
+ * W3-O01-b: snapshot export/import enables durable persistence on this owner
+ * via DurableOrchestrationCoordinationStore. Not a new Source of Truth.
  */
 
 import { Injectable } from '@nestjs/common';
@@ -10,6 +11,15 @@ import type { OrchestrationPlan } from '../domain/orchestration-plan';
 import type { OrchestrationRun } from '../domain/orchestration-run';
 import type { SelectionDecision } from '../domain/selection-decision';
 import type { SessionHandoffIntent } from '../domain/session-handoff-intent';
+
+export type OrchestrationStoreDurableState = Readonly<{
+  plans: OrchestrationPlan[];
+  runs: OrchestrationRun[];
+  selections: SelectionDecision[];
+  handoffs: SessionHandoffIntent[];
+  runPlanIds: Array<readonly [string, string]>;
+  seq: number;
+}>;
 
 @Injectable()
 export class OrchestrationCoordinationStore {
@@ -80,5 +90,41 @@ export class OrchestrationCoordinationStore {
 
   getPlanIdForRun(orchestrationRunId: string): string | undefined {
     return this.runPlanIds.get(orchestrationRunId);
+  }
+
+  exportDurableState(): OrchestrationStoreDurableState {
+    return Object.freeze({
+      plans: [...this.plans.values()],
+      runs: [...this.runs.values()],
+      selections: [...this.selections.values()],
+      handoffs: [...this.handoffs.values()],
+      runPlanIds: [...this.runPlanIds.entries()].map(([k, v]) => Object.freeze([k, v] as const)),
+      seq: this.seq,
+    });
+  }
+
+  importDurableState(state: OrchestrationStoreDurableState): void {
+    this.plans.clear();
+    this.runs.clear();
+    this.selections.clear();
+    this.handoffs.clear();
+    this.runPlanIds.clear();
+    this.seq = 0;
+    for (const plan of state.plans ?? []) {
+      this.plans.set(plan.orchestrationPlanId, plan);
+    }
+    for (const run of state.runs ?? []) {
+      this.runs.set(run.orchestrationRunId, run);
+    }
+    for (const selection of state.selections ?? []) {
+      this.selections.set(selection.selectionDecisionId, selection);
+    }
+    for (const handoff of state.handoffs ?? []) {
+      this.handoffs.set(handoff.sessionHandoffIntentId, handoff);
+    }
+    for (const [runId, planId] of state.runPlanIds ?? []) {
+      this.runPlanIds.set(runId, planId);
+    }
+    this.seq = typeof state.seq === 'number' && Number.isFinite(state.seq) ? state.seq : 0;
   }
 }

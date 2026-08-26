@@ -34,7 +34,7 @@ describe('RC-21 KnowledgeLakeModule', () => {
     expect(boundary.getBoundary().activePorts.ingestion).toBe(true);
     expect(boundary.getBoundary().activePorts.producers).toBe(true);
     expect(boundary.getBoundary().activePorts.query).toBe(true);
-    expect(boundary.getBoundary().activePorts.persistence).toBe(false);
+    expect(boundary.getBoundary().activePorts.persistence).toBe(true);
 
     const ingestion = moduleRef.get<KnowledgeLakeIngestionPort>(KNOWLEDGE_LAKE_INGESTION_PORT);
     const query = moduleRef.get<KnowledgeLakeQueryPort>(KNOWLEDGE_LAKE_QUERY_PORT);

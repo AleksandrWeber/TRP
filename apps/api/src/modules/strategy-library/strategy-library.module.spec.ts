@@ -25,7 +25,7 @@ describe('RC-22 StrategyLibraryModule', () => {
       lookup: true,
       eligibility: true,
       lifecycle: false,
-      persistence: false,
+      persistence: true,
       strategyModel: true,
     });
     expect(boundary.getBoundary().knowledgeLakeRole).toBe('projection-consumer-only');

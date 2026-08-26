@@ -37,9 +37,13 @@ describe('W3-O01-a analytical inventory — unit', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it('inventory completeness: certified modules still declare persistence false', () => {
+  it('inventory completeness: SURVIVE owners declare persistence true; AI analytics remains false', () => {
     for (const owner of W3_O01_A_ALLOWED_OWNERS) {
-      expect(W3_O01_A_PORT_PERSISTENCE_FLAGS[owner]).toBe(false);
+      if (owner === 'ai-analytics') {
+        expect(W3_O01_A_PORT_PERSISTENCE_FLAGS[owner]).toBe(false);
+      } else {
+        expect(W3_O01_A_PORT_PERSISTENCE_FLAGS[owner]).toBe(true);
+      }
     }
   });
 
@@ -75,11 +79,11 @@ describe('W3-O01-a analytical inventory — unit', () => {
     }
   });
 
-  it('classification consistency: operator-relied SURVIVE rows remain non-surviving today', () => {
+  it('classification consistency: operator-relied SURVIVE rows remain non-surviving until restart proof', () => {
     for (const row of rowsRequiringSurvive()) {
       if (!row.operatorRelied) continue;
       expect(row.restartSurvivability).toBe('does-not-survive-today');
-      expect(row.futureSlice).toBe('W3-O01-b');
+      expect(['W3-O01-b', 'W3-O01-c']).toContain(row.futureSlice);
     }
   });
 });

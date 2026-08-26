@@ -126,7 +126,7 @@ export type MarketProfileBoundary = Readonly<{
     marketProfileQuery: true;
     observationalInputReads: true;
     consumerRead: true;
-    persistence: false;
+    persistence: true;
     rest: false;
   }>;
   /** Qualification is upstream consumer of LMD; Profile consumes via Qualification. */
@@ -149,7 +149,7 @@ export const MARKET_PROFILE_BOUNDARY: MarketProfileBoundary = Object.freeze({
     marketProfileQuery: true,
     observationalInputReads: true,
     consumerRead: true,
-    persistence: false,
+    persistence: true,
     rest: false,
   }),
   qualificationRole: 'upstream-read-consumer',

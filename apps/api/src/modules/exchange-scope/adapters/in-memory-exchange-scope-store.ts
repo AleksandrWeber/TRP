@@ -1,7 +1,9 @@
 /**
  * RC-27 Epic 3 — Process-local Exchange Scope artifact store.
  *
- * Not a persistence product / DB schema. In-memory only.
+ * Not a persistence product / DB schema.
+ * W3-O01-b: snapshot export/import enables durable persistence on this owner
+ * via DurableExchangeScopeStore.
  */
 
 import { Injectable } from '@nestjs/common';
@@ -9,6 +11,14 @@ import type { AdapterBindingContext } from '../domain/adapter-binding-context';
 import type { ExchangeScope } from '../domain/exchange-scope';
 import type { ExchangeRiskPolicy } from '../domain/exchange-risk-policy';
 import type { TradingAccountBinding } from '../domain/trading-account-binding';
+
+export type ExchangeScopeStoreDurableState = Readonly<{
+  latest: ExchangeScope[];
+  history: Array<readonly [string, ExchangeScope[]]>;
+  policies: Array<readonly [string, ExchangeRiskPolicy[]]>;
+  bindings: TradingAccountBinding[];
+  adapters: AdapterBindingContext[];
+}>;
 
 @Injectable()
 export class InMemoryExchangeScopeStore {
@@ -125,5 +135,42 @@ export class InMemoryExchangeScopeStore {
 
   getAdapterContext(exchangeScopeId: string): AdapterBindingContext | null {
     return this.adapterByScope.get(exchangeScopeId) ?? null;
+  }
+
+  exportDurableState(): ExchangeScopeStoreDurableState {
+    return Object.freeze({
+      latest: [...this.latestById.values()],
+      history: [...this.historyById.entries()].map(([id, rows]) =>
+        Object.freeze([id, rows] as const),
+      ),
+      policies: [...this.policiesByScope.entries()].map(([id, rows]) =>
+        Object.freeze([id, rows] as const),
+      ),
+      bindings: [...this.bindingsById.values()],
+      adapters: [...this.adapterByScope.values()],
+    });
+  }
+
+  importDurableState(state: ExchangeScopeStoreDurableState): void {
+    this.latestById.clear();
+    this.historyById.clear();
+    this.policiesByScope.clear();
+    this.bindingsById.clear();
+    this.adapterByScope.clear();
+    for (const scope of state.latest ?? []) {
+      this.latestById.set(scope.exchangeScopeId, scope);
+    }
+    for (const [id, history] of state.history ?? []) {
+      this.historyById.set(id, [...history]);
+    }
+    for (const [id, policies] of state.policies ?? []) {
+      this.policiesByScope.set(id, [...policies]);
+    }
+    for (const binding of state.bindings ?? []) {
+      this.bindingsById.set(binding.tradingAccountBindingId, binding);
+    }
+    for (const adapter of state.adapters ?? []) {
+      this.adapterByScope.set(adapter.exchangeScopeId, adapter);
+    }
   }
 }

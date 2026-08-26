@@ -107,7 +107,7 @@ describe('RC-25 Epic 6 — Market Qualification authority conformance', () => {
       liveMarketDataConsumer: true,
       researchOutputConsumer: true,
       consumerRead: true,
-      persistence: false,
+      persistence: true,
       rest: false,
     });
     expect(MARKET_QUALIFICATION_BOUNDARY.activePorts.consumerRead).toBe(true);

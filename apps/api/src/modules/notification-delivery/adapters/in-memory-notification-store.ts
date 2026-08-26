@@ -1,5 +1,8 @@
 /**
- * RC-24 Epic 6 — Process-local notification store (not a DB product).
+ * RC-24 Epic 6 — Process-local notification store.
+ *
+ * W3-O01-b: snapshot export/import enables durable persistence on this owner
+ * via DurableNotificationStore. Distinct from W3-O02 durable delivery queue.
  */
 
 import { Injectable } from '@nestjs/common';
@@ -10,6 +13,12 @@ import type { UserNotificationPreferences } from '../domain/user-notification-pr
 function key(workspaceId: string, userId: string): string {
   return `${workspaceId}::${userId}`;
 }
+
+export type NotificationStoreDurableState = Readonly<{
+  preferences: UserNotificationPreferences[];
+  telegram: TelegramConnection[];
+  deliveries: DeliveryResult[];
+}>;
 
 @Injectable()
 export class InMemoryNotificationStore {
@@ -54,5 +63,29 @@ export class InMemoryNotificationStore {
 
   listDeliveries(): readonly DeliveryResult[] {
     return Object.freeze([...this.deliveries]);
+  }
+
+  exportDurableState(): NotificationStoreDurableState {
+    return Object.freeze({
+      preferences: [...this.preferences.values()],
+      telegram: [...this.telegram.values()],
+      deliveries: [...this.deliveries],
+    });
+  }
+
+  importDurableState(state: NotificationStoreDurableState): void {
+    this.preferences.clear();
+    this.telegram.clear();
+    this.tokenIndex.clear();
+    this.deliveries.length = 0;
+    for (const prefs of state.preferences ?? []) {
+      this.preferences.set(key(prefs.workspaceId, prefs.userId), prefs);
+    }
+    for (const connection of state.telegram ?? []) {
+      this.saveTelegram(connection);
+    }
+    for (const delivery of state.deliveries ?? []) {
+      this.deliveries.push(delivery);
+    }
   }
 }

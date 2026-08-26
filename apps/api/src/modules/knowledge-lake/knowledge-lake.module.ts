@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
+import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
 import { EventProcessingModule } from '../event-processing';
+import { DurableKnowledgeLakeIngestionAdapter } from './ingestion/durable-knowledge-lake-ingestion.adapter';
 import { InMemoryKnowledgeLakeIngestionAdapter } from './ingestion/in-memory-knowledge-lake-ingestion.adapter';
 import { KnowledgeLakeBoundaryService } from './knowledge-lake-boundary.service';
 import { KnowledgeLakeResearchLabProjectionService } from './projections/knowledge-lake-research-lab-projection.service';
@@ -29,6 +31,7 @@ import { KNOWLEDGE_LAKE_QUERY_PORT } from './ports/knowledge-lake-query.port';
  * Epic 4: Research Lab outcome projections (one-way; Research modules untouched).
  * Epic 5: query port (consumer-safe analytical reads) — no Reporting / AI UI.
  * Epic 6: authority conformance (no new ports / features).
+ * W3-O01-b: optional durable fact buffer via PERSISTENCE_DRIVER=prisma.
  *
  * Does not expose durable persistence product, Reporting UI, or AI.
  * Distinct from {@link KnowledgeModule} (research knowledge domain).
@@ -37,7 +40,14 @@ import { KNOWLEDGE_LAKE_QUERY_PORT } from './ports/knowledge-lake-query.port';
   imports: [EventProcessingModule],
   providers: [
     KnowledgeLakeBoundaryService,
-    InMemoryKnowledgeLakeIngestionAdapter,
+    {
+      provide: InMemoryKnowledgeLakeIngestionAdapter,
+      useFactory: async () =>
+        createRepositoryByDriver({
+          createMemory: () => new InMemoryKnowledgeLakeIngestionAdapter(),
+          createPrisma: (client) => new DurableKnowledgeLakeIngestionAdapter(client),
+        }),
+    },
     {
       provide: KNOWLEDGE_LAKE_INGESTION_PORT,
       useExisting: InMemoryKnowledgeLakeIngestionAdapter,

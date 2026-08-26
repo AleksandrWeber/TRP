@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
+import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
 import { LiveMarketDataModule } from '../live-market-data/live-market-data.module';
 import { MarketQualificationModule } from '../market-qualification';
 import { MarketProfileModule } from '../market-profile';
+import { DurableMarketStateProjectionStore } from './adapters/durable-market-state-projection.store';
 import { MarketStateLiveMarketDataReadAdapter } from './adapters/live-market-data-read.adapter';
 import { MarketStateConsumerReadAdapter } from './adapters/market-state-consumer-read.adapter';
 import { MarketStateProfileReadAdapter } from './adapters/profile-consumer-read.adapter';
@@ -21,6 +23,7 @@ import {
  *
  * Epic 6: Consumer read port for Reporting / AI / Command Center.
  * Classify/query Nest ports remain inactive (no classification algorithms).
+ * W3-O01-b: optional durable projection store via PERSISTENCE_DRIVER=prisma.
  *
  * Does not import Runtime Enforcement, Strategy Library, Trading Session,
  * Orders, Execution, Risk, Reporting, AI, or Trading Orchestrator.
@@ -33,7 +36,14 @@ import {
     MarketStateQualificationReadAdapter,
     MarketStateProfileReadAdapter,
     MarketStateObservationalReadService,
-    MarketStateProjectionStore,
+    {
+      provide: MarketStateProjectionStore,
+      useFactory: async () =>
+        createRepositoryByDriver({
+          createMemory: () => new MarketStateProjectionStore(),
+          createPrisma: (client) => new DurableMarketStateProjectionStore(client),
+        }),
+    },
     MarketStateConsumerReadAdapter,
     {
       provide: MARKET_STATE_LIVE_MARKET_DATA_READ_CONSUMER,

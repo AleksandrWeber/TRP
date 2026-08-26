@@ -208,7 +208,7 @@ describe('RC-27 Epic 6 — authority conformance', () => {
       exchangeScopeService: true,
       exchangeScopeQuery: true,
       consumerRead: true,
-      persistence: false,
+      persistence: true,
       rest: false,
       transport: false,
     });

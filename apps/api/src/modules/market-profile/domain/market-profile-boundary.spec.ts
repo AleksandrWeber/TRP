@@ -31,7 +31,7 @@ describe('RC-25 Epic 5 — Market Profile boundary', () => {
       marketProfileQuery: true,
       observationalInputReads: true,
       consumerRead: true,
-      persistence: false,
+      persistence: true,
       rest: false,
     });
   });

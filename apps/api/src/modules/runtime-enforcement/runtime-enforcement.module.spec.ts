@@ -28,7 +28,7 @@ describe('RC-23 RuntimeEnforcementModule', () => {
       validateDeployment: true,
       libraryLookup: true,
       libraryEligibility: true,
-      persistence: false,
+      persistence: true,
       rest: true,
     });
 

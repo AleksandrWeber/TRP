@@ -120,7 +120,7 @@ describe('RC-22 Epic 1 — Strategy Library boundary', () => {
       lookup: true,
       eligibility: true,
       lifecycle: false,
-      persistence: false,
+      persistence: true,
       strategyModel: true,
     });
   });

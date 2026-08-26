@@ -117,7 +117,7 @@ export type KnowledgeLakeBoundary = Readonly<{
   activePorts: Readonly<{
     ingestion: true;
     query: true;
-    persistence: false;
+    persistence: true;
     producers: true;
   }>;
 }>;
@@ -135,7 +135,7 @@ export const KNOWLEDGE_LAKE_BOUNDARY: KnowledgeLakeBoundary = Object.freeze({
   activePorts: Object.freeze({
     ingestion: true,
     query: true,
-    persistence: false,
+    persistence: true,
     producers: true,
   }),
 });

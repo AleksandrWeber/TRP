@@ -130,7 +130,7 @@ export type MarketQualificationBoundary = Readonly<{
     liveMarketDataConsumer: true;
     researchOutputConsumer: true;
     consumerRead: true;
-    persistence: false;
+    persistence: true;
     rest: false;
   }>;
   /** Live Market Data ingress role. */
@@ -156,7 +156,7 @@ export const MARKET_QUALIFICATION_BOUNDARY: MarketQualificationBoundary = Object
     liveMarketDataConsumer: true,
     researchOutputConsumer: true,
     consumerRead: true,
-    persistence: false,
+    persistence: true,
     rest: false,
   }),
   liveMarketDataRole: 'read-only-consumer',

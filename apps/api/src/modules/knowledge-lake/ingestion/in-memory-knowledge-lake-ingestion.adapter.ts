@@ -19,8 +19,15 @@ import { queryAnalyticalFacts } from '../query/query-analytical-facts';
  * - Epic 5 `KnowledgeLakeQueryPort` (read-only list/get)
  *
  * This is NOT a database, warehouse product, or Source of Truth.
- * Durable persistence remains out of RC-21 scope.
+ * W3-O01-b: snapshot export/import enables durable persistence on this owner
+ * via DurableKnowledgeLakeIngestionAdapter.
  */
+
+export type KnowledgeLakeIngestionDurableState = Readonly<{
+  facts: AnalyticalFact[];
+  appendOrder: string[];
+}>;
+
 @Injectable()
 export class InMemoryKnowledgeLakeIngestionAdapter
   implements KnowledgeLakeIngestionPort, KnowledgeLakeQueryPort
@@ -84,5 +91,31 @@ export class InMemoryKnowledgeLakeIngestionAdapter
   /** Test helper: count of admitted facts. */
   peekSize(): number {
     return this.factsByEventId.size;
+  }
+
+  exportDurableState(): KnowledgeLakeIngestionDurableState {
+    return Object.freeze({
+      facts: [...this.factsByEventId.values()],
+      appendOrder: [...this.appendOrder],
+    });
+  }
+
+  importDurableState(state: KnowledgeLakeIngestionDurableState): void {
+    this.factsByEventId.clear();
+    this.appendOrder.length = 0;
+    const order = state.appendOrder ?? [];
+    const byId = new Map((state.facts ?? []).map((fact) => [fact.eventId, fact] as const));
+    for (const eventId of order) {
+      const fact = byId.get(eventId);
+      if (!fact || this.factsByEventId.has(eventId)) continue;
+      this.factsByEventId.set(eventId, fact);
+      this.appendOrder.push(eventId);
+      byId.delete(eventId);
+    }
+    for (const fact of byId.values()) {
+      if (this.factsByEventId.has(fact.eventId)) continue;
+      this.factsByEventId.set(fact.eventId, fact);
+      this.appendOrder.push(fact.eventId);
+    }
   }
 }
