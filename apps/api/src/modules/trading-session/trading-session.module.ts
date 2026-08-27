@@ -6,10 +6,12 @@ import { StrategyDeploymentModule } from '../strategy-deployment';
 import { StrategyRuntimeModule } from '../strategy-runtime';
 import { RECOVERY_INCIDENT_REPOSITORY } from './domain/recovery-incident.repository';
 import { RECOVERY_STATE_REPOSITORY } from './domain/recovery-state.repository';
+import { KILL_SWITCH_STATE_REPOSITORY } from './domain/kill-switch-state.repository';
 import { TRADING_SESSION_REPOSITORY } from './persistence/trading-session.repository';
 import { PrismaTradingSessionRepository } from './persistence/prisma-trading-session.repository';
 import { PrismaRecoveryStateRepository } from './persistence/prisma-recovery-state.repository';
 import { PrismaRecoveryIncidentRepository } from './persistence/prisma-recovery-incident.repository';
+import { PrismaKillSwitchStateRepository } from './persistence/prisma-kill-switch-state.repository';
 import {
   InactiveRecoveryEventAdmissionPolicy,
   RECOVERY_EVENT_ADMISSION_POLICY,
@@ -26,6 +28,9 @@ import { RecoveryStrategyEvaluationService } from './recovery/recovery-strategy-
 import { RecoverySignalIntentGenerationService } from './recovery/recovery-signal-intent-generation.service';
 import { RecoveryCompletionService } from './recovery/recovery-completion.service';
 import { StartupRecoveryDiscoveryService } from './recovery/startup-recovery-discovery.service';
+import { KillSwitchPersistenceService } from './kill-switch/kill-switch-persistence.service';
+import { KillSwitchRecoveryStore } from './kill-switch/kill-switch-recovery-store';
+import { KillSwitchRestartRecoveryService } from './kill-switch/kill-switch-restart-recovery.service';
 import { TradingSessionService } from './trading-session.service';
 
 /**
@@ -65,6 +70,11 @@ import { TradingSessionService } from './trading-session.service';
       inject: [PrismaService],
     },
     {
+      provide: KILL_SWITCH_STATE_REPOSITORY,
+      useFactory: (prisma: PrismaService) => new PrismaKillSwitchStateRepository(prisma),
+      inject: [PrismaService],
+    },
+    {
       provide: RECOVERY_EVENT_ADMISSION_POLICY,
       useClass: InactiveRecoveryEventAdmissionPolicy,
     },
@@ -81,11 +91,15 @@ import { TradingSessionService } from './trading-session.service';
     RecoveryStrategyEvaluationService,
     RecoverySignalIntentGenerationService,
     RecoveryCompletionService,
+    KillSwitchPersistenceService,
+    KillSwitchRecoveryStore,
+    KillSwitchRestartRecoveryService,
   ],
   exports: [
     TRADING_SESSION_REPOSITORY,
     RECOVERY_STATE_REPOSITORY,
     RECOVERY_INCIDENT_REPOSITORY,
+    KILL_SWITCH_STATE_REPOSITORY,
     TradingSessionService,
     RecoveryPhaseProgressService,
     RecoveryIncidentFailClosedService,
@@ -99,6 +113,9 @@ import { TradingSessionService } from './trading-session.service';
     RecoveryStrategyEvaluationService,
     RecoverySignalIntentGenerationService,
     RecoveryCompletionService,
+    KillSwitchPersistenceService,
+    KillSwitchRecoveryStore,
+    KillSwitchRestartRecoveryService,
     RECOVERY_EVENT_ADMISSION_POLICY,
   ],
 })

@@ -1,9 +1,10 @@
 /**
- * W3-O01-d / W3-O02-d — Operational Continuity service.
+ * W3-O01-d / W3-O02-d / W3-O04-d — Operational Continuity service.
  *
  * Extends recovered analytical owners with readiness / graceful degradation projection.
  * W3-O02-d adds Notification Durable Queue operational continuity (derived).
- * Recovery itself remains W3-O01-c / W3-O02-c only. No new persistence / BC / HA / monitoring.
+ * W3-O04-d adds Kill Switch operational continuity (derived).
+ * Recovery itself remains W3-O01-c / W3-O02-c / W3-O04-c only. No new persistence / BC / HA / monitoring.
  */
 
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
@@ -20,6 +21,8 @@ import {
 } from '../../persistence/analytical-restart-recovery';
 import { getNotificationQueueContinuityRecord } from '../notification-delivery/domain/notification-queue-continuity-status';
 import { buildNotificationQueueContinuityProjection } from '../notification-delivery/domain/notification-queue-operational-continuity';
+import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
+import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
 import { OperationalContinuityAudit } from './operational-continuity-audit';
 import {
   buildPlatformOperationalProjection,
@@ -45,6 +48,11 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       notificationQueue: buildNotificationQueueContinuityProjection({
         recovering: true,
         ownerBoot: 'ready',
+        continuity: null,
+      }),
+      killSwitch: buildKillSwitchContinuityProjection({
+        recovering: true,
+        ownerReadiness: 'ready',
         continuity: null,
       }),
     });
@@ -81,6 +89,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       recordAnalyticalOwnerBootOutcome(row.owner, row.outcome, row.reason);
     }
     return this.finalizeFromBootRegistry();
+  }
+
+  private buildKillSwitchView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getKillSwitchContinuityRecord();
+    return buildKillSwitchContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
   }
 
   private buildNotificationQueueView(input: {
@@ -125,6 +145,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         recovering: true,
         ownerBoot: notificationOwnerBoot,
       }),
+      killSwitch: this.buildKillSwitchView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
     });
 
     const owners = evaluateOwnerOperationalStates({
@@ -147,11 +171,25 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         notificationQueueBase.recoveryDurationMs ??
         (notificationQueueBase.operationalState === 'Recovering' ? null : recoveryDurationMs),
     });
+    const killSwitchBase = this.buildKillSwitchView({
+      recovering: false,
+      ownerReadiness: 'ready',
+    });
+    const killSwitch = Object.freeze({
+      ...killSwitchBase,
+      recoveryTimestamp:
+        killSwitchBase.recoveryTimestamp ??
+        (killSwitchBase.operationalState === 'Recovering' ? null : recoveryTimestamp),
+      recoveryDurationMs:
+        killSwitchBase.recoveryDurationMs ??
+        (killSwitchBase.operationalState === 'Recovering' ? null : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
       recoveryDurationMs,
       notificationQueue,
+      killSwitch,
     });
     this.finalized = true;
 

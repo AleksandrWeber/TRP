@@ -98,6 +98,52 @@ export function OperationalContinuityView({ readiness }: Props) {
       </section>
 
       <section>
+        <h2 className="text-lg font-semibold text-slate-100">Kill switch</h2>
+        {readiness.killSwitch ? (
+          <dl className="mt-4 grid gap-3 sm:grid-cols-2" data-testid="kill-switch-continuity">
+            <div>
+              <dt className="text-sm text-slate-400">Kill switch operational state</dt>
+              <dd className="text-slate-100" data-testid="kill-switch-state">
+                {readiness.killSwitch.operationalState}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Owner readiness</dt>
+              <dd className="text-slate-100" data-testid="kill-switch-owner-readiness">
+                {readiness.killSwitch.ownerReadiness}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery timestamp</dt>
+              <dd className="text-slate-100" data-testid="kill-switch-recovery-timestamp">
+                {readiness.killSwitch.recoveryTimestamp ?? '—'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery duration</dt>
+              <dd className="text-slate-100" data-testid="kill-switch-recovery-duration">
+                {formatDuration(readiness.killSwitch.recoveryDurationMs)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Restored workspaces</dt>
+              <dd className="text-slate-100" data-testid="kill-switch-restored-count">
+                {readiness.killSwitch.restoredCount}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Armed workspaces</dt>
+              <dd className="text-slate-100" data-testid="kill-switch-armed-count">
+                {readiness.killSwitch.armedCount}
+              </dd>
+            </div>
+          </dl>
+        ) : (
+          <p className="mt-2 text-slate-400">Not evaluated</p>
+        )}
+      </section>
+
+      <section>
         <h2 className="text-lg font-semibold text-slate-100">Owner operational state</h2>
         <table className="mt-3 w-full text-left text-sm text-slate-200">
           <thead className="text-slate-400">

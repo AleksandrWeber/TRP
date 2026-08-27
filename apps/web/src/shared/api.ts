@@ -1036,6 +1036,8 @@ export type OperationalContinuityReadinessView = {
   recoveryDurationMs: number | null;
   /** W3-O02-d — Notification Durable Queue operational continuity. */
   notificationQueue: NotificationQueueContinuityView | null;
+  /** W3-O04-d — Kill Switch operational continuity. */
+  killSwitch: KillSwitchContinuityView | null;
 };
 
 export type NotificationQueueContinuityView = {
@@ -1047,6 +1049,18 @@ export type NotificationQueueContinuityView = {
   openCount: number;
   abandonedCount: number;
   channelUnavailable: boolean;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+};
+
+export type KillSwitchContinuityView = {
+  operationalState: OperationalContinuityState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  armedCount: number;
   integrityVerified: boolean;
   workspaceIds: readonly string[];
 };

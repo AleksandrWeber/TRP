@@ -2,7 +2,7 @@
 
 **Document:** Version 3 Durable Kill Switch Overview
 **Date:** 2026-08-27
-**Status:** Product-facing record. W3-O04 Planning **COMPLETE**. Awaiting Product Owner Review and Approval. Not approved. Not implementation. Slices not opened.
+**Status:** Product-facing record. W3-O04 Planning **APPROVED**. W3-O04-a…e **COMPLETE** — Close Evidence assembled; awaiting Product Owner Package Review. Not Kill Switch product Close.
 **Product:** W3-O04 Durable Kill Switch Product (V3-O04 · LT-03 · TD-047)
 **Wave:** 3 — Durability, Operations & Continuity
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
@@ -50,23 +50,27 @@ That is still not enough for **operational emergency halt**. Master Plan Wave 3 
 
 ---
 
-## Current package (W3-O04) — Planning open
+## Current package (W3-O04) — Close Evidence assembled (W3-O04-e)
 
-| Capability                         | Status                                           |
-| ---------------------------------- | ------------------------------------------------ |
-| W3-O04 Planning Package            | **OPEN** — Planning COMPLETE; awaiting PO review |
-| Kill Switch inventory              | Not opened (W3-O04-a)                            |
-| Durable Kill Switch persistence    | Not opened (W3-O04-b)                            |
-| Paper product visibility           | Not opened (W3-O04-c)                            |
-| Restart survival & admission block | Not opened (W3-O04-d)                            |
-| Package Close evidence             | Not opened (W3-O04-e)                            |
-| Monitoring / health dashboard      | Out (O05)                                        |
-| Live Trading                       | Out (Wave 6)                                     |
+| Capability                      | Status                                                 |
+| ------------------------------- | ------------------------------------------------------ |
+| W3-O04 Planning Package         | **APPROVED** — implementation authorized               |
+| Kill Switch inventory           | **COMPLETE** (W3-O04-a)                                |
+| Durable Kill Switch persistence | **COMPLETE** (W3-O04-b)                                |
+| Restart recovery foundation     | **COMPLETE** (W3-O04-c)                                |
+| Operational continuity          | **COMPLETE** (W3-O04-d)                                |
+| Package Close evidence          | **COMPLETE** (W3-O04-e) — **NOT CLOSED** (awaiting PO) |
+| Monitoring / health dashboard   | Out (O05)                                              |
+| Live Trading                    | Out (Wave 6)                                           |
 
 ### What already exists (operator language)
 
-- Domain hooks for halt admission (`kill_switch_active`) exist in runtime recovery paths.
+- **W3-O04-b persistence** — paper armed/cleared state on `workspace_kill_switch_states` (Trading Session owner).
+- **W3-O04-c restart recovery** — persisted state hydrates into runtime after normal API restart (internal only).
+- **W3-O04-d operational continuity** — Kill Switch readiness on Platform Readiness (`/operational-continuity`); derived Recovering | Ready | Degraded | Unavailable.
+- **W3-O04-e Close Evidence** — package validation, walkthrough, and integrity verification (does not declare CLOSED).
 - Kill Switch REST exists but is **live-only** and **hidden** from the paper product.
+- Command Center emergency controls exist but are **unavailable** (honest non-delivery).
 - Pause / resume / stop exist but are **not** the same as durable Kill Switch Complete.
 - W3-O01, W3-O02, and W3-O03 are **CLOSED** — different durability outcomes.
 
@@ -136,25 +140,33 @@ Authorized operator clears Kill Switch explicitly
 
 ## Explicit Non-Claims
 
-| Claim                | Status for planning open |
-| -------------------- | ------------------------ |
-| W3-O04 APPROVED      | **Not claimed**          |
-| W3-O04 CLOSED        | **Not claimed**          |
-| Kill Switch Complete | **Not claimed**          |
-| Monitoring Complete  | **Not claimed**          |
-| Live Trading enabled | **Not claimed**          |
-| Wave 3 COMPLETE      | **Not claimed**          |
-| W3-O04-a opened      | **Not claimed**          |
+| Claim                                          | Status after W3-O04-a               |
+| ---------------------------------------------- | ----------------------------------- |
+| W3-O04 APPROVED                                | **Yes**                             |
+| W3-O04 CLOSED                                  | **Not claimed**                     |
+| Kill Switch Complete                           | **Not claimed**                     |
+| Monitoring Complete                            | **Not claimed**                     |
+| Live Trading enabled                           | **Not claimed**                     |
+| Wave 3 COMPLETE                                | **Not claimed**                     |
+| W3-O04-a COMPLETE                              | **Yes** — PO review pending         |
+| W3-O04-b COMPLETE                              | **Yes** — PO review pending         |
+| W3-O04-c COMPLETE                              | **Yes** — PO review pending         |
+| W3-O04-d COMPLETE                              | **Yes** — PO review pending         |
+| W3-O04-e Close Evidence                        | **Yes** — PO Package Review pending |
+| W3-O04 CLOSED                                  | **Not claimed**                     |
+| Kill Switch Complete                           | **Not claimed**                     |
+| Paper restart recovery (normal process)        | **Yes** (W3-O04-c)                  |
+| Operational Continuity (Kill Switch readiness) | **Yes** (W3-O04-d)                  |
+| Kill Switch execution / admission block        | **Not claimed**                     |
 
 ---
 
 ## What's Next
 
-1. Product Owner Planning Review of W3-O04 package set
-2. Product Owner Approval before any implementation slice
-3. W3-O05 Monitoring & Security Health — **not opened** from this package
-4. Wave 6 Live Trading — reuses same Kill Switch control later; **not enabled** by O04
+1. Product Owner Package Review of W3-O04 Close Evidence
+2. Product Owner declares W3-O04 CLOSED — **not done** (PO authority only)
+3. W3-O05 Monitoring & Security Health — **not opened**
 
 ---
 
-**STOP.** Planning only. Awaiting Product Owner Planning Review. Do not open W3-O04-a. Do not approve the package. Do not declare W3-O04 READY. Do not declare Wave 3 COMPLETE.
+**STOP.** W3-O04-e Close Evidence **COMPLETE**. Awaiting Product Owner Package Review. Do **not** declare W3-O04 CLOSED. Do not declare Kill Switch Complete. Do not declare Production Restart Safe. Do not declare Wave 3 COMPLETE. Do not open W3-O05.

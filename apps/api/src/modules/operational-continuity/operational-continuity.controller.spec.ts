@@ -14,6 +14,7 @@ describe('OperationalContinuityController', () => {
     recoveryTimestamp: '2026-08-26T00:00:00.000Z',
     recoveryDurationMs: 5,
     notificationQueue: null,
+    killSwitch: null,
   });
 
   let continuity: OperationalContinuityService;

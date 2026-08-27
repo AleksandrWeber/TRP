@@ -3,7 +3,7 @@
 **Package:** W3-O04 Durable Kill Switch Product
 **Wave:** 3 — Durability, Operations & Continuity
 **Master Plan / Roadmap:** V3-O04 · LT-03 · TD-047
-**Status:** Planning **COMPLETE**. Awaiting Product Owner Review and Approval. Not implementation. Slices not opened.
+**Status:** W3-O04-a…e **COMPLETE** — Close Evidence assembled. Package **NOT CLOSED** — awaiting Product Owner Package Review.
 **Date:** 2026-08-27
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w3-o04-product-scope.md`](./w3-o04-product-scope.md)
@@ -24,13 +24,13 @@ Do not treat W3-O01 store survival, W3-O02 queue durability, or W3-O03 recovery 
 
 ### Slice progress
 
-| Slice    | Name                                                           | Validation record |
-| -------- | -------------------------------------------------------------- | ----------------- |
-| W3-O04-a | Kill Switch inventory & honesty baseline                       | Not opened        |
-| W3-O04-b | Durable Kill Switch persistence on existing Session / CC owner | Not opened        |
-| W3-O04-c | Paper product visibility & Command Center integration          | Not opened        |
-| W3-O04-d | Restart survival & admission block proof                       | Not opened        |
-| W3-O04-e | Package Validation, Operational Verification & Close Evidence  | Not opened        |
+| Slice    | Name                                                           | Validation record                                                             |
+| -------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| W3-O04-a | Kill Switch inventory & honesty baseline                       | [`w3-o04-a-validation-report.md`](./w3-o04-a-validation-report.md) — **PASS** |
+| W3-O04-b | Durable Kill Switch persistence on existing Session / CC owner | [`w3-o04-b-validation-report.md`](./w3-o04-b-validation-report.md) — **PASS** |
+| W3-O04-c | Restart recovery foundation                                    | [`w3-o04-c-validation-report.md`](./w3-o04-c-validation-report.md) — **PASS** |
+| W3-O04-d | Operational continuity                                         | [`w3-o04-d-validation-report.md`](./w3-o04-d-validation-report.md) — **PASS** |
+| W3-O04-e | Package Validation, Operational Verification & Close Evidence  | [`w3-o04-e-validation-report.md`](./w3-o04-e-validation-report.md) — **PASS** |
 
 ---
 
@@ -75,47 +75,60 @@ Do not treat W3-O01 store survival, W3-O02 queue durability, or W3-O03 recovery 
 | No capital side effect      | Kill Switch helpers never invoke live order placement from O04     |
 | No second SoT helpers       | No parallel Kill Switch engine / runtime controller invent helpers |
 
-### W3-O04-a unit focus (planning)
+### W3-O04-a unit focus (implemented)
 
-| Area                    | Must prove                                                      |
-| ----------------------- | --------------------------------------------------------------- |
-| Inventory completeness  | Every required Kill Switch surface appears; ids unique          |
-| Ownership consistency   | Session / Command Center / Trading Session owners only          |
-| Distinction consistency | Kill Switch ≠ pause/stop alone; ≠ O05 Monitoring; ≠ Wave 6 Live |
+| Area                    | Must prove                                                      | Result |
+| ----------------------- | --------------------------------------------------------------- | ------ |
+| Inventory completeness  | Every required Kill Switch surface appears; ids unique          | PASS   |
+| Ownership consistency   | Session / Command Center / Trading Session owners only          | PASS   |
+| Distinction consistency | Kill Switch ≠ pause/stop alone; ≠ O05 Monitoring; ≠ Wave 6 Live | PASS   |
+| SURVIVE / EPHEMERAL     | Every row classified; no Kill Switch Complete authorization     | PASS   |
+| Dependency directions   | consumes / produces / depends-on / blocked-by documented        | PASS   |
 
-### W3-O04-b unit focus (planning)
+### W3-O04-b unit focus (implemented)
 
-| Area                 | Must prove                                                     |
-| -------------------- | -------------------------------------------------------------- |
-| Persistence on owner | Armed / cleared state on existing Session / CC aggregates only |
-| No second SoT        | No parallel Kill Switch store or engine                        |
-| Immutability rules   | State transitions honest; no silent wipe                       |
+| Area                 | Must prove                                                     | Result |
+| -------------------- | -------------------------------------------------------------- | ------ |
+| Persistence on owner | Armed / cleared state on existing Session / CC aggregates only | PASS   |
+| No second SoT        | No parallel Kill Switch store or engine                        | PASS   |
+| Immutability rules   | State transitions honest; no silent wipe; no synthetic clear   | PASS   |
+| EPHEMERAL excluded   | Stubs/UI/in-memory not persisted                               | PASS   |
+| No recovery wiring   | No hydrate-on-startup; policy stub unchanged                   | PASS   |
 
-### W3-O04-c unit focus (planning)
+### W3-O04-c unit focus (implemented)
 
-| Area                     | Must prove                                             |
-| ------------------------ | ------------------------------------------------------ |
-| Visible product surfaces | Paper operator can arm / clear through product         |
-| Session stop             | Armed state stops sessions on paper                    |
-| Authz gate               | Unauthorized arm / clear denied                        |
-| Reason capture           | Required attribution captured per existing port policy |
+| Area                      | Must prove                                                  | Result |
+| ------------------------- | ----------------------------------------------------------- | ------ |
+| Restart recovery          | Persisted armed/cleared state hydrates after normal restart | PASS   |
+| Deterministic order       | workspaceId ascending recovery order                        | PASS   |
+| Idempotent hydrate        | Re-hydrate yields same runtime cache                        | PASS   |
+| Missing state honesty     | No fabrication when rows absent                             | PASS   |
+| Corrupt state honesty     | Corrupt rows fail; no silent recovery                       | PASS   |
+| No operational continuity | No readiness evaluation or CC controls                      | PASS   |
 
-### W3-O04-d unit focus (planning)
+### W3-O04-d unit focus (implemented)
 
-| Area                  | Must prove                                               |
-| --------------------- | -------------------------------------------------------- |
-| Restart survival      | Armed state persists after API restart                   |
-| Admission block       | Evaluation/admission blocked on paper while armed        |
-| Safe stop persistence | Sessions remain safely stopped after restart while armed |
+| Area                         | Must prove                                                   | Result |
+| ---------------------------- | ------------------------------------------------------------ | ------ |
+| Operational state derivation | Recovering / Ready / Degraded / Unavailable only             | PASS   |
+| Recovery success             | Healthy recovered owner → Ready after integrity verification | PASS   |
+| Integrity failure            | Degraded — never fabricates Ready                            | PASS   |
+| Recovery failure             | Unavailable on corrupt/failed hydrate                        | PASS   |
+| Missing continuity           | No fabricated Ready without continuity record                | PASS   |
+| Graceful degradation         | Healthy Kill Switch continues while other owners degraded    | PASS   |
+| Platform readiness UI        | Kill switch section on `/operational-continuity`             | PASS   |
+| No execution                 | No arm/clear, admission, or Command Center                   | PASS   |
 
-### W3-O04-e unit focus (planning)
+### W3-O04-e unit focus (implemented)
 
-| Area                   | Must prove                                                       |
-| ---------------------- | ---------------------------------------------------------------- |
-| Slice roll-up          | a–d Validation / Architecture / Security / Product all PASS      |
-| Operational chain      | Inventory → Persistence → Visibility → Restart proof → integrity |
-| Close Evidence honesty | Package NOT CLOSED until PO; Wave 3 NOT COMPLETE; O05 NOT opened |
-| Honest Product         | No Monitoring / Live Trading / BC/HA/DR claims from O04          |
+| Area                      | Must prove                                                  | Result |
+| ------------------------- | ----------------------------------------------------------- | ------ |
+| Slice roll-up             | a–d Validation / Architecture / Security / Product all PASS | PASS   |
+| Operational chain         | Inventory → Persistence → Recovery → Continuity → Readiness | PASS   |
+| Close Evidence honesty    | Package NOT CLOSED; Wave 3 NOT COMPLETE; O05 NOT opened     | PASS   |
+| Honest Product            | No execution / admission / Live Trading / BC/HA/DR claims   | PASS   |
+| Governance                | trading-session sole owner; no duplicate authority          | PASS   |
+| No new functionality in e | Evidence assembly only                                      | PASS   |
 
 ---
 
@@ -261,4 +274,4 @@ Do **not** count as W3-O04 Close evidence:
 
 ---
 
-**STOP.** Planning only. Validation executes after Product Owner Approval and implemented slices. Do not open W3-O04-a from this document.
+**STOP.** W3-O04-e Close Evidence validated. Await Product Owner Package Review. Do **not** declare W3-O04 CLOSED. Do not open W3-O05 from validation alone.

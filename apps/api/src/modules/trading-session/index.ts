@@ -235,6 +235,52 @@ export type { RecoveryStateRepository } from './domain/recovery-state.repository
 export { RECOVERY_STATE_REPOSITORY } from './domain/recovery-state.repository';
 export type { RecoveryIncidentRepository } from './domain/recovery-incident.repository';
 export { RECOVERY_INCIDENT_REPOSITORY } from './domain/recovery-incident.repository';
+export type { KillSwitchStateRepository } from './domain/kill-switch-state.repository';
+export { KILL_SWITCH_STATE_REPOSITORY } from './domain/kill-switch-state.repository';
+export {
+  buildArmedKillSwitchState,
+  buildClearedKillSwitchState,
+  isKillSwitchArmed,
+  KILL_SWITCH_STATE_SCHEMA_VERSION,
+  type DurableKillSwitchState,
+  type KillSwitchPersistenceOutcome,
+} from './domain/durable-kill-switch-state';
+export {
+  KillSwitchPersistenceService,
+  type PersistArmedKillSwitchCommand,
+  type PersistClearedKillSwitchCommand,
+} from './kill-switch/kill-switch-persistence.service';
+export { KillSwitchRecoveryStore } from './kill-switch/kill-switch-recovery-store';
+export { KillSwitchRestartRecoveryService } from './kill-switch/kill-switch-restart-recovery.service';
+export {
+  assertRecoverableKillSwitchState,
+  buildKillSwitchRecoveryDiagnostics,
+  prepareKillSwitchStatesForRecovery,
+  sortKillSwitchStatesDeterministically,
+  KillSwitchRestartRecoveryError,
+  W3_O04_C_KILL_SWITCH_RECOVERY_OWNER,
+  type KillSwitchRecoveryDiagnostics,
+} from './domain/kill-switch-restart-recovery';
+export {
+  getKillSwitchContinuityRecord,
+  isKillSwitchRecovering,
+  recordKillSwitchIntegrityFailure,
+  recordKillSwitchOwnerReadiness,
+  recordKillSwitchRecoveryFailure,
+  recordKillSwitchRecoveryStart,
+  recordKillSwitchRecoverySuccess,
+  resetKillSwitchContinuity,
+  type KillSwitchContinuityRecord,
+  type KillSwitchOwnerReadiness,
+  type KillSwitchRecoveryOutcome,
+} from './domain/kill-switch-continuity-status';
+export {
+  buildKillSwitchContinuityProjection,
+  evaluateKillSwitchOperationalState,
+  killSwitchContinuesWhileOthersDegraded,
+  type KillSwitchContinuityProjection,
+  type KillSwitchOperationalState,
+} from './domain/kill-switch-operational-continuity';
 export {
   createRecoveryIncident,
   type RecoveryIncident,

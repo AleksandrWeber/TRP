@@ -848,6 +848,24 @@ model TradingSession {
   @@map("trading_sessions")
 }
 
+/// W3-O04-b — Durable paper Kill Switch state on existing Trading Session owner.
+/// Workspace-scoped armed/cleared substrate. Distinct from live `trading_frozen`.
+/// Persistence only — restart recovery and admission wiring are later slices.
+model WorkspaceKillSwitchState {
+  workspaceId      String    @id @map("workspace_id")
+  armed            Boolean   @default(false)
+  reason           String?
+  armedAt          DateTime? @map("armed_at")
+  armedByActorId   String?   @map("armed_by_actor_id")
+  clearedAt        DateTime? @map("cleared_at")
+  clearedByActorId String?   @map("cleared_by_actor_id")
+  correlationId    String?   @map("correlation_id")
+  schemaVersion    Int       @default(1) @map("schema_version")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@map("workspace_kill_switch_states")
+}
+
 /// RC-18 US292 durable RecoveryState (E17 §4.5 / P0-1).
 /// Source of truth for RecoveryPhase progress within Session RECOVERING.
 /// Distinct from Session lifecycle status and aggregate RecoveryStatus.

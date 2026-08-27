@@ -34,6 +34,16 @@ const ready: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: [],
   },
+  killSwitch: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:00:00.000Z',
+    recoveryDurationMs: 42,
+    restoredCount: 0,
+    armedCount: 0,
+    integrityVerified: true,
+    workspaceIds: [],
+  },
 };
 
 const degraded: OperationalContinuityReadinessView = {
@@ -74,6 +84,16 @@ const degraded: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: [],
   },
+  killSwitch: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:01:00.000Z',
+    recoveryDurationMs: 100,
+    restoredCount: 1,
+    armedCount: 0,
+    integrityVerified: true,
+    workspaceIds: ['ws-1'],
+  },
 };
 
 describe('OperationalContinuityView', () => {
@@ -103,5 +123,15 @@ describe('OperationalContinuityView', () => {
     expect(html).toContain('Owner readiness');
     expect(html).not.toContain('Retry');
     expect(html).not.toContain('Scheduler');
+  });
+
+  it('shows kill switch operational state, owner readiness, and recovery timing', () => {
+    const html = renderToStaticMarkup(<OperationalContinuityView readiness={ready} />);
+    expect(html).toContain('Kill switch');
+    expect(html).toContain('Kill switch operational state');
+    expect(html).toContain('Restored workspaces');
+    expect(html).toContain('Armed workspaces');
+    expect(html).not.toContain('Arm kill switch');
+    expect(html).not.toContain('Command Center');
   });
 });
