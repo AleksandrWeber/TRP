@@ -6,7 +6,7 @@
 **Nature:** Pre-Close engineering verification only. **Not** implementation. **Not** a new slice. **Not** Package Close.  
 **Production code written:** None (this verification task)  
 **Functionality added:** None  
-**W3-O04 declared CLOSED:** No  
+**W3-O04 declared CLOSED:** Yes (Product Owner, 2026-08-27)
 **Kill Switch COMPLETE declared:** No  
 **Wave 3 declared COMPLETE:** No  
 **W3-O05 opened:** No
@@ -215,16 +215,13 @@ Confidence residual (~4%): Product Owner Package Close declaration still pending
 
 ## Engineering recommendation
 
-W3-O04 Durable Kill Switch foundation is **ready for Product Owner Final Close Decision**.
-
-This verification does **not** declare the package CLOSED.
+W3-O04 Durable Kill Switch foundation was **closed by Product Owner** on 2026-08-27.
 
 ---
 
-**STOP.**  
-Do **not** declare W3-O04 CLOSED.  
-Do **not** declare Kill Switch COMPLETE.  
-Do **not** declare Production Restart Safe.  
-Do **not** declare Wave 3 COMPLETE.  
-Do **not** open W3-O05.  
-Wait for Product Owner Final Close Decision.
+**STOP.**
+W3-O04 **CLOSED** by Product Owner.
+Do **not** declare Kill Switch execution COMPLETE.
+Do **not** declare Production Restart Safe.
+Do **not** declare Wave 3 COMPLETE.
+W3-O05 Planning Authorized — do not open W3-O05-a without Planning Approval.

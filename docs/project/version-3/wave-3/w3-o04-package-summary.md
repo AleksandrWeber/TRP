@@ -5,14 +5,14 @@
 **Master Plan / Roadmap:** V3-O04 · LT-03 · TD-047  
 **Evidence slice:** W3-O04-e  
 **Date:** 2026-08-27  
-**Status:** **APPROVED** — Close Evidence assembled. Package **NOT CLOSED** — awaiting Product Owner Package Review.
+**Status:** **CLOSED** by Product Owner (2026-08-27). See [`w3-o04-product-owner-close-record.md`](./w3-o04-product-owner-close-record.md).
 
 ---
 
 ## Mandatory package summary answers
 
 1. **What did the customer receive?**  
-   Durable Kill Switch foundation: inventory honesty (a), durable paper persistence on trading-session (b), normal process restart recovery (c), derived operational continuity with Kill Switch fields on Platform Readiness (d). Close Evidence assembled (e). Package **NOT CLOSED** — Product Owner review pending.
+   Durable Kill Switch foundation: inventory honesty (a), durable paper persistence on trading-session (b), normal process restart recovery (c), derived operational continuity with Kill Switch fields on Platform Readiness (d). Close Evidence assembled (e). Package **CLOSED** by Product Owner.
 
 2. **What did the customer NOT receive?**  
    Kill Switch execution, Command Center arm/clear controls, admission blocking while armed, session stop on paper, Monitoring Platform, Business Continuity, High Availability, Disaster Recovery, Live Trading, Production Restart Safe, Kill Switch COMPLETE, Wave 3 COMPLETE, or any second Kill Switch engine / persistence owner.
@@ -21,10 +21,10 @@
    Paper Kill Switch armed/cleared state can persist, survive normal API restart, and project honest operational readiness — TD-047 foundation — without fabricating halt execution or inventing a second Kill Switch platform.
 
 4. **What remains for later packages?**  
-   Kill Switch execution / admission block proof (out of W3-O04 Close scope); W3-O05 Monitoring & Security Health; Wave 6 Live Trading; Product Owner Final Close act.
+   Kill Switch execution / admission block proof (out of W3-O04 Close scope); W3-O05 Monitoring & Security Health (Planning Authorized); Wave 6 Live Trading.
 
 5. **Which package becomes available next?**  
-   **W3-O05** Monitoring & Security Health — only after Product Owner authorizes opening O05 and closes O04. **Not opened.**
+   **W3-O05** Monitoring & Security Health — Planning Authorized after O04 Close. Implementation **not opened**.
 
 6. **Was the Master Plan followed?**  
    **Yes.** W3-O04 / V3-O04 only; Master Plan unchanged; package order O01→O02→… preserved.
@@ -39,14 +39,14 @@
 
 ## Slice roll-up
 
-| Slice    | Outcome                | PO status                    |
-| -------- | ---------------------- | ---------------------------- |
-| W3-O04-a | Inventory Foundation   | APPROVED / COMPLETE          |
-| W3-O04-b | Durable Persistence    | APPROVED / COMPLETE          |
-| W3-O04-c | Restart Recovery       | APPROVED / COMPLETE          |
-| W3-O04-d | Operational Continuity | APPROVED / COMPLETE          |
-| W3-O04-e | Close Evidence         | APPROVED / COMPLETE          |
-| W3-O04   | Package                | **NOT CLOSED** (awaiting PO) |
+| Slice    | Outcome                | PO status                  |
+| -------- | ---------------------- | -------------------------- |
+| W3-O04-a | Inventory Foundation   | APPROVED / COMPLETE        |
+| W3-O04-b | Durable Persistence    | APPROVED / COMPLETE        |
+| W3-O04-c | Restart Recovery       | APPROVED / COMPLETE        |
+| W3-O04-d | Operational Continuity | APPROVED / COMPLETE        |
+| W3-O04-e | Close Evidence         | APPROVED / COMPLETE        |
+| W3-O04   | Package                | **CLOSED** (Product Owner) |
 
 ---
 
@@ -60,4 +60,4 @@
 
 ---
 
-**STOP.** Close Evidence assembled. Do **not** declare W3-O04 CLOSED. Do not declare Wave 3 COMPLETE. Do not open W3-O05. Await Product Owner Package Review.
+**STOP.** W3-O04 **CLOSED** by Product Owner. Do not declare Wave 3 COMPLETE. Do not declare Kill Switch execution complete. W3-O05 Planning Authorized — implementation not opened.

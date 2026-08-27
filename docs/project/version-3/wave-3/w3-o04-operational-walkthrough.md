@@ -93,4 +93,4 @@ Close Evidence verifies complete chain, governance, architecture, and Honest Pro
 
 ---
 
-**STOP.** Walkthrough is Close Evidence only. Do **not** declare W3-O04 CLOSED. Do not declare Kill Switch COMPLETE. Await Product Owner Package Review.
+**STOP.** Walkthrough Close Evidence retained. W3-O04 **CLOSED** by Product Owner. Do not declare Kill Switch execution COMPLETE. Do not declare Wave 3 COMPLETE.

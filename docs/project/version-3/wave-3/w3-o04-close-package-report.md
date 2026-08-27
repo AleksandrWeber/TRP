@@ -3,7 +3,7 @@
 **Package:** W3-O04 Durable Kill Switch Product  
 **Evidence slice:** W3-O04-e  
 **Date:** 2026-08-27  
-**Decision status:** Close Evidence complete. Package **NOT CLOSED** — awaiting Product Owner Package Review.
+**Decision status:** **CLOSED** by Product Owner (2026-08-27). See [`w3-o04-product-owner-close-record.md`](./w3-o04-product-owner-close-record.md).
 
 ---
 
@@ -34,53 +34,53 @@ This report indexes Close Evidence assembled in W3-O04-e for Product Owner Packa
 
 ## Package Integrity Review
 
-| Expansion risk            | Present in W3-O04? |
-| ------------------------- | ------------------ |
-| Kill Switch execution     | **No**             |
-| Command Center controls   | **No**             |
-| Admission blocking        | **No**             |
-| Business Continuity       | **No**             |
-| High Availability         | **No**             |
-| Disaster Recovery         | **No**             |
-| Monitoring Platform       | **No**             |
-| Live Trading              | **No**             |
-| Second Kill Switch engine | **No**             |
-| Second persistence owner  | **No**             |
-| Production Restart Safe   | **No**             |
-| Wave 3 COMPLETE           | **No**             |
-| W3-O05 Opened             | **No**             |
+| Expansion risk             | Present in W3-O04?                  |
+| -------------------------- | ----------------------------------- |
+| Kill Switch execution      | **No**                              |
+| Command Center controls    | **No**                              |
+| Admission blocking         | **No**                              |
+| Business Continuity        | **No**                              |
+| High Availability          | **No**                              |
+| Disaster Recovery          | **No**                              |
+| Monitoring Platform        | **No**                              |
+| Live Trading               | **No**                              |
+| Second Kill Switch engine  | **No**                              |
+| Second persistence owner   | **No**                              |
+| Production Restart Safe    | **No**                              |
+| Wave 3 COMPLETE            | **No**                              |
+| W3-O05 Planning Authorized | **Yes** (implementation not opened) |
 
 ---
 
 ## Close checklist (evidence)
 
-| Criterion                                                      | Status      |
-| -------------------------------------------------------------- | ----------- |
-| Every approved slice validated (a–d PASS)                      | **Met**     |
-| Operational walkthrough completed                              | **Met**     |
-| Inventory / Persistence / Recovery / Continuity verified       | **Met**     |
-| Platform Readiness projection verified                         | **Met**     |
-| Honest Product enforcement intact                              | **Met**     |
-| Governance: trading-session sole owner; no duplicate authority | **Met**     |
-| Security Verification PASS                                     | **Met**     |
-| Architecture Verification PASS                                 | **Met**     |
-| Documentation consistency verified                             | **Met**     |
-| Package Summary completed                                      | **Met**     |
-| No new functionality in e                                      | **Met**     |
-| No ownership / architecture / Master Plan changes in e         | **Met**     |
-| Product Owner declares CLOSED                                  | **Pending** |
+| Criterion                                                      | Status  |
+| -------------------------------------------------------------- | ------- |
+| Every approved slice validated (a–d PASS)                      | **Met** |
+| Operational walkthrough completed                              | **Met** |
+| Inventory / Persistence / Recovery / Continuity verified       | **Met** |
+| Platform Readiness projection verified                         | **Met** |
+| Honest Product enforcement intact                              | **Met** |
+| Governance: trading-session sole owner; no duplicate authority | **Met** |
+| Security Verification PASS                                     | **Met** |
+| Architecture Verification PASS                                 | **Met** |
+| Documentation consistency verified                             | **Met** |
+| Package Summary completed                                      | **Met** |
+| No new functionality in e                                      | **Met** |
+| No ownership / architecture / Master Plan changes in e         | **Met** |
+| Product Owner declares CLOSED                                  | **Met** |
 
 ---
 
 ## Explicit non-declarations
 
-- W3-O04 is **NOT** declared CLOSED.
-- Kill Switch COMPLETE is **NOT** declared.
+- W3-O04 is **CLOSED** by Product Owner — Kill Switch **execution** / admission blocking **not** claimed beyond foundation scope.
+- Kill Switch COMPLETE (execution) is **NOT** declared.
 - Production Restart Safe is **NOT** declared.
 - Wave 3 is **NOT** declared COMPLETE.
-- W3-O05 is **NOT** opened.
+- W3-O05 implementation is **NOT** opened — Planning Authorized only.
 - Monitoring / BC / HA / DR / Live Trading are **NOT** claimed.
 
 ---
 
-**STOP.** Await Product Owner Package Review. Do **not** declare W3-O04 CLOSED from this report alone.
+**STOP.** W3-O04 **CLOSED**. Do not declare Wave 3 COMPLETE. Do not open W3-O05-a without Planning Package Review and Approval.

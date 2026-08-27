@@ -2,12 +2,12 @@
 
 **Document:** Version 3 Durability, Operations & Continuity Overview
 **Date:** 2026-08-27
-**Status:** Product-facing record. Wave 3 Planning **APPROVED**. W3-O01 **CLOSED** by Product Owner. W3-O02 **CLOSED** by Product Owner. W3-O03 **CLOSED** by Product Owner. W3-O04 Planning Package **authorized** — not opened. Business Continuity / HA / Monitoring **not** delivered.
+**Status:** Product-facing record. Wave 3 Planning **APPROVED**. W3-O01 **CLOSED** by Product Owner. W3-O02 **CLOSED** by Product Owner. W3-O03 **CLOSED** by Product Owner. W3-O04 **CLOSED** by Product Owner. W3-O05 Planning **Authorized** — not opened. Business Continuity / HA / Monitoring **not** delivered.
 **Product:** Wave 3 — Durability, Operations & Continuity
-**Current package:** W3-O04 Durable Kill Switch Product (V3-O04) — Planning Package **authorized**; not opened
-**Prior closed:** W3-O01 Durable Analytical Stores (V3-O01); W3-O02 Notification Durable Queue (V3-O02); W3-O03 Recovery Residual (V3-O03)
-**Close Evidence (O03):** [`w3-o03-close-package-report.md`](./w3-o03-close-package-report.md) · [`w3-o03-package-summary.md`](./w3-o03-package-summary.md) · [`w3-o03-product-owner-close-record.md`](./w3-o03-product-owner-close-record.md)
-**O03 overview:** [`recovery-residual-overview.md`](./recovery-residual-overview.md)
+**Current package:** W3-O05 Monitoring & Security Health (V3-O05) — Planning **Authorized**
+**Prior closed:** W3-O01 Durable Analytical Stores (V3-O01); W3-O02 Notification Durable Queue (V3-O02); W3-O03 Recovery Residual (V3-O03); W3-O04 Durable Kill Switch Product (V3-O04)
+**Close Evidence (O04):** [`w3-o04-close-package-report.md`](./w3-o04-close-package-report.md) · [`w3-o04-package-summary.md`](./w3-o04-package-summary.md) · [`w3-o04-product-owner-close-record.md`](./w3-o04-product-owner-close-record.md)
+**O04 overview:** [`durable-kill-switch-overview.md`](./durable-kill-switch-overview.md)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 **Inventory:** [`w3-o01-a-analytical-inventory.md`](./w3-o01-a-analytical-inventory.md)
 **Operational State Matrix:** [`operational-state-matrix.md`](./operational-state-matrix.md)
@@ -42,24 +42,37 @@ It does NOT mean Business Continuity, High Availability, or Monitoring Complete.
 
 ## Wave packages (honest sequence)
 
-| Package                                        | Operator meaning                                                     | Status                                                                                                                    |
-| ---------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| **W3-O01** Durable Analytical Stores           | Relied-on analytical artifacts survive restart (or honest ephemeral) | Planning APPROVED; slices a–e APPROVED; package **CLOSED** by Product Owner                                               |
-| **W3-O02** Notification Durable Queue          | In-flight notification delivery not lost on process restart          | Planning APPROVED; slices a–e APPROVED; package **CLOSED** by Product Owner                                               |
-| **W3-O03** Recovery Residual (US295 / ADL-008) | Accept or write live-claim limitation — no silent PASS               | Planning **APPROVED**; slices a–e **COMPLETE**; package **CLOSED** by Product Owner; ADL-008 disposition **not recorded** |
-| W3-O04 Durable Kill Switch Product             | Arm Kill Switch; sessions stop; durable across restart               | Planning Package **authorized** — not opened                                                                              |
-| W3-O05 Monitoring & Security Health            | Health and recent incidents without server login; honest degradation | Not opened                                                                                                                |
+| Package                                        | Operator meaning                                                         | Status                                                                                                                    |
+| ---------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| **W3-O01** Durable Analytical Stores           | Relied-on analytical artifacts survive restart (or honest ephemeral)     | Planning APPROVED; slices a–e APPROVED; package **CLOSED** by Product Owner                                               |
+| **W3-O02** Notification Durable Queue          | In-flight notification delivery not lost on process restart              | Planning APPROVED; slices a–e APPROVED; package **CLOSED** by Product Owner                                               |
+| **W3-O03** Recovery Residual (US295 / ADL-008) | Accept or write live-claim limitation — no silent PASS                   | Planning **APPROVED**; slices a–e **COMPLETE**; package **CLOSED** by Product Owner; ADL-008 disposition **not recorded** |
+| W3-O04 Durable Kill Switch Product             | Durable Kill Switch foundation; restart recovery; operational continuity | Planning **APPROVED**; slices a–e **COMPLETE**; package **CLOSED** by Product Owner                                       |
+| W3-O05 Monitoring & Security Health            | Health and recent incidents without server login; honest degradation     | Planning **Authorized** — not opened                                                                                      |
 
 ---
 
-## Current package (W3-O04) — Planning authorized
+## Current package (W3-O05) — Planning Authorized
 
-| Capability                         | Status                      |
-| ---------------------------------- | --------------------------- |
-| W3-O04 Planning Package            | **Authorized** — not opened |
-| Kill Switch product implementation | Not opened                  |
-| Monitoring / health dashboard      | Out (O05)                   |
-| Live Trading                       | Out (Wave 6)                |
+| Capability                    | Status                      |
+| ----------------------------- | --------------------------- |
+| W3-O05 Planning Package       | **Authorized** — not opened |
+| Monitoring / health dashboard | Not opened                  |
+| Live Trading                  | Out (Wave 6)                |
+
+### Prior closed package (W3-O04)
+
+| Capability                        | Status                                                        |
+| --------------------------------- | ------------------------------------------------------------- |
+| W3-O04 Planning Package           | **APPROVED**                                                  |
+| Kill Switch inventory             | **COMPLETE** (W3-O04-a)                                       |
+| Durable persistence               | **COMPLETE** (W3-O04-b)                                       |
+| Restart recovery                  | **COMPLETE** (W3-O04-c)                                       |
+| Operational continuity            | **COMPLETE** (W3-O04-d)                                       |
+| Package Close evidence            | **COMPLETE** (W3-O04-e) — package **CLOSED** by Product Owner |
+| Kill Switch execution / admission | **Not claimed** (foundation only)                             |
+| Monitoring / health dashboard     | Out (O05)                                                     |
+| Live Trading                      | Out (Wave 6)                                                  |
 
 ### Prior closed package (W3-O03)
 

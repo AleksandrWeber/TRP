@@ -3,7 +3,7 @@
 **Package:** W3-O04 Durable Kill Switch Product
 **Wave:** 3 — Durability, Operations & Continuity
 **Master Plan / Roadmap:** V3-O04 · LT-03 · TD-047
-**Status:** W3-O04-a…e **COMPLETE** — Close Evidence assembled. Package **NOT CLOSED** — awaiting Product Owner Package Review.
+**Status:** W3-O04-a…e **COMPLETE** — Close Evidence assembled. Package **CLOSED** by Product Owner (2026-08-27).
 **Date:** 2026-08-27
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w3-o04-product-scope.md`](./w3-o04-product-scope.md)
@@ -121,14 +121,14 @@ Do not treat W3-O01 store survival, W3-O02 queue durability, or W3-O03 recovery 
 
 ### W3-O04-e unit focus (implemented)
 
-| Area                      | Must prove                                                  | Result |
-| ------------------------- | ----------------------------------------------------------- | ------ |
-| Slice roll-up             | a–d Validation / Architecture / Security / Product all PASS | PASS   |
-| Operational chain         | Inventory → Persistence → Recovery → Continuity → Readiness | PASS   |
-| Close Evidence honesty    | Package NOT CLOSED; Wave 3 NOT COMPLETE; O05 NOT opened     | PASS   |
-| Honest Product            | No execution / admission / Live Trading / BC/HA/DR claims   | PASS   |
-| Governance                | trading-session sole owner; no duplicate authority          | PASS   |
-| No new functionality in e | Evidence assembly only                                      | PASS   |
+| Area                      | Must prove                                                   | Result |
+| ------------------------- | ------------------------------------------------------------ | ------ |
+| Slice roll-up             | a–d Validation / Architecture / Security / Product all PASS  | PASS   |
+| Operational chain         | Inventory → Persistence → Recovery → Continuity → Readiness  | PASS   |
+| Close Evidence honesty    | Package CLOSED; Wave 3 NOT COMPLETE; O05 Planning Authorized | PASS   |
+| Honest Product            | No execution / admission / Live Trading / BC/HA/DR claims    | PASS   |
+| Governance                | trading-session sole owner; no duplicate authority           | PASS   |
+| No new functionality in e | Evidence assembly only                                       | PASS   |
 
 ---
 
@@ -274,4 +274,4 @@ Do **not** count as W3-O04 Close evidence:
 
 ---
 
-**STOP.** W3-O04-e Close Evidence validated. Await Product Owner Package Review. Do **not** declare W3-O04 CLOSED. Do not open W3-O05 from validation alone.
+**STOP.** W3-O04 **CLOSED** by Product Owner. Do not declare Wave 3 COMPLETE. W3-O05 Planning Authorized — do not open W3-O05-a without Planning Approval.
