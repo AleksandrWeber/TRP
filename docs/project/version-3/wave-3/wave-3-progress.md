@@ -10,6 +10,7 @@
 **Planning summary (O03):** [`w3-o03-planning-summary.md`](./w3-o03-planning-summary.md)
 **Planning summary (O04):** [`w3-o04-planning-summary.md`](./w3-o04-planning-summary.md)
 **Planning review (O04):** [`w3-o04-planning-review.md`](./w3-o04-planning-review.md)
+**Planning review (O05):** [`w3-o05-planning-review.md`](./w3-o05-planning-review.md)
 **Planning approval (O04):** [`w3-o04-planning-approval.md`](./w3-o04-planning-approval.md)
 **Planning summary (O05):** [`w3-o05-planning-summary.md`](./w3-o05-planning-summary.md)
 **Planning summary (O02):** [`w3-o02-planning-summary.md`](./w3-o02-planning-summary.md)
