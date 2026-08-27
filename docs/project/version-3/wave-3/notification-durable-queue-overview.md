@@ -181,10 +181,10 @@ Delivery work is still present and resumes
 
 ## What's Next
 
-1. Product Owner may authorize W3-O03 Planning / implementation when ready
-2. Do **not** open W3-O03 until Product Owner instructs
+1. W3-O03 Recovery Residual Planning Package is **opened** — awaiting Product Owner Review
+2. Do **not** open W3-O03-a until Product Owner Approves O03 planning and writes the implementation task
 3. Do **not** claim retry execution, Wave 5 Complete, Live Trading, Monitoring, BC/HA/DR, or Wave 3 COMPLETE
 
 ---
 
-**STOP.** W3-O02 is **CLOSED** by Product Owner. Do not declare Wave 3 COMPLETE. Do not open W3-O03. Wait for Product Owner instruction.
+**STOP.** W3-O02 is **CLOSED** by Product Owner. Do not declare Wave 3 COMPLETE. Wait for Product Owner Planning Review of W3-O03.

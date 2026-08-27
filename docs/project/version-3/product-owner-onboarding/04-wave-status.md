@@ -7,6 +7,7 @@
 
 Primary PO progress file: [`../wave-3/wave-3-progress.md`](../wave-3/wave-3-progress.md)
 Wave 3 planning summary: [`../wave-3/wave-3-planning-summary.md`](../wave-3/wave-3-planning-summary.md)
+W3-O03 planning summary: [`../wave-3/w3-o03-planning-summary.md`](../wave-3/w3-o03-planning-summary.md)
 W3-O02 planning summary: [`../wave-3/w3-o02-planning-summary.md`](../wave-3/w3-o02-planning-summary.md)
 Implementation Readiness (O01): [`../wave-3/implementation-readiness-checklist.md`](../wave-3/implementation-readiness-checklist.md)
 Wave 2 completion: [`../wave-2-completion-report.md`](../wave-2-completion-report.md)
@@ -46,35 +47,35 @@ Wave 2 progress (historical): [`../wave-2/wave-2-progress.md`](../wave-2/wave-2-
 
 ## Current Wave
 
-| Field                          | Value                                                                                      |
-| ------------------------------ | ------------------------------------------------------------------------------------------ |
-| **Wave**                       | **3 — Durability, Operations & Continuity**                                                |
-| **Wave Planning**              | **APPROVED**                                                                               |
-| **Wave COMPLETE claimed?**     | **No**                                                                                     |
-| **Implementation authorized?** | **Partial** — W3-O01 **CLOSED**; W3-O02 planning open, **not** approved for implementation |
-| **Live Trading claimed?**      | **No**                                                                                     |
-| **Next**                       | Product Owner Planning Review of W3-O02 before any implementation                          |
+| Field                          | Value                                                                                                         |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| **Wave**                       | **3 — Durability, Operations & Continuity**                                                                   |
+| **Wave Planning**              | **APPROVED**                                                                                                  |
+| **Wave COMPLETE claimed?**     | **No**                                                                                                        |
+| **Implementation authorized?** | **Partial** — W3-O01 **CLOSED**; W3-O02 **CLOSED**; W3-O03 planning open, **not** approved for implementation |
+| **Live Trading claimed?**      | **No**                                                                                                        |
+| **Next**                       | Product Owner Planning Review of W3-O03 before any implementation                                             |
 
 ---
 
 ## Current Package
 
-| Field                     | Value                                                                                                  |
-| ------------------------- | ------------------------------------------------------------------------------------------------------ |
-| **Package**               | **W3-O02 Notification Durable Queue** (Master Plan **V3-O02**)                                         |
-| **Stage**                 | Planning **COMPLETE** — awaiting Product Owner Review and Approval                                     |
-| **Persistence stance**    | Extends existing notification-delivery owner only — **no new persistence owner**; **no second Outbox** |
-| **Implementation slices** | **Not opened** (a…e planned only)                                                                      |
-| **Previous**              | W3-O01 Durable Analytical Stores **CLOSED**                                                            |
+| Field                     | Value                                                                                                                  |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Package**               | **W3-O03 Recovery Residual (US295 / ADL-008)** (Master Plan **V3-O03**)                                                |
+| **Stage**                 | Planning **COMPLETE** — awaiting Product Owner Review and Approval                                                     |
+| **Persistence stance**    | Existing Runtime Recovery / Session / ADL ownership only — **no new persistence owner**; **no second recovery domain** |
+| **Implementation slices** | **Not opened** (a…e planned only)                                                                                      |
+| **Previous**              | W3-O02 Notification Durable Queue **CLOSED**                                                                           |
 
 Companions under [`../wave-3/`](../wave-3/):
 
-- `w3-o02-implementation-package.md`
-- `w3-o02-product-scope.md`
-- `w3-o02-security-review.md`
-- `w3-o02-validation-plan.md`
-- `notification-durable-queue-overview.md`
-- `w3-o02-planning-summary.md`
+- `w3-o03-implementation-package.md`
+- `w3-o03-product-scope.md`
+- `w3-o03-security-review.md`
+- `w3-o03-validation-plan.md`
+- `recovery-residual-overview.md`
+- `w3-o03-planning-summary.md`
 - `durability-overview.md`
 - `wave-3-progress.md`
 
@@ -82,11 +83,11 @@ Companions under [`../wave-3/`](../wave-3/):
 
 ## STOP
 
-Do **not** approve or start W3-O02 implementation until Product Owner Planning Review.
-Do **not** create W3-O02-a until Product Owner Approves planning and writes / sequences an implementation task.
-Do **not** implement Wave 5 transports / Business Continuity / HA / Disaster Recovery / monitoring / Kill Switch from this package.
+Do **not** approve or start W3-O03 implementation until Product Owner Planning Review.
+Do **not** create W3-O03-a until Product Owner Approves planning and writes / sequences an implementation task.
+Do **not** redesign US290–US294 recovery / Business Continuity / HA / Monitoring / Kill Switch from this package.
 Do **not** claim Live Trading.
 Do **not** claim Wave 7 AI Platform Complete.
 Do **not** modify the Master Plan.
-Do **not** introduce a new persistence owner or second Outbox.
+Do **not** introduce a new persistence owner or second recovery domain.
 Do **not** declare Wave 3 COMPLETE.
