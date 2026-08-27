@@ -9,6 +9,8 @@
 
 No Version 3 package starts with production code. Every package follows the same lifecycle. This is the discipline that certified Version 2, made predictable for Version 3.
 
+**Package execution** follows the Version 3 Development Lifecycle Standard: [`product-owner-onboarding/11-development-lifecycle-standard.md`](./product-owner-onboarding/11-development-lifecycle-standard.md). That document is the normative detailed workflow (planning → slices → Close Evidence → Final Package Integration Verification → Product Owner Final Close → repository synchronization). This policy remains binding for stage rules and constraints; it does not duplicate the lifecycle standard.
+
 ---
 
 ## Lifecycle (mandatory)
