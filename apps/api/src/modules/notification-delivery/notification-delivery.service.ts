@@ -3,6 +3,10 @@
  *
  * Delivers completed report / ops notifications through configured channels.
  * Never generates reports. Never owns business state. Never controls runtime.
+ *
+ * W3-O02-b: deliver() persists queue work on this owner (pending → in-flight →
+ * completed|retryable|failed). Internal queue APIs only — no REST / operator UI.
+ * Restart recovery is W3-O02-c. Retry execution is out of this slice.
  */
 
 import { Inject, Injectable } from '@nestjs/common';
@@ -14,6 +18,11 @@ import {
   type DeliverNotificationCommand,
   type DeliveryResult,
 } from './domain/delivery';
+import {
+  createPendingNotificationQueueItem,
+  withNotificationQueueStatus,
+  type NotificationDeliveryQueueItem,
+} from './domain/delivery-queue';
 import { NOTIFICATION_CHANNEL_CATALOG } from './domain/notification-channel';
 import {
   bindTelegramChat,
@@ -159,9 +168,32 @@ export class NotificationDeliveryService implements NotificationServicePort {
   }
 
   deliver(cmd: DeliverNotificationCommand): DeliveryResult {
-    const prefs = this.getPreferences(cmd.workspaceId, cmd.userId);
-    const telegram = this.getTelegramConnection(cmd.workspaceId, cmd.userId);
-    const routes = resolveDeliveryRoutes(cmd, prefs, {
+    const workspaceId = cmd.workspaceId.trim();
+    if (!workspaceId) {
+      throw new Error('Notification delivery requires workspaceId');
+    }
+
+    const queueItemId = `nq-${stableHash(
+      `${workspaceId}|${cmd.userId}|${cmd.type}|${cmd.requestedAt}|${cmd.subject}|queue`,
+    )}`;
+    const deliveryId = `del-${stableHash(
+      `${workspaceId}|${cmd.userId}|${cmd.type}|${cmd.requestedAt}|${cmd.subject}`,
+    )}`;
+    const now = nowOr(cmd.requestedAt);
+
+    let queueItem = createPendingNotificationQueueItem({
+      queueItemId,
+      command: { ...cmd, workspaceId },
+      createdAt: now,
+    });
+    this.store.saveQueueItem(queueItem);
+
+    queueItem = withNotificationQueueStatus(queueItem, 'in-flight', { updatedAt: now });
+    this.store.saveQueueItem(queueItem);
+
+    const prefs = this.getPreferences(workspaceId, cmd.userId);
+    const telegram = this.getTelegramConnection(workspaceId, cmd.userId);
+    const routes = resolveDeliveryRoutes({ ...cmd, workspaceId }, prefs, {
       telegramConnected: telegram.status === 'connected' && Boolean(telegram.chatId),
     });
 
@@ -211,10 +243,8 @@ export class NotificationDeliveryService implements NotificationServicePort {
     }
 
     const delivery = createDeliveryResult({
-      deliveryId: `del-${stableHash(
-        `${cmd.workspaceId}|${cmd.userId}|${cmd.type}|${cmd.requestedAt}|${cmd.subject}`,
-      )}`,
-      workspaceId: cmd.workspaceId,
+      deliveryId,
+      workspaceId,
       userId: cmd.userId,
       type: cmd.type,
       reportRunId: cmd.reportRunId,
@@ -222,7 +252,71 @@ export class NotificationDeliveryService implements NotificationServicePort {
       createdAt: cmd.requestedAt,
     });
     this.store.recordDelivery(delivery);
+
+    const terminalStatus = delivery.outcome === 'failed' ? 'retryable' : 'completed';
+    const failedAttempt = attempts.find((a) => a.outcome === 'failed');
+    queueItem = withNotificationQueueStatus(queueItem, terminalStatus, {
+      updatedAt: nowOr(undefined),
+      deliveryId: delivery.deliveryId,
+      ...(failedAttempt?.detail ? { detail: failedAttempt.detail } : {}),
+    });
+    this.store.saveQueueItem(queueItem);
+
     return delivery;
+  }
+
+  /**
+   * Internal queue read — workspace-scoped. Not a product HTTP surface.
+   * Does not send, retry, or recover.
+   */
+  listDeliveryQueue(query: {
+    workspaceId: string;
+    userId?: string;
+    openOnly?: boolean;
+  }): readonly NotificationDeliveryQueueItem[] {
+    const workspaceId = query.workspaceId.trim();
+    if (!workspaceId) {
+      throw new Error('Notification delivery queue list requires workspaceId');
+    }
+    return this.store.listQueueItems({
+      workspaceId,
+      userId: query.userId,
+      openOnly: query.openOnly,
+    });
+  }
+
+  /**
+   * Internal enqueue for persistence tests / future recovery (O02-c).
+   * Does not execute delivery or retries.
+   */
+  enqueueDeliveryWork(cmd: DeliverNotificationCommand): NotificationDeliveryQueueItem {
+    const workspaceId = cmd.workspaceId.trim();
+    if (!workspaceId) {
+      throw new Error('Notification queue enqueue requires workspaceId');
+    }
+    const createdAt = nowOr(cmd.requestedAt);
+    const queueItemId = `nq-${stableHash(
+      `${workspaceId}|${cmd.userId}|${cmd.type}|${createdAt}|${cmd.subject}|enqueue`,
+    )}`;
+    const item = createPendingNotificationQueueItem({
+      queueItemId,
+      command: { ...cmd, workspaceId, requestedAt: createdAt },
+      createdAt,
+    });
+    this.store.saveQueueItem(item);
+    return item;
+  }
+
+  /**
+   * Internal status write for persistence integrity tests. Not retry execution.
+   */
+  saveDeliveryQueueItem(item: NotificationDeliveryQueueItem): NotificationDeliveryQueueItem {
+    const workspaceId = item.workspaceId.trim();
+    if (!workspaceId) {
+      throw new Error('Notification queue item requires workspaceId');
+    }
+    this.store.saveQueueItem(item);
+    return item;
   }
 
   listDeliveries(query: {

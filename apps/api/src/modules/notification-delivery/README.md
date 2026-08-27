@@ -19,9 +19,10 @@ Delivery only. Never Source of Truth. Never a Telegram control plane.
 - Telegram connection: Not Connected → Connect → (adapter binds chat id) → Connected
 - Preferences: master enable, per-channel, per-type routing, schedule / quiet hours
 - Test notification + delivery routing
+- W3-O02-b: Notification Durable Queue work items on this owner snapshot (internal only; not REST)
 
 ## Forbidden
 
-Trading commands, pause/resume/stop, runtime control, strategy/session management, report generation, Strategy Library coupling, REST on this module, durable persistence product.
+Trading commands, pause/resume/stop, runtime control, strategy/session management, report generation, Strategy Library coupling, REST on this module, second Outbox, Wave 5 production transports, operator Queue UI.
 
 HTTP product transport lives in sibling `notification-product` (PC-06). Telegram connection HTTP lives in sibling `telegram-product` (PC-07). Domain `rest: false` is unchanged.
