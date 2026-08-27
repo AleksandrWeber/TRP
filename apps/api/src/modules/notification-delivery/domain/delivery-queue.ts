@@ -17,6 +17,7 @@ export const NOTIFICATION_QUEUE_STATUSES = Object.freeze([
   'retryable',
   'completed',
   'failed',
+  'abandoned',
 ] as const);
 
 export type NotificationQueueStatus = (typeof NOTIFICATION_QUEUE_STATUSES)[number];

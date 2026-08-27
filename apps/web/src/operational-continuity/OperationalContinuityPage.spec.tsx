@@ -23,6 +23,17 @@ const ready: OperationalContinuityReadinessView = {
   degradedOwners: [],
   recoveryTimestamp: '2026-08-26T12:00:00.000Z',
   recoveryDurationMs: 42,
+  notificationQueue: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:00:00.000Z',
+    recoveryDurationMs: 42,
+    openCount: 0,
+    abandonedCount: 0,
+    channelUnavailable: false,
+    integrityVerified: true,
+    workspaceIds: [],
+  },
 };
 
 const degraded: OperationalContinuityReadinessView = {
@@ -52,6 +63,17 @@ const degraded: OperationalContinuityReadinessView = {
   degradedOwners: ['reporting'],
   recoveryTimestamp: '2026-08-26T12:01:00.000Z',
   recoveryDurationMs: 100,
+  notificationQueue: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:01:00.000Z',
+    recoveryDurationMs: 100,
+    openCount: 0,
+    abandonedCount: 0,
+    channelUnavailable: false,
+    integrityVerified: true,
+    workspaceIds: [],
+  },
 };
 
 describe('OperationalContinuityView', () => {
@@ -72,5 +94,14 @@ describe('OperationalContinuityView', () => {
     expect(html).not.toContain('Incident');
     expect(html).not.toContain('Cluster');
     expect(html).not.toContain('Replication');
+  });
+
+  it('shows notification queue operational state, owner readiness, and recovery timing', () => {
+    const html = renderToStaticMarkup(<OperationalContinuityView readiness={ready} />);
+    expect(html).toContain('Notification queue');
+    expect(html).toContain('Queue operational state');
+    expect(html).toContain('Owner readiness');
+    expect(html).not.toContain('Retry');
+    expect(html).not.toContain('Scheduler');
   });
 });

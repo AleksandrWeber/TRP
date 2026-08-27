@@ -169,6 +169,7 @@ export function buildNotificationQueueRecoveryDiagnostics(
     retryable: 0,
     completed: 0,
     failed: 0,
+    abandoned: 0,
   }) as Record<NotificationQueueStatus, number>;
   const mutable: Record<NotificationQueueStatus, number> = { ...byStatus };
   const workspaceIds = new Set<string>();

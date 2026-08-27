@@ -1034,6 +1034,21 @@ export type OperationalContinuityReadinessView = {
   degradedOwners: readonly string[];
   recoveryTimestamp: string | null;
   recoveryDurationMs: number | null;
+  /** W3-O02-d — Notification Durable Queue operational continuity. */
+  notificationQueue: NotificationQueueContinuityView | null;
+};
+
+export type NotificationQueueContinuityView = {
+  operationalState: OperationalContinuityState;
+  ownerReadiness: 'ready' | 'unavailable';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  openCount: number;
+  abandonedCount: number;
+  channelUnavailable: boolean;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
 };
 
 export type ReportAggregationView = {

@@ -94,6 +94,25 @@ export {
   type NotificationQueueRecoveryDiagnostics,
 } from './domain/notification-queue-restart-recovery';
 export {
+  getNotificationQueueContinuityRecord,
+  isNotificationQueueRecovering,
+  recordNotificationChannelUnavailable,
+  recordNotificationQueueRecoveryFailure,
+  recordNotificationQueueRecoveryStart,
+  recordNotificationQueueRecoverySuccess,
+  resetNotificationQueueContinuity,
+  type NotificationQueueContinuityRecord,
+  type NotificationQueueRecoveryOutcome,
+} from './domain/notification-queue-continuity-status';
+export {
+  buildNotificationQueueContinuityProjection,
+  evaluateNotificationQueueOperationalState,
+  notificationDeliveryContinuesWhileOthersDegraded,
+  type EvaluateNotificationQueueContinuityInput,
+  type NotificationQueueContinuityProjection,
+  type NotificationQueueOperationalState,
+} from './domain/notification-queue-operational-continuity';
+export {
   extractLocalTimeHHmm,
   isWithinQuietHours,
   resolveCritical,

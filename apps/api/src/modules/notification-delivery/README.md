@@ -21,6 +21,7 @@ Delivery only. Never Source of Truth. Never a Telegram control plane.
 - Test notification + delivery routing
 - W3-O02-b: Notification Durable Queue work items on this owner snapshot (internal only; not REST)
 - W3-O02-c: integrity-gated hydrate restores queue after normal process restart (not retry execution)
+- W3-O02-d: derived Recovering | Ready | Degraded | Unavailable on Platform readiness (limited fields; not retry)
 
 ## Forbidden
 

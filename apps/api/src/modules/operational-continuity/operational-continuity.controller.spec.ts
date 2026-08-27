@@ -13,6 +13,7 @@ describe('OperationalContinuityController', () => {
     degradedOwners: Object.freeze([]),
     recoveryTimestamp: '2026-08-26T00:00:00.000Z',
     recoveryDurationMs: 5,
+    notificationQueue: null,
   });
 
   let continuity: OperationalContinuityService;

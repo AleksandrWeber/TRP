@@ -16,6 +16,7 @@ export const W3_O02_C_RECOVERED_STATUSES = Object.freeze([
   'retryable',
   'completed',
   'failed',
+  'abandoned',
 ] as const);
 
 export const W3_O02_C_OPEN_STATUSES = Object.freeze(['pending', 'in-flight', 'retryable'] as const);

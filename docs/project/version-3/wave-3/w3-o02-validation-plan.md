@@ -3,7 +3,7 @@
 **Package:** W3-O02 Notification Durable Queue
 **Wave:** 3 — Durability, Operations & Continuity
 **Master Plan / Roadmap:** V3-O02 · NT-02 · TD-045
-**Status:** Planning **APPROVED**. Implementation in progress. **W3-O02-a/b/c COMPLETE**. W3-O02-d…e not opened.
+**Status:** Planning **APPROVED**. Implementation in progress. **W3-O02-a/b/c/d COMPLETE**. W3-O02-e not opened.
 **Date:** 2026-08-27
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w3-o02-product-scope.md`](./w3-o02-product-scope.md)
@@ -13,6 +13,7 @@
 **Inventory (a):** [`w3-o02-a-notification-queue-inventory.md`](./w3-o02-a-notification-queue-inventory.md)
 **Persistence (b):** [`w3-o02-b-implementation-report.md`](./w3-o02-b-implementation-report.md)
 **Recovery (c):** [`w3-o02-c-implementation-report.md`](./w3-o02-c-implementation-report.md)
+**Continuity (d):** [`w3-o02-d-implementation-report.md`](./w3-o02-d-implementation-report.md)
 **Wave durability:** [`durability-overview.md`](./durability-overview.md)
 **Checklists:** [`../version-3-product-checklist.md`](../version-3-product-checklist.md) · [`../version-3-architecture-checklist.md`](../version-3-architecture-checklist.md) · [`../version-3-security-checklist.md`](../version-3-security-checklist.md)
 **Verification Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md)
@@ -32,7 +33,7 @@ Do not treat W3-O01 DeliveryResult **history** survival as proof of W3-O02 queue
 | W3-O02-a | Notification queue inventory & honesty baseline                   | **COMPLETE** — [`w3-o02-a-validation-report.md`](./w3-o02-a-validation-report.md) |
 | W3-O02-b | Durable queue persistence on existing notification-delivery owner | **COMPLETE** — [`w3-o02-b-validation-report.md`](./w3-o02-b-validation-report.md) |
 | W3-O02-c | Restart-survival proof for in-flight delivery                     | **COMPLETE** — [`w3-o02-c-validation-report.md`](./w3-o02-c-validation-report.md) |
-| W3-O02-d | Degraded delivery honesty & continuity alignment                  | Not opened                                                                        |
+| W3-O02-d | Degraded delivery honesty & continuity alignment                  | **COMPLETE** — [`w3-o02-d-validation-report.md`](./w3-o02-d-validation-report.md) |
 | W3-O02-e | Package Validation, Operational Verification & Close Evidence     | Not opened                                                                        |
 
 ---
@@ -112,6 +113,18 @@ Evidence: `apps/api/src/platform-conformance/w3-o02-b-durable-queue-persistence.
 
 Evidence: `apps/api/src/platform-conformance/w3-o02-c-restart-recovery.spec.ts`
 
+### W3-O02-d unit focus — **COMPLETE**
+
+| Area                  | Must prove                                                              | Result |
+| --------------------- | ----------------------------------------------------------------------- | ------ |
+| State derivation      | Recovering / Ready / Degraded / Unavailable only; Ready never hardcoded | PASS   |
+| Graceful degradation  | Channel-down / abandoned → Degraded; does not fabricate Ready           | PASS   |
+| Dependency evaluation | Healthy notification-delivery continues while other owners degraded     | PASS   |
+| Recovery verification | Integrity required before Ready; corrupt/failed → Unavailable           | PASS   |
+| Workspace isolation   | Continuity diagnostics remain workspace-bound                           | PASS   |
+
+Evidence: `apps/api/src/platform-conformance/w3-o02-d-operational-continuity.spec.ts`
+
 ---
 
 ## 3. Integration validation
@@ -139,6 +152,10 @@ Persist queue item on existing owner snapshot; workspace isolation; persistence 
 
 Recover persisted open queue after normal restart (new store + hydrate); idempotent re-hydrate; missing empty (no fabrication); corrupt fails honestly; workspace isolation preserved. Retry execution still out.
 
+### W3-O02-d integration note — **COMPLETE for continuity**
+
+Recovered queue projects Ready after integrity verification; unavailable/corrupt path projects Unavailable; channel-down / abandoned project Degraded; Platform readiness exposes limited queue continuity fields. Retry execution still out.
+
 ---
 
 ## 4. UI validation
@@ -162,6 +179,10 @@ No Pending Queue / Retry / Recovery / Scheduler / Replay / Operational Queue con
 ### W3-O02-c UI note — **COMPLETE for slice**
 
 No Recovery / Retry / Queue editor / Replay / Scheduler / Operational queue management UI. Recovery is internal only.
+
+### W3-O02-d UI note — **COMPLETE for slice**
+
+Exposes only Notification Queue operational state, owner readiness, recovery timestamp, and recovery duration on Platform readiness. No Retry controls, Replay, Queue editing, Scheduler, Workflow controls, Monitoring dashboard, or Incident management.
 ---
 
 ## 5. Regression validation
@@ -205,6 +226,8 @@ Overall verdict for Package Review (fill at Close): **PENDING**. Only Product Ow
 
 **W3-O02-c:** Walkthrough **partial / internal** — persisted open queue restores after normal restart (hydrate proof). Full operator walkthrough + retry/degraded honesty remain later slices. Recorded in [`w3-o02-c-validation-report.md`](./w3-o02-c-validation-report.md).
 
+**W3-O02-d:** Walkthrough **partial** — limited Platform readiness continuity fields after recovery; retry execution and full Close walkthrough remain for W3-O02-e. Recorded in [`w3-o02-d-validation-report.md`](./w3-o02-d-validation-report.md).
+
 ---
 
 ## 7. Architecture validation
@@ -226,6 +249,8 @@ Overall verdict for Package Review (fill at Close): **PENDING**. Only Product Ow
 
 **W3-O02-c:** Architecture review **PASS** — [`w3-o02-c-architecture-review.md`](./w3-o02-c-architecture-review.md).
 
+**W3-O02-d:** Architecture review **PASS** — [`w3-o02-d-architecture-review.md`](./w3-o02-d-architecture-review.md).
+
 ---
 
 ## 8. Security validation
@@ -246,6 +271,8 @@ Overall verdict for Package Review (fill at Close): **PENDING**. Only Product Ow
 **W3-O02-b:** Security review **PASS** for persistence-foundation scope — [`w3-o02-b-security-review.md`](./w3-o02-b-security-review.md).
 
 **W3-O02-c:** Security review **PASS** for restart-recovery scope — [`w3-o02-c-security-review.md`](./w3-o02-c-security-review.md).
+
+**W3-O02-d:** Security review **PASS** for operational-continuity scope — [`w3-o02-d-security-review.md`](./w3-o02-d-security-review.md).
 
 ---
 
@@ -274,6 +301,8 @@ Commands expected at Close (unless Product Owner narrows a slice):
 
 **W3-O02-c:** Commands executed — see [`w3-o02-c-validation-report.md`](./w3-o02-c-validation-report.md).
 
+**W3-O02-d:** Commands executed — see [`w3-o02-d-validation-report.md`](./w3-o02-d-validation-report.md).
+
 ---
 
 ## Explicit non-validation
@@ -290,7 +319,8 @@ Do **not** treat as W3-O02 Close evidence:
 - W3-O02-a inventory alone (foundation only)
 - W3-O02-b persistence alone (restart survival requires c)
 - W3-O02-c recovery alone without d/e Close (retry / degraded honesty / package Close remain)
+- W3-O02-d continuity alone without e Close (retry execution / package Close remain)
 
 ---
 
-**STOP.** Wait for Product Owner review before W3-O02-d. Do not declare W3-O02 CLOSED. Do not declare Wave 3 COMPLETE.
+**STOP.** Wait for Product Owner review before W3-O02-e. Do not declare W3-O02 CLOSED. Do not declare Wave 3 COMPLETE.

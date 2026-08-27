@@ -2,7 +2,7 @@
 
 **Document:** Version 3 Notification Durable Queue Overview
 **Date:** 2026-08-27
-**Status:** Product-facing record. W3-O02 Planning **APPROVED**. Slices **W3-O02-a**, **W3-O02-b**, and **W3-O02-c** **COMPLETE** — awaiting Product Owner review before W3-O02-d. Normal-restart queue recovery **claimed**; retry execution / degraded honesty **not** claimed.
+**Status:** Product-facing record. W3-O02 Planning **APPROVED**. Slices **W3-O02-a**, **W3-O02-b**, **W3-O02-c**, and **W3-O02-d** **COMPLETE** — awaiting Product Owner review before W3-O02-e. Normal-restart recovery + derived operational continuity **claimed**; retry execution / package Close **not** claimed.
 **Product:** W3-O02 Notification Durable Queue (V3-O02 · NT-02 · TD-045)
 **Wave:** 3 — Durability, Operations & Continuity
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
@@ -10,6 +10,7 @@
 **Inventory (a):** [`w3-o02-a-notification-queue-inventory.md`](./w3-o02-a-notification-queue-inventory.md)
 **Persistence (b):** [`w3-o02-b-implementation-report.md`](./w3-o02-b-implementation-report.md)
 **Recovery (c):** [`w3-o02-c-implementation-report.md`](./w3-o02-c-implementation-report.md)
+**Continuity (d):** [`w3-o02-d-implementation-report.md`](./w3-o02-d-implementation-report.md)
 **Wave durability:** [`durability-overview.md`](./durability-overview.md)
 
 This is what an ordinary operator should understand. It is not an internal design note.
@@ -34,6 +35,8 @@ W3-O02-a inventory alone does NOT make the queue durable.
 W3-O02-b persistence alone does NOT prove owed work survives restart.
 W3-O02-c proves normal-process restart recovery of persisted queue work.
 W3-O02-c does NOT mean retry execution, BC, HA, or DR.
+W3-O02-d derives Recovering | Ready | Degraded | Unavailable after recovery.
+W3-O02-d does NOT mean retry execution or package Close.
 ```
 
 ---
@@ -50,18 +53,18 @@ Wave 5 will later make channels production-real. This package makes the queue re
 
 ## Current package (W3-O02)
 
-| Capability                                    | Status                                                       |
-| --------------------------------------------- | ------------------------------------------------------------ |
-| Planning package                              | **APPROVED**                                                 |
-| Notification queue inventory                  | **COMPLETE** (W3-O02-a)                                      |
-| Durable queue persistence                     | **COMPLETE** (W3-O02-b)                                      |
-| Restart-survival proof for in-flight delivery | **COMPLETE** (W3-O02-c — normal restart recovery; not retry) |
-| Degraded delivery honesty                     | Planned (slice d — **not opened**)                           |
-| Package Close evidence                        | Planned (slice e — **not opened**)                           |
-| Wave 5 production transports                  | Out                                                          |
-| Kill Switch product                           | Out (O04)                                                    |
-| Monitoring / health dashboard                 | Out (O05)                                                    |
-| Live Trading                                  | Out (Wave 6)                                                 |
+| Capability                                         | Status                                                       |
+| -------------------------------------------------- | ------------------------------------------------------------ |
+| Planning package                                   | **APPROVED**                                                 |
+| Notification queue inventory                       | **COMPLETE** (W3-O02-a)                                      |
+| Durable queue persistence                          | **COMPLETE** (W3-O02-b)                                      |
+| Restart-survival proof for in-flight delivery      | **COMPLETE** (W3-O02-c — normal restart recovery; not retry) |
+| Degraded delivery honesty / operational continuity | **COMPLETE** (W3-O02-d — derived states; not retry)          |
+| Package Close evidence                             | Planned (slice e — **not opened**)                           |
+| Wave 5 production transports                       | Out                                                          |
+| Kill Switch product                                | Out (O04)                                                    |
+| Monitoring / health dashboard                      | Out (O05)                                                    |
+| Live Trading                                       | Out (Wave 6)                                                 |
 
 ### What W3-O02-a found (operator language)
 
@@ -82,6 +85,14 @@ Wave 5 will later make channels production-real. This package makes the queue re
 - Retries are **not** run automatically yet.
 - Operators still see **no** Recovery / Retry screens.
 
+### What W3-O02-d delivered (operator language)
+
+- After recovery, Platform readiness shows whether the Notification Queue is **Recovering / Ready / Degraded / Unavailable**.
+- Operators also see **owner readiness**, **recovery timestamp**, and **recovery duration**.
+- Degraded / Unavailable never pretend to be Ready.
+- Retries are still **not** run automatically.
+- No Retry / Replay / Queue editor / Scheduler / Monitoring / Incident screens from this slice.
+
 ---
 
 ## Customer Journey (W3-O02 — after full package Close)
@@ -100,7 +111,7 @@ Delivery work is still present and resumes
   (never silent drop without a record)
 ```
 
-**Not available from W3-O02-a/b alone; normal-restart restore available after c.** Retry / degraded honesty / package Close remain later slices.
+**After a–d:** normal-restart restore + derived continuity honesty available; retry execution and package Close remain for later slices / Close.
 
 ### Operator workflow (at package Close)
 
@@ -120,10 +131,12 @@ Delivery work is still present and resumes
 | Pending / in-flight notification delivery work | Survives restart or honest failure recorded |
 | No silent drop without record                  | Binding honesty after Wave 3 queue          |
 | Workspace-scoped delivery                      | A cannot see B’s delivery                   |
+| Notification Queue operational state (d)       | Recovering / Ready / Degraded / Unavailable |
+| Owner readiness + recovery timing (d)          | Limited Platform readiness fields           |
 | Wave 5 real channel send                       | **Out** — later wave                        |
 | Monitoring dashboard                           | **Out** — O05                               |
 
-**After W3-O02-a/b/c:** still no new operator screen; normal-restart queue restore is internal; retries not auto-run.
+**After W3-O02-a/b/c/d:** limited continuity fields on Platform readiness; no Retry / Replay / Queue editor; retries not auto-run.
 
 ---
 
@@ -131,6 +144,7 @@ Delivery work is still present and resumes
 
 - Silent disappearance of owed in-flight delivery presented as success
 - Fake “delivered” when delivery did not complete
+- Fabricated Ready when queue is Degraded or Unavailable
 - Production Telegram / Email / Slack / Discord / Teams / Push from this package
 - Live Trading enablement from this package
 - A second product inventing a parallel Outbox
@@ -141,6 +155,7 @@ Delivery work is still present and resumes
 - Claims that W3-O02-a inventory alone made the queue durable
 - Claims that W3-O02-b persistence alone proved restart survival
 - Claims that W3-O02-c means retry execution, BC, HA, or DR
+- Claims that W3-O02-d means retry execution or package Close
 
 ---
 
@@ -157,10 +172,10 @@ Delivery work is still present and resumes
 
 ## What's Next
 
-1. Product Owner reviews W3-O02-c restart recovery foundation
-2. Do **not** open W3-O02-d until Product Owner authorizes the next implementation task
+1. Product Owner reviews W3-O02-d operational continuity foundation
+2. Do **not** open W3-O02-e until Product Owner authorizes the next implementation task
 3. Do **not** claim retry execution, Wave 5 Complete, Live Trading, Monitoring, BC/HA/DR, or Wave 3 COMPLETE
 
 ---
 
-**STOP.** Wait for Product Owner review before W3-O02-d. Do not declare Wave 3 COMPLETE.
+**STOP.** Wait for Product Owner review before W3-O02-e. Do not declare Wave 3 COMPLETE.

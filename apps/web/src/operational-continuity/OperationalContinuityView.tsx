@@ -61,6 +61,43 @@ export function OperationalContinuityView({ readiness }: Props) {
       </section>
 
       <section>
+        <h2 className="text-lg font-semibold text-slate-100">Notification queue</h2>
+        {readiness.notificationQueue ? (
+          <dl
+            className="mt-4 grid gap-3 sm:grid-cols-2"
+            data-testid="notification-queue-continuity"
+          >
+            <div>
+              <dt className="text-sm text-slate-400">Queue operational state</dt>
+              <dd className="text-slate-100" data-testid="notification-queue-state">
+                {readiness.notificationQueue.operationalState}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Owner readiness</dt>
+              <dd className="text-slate-100" data-testid="notification-queue-owner-readiness">
+                {readiness.notificationQueue.ownerReadiness}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery timestamp</dt>
+              <dd className="text-slate-100" data-testid="notification-queue-recovery-timestamp">
+                {readiness.notificationQueue.recoveryTimestamp ?? '—'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery duration</dt>
+              <dd className="text-slate-100" data-testid="notification-queue-recovery-duration">
+                {formatDuration(readiness.notificationQueue.recoveryDurationMs)}
+              </dd>
+            </div>
+          </dl>
+        ) : (
+          <p className="mt-2 text-slate-400">Not evaluated</p>
+        )}
+      </section>
+
+      <section>
         <h2 className="text-lg font-semibold text-slate-100">Owner operational state</h2>
         <table className="mt-3 w-full text-left text-sm text-slate-200">
           <thead className="text-slate-400">
