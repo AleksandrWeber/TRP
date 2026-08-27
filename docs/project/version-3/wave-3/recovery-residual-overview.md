@@ -19,9 +19,12 @@ This is what an ordinary operator should understand. It is not an internal desig
 Recovery Residual makes **production restart-safety claims honest**: the product either **accepts** the recovery claim (ADL-008 ACCEPTED, evidence-synchronized) or publishes an **explicit written live-claim limitation** — never a silent “production restart-safe” PASS.
 
 ```text
-Stance closed means ADL-008 is ACCEPTED
+Stance closed means Product Owner records ADL-008 as ACCEPTED
   — or —
-an explicit accepted deferral / written live-claim limitation is recorded.
+Product Owner records an explicit accepted deferral / written live-claim limitation.
+Engineering prepares evidence only — Engineering never self-promotes ADL-008 to ACCEPTED.
+If evidence is insufficient for ACCEPTED, the required outcome is an explicit written limitation
+(evidence must never be invented to achieve ACCEPTED).
 It does NOT redesign US290–US294 recovery behaviour.
 It does NOT invent a second recovery product.
 It does NOT mean Live Trading enabled.
@@ -33,6 +36,17 @@ W3-O01 store survival alone does NOT close US295.
 W3-O02 queue durability alone does NOT close US295.
 US294 chaos evidence alone does NOT close ADL-008.
 ```
+
+---
+
+## Authority
+
+| Rule          | Binding                                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Engineering   | Implements **evidence only**                                                                                     |
+| Product Owner | **Only** authority that decides ADL-008 **ACCEPTED** or **DEFERRED** with explicit written live-claim limitation |
+| Prohibition   | Engineering must **never** self-promote ADL-008 to ACCEPTED                                                      |
+| Package       | May prepare evidence; may **not** make the governance decision                                                   |
 
 ---
 

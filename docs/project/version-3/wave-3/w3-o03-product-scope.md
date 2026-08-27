@@ -59,6 +59,21 @@ Existing Runtime Recovery / Architecture Decision Log owners remain owners. Resi
 
 ---
 
+## Authority
+
+**Binding governance for ADL-008 disposition:**
+
+| Rule                    | Binding                                                                                                                                                                   |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Engineering role        | Engineering implements **evidence only** (inventory, evidence-chain sync, honesty surfaces, Close Evidence preparation).                                                  |
+| Disposition authority   | **Product Owner** is the **only** authority that decides whether ADL-008 becomes **ACCEPTED** or remains **DEFERRED** with an **explicit written live-claim limitation**. |
+| Engineering prohibition | Engineering must **never** self-promote ADL-008 to ACCEPTED.                                                                                                              |
+| Package boundary        | Package implementation may **prepare evidence** but may **not** make the governance decision.                                                                             |
+
+“ADL-008 ACCEPTED or explicit written limitation” is a **Product Owner governance outcome**, not an Engineering self-service path.
+
+---
+
 ## Why Recovery Residual exists (business language)
 
 Wave 1 closed Security Foundation. Wave 2 closed Connection Management. W3-O01 closed Durable Analytical Stores. W3-O02 closed Notification Durable Queue.
@@ -276,22 +291,27 @@ Never a silent “production restart-safe” PASS
 - Never present DEFERRED ADL-008 as production restart-safe Complete.
 - Never invent ACCEPTED without required evidence grounding when that path is chosen.
 - Prefer explicit limitation over silent PASS when acceptance is not warranted.
+- If evidence is insufficient to justify ACCEPTED, Product Owner records an explicit written live-claim limitation — evidence must never be invented to achieve ACCEPTED.
+- Engineering never self-promotes ADL-008 to ACCEPTED.
 - Secrets never echo.
 
 ---
 
 ## Product Acceptance Criteria
 
-| #   | Outcome                                                                              | Fail if              |
-| --- | ------------------------------------------------------------------------------------ | -------------------- |
-| 1   | ADL-008 ACCEPTED **or** explicit written live-claim limitation                       | Silent PASS          |
-| 2   | No silent “production restart-safe” while residual open                              | Dishonest claim      |
-| 3   | Accept path evidence-grounded (or limitation explicit)                               | Evidence-free accept |
-| 4   | Cross-workspace deny (if UI)                                                         | Leak                 |
-| 5   | Unauthorized deny                                                                    | Privilege bypass     |
-| 6   | No Live Trading / Kill Switch Complete / Monitoring / BC/HA / Wave 3 COMPLETE claims | Dishonest claim      |
-| 7   | No plaintext secret exposure                                                         | Exposure             |
-| 8   | No second Lake / Outbox / recovery domain; US290–US294 ownership unchanged           | Architecture drift   |
+| #   | Outcome                                                                                                                                                                                    | Fail if                                             |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| 1   | ADL-008 ACCEPTED **or** explicit written live-claim limitation                                                                                                                             | Silent PASS                                         |
+| 2   | No silent “production restart-safe” while residual open                                                                                                                                    | Dishonest claim                                     |
+| 3   | Accept path evidence-grounded (or limitation explicit)                                                                                                                                     | Evidence-free accept                                |
+| 4   | Cross-workspace deny (if UI)                                                                                                                                                               | Leak                                                |
+| 5   | Unauthorized deny                                                                                                                                                                          | Privilege bypass                                    |
+| 6   | No Live Trading / Kill Switch Complete / Monitoring / BC/HA / Wave 3 COMPLETE claims                                                                                                       | Dishonest claim                                     |
+| 7   | No plaintext secret exposure                                                                                                                                                               | Exposure                                            |
+| 8   | No second Lake / Outbox / recovery domain; US290–US294 ownership unchanged                                                                                                                 | Architecture drift                                  |
+| 9   | If available evidence is insufficient to justify ACCEPTED, the required outcome is an **explicit written live-claim limitation**. Evidence must **never** be invented to achieve ACCEPTED. | Invented evidence; forced ACCEPTED; silent fallback |
+
+**Authority note:** Criteria 1 and 9 are Product Owner disposition outcomes. Engineering prepares evidence; Engineering does not decide ACCEPTED.
 
 ---
 

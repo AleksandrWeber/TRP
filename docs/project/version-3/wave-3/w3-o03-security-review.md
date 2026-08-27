@@ -118,12 +118,14 @@ Planning intent below is the baseline. Close evidence is recorded only after app
 
 ### 4. Claim integrity
 
-| Outcome                          | Required                                                         |
-| -------------------------------- | ---------------------------------------------------------------- |
-| Accept or explicit limitation    | Close requires one of the two Master Plan paths                  |
-| No silent PASS                   | DEFERRED placeholder never authorizes “production restart-safe”  |
-| No client-asserted ACCEPTED      | Client-supplied “restart-safe Complete” claims rejected          |
-| Evidence grounding when ACCEPTED | Accept path cites required US290–US294 / Evidence Package inputs |
+| Outcome                            | Required                                                                                         |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Accept or explicit limitation      | Close requires one of the two Master Plan paths                                                  |
+| No silent PASS                     | DEFERRED placeholder never authorizes “production restart-safe”                                  |
+| No client-asserted ACCEPTED        | Client-supplied “restart-safe Complete” claims rejected                                          |
+| Evidence grounding when ACCEPTED   | Accept path cites required US290–US294 / Evidence Package inputs                                 |
+| Insufficient evidence → limitation | Required outcome is explicit written live-claim limitation; evidence never invented for ACCEPTED |
+| Product Owner disposition only     | Engineering prepares evidence; never self-promotes ADL-008 to ACCEPTED                           |
 
 ### 5. Architecture security
 

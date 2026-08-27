@@ -47,13 +47,15 @@ Nature: planning only. No implementation. No implementation slices. No W3-O03-a.
 
 Close the production restart-safety **claim residual**: accept ADL-008 with evidence sync, **or** publish an explicit written live-claim limitation — never silent PASS.
 
-**Stance closed** means ACCEPTED **or** explicit limitation.
+**Stance closed** means ACCEPTED **or** explicit limitation — decided by **Product Owner** only.
 
 **Stance closed** does not mean Live Trading enabled.
 
 **Stance closed** does not mean Kill Switch Complete or Monitoring Complete.
 
 **Stance closed** does not mean Wave 3 COMPLETE.
+
+**Authority (binding):** Engineering prepares evidence only. Product Owner alone decides ACCEPTED vs DEFERRED with explicit written live-claim limitation. Engineering must never self-promote ADL-008 to ACCEPTED.
 
 ---
 
@@ -178,9 +180,11 @@ Kill Switch (O04), Monitoring (O05), US290–US294 redesign, E19 recovery UX, Va
 3. W3-O01 / W3-O02 durability ≠ production restart-safety claim Close.
 4. Silent “production restart-safe” PASS is forbidden.
 5. Stance must be ACCEPTED **or** explicit written limitation — no third silent path.
-6. Fail closed; never echo plaintext secrets.
-7. No Live Trading. No Wave 3 COMPLETE from this package alone.
-8. No implementation slices until Product Owner Approval + task.
+6. **Product Owner alone** decides ACCEPTED vs limitation; Engineering prepares evidence only and never self-promotes ADL-008.
+7. If evidence is insufficient for ACCEPTED, required outcome is explicit written live-claim limitation — never invent evidence.
+8. Fail closed; never echo plaintext secrets.
+9. No Live Trading. No Wave 3 COMPLETE from this package alone.
+10. No implementation slices until Product Owner Approval + task.
 
 ---
 
@@ -208,7 +212,7 @@ Kill Switch (O04), Monitoring (O05), US290–US294 redesign, E19 recovery UX, Va
    Authentication, Authorization, Workspace Isolation, Vault, Security Platform, Security Audit; Closed Wave 2; Closed W3-O01; Closed W3-O02; existing Runtime Recovery / Session / ADL ownership with US290–US294 evidence.
 
 4. **What does W3-O03 own?**
-   US295 / ADL-008 recovery residual **claim stance outcomes** (IN-02 / TD-036 R6): ADL-008 ACCEPTED **or** explicit written live-claim limitation — never silent PASS — on existing ownership only.
+   US295 / ADL-008 recovery residual **claim stance outcomes** (IN-02 / TD-036 R6): Product Owner decides ADL-008 ACCEPTED **or** explicit written live-claim limitation — never silent PASS — on existing ownership only. Engineering prepares evidence; Engineering does not decide ACCEPTED.
 
 5. **What is explicitly OUT of scope?**
    Kill Switch (O04); Monitoring (O05); US290–US294 redesign; Live Trading; BC/HA; Master Plan / Version 2 / Wave 1 / Wave 2 / W3-O01 / W3-O02 modifications; ownership changes; implementation slices in this open; Wave 3 COMPLETE from planning.

@@ -95,16 +95,18 @@ Do not treat W3-O01 analytical survival or W3-O02 queue durability as proof of U
 
 ## 3. Integration validation
 
-| Area                           | Must prove                                                              |
-| ------------------------------ | ----------------------------------------------------------------------- |
-| Disposition on existing owners | Uses existing ADL / recovery documentation ownership — not a new domain |
-| Accept or limitation           | One of two Master Plan paths recorded                                   |
-| No silent PASS                 | DEFERRED cannot authorize production restart-safe language              |
-| Evidence grounding             | ACCEPTED path cites US290–US294 / US294 Evidence Package inputs         |
-| Cross-workspace deny           | Workspace A cannot read Workspace B claim surfaces                      |
-| Authz deny                     | Unauthorized role cannot access                                         |
-| W3-O01 / W3-O02 untouched      | Closed packages not reopened as redesign                                |
-| Outbox/Lake/recovery unchanged | No second Outbox / Lake / recovery SoT                                  |
+| Area                           | Must prove                                                               |
+| ------------------------------ | ------------------------------------------------------------------------ |
+| Disposition on existing owners | Uses existing ADL / recovery documentation ownership — not a new domain  |
+| Accept or limitation           | One of two Master Plan paths recorded by **Product Owner**               |
+| No silent PASS                 | DEFERRED cannot authorize production restart-safe language               |
+| Evidence grounding             | ACCEPTED path cites US290–US294 / US294 Evidence Package inputs          |
+| Insufficient evidence          | Explicit written live-claim limitation required; evidence never invented |
+| No Engineering self-promote    | Engineering cannot promote ADL-008 to ACCEPTED                           |
+| Cross-workspace deny           | Workspace A cannot read Workspace B claim surfaces                       |
+| Authz deny                     | Unauthorized role cannot access                                          |
+| W3-O01 / W3-O02 untouched      | Closed packages not reopened as redesign                                 |
+| Outbox/Lake/recovery unchanged | No second Outbox / Lake / recovery SoT                                   |
 
 ---
 

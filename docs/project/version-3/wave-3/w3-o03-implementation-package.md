@@ -144,6 +144,21 @@ It consumes Wave 1 security products, Closed Wave 2 products as context, Closed 
 
 ---
 
+## Authority
+
+**Binding governance for ADL-008 disposition:**
+
+| Rule                    | Binding                                                                                                                                                                   |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Engineering role        | Engineering implements **evidence only** (inventory, evidence-chain sync, honesty surfaces, Close Evidence preparation).                                                  |
+| Disposition authority   | **Product Owner** is the **only** authority that decides whether ADL-008 becomes **ACCEPTED** or remains **DEFERRED** with an **explicit written live-claim limitation**. |
+| Engineering prohibition | Engineering must **never** self-promote ADL-008 to ACCEPTED.                                                                                                              |
+| Package boundary        | Package implementation may **prepare evidence** but may **not** make the governance decision.                                                                             |
+
+“ADL-008 ACCEPTED or explicit written limitation” is a **Product Owner governance outcome**, not an Engineering self-service path.
+
+---
+
 | Field                           | Value                                                  |
 | ------------------------------- | ------------------------------------------------------ |
 | Package ID                      | W3-O03                                                 |
@@ -330,16 +345,19 @@ Nothing in IN Scope may be invented. If a desired item is not already named in M
 
 ## Product Acceptance Criteria
 
-| #   | Outcome                                                                                                 | Fail if                        |
-| --- | ------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| 1   | ADL-008 is ACCEPTED **or** an explicit accepted deferral / written live-claim limitation is recorded    | Silent DEFERRED / silent PASS  |
-| 2   | Product never claims “production restart-safe” without that stance                                      | Silent / dishonest claim       |
-| 3   | Stance is grounded in US290–US294 evidence chain (or limitation explicitly cites what is not claimed)   | Evidence-free accept           |
-| 4   | Workspace A cannot access Workspace B recovery claim surfaces (if any product UI)                       | Cross-tenant leak              |
-| 5   | Unauthorized roles cannot access stance / limitation surfaces                                           | Privilege bypass               |
-| 6   | Product never claims Live Trading, Kill Switch Complete, Monitoring Complete, BC/HA, or Wave 3 COMPLETE | Dishonest product claim        |
-| 7   | Secrets never shown, exported, or logged as plaintext                                                   | Plaintext exposure             |
-| 8   | No second Lake / Outbox / recovery domain; US290–US294 ownership unchanged                              | Ownership / architecture drift |
+| #   | Outcome                                                                                                                                                                                    | Fail if                                             |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| 1   | ADL-008 is ACCEPTED **or** an explicit accepted deferral / written live-claim limitation is recorded                                                                                       | Silent DEFERRED / silent PASS                       |
+| 2   | Product never claims “production restart-safe” without that stance                                                                                                                         | Silent / dishonest claim                            |
+| 3   | Stance is grounded in US290–US294 evidence chain (or limitation explicitly cites what is not claimed)                                                                                      | Evidence-free accept                                |
+| 4   | Workspace A cannot access Workspace B recovery claim surfaces (if any product UI)                                                                                                          | Cross-tenant leak                                   |
+| 5   | Unauthorized roles cannot access stance / limitation surfaces                                                                                                                              | Privilege bypass                                    |
+| 6   | Product never claims Live Trading, Kill Switch Complete, Monitoring Complete, BC/HA, or Wave 3 COMPLETE                                                                                    | Dishonest product claim                             |
+| 7   | Secrets never shown, exported, or logged as plaintext                                                                                                                                      | Plaintext exposure                                  |
+| 8   | No second Lake / Outbox / recovery domain; US290–US294 ownership unchanged                                                                                                                 | Ownership / architecture drift                      |
+| 9   | If available evidence is insufficient to justify ACCEPTED, the required outcome is an **explicit written live-claim limitation**. Evidence must **never** be invented to achieve ACCEPTED. | Invented evidence; forced ACCEPTED; silent fallback |
+
+**Authority note:** Criteria 1 and 9 are Product Owner disposition outcomes. Engineering prepares evidence; Engineering does not decide ACCEPTED.
 
 The customer never uses SSH, customer `.env` vendor secrets, local secret files, or manual database edits for these journeys.
 
@@ -466,9 +484,9 @@ Tests that mock “ACCEPTED” without proving stance recording / limitation hon
 
 ### W3-O03-c — ADL-008 disposition (ACCEPTED or explicit deferral)
 
-**Goal:** Record ADL-008 ACCEPTED **or** explicit accepted deferral / written live-claim limitation per Master Plan.
-**Done when:** Disposition recorded; silent DEFERRED-as-PASS impossible.
-**Must not:** Claim Live Trading; claim Wave 3 COMPLETE; reopen US290–US294 behaviour.
+**Goal:** Prepare disposition package for Product Owner decision — evidence for ACCEPTED **or** draft explicit accepted deferral / written live-claim limitation per Master Plan.
+**Done when:** Evidence (or insufficiency honesty) prepared for Product Owner; silent DEFERRED-as-PASS impossible; **Product Owner** records ACCEPTED or explicit limitation (Engineering does not self-promote).
+**Must not:** Engineering self-promote ADL-008 to ACCEPTED; invent evidence; claim Live Trading; claim Wave 3 COMPLETE; reopen US290–US294 behaviour.
 
 ### W3-O03-d — Live-claim limitation / honesty alignment
 

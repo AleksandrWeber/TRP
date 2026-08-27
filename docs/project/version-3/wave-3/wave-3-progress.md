@@ -77,6 +77,9 @@ Companions:
 - [`w3-o03-validation-plan.md`](./w3-o03-validation-plan.md)
 - [`recovery-residual-overview.md`](./recovery-residual-overview.md)
 - [`w3-o03-planning-summary.md`](./w3-o03-planning-summary.md)
+- [`w3-o03-planning-refinement-summary.md`](./w3-o03-planning-refinement-summary.md)
+- [`w3-o03-architecture-verification.md`](./w3-o03-architecture-verification.md)
+- [`w3-o03-governance-verification.md`](./w3-o03-governance-verification.md)
 - [`durability-overview.md`](./durability-overview.md)
 
 Prior closed package companions remain under W3-O01 / W3-O02 filenames.
