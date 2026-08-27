@@ -3,13 +3,14 @@
 **Package:** W3-O02 Notification Durable Queue
 **Wave:** 3 — Durability, Operations & Continuity
 **Master Plan / Roadmap:** V3-O02 · NT-02 · TD-045
-**Status:** Planning **COMPLETE**. Awaiting Product Owner Review and Approval. Not implementation. Slices not opened.
+**Status:** Planning **APPROVED**. Implementation in progress. **W3-O02-a COMPLETE** (inventory & honesty baseline). W3-O02-b…e not opened.
 **Date:** 2026-08-27
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w3-o02-product-scope.md`](./w3-o02-product-scope.md)
 **Security:** [`w3-o02-security-review.md`](./w3-o02-security-review.md)
 **Umbrella:** [`w3-o02-implementation-package.md`](./w3-o02-implementation-package.md)
 **Overview:** [`notification-durable-queue-overview.md`](./notification-durable-queue-overview.md)
+**Inventory (a):** [`w3-o02-a-notification-queue-inventory.md`](./w3-o02-a-notification-queue-inventory.md)
 **Wave durability:** [`durability-overview.md`](./durability-overview.md)
 **Checklists:** [`../version-3-product-checklist.md`](../version-3-product-checklist.md) · [`../version-3-architecture-checklist.md`](../version-3-architecture-checklist.md) · [`../version-3-security-checklist.md`](../version-3-security-checklist.md)
 **Verification Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md)
@@ -22,15 +23,15 @@ Do not validate US295 Complete (O03), Kill Switch product (O04), Monitoring prod
 
 Do not treat W3-O01 DeliveryResult **history** survival as proof of W3-O02 queue durability.
 
-### Slice progress (planning — not opened)
+### Slice progress
 
-| Slice    | Name                                                              | Validation record |
-| -------- | ----------------------------------------------------------------- | ----------------- |
-| W3-O02-a | Notification queue inventory & honesty baseline                   | Not opened        |
-| W3-O02-b | Durable queue persistence on existing notification-delivery owner | Not opened        |
-| W3-O02-c | Restart-survival proof for in-flight delivery                     | Not opened        |
-| W3-O02-d | Degraded delivery honesty & continuity alignment                  | Not opened        |
-| W3-O02-e | Package Validation, Operational Verification & Close Evidence     | Not opened        |
+| Slice    | Name                                                              | Validation record                                                                 |
+| -------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| W3-O02-a | Notification queue inventory & honesty baseline                   | **COMPLETE** — [`w3-o02-a-validation-report.md`](./w3-o02-a-validation-report.md) |
+| W3-O02-b | Durable queue persistence on existing notification-delivery owner | Not opened                                                                        |
+| W3-O02-c | Restart-survival proof for in-flight delivery                     | Not opened                                                                        |
+| W3-O02-d | Degraded delivery honesty & continuity alignment                  | Not opened                                                                        |
+| W3-O02-e | Package Validation, Operational Verification & Close Evidence     | Not opened                                                                        |
 
 ---
 
@@ -75,13 +76,15 @@ Do not treat W3-O01 DeliveryResult **history** survival as proof of W3-O02 queue
 | No capital side effect | Queue helpers never invoke live order placement               |
 | No second SoT helpers  | No parallel Lake/Outbox invent helpers; TD-045 ≠ TD-035       |
 
-### W3-O02-a unit focus (when opened)
+### W3-O02-a unit focus — **COMPLETE**
 
-| Area                    | Must prove                                                                     |
-| ----------------------- | ------------------------------------------------------------------------------ |
-| Inventory completeness  | Every required queue surface appears; ids unique                               |
-| Ownership consistency   | Exactly one allowed existing owner (notification-delivery) per surface         |
-| Distinction consistency | Queue ≠ DeliveryResult history; queue ≠ paper Outbox; queue ≠ Wave 5 transport |
+| Area                    | Must prove                                                                     | Result |
+| ----------------------- | ------------------------------------------------------------------------------ | ------ |
+| Inventory completeness  | Every required queue surface appears; ids unique                               | PASS   |
+| Ownership consistency   | Exactly one allowed existing owner (notification-delivery) per queue surface   | PASS   |
+| Distinction consistency | Queue ≠ DeliveryResult history; queue ≠ paper Outbox; queue ≠ Wave 5 transport | PASS   |
+
+Evidence: `apps/api/src/platform-conformance/w3-o02-a-notification-queue-inventory.spec.ts`
 
 ---
 
@@ -98,6 +101,10 @@ Do not treat W3-O01 DeliveryResult **history** survival as proof of W3-O02 queue
 | W3-O01 untouched as redesign  | Analytical store outcomes not reopened                             |
 | Outbox/Lake unchanged as SoT  | No second Outbox / Lake; no merge with TD-035                      |
 
+### W3-O02-a integration note
+
+Inventory-only: evidence paths on disk, required reports present, architecture claims frozen. Persist / restart survival deferred to W3-O02-b/c.
+
 ---
 
 ## 4. UI validation
@@ -110,9 +117,9 @@ Do not treat W3-O01 DeliveryResult **history** survival as proof of W3-O02 queue
 | No dishonest claims     | UI never claims Live Trading, Wave 5 Complete, Monitoring Complete, Kill Switch Complete, Wave 3 COMPLETE |
 | Unauthorized UX         | Denied roles see unavailable / deny — not foreign empty success                                           |
 
-### W3-O02-a UI note
+### W3-O02-a UI note — **COMPLETE for slice**
 
-No requirement to claim queue durable from inventory alone. Must not imply Wave 5 production send.
+No requirement to claim queue durable from inventory alone. Must not imply Wave 5 production send. No UI change shipped in W3-O02-a.
 
 ---
 
@@ -151,7 +158,7 @@ No requirement to claim queue durable from inventory alone. Must not imply Wave 
 
 Overall verdict for Package Review (fill at Close): **PENDING**. Only Product Owner may declare W3-O02 CLOSED.
 
-**W3-O02-a:** Walkthrough N/A — inventory foundation only; no restart survival claimed.
+**W3-O02-a:** Walkthrough **N/A** — inventory foundation only; no restart survival claimed. Recorded in [`w3-o02-a-validation-report.md`](./w3-o02-a-validation-report.md).
 
 ---
 
@@ -168,6 +175,8 @@ Overall verdict for Package Review (fill at Close): **PENDING**. Only Product Ow
 | Master Plan unchanged            | No Master Plan edits in implementation                        |
 | W3-O01 unchanged as redesign     | Analytical store package not reopened                         |
 
+**W3-O02-a:** Architecture review **PASS** — [`w3-o02-a-architecture-review.md`](./w3-o02-a-architecture-review.md).
+
 ---
 
 ## 8. Security validation
@@ -182,6 +191,8 @@ Overall verdict for Package Review (fill at Close): **PENDING**. Only Product Ow
 | No Live Trading path  | No live order / Gate-Risk bypass from queue package |
 | No Wave 5 claim path  | No production transport claim from queue package    |
 | Audit                 | Required queue outcomes attributable                |
+
+**W3-O02-a:** Security review **PASS** for inventory-only scope — [`w3-o02-a-security-review.md`](./w3-o02-a-security-review.md).
 
 ---
 
@@ -204,6 +215,8 @@ Commands expected at Close (unless Product Owner narrows a slice):
 - `pnpm --filter @trp/web build`
 - `git diff --check`
 
+**W3-O02-a:** Commands executed — see [`w3-o02-a-validation-report.md`](./w3-o02-a-validation-report.md).
+
 ---
 
 ## Explicit non-validation
@@ -217,7 +230,8 @@ Do **not** treat as W3-O02 Close evidence:
 - Kill Switch arming (O04)
 - US295 acceptance (O03)
 - Live Trading proofs
+- W3-O02-a inventory alone (foundation only)
 
 ---
 
-**STOP.** Wait for Product Owner Planning Review before approving W3-O02 implementation. Do not create W3-O02-a. Do not declare Wave 3 COMPLETE.
+**STOP.** Wait for Product Owner review before W3-O02-b. Do not declare W3-O02 CLOSED. Do not declare Wave 3 COMPLETE.

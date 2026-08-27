@@ -2,11 +2,12 @@
 
 **Document:** Version 3 Notification Durable Queue Overview
 **Date:** 2026-08-27
-**Status:** Product-facing record. W3-O02 Planning **COMPLETE** — awaiting Product Owner Review and Approval. Implementation **not** started. Slices **not** opened.
+**Status:** Product-facing record. W3-O02 Planning **APPROVED**. Slice **W3-O02-a** inventory & honesty baseline **COMPLETE** — awaiting Product Owner review before W3-O02-b. Queue durability **not** delivered.
 **Product:** W3-O02 Notification Durable Queue (V3-O02 · NT-02 · TD-045)
 **Wave:** 3 — Durability, Operations & Continuity
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 **Umbrella:** [`w3-o02-implementation-package.md`](./w3-o02-implementation-package.md)
+**Inventory (a):** [`w3-o02-a-notification-queue-inventory.md`](./w3-o02-a-notification-queue-inventory.md)
 **Wave durability:** [`durability-overview.md`](./durability-overview.md)
 
 This is what an ordinary operator should understand. It is not an internal design note.
@@ -27,6 +28,7 @@ It does NOT mean Live Trading enabled.
 It does NOT mean Monitoring Complete.
 It does NOT mean production restart-safety Complete from O02 alone.
 It does NOT mean Wave 3 COMPLETE.
+W3-O02-a inventory alone does NOT make the queue durable.
 ```
 
 ---
@@ -43,22 +45,29 @@ Wave 5 will later make channels production-real. This package makes the queue re
 
 ## Current package (W3-O02)
 
-| Capability                                    | Status                                     |
-| --------------------------------------------- | ------------------------------------------ |
-| Planning package                              | **COMPLETE** — awaiting PO Review/Approval |
-| Notification queue inventory                  | Planned (slice a — not opened)             |
-| Durable queue persistence                     | Planned (slice b — not opened)             |
-| Restart-survival proof for in-flight delivery | Planned (slice c — not opened)             |
-| Degraded delivery honesty                     | Planned (slice d — not opened)             |
-| Package Close evidence                        | Planned (slice e — not opened)             |
-| Wave 5 production transports                  | Out                                        |
-| Kill Switch product                           | Out (O04)                                  |
-| Monitoring / health dashboard                 | Out (O05)                                  |
-| Live Trading                                  | Out (Wave 6)                               |
+| Capability                                    | Status                                          |
+| --------------------------------------------- | ----------------------------------------------- |
+| Planning package                              | **APPROVED**                                    |
+| Notification queue inventory                  | **COMPLETE** (W3-O02-a — honesty baseline only) |
+| Durable queue persistence                     | Planned (slice b — **not opened**)              |
+| Restart-survival proof for in-flight delivery | Planned (slice c — **not opened**)              |
+| Degraded delivery honesty                     | Planned (slice d — **not opened**)              |
+| Package Close evidence                        | Planned (slice e — **not opened**)              |
+| Wave 5 production transports                  | Out                                             |
+| Kill Switch product                           | Out (O04)                                       |
+| Monitoring / health dashboard                 | Out (O05)                                       |
+| Live Trading                                  | Out (Wave 6)                                    |
+
+### What W3-O02-a found (operator language)
+
+- Delivery today finishes in one step (send or skip, then history). There is **no** held “waiting to send” queue yet.
+- History that already finished can survive restart (from W3-O01). **Owed work that had not finished** still cannot.
+- Paper event Outbox is a **different** system — not this alert queue.
+- Real Telegram / Email / Slack sending remains a later wave (Wave 5).
 
 ---
 
-## Customer Journey (W3-O02 — after Approval and Close)
+## Customer Journey (W3-O02 — after full package Close)
 
 ```text
 Sign in
@@ -74,7 +83,9 @@ Delivery work is still present and resumes
   (never silent drop without a record)
 ```
 
-### Operator workflow
+**Not available from W3-O02-a alone.** Inventory freezes the map; persistence and restart proof come in later slices.
+
+### Operator workflow (at package Close)
 
 1. Sign in with an authorized role.
 2. Trigger or rely on an owed notification path that creates pending delivery work.
@@ -95,6 +106,8 @@ Delivery work is still present and resumes
 | Wave 5 real channel send                       | **Out** — later wave                        |
 | Monitoring dashboard                           | **Out** — O05                               |
 
+**After W3-O02-a:** still no new operator screen or queue-durable claim.
+
 ---
 
 ## Customer Never Sees
@@ -108,6 +121,7 @@ Delivery work is still present and resumes
 - Plaintext secrets / bot tokens
 - Claims of Monitoring Complete / Kill Switch Complete / Wave 3 COMPLETE from W3-O02
 - Claims that W3-O01 history survival alone was the durable queue
+- Claims that W3-O02-a inventory alone made the queue durable
 
 ---
 
@@ -124,10 +138,10 @@ Delivery work is still present and resumes
 
 ## What's Next
 
-1. Product Owner reviews and Approves (or revises) this planning package
-2. Do **not** create W3-O02-a until Product Owner writes / sequences an implementation task
-3. Do **not** claim Wave 5 Complete, Live Trading, Monitoring, or Wave 3 COMPLETE
+1. Product Owner reviews W3-O02-a inventory & honesty baseline
+2. Do **not** open W3-O02-b until Product Owner authorizes the next implementation task
+3. Do **not** claim queue durable, Wave 5 Complete, Live Trading, Monitoring, or Wave 3 COMPLETE
 
 ---
 
-**STOP.** Wait for Product Owner Planning Review before approving W3-O02 implementation. Do not open W3-O02-a. Do not declare Wave 3 COMPLETE.
+**STOP.** Wait for Product Owner review before W3-O02-b. Do not declare Wave 3 COMPLETE.
