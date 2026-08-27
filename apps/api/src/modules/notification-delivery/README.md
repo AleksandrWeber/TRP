@@ -20,6 +20,7 @@ Delivery only. Never Source of Truth. Never a Telegram control plane.
 - Preferences: master enable, per-channel, per-type routing, schedule / quiet hours
 - Test notification + delivery routing
 - W3-O02-b: Notification Durable Queue work items on this owner snapshot (internal only; not REST)
+- W3-O02-c: integrity-gated hydrate restores queue after normal process restart (not retry execution)
 
 ## Forbidden
 

@@ -84,6 +84,16 @@ export {
   type NotificationQueueStatus,
 } from './domain/delivery-queue';
 export {
+  NotificationQueueRecoveryError,
+  W3_O02_C_QUEUE_RECOVERY_OWNER,
+  assertRecoverableNotificationQueue,
+  assertRecoverableNotificationQueueItem,
+  buildNotificationQueueRecoveryDiagnostics,
+  prepareNotificationStoreStateForRecovery,
+  sortQueueItemsDeterministically,
+  type NotificationQueueRecoveryDiagnostics,
+} from './domain/notification-queue-restart-recovery';
+export {
   extractLocalTimeHHmm,
   isWithinQuietHours,
   resolveCritical,

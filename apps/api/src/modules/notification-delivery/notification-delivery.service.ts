@@ -319,6 +319,14 @@ export class NotificationDeliveryService implements NotificationServicePort {
     return item;
   }
 
+  /**
+   * Internal recovery diagnostic — workspace-scoped open queue after hydrate.
+   * Does not send, retry, or fabricate items.
+   */
+  listOpenDeliveryQueue(workspaceId: string): readonly NotificationDeliveryQueueItem[] {
+    return this.listDeliveryQueue({ workspaceId, openOnly: true });
+  }
+
   listDeliveries(query: {
     workspaceId: string;
     userId?: string;

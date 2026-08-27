@@ -5,7 +5,7 @@
  * Distinct from DeliveryResult history (W3-O01), paper Outbox (TD-035),
  * and Wave 5 production transports.
  *
- * Persistence foundation only — not restart recovery, not retry execution.
+ * Persistence: W3-O02-b. Restart recovery hydrate: W3-O02-c. Not retry execution.
  */
 
 import type { DeliverNotificationCommand } from './delivery';
