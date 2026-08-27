@@ -2,9 +2,9 @@
 
 **Document:** Version 3 Durability, Operations & Continuity Overview
 **Date:** 2026-08-27
-**Status:** Product-facing record. Wave 3 Planning **APPROVED**. W3-O01 **CLOSED** by Product Owner. W3-O02 **CLOSED** by Product Owner. W3-O03 **CLOSED** by Product Owner. W3-O04 **CLOSED** by Product Owner. W3-O05 Planning **Authorized** — not opened. Business Continuity / HA / Monitoring **not** delivered.
+**Status:** Product-facing record. Wave 3 Planning **APPROVED**. W3-O01 **CLOSED** by Product Owner. W3-O02 **CLOSED** by Product Owner. W3-O03 **CLOSED** by Product Owner. W3-O04 **CLOSED** by Product Owner. W3-O05 Planning **OPEN**. Business Continuity / HA / Monitoring **not** delivered.
 **Product:** Wave 3 — Durability, Operations & Continuity
-**Current package:** W3-O05 Monitoring & Security Health (V3-O05) — Planning **Authorized**
+**Current package:** W3-O05 Monitoring & Security Health (V3-O05) — Planning **OPEN**
 **Prior closed:** W3-O01 Durable Analytical Stores (V3-O01); W3-O02 Notification Durable Queue (V3-O02); W3-O03 Recovery Residual (V3-O03); W3-O04 Durable Kill Switch Product (V3-O04)
 **Close Evidence (O04):** [`w3-o04-close-package-report.md`](./w3-o04-close-package-report.md) · [`w3-o04-package-summary.md`](./w3-o04-package-summary.md) · [`w3-o04-product-owner-close-record.md`](./w3-o04-product-owner-close-record.md)
 **O04 overview:** [`durable-kill-switch-overview.md`](./durable-kill-switch-overview.md)
@@ -48,16 +48,16 @@ It does NOT mean Business Continuity, High Availability, or Monitoring Complete.
 | **W3-O02** Notification Durable Queue          | In-flight notification delivery not lost on process restart              | Planning APPROVED; slices a–e APPROVED; package **CLOSED** by Product Owner                                               |
 | **W3-O03** Recovery Residual (US295 / ADL-008) | Accept or write live-claim limitation — no silent PASS                   | Planning **APPROVED**; slices a–e **COMPLETE**; package **CLOSED** by Product Owner; ADL-008 disposition **not recorded** |
 | W3-O04 Durable Kill Switch Product             | Durable Kill Switch foundation; restart recovery; operational continuity | Planning **APPROVED**; slices a–e **COMPLETE**; package **CLOSED** by Product Owner                                       |
-| W3-O05 Monitoring & Security Health            | Health and recent incidents without server login; honest degradation     | Planning **Authorized** — not opened                                                                                      |
+| W3-O05 Monitoring & Security Health            | Health and recent incidents without server login; honest degradation     | Planning **OPEN** — implementation not opened                                                                             |
 
 ---
 
-## Current package (W3-O05) — Planning Authorized
+## Current package (W3-O05) — Planning OPEN
 
 | Capability                    | Status                      |
 | ----------------------------- | --------------------------- |
-| W3-O05 Planning Package       | **Authorized** — not opened |
-| Monitoring / health dashboard | Not opened                  |
+| W3-O05 Planning Package       | **OPEN**                    |
+| Monitoring / health dashboard | Not opened (implementation) |
 | Live Trading                  | Out (Wave 6)                |
 
 ### Prior closed package (W3-O04)
