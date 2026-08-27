@@ -2,67 +2,63 @@
 
 **Audience:** Permanent AI Product Owner / Chief Architect
 **Nature:** Snapshot of the project as documented today
-**As-of:** 2026-08-26
+**As-of:** 2026-08-27
 **Do not:** speculate beyond approved planning; do not treat this as a Close declaration
 
 ---
 
 ## Where we are
 
-| Field                 | Value                                                                     |
-| --------------------- | ------------------------------------------------------------------------- |
-| Version 2             | **CERTIFIED** (`v2.0.1`)                                                  |
-| Version 3 planning    | **FROZEN** (Master Plan)                                                  |
-| Wave 1                | **CERTIFIED COMPLETE**                                                    |
-| Wave 2                | **COMPLETE**                                                              |
-| Current Wave          | **3 — Durability, Operations & Continuity**                               |
-| Current Package       | **W3-O01 Durable Analytical Stores** (Planning APPROVED)                  |
-| Wave 3 Planning       | **APPROVED**                                                              |
-| W3-O01 Readiness      | **FINALIZED** (planning quality)                                          |
-| Wave 3 Implementation | **In progress** — W3-O01-a/b APPROVED; W3-O01-c implemented; d not opened |
-| Live Trading          | **Not claimed / unauthorized** until Wave 6 ADR                           |
+| Field                 | Value                                                                          |
+| --------------------- | ------------------------------------------------------------------------------ |
+| Version 2             | **CERTIFIED** (`v2.0.1`)                                                       |
+| Version 3 planning    | **FROZEN** (Master Plan)                                                       |
+| Wave 1                | **CERTIFIED COMPLETE**                                                         |
+| Wave 2                | **COMPLETE**                                                                   |
+| Current Wave          | **3 — Durability, Operations & Continuity**                                    |
+| Current Package       | **W3-O02 Notification Durable Queue** (Planning COMPLETE — awaiting PO Review) |
+| Wave 3 Planning       | **APPROVED**                                                                   |
+| W3-O01                | **CLOSED** by Product Owner                                                    |
+| W3-O02 Planning       | **COMPLETE** — awaiting Product Owner Review and Approval                      |
+| W3-O02 Implementation | **Not authorized** · slices **not opened**                                     |
+| Live Trading          | **Not claimed / unauthorized** until Wave 6 ADR                                |
 
 ---
 
 ## Current package
 
-**W3-O01 Durable Analytical Stores** (Master Plan / Roadmap **V3-O01** · IN-01 · TD-048)
+**W3-O02 Notification Durable Queue** (Master Plan / Roadmap **V3-O02** · NT-02 · TD-045)
 
-- Operator-relied analytical artifacts survive API restart (default)
-- Or honest ephemeral labeling when survival is not delivered
-- **Extends existing owners only — no new persistence owner**
-- Persistence on existing aggregates only
-- No second Lake / Outbox / Inbox / Event Store / Projection Store
+- In-flight notification delivery work survives API restart (default)
+- Or honest failure / unavailable recorded — never silent drop without a record
+- **Extends existing notification-delivery owner only — no new persistence owner**
+- **No second Outbox**; TD-045 ≠ TD-035 (paper Outbox)
+- Distinct from W3-O01 analytical history survival
+- No Wave 5 production transports
 - No Live Trading
 - No Monitoring Complete (O05)
 - No Kill Switch product (O04)
-- **W3-O01-a inventory foundation APPROVED**
-- **W3-O01-b durable persistence foundation APPROVED**
-- **W3-O01-c restart recovery foundation done** — Business Continuity / High Availability **not** claimed
+- **Planning only** — no W3-O02-a
 
 Companions (under `../wave-3/`):
 
-- `w3-o01-implementation-package.md`
-- `w3-o01-product-scope.md`
-- `w3-o01-security-review.md`
-- `w3-o01-validation-plan.md`
+- `w3-o02-implementation-package.md`
+- `w3-o02-product-scope.md`
+- `w3-o02-security-review.md`
+- `w3-o02-validation-plan.md`
+- `notification-durable-queue-overview.md`
+- `w3-o02-planning-summary.md`
 - `durability-overview.md`
 - `wave-3-planning-summary.md`
 - `wave-3-progress.md`
-- `implementation-readiness-checklist.md`
-- `w3-o01-a-analytical-inventory.md`
-- `w3-o01-a-implementation-report.md`
 
 ---
 
 ## Current slice
 
-| Slice        | Documented operational status                                     |
-| ------------ | ----------------------------------------------------------------- |
-| **W3-O01-a** | **APPROVED** — inventory & honesty baseline                       |
-| **W3-O01-b** | **APPROVED** — durable persistence foundation                     |
-| **W3-O01-c** | **IMPLEMENTED** — restart recovery foundation; awaiting PO review |
-| W3-O01-d     | **Not started**                                                   |
+| Slice      | Documented operational status |
+| ---------- | ----------------------------- |
+| W3-O02-a…e | **Not opened**                |
 
 ---
 
@@ -91,10 +87,11 @@ Companions (under `../wave-3/`):
 
 ### Wave 3
 
-| Package                          | Status                                                              |
-| -------------------------------- | ------------------------------------------------------------------- |
-| W3-O01 Durable Analytical Stores | Planning **APPROVED** · Readiness **FINALIZED** · slices not opened |
-| W3-O02…O05                       | Not opened                                                          |
+| Package                           | Status                                                                 |
+| --------------------------------- | ---------------------------------------------------------------------- |
+| W3-O01 Durable Analytical Stores  | **CLOSED** by Product Owner                                            |
+| W3-O02 Notification Durable Queue | Planning **COMPLETE** — awaiting PO Review/Approval; slices not opened |
+| W3-O03…O05                        | Not opened                                                             |
 
 ---
 
@@ -108,9 +105,9 @@ Companions (under `../wave-3/`):
 | Customer vendor secrets not via `.env` | Vault + Connections path                                             |
 | Vault Customer Complete open           | Operator Vault UI intentionally deferred under Vault ownership       |
 | Customer Security Audit UX deferred    | F-05 — search/filter/download etc. outside Wave 1 certification      |
-| Process-local V2 analytical stores     | TD-048 — addressed by Wave 3 W3-O01 planning                         |
+| Notification durable delivery queue    | TD-045 — addressed by W3-O02 planning (not implementation)           |
 | Production restart-safety Complete     | Not claimed until Wave 3 O03 stance among other exits                |
-| Wave 3 Implementation                  | Not authorized until Planning Approved                               |
+| W3-O02 Implementation                  | Not authorized until Planning Approved                               |
 | Architecture Spec v2.0 frozen          | No redesign; ADRs only where justified                               |
 | Master Plan frozen                     | Package-local planning must not silently revise it                   |
 
@@ -120,8 +117,8 @@ Companions (under `../wave-3/`):
 
 | Work                            | Stance                                                    |
 | ------------------------------- | --------------------------------------------------------- |
-| W3-O01 after Planning Approval  | Implementation only after PO Approval + slice sequencing  |
-| W3-O02…O05                      | Execution Roadmap order after prior Close / PO sequencing |
+| W3-O02 after Planning Approval  | Implementation only after PO Approval + slice sequencing  |
+| W3-O03…O05                      | Execution Roadmap order after prior Close / PO sequencing |
 | Waves 4–10                      | Master Plan / Execution Roadmap — not started             |
 | Vault Customer Complete         | Remains under Vault ownership                             |
 | Customer Security Audit Product | Later Security Audit-owned work (F-05)                    |
@@ -133,7 +130,7 @@ Do not invent additional products beyond Master Plan / approved package scopes.
 
 ## What an operator can do today (honest)
 
-Through Closed Wave 1–2 packages:
+Through Closed Wave 1–2 packages and Closed W3-O01:
 
 1. Register / sign in / manage sessions / recover when host mail available
 2. Receive roles via People (Reader / Researcher / Trader / Administrator)
@@ -145,21 +142,22 @@ Through Closed Wave 1–2 packages:
 8. View Market Data (Binance symbols/ticker/candles/book; honest unavailable/stale)
 9. Use Paper Trading Foundation (paper-only)
 10. Use AI Connectivity Foundation (vaulted OpenRouter; Sessions; Request History — not AI Platform)
+11. Rely on Durable Analytical Stores (W3-O01 CLOSED) for SURVIVE analytical artifacts / platform readiness honesty
 
-Not available as finished Version 3 claims today: Live Trading, Wave 3 durability/ops Complete, production restart-safety Complete, real notification delivery product (Wave 5), Monitoring product, durable Kill Switch product, etc.
+Not available as finished Version 3 claims today: Live Trading, Notification Durable Queue product (W3-O02 planning only), Wave 3 durability/ops Complete, production restart-safety Complete, real notification delivery product (Wave 5), Monitoring product, durable Kill Switch product, etc.
 
 ---
 
 ## Immediate Product Owner queue
 
-1. Review **Implementation Readiness** (`implementation-readiness-checklist.md`).
-2. When ready: write / sequence the first W3-O01 implementation task.
-3. Do **not** create W3-O01-a until that task is authorized.
+1. Review **W3-O02 Planning Package** (`w3-o02-planning-summary.md` + companions).
+2. Approve or revise planning before any implementation.
+3. Do **not** create W3-O02-a until planning is Approved and an implementation task is authorized.
 4. Do **not** declare Wave 3 COMPLETE.
-5. Do **not** claim Live Trading.
+5. Do **not** claim Live Trading or Wave 5 Complete.
 6. Do **not** modify the Master Plan.
-7. Do **not** introduce a new persistence owner.
+7. Do **not** introduce a new persistence owner or second Outbox.
 
 ---
 
-**STOP.** Wait for Product Owner review before any Wave 3 implementation.
+**STOP.** Wait for Product Owner Planning Review before approving W3-O02 implementation.
