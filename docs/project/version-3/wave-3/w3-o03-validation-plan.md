@@ -3,13 +3,14 @@
 **Package:** W3-O03 Recovery Residual (US295 / ADL-008)
 **Wave:** 3 — Durability, Operations & Continuity
 **Master Plan / Roadmap:** V3-O03 · IN-02 · TD-036 (R6 / US295)
-**Status:** Planning **COMPLETE**. Awaiting Product Owner Review and Approval. Not implementation. Slices not opened.
+**Status:** Planning **APPROVED** for implementation. **W3-O03-a…e COMPLETE**. Package **CLOSED** by Product Owner. ADL-008 disposition **not recorded**.
 **Date:** 2026-08-27
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w3-o03-product-scope.md`](./w3-o03-product-scope.md)
 **Security:** [`w3-o03-security-review.md`](./w3-o03-security-review.md)
 **Umbrella:** [`w3-o03-implementation-package.md`](./w3-o03-implementation-package.md)
 **Overview:** [`recovery-residual-overview.md`](./recovery-residual-overview.md)
+**Inventory (a):** [`w3-o03-a-recovery-residual-inventory.md`](./w3-o03-a-recovery-residual-inventory.md)
 **Wave durability:** [`durability-overview.md`](./durability-overview.md)
 **Checklists:** [`../version-3-product-checklist.md`](../version-3-product-checklist.md) · [`../version-3-architecture-checklist.md`](../version-3-architecture-checklist.md) · [`../version-3-security-checklist.md`](../version-3-security-checklist.md)
 **Verification Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md)
@@ -24,27 +25,27 @@ Do not treat W3-O01 analytical survival or W3-O02 queue durability as proof of U
 
 ### Slice progress
 
-| Slice    | Name                                                          | Validation record |
-| -------- | ------------------------------------------------------------- | ----------------- |
-| W3-O03-a | Recovery residual inventory & claim-language baseline         | **Not opened**    |
-| W3-O03-b | Evidence-chain sync for US295 inputs                          | **Not opened**    |
-| W3-O03-c | ADL-008 disposition (ACCEPTED or explicit deferral)           | **Not opened**    |
-| W3-O03-d | Live-claim limitation / honesty alignment                     | **Not opened**    |
-| W3-O03-e | Package Validation, Operational Verification & Close Evidence | **Not opened**    |
+| Slice    | Name                                                          | Validation record                                                                 |
+| -------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| W3-O03-a | Recovery residual inventory & claim-language baseline         | **COMPLETE** — [`w3-o03-a-validation-report.md`](./w3-o03-a-validation-report.md) |
+| W3-O03-b | Evidence-chain sync for US295 inputs                          | **COMPLETE** — [`w3-o03-b-validation-report.md`](./w3-o03-b-validation-report.md) |
+| W3-O03-c | ADL-008 disposition (ACCEPTED or explicit deferral)           | **COMPLETE** — [`w3-o03-c-validation-report.md`](./w3-o03-c-validation-report.md) |
+| W3-O03-d | Live-claim limitation / honesty alignment                     | **COMPLETE** — [`w3-o03-d-validation-report.md`](./w3-o03-d-validation-report.md) |
+| W3-O03-e | Package Validation, Operational Verification & Close Evidence | **COMPLETE** — [`w3-o03-e-validation-report.md`](./w3-o03-e-validation-report.md) |
 
 ---
 
 ## 0. What Close means for W3-O03
 
-| Gate                | Meaning                                                     | Unlocks                                     |
-| ------------------- | ----------------------------------------------------------- | ------------------------------------------- |
-| **W3-O03 Closed**   | US295 / ADL-008 stance outcomes evidenced; walkthrough PASS | TD-036 R6 residual closed for package scope |
-| **Wave 3 COMPLETE** | Not claimed from O03 alone                                  | Requires O01…O05 + PO declaration           |
-| **Not claimed**     | Kill Switch product                                         | V3-O04                                      |
-| **Not claimed**     | Monitoring product                                          | V3-O05                                      |
-| **Not claimed**     | Live Trading                                                | Wave 6 / Order Path                         |
-| **Not claimed**     | Business Continuity / High Availability                     | Later / never silent                        |
-| **Not claimed**     | Stance closed from W3-O03-a alone                           | Requires disposition path (c/d) + e         |
+| Gate                | Meaning                                                     | Unlocks                                        |
+| ------------------- | ----------------------------------------------------------- | ---------------------------------------------- |
+| **W3-O03 Closed**   | US295 / ADL-008 stance outcomes evidenced; walkthrough PASS | TD-036 R6 residual closed for package scope    |
+| **Wave 3 COMPLETE** | Not claimed from O03 alone                                  | Requires O01…O05 + PO declaration              |
+| **Not claimed**     | Kill Switch product                                         | V3-O04                                         |
+| **Not claimed**     | Monitoring product                                          | V3-O05                                         |
+| **Not claimed**     | Live Trading                                                | Wave 6 / Order Path                            |
+| **Not claimed**     | Business Continuity / High Availability                     | Later / never silent                           |
+| **Not claimed**     | Stance closed from W3-O03-a…e alone                         | Requires Product Owner Close + disposition act |
 
 ---
 
@@ -74,7 +75,7 @@ Do not treat W3-O01 analytical survival or W3-O02 queue durability as proof of U
 | No capital side effect   | Stance helpers never invoke live order placement                   |
 | No second SoT helpers    | No parallel Lake/Outbox/recovery invent helpers                    |
 
-### W3-O03-a unit focus — **Not opened**
+### W3-O03-a unit focus — **COMPLETE**
 
 | Area                    | Must prove                                                            |
 | ----------------------- | --------------------------------------------------------------------- |
@@ -82,14 +83,50 @@ Do not treat W3-O01 analytical survival or W3-O02 queue durability as proof of U
 | Ownership consistency   | Existing recovery / ADL owners only                                   |
 | Distinction consistency | Stance ≠ O01 stores; ≠ O02 queue; ≠ O04 Kill Switch; ≠ O05 Monitoring |
 
-### Later slices (planning expectations)
+**Evidence:** [`w3-o03-a-validation-report.md`](./w3-o03-a-validation-report.md) · `w3-o03-a-recovery-residual-inventory.spec.ts`
 
-| Slice    | Unit focus                                                                     |
-| -------- | ------------------------------------------------------------------------------ |
-| W3-O03-b | Evidence inputs attributable; missing evidence fails honesty for ACCEPTED      |
-| W3-O03-c | Disposition is ACCEPTED **or** explicit limitation; silent DEFERRED impossible |
-| W3-O03-d | Limitation / accepted honesty aligned; Ready never forged from DEFERRED        |
-| W3-O03-e | Close evidence registry; architecture non-claims; transition safety            |
+### W3-O03-b unit focus — **COMPLETE**
+
+| Area                 | Must prove                                                                |
+| -------------------- | ------------------------------------------------------------------------- |
+| Evidence attribution | Every mandatory US295 input has id / owner / path / status / dependencies |
+| Sync honesty         | Missing / duplicate / orphan / cycle / broken dependency fail openly      |
+| ACCEPTED honesty     | Missing evidence blocks ACCEPTED; Engineering cannot self-promote         |
+
+**Evidence:** [`w3-o03-b-validation-report.md`](./w3-o03-b-validation-report.md) · `w3-o03-b-evidence-chain-sync.spec.ts`
+
+### W3-O03-c unit focus — **COMPLETE**
+
+| Area                     | Must prove                                                                 |
+| ------------------------ | -------------------------------------------------------------------------- |
+| Two-state decisions only | ACCEPTED or DEFERRED — no third / hidden / implicit state                  |
+| Authority gate           | Engineering cannot create ACCEPTED; Product Owner can when evidence synced |
+| Limitation honesty       | DEFERRED requires non-empty written live-claim limitation                  |
+| Immutability             | Records immutable; rewrite forbidden; change appends new record            |
+
+**Evidence:** [`w3-o03-c-validation-report.md`](./w3-o03-c-validation-report.md) · `w3-o03-c-disposition-foundation.spec.ts`
+
+### W3-O03-d unit focus — **COMPLETE**
+
+| Area                       | Must prove                                                            |
+| -------------------------- | --------------------------------------------------------------------- |
+| Disposition-derived claims | Restart-safe claims originate only from Product Owner disposition     |
+| Limitation honesty         | DEFERRED / no disposition requires explicit written limitation        |
+| Surface consistency        | Documentation / validation / overview / operational / runtime aligned |
+| Engineering bypass         | Engineering cannot present Production Restart Safe independently      |
+
+**Evidence:** [`w3-o03-d-validation-report.md`](./w3-o03-d-validation-report.md) · `w3-o03-d-honest-claim-alignment.spec.ts`
+
+### W3-O03-e unit focus — **COMPLETE**
+
+| Area                        | Must prove                                                                    |
+| --------------------------- | ----------------------------------------------------------------------------- |
+| Slice roll-up               | a–d Validation / Architecture / Security / Product all PASS                   |
+| Operational chain           | Inventory → Registry → Sync → Disposition → Claim alignment → integrity       |
+| Close Evidence honesty      | Package NOT CLOSED; ADL-008 NOT ACCEPTED; Wave 3 NOT COMPLETE; O04 NOT opened |
+| Governance / Honest Product | Engineering cannot ACCEPT or claim restart-safe; claims disposition-derived   |
+
+**Evidence:** [`w3-o03-e-validation-report.md`](./w3-o03-e-validation-report.md) · `w3-o03-e-close-evidence.spec.ts` · [`w3-o03-close-package-report.md`](./w3-o03-close-package-report.md)
 
 ---
 
@@ -121,13 +158,13 @@ Do not treat W3-O01 analytical survival or W3-O02 queue durability as proof of U
 
 ### Slice UI notes (planning)
 
-| Slice    | UI expectation                                                            |
-| -------- | ------------------------------------------------------------------------- |
-| W3-O03-a | Inventory foundation; must not imply stance Closed                        |
-| W3-O03-b | No requirement for full operator Close walkthrough                        |
-| W3-O03-c | Disposition recorded; may be governed docs + product honesty linkage      |
-| W3-O03-d | Product-visible honesty aligned where claims appear                       |
-| W3-O03-e | Close Evidence only — no new customer functionality beyond stance honesty |
+| Slice    | UI expectation                                                                   |
+| -------- | -------------------------------------------------------------------------------- |
+| W3-O03-a | Inventory foundation; must not imply stance Closed — **COMPLETE** (no UI change) |
+| W3-O03-b | No requirement for full operator Close walkthrough                               |
+| W3-O03-c | Disposition recorded; may be governed docs + product honesty linkage             |
+| W3-O03-d | Product-visible honesty aligned where claims appear                              |
+| W3-O03-e | Close Evidence only — no new customer functionality beyond stance honesty        |
 
 ---
 
@@ -164,7 +201,17 @@ Do not treat W3-O01 analytical survival or W3-O02 queue durability as proof of U
 □ Confirm no US290–US294 redesign / no second recovery SoT
 ```
 
-Overall verdict for Package Review (fill at Close): **PENDING APPROVAL** (planning open).
+Overall verdict for Package Review (fill at Close): **CLOSED** by Product Owner.
+
+**W3-O03-a:** Walkthrough **N/A** — inventory foundation only; no stance Closed claimed. Recorded in [`w3-o03-a-validation-report.md`](./w3-o03-a-validation-report.md).
+
+**W3-O03-b:** Walkthrough **N/A** — evidence-chain sync foundation only; stance Close **not** claimed. Recorded in [`w3-o03-b-validation-report.md`](./w3-o03-b-validation-report.md).
+
+**W3-O03-c:** Walkthrough **N/A** — disposition foundation mechanism only; no disposition recorded. Recorded in [`w3-o03-c-validation-report.md`](./w3-o03-c-validation-report.md).
+
+**W3-O03-d:** Walkthrough **partial / internal** — honest claim alignment verified across documentation and runtime surfaces; Product Owner disposition act still pending. Recorded in [`w3-o03-d-validation-report.md`](./w3-o03-d-validation-report.md).
+
+**W3-O03-e:** Walkthrough **COMPLETE for Close Evidence** — [`w3-o03-operational-walkthrough.md`](./w3-o03-operational-walkthrough.md). Product Owner Package Close declaration: **CLOSED**.
 
 ---
 
@@ -182,6 +229,16 @@ Overall verdict for Package Review (fill at Close): **PENDING APPROVAL** (planni
 | Master Plan unchanged            | No Master Plan edits in implementation                        |
 | W3-O01 / W3-O02 unchanged        | Closed packages not reopened                                  |
 
+**W3-O03-a:** Architecture review **PASS** — [`w3-o03-a-architecture-review.md`](./w3-o03-a-architecture-review.md).
+
+**W3-O03-b:** Architecture review **PASS** — [`w3-o03-b-architecture-review.md`](./w3-o03-b-architecture-review.md).
+
+**W3-O03-c:** Architecture review **PASS** — [`w3-o03-c-architecture-review.md`](./w3-o03-c-architecture-review.md).
+
+**W3-O03-d:** Architecture review **PASS** — [`w3-o03-d-architecture-review.md`](./w3-o03-d-architecture-review.md).
+
+**W3-O03-e:** Architecture review **PASS** — [`w3-o03-e-architecture-review.md`](./w3-o03-e-architecture-review.md).
+
 ---
 
 ## 8. Security validation
@@ -196,6 +253,16 @@ Overall verdict for Package Review (fill at Close): **PENDING APPROVAL** (planni
 | No Live Trading path  | No live order / Gate-Risk bypass from residual package |
 | No O04/O05 claim path | No Kill Switch / Monitoring Complete from O03          |
 | Audit                 | Required stance outcomes attributable                  |
+
+**W3-O03-a:** Security review **PASS** for inventory-only scope — [`w3-o03-a-security-review.md`](./w3-o03-a-security-review.md).
+
+**W3-O03-b:** Security review **PASS** for evidence-chain sync scope — [`w3-o03-b-security-review.md`](./w3-o03-b-security-review.md).
+
+**W3-O03-c:** Security review **PASS** for disposition foundation scope — [`w3-o03-c-security-review.md`](./w3-o03-c-security-review.md).
+
+**W3-O03-d:** Security review **PASS** for honest claim alignment scope — [`w3-o03-d-security-review.md`](./w3-o03-d-security-review.md).
+
+**W3-O03-e:** Security review **PASS** for Close Evidence scope — [`w3-o03-e-security-review.md`](./w3-o03-e-security-review.md).
 
 ---
 
@@ -218,6 +285,16 @@ Commands expected at Close (unless Product Owner narrows a slice):
 - `pnpm --filter @trp/web build`
 - `git diff --check`
 
+**W3-O03-a:** Commands executed — see [`w3-o03-a-validation-report.md`](./w3-o03-a-validation-report.md).
+
+**W3-O03-b:** Commands executed — see [`w3-o03-b-validation-report.md`](./w3-o03-b-validation-report.md).
+
+**W3-O03-c:** Commands executed — see [`w3-o03-c-validation-report.md`](./w3-o03-c-validation-report.md).
+
+**W3-O03-d:** Commands executed — see [`w3-o03-d-validation-report.md`](./w3-o03-d-validation-report.md).
+
+**W3-O03-e:** Commands executed — see [`w3-o03-e-validation-report.md`](./w3-o03-e-validation-report.md). Package acceptance criteria evidenced; Product Owner Package Close declaration: **CLOSED**.
+
 ---
 
 ## Explicit non-validation
@@ -238,16 +315,16 @@ Do **not** treat as W3-O03 Close evidence:
 
 ## Mandatory Planning Verification
 
-| Check                           | Result               |
-| ------------------------------- | -------------------- |
-| No Master Plan revision         | PASS                 |
-| No Version 2 modification       | PASS                 |
-| No ownership changes            | PASS                 |
-| No new bounded context          | PASS                 |
-| No Source of Truth changes      | PASS                 |
-| No hidden Wave 4/5/6 function   | PASS                 |
-| No implementation authorization | PASS (planning only) |
+| Check                         | Result                                              |
+| ----------------------------- | --------------------------------------------------- |
+| No Master Plan revision       | PASS                                                |
+| No Version 2 modification     | PASS                                                |
+| No ownership changes          | PASS                                                |
+| No new bounded context        | PASS                                                |
+| No Source of Truth changes    | PASS                                                |
+| No hidden Wave 4/5/6 function | PASS                                                |
+| Slices a–e COMPLETE           | PASS (package CLOSED; ADL-008 disposition separate) |
 
 ---
 
-**STOP.** Wait for Product Owner Planning Review before approving W3-O03 implementation. Do not create W3-O03-a. Do not declare Wave 3 COMPLETE.
+**STOP.** W3-O03 is **CLOSED** by Product Owner. Do not declare ADL-008 ACCEPTED without disposition act. Do not declare Production Restart Safe automatically. Do not declare Wave 3 COMPLETE. W3-O04 Planning Package **authorized** — implementation slices not opened.
