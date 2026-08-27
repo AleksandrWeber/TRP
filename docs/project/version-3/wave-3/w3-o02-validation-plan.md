@@ -3,7 +3,7 @@
 **Package:** W3-O02 Notification Durable Queue
 **Wave:** 3 — Durability, Operations & Continuity
 **Master Plan / Roadmap:** V3-O02 · NT-02 · TD-045
-**Status:** Planning **APPROVED**. Implementation complete for slices a–e. **W3-O02-a…e COMPLETE** (Close Evidence). Package **not declared CLOSED** — awaiting Product Owner Package Review.
+**Status:** Planning **APPROVED**. Implementation complete for slices a–e. **W3-O02-a…e APPROVED**. Package **CLOSED** by Product Owner.
 **Date:** 2026-08-27
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w3-o02-product-scope.md`](./w3-o02-product-scope.md)
@@ -238,7 +238,7 @@ No UI changes. Close Evidence only. Confirms existing Platform readiness fields 
 □ Confirm no second Lake / Outbox; TD-045 ≠ TD-035
 ```
 
-Overall verdict for Package Review (fill at Close): **PENDING**. Only Product Owner may declare W3-O02 CLOSED.
+Overall verdict for Package Review (fill at Close): **CLOSED** by Product Owner.
 
 **W3-O02-a:** Walkthrough **N/A** — inventory foundation only; no restart survival claimed. Recorded in [`w3-o02-a-validation-report.md`](./w3-o02-a-validation-report.md).
 
@@ -248,7 +248,7 @@ Overall verdict for Package Review (fill at Close): **PENDING**. Only Product Ow
 
 **W3-O02-d:** Walkthrough **partial** — limited Platform readiness continuity fields after recovery; retry execution and full Close walkthrough remain for W3-O02-e. Recorded in [`w3-o02-d-validation-report.md`](./w3-o02-d-validation-report.md).
 
-**W3-O02-e:** Walkthrough **COMPLETE for Close Evidence** — [`w3-o02-operational-walkthrough.md`](./w3-o02-operational-walkthrough.md). Product Owner Package Close declaration remains **PENDING**.
+**W3-O02-e:** Walkthrough **COMPLETE for Close Evidence** — [`w3-o02-operational-walkthrough.md`](./w3-o02-operational-walkthrough.md). Product Owner Package Close declaration: **CLOSED**.
 
 ---
 
@@ -329,7 +329,7 @@ Commands expected at Close (unless Product Owner narrows a slice):
 
 **W3-O02-d:** Commands executed — see [`w3-o02-d-validation-report.md`](./w3-o02-d-validation-report.md).
 
-**W3-O02-e:** Commands executed — see [`w3-o02-e-validation-report.md`](./w3-o02-e-validation-report.md). Package acceptance criteria evidenced for Close Evidence; Product Owner Package Close declaration remains **PENDING**.
+**W3-O02-e:** Commands executed — see [`w3-o02-e-validation-report.md`](./w3-o02-e-validation-report.md). Package acceptance criteria evidenced; Product Owner Package Close declaration: **CLOSED**.
 
 ---
 
@@ -352,4 +352,4 @@ Do **not** treat as W3-O02 Close evidence:
 
 ---
 
-**STOP.** Wait for Product Owner Package Review. Do not declare W3-O02 CLOSED. Do not declare Wave 3 COMPLETE. Do not open W3-O03.
+**STOP.** W3-O02 is **CLOSED** by Product Owner. Do not declare Wave 3 COMPLETE. Do not open W3-O03. Wait for Product Owner instruction.

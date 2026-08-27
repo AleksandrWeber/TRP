@@ -87,4 +87,4 @@ Do **not** expose Retry controls, Replay, Queue editing, Scheduler, Workflow con
 
 ---
 
-**STOP.** Walkthrough remains Close Evidence. Do not declare W3-O02 CLOSED. Do not declare Wave 3 COMPLETE. Do not open W3-O03.
+**STOP.** Walkthrough remains Close Evidence. W3-O02 is **CLOSED** by Product Owner. Do not declare Wave 3 COMPLETE. Do not open W3-O03. Wait for Product Owner instruction.

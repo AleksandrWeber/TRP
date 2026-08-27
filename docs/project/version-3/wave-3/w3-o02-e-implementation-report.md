@@ -1,6 +1,6 @@
 # W3-O02-e Implementation Report — Package Close Evidence
 
-**Status:** Close Evidence assembled; awaiting Product Owner Package Review  
+**Status:** Close Evidence assembled; package **CLOSED** by Product Owner.
 **Scope:** W3-O02-e only  
 **Package:** W3-O02 Notification Durable Queue (V3-O02 · NT-02 · TD-045)
 
@@ -17,28 +17,29 @@
 ## Explicitly not delivered
 
 - No new customer functionality, APIs, UI, persistence, recovery, or continuity logic.
-- W3-O02 is **not** declared CLOSED by this slice.
+- W3-O02 is **CLOSED** by Product Owner (this e slice assembled evidence only; Close is a PO act).
 - Wave 3 is **not** declared COMPLETE.
 - W3-O03 is **not** opened.
 - No Retry execution, Scheduler, Workflow Engine, Monitoring, BC, HA, DR, or Wave 5 providers.
 
 ## Transition Matrix
 
-| Before this slice          | After this slice                                                      | Still missing                           |
-| -------------------------- | --------------------------------------------------------------------- | --------------------------------------- |
-| Inventory (a)              | Complete package Close Evidence assembled                             | Product Owner Package Close declaration |
-| Persistence (b)            | Operational / architecture / security / product verification recorded | Retry execution                         |
-| Restart recovery (c)       | Package walkthrough evidenced                                         | Wave 5 providers                        |
-| Operational continuity (d) |                                                                       | W3-O03…O05 / Wave 3 COMPLETE            |
+| Before this slice          | After this slice                                                      | Still missing                |
+| -------------------------- | --------------------------------------------------------------------- | ---------------------------- |
+| Inventory (a)              | Complete package Close Evidence assembled                             | Retry execution              |
+| Persistence (b)            | Operational / architecture / security / product verification recorded | Wave 5 providers             |
+| Restart recovery (c)       | Package walkthrough evidenced                                         | W3-O03…O05 / Wave 3 COMPLETE |
+| Operational continuity (d) | Package **CLOSED** by Product Owner                                   |                              |
 
 ## Operational Maturity
 
-| Before                 | After                  | Remaining                       |
-| ---------------------- | ---------------------- | ------------------------------- |
-| Persistence            | Persistence            | Product Owner Close declaration |
-| Recovery               | Recovery               | Wave 3 completion               |
-| Operational continuity | Operational continuity |                                 |
-|                        | Package Close Evidence |                                 |
+| Before                 | After                              | Remaining         |
+| ---------------------- | ---------------------------------- | ----------------- |
+| Persistence            | Persistence                        | Wave 3 completion |
+| Recovery               | Recovery                           |                   |
+| Operational continuity | Operational continuity             |                   |
+|                        | Package Close Evidence             |                   |
+|                        | Package **CLOSED** (Product Owner) |                   |
 
 ## Capability Evolution
 
@@ -86,15 +87,15 @@
 
 ## Transition Safety
 
-| Question                                           | Answer  |
-| -------------------------------------------------- | ------- |
-| Version 2 unchanged?                               | **Yes** |
-| Wave 1 unchanged?                                  | **Yes** |
-| Wave 2 unchanged?                                  | **Yes** |
-| W3-O01 unchanged as redesign?                      | **Yes** |
-| No new bounded contexts?                           | **Yes** |
-| No new persistence owners?                         | **Yes** |
-| No second Queue / Outbox / notification lifecycle? | **Yes** |
-| Package not declared CLOSED by e?                  | **Yes** |
-| Wave 3 not declared COMPLETE?                      | **Yes** |
-| W3-O03 not opened?                                 | **Yes** |
+| Question                                           | Answer                                 |
+| -------------------------------------------------- | -------------------------------------- |
+| Version 2 unchanged?                               | **Yes**                                |
+| Wave 1 unchanged?                                  | **Yes**                                |
+| Wave 2 unchanged?                                  | **Yes**                                |
+| W3-O01 unchanged as redesign?                      | **Yes**                                |
+| No new bounded contexts?                           | **Yes**                                |
+| No new persistence owners?                         | **Yes**                                |
+| No second Queue / Outbox / notification lifecycle? | **Yes**                                |
+| Package not declared CLOSED by e slice itself?     | **Yes** (PO Close recorded separately) |
+| Wave 3 not declared COMPLETE?                      | **Yes**                                |
+| W3-O03 not opened?                                 | **Yes**                                |

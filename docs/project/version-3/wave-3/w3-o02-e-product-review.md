@@ -29,12 +29,11 @@ W3-O02 did not become Retry Engine, Monitoring, Incident Management, Business Co
 
 ## Close decision
 
-Close Evidence is complete for Product Owner Package Review.
+W3-O02 is **APPROVED** and **CLOSED** by Product Owner.
 
-- Do **not** declare W3-O02 CLOSED in this slice (Product Owner decision).
 - Do **not** declare Wave 3 COMPLETE.
-- Do **not** open W3-O03 until Product Owner authorizes.
+- Do **not** open W3-O03 until Product Owner instructs.
 
 ## Verdict
 
-**Close Evidence PASS** — awaiting Product Owner Package Review. Do not declare W3-O02 CLOSED.
+**CLOSED** by Product Owner. Wait for Product Owner instruction before W3-O03.
