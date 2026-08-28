@@ -16,26 +16,28 @@
 
 ## Authority
 
-| Item                         | Status                                                 |
-| ---------------------------- | ------------------------------------------------------ |
-| Version 3                    | In progress                                            |
-| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**                                 |
-| Wave 2 Connection Management | **COMPLETE**                                           |
-| Wave 3 Durability & Ops      | **COMPLETE**                                           |
-| W4-E01                       | **CLOSED** by Product Owner                            |
-| W4-E02                       | **CLOSED** by Product Owner                            |
-| W4-E03                       | **CLOSED** by Product Owner                            |
-| W4-E03 Planning Package      | **APPROVED** — W4-E03 **CLOSED** (2026-08-28)          |
-| W4-E04                       | **CLOSED** by Product Owner                            |
-| W4-E04 Planning Package      | **APPROVED** — W4-E04 **CLOSED** (2026-08-28)          |
-| W4-E04 Planning Review       | **PASS** (2026-08-28)                                  |
-| W4-E04 Planning Approval     | **RECORDED** (2026-08-28)                              |
-| W4-E04 Implementation        | **AUTHORIZED** — W4-E04-a/b/c/d/e **COMPLETE**         |
-| W4-E05                       | Planning Review **PASS** (2026-08-28)                  |
-| W4-E05 Planning Package      | **OPEN** — Planning Review **PASS**; awaiting Approval |
-| W4-E05 Planning Review       | **PASS** (2026-08-28)                                  |
-| Live Trading                 | **Not claimed**                                        |
-| Master Plan                  | **FROZEN** — unchanged                                 |
+| Item                         | Status                                         |
+| ---------------------------- | ---------------------------------------------- |
+| Version 3                    | In progress                                    |
+| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**                         |
+| Wave 2 Connection Management | **COMPLETE**                                   |
+| Wave 3 Durability & Ops      | **COMPLETE**                                   |
+| W4-E01                       | **CLOSED** by Product Owner                    |
+| W4-E02                       | **CLOSED** by Product Owner                    |
+| W4-E03                       | **CLOSED** by Product Owner                    |
+| W4-E03 Planning Package      | **APPROVED** — W4-E03 **CLOSED** (2026-08-28)  |
+| W4-E04                       | **CLOSED** by Product Owner                    |
+| W4-E04 Planning Package      | **APPROVED** — W4-E04 **CLOSED** (2026-08-28)  |
+| W4-E04 Planning Review       | **PASS** (2026-08-28)                          |
+| W4-E04 Planning Approval     | **RECORDED** (2026-08-28)                      |
+| W4-E04 Implementation        | **AUTHORIZED** — W4-E04-a/b/c/d/e **COMPLETE** |
+| W4-E05                       | Planning **APPROVED** (2026-08-28)             |
+| W4-E05 Planning Package      | **APPROVED** — awaiting W4-E05-a               |
+| W4-E05 Planning Review       | **PASS** (2026-08-28)                          |
+| W4-E05 Planning Approval     | **RECORDED** (2026-08-28)                      |
+| W4-E05 Implementation        | **AUTHORIZED** — W4-E05-a not yet opened       |
+| Live Trading                 | **Not claimed**                                |
+| Master Plan                  | **FROZEN** — unchanged                         |
 
 ---
 
@@ -47,7 +49,7 @@
 | **W4-E02** | **V3-E02** | Bybit Real I/O                | **CLOSED** by Product Owner (2026-08-28) |
 | **W4-E03** | **V3-E03** | OKX Real I/O                  | **CLOSED** by Product Owner (2026-08-28) |
 | **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **CLOSED** by Product Owner (2026-08-28) |
-| **W4-E05** | **V3-E05** | Venue Permission Verification | Planning Review **PASS** (2026-08-28)    |
+| **W4-E05** | **V3-E05** | Venue Permission Verification | Planning **APPROVED** (2026-08-28)       |
 
 Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
@@ -55,17 +57,17 @@ Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
 ## Current package
 
-| Field                     | Value                                                              |
-| ------------------------- | ------------------------------------------------------------------ |
-| **Package**               | **W4-E05** Venue Permission Verification                           |
-| **Master Plan / Roadmap** | V3-E05 · feeds LT-02 later                                         |
-| **Stage**                 | Planning Review **PASS** — Awaiting Planning Approval (2026-08-28) |
-| **Approval**              | **Not granted** — awaiting Planning Approval                       |
-| **Planning review**       | [`w4-e05-planning-review.md`](./w4-e05-planning-review.md)         |
-| **Implementation**        | **Not authorized** — slices not opened                             |
-| **Predecessor**           | W4-E04 **CLOSED** by Product Owner (2026-08-28)                    |
-| **Implementation slices** | W4-E05-a/b/c/d/e **not opened**                                    |
-| **Planning summary**      | [`w4-e05-planning-summary.md`](./w4-e05-planning-summary.md)       |
+| Field                     | Value                                                                         |
+| ------------------------- | ----------------------------------------------------------------------------- |
+| **Package**               | **W4-E05** Venue Permission Verification                                      |
+| **Master Plan / Roadmap** | V3-E05 · feeds LT-02 later                                                    |
+| **Stage**                 | Planning **APPROVED** — Awaiting W4-E05-a (2026-08-28)                        |
+| **Approval**              | **RECORDED** — [`w4-e05-planning-approval.md`](./w4-e05-planning-approval.md) |
+| **Planning review**       | [`w4-e05-planning-review.md`](./w4-e05-planning-review.md)                    |
+| **Implementation**        | **AUTHORIZED** — W4-E05-a not yet opened                                      |
+| **Predecessor**           | W4-E04 **CLOSED** by Product Owner (2026-08-28)                               |
+| **Implementation slices** | W4-E05-a/b/c/d/e **not opened**                                               |
+| **Planning summary**      | [`w4-e05-planning-summary.md`](./w4-e05-planning-summary.md)                  |
 
 Companions:
 
@@ -76,6 +78,7 @@ Companions:
 - [`w4-e05-overview.md`](./w4-e05-overview.md)
 - [`w4-e05-planning-summary.md`](./w4-e05-planning-summary.md)
 - [`w4-e05-planning-review.md`](./w4-e05-planning-review.md)
+- [`w4-e05-planning-approval.md`](./w4-e05-planning-approval.md)
 - [`w4-e04-product-owner-close-record.md`](./w4-e04-product-owner-close-record.md)
 - [`w4-e03-implementation-package.md`](./w4-e03-implementation-package.md)
 - [`w4-e03-product-scope.md`](./w4-e03-product-scope.md)
@@ -292,7 +295,9 @@ W4-E05 Planning Package OPEN (2026-08-28)
         ↓
 W4-E05 Planning Review PASS (2026-08-28)
         ↓
-STOP — Awaiting Planning Approval
+W4-E05 Planning Approval RECORDED (2026-08-28)
+        ↓
+STOP — Awaiting W4-E05-a
 (No W4-E05-a)
 (No Live Trading)
 (No Wave 4 COMPLETE)
@@ -345,8 +350,8 @@ STOP — Awaiting Planning Approval
 | W4-E04 CLOSED                               | **Recorded** (2026-08-28)                  |
 | W4-E05 Planning OPEN                        | **Recorded** (2026-08-28)                  |
 | W4-E05 Planning Review PASS                 | **Recorded** (2026-08-28)                  |
-| W4-E05 Planning APPROVED                    | **Not claimed**                            |
-| W4-E05 Implementation                       | **Not authorized**                         |
+| W4-E05 Planning APPROVED                    | **Recorded** (2026-08-28)                  |
+| W4-E05 Implementation                       | **AUTHORIZED** — W4-E05-a not yet opened   |
 | W4-E05-a opened                             | **Not claimed**                            |
 | Live Trading                                | **Not claimed**                            |
 | Production Ready                            | **Not claimed**                            |
@@ -354,4 +359,4 @@ STOP — Awaiting Planning Approval
 
 ---
 
-**STOP.** W4-E05 Planning Review **PASS** (2026-08-28). Current stage: **Awaiting Planning Approval**. Do not declare Venue Permission Verification Complete, Exchange Connectivity Complete, or Wave 4 COMPLETE. Do not perform Planning Approval. Do not open W4-E05-a without separate Product Owner instruction.
+**STOP.** W4-E05 Planning **APPROVED** (2026-08-28). Implementation **AUTHORIZED** for W4-E05-a only. Current stage: **Awaiting W4-E05-a**. Do not declare Venue Permission Verification Complete, Exchange Connectivity Complete, or Wave 4 COMPLETE. Do not open W4-E05-a without separate Product Owner instruction. Do not open W4-E05-b through W4-E05-e.
