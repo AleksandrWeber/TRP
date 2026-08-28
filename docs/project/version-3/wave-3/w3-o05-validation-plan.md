@@ -3,7 +3,7 @@
 **Package:** W3-O05 Monitoring & Security Health  
 **Wave:** 3 — Durability, Operations & Continuity  
 **Master Plan / Roadmap:** V3-O05 · MN-02 · MN-03 · SEC-13 · SEC-15  
-**Status:** Planning **APPROVED**. W3-O05-a/b/c/d **COMPLETE**. W3-O05-e not opened.
+**Status:** Planning **APPROVED**. W3-O05-a/b/c/d/e **COMPLETE**. Close Evidence assembled. Awaiting Product Owner Package Review.
 **Date:** 2026-08-27  
 **Umbrella:** [`w3-o05-implementation-package.md`](./w3-o05-implementation-package.md)  
 **Scope:** [`w3-o05-product-scope.md`](./w3-o05-product-scope.md)  
@@ -203,7 +203,37 @@ Evidence: [`w3-o05-d-validation-report.md`](./w3-o05-d-validation-report.md) · 
 
 ---
 
-## 14. Close checklist (planning)
+## 14. W3-O05-e Close Evidence validation (COMPLETE)
+
+| Assertion                                  | Result |
+| ------------------------------------------ | ------ |
+| Complete operational journey verified      | PASS   |
+| Approved slices a–d validated              | PASS   |
+| Evidence chain complete                    | PASS   |
+| Honest Product enforcement intact          | PASS   |
+| No new runtime functionality in e          | PASS   |
+| Engineering does not declare W3-O05 CLOSED | PASS   |
+| Monitoring Complete not claimed            | PASS   |
+| Security Health Complete not claimed       | PASS   |
+
+Evidence: [`w3-o05-e-validation-report.md`](./w3-o05-e-validation-report.md) · [`w3-o05-e-implementation-report.md`](./w3-o05-e-implementation-report.md) · [`w3-o05-close-package-report.md`](./w3-o05-close-package-report.md) · [`w3-o05-operational-walkthrough.md`](./w3-o05-operational-walkthrough.md)
+
+---
+
+## 15. W3-O05-e unit focus
+
+| Area                   | Must prove                                                  |
+| ---------------------- | ----------------------------------------------------------- |
+| Slice roll-up          | a–d all PASS                                                |
+| Operational chain      | Inventory → Persistence → Recovery → Continuity → Readiness |
+| Close Evidence honesty | Evidence assembled; W3-O05 NOT CLOSED; Wave 3 NOT           |
+| Honest Product         | No evaluation/dashboards/Live/BC/HA/DR                      |
+| Governance             | security-platform sole owner                                |
+| No new functionality   | Evidence only in e                                          |
+
+---
+
+## 16. Close checklist (planning)
 
 | Item                                           | Required at Close |
 | ---------------------------------------------- | ----------------- |
@@ -232,4 +262,4 @@ Do **not** count as W3-O05 Close evidence during planning:
 
 ---
 
-**STOP.** W3-O05-d operational continuity **COMPLETE**. Await Product Owner review before W3-O05-e. Do not declare Monitoring Complete. Do not declare Wave 3 COMPLETE.
+**STOP.** W3-O05-e Close Evidence **COMPLETE**. Await Product Owner Package Review. Do not declare W3-O05 CLOSED. Do not declare Wave 3 COMPLETE.

@@ -2,7 +2,7 @@
 
 **Document:** Version 3 Monitoring & Security Health Overview  
 **Date:** 2026-08-27  
-**Status:** Product-facing record. W3-O05 Planning **APPROVED**. W3-O05-a inventory **COMPLETE**. W3-O05-b persistence **COMPLETE**. W3-O05-c restart recovery **COMPLETE**. W3-O05-d operational continuity **COMPLETE**. Not Monitoring Complete. Not W3-O05 CLOSED.
+**Status:** Product-facing record. W3-O05 Planning **APPROVED**. W3-O05-a/b/c/d/e **COMPLETE**. Close Evidence assembled. Not Monitoring Complete. Not W3-O05 CLOSED.
 **Product:** W3-O05 Monitoring & Security Health (V3-O05 · MN-02 · MN-03 · SEC-13 · SEC-15)  
 **Wave:** 3 — Durability, Operations & Continuity  
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.  
@@ -46,23 +46,24 @@ That is still not enough for **operational visibility**. Master Plan Wave 3 exit
 
 ---
 
-## Current package (W3-O05) — Planning APPROVED · W3-O05-a/b/c/d COMPLETE
+## Current package (W3-O05) — Planning APPROVED · W3-O05-a/b/c/d/e COMPLETE
 
-| Capability                      | Status                                            |
-| ------------------------------- | ------------------------------------------------- |
-| W3-O05 Planning Package         | **APPROVED**                                      |
-| W3-O05-a inventory foundation   | **COMPLETE** — canonical baseline frozen          |
-| W3-O05-b persistence foundation | **COMPLETE** — durable storage only               |
-| W3-O05-c restart recovery       | **COMPLETE** — hydrate on normal restart          |
-| W3-O05-d operational continuity | **COMPLETE** — Platform Readiness projection only |
-| W3-O05-e                        | Not opened                                        |
-| Monitoring Complete             | **Not claimed**                                   |
-| Live Trading                    | Out (Wave 6)                                      |
-| Business Continuity / HA / DR   | Out                                               |
+| Capability                      | Status                                               |
+| ------------------------------- | ---------------------------------------------------- |
+| W3-O05 Planning Package         | **APPROVED**                                         |
+| W3-O05-a inventory foundation   | **COMPLETE** — canonical baseline frozen             |
+| W3-O05-b persistence foundation | **COMPLETE** — durable storage only                  |
+| W3-O05-c restart recovery       | **COMPLETE** — hydrate on normal restart             |
+| W3-O05-d operational continuity | **COMPLETE** — Platform Readiness projection only    |
+| W3-O05-e Close Evidence         | **COMPLETE** — awaiting Product Owner Package Review |
+| Monitoring Complete             | **Not claimed**                                      |
+| W3-O05 CLOSED                   | **Not claimed**                                      |
+| Live Trading                    | Out (Wave 6)                                         |
+| Business Continuity / HA / DR   | Out                                                  |
 
 **Inventory baseline:** [`w3-o05-a-monitoring-inventory.md`](./w3-o05-a-monitoring-inventory.md)
 
-Binding finding: monitoring product is **not Complete**; operational continuity is now **projected on Platform Readiness** (W3-O05-d); monitoring evaluation, SEC-15 dashboard, and operator incident UI remain **missing**.
+Binding finding: monitoring product is **not Complete**; Close Evidence is **assembled** (W3-O05-e); Product Owner Package Close is **pending**; monitoring evaluation, SEC-15 dashboard, and operator incident UI remain **missing**.
 
 ---
 
@@ -74,6 +75,7 @@ Binding finding: monitoring product is **not Complete**; operational continuity 
 | W3-O05-b persistence COMPLETE | **COMPLETE** — storage only              |
 | W3-O05-c recovery COMPLETE    | **COMPLETE** — hydrate only              |
 | W3-O05-d continuity COMPLETE  | **COMPLETE** — not monitoring evaluation |
+| W3-O05-e Close Evidence       | **COMPLETE** — not package CLOSED        |
 | W3-O05 CLOSED                 | **Not claimed**                          |
 | Monitoring Complete           | **Not claimed**                          |
 | Wave 3 COMPLETE               | **Not claimed**                          |
@@ -84,10 +86,10 @@ Binding finding: monitoring product is **not Complete**; operational continuity 
 
 ## What's Next
 
-1. Product Owner review of W3-O05-d operational continuity foundation
-2. W3-O05-e — Package Validation, Operational Verification & Close Evidence — **not opened**
+1. Product Owner Package Review of W3-O05 Close Evidence
+2. Product Owner Package Close (if approved)
 3. Monitoring Complete — **not claimed**
 
 ---
 
-**STOP.** W3-O05-d operational continuity **COMPLETE**. Do not open W3-O05-e without Product Owner instruction. Do not declare Monitoring Complete. Do not declare Wave 3 COMPLETE.
+**STOP.** W3-O05-e Close Evidence **COMPLETE**. Await Product Owner Package Review. Do not declare W3-O05 CLOSED. Do not declare Wave 3 COMPLETE.
