@@ -3,7 +3,7 @@
 **Package:** W4-E02 Bybit Real I/O  
 **Evidence slice:** W4-E02-e  
 **Date:** 2026-08-28  
-**Decision status:** Close Evidence assembled — **awaiting Product Owner Package Review**.
+**Decision status:** **CLOSED** by Product Owner (2026-08-28). See [`w4-e02-product-owner-close-record.md`](./w4-e02-product-owner-close-record.md).
 
 ---
 
@@ -56,34 +56,34 @@ This report indexes Close Evidence assembled in W4-E02-e for Product Owner Packa
 
 ## Close checklist (evidence)
 
-| Criterion                                                       | Status      |
-| --------------------------------------------------------------- | ----------- |
-| Every approved slice validated (a–d PASS)                       | **Met**     |
-| Operational walkthrough completed                               | **Met**     |
-| Inventory / Persistence / Recovery / Continuity verified        | **Met**     |
-| Platform Readiness projection verified                          | **Met**     |
-| Honest Product enforcement intact                               | **Met**     |
-| Governance: exchange-adapter sole owner; no duplicate authority | **Met**     |
-| Security Verification PASS                                      | **Met**     |
-| Architecture Verification PASS                                  | **Met**     |
-| Documentation consistency verified                              | **Met**     |
-| Package Summary completed                                       | **Met**     |
-| No new functionality in e                                       | **Met**     |
-| No ownership / architecture / Master Plan changes in e          | **Met**     |
-| Product Owner declares CLOSED                                   | **Pending** |
+| Criterion                                                       | Status  |
+| --------------------------------------------------------------- | ------- |
+| Every approved slice validated (a–d PASS)                       | **Met** |
+| Operational walkthrough completed                               | **Met** |
+| Inventory / Persistence / Recovery / Continuity verified        | **Met** |
+| Platform Readiness projection verified                          | **Met** |
+| Honest Product enforcement intact                               | **Met** |
+| Governance: exchange-adapter sole owner; no duplicate authority | **Met** |
+| Security Verification PASS                                      | **Met** |
+| Architecture Verification PASS                                  | **Met** |
+| Documentation consistency verified                              | **Met** |
+| Package Summary completed                                       | **Met** |
+| No new functionality in e                                       | **Met** |
+| No ownership / architecture / Master Plan changes in e          | **Met** |
+| Product Owner declares CLOSED                                   | **Met** |
 
 ---
 
 ## Explicit non-declarations
 
-- W4-E02 CLOSED — **not claimed**
+- W4-E02 is **CLOSED** by Product Owner — foundation scope only.
 - Exchange Connectivity Complete — **not claimed**
 - Bybit Connected — **not claimed**
 - Production Ready — **not claimed**
 - Live Trading — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
-- W4-E03 opened — **not claimed**
+- W4-E03 Planning — **not opened**
 
 ---
 
-**STOP.** Close Evidence assembled. Await Product Owner Package Review. Do not perform Final Package Integration Verification without PO instruction.
+**STOP.** W4-E02 **CLOSED** by Product Owner. Do not declare Exchange Connectivity Complete. Do not declare Bybit Connected. Do not declare Wave 4 COMPLETE.

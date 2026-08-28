@@ -3,7 +3,7 @@
 **Package:** W4-E02 Bybit Real I/O
 **Wave:** 4 — Exchange Connectivity
 **Master Plan / Roadmap:** V3-E02 · CM-08
-**Status:** Planning **APPROVED**. Implementation slices a–e **COMPLETE**. Foundation validation **PASS**. W4-E02 CLOSED — **not claimed**.
+**Status:** Planning **APPROVED**. W4-E02-a–e **COMPLETE**. W4-E02 **CLOSED** by Product Owner (2026-08-28). See [`w4-e02-product-owner-close-record.md`](./w4-e02-product-owner-close-record.md).
 **Date:** 2026-08-28
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w4-e02-product-scope.md`](./w4-e02-product-scope.md)
@@ -146,13 +146,12 @@ Copy and complete [`../version-3-product-checklist.md`](../version-3-product-che
 
 ## Explicit non-claims
 
-- W4-E02 validation PASS — **not claimed** (planning only)
-- W4-E02 CLOSED — **not claimed**
+- W4-E02 validation PASS — **recorded**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
 - Bybit Connected — **not claimed**
-- Planning Review PASS / APPROVED — **not claimed**
+- W4-E03 Planning OPEN — **not claimed**
 
 ---
 
-**STOP.** Planning **OPEN** only. Await Product Owner Planning Review. Do not open W4-E02-a.
+**STOP.** W4-E02 **CLOSED** by Product Owner. Do not declare Exchange Connectivity Complete. Do not declare Bybit Connected. Do not declare Wave 4 COMPLETE. Do not open W4-E03.

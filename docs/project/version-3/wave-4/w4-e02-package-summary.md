@@ -5,14 +5,14 @@
 **Master Plan / Roadmap:** V3-E02 · CM-08  
 **Evidence slice:** W4-E02-e  
 **Date:** 2026-08-28  
-**Status:** Close Evidence assembled — **awaiting Product Owner Package Review**.
+**Status:** **CLOSED** by Product Owner (2026-08-28). See [`w4-e02-product-owner-close-record.md`](./w4-e02-product-owner-close-record.md).
 
 ---
 
 ## Mandatory package summary answers
 
 1. **What did the customer receive?**  
-   Bybit Exchange Connectivity foundation: inventory honesty (a), durable Bybit exchange connectivity persistence on exchange-adapter (b), normal process restart recovery (c), derived Bybit operational continuity with `bybitExchangeConnectivity` fields on Platform Readiness (d). Close Evidence assembled (e). Package **not CLOSED** — foundation scope only.
+   Bybit Exchange Connectivity foundation: inventory honesty (a), durable Bybit exchange connectivity persistence on exchange-adapter (b), normal process restart recovery (c), derived Bybit operational continuity with `bybitExchangeConnectivity` fields on Platform Readiness (d). Close Evidence assembled (e). Package **CLOSED** by Product Owner — foundation scope only.
 
 2. **What did the customer NOT receive?**  
    REST I/O, WebSocket I/O, live Bybit connection, honest Connected labels from vendor round-trip, order placement, market data streaming, Exchange Connectivity Complete, Bybit Connected, Live Trading, Production Ready, Wave 4 COMPLETE, or any second exchange connectivity engine / persistence owner.
@@ -46,17 +46,17 @@
 | W4-E02-c | Bybit Restart Recovery       | APPROVED / COMPLETE |
 | W4-E02-d | Bybit Operational Continuity | APPROVED / COMPLETE |
 | W4-E02-e | Close Evidence               | APPROVED / COMPLETE |
-| W4-E02   | Package                      | **OPEN**            |
+| W4-E02   | Package                      | **CLOSED**          |
 
 ---
 
 ## Capability Evolution
 
-| Stage                     | Capability                                                                                                                                                                                                    |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Package opened            | Bybit adapter stub; no durable Bybit exchange connectivity store; no restart recovery; no Bybit operational continuity projection; Connected not honest without vendor round-trip.                            |
-| Package closed capability | Bybit Exchange Connectivity foundation evidenced: inventory, persistence, restart recovery, and operational continuity — without REST/WebSocket I/O, live connection, Connected fabrication, or Live Trading. |
+| Stage                     | Capability                                                                                                                                                                                                     |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Package opened            | Bybit adapter stub; no durable Bybit exchange connectivity store; no restart recovery; no Bybit operational continuity projection; Connected not honest without vendor round-trip.                             |
+| Package closed capability | Bybit Exchange Connectivity foundation **CLOSED**: inventory, persistence, restart recovery, and operational continuity — without REST/WebSocket I/O, live connection, Connected fabrication, or Live Trading. |
 
 ---
 
-**STOP.** W4-E02 **not CLOSED**. Await Product Owner Package Review. Do not declare Exchange Connectivity Complete. Do not declare Bybit Connected. Do not declare Wave 4 COMPLETE.
+**STOP.** W4-E02 **CLOSED** by Product Owner. Do not declare Exchange Connectivity Complete. Do not declare Bybit Connected. Do not declare Wave 4 COMPLETE.

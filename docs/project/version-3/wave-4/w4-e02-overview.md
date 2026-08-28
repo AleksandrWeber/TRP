@@ -2,7 +2,7 @@
 
 **Document:** W4-E02 Bybit Real I/O Overview
 **Date:** 2026-08-28
-**Status:** Product-facing planning record. W4-E02-a inventory **COMPLETE**. Not Bybit Connected. Not Exchange Connectivity Complete.
+**Status:** Product-facing planning record. W4-E02 **CLOSED** by Product Owner (2026-08-28). Foundation scope only — not REST/WebSocket I/O, not Bybit Connected, not Exchange Connectivity Complete.
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E02 (V3-E02 · CM-08)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -79,7 +79,7 @@ Registry: `w4-e02-d-operational-continuity.ts`
 
 ## W4-E02-e Close Evidence baseline (2026-08-28)
 
-W4-E02-e assembled package Close Evidence verifying slices a–d form one internally consistent Bybit Exchange Connectivity foundation. **No new runtime behaviour.** Package **not CLOSED** — awaiting Product Owner Package Review.
+W4-E02-e assembled package Close Evidence verifying slices a–d form one internally consistent Bybit Exchange Connectivity foundation. **No new runtime behaviour.** Package **CLOSED** by Product Owner (2026-08-28). Close record: [`w4-e02-product-owner-close-record.md`](./w4-e02-product-owner-close-record.md).
 
 Registry: `w4-e02-e-close-evidence.ts`
 
@@ -139,7 +139,7 @@ W4-E01 Binance Real I/O is **CLOSED** (foundation: inventory, durable persistenc
 - W4-E02-c restart recovery — **COMPLETE**
 - W4-E02-d operational continuity — **COMPLETE**
 - W4-E02-e Close Evidence — **COMPLETE**
-- W4-E02 CLOSED — **not claimed**
+- W4-E02 CLOSED — **recorded** (Product Owner, 2026-08-28)
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
 - Bybit Connected — **not claimed**
@@ -149,4 +149,4 @@ W4-E01 Binance Real I/O is **CLOSED** (foundation: inventory, durable persistenc
 
 ---
 
-**STOP.** W4-E02-e Close Evidence **COMPLETE**. Await Product Owner Package Review. Do not declare Bybit Connected or W4-E02 CLOSED.
+**STOP.** W4-E02 **CLOSED** by Product Owner. Do not declare Exchange Connectivity Complete. Do not declare Bybit Connected. Do not declare Wave 4 COMPLETE. Do not open W4-E03.

@@ -258,6 +258,8 @@ Undocumented technical debt introduced by this package: **None observed.**
 
 **Residual risks (~4%):** REST/WebSocket I/O and honest Connected outcomes intentionally deferred to post-foundation scope; `BybitExchangeAdapter` remains stub (honest per inventory).
 
+**Post-Close note (2026-08-28):** Product Owner Final Close executed. W4-E02 **CLOSED** — see [`w4-e02-product-owner-close-record.md`](./w4-e02-product-owner-close-record.md).
+
 ---
 
 ## 11. Final Engineering Verdict
@@ -275,6 +277,24 @@ Undocumented technical debt introduced by this package: **None observed.**
 
 ---
 
-Engineering verification does **not** declare W4-E02 CLOSED, Bybit Connected, Exchange Connectivity Complete, Production Ready, Live Trading, or Wave 4 COMPLETE.
+## Engineering recommendation
 
-**STOP.** Await Product Owner Final Close. Do **not** create `w4-e02-product-owner-close-record.md` without Product Owner instruction.
+**Ready for Product Owner Final Close** — **executed 2026-08-28.**
+
+Engineering verification does **not** declare W4-E02 CLOSED. Product Owner Close is recorded in [`w4-e02-product-owner-close-record.md`](./w4-e02-product-owner-close-record.md).
+
+Engineering does **not** declare Exchange Connectivity Complete, Bybit Connected, Live Trading, Production Ready, or Wave 4 COMPLETE.
+
+---
+
+**STOP.**
+
+W4-E02 **CLOSED** by Product Owner (2026-08-28).
+
+Do **not** declare Exchange Connectivity Complete.
+
+Do **not** declare Bybit Connected.
+
+Do **not** declare Wave 4 COMPLETE.
+
+Do **not** open W4-E03 without separate Product Owner instruction.

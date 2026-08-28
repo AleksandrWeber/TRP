@@ -14,29 +14,29 @@
 
 ## Authority
 
-| Item                         | Status                                       |
-| ---------------------------- | -------------------------------------------- |
-| Version 3                    | In progress                                  |
-| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**                       |
-| Wave 2 Connection Management | **COMPLETE**                                 |
-| Wave 3 Durability & Ops      | **COMPLETE**                                 |
-| W4-E01                       | **CLOSED** by Product Owner                  |
-| W4-E02 Planning Package      | **APPROVED** — Implementation **AUTHORIZED** |
-| W4-E03 … W4-E05              | **Not opened**                               |
-| Live Trading                 | **Not claimed**                              |
-| Master Plan                  | **FROZEN** — unchanged                       |
+| Item                         | Status                      |
+| ---------------------------- | --------------------------- |
+| Version 3                    | In progress                 |
+| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**      |
+| Wave 2 Connection Management | **COMPLETE**                |
+| Wave 3 Durability & Ops      | **COMPLETE**                |
+| W4-E01                       | **CLOSED** by Product Owner |
+| W4-E02                       | **CLOSED** by Product Owner |
+| W4-E03 … W4-E05              | **Not opened**              |
+| Live Trading                 | **Not claimed**             |
+| Master Plan                  | **FROZEN** — unchanged      |
 
 ---
 
 ## Wave 4 packages (Master Plan / Execution Roadmap)
 
-| Package    | Roadmap ID | Name                          | Status                                                                           |
-| ---------- | ---------- | ----------------------------- | -------------------------------------------------------------------------------- |
-| **W4-E01** | **V3-E01** | Binance Real I/O              | **CLOSED** by Product Owner (2026-08-28)                                         |
-| **W4-E02** | **V3-E02** | Bybit Real I/O                | Final Integration Verification **PASS** — awaiting **Product Owner Final Close** |
-| **W4-E03** | **V3-E03** | OKX Real I/O                  | **Not opened**                                                                   |
-| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **Not opened**                                                                   |
-| **W4-E05** | **V3-E05** | Venue Permission Verification | **Not opened**                                                                   |
+| Package    | Roadmap ID | Name                          | Status                                   |
+| ---------- | ---------- | ----------------------------- | ---------------------------------------- |
+| **W4-E01** | **V3-E01** | Binance Real I/O              | **CLOSED** by Product Owner (2026-08-28) |
+| **W4-E02** | **V3-E02** | Bybit Real I/O                | **CLOSED** by Product Owner (2026-08-28) |
+| **W4-E03** | **V3-E03** | OKX Real I/O                  | **Not opened**                           |
+| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **Not opened**                           |
+| **W4-E05** | **V3-E05** | Venue Permission Verification | **Not opened**                           |
 
 Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
@@ -44,17 +44,17 @@ Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
 ## Current package
 
-| Field                     | Value                                                                            |
-| ------------------------- | -------------------------------------------------------------------------------- |
-| **Package**               | **W4-E02** Bybit Real I/O                                                        |
-| **Master Plan / Roadmap** | V3-E02 · CM-08                                                                   |
-| **Stage**                 | Final Integration Verification **PASS** — awaiting **Product Owner Final Close** |
-| **Approval**              | **RECORDED** — Planning **APPROVED**                                             |
-| **Implementation**        | **AUTHORIZED** — W4-E02-a…e **COMPLETE**                                         |
-| **Predecessor**           | W4-E01 **CLOSED** by Product Owner                                               |
-| **Implementation slices** | **W4-E02-a…e COMPLETE** — package **OPEN**                                       |
+| Field                     | Value                                                                   |
+| ------------------------- | ----------------------------------------------------------------------- |
+| **Package**               | **None open** — W4-E03…E05 **not opened**                               |
+| **Last closed package**   | **W4-E02** Bybit Real I/O — **CLOSED** by Product Owner (2026-08-28)    |
+| **Master Plan / Roadmap** | V3-E03 · CM-09 (next in sequence — **not opened**)                      |
+| **Stage**                 | Await explicit Product Owner instruction before W4-E03 Planning Package |
+| **Predecessor**           | W4-E02 **CLOSED** by Product Owner                                      |
 
-Companions:
+Companions (W4-E02 closed):
+
+- [`w4-e02-product-owner-close-record.md`](./w4-e02-product-owner-close-record.md)
 
 - [`w4-e02-implementation-package.md`](./w4-e02-implementation-package.md)
 - [`w4-e02-product-scope.md`](./w4-e02-product-scope.md)
@@ -76,6 +76,18 @@ Companions:
 - [`w4-e02-final-integration-verification.md`](./w4-e02-final-integration-verification.md)
 - [`w4-e01-product-owner-close-record.md`](./w4-e01-product-owner-close-record.md)
 - [`wave-4-planning-summary.md`](./wave-4-planning-summary.md)
+
+---
+
+## W4-E02 status (closed)
+
+| Field                     | Value                                                                            |
+| ------------------------- | -------------------------------------------------------------------------------- |
+| **Package**               | **W4-E02** Bybit Real I/O — **CLOSED**                                           |
+| **Master Plan / Roadmap** | V3-E02 · CM-08                                                                   |
+| **Close date**            | 2026-08-28                                                                       |
+| **Implementation slices** | W4-E02-a…e **COMPLETE**; W4-E02-e Close Evidence                                 |
+| **Close record**          | [`w4-e02-product-owner-close-record.md`](./w4-e02-product-owner-close-record.md) |
 
 ---
 
@@ -127,8 +139,9 @@ W4-E02-e Package Close Evidence — COMPLETE (2026-08-28)
         ↓
 Final Package Integration Verification — PASS (2026-08-28)
         ↓
-STOP — Await Product Owner Final Close
-Do not create Product Owner Close Record without PO instruction
+W4-E02 CLOSED by Product Owner (2026-08-28)
+        ↓
+STOP — Await explicit Product Owner instruction before W4-E03 Planning Package
 Do not open W4-E03…E05 without separate PO sequencing
 (No Live Trading)
 (No Wave 4 COMPLETE)
@@ -156,7 +169,7 @@ Do not open W4-E03…E05 without separate PO sequencing
 | W4-E02-d COMPLETE                          | **Recorded**    |
 | W4-E02-e COMPLETE                          | **Recorded**    |
 | W4-E02 Final Integration Verification PASS | **Recorded**    |
-| W4-E02 CLOSED                              | **Not claimed** |
+| W4-E02 CLOSED                              | **Recorded**    |
 | W4-E03 … E05 opened                        | **Not claimed** |
 | Live Trading                               | **Not claimed** |
 | Production Ready                           | **Not claimed** |
@@ -164,4 +177,4 @@ Do not open W4-E03…E05 without separate PO sequencing
 
 ---
 
-**STOP.** W4-E02 Final Package Integration Verification **PASS**. Await **Product Owner Final Close**. Do not create Product Owner Close Record without PO instruction. Do not declare W4-E02 CLOSED, Wave 4 COMPLETE, or Bybit Connected.
+**STOP.** W4-E02 **CLOSED** by Product Owner. Do not declare Exchange Connectivity Complete. Do not declare Bybit Connected. Do not declare Wave 4 COMPLETE. Do not open W4-E03 without separate Product Owner instruction.
