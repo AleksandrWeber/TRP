@@ -3,7 +3,7 @@
 **Package:** W4-E01 Binance Real I/O
 **Wave:** 4 — Exchange Connectivity
 **Master Plan / Roadmap:** V3-E01 · CM-07
-**Status:** Planning **OPEN**. Awaiting Product Owner Review. Slices not opened.
+**Status:** Planning **APPROVED**. W4-E01-a inventory baseline **COMPLETE**. Real I/O slices b–e not opened.
 **Date:** 2026-08-28
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w4-e01-product-scope.md`](./w4-e01-product-scope.md)
@@ -20,15 +20,15 @@ Tests that mock vendor I/O without proving a real connect/test round-trip (or an
 
 Do not validate Bybit/OKX/Kraken (E02–E04), venue permission verification product (E05), Live Trading, Wave 5 transports, or Wave 4 COMPLETE. Validate **Binance Real I/O** outcomes only.
 
-### Slice progress (planning)
+### Slice progress
 
-| Slice    | Name                                         | Validation record |
-| -------- | -------------------------------------------- | ----------------- |
-| W4-E01-a | Binance adapter inventory & honesty baseline | **Not opened**    |
-| W4-E01-b | Real Binance connect / test / disconnect I/O | **Not opened**    |
-| W4-E01-c | Permission & credential status visibility    | **Not opened**    |
-| W4-E01-d | Operational continuity foundation            | **Not opened**    |
-| W4-E01-e | Package Close evidence                       | **Not opened**    |
+| Slice    | Name                                         | Validation record                                                                 |
+| -------- | -------------------------------------------- | --------------------------------------------------------------------------------- |
+| W4-E01-a | Inventory & Exchange Connectivity Baseline   | [`w4-e01-a-validation-report.md`](./w4-e01-a-validation-report.md) — **COMPLETE** |
+| W4-E01-b | Real Binance connect / test / disconnect I/O | **Not opened**                                                                    |
+| W4-E01-c | Permission & credential status visibility    | **Not opened**                                                                    |
+| W4-E01-d | Operational continuity foundation            | **Not opened**                                                                    |
+| W4-E01-e | Package Close evidence                       | **Not opened**                                                                    |
 
 ---
 

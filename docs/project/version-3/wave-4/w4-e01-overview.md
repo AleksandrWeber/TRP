@@ -2,7 +2,7 @@
 
 **Document:** W4-E01 Binance Real I/O Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. Wave 4 Planning **OPEN**. W4-E01 Planning **OPEN**. Not approved. Not implementation.
+**Status:** Product-facing record. W4-E01 Planning **APPROVED**. W4-E01-a inventory baseline **COMPLETE**. Not Package Close. Not real I/O implementation.
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E01 (V3-E01 · CM-07)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -77,6 +77,16 @@ Sign in
   → Disconnect when done
   → Paper trading remains default
 ```
+
+---
+
+## W4-E01-a inventory baseline (2026-08-28)
+
+W4-E01-a catalogued all exchange connectivity artifacts for Binance Real I/O. **No operator-visible behaviour changed.**
+
+Binding inventory finding: `BinanceExchangeAdapter` remains a **stub** (simulated connect). Connection Management **validate** performs real signed Binance REST via handshake adapter. Public market data REST/WS paths are **adjacent** — not credentialed Connected. Exchange Connectivity **does not** survive restart from this slice.
+
+Inventory: [`w4-e01-a-exchange-connectivity-inventory.md`](./w4-e01-a-exchange-connectivity-inventory.md)
 
 ---
 
