@@ -9,6 +9,7 @@
 **Planning summary (wave):** [`wave-4-planning-summary.md`](./wave-4-planning-summary.md)
 **Planning summary (E03):** [`w4-e03-planning-summary.md`](./w4-e03-planning-summary.md)
 **Planning summary (E04):** [`w4-e04-planning-summary.md`](./w4-e04-planning-summary.md)
+**Planning summary (E05):** [`w4-e05-planning-summary.md`](./w4-e05-planning-summary.md)
 **Prior wave:** Wave 3 **COMPLETE** — [`../wave-3-completion-report.md`](../wave-3-completion-report.md)
 
 ---
@@ -30,7 +31,8 @@
 | W4-E04 Planning Review       | **PASS** (2026-08-28)                          |
 | W4-E04 Planning Approval     | **RECORDED** (2026-08-28)                      |
 | W4-E04 Implementation        | **AUTHORIZED** — W4-E04-a/b/c/d/e **COMPLETE** |
-| W4-E05                       | **Not opened**                                 |
+| W4-E05                       | Planning **OPEN** (2026-08-28)                 |
+| W4-E05 Planning Package      | **OPEN** — awaiting Review and Approval        |
 | Live Trading                 | **Not claimed**                                |
 | Master Plan                  | **FROZEN** — unchanged                         |
 
@@ -44,7 +46,7 @@
 | **W4-E02** | **V3-E02** | Bybit Real I/O                | **CLOSED** by Product Owner (2026-08-28) |
 | **W4-E03** | **V3-E03** | OKX Real I/O                  | **CLOSED** by Product Owner (2026-08-28) |
 | **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **CLOSED** by Product Owner (2026-08-28) |
-| **W4-E05** | **V3-E05** | Venue Permission Verification | **Not opened**                           |
+| **W4-E05** | **V3-E05** | Venue Permission Verification | Planning **OPEN** (2026-08-28)           |
 
 Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
@@ -52,57 +54,25 @@ Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
 ## Current package
 
-| Field                     | Value                                                                            |
-| ------------------------- | -------------------------------------------------------------------------------- |
-| **Package**               | **W4-E04** Kraken Adapter (factory)                                              |
-| **Master Plan / Roadmap** | V3-E04 · CM-10                                                                   |
-| **Stage**                 | W4-E04 **CLOSED** by Product Owner (2026-08-28)                                  |
-| **Approval**              | **RECORDED** — [`w4-e04-planning-approval.md`](./w4-e04-planning-approval.md)    |
-| **Implementation**        | **AUTHORIZED** — W4-E04-a/b/c/d/e **COMPLETE**                                   |
-| **Predecessor**           | W4-E03 **CLOSED** by Product Owner                                               |
-| **Implementation slices** | W4-E04-a/b/c/d/e **COMPLETE**; Final Integration Verification **PASS**           |
-| **Close record**          | [`w4-e04-product-owner-close-record.md`](./w4-e04-product-owner-close-record.md) |
+| Field                     | Value                                                        |
+| ------------------------- | ------------------------------------------------------------ |
+| **Package**               | **W4-E05** Venue Permission Verification                     |
+| **Master Plan / Roadmap** | V3-E05 · feeds LT-02 later                                   |
+| **Stage**                 | W4-E05 Planning **OPEN** (2026-08-28)                        |
+| **Approval**              | **Not granted** — awaiting Planning Review and Approval      |
+| **Implementation**        | **Not authorized** — slices not opened                       |
+| **Predecessor**           | W4-E04 **CLOSED** by Product Owner (2026-08-28)              |
+| **Implementation slices** | W4-E05-a/b/c/d/e **not opened**                              |
+| **Planning summary**      | [`w4-e05-planning-summary.md`](./w4-e05-planning-summary.md) |
 
 Companions:
 
-- [`w4-e04-implementation-package.md`](./w4-e04-implementation-package.md)
-- [`w4-e04-product-scope.md`](./w4-e04-product-scope.md)
-- [`w4-e04-security-review.md`](./w4-e04-security-review.md)
-- [`w4-e04-validation-plan.md`](./w4-e04-validation-plan.md)
-- [`w4-e04-overview.md`](./w4-e04-overview.md)
-- [`w4-e04-planning-summary.md`](./w4-e04-planning-summary.md)
-- [`w4-e04-planning-review.md`](./w4-e04-planning-review.md)
-- [`w4-e04-planning-approval.md`](./w4-e04-planning-approval.md)
-- [`w4-e04-a-exchange-connectivity-inventory.md`](./w4-e04-a-exchange-connectivity-inventory.md)
-- [`w4-e04-a-implementation-report.md`](./w4-e04-a-implementation-report.md)
-- [`w4-e04-a-architecture-review.md`](./w4-e04-a-architecture-review.md)
-- [`w4-e04-a-security-review.md`](./w4-e04-a-security-review.md)
-- [`w4-e04-a-product-review.md`](./w4-e04-a-product-review.md)
-- [`w4-e04-a-validation-report.md`](./w4-e04-a-validation-report.md)
-- [`w4-e04-b-implementation-report.md`](./w4-e04-b-implementation-report.md)
-- [`w4-e04-b-architecture-review.md`](./w4-e04-b-architecture-review.md)
-- [`w4-e04-b-security-review.md`](./w4-e04-b-security-review.md)
-- [`w4-e04-b-product-review.md`](./w4-e04-b-product-review.md)
-- [`w4-e04-b-validation-report.md`](./w4-e04-b-validation-report.md)
-- [`w4-e04-c-implementation-report.md`](./w4-e04-c-implementation-report.md)
-- [`w4-e04-c-architecture-review.md`](./w4-e04-c-architecture-review.md)
-- [`w4-e04-c-security-review.md`](./w4-e04-c-security-review.md)
-- [`w4-e04-c-product-review.md`](./w4-e04-c-product-review.md)
-- [`w4-e04-c-validation-report.md`](./w4-e04-c-validation-report.md)
-- [`w4-e04-d-implementation-report.md`](./w4-e04-d-implementation-report.md)
-- [`w4-e04-d-architecture-review.md`](./w4-e04-d-architecture-review.md)
-- [`w4-e04-d-security-review.md`](./w4-e04-d-security-review.md)
-- [`w4-e04-d-product-review.md`](./w4-e04-d-product-review.md)
-- [`w4-e04-d-validation-report.md`](./w4-e04-d-validation-report.md)
-- [`w4-e04-e-implementation-report.md`](./w4-e04-e-implementation-report.md)
-- [`w4-e04-e-architecture-review.md`](./w4-e04-e-architecture-review.md)
-- [`w4-e04-e-security-review.md`](./w4-e04-e-security-review.md)
-- [`w4-e04-e-product-review.md`](./w4-e04-e-product-review.md)
-- [`w4-e04-e-validation-report.md`](./w4-e04-e-validation-report.md)
-- [`w4-e04-close-package-report.md`](./w4-e04-close-package-report.md)
-- [`w4-e04-package-summary.md`](./w4-e04-package-summary.md)
-- [`w4-e04-operational-walkthrough.md`](./w4-e04-operational-walkthrough.md)
-- [`w4-e04-final-integration-verification.md`](./w4-e04-final-integration-verification.md)
+- [`w4-e05-implementation-package.md`](./w4-e05-implementation-package.md)
+- [`w4-e05-product-scope.md`](./w4-e05-product-scope.md)
+- [`w4-e05-security-review.md`](./w4-e05-security-review.md)
+- [`w4-e05-validation-plan.md`](./w4-e05-validation-plan.md)
+- [`w4-e05-overview.md`](./w4-e05-overview.md)
+- [`w4-e05-planning-summary.md`](./w4-e05-planning-summary.md)
 - [`w4-e04-product-owner-close-record.md`](./w4-e04-product-owner-close-record.md)
 - [`w4-e03-implementation-package.md`](./w4-e03-implementation-package.md)
 - [`w4-e03-product-scope.md`](./w4-e03-product-scope.md)
@@ -315,11 +285,13 @@ W4-E04 Final Package Integration Verification — PASS (2026-08-28)
         ↓
 W4-E04 CLOSED by Product Owner (2026-08-28)
         ↓
-STOP — W4-E05 not opened without separate PO sequencing
+W4-E05 Planning Package OPEN (2026-08-28)
+        ↓
+STOP — W4-E05 Planning Review not performed
+(No W4-E05-a)
 (No Live Trading)
 (No Wave 4 COMPLETE)
 (No Exchange Connectivity Complete)
-(No Bybit Connected)
 (No engine clone per venue)
 ```
 
@@ -366,11 +338,15 @@ STOP — W4-E05 not opened without separate PO sequencing
 | W4-E04-e COMPLETE                           | **Recorded** (committed `bf1f94d`)         |
 | W4-E04 Final Integration Verification PASS  | **Recorded** (committed `2b0d4a0`)         |
 | W4-E04 CLOSED                               | **Recorded** (2026-08-28)                  |
-| W4-E05 opened                               | **Not claimed**                            |
+| W4-E05 Planning OPEN                        | **Recorded** (2026-08-28)                  |
+| W4-E05 Planning Review PASS                 | **Not claimed**                            |
+| W4-E05 Planning APPROVED                    | **Not claimed**                            |
+| W4-E05 Implementation                       | **Not authorized**                         |
+| W4-E05-a opened                             | **Not claimed**                            |
 | Live Trading                                | **Not claimed**                            |
 | Production Ready                            | **Not claimed**                            |
 | Master Plan changed                         | **Not claimed**                            |
 
 ---
 
-**STOP.** W4-E04 **CLOSED** by Product Owner (2026-08-28). Do not declare Kraken Connected, Exchange Connectivity Complete, or Wave 4 COMPLETE. Do not open W4-E05 without separate Product Owner sequencing.
+**STOP.** W4-E05 Planning is **OPEN** (2026-08-28). Do not declare Venue Permission Verification Complete, Exchange Connectivity Complete, or Wave 4 COMPLETE. Do not perform Planning Review. Do not perform Planning Approval. Do not open W4-E05-a without separate Product Owner instruction.
