@@ -2,7 +2,7 @@
 
 **Document:** W4-E03 OKX Real I/O Overview
 **Date:** 2026-08-28
-**Status:** Product-facing planning record. Planning **OPEN**. Not OKX Connected. Not Exchange Connectivity Complete.
+**Status:** Product-facing planning record. W4-E03-a inventory **COMPLETE** (local). Not OKX Connected. Not Exchange Connectivity Complete.
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E03 (V3-E03 · CM-09)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -39,7 +39,7 @@ W4-E01 and W4-E02 foundations are consumed — not redesigned.
 5. See **Error**, **Expired**, or permission problems when the vendor reports them.
 6. **Disconnect** without SSH or editing `.env`.
 
-**Not available today** — planning only. `OkxExchangeAdapter` remains a stub; validate returns planned `not_implemented`.
+**Not available today** — `OkxExchangeAdapter` remains a stub; validate returns planned `not_implemented`. W4-E03-a inventory baseline recorded locally; honest Connected unavailable until W4-E03-b+.
 
 ---
 
@@ -92,9 +92,10 @@ W4-E01 Binance Real I/O and W4-E02 Bybit Real I/O are **CLOSED** (foundation: in
 ## Explicit non-claims
 
 - W4-E03 Planning OPEN — **recorded**
-- W4-E03 Planning Review PASS — **not claimed**
-- W4-E03 Planning APPROVED — **not claimed**
-- W4-E03-a opened — **not claimed**
+- W4-E03 Planning Review PASS — **recorded**
+- W4-E03 Planning APPROVED — **recorded**
+- W4-E03-a COMPLETE — **recorded** (local, uncommitted)
+- W4-E03-b opened — **not claimed**
 - W4-E03 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -105,4 +106,4 @@ W4-E01 Binance Real I/O and W4-E02 Bybit Real I/O are **CLOSED** (foundation: in
 
 ---
 
-**STOP.** W4-E03 Planning **OPEN** only. Await Product Owner Planning Review. Do not declare OKX Connected or W4-E03 CLOSED. Do not create W4-E03-a.
+**STOP.** W4-E03-a inventory **COMPLETE** (local). Await Product Owner review before W4-E03-b. Do not declare OKX Connected or W4-E03 CLOSED.

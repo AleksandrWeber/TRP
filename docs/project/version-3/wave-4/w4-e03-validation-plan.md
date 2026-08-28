@@ -3,7 +3,7 @@
 **Package:** W4-E03 OKX Real I/O
 **Wave:** 4 — Exchange Connectivity
 **Master Plan / Roadmap:** V3-E03 · CM-09
-**Status:** Planning **OPEN**. Awaiting Product Owner Review and Approval. Not implementation. Slices not opened.
+**Status:** W4-E03-a inventory **COMPLETE** (local). Awaiting Product Owner review. Not OKX Connected. Slices b…e not opened.
 **Date:** 2026-08-28
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w4-e03-product-scope.md`](./w4-e03-product-scope.md)
@@ -21,13 +21,13 @@ Do not validate Kraken (E04), venue permission verification product (E05), Live 
 
 ### Slice progress (planning)
 
-| Slice    | Name                                           | Validation record |
-| -------- | ---------------------------------------------- | ----------------- |
-| W4-E03-a | OKX Inventory & Exchange Connectivity Baseline | **Not opened**    |
-| W4-E03-b | Durable OKX Exchange Connectivity Foundation   | **Not opened**    |
-| W4-E03-c | OKX Restart Recovery Foundation                | **Not opened**    |
-| W4-E03-d | OKX Operational Continuity Foundation          | **Not opened**    |
-| W4-E03-e | Package Close evidence                         | **Not opened**    |
+| Slice    | Name                                           | Validation record                                                  |
+| -------- | ---------------------------------------------- | ------------------------------------------------------------------ |
+| W4-E03-a | OKX Inventory & Exchange Connectivity Baseline | [`w4-e03-a-validation-report.md`](./w4-e03-a-validation-report.md) |
+| W4-E03-b | Durable OKX Exchange Connectivity Foundation   | **Not opened**                                                     |
+| W4-E03-c | OKX Restart Recovery Foundation                | **Not opened**                                                     |
+| W4-E03-d | OKX Operational Continuity Foundation          | **Not opened**                                                     |
+| W4-E03-e | Package Close evidence                         | **Not opened**                                                     |
 
 ---
 
