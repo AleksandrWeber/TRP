@@ -137,8 +137,8 @@ Do not validate venue permission verification product (E05), Live Trading, Wave 
 | W4-E04-a | Kraken Inventory & Exchange Connectivity Baseline | [`w4-e04-a-validation-report.md`](./w4-e04-a-validation-report.md) — **PASS** (2026-08-28)        |
 | W4-E04-b | Durable Kraken Exchange Connectivity Foundation   | [`w4-e04-b-validation-report.md`](./w4-e04-b-validation-report.md) — **PASS** (2026-08-28, local) |
 | W4-E04-c | Kraken Restart Recovery Foundation                | [`w4-e04-c-validation-report.md`](./w4-e04-c-validation-report.md) — **PASS** (2026-08-28)        |
-| W4-E04-d | Kraken Operational Continuity Foundation          | [`w4-e04-d-validation-report.md`](./w4-e04-d-validation-report.md) — **PASS** (2026-08-28, local) |
-| W4-E04-e | Package Close evidence                            | **Not created**                                                                                   |
+| W4-E04-d | Kraken Operational Continuity Foundation          | [`w4-e04-d-validation-report.md`](./w4-e04-d-validation-report.md) — **PASS** (2026-08-28)        |
+| W4-E04-e | Package Close evidence                            | [`w4-e04-e-validation-report.md`](./w4-e04-e-validation-report.md) — **PASS** (2026-08-28, local) |
 
 **Slices not opened.** Validation records created only after slice authorization.
 
@@ -165,11 +165,12 @@ Do not validate venue permission verification product (E05), Live Trading, Wave 
 - W4-E04-a inventory PASS — **recorded**
 - W4-E04-b durable persistence PASS — **recorded** (local; uncommitted)
 - W4-E04-c restart recovery PASS — **recorded**
-- W4-E04-d operational continuity PASS — **recorded** (local)
+- W4-E04-d operational continuity PASS — **recorded**
+- W4-E04-e close evidence PASS — **recorded** (local)
 - Wave 4 COMPLETE — **not claimed**
 - Kraken Connected — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
 
 ---
 
-**STOP.** W4-E04-d operational continuity validation **PASS** (local). Await Product Owner review before W4-E04-e. Do not declare Kraken Connected or Exchange Connectivity Complete.
+**STOP.** W4-E04-e close evidence validation **PASS** (local). Await Product Owner Package Review. Do not declare W4-E04 CLOSED, Kraken Connected, or Exchange Connectivity Complete.
