@@ -2,7 +2,7 @@
 
 **Document:** W4-E06 Wave 4 Completion Review Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W4-E06 Planning **OPEN**. Awaiting Planning Review. Not Wave 4 COMPLETE. Not Exchange Connectivity Complete.
+**Status:** Product-facing record. W4-E06-a **COMPLETE** — awaiting Product Owner review. Not Wave 4 COMPLETE. Not Exchange Connectivity Complete.
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E06 (governance roll-up after V3-E01…E05)
 **Nature:** Customer / operator / Product Owner description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -102,12 +102,18 @@ Wave 5 (Notifications) and Wave 6 (Live Trading) remain blocked by wave sequenci
 
 ---
 
+## W4-E06-a outcome (inventory foundation)
+
+W4-E06-a delivered the canonical Wave 4 roll-up inventory and Honest Product baseline. Operators gain **no new exchange I/O** from this slice. Engineering indexed W4-E01…E05 Close Evidence and verified governance completeness without reopening closed packages.
+
+Inventory: [`w4-e06-a-wave4-rollup-inventory.md`](./w4-e06-a-wave4-rollup-inventory.md)
+
+---
+
 ## Explicit non-claims
 
-- W4-E06 Planning APPROVED — **not claimed**
-- W4-E06 Planning Review PASS — **not claimed**
-- W4-E06-a opened — **not claimed**
 - W4-E06 CLOSED — **not claimed**
+- W4-E06-b opened — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
 - Live Trading — **not claimed**
@@ -115,4 +121,4 @@ Wave 5 (Notifications) and Wave 6 (Live Trading) remain blocked by wave sequenci
 
 ---
 
-**STOP.** W4-E06 Planning is **OPEN**. Await Product Owner Planning Review. Do not declare Wave 4 COMPLETE. Do not open W4-E06-a without Planning Approval.
+**STOP.** W4-E06-a **COMPLETE** — awaiting Product Owner review. Do not declare Wave 4 COMPLETE. Do not open W4-E06-b without separate Product Owner authorization.

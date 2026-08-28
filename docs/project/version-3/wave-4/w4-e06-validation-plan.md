@@ -3,7 +3,7 @@
 **Package:** W4-E06 Wave 4 Completion Review
 **Wave:** 4 — Exchange Connectivity
 **Governance map:** Roll-up after Master Plan **V3-E01…E05**
-**Status:** Planning **OPEN**. Awaiting Product Owner Review and Approval. Not implementation. Slices not opened.
+**Status:** W4-E06-a **COMPLETE** — awaiting Product Owner review. W4-E06-b…e not opened.
 **Date:** 2026-08-28
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w4-e06-product-scope.md`](./w4-e06-product-scope.md)
@@ -138,13 +138,13 @@ Do not validate Live Trading, Wave 5 transports, or Wave 4 COMPLETE from W4-E06 
 
 ## 9. Slice validation records (future)
 
-| Slice    | Name                                                | Validation record |
-| -------- | --------------------------------------------------- | ----------------- |
-| W4-E06-a | Wave 4 Package Roll-Up Inventory & Honesty Baseline | _Not opened_      |
-| W4-E06-b | Wave Exit Criteria Evidence Foundation              | _Not opened_      |
-| W4-E06-c | Cross-Package Integration Verification Foundation   | _Not opened_      |
-| W4-E06-d | Wave Operational Continuity & Honest Product Review | _Not opened_      |
-| W4-E06-e | Wave Completion Evidence Assembly                   | _Not opened_      |
+| Slice    | Name                                                | Validation record                                                             |
+| -------- | --------------------------------------------------- | ----------------------------------------------------------------------------- |
+| W4-E06-a | Wave 4 Package Roll-Up Inventory & Honesty Baseline | [`w4-e06-a-validation-report.md`](./w4-e06-a-validation-report.md) — **PASS** |
+| W4-E06-b | Wave Exit Criteria Evidence Foundation              | _Not opened_                                                                  |
+| W4-E06-c | Cross-Package Integration Verification Foundation   | _Not opened_                                                                  |
+| W4-E06-d | Wave Operational Continuity & Honest Product Review | _Not opened_                                                                  |
+| W4-E06-e | Wave Completion Evidence Assembly                   | _Not opened_                                                                  |
 
 ---
 
@@ -163,15 +163,13 @@ Do not validate Live Trading, Wave 5 transports, or Wave 4 COMPLETE from W4-E06 
 
 ## Explicit non-claims
 
-- W4-E06 validation PASS — **not claimed**
+- W4-E06 package validation PASS — **not claimed**
 - W4-E06 CLOSED — **not claimed**
-- W4-E06 Planning APPROVED — **not claimed**
-- W4-E06 Planning Review PASS — **not claimed**
+- W4-E06-b opened — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
 - Live Trading — **not claimed**
-- Implementation started — **not claimed**
 
 ---
 
-**STOP.** W4-E06 Planning is **OPEN**. Await Product Owner Planning Review. Do not declare Wave 4 COMPLETE. Do not open W4-E06-a without Planning Approval.
+**STOP.** W4-E06-a validation **PASS**. Await Product Owner review before W4-E06-b. Do not declare Wave 4 COMPLETE.
