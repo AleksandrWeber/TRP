@@ -243,7 +243,9 @@ Consolidated readiness assessment:
 | Technical debt introduced         | **0**    |
 | **Engineering confidence score**  | **95%**  |
 
-**Residual risks (~5%):** Per-package deferred REST/WebSocket I/O, live Connected labels, and vendor permission probe I/O remain intentionally deferred — honest per Close records and W4-E06 exit criteria map. Wave 4 COMPLETE remains a separate Product Owner governance act.
+**Residual risks (~5%):** Per-package deferred REST/WebSocket I/O, live Connected labels, and vendor permission probe I/O remain intentionally deferred — honest per Close records and W4-E06 exit criteria map.
+
+**Post-Close note (2026-08-28):** Product Owner Final Wave Close executed. Wave 4 **CLOSED** — see [`wave-4-product-owner-close-record.md`](./wave-4-product-owner-close-record.md).
 
 | Question                                            | Answer  |
 | --------------------------------------------------- | ------- |
@@ -267,9 +269,9 @@ Consolidated readiness assessment:
 
 ## Engineering recommendation
 
-Engineering verification recommends **Product Owner Final Wave Close** as the next governance act.
+Engineering verification recommends **Product Owner Final Wave Close** — **executed 2026-08-28**.
 
-Engineering verification does **not** declare Wave 4 COMPLETE.
+Engineering verification does **not** declare Wave 4 COMPLETE. Product Owner Close is recorded in [`wave-4-product-owner-close-record.md`](./wave-4-product-owner-close-record.md).
 
 Engineering does **not** declare W4-E06 CLOSED.
 
@@ -289,9 +291,7 @@ Engineering does **not** open the next Wave without separate Product Owner instr
 
 Final Wave Integration Verification **PASS** (2026-08-28).
 
-Await explicit Product Owner instruction before Wave 4 Product Owner Final Close.
-
-Do **not** declare Wave 4 COMPLETE.
+Wave 4 **CLOSED** by Product Owner (2026-08-28).
 
 Do **not** declare Exchange Connectivity Complete.
 

@@ -2,7 +2,7 @@
 
 **Document:** W4-E06 Wave 4 Completion Review Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W4-E06-e **COMPLETE** — awaiting Product Owner review. Not Wave 4 COMPLETE. Not Exchange Connectivity Complete.
+**Status:** Product-facing record. Wave 4 **CLOSED** by Product Owner (2026-08-28). W4-E06 governance **COMPLETE**. Not Exchange Connectivity Complete.
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E06 (governance roll-up after V3-E01…E05)
 **Nature:** Customer / operator / Product Owner description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -137,4 +137,4 @@ Evidence package: [`w4-e06-wave-completion-evidence.md`](./w4-e06-wave-completio
 
 ---
 
-**STOP.** W4-E06-e **COMPLETE** — awaiting Product Owner review. Do not declare Wave 4 COMPLETE. Do not perform Final Wave Integration Verification without separate Product Owner authorization.
+**STOP.** Wave 4 **CLOSED** (2026-08-28). Do not declare Exchange Connectivity Complete. Do not open the next Wave without separate Product Owner authorization.

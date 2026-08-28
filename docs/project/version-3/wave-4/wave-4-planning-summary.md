@@ -4,7 +4,7 @@
 **Date:** 2026-08-28
 **Wave:** 4 — Exchange Connectivity
 **First package:** W4-E01 Binance Real I/O (Master Plan / Roadmap **V3-E01**)
-**Status:** Planning **OPEN**. Awaiting Product Owner Review and Approval. Not approved. Not implementation. Slices not opened.
+**Status:** Planning **CLOSED**. Wave 4 **CLOSED** by Product Owner (2026-08-28). See [`wave-4-product-owner-close-record.md`](./wave-4-product-owner-close-record.md).
 **Nature:** Planning open record. Not an RC. Not an ADR. Not a Master Plan revision.
 **Readiness:** [`implementation-readiness-checklist.md`](./implementation-readiness-checklist.md)
 
@@ -213,4 +213,4 @@ Live Trading must not be claimed.
 
 ---
 
-**STOP.** Wait for Product Owner Planning Review. Do not create W4-E01-a. Do not begin implementation.
+**STOP.** Wave 4 **CLOSED** (2026-08-28). Do not open the next Wave Planning Package without separate Product Owner authorization.

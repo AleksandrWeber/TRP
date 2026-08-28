@@ -4,7 +4,12 @@
 **Audience:** Product Owner
 **Date:** 2026-08-28
 **Wave:** 4 — Exchange Connectivity
+**Status:** **CLOSED** by Product Owner (2026-08-28). See [`wave-4-product-owner-close-record.md`](./wave-4-product-owner-close-record.md).
 **Nature:** Simple Product Owner status. Not an RC. Not an ADR. Not a Master Plan revision.
+
+**Overview:** [`wave-4-overview.md`](./wave-4-overview.md)
+**Validation:** [`wave-4-validation-plan.md`](./wave-4-validation-plan.md)
+**Close record:** [`wave-4-product-owner-close-record.md`](./wave-4-product-owner-close-record.md)
 
 **Planning summary (wave):** [`wave-4-planning-summary.md`](./wave-4-planning-summary.md)
 **Planning summary (E03):** [`w4-e03-planning-summary.md`](./w4-e03-planning-summary.md)
@@ -41,6 +46,7 @@
 | W4-E06 Planning Review       | **PASS** (2026-08-28)                          |
 | W4-E06 Planning Approval     | **RECORDED** (2026-08-28)                      |
 | W4-E06 Implementation        | **AUTHORIZED** — W4-E06-a/b/c/d/e **COMPLETE** |
+| Wave 4                       | **CLOSED** by Product Owner (2026-08-28)       |
 | Live Trading                 | **Not claimed**                                |
 | Master Plan                  | **FROZEN** — unchanged                         |
 
@@ -48,32 +54,31 @@
 
 ## Wave 4 packages (Master Plan / Execution Roadmap)
 
-| Package    | Roadmap ID | Name                          | Status                                                                |
-| ---------- | ---------- | ----------------------------- | --------------------------------------------------------------------- |
-| **W4-E01** | **V3-E01** | Binance Real I/O              | **CLOSED** by Product Owner (2026-08-28)                              |
-| **W4-E02** | **V3-E02** | Bybit Real I/O                | **CLOSED** by Product Owner (2026-08-28)                              |
-| **W4-E03** | **V3-E03** | OKX Real I/O                  | **CLOSED** by Product Owner (2026-08-28)                              |
-| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **CLOSED** by Product Owner (2026-08-28)                              |
-| **W4-E05** | **V3-E05** | Venue Permission Verification | **CLOSED** by Product Owner (2026-08-28)                              |
-| **W4-E06** | —          | Wave 4 Completion Review      | W4-E06-a…e **COMPLETE** — FIV **PASS** — Awaiting PO Final Wave Close |
+| Package    | Roadmap ID | Name                          | Status                                        |
+| ---------- | ---------- | ----------------------------- | --------------------------------------------- |
+| **W4-E01** | **V3-E01** | Binance Real I/O              | **CLOSED** by Product Owner (2026-08-28)      |
+| **W4-E02** | **V3-E02** | Bybit Real I/O                | **CLOSED** by Product Owner (2026-08-28)      |
+| **W4-E03** | **V3-E03** | OKX Real I/O                  | **CLOSED** by Product Owner (2026-08-28)      |
+| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **CLOSED** by Product Owner (2026-08-28)      |
+| **W4-E05** | **V3-E05** | Venue Permission Verification | **CLOSED** by Product Owner (2026-08-28)      |
+| **W4-E06** | —          | Wave 4 Completion Review      | **COMPLETE** — Wave 4 **CLOSED** (2026-08-28) |
 
 Order is binding: **E01 → E02 → E03 → E04 → E05 → E06 (governance)**.
 
 ---
 
-## Current package
+## Wave status
 
-| Field                     | Value                                                                                               |
-| ------------------------- | --------------------------------------------------------------------------------------------------- |
-| **Package**               | **W4-E06** Wave 4 Completion Review                                                                 |
-| **Master Plan / Roadmap** | Governance roll-up after **V3-E01…E05** (no new roadmap ID)                                         |
-| **Stage**                 | Final Wave Integration Verification **PASS** — Awaiting Product Owner Final Wave Close (2026-08-28) |
-| **Approval**              | **RECORDED** — [`w4-e06-planning-approval.md`](./w4-e06-planning-approval.md)                       |
-| **Planning review**       | [`w4-e06-planning-review.md`](./w4-e06-planning-review.md)                                          |
-| **Implementation**        | **AUTHORIZED** — W4-E06-a/b/c/d/e **COMPLETE**                                                      |
-| **Predecessor**           | W4-E05 **CLOSED** by Product Owner (2026-08-28)                                                     |
-| **Implementation slices** | W4-E06-a/b/c/d/e **COMPLETE**                                                                       |
-| **Planning summary**      | [`w4-e06-planning-summary.md`](./w4-e06-planning-summary.md)                                        |
+| Field                              | Value                                                                                               |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Wave**                           | **4 — Exchange Connectivity**                                                                       |
+| **Status**                         | **CLOSED** by Product Owner (2026-08-28)                                                            |
+| **Final Integration Verification** | **PASS** — [`wave-4-final-integration-verification.md`](./wave-4-final-integration-verification.md) |
+| **Close record**                   | [`wave-4-product-owner-close-record.md`](./wave-4-product-owner-close-record.md)                    |
+| **Overview**                       | [`wave-4-overview.md`](./wave-4-overview.md)                                                        |
+| **Validation plan**                | [`wave-4-validation-plan.md`](./wave-4-validation-plan.md)                                          |
+| **Packages closed**                | W4-E01, W4-E02, W4-E03, W4-E04, W4-E05                                                              |
+| **Governance complete**            | W4-E06-a/b/c/d/e **COMPLETE**                                                                       |
 
 Companions:
 
@@ -116,6 +121,9 @@ Companions:
 - [`w4-e06-e-product-review.md`](./w4-e06-e-product-review.md)
 - [`w4-e06-e-validation-report.md`](./w4-e06-e-validation-report.md)
 - [`wave-4-final-integration-verification.md`](./wave-4-final-integration-verification.md)
+- [`wave-4-product-owner-close-record.md`](./wave-4-product-owner-close-record.md)
+- [`wave-4-overview.md`](./wave-4-overview.md)
+- [`wave-4-validation-plan.md`](./wave-4-validation-plan.md)
 - [`w4-e05-product-owner-close-record.md`](./w4-e05-product-owner-close-record.md)
 - [`w4-e05-implementation-package.md`](./w4-e05-implementation-package.md)
 - [`w4-e05-product-scope.md`](./w4-e05-product-scope.md)
@@ -406,8 +414,12 @@ W4-E06-e Wave Completion Evidence Assembly — COMPLETE (2026-08-28)
         ↓
 Final Wave Integration Verification — PASS (2026-08-28)
         ↓
-STOP — Awaiting Product Owner Final Wave Close
-(No Wave 4 COMPLETE)
+Wave 4 CLOSED by Product Owner (2026-08-28)
+        ↓
+STOP — Wave 4 is CLOSED
+(No Exchange Connectivity Complete)
+(No Live Trading)
+(No next Wave opened)
 ```
 
 ---
@@ -416,7 +428,8 @@ STOP — Awaiting Product Owner Final Wave Close
 
 | Claim                                       | Status                                         |
 | ------------------------------------------- | ---------------------------------------------- |
-| Wave 4 COMPLETE                             | **Not claimed**                                |
+| Wave 4 COMPLETE                             | **CLOSED** (2026-08-28)                        |
+| Wave 4 Product Owner Close Record           | **Recorded** (2026-08-28)                      |
 | Exchange Connectivity Complete              | **Not claimed**                                |
 | Binance Connected                           | **Not claimed**                                |
 | Bybit Connected                             | **Not claimed**                                |
@@ -475,10 +488,11 @@ STOP — Awaiting Product Owner Final Wave Close
 | W4-E06-d COMPLETE                           | **Recorded** (2026-08-28)                      |
 | W4-E06-e COMPLETE                           | **Recorded** (2026-08-28)                      |
 | Final Wave Integration Verification PASS    | **Recorded** (2026-08-28)                      |
+| Wave 4 CLOSED                               | **Recorded** (2026-08-28)                      |
 | Live Trading                                | **Not claimed**                                |
 | Production Ready                            | **Not claimed**                                |
 | Master Plan changed                         | **Not claimed**                                |
 
 ---
 
-**STOP.** Final Wave Integration Verification **PASS** (2026-08-28). Await Product Owner Final Wave Close. Do not create `wave-4-product-owner-close-record.md` without separate authorization. Do not declare Wave 4 COMPLETE, Exchange Connectivity Complete, Live Trading, or Production Ready. Do not open the next Wave.
+**STOP.** Wave 4 **CLOSED** by Product Owner (2026-08-28). Do not declare Exchange Connectivity Complete, Live Trading, or Production Ready. Do not open the next Wave Planning Package without separate authorization. Do not begin implementation of the next Wave.

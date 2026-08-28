@@ -3,7 +3,7 @@
 **Package:** W4-E06 Wave 4 Completion Review
 **Wave:** 4 — Exchange Connectivity
 **Governance map:** Roll-up after Master Plan **V3-E01…E05**
-**Status:** W4-E06-e **COMPLETE** — awaiting Product Owner review.
+**Status:** W4-E06-a…e **COMPLETE**. Wave 4 **CLOSED** by Product Owner (2026-08-28).
 **Date:** 2026-08-28
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w4-e06-product-scope.md`](./w4-e06-product-scope.md)
@@ -172,4 +172,4 @@ Do not validate Live Trading, Wave 5 transports, or Wave 4 COMPLETE from W4-E06 
 
 ---
 
-**STOP.** W4-E06-e validation **PASS**. Await Product Owner review before Final Wave Integration Verification. Do not declare Wave 4 COMPLETE.
+**STOP.** Wave 4 validation **PASS** at Close (2026-08-28). Do not declare Exchange Connectivity Complete or Live Trading.

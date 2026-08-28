@@ -5,7 +5,7 @@
 **Master Plan / Roadmap:** V3-E03 · CM-09  
 **Evidence slice:** W4-E03-e  
 **Date:** 2026-08-28  
-**Status:** **CLOSED** by Product Owner (2026-08-28). See [`w4-e03-product-owner-close-record.md`](./w4-e03-product-owner-close-record.md).
+**Status:** **CLOSED** by Product Owner (2026-08-28). See [`w4-e03-product-owner-close-record.md`](./w4-e03-product-owner-close-record.md). Wave 4 **CLOSED** — see [`wave-4-product-owner-close-record.md`](./wave-4-product-owner-close-record.md).
 
 ---
 
