@@ -88,6 +88,17 @@ const ready: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: [],
   },
+  krakenExchangeConnectivity: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:00:00.000Z',
+    recoveryDurationMs: 42,
+    restoredCount: 0,
+    connectionAnchorCount: 0,
+    adapterAnchorCount: 0,
+    integrityVerified: true,
+    workspaceIds: [],
+  },
 };
 
 const degraded: OperationalContinuityReadinessView = {
@@ -182,6 +193,17 @@ const degraded: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: ['ws-1'],
   },
+  krakenExchangeConnectivity: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:01:00.000Z',
+    recoveryDurationMs: 100,
+    restoredCount: 1,
+    connectionAnchorCount: 1,
+    adapterAnchorCount: 0,
+    integrityVerified: true,
+    workspaceIds: ['ws-1'],
+  },
 };
 
 describe('OperationalContinuityView', () => {
@@ -257,5 +279,14 @@ describe('OperationalContinuityView', () => {
     expect(html).toContain('Connection anchors');
     expect(html).not.toContain('Connected');
     expect(html).not.toContain('OKX Connected');
+  });
+
+  it('shows Kraken exchange connectivity operational state within platform readiness only', () => {
+    const html = renderToStaticMarkup(<OperationalContinuityView readiness={ready} />);
+    expect(html).toContain('Kraken exchange connectivity');
+    expect(html).toContain('Kraken exchange connectivity operational state');
+    expect(html).toContain('Connection anchors');
+    expect(html).not.toContain('Connected');
+    expect(html).not.toContain('Kraken Connected');
   });
 });

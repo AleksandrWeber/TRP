@@ -125,13 +125,22 @@ Report: [`w4-e04-c-implementation-report.md`](./w4-e04-c-implementation-report.m
 
 ---
 
+## W4-E04-d status (operational continuity foundation)
+
+W4-E04-d delivered derived operational readiness for Kraken exchange connectivity on Platform Readiness after W4-E04-c recovery. Operators see Recovering, Ready, Degraded, or Unavailable — not Connected, not Kraken Connected, and not live trading enablement.
+
+Report: [`w4-e04-d-implementation-report.md`](./w4-e04-d-implementation-report.md)
+
+---
+
 ## Explicit non-claims
 
 - W4-E04 Planning APPROVED — **recorded**
 - W4-E04-a inventory baseline — **recorded**
 - W4-E04-b durable persistence foundation — **recorded**
-- W4-E04-c restart recovery foundation — **recorded** (local)
-- W4-E04-d opened — **not claimed**
+- W4-E04-c restart recovery foundation — **recorded**
+- W4-E04-d operational continuity foundation — **recorded** (local)
+- W4-E04-e opened — **not claimed**
 - W4-E04 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -141,4 +150,4 @@ Report: [`w4-e04-c-implementation-report.md`](./w4-e04-c-implementation-report.m
 
 ---
 
-**STOP.** W4-E04-c restart recovery foundation recorded (local). Do not declare Kraken Connected, Exchange Connectivity Complete, operational continuity complete, or Wave 4 COMPLETE. Await Product Owner review before W4-E04-d.
+**STOP.** W4-E04-d operational continuity foundation recorded (local). Do not declare Kraken Connected, Exchange Connectivity Complete, operational continuity complete, or Wave 4 COMPLETE. Await Product Owner review before W4-E04-e.

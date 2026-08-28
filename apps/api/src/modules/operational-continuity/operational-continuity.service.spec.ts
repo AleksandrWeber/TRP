@@ -7,11 +7,13 @@ import { OperationalContinuityService } from './operational-continuity.service';
 import { OperationalContinuityAudit } from './operational-continuity-audit';
 import { resetAnalyticalOwnerBootOutcomes } from '../../persistence/analytical-owner-continuity-status';
 import { resetMonitoringHealthContinuity } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
+import { resetKrakenExchangeConnectivityContinuity } from '../exchange-adapter/domain/kraken-exchange-connectivity-continuity-status';
 
 describe('OperationalContinuityService', () => {
   beforeEach(() => {
     resetAnalyticalOwnerBootOutcomes();
     resetMonitoringHealthContinuity();
+    resetKrakenExchangeConnectivityContinuity();
   });
 
   it('mixed owner states: unavailable + ready + degraded dependents', async () => {
@@ -71,6 +73,8 @@ describe('OperationalContinuityService', () => {
     expect(projection.degradedOwners).toEqual([]);
     expect(projection.recoveryTimestamp).toBeTruthy();
     expect(typeof projection.recoveryDurationMs).toBe('number');
+    expect(projection.krakenExchangeConnectivity).toBeTruthy();
+    expect(projection.krakenExchangeConnectivity?.operationalState).toBe('Unavailable');
   });
 
   it('workspace-safe projection is read-only (no mutation API on service)', () => {

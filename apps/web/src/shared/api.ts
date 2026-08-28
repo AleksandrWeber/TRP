@@ -1046,6 +1046,8 @@ export type OperationalContinuityReadinessView = {
   bybitExchangeConnectivity: BybitExchangeConnectivityContinuityView | null;
   /** W4-E03-d — OKX Exchange Connectivity operational continuity. */
   okxExchangeConnectivity: OkxExchangeConnectivityContinuityView | null;
+  /** W4-E04-d — Kraken Exchange Connectivity operational continuity. */
+  krakenExchangeConnectivity: KrakenExchangeConnectivityContinuityView | null;
 };
 
 export type NotificationQueueContinuityView = {
@@ -1113,6 +1115,19 @@ export type BybitExchangeConnectivityContinuityView = {
 };
 
 export type OkxExchangeConnectivityContinuityView = {
+  operationalState: OperationalContinuityState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  connectionAnchorCount: number;
+  adapterAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+};
+
+export type KrakenExchangeConnectivityContinuityView = {
   operationalState: OperationalContinuityState;
   ownerReadiness: 'ready' | 'unavailable' | 'degraded';
   recoveryTimestamp: string | null;

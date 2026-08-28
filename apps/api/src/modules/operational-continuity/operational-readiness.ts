@@ -90,6 +90,20 @@ export type OkxExchangeConnectivityContinuityView = Readonly<{
   workspaceIds: readonly string[];
 }>;
 
+/** W4-E04-d — Kraken Exchange Connectivity continuity fields on platform readiness. */
+export type KrakenExchangeConnectivityContinuityView = Readonly<{
+  operationalState: OperationalState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  connectionAnchorCount: number;
+  adapterAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+}>;
+
 /** W3-O05-d — Monitoring & Security Health continuity fields on platform readiness. */
 export type MonitoringHealthContinuityView = Readonly<{
   operationalState: OperationalState;
@@ -137,6 +151,8 @@ export type PlatformOperationalProjection = Readonly<{
   bybitExchangeConnectivity: BybitExchangeConnectivityContinuityView | null;
   /** W4-E03-d — OKX Exchange Connectivity operational continuity (derived). */
   okxExchangeConnectivity: OkxExchangeConnectivityContinuityView | null;
+  /** W4-E04-d — Kraken Exchange Connectivity operational continuity (derived). */
+  krakenExchangeConnectivity: KrakenExchangeConnectivityContinuityView | null;
 }>;
 
 export type EvaluateOwnerReadinessInput = Readonly<{
@@ -229,6 +245,7 @@ export function buildPlatformOperationalProjection(input: {
   exchangeConnectivity?: ExchangeConnectivityContinuityView | null;
   bybitExchangeConnectivity?: BybitExchangeConnectivityContinuityView | null;
   okxExchangeConnectivity?: OkxExchangeConnectivityContinuityView | null;
+  krakenExchangeConnectivity?: KrakenExchangeConnectivityContinuityView | null;
 }): PlatformOperationalProjection {
   const platformState = derivePlatformOperationalState(input.owners);
   assertOperationalState(platformState);
@@ -249,6 +266,7 @@ export function buildPlatformOperationalProjection(input: {
     exchangeConnectivity: input.exchangeConnectivity ?? null,
     bybitExchangeConnectivity: input.bybitExchangeConnectivity ?? null,
     okxExchangeConnectivity: input.okxExchangeConnectivity ?? null,
+    krakenExchangeConnectivity: input.krakenExchangeConnectivity ?? null,
   });
 }
 

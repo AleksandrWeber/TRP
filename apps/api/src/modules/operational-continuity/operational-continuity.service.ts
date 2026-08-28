@@ -8,6 +8,7 @@
  * W4-E01-d adds Exchange Connectivity operational continuity (derived).
  * W4-E02-d adds Bybit Exchange Connectivity operational continuity (derived).
  * W4-E03-d adds OKX Exchange Connectivity operational continuity (derived).
+ * W4-E04-d adds Kraken Exchange Connectivity operational continuity (derived).
  * Recovery itself remains W3-O01-c / W3-O02-c / W3-O04-c / W3-O05-c only. No new persistence / BC / HA / monitoring evaluation.
  */
 
@@ -35,6 +36,8 @@ import { getBybitExchangeConnectivityContinuityRecord } from '../exchange-adapte
 import { buildBybitExchangeConnectivityContinuityProjection } from '../exchange-adapter/domain/bybit-exchange-connectivity-operational-continuity';
 import { getOkxExchangeConnectivityContinuityRecord } from '../exchange-adapter/domain/okx-exchange-connectivity-continuity-status';
 import { buildOkxExchangeConnectivityContinuityProjection } from '../exchange-adapter/domain/okx-exchange-connectivity-operational-continuity';
+import { getKrakenExchangeConnectivityContinuityRecord } from '../exchange-adapter/domain/kraken-exchange-connectivity-continuity-status';
+import { buildKrakenExchangeConnectivityContinuityProjection } from '../exchange-adapter/domain/kraken-exchange-connectivity-operational-continuity';
 import { OperationalContinuityAudit } from './operational-continuity-audit';
 import {
   buildPlatformOperationalProjection,
@@ -83,6 +86,11 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         continuity: null,
       }),
       okxExchangeConnectivity: buildOkxExchangeConnectivityContinuityProjection({
+        recovering: true,
+        ownerReadiness: 'ready',
+        continuity: null,
+      }),
+      krakenExchangeConnectivity: buildKrakenExchangeConnectivityContinuityProjection({
         recovering: true,
         ownerReadiness: 'ready',
         continuity: null,
@@ -183,6 +191,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildKrakenExchangeConnectivityView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getKrakenExchangeConnectivityContinuityRecord();
+    return buildKrakenExchangeConnectivityContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -242,6 +262,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       okxExchangeConnectivity: this.buildOkxExchangeConnectivityView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      krakenExchangeConnectivity: this.buildKrakenExchangeConnectivityView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -336,6 +360,23 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         okxExchangeConnectivityBase.recoveryDurationMs ??
         (okxExchangeConnectivityBase.operationalState === 'Recovering' ? null : recoveryDurationMs),
     });
+    const krakenExchangeConnectivityBase = this.buildKrakenExchangeConnectivityView({
+      recovering: false,
+      ownerReadiness: 'ready',
+    });
+    const krakenExchangeConnectivity = Object.freeze({
+      ...krakenExchangeConnectivityBase,
+      recoveryTimestamp:
+        krakenExchangeConnectivityBase.recoveryTimestamp ??
+        (krakenExchangeConnectivityBase.operationalState === 'Recovering'
+          ? null
+          : recoveryTimestamp),
+      recoveryDurationMs:
+        krakenExchangeConnectivityBase.recoveryDurationMs ??
+        (krakenExchangeConnectivityBase.operationalState === 'Recovering'
+          ? null
+          : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -346,6 +387,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       exchangeConnectivity,
       bybitExchangeConnectivity,
       okxExchangeConnectivity,
+      krakenExchangeConnectivity,
     });
     this.finalized = true;
 

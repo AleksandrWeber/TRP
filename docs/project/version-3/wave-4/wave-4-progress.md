@@ -37,13 +37,13 @@
 
 ## Wave 4 packages (Master Plan / Execution Roadmap)
 
-| Package    | Roadmap ID | Name                          | Status                                                                      |
-| ---------- | ---------- | ----------------------------- | --------------------------------------------------------------------------- |
-| **W4-E01** | **V3-E01** | Binance Real I/O              | **CLOSED** by Product Owner (2026-08-28)                                    |
-| **W4-E02** | **V3-E02** | Bybit Real I/O                | **CLOSED** by Product Owner (2026-08-28)                                    |
-| **W4-E03** | **V3-E03** | OKX Real I/O                  | **CLOSED** by Product Owner (2026-08-28)                                    |
-| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | W4-E04-b durable persistence **COMPLETE** — Awaiting PO review (2026-08-28) |
-| **W4-E05** | **V3-E05** | Venue Permission Verification | **Not opened**                                                              |
+| Package    | Roadmap ID | Name                          | Status                                                                         |
+| ---------- | ---------- | ----------------------------- | ------------------------------------------------------------------------------ |
+| **W4-E01** | **V3-E01** | Binance Real I/O              | **CLOSED** by Product Owner (2026-08-28)                                       |
+| **W4-E02** | **V3-E02** | Bybit Real I/O                | **CLOSED** by Product Owner (2026-08-28)                                       |
+| **W4-E03** | **V3-E03** | OKX Real I/O                  | **CLOSED** by Product Owner (2026-08-28)                                       |
+| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | W4-E04-d operational continuity **COMPLETE** — Awaiting PO review (2026-08-28) |
+| **W4-E05** | **V3-E05** | Venue Permission Verification | **Not opened**                                                                 |
 
 Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
@@ -51,16 +51,16 @@ Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
 ## Current package
 
-| Field                     | Value                                                                                |
-| ------------------------- | ------------------------------------------------------------------------------------ |
-| **Package**               | **W4-E04** Kraken Adapter (factory)                                                  |
-| **Master Plan / Roadmap** | V3-E04 · CM-10                                                                       |
-| **Stage**                 | W4-E04-c restart recovery **COMPLETE** — Awaiting Product Owner review (2026-08-28)  |
-| **Approval**              | **RECORDED** — [`w4-e04-planning-approval.md`](./w4-e04-planning-approval.md)        |
-| **Implementation**        | **AUTHORIZED** — W4-E04-a/b **COMPLETE**; W4-E04-c **COMPLETE** (local; uncommitted) |
-| **Predecessor**           | W4-E03 **CLOSED** by Product Owner                                                   |
-| **Implementation slices** | W4-E04-a/b/c **COMPLETE**; W4-E04-d…e **not authorized**                             |
-| **Close record**          | —                                                                                    |
+| Field                     | Value                                                                                     |
+| ------------------------- | ----------------------------------------------------------------------------------------- |
+| **Package**               | **W4-E04** Kraken Adapter (factory)                                                       |
+| **Master Plan / Roadmap** | V3-E04 · CM-10                                                                            |
+| **Stage**                 | W4-E04-d operational continuity **COMPLETE** — Awaiting Product Owner review (2026-08-28) |
+| **Approval**              | **RECORDED** — [`w4-e04-planning-approval.md`](./w4-e04-planning-approval.md)             |
+| **Implementation**        | **AUTHORIZED** — W4-E04-a/b/c/d **COMPLETE** (d local; uncommitted)                       |
+| **Predecessor**           | W4-E03 **CLOSED** by Product Owner                                                        |
+| **Implementation slices** | W4-E04-a/b/c/d **COMPLETE**; W4-E04-e **not authorized**                                  |
+| **Close record**          | —                                                                                         |
 
 Companions:
 
@@ -88,6 +88,11 @@ Companions:
 - [`w4-e04-c-security-review.md`](./w4-e04-c-security-review.md)
 - [`w4-e04-c-product-review.md`](./w4-e04-c-product-review.md)
 - [`w4-e04-c-validation-report.md`](./w4-e04-c-validation-report.md)
+- [`w4-e04-d-implementation-report.md`](./w4-e04-d-implementation-report.md)
+- [`w4-e04-d-architecture-review.md`](./w4-e04-d-architecture-review.md)
+- [`w4-e04-d-security-review.md`](./w4-e04-d-security-review.md)
+- [`w4-e04-d-product-review.md`](./w4-e04-d-product-review.md)
+- [`w4-e04-d-validation-report.md`](./w4-e04-d-validation-report.md)
 - [`w4-e03-implementation-package.md`](./w4-e03-implementation-package.md)
 - [`w4-e03-product-scope.md`](./w4-e03-product-scope.md)
 - [`w4-e03-security-review.md`](./w4-e03-security-review.md)
@@ -150,21 +155,22 @@ Companions:
 
 ---
 
-## W4-E04 status (W4-E04-b durable persistence complete)
+## W4-E04 status (W4-E04-d operational continuity complete)
 
 | Field                     | Value                                                                                          |
 | ------------------------- | ---------------------------------------------------------------------------------------------- |
-| **Package**               | **W4-E04** Kraken Adapter (factory) — W4-E04-c **COMPLETE**                                    |
+| **Package**               | **W4-E04** Kraken Adapter (factory) — W4-E04-d **COMPLETE**                                    |
 | **Master Plan / Roadmap** | V3-E04 · CM-10                                                                                 |
 | **Open date**             | 2026-08-28                                                                                     |
 | **Review date**           | 2026-08-28                                                                                     |
 | **Approval date**         | 2026-08-28                                                                                     |
 | **Slice a date**          | 2026-08-28 (committed `9a3da01`)                                                               |
-| **Slice b date**          | 2026-08-28 (local; uncommitted)                                                                |
-| **Slice c date**          | 2026-08-28 (local; uncommitted)                                                                |
-| **Current stage**         | **Awaiting Product Owner review** (W4-E04-c local)                                             |
-| **Implementation**        | **AUTHORIZED** — W4-E04-a/b/c **COMPLETE**; W4-E04-d **not opened**                            |
-| **Implementation slices** | W4-E04-a/b/c **COMPLETE**; W4-E04-d…e **not authorized**                                       |
+| **Slice b date**          | 2026-08-28 (committed `26ee4e1`)                                                               |
+| **Slice c date**          | 2026-08-28 (committed `58a267a`)                                                               |
+| **Slice d date**          | 2026-08-28 (local; uncommitted)                                                                |
+| **Current stage**         | **Awaiting Product Owner review** (W4-E04-d local)                                             |
+| **Implementation**        | **AUTHORIZED** — W4-E04-a/b/c/d **COMPLETE**; W4-E04-e **not opened**                          |
+| **Implementation slices** | W4-E04-a/b/c/d **COMPLETE**; W4-E04-e **not authorized**                                       |
 | **Predecessor**           | W4-E03 **CLOSED** by Product Owner (2026-08-28)                                                |
 | **Planning review**       | [`w4-e04-planning-review.md`](./w4-e04-planning-review.md)                                     |
 | **Planning approval**     | [`w4-e04-planning-approval.md`](./w4-e04-planning-approval.md)                                 |
@@ -172,6 +178,7 @@ Companions:
 | **Slice a validation**    | [`w4-e04-a-validation-report.md`](./w4-e04-a-validation-report.md)                             |
 | **Slice b validation**    | [`w4-e04-b-validation-report.md`](./w4-e04-b-validation-report.md)                             |
 | **Slice c validation**    | [`w4-e04-c-validation-report.md`](./w4-e04-c-validation-report.md)                             |
+| **Slice d validation**    | [`w4-e04-d-validation-report.md`](./w4-e04-d-validation-report.md)                             |
 
 ---
 
@@ -277,12 +284,14 @@ W4-E04 Planning Approval RECORDED (2026-08-28)
         ↓
 W4-E04-a Inventory & Exchange Connectivity Baseline — COMPLETE (2026-08-28)
         ↓
-W4-E04-b Durable Kraken Exchange Connectivity Foundation — COMPLETE (2026-08-28, local)
+W4-E04-b Durable Kraken Exchange Connectivity Foundation — COMPLETE (2026-08-28)
         ↓
-W4-E04-c Restart Recovery Foundation — COMPLETE (2026-08-28, local)
+W4-E04-c Restart Recovery Foundation — COMPLETE (2026-08-28)
         ↓
-STOP — Await explicit Product Owner review before W4-E04-d
-Do not open W4-E04-d…e without prior slice completion and PO sequencing
+W4-E04-d Operational Continuity Foundation — COMPLETE (2026-08-28, local)
+        ↓
+STOP — Await explicit Product Owner review before W4-E04-e
+Do not open W4-E04-e without prior slice completion and PO sequencing
 Do not open W4-E05 without separate PO sequencing
 (No Live Trading)
 (No Wave 4 COMPLETE)
@@ -326,11 +335,12 @@ Do not open W4-E05 without separate PO sequencing
 | W4-E04 Planning OPEN                        | **Recorded**                                       |
 | W4-E04 Planning Review PASS                 | **Recorded**                                       |
 | W4-E04 Planning APPROVED                    | **Recorded**                                       |
-| W4-E04 Implementation                       | **AUTHORIZED** — W4-E04-a/b/c COMPLETE (b/c local) |
+| W4-E04 Implementation                       | **AUTHORIZED** — W4-E04-a/b/c/d COMPLETE (d local) |
 | W4-E04-a COMPLETE                           | **Recorded** (committed `9a3da01`)                 |
-| W4-E04-b COMPLETE                           | **Recorded** (local; uncommitted)                  |
-| W4-E04-c COMPLETE                           | **Recorded** (local; uncommitted)                  |
-| W4-E04-d opened                             | **Not claimed**                                    |
+| W4-E04-b COMPLETE                           | **Recorded** (committed `26ee4e1`)                 |
+| W4-E04-c COMPLETE                           | **Recorded** (committed `58a267a`)                 |
+| W4-E04-d COMPLETE                           | **Recorded** (local; uncommitted)                  |
+| W4-E04-e opened                             | **Not claimed**                                    |
 | W4-E04 CLOSED                               | **Not claimed**                                    |
 | W4-E05 opened                               | **Not claimed**                                    |
 | Live Trading                                | **Not claimed**                                    |
@@ -339,4 +349,4 @@ Do not open W4-E05 without separate PO sequencing
 
 ---
 
-**STOP.** W4-E04-c restart recovery **COMPLETE** (2026-08-28, local). Await Product Owner review before W4-E04-d. Do not declare Kraken Connected, Exchange Connectivity Complete, operational continuity complete, or Wave 4 COMPLETE. Do not commit or push without Product Owner instruction.
+**STOP.** W4-E04-d operational continuity **COMPLETE** (2026-08-28, local). Await Product Owner review before W4-E04-e. Do not declare Kraken Connected, Exchange Connectivity Complete, operational continuity complete, or Wave 4 COMPLETE. Do not commit or push without Product Owner instruction.
