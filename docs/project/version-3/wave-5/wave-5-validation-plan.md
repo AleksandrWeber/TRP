@@ -131,6 +131,26 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
+## W5-N01-c validation (restart recovery slice — local)
+
+| Layer                          | Result   | Evidence                                                      |
+| ------------------------------ | -------- | ------------------------------------------------------------- |
+| Restart recovery hydrate       | **PASS** | `TelegramNotificationRestartRecoveryService` + recovery store |
+| Deterministic ordering         | **PASS** | workspaceId, notificationId ascending                         |
+| Idempotent hydrate             | **PASS** | Conformance spec — hydrate twice yields same diagnostics      |
+| Integrity verification         | **PASS** | `assertRecoverableTelegramNotificationAnchor`                 |
+| Missing rows not fabricated    | **PASS** | Empty persistence → empty recovery cache                      |
+| Corrupt rows fail honestly     | **PASS** | Explicit recovery error on corruption                         |
+| Ownership preserved            | **PASS** | Notification Delivery owner only                              |
+| No Bot API / outbound delivery | **PASS** | Explicit OUT in conformance registry                          |
+| Operational continuity OUT     | **PASS** | Deferred to W5-N01-d                                          |
+| Regression suite               | **PASS** | lint / typecheck / test / build                               |
+| git diff --check               | **PASS** | No whitespace errors                                          |
+
+**Explicit non-claim:** W5-N01-c does **not** authorize Telegram notifications operational, operational continuity, or W5-N01 COMPLETE.
+
+---
+
 ## Explicit non-claims
 
 - Wave 5 validation PASS at Close — **not claimed**

@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { TelegramNotificationPersistenceService } from '../modules/notification-delivery/telegram-notification-persistence.service';
 import { PrismaTelegramNotificationAnchorRepository } from '../modules/notification-delivery/persistence/prisma-telegram-notification-anchor.repository';
+import { TelegramNotificationRecoveryStore } from '../modules/notification-delivery/telegram-notification-recovery-store';
 import { rowsEphemeral } from './w5-n01-a-telegram-notification-inventory';
 import {
   W5_N01_B_ARCHITECTURE_CLAIMS,
@@ -63,7 +64,10 @@ describe('W5-N01-b durable telegram notification — unit', () => {
   it('persistence correctness: anchor write-through upserts workspace notification row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaTelegramNotificationAnchorRepository(prisma as never);
-    const service = new TelegramNotificationPersistenceService(repository);
+    const service = new TelegramNotificationPersistenceService(
+      repository,
+      new TelegramNotificationRecoveryStore(),
+    );
 
     const outcome = await service.persistNotificationAnchor({
       workspaceId: 'ws-a',

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { TelegramNotificationPersistenceService } from './telegram-notification-persistence.service';
 import type { DurableTelegramNotificationAnchor } from './domain/durable-telegram-notification-anchor';
 import type { TelegramNotificationAnchorRepository } from './domain/telegram-notification-anchor.repository';
+import { TelegramNotificationRecoveryStore } from './telegram-notification-recovery-store';
 
 const recordedAt = '2026-08-28T14:00:00.000Z';
 
@@ -27,7 +28,10 @@ function createRepository(): TelegramNotificationAnchorRepository & {
 describe('TelegramNotificationPersistenceService — W5-N01-b storage only', () => {
   it('persistNotificationAnchor writes canonical anchors without delivery execution', async () => {
     const repository = createRepository();
-    const service = new TelegramNotificationPersistenceService(repository);
+    const service = new TelegramNotificationPersistenceService(
+      repository,
+      new TelegramNotificationRecoveryStore(),
+    );
 
     const outcome = await service.persistNotificationAnchor({
       workspaceId: 'ws-1',
@@ -61,7 +65,10 @@ describe('TelegramNotificationPersistenceService — W5-N01-b storage only', () 
 
   it('does not claim delivered or connected flags on anchor rows', async () => {
     const repository = createRepository();
-    const service = new TelegramNotificationPersistenceService(repository);
+    const service = new TelegramNotificationPersistenceService(
+      repository,
+      new TelegramNotificationRecoveryStore(),
+    );
 
     await service.persistNotificationAnchor({
       workspaceId: 'ws-1',
