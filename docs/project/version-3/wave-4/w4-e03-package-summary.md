@@ -5,7 +5,7 @@
 **Master Plan / Roadmap:** V3-E03 · CM-09  
 **Evidence slice:** W4-E03-e  
 **Date:** 2026-08-28  
-**Status:** Close Evidence assembled — awaiting Product Owner Package Review and Final Package Integration Verification.
+**Status:** **CLOSED** by Product Owner (2026-08-28). See [`w4-e03-product-owner-close-record.md`](./w4-e03-product-owner-close-record.md).
 
 ---
 
@@ -46,17 +46,17 @@
 | W4-E03-c | OKX Restart Recovery       | APPROVED / COMPLETE |
 | W4-E03-d | OKX Operational Continuity | APPROVED / COMPLETE |
 | W4-E03-e | Close Evidence             | APPROVED / COMPLETE |
-| W4-E03   | Package                    | **Not CLOSED**      |
+| W4-E03   | Package                    | **CLOSED**          |
 
 ---
 
 ## Capability Evolution
 
-| Stage                     | Capability                                                                                                                                                                                                                          |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Package opened            | OKX adapter stub; no durable OKX exchange connectivity store; no restart recovery; no OKX operational continuity projection; Connected not honest without vendor round-trip.                                                        |
-| Package closed capability | OKX Exchange Connectivity foundation evidenced for Product Owner Close: inventory, persistence, restart recovery, and operational continuity — without REST/WebSocket I/O, live connection, Connected fabrication, or Live Trading. |
+| Stage                     | Capability                                                                                                                                                                                                   |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Package opened            | OKX adapter stub; no durable OKX exchange connectivity store; no restart recovery; no OKX operational continuity projection; Connected not honest without vendor round-trip.                                 |
+| Package closed capability | OKX Exchange Connectivity foundation **CLOSED**: inventory, persistence, restart recovery, and operational continuity — without REST/WebSocket I/O, live connection, Connected fabrication, or Live Trading. |
 
 ---
 
-**STOP.** Close Evidence assembled. Do not declare W4-E03 CLOSED. Do not declare Exchange Connectivity Complete. Do not declare OKX Connected. Do not declare Wave 4 COMPLETE.
+**STOP.** W4-E03 **CLOSED** by Product Owner. Do not declare Exchange Connectivity Complete. Do not declare OKX Connected. Do not declare Wave 4 COMPLETE.

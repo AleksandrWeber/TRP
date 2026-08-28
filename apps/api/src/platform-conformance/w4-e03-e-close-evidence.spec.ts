@@ -203,23 +203,29 @@ describe('W4-E03-e package close evidence — integration / planning', () => {
     expect(view).not.toMatch(/Test connection|Place order|Live Trading|OKX Connected/i);
   });
 
-  it('status docs: Close Evidence complete; awaiting Final Package Integration Verification', () => {
+  it('status docs: W4-E03 CLOSED by Product Owner; Wave 4 COMPLETE not claimed', () => {
     const progress = readWave4('wave-4-progress.md');
     const overview = readWave4('w4-e03-overview.md');
     const close = readWave4('w4-e03-close-package-report.md');
     const summary = readWave4('w4-e03-package-summary.md');
+    const poClose = readWave4('w4-e03-product-owner-close-record.md');
+    expect(progress).toMatch(/CLOSED by Product Owner|Package \*\*CLOSED\*\*/);
     expect(progress).toMatch(/W4-E03-a|W4-E03-b|W4-E03-c|W4-E03-d/);
     expect(progress).toMatch(/Close Evidence|W4-E03-e/);
-    expect(progress).toMatch(/Final Package Integration Verification|awaiting/i);
     expect(progress).toMatch(/Wave 4 COMPLETE[\s\S]*Not claimed|Not claimed[\s\S]*Wave 4 COMPLETE/);
+    expect(overview).toMatch(/\*\*CLOSED\*\* by Product Owner|CLOSED by Product Owner/);
     expect(overview).toMatch(/STOP/);
     expect(overview).toMatch(
       /Exchange Connectivity Complete[\s\S]*not claimed|not claimed[\s\S]*Exchange Connectivity Complete/i,
     );
-    expect(close).toMatch(/Close Evidence|Product Owner Package Review/i);
-    expect(close).not.toMatch(/CLOSED by Product Owner/);
-    expect(summary).toMatch(/Close Evidence|foundation evidenced/i);
-    expect(summary).not.toMatch(/\*\*CLOSED\*\* by Product Owner/);
+    expect(close).toMatch(
+      /Package \*\*CLOSED\*\* by Product Owner|\*\*CLOSED\*\* by Product Owner|CLOSED by Product Owner/,
+    );
+    expect(close).toMatch(/Wave 4 COMPLETE[\s\S]*not claimed|not claimed[\s\S]*Wave 4 COMPLETE/i);
+    expect(summary).toMatch(/\*\*CLOSED\*\* by Product Owner/);
+    expect(poClose).toMatch(
+      /officially CLOSED|Decision:\*\* \*\*CLOSED\*\*|Decision: \*\*CLOSED\*\*/,
+    );
     expect(W4_E03_E_ARCHITECTURE_CLAIMS.packageCloseEvidenceAssembled).toBe(true);
     expect(W4_E03_E_ARCHITECTURE_CLAIMS.packageDeclaredClosed).toBe(false);
   });

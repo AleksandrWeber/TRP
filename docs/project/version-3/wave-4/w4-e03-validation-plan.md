@@ -3,7 +3,7 @@
 **Package:** W4-E03 OKX Real I/O
 **Wave:** 4 — Exchange Connectivity
 **Master Plan / Roadmap:** V3-E03 · CM-09
-**Status:** W4-E03-e Close Evidence **COMPLETE** (local). Awaiting Product Owner Package Review and Final Package Integration Verification. Not OKX Connected.
+**Status:** Planning **APPROVED**. W4-E03-a–e **COMPLETE**. W4-E03 **CLOSED** by Product Owner (2026-08-28). See [`w4-e03-product-owner-close-record.md`](./w4-e03-product-owner-close-record.md).
 **Date:** 2026-08-28
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w4-e03-product-scope.md`](./w4-e03-product-scope.md)
@@ -148,7 +148,7 @@ Copy and complete [`../version-3-product-checklist.md`](../version-3-product-che
 ## Explicit non-claims
 
 - W4-E03 validation PASS — **not claimed** (planning only)
-- W4-E03 CLOSED — **not claimed**
+- W4-E03 CLOSED — **recorded** (2026-08-28)
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
 - OKX Connected — **not claimed**
@@ -156,4 +156,4 @@ Copy and complete [`../version-3-product-checklist.md`](../version-3-product-che
 
 ---
 
-**STOP.** Planning **OPEN** only. Await Product Owner Planning Review. Do not open W4-E03-a.
+**STOP.** W4-E03 **CLOSED** by Product Owner. Do not declare Exchange Connectivity Complete. Do not declare OKX Connected. Do not declare Wave 4 COMPLETE. Do not open W4-E04.
