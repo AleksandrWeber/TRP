@@ -38,6 +38,7 @@
 | W4-E05 Planning Approval     | **RECORDED** (2026-08-28)                      |
 | W4-E05 Implementation        | **AUTHORIZED** — W4-E05-a/b/c/d/e **COMPLETE** |
 | W4-E06 Planning Package      | **OPEN** (2026-08-28)                          |
+| W4-E06 Planning Review       | **PASS** (2026-08-28)                          |
 | Live Trading                 | **Not claimed**                                |
 | Master Plan                  | **FROZEN** — unchanged                         |
 
@@ -60,17 +61,17 @@ Order is binding: **E01 → E02 → E03 → E04 → E05 → E06 (governance)**.
 
 ## Current package
 
-| Field                     | Value                                                                |
-| ------------------------- | -------------------------------------------------------------------- |
-| **Package**               | **W4-E06** Wave 4 Completion Review                                  |
-| **Master Plan / Roadmap** | Governance roll-up after **V3-E01…E05** (no new roadmap ID)          |
-| **Stage**                 | W4-E06 Planning **OPEN** — **Awaiting Planning Review** (2026-08-28) |
-| **Approval**              | **Not granted**                                                      |
-| **Planning review**       | **Not performed**                                                    |
-| **Implementation**        | **Not authorized**                                                   |
-| **Predecessor**           | W4-E05 **CLOSED** by Product Owner (2026-08-28)                      |
-| **Implementation slices** | W4-E06-a/b/c/d/e **not opened**                                      |
-| **Planning summary**      | [`w4-e06-planning-summary.md`](./w4-e06-planning-summary.md)         |
+| Field                     | Value                                                                  |
+| ------------------------- | ---------------------------------------------------------------------- |
+| **Package**               | **W4-E06** Wave 4 Completion Review                                    |
+| **Master Plan / Roadmap** | Governance roll-up after **V3-E01…E05** (no new roadmap ID)            |
+| **Stage**                 | Planning Review **PASS** — **Awaiting Planning Approval** (2026-08-28) |
+| **Approval**              | **Not granted**                                                        |
+| **Planning review**       | [`w4-e06-planning-review.md`](./w4-e06-planning-review.md)             |
+| **Implementation**        | **Not authorized**                                                     |
+| **Predecessor**           | W4-E05 **CLOSED** by Product Owner (2026-08-28)                        |
+| **Implementation slices** | W4-E06-a/b/c/d/e **not opened**                                        |
+| **Planning summary**      | [`w4-e06-planning-summary.md`](./w4-e06-planning-summary.md)           |
 
 Companions:
 
@@ -80,6 +81,7 @@ Companions:
 - [`w4-e06-validation-plan.md`](./w4-e06-validation-plan.md)
 - [`w4-e06-overview.md`](./w4-e06-overview.md)
 - [`w4-e06-planning-summary.md`](./w4-e06-planning-summary.md)
+- [`w4-e06-planning-review.md`](./w4-e06-planning-review.md)
 - [`w4-e05-product-owner-close-record.md`](./w4-e05-product-owner-close-record.md)
 - [`w4-e05-implementation-package.md`](./w4-e05-implementation-package.md)
 - [`w4-e05-product-scope.md`](./w4-e05-product-scope.md)
@@ -354,9 +356,11 @@ W4-E05 CLOSED by Product Owner (2026-08-28)
         ↓
 W4-E06 Planning Package OPEN (2026-08-28)
         ↓
-STOP — Awaiting Planning Review
+W4-E06 Planning Review PASS (2026-08-28)
+        ↓
+STOP — Awaiting Planning Approval
 (No W4-E06-a)
-(No W4-E06 Planning Approval)
+(No W4-E06 Planning Approval recorded)
 (No Live Trading)
 (No Wave 4 COMPLETE)
 (No Exchange Connectivity Complete)
@@ -418,7 +422,7 @@ STOP — Awaiting Planning Review
 | W4-E05 Final Integration Verification PASS  | **Recorded** (2026-08-28)                  |
 | W4-E05 CLOSED                               | **Recorded** (2026-08-28)                  |
 | W4-E06 Planning OPEN                        | **Recorded** (2026-08-28)                  |
-| W4-E06 Planning Review PASS                 | **Not claimed**                            |
+| W4-E06 Planning Review PASS                 | **Recorded** (2026-08-28)                  |
 | W4-E06 Planning APPROVED                    | **Not claimed**                            |
 | W4-E06 Implementation                       | **Not authorized**                         |
 | W4-E06-a opened                             | **Not claimed**                            |
@@ -428,4 +432,4 @@ STOP — Awaiting Planning Review
 
 ---
 
-**STOP.** W4-E06 Planning is **OPEN** — **Awaiting Planning Review** (2026-08-28). Do not perform Planning Review. Do not perform Planning Approval. Do not open W4-E06-a. Do not declare Wave 4 COMPLETE, Exchange Connectivity Complete, Live Trading, or Production Ready.
+**STOP.** W4-E06 Planning Review **PASS** (2026-08-28). Current stage: **Awaiting Planning Approval**. Do not perform Planning Approval without explicit Product Owner instruction. Do not open W4-E06-a. Do not declare Wave 4 COMPLETE, Exchange Connectivity Complete, Live Trading, or Production Ready.
