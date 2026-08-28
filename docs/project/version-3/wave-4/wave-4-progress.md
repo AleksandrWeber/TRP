@@ -22,7 +22,7 @@
 | Wave 3 Durability & Ops      | **COMPLETE**                                                      |
 | W4-E01                       | **CLOSED** by Product Owner                                       |
 | W4-E02                       | **CLOSED** by Product Owner                                       |
-| W4-E03 Planning Package      | **APPROVED** — W4-E03-a **COMPLETE** (local) — awaiting PO review |
+| W4-E03 Planning Package      | **APPROVED** — W4-E03-b **COMPLETE** (local) — awaiting PO review |
 | W4-E04 … W4-E05              | **Not opened**                                                    |
 | Live Trading                 | **Not claimed**                                                   |
 | Master Plan                  | **FROZEN** — unchanged                                            |
@@ -35,7 +35,7 @@
 | ---------- | ---------- | ----------------------------- | ----------------------------------------------------------------- |
 | **W4-E01** | **V3-E01** | Binance Real I/O              | **CLOSED** by Product Owner (2026-08-28)                          |
 | **W4-E02** | **V3-E02** | Bybit Real I/O                | **CLOSED** by Product Owner (2026-08-28)                          |
-| **W4-E03** | **V3-E03** | OKX Real I/O                  | W4-E03-a **COMPLETE** (local) — awaiting **Product Owner review** |
+| **W4-E03** | **V3-E03** | OKX Real I/O                  | W4-E03-b **COMPLETE** (local) — awaiting **Product Owner review** |
 | **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **Not opened**                                                    |
 | **W4-E05** | **V3-E05** | Venue Permission Verification | **Not opened**                                                    |
 
@@ -45,15 +45,15 @@ Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
 ## Current package
 
-| Field                     | Value                                                         |
-| ------------------------- | ------------------------------------------------------------- |
-| **Package**               | **W4-E03** OKX Real I/O                                       |
-| **Master Plan / Roadmap** | V3-E03 · CM-09                                                |
-| **Stage**                 | W4-E03-a **COMPLETE** (local) — awaiting Product Owner review |
-| **Approval**              | **RECORDED** (2026-08-28)                                     |
-| **Implementation**        | **AUTHORIZED** — W4-E03-a **delivered locally**               |
-| **Predecessor**           | W4-E02 **CLOSED** by Product Owner                            |
-| **Implementation slices** | W4-E03-a **COMPLETE** (local); W4-E03-b…e **not opened**      |
+| Field                     | Value                                                                |
+| ------------------------- | -------------------------------------------------------------------- |
+| **Package**               | **W4-E03** OKX Real I/O                                              |
+| **Master Plan / Roadmap** | V3-E03 · CM-09                                                       |
+| **Stage**                 | W4-E03-b **COMPLETE** (local) — awaiting Product Owner review        |
+| **Approval**              | **RECORDED** (2026-08-28)                                            |
+| **Implementation**        | **AUTHORIZED** — W4-E03-b **delivered locally**                      |
+| **Predecessor**           | W4-E02 **CLOSED** by Product Owner                                   |
+| **Implementation slices** | W4-E03-a **COMPLETE**; W4-E03-b **COMPLETE** (local); c…e not opened |
 
 Companions:
 
@@ -71,6 +71,11 @@ Companions:
 - [`w4-e03-a-security-review.md`](./w4-e03-a-security-review.md)
 - [`w4-e03-a-product-review.md`](./w4-e03-a-product-review.md)
 - [`w4-e03-a-validation-report.md`](./w4-e03-a-validation-report.md)
+- [`w4-e03-b-implementation-report.md`](./w4-e03-b-implementation-report.md)
+- [`w4-e03-b-architecture-review.md`](./w4-e03-b-architecture-review.md)
+- [`w4-e03-b-security-review.md`](./w4-e03-b-security-review.md)
+- [`w4-e03-b-product-review.md`](./w4-e03-b-product-review.md)
+- [`w4-e03-b-validation-report.md`](./w4-e03-b-validation-report.md)
 - [`w4-e02-product-owner-close-record.md`](./w4-e02-product-owner-close-record.md)
 - [`w4-e02-product-scope.md`](./w4-e02-product-scope.md)
 - [`w4-e02-security-review.md`](./w4-e02-security-review.md)
@@ -162,10 +167,12 @@ W4-E03 Planning Review PASS (2026-08-28)
         ↓
 W4-E03 Planning Approval RECORDED (2026-08-28)
         ↓
-W4-E03-a Inventory & Exchange Connectivity Baseline — COMPLETE (2026-08-28, local)
+W4-E03-a Inventory & Exchange Connectivity Baseline — COMPLETE (2026-08-28)
         ↓
-STOP — Await Product Owner review before W4-E03-b
-Do not open W4-E03-b without explicit PO task
+W4-E03-b Durable OKX Exchange Connectivity Foundation — COMPLETE (2026-08-28, local)
+        ↓
+STOP — Await Product Owner review before W4-E03-c
+Do not open W4-E03-c without explicit PO task
 Do not open W4-E04…E05 without separate PO sequencing
 (No Live Trading)
 (No Wave 4 COMPLETE)
@@ -199,8 +206,9 @@ Do not open W4-E04…E05 without separate PO sequencing
 | W4-E03 Planning Review PASS                | **Recorded**                      |
 | W4-E03 Planning APPROVED                   | **Recorded**                      |
 | W4-E03 Implementation                      | **AUTHORIZED**                    |
-| W4-E03-a COMPLETE                          | **Recorded** (local, uncommitted) |
-| W4-E03-b opened                            | **Not claimed**                   |
+| W4-E03-a COMPLETE                          | **Recorded**                      |
+| W4-E03-b COMPLETE                          | **Recorded** (local, uncommitted) |
+| W4-E03-c opened                            | **Not claimed**                   |
 | W4-E03 CLOSED                              | **Not claimed**                   |
 | W4-E04 … E05 opened                        | **Not claimed**                   |
 | Live Trading                               | **Not claimed**                   |
@@ -209,4 +217,4 @@ Do not open W4-E04…E05 without separate PO sequencing
 
 ---
 
-**STOP.** W4-E03-a **COMPLETE** (local). Await Product Owner review before W4-E03-b. Do not declare OKX Connected, Exchange Connectivity Complete, or Wave 4 COMPLETE.
+**STOP.** W4-E03-b **COMPLETE** (local). Await Product Owner review before W4-E03-c. Do not declare OKX Connected, Exchange Connectivity Complete, or Wave 4 COMPLETE.

@@ -96,29 +96,29 @@ Full row detail: machine inventory `W4_E03_A_EXCHANGE_CONNECTIVITY_INVENTORY` an
 
 ## OKX Exchange Connectivity EPHEMERAL artifacts (summary)
 
-| Artifact ID                                    | Owner                  | Justification                            |
-| ---------------------------------------------- | ---------------------- | ---------------------------------------- |
-| `rest-okx-planned-handshake`                   | exchange-connectivity  | not_implemented — active honesty blocker |
-| `rest-okx-planned-capability`                  | exchange-connectivity  | Capability probe stub                    |
-| `rest-okx-v5-api-handshake-target`             | exchange-adapter       | **Missing** real OKX REST                |
-| `rest-exchanges-connect-okx` / `disconnect`    | exchange-adapter       | Stub simulated connect                   |
-| `rest-market-data-public-okx`                  | market-data-foundation | Planned public REST                      |
-| `ws-okx-public-stream`                         | live-market-data       | **Missing**                              |
-| `ws-okx-adapter-subscribe-stubs`               | exchange-adapter       | Noop subscription hooks                  |
-| `ws-okx-authenticated-user-data`               | exchange-adapter       | **Missing**                              |
-| `auth-handshake-vault-retrieve-okx`            | exchange-connectivity  | Not reached — planned adapter fails      |
-| `auth-okx-request-signing`                     | exchange-adapter       | **Missing**                              |
-| `lifecycle-exchange-manager-okx`               | exchange-adapter       | Orchestrates stub connect                |
-| `lifecycle-exchange-session-projection-okx`    | exchange-connectivity  | VALIDATION_FAILED projection             |
-| `runtime-okx-adapter-stub-connected-flag`      | exchange-adapter       | Simulated in-memory flag                 |
-| `runtime-exchange-registry-okx`                | exchange-adapter       | In-process; lost on restart              |
-| `runtime-exchange-factory-okx`                 | exchange-adapter       | Stub factory entry point                 |
-| `persist-okx-connection-continuity`            | exchange-adapter       | **Missing** — W4-E03-b target            |
-| `ui-honest-connected-label-okx`                | connection-management  | **Partial/missing**                      |
-| `dep-platform-readiness-exchange-connectivity` | operational-continuity | Aggregate only; no OKX row               |
-| `dep-blocked-by-planned-handshake`             | exchange-connectivity  | Active honesty blocker                   |
-| `dep-blocked-by-stub-adapter-okx`              | exchange-adapter       | Active honesty blocker                   |
-| `dep-observed-by-live-trading-engine-okx`      | live-trading-deferred  | Live-only consumer                       |
+| Artifact ID                                    | Owner                  | Justification                                                |
+| ---------------------------------------------- | ---------------------- | ------------------------------------------------------------ |
+| `rest-okx-planned-handshake`                   | exchange-connectivity  | not_implemented — active honesty blocker                     |
+| `rest-okx-planned-capability`                  | exchange-connectivity  | Capability probe stub                                        |
+| `rest-okx-v5-api-handshake-target`             | exchange-adapter       | **Missing** real OKX REST                                    |
+| `rest-exchanges-connect-okx` / `disconnect`    | exchange-adapter       | Stub simulated connect                                       |
+| `rest-market-data-public-okx`                  | market-data-foundation | Planned public REST                                          |
+| `ws-okx-public-stream`                         | live-market-data       | **Missing**                                                  |
+| `ws-okx-adapter-subscribe-stubs`               | exchange-adapter       | Noop subscription hooks                                      |
+| `ws-okx-authenticated-user-data`               | exchange-adapter       | **Missing**                                                  |
+| `auth-handshake-vault-retrieve-okx`            | exchange-connectivity  | Not reached — planned adapter fails                          |
+| `auth-okx-request-signing`                     | exchange-adapter       | **Missing**                                                  |
+| `lifecycle-exchange-manager-okx`               | exchange-adapter       | Orchestrates stub connect                                    |
+| `lifecycle-exchange-session-projection-okx`    | exchange-connectivity  | VALIDATION_FAILED projection                                 |
+| `runtime-okx-adapter-stub-connected-flag`      | exchange-adapter       | Simulated in-memory flag                                     |
+| `runtime-exchange-registry-okx`                | exchange-adapter       | In-process; lost on restart                                  |
+| `runtime-exchange-factory-okx`                 | exchange-adapter       | Stub factory entry point                                     |
+| `persist-okx-connection-continuity`            | exchange-adapter       | **SURVIVE** — W4-E03-b persistence; W4-E03-c restart hydrate |
+| `ui-honest-connected-label-okx`                | connection-management  | **Partial/missing**                                          |
+| `dep-platform-readiness-exchange-connectivity` | operational-continuity | Aggregate only; no OKX row                                   |
+| `dep-blocked-by-planned-handshake`             | exchange-connectivity  | Active honesty blocker                                       |
+| `dep-blocked-by-stub-adapter-okx`              | exchange-adapter       | Active honesty blocker                                       |
+| `dep-observed-by-live-trading-engine-okx`      | live-trading-deferred  | Live-only consumer                                           |
 
 ---
 

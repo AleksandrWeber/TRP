@@ -923,6 +923,26 @@ model WorkspaceBybitExchangeConnectivityState {
   @@map("workspace_bybit_exchange_connectivity_states")
 }
 
+/// W4-E03-b — Durable OKX exchange connectivity state on existing Exchange Adapter owner.
+/// Workspace-scoped OKX connection/adapter anchors. No synthetic connected flag.
+/// Persistence only — restart recovery and operational continuity are later slices.
+model WorkspaceOkxExchangeConnectivityState {
+  workspaceId                       String    @id @map("workspace_id")
+  schemaVersion                     Int       @default(1) @map("schema_version")
+  exchangeIdentifier                String    @default("OKX") @map("exchange_identifier")
+  connectionAnchorConnectionId      String?   @map("connection_anchor_connection_id")
+  connectionAnchorRecordedAt        DateTime? @map("connection_anchor_recorded_at")
+  connectionAnchorRecordedByActorId String?   @map("connection_anchor_recorded_by_actor_id")
+  adapterAnchorExchangeConnectionId String?   @map("adapter_anchor_exchange_connection_id")
+  adapterAnchorRecordedAt           DateTime? @map("adapter_anchor_recorded_at")
+  adapterAnchorRecordedByActorId    String?   @map("adapter_anchor_recorded_by_actor_id")
+  correlationId                     String?   @map("correlation_id")
+  integrityMetadataHash             String?   @map("integrity_metadata_hash")
+  updatedAt                         DateTime  @updatedAt @map("updated_at")
+
+  @@map("workspace_okx_exchange_connectivity_states")
+}
+
 /// RC-18 US292 durable RecoveryState (E17 §4.5 / P0-1).
 /// Source of truth for RecoveryPhase progress within Session RECOVERING.
 /// Distinct from Session lifecycle status and aggregate RecoveryStatus.

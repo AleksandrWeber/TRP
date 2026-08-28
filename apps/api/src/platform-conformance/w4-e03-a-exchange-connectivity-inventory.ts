@@ -531,14 +531,15 @@ export const W4_E03_A_EXCHANGE_CONNECTIVITY_INVENTORY: readonly W4E03AInventoryR
       artifact: 'OKX connection continuity / restart recovery durable anchors',
       kind: 'persistence-candidate' as const,
       owner: 'exchange-adapter' as const,
-      durabilityClass: 'EPHEMERAL' as const,
+      durabilityClass: 'SURVIVE' as const,
       currentStatus:
-        'Missing — no prisma-okx-exchange-connectivity-state.repository.ts; W4-E03-b target',
+        'Implemented — WorkspaceOkxExchangeConnectivityState (W4-E03-b); restart hydrate is W4-E03-c',
       honestyRequirement:
-        'No OKX continuity substrate today; extend W4-E01/E02 patterns in W4-E03-b; no synthetic Connected',
-      futureW4E03Responsibility: 'W4-E03-b' as const,
-      evidencePath: 'docs/project/version-3/wave-4/w4-e03-implementation-package.md',
-      existsToday: false,
+        'Persistence substrate only; no synthetic Connected; restart recovery is post-W4-E03-c',
+      futureW4E03Responsibility: 'W4-E03-c' as const,
+      evidencePath:
+        'apps/api/src/modules/exchange-adapter/persistence/prisma-okx-exchange-connectivity-state.repository.ts',
+      existsToday: true,
       isPaperProduct: true,
       authorizesExchangeConnectivityComplete: false,
     }),

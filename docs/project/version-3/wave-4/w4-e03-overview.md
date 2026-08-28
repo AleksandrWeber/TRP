@@ -2,7 +2,7 @@
 
 **Document:** W4-E03 OKX Real I/O Overview
 **Date:** 2026-08-28
-**Status:** Product-facing planning record. W4-E03-a inventory **COMPLETE** (local). Not OKX Connected. Not Exchange Connectivity Complete.
+**Status:** Product-facing record. W4-E03-b durable persistence **COMPLETE** (local). Not OKX Connected. Not Exchange Connectivity Complete.
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E03 (V3-E03 · CM-09)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -94,8 +94,9 @@ W4-E01 Binance Real I/O and W4-E02 Bybit Real I/O are **CLOSED** (foundation: in
 - W4-E03 Planning OPEN — **recorded**
 - W4-E03 Planning Review PASS — **recorded**
 - W4-E03 Planning APPROVED — **recorded**
-- W4-E03-a COMPLETE — **recorded** (local, uncommitted)
-- W4-E03-b opened — **not claimed**
+- W4-E03-a COMPLETE — **recorded**
+- W4-E03-b COMPLETE — **recorded** (local, uncommitted)
+- W4-E03-c opened — **not claimed**
 - W4-E03 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -106,4 +107,4 @@ W4-E01 Binance Real I/O and W4-E02 Bybit Real I/O are **CLOSED** (foundation: in
 
 ---
 
-**STOP.** W4-E03-a inventory **COMPLETE** (local). Await Product Owner review before W4-E03-b. Do not declare OKX Connected or W4-E03 CLOSED.
+**STOP.** W4-E03-b durable persistence **COMPLETE** (local). Await Product Owner review before W4-E03-c. Do not declare OKX Connected or W4-E03 CLOSED.
