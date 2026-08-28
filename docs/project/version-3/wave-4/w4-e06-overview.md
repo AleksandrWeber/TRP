@@ -2,7 +2,7 @@
 
 **Document:** W4-E06 Wave 4 Completion Review Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W4-E06-b **COMPLETE** — awaiting Product Owner review. Not Wave 4 COMPLETE. Not Exchange Connectivity Complete.
+**Status:** Product-facing record. W4-E06-c **COMPLETE** — awaiting Product Owner review. Not Wave 4 COMPLETE. Not Exchange Connectivity Complete.
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E06 (governance roll-up after V3-E01…E05)
 **Nature:** Customer / operator / Product Owner description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -102,18 +102,18 @@ Wave 5 (Notifications) and Wave 6 (Live Trading) remain blocked by wave sequenci
 
 ---
 
-## W4-E06-b outcome (exit criteria evidence)
+## W4-E06-c outcome (cross-package integration verification)
 
-W4-E06-b mapped Master Plan and Execution Roadmap Wave 4 exit criteria to W4-E01…E05 Close Evidence with honest satisfaction labels. Operators gain **no new exchange I/O** from this slice. Deferred product outcomes remain explicit in the deferral register.
+W4-E06-c verified W4-E01…E05 integrate as one internally consistent Exchange Connectivity capability with preserved architecture, ownership, governance, and Honest Product boundaries. Operators gain **no new exchange I/O** from this slice.
 
-Evidence matrix: [`w4-e06-b-wave-exit-criteria.md`](./w4-e06-b-wave-exit-criteria.md)
+Verification report: [`w4-e06-c-cross-package-integration.md`](./w4-e06-c-cross-package-integration.md)
 
 ---
 
 ## Explicit non-claims
 
 - W4-E06 CLOSED — **not claimed**
-- W4-E06-c opened — **not claimed**
+- W4-E06-d opened — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
 - Live Trading — **not claimed**
@@ -121,4 +121,4 @@ Evidence matrix: [`w4-e06-b-wave-exit-criteria.md`](./w4-e06-b-wave-exit-criteri
 
 ---
 
-**STOP.** W4-E06-b **COMPLETE** — awaiting Product Owner review. Do not declare Wave 4 COMPLETE. Do not open W4-E06-c without separate Product Owner authorization.
+**STOP.** W4-E06-c **COMPLETE** — awaiting Product Owner review. Do not declare Wave 4 COMPLETE. Do not open W4-E06-d without separate Product Owner authorization.
