@@ -531,15 +531,15 @@ export const W4_E02_A_EXCHANGE_CONNECTIVITY_INVENTORY: readonly W4E02AInventoryR
       artifact: 'Bybit connection continuity / restart recovery durable anchors',
       kind: 'persistence-candidate' as const,
       owner: 'exchange-adapter' as const,
-      durabilityClass: 'EPHEMERAL' as const,
+      durabilityClass: 'SURVIVE' as const,
       currentStatus:
-        'W4-E01-b substrate structurally venue-capable; BYBIT anchors not evidenced or tested — W4-E02-b',
+        'Implemented — WorkspaceBybitExchangeConnectivityState (W4-E02-b); restart hydrate is W4-E02-c',
       honestyRequirement:
-        'Extend W4-E01-b patterns for BYBIT; no second persistence owner; no synthetic Connected',
-      futureW4E02Responsibility: 'W4-E02-b' as const,
+        'Persistence substrate only; no synthetic Connected; restart recovery is post-W4-E02-c',
+      futureW4E02Responsibility: 'W4-E02-c' as const,
       evidencePath:
-        'apps/api/src/modules/exchange-adapter/persistence/prisma-exchange-connectivity-state.repository.ts',
-      existsToday: false,
+        'apps/api/src/modules/exchange-adapter/persistence/prisma-bybit-exchange-connectivity-state.repository.ts',
+      existsToday: true,
       isPaperProduct: true,
       authorizesExchangeConnectivityComplete: false,
     }),

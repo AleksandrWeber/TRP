@@ -11,10 +11,13 @@ import { ExchangeRegistry } from './exchange-registry';
 import { ExchangeRouter } from './exchange-router';
 import { PrismaExchangeAdapterRepository } from './prisma-exchange-adapter.repository';
 import { ExchangeConnectivityPersistenceService } from './exchange-connectivity-persistence.service';
+import { BybitExchangeConnectivityPersistenceService } from './bybit-exchange-connectivity-persistence.service';
 import { ExchangeConnectivityRecoveryStore } from './exchange-connectivity-recovery-store';
 import { ExchangeConnectivityRestartRecoveryService } from './exchange-connectivity-restart-recovery.service';
 import { EXCHANGE_CONNECTIVITY_STATE_REPOSITORY } from './domain/exchange-connectivity-state.repository';
+import { BYBIT_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY } from './domain/bybit-exchange-connectivity-state.repository';
 import { PrismaExchangeConnectivityStateRepository } from './persistence/prisma-exchange-connectivity-state.repository';
+import { PrismaBybitExchangeConnectivityStateRepository } from './persistence/prisma-bybit-exchange-connectivity-state.repository';
 
 /**
  * US209 Exchange Adapter Layer — Nest module.
@@ -35,7 +38,14 @@ import { PrismaExchangeConnectivityStateRepository } from './persistence/prisma-
       useFactory: (prisma: PrismaService) => new PrismaExchangeConnectivityStateRepository(prisma),
       inject: [PrismaService],
     },
+    {
+      provide: BYBIT_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
+      useFactory: (prisma: PrismaService) =>
+        new PrismaBybitExchangeConnectivityStateRepository(prisma),
+      inject: [PrismaService],
+    },
     ExchangeConnectivityPersistenceService,
+    BybitExchangeConnectivityPersistenceService,
     ExchangeConnectivityRecoveryStore,
     ExchangeConnectivityRestartRecoveryService,
     ExchangeRegistry,
@@ -53,7 +63,9 @@ import { PrismaExchangeConnectivityStateRepository } from './persistence/prisma-
     ExchangeRouter,
     EXCHANGE_ADAPTER_REPOSITORY,
     EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
+    BYBIT_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
     ExchangeConnectivityPersistenceService,
+    BybitExchangeConnectivityPersistenceService,
     ExchangeConnectivityRecoveryStore,
     ExchangeConnectivityRestartRecoveryService,
   ],

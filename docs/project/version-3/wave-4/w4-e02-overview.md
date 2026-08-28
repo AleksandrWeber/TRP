@@ -39,7 +39,7 @@ W4-E01 foundation is consumed — not redesigned.
 5. See **Error**, **Expired**, or permission problems when the vendor reports them.
 6. **Disconnect** without SSH or editing `.env`.
 
-**Not available today** — W4-E02-a inventory only. `BybitExchangeAdapter` remains a stub; validate returns planned `not_implemented`.
+**Not available today** — W4-E02-a inventory and W4-E02-b durable persistence only. `BybitExchangeAdapter` remains a stub; validate returns planned `not_implemented`.
 
 ---
 
@@ -50,6 +50,14 @@ W4-E02-a catalogued all exchange connectivity artifacts for Bybit Real I/O. **No
 Binding inventory finding: `BybitExchangeAdapter` remains a **stub** (simulated connect). Connection Management **validate** routes to `PlannedExchangeHandshakeAdapter(BYBIT)` which returns **not_implemented** — no real vendor round-trip. W4-E01 CLOSED foundation is **consumed** (structurally venue-capable; BYBIT anchors not evidenced). Exchange Connectivity **does not** survive restart from this slice.
 
 Inventory: [`w4-e02-a-exchange-connectivity-inventory.md`](./w4-e02-a-exchange-connectivity-inventory.md)
+
+---
+
+## W4-E02-b durable persistence baseline (2026-08-28)
+
+W4-E02-b added `workspace_bybit_exchange_connectivity_states` on the **Exchange Adapter** owner. Explicit BYBIT connection and adapter anchors can be persisted per workspace. **No operator-visible behaviour changed.** No synthetic Connected flag.
+
+Registry: `w4-e02-b-durable-exchange-connectivity.ts`
 
 ---
 
@@ -103,6 +111,7 @@ W4-E01 Binance Real I/O is **CLOSED** (foundation: inventory, durable persistenc
 
 - W4-E02 Planning APPROVED — **recorded**
 - W4-E02-a inventory — **COMPLETE**
+- W4-E02-b durable persistence — **COMPLETE**
 - W4-E02 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -113,4 +122,4 @@ W4-E01 Binance Real I/O is **CLOSED** (foundation: inventory, durable persistenc
 
 ---
 
-**STOP.** W4-E02-a **COMPLETE**. Await explicit Product Owner instruction before W4-E02-b. Do not declare Bybit Connected.
+**STOP.** W4-E02-b **COMPLETE**. Await explicit Product Owner instruction before W4-E02-c. Do not declare Bybit Connected.
