@@ -2,7 +2,7 @@
 
 **Document:** Version 3 Wave 3 Progress
 **Audience:** Product Owner
-**Date:** 2026-08-27
+**Date:** 2026-08-28
 **Wave:** 3 — Durability, Operations & Continuity
 **Nature:** Simple Product Owner status. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -39,34 +39,37 @@
 **Close Evidence (O01):** [`w3-o01-close-package-report.md`](./w3-o01-close-package-report.md) · [`w3-o01-package-summary.md`](./w3-o01-package-summary.md)
 **Prior wave:** Wave 2 **COMPLETE** — [`../wave-2-completion-report.md`](../wave-2-completion-report.md)
 **Completion Review:** [`wave-3-completion-review.md`](./wave-3-completion-review.md)
+**Completion record:** [`../wave-3-completion-report.md`](../wave-3-completion-report.md)
+**Next wave:** Wave 4 Planning **OPEN** — [`../wave-4/wave-4-progress.md`](../wave-4/wave-4-progress.md)
 
 ---
 
 ## Authority
 
-| Item                         | Status                                                       |
-| ---------------------------- | ------------------------------------------------------------ |
-| Version 3                    | In progress                                                  |
-| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**                                       |
-| Wave 2 Connection Management | **COMPLETE**                                                 |
-| Wave 3 Planning Package      | **APPROVED**                                                 |
-| W3-O01                       | **APPROVED** · **CLOSED** by Product Owner                   |
-| W3-O02 Planning Package      | **APPROVED**                                                 |
-| W3-O02                       | **APPROVED** · **CLOSED** by Product Owner                   |
-| W3-O02-a…e                   | **COMPLETE** (APPROVED)                                      |
-| W3-O03 Planning Package      | **APPROVED**                                                 |
-| W3-O03                       | **APPROVED** · **CLOSED** by Product Owner                   |
-| W3-O03-a…e                   | **COMPLETE** (APPROVED)                                      |
-| W3-O04 Planning Package      | **APPROVED**                                                 |
-| W3-O04                       | **APPROVED** · **CLOSED** by Product Owner                   |
-| W3-O04-a…e                   | **COMPLETE** (APPROVED)                                      |
-| W3-O05 Planning Package      | **APPROVED**                                                 |
-| W3-O05                       | **APPROVED** · **CLOSED** by Product Owner                   |
-| W3-O06                       | **Not opened**                                               |
-| Wave 3 Implementation        | **All packages CLOSED** (O01–O05) — Wave 3 Completion Review |
-| Live Trading                 | **Not claimed**                                              |
-| Wave 7 AI Platform Complete  | **Not claimed**                                              |
-| Master Plan                  | **FROZEN** — unchanged                                       |
+| Item                         | Status                                     |
+| ---------------------------- | ------------------------------------------ |
+| Version 3                    | In progress                                |
+| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**                     |
+| Wave 2 Connection Management | **COMPLETE**                               |
+| Wave 3 Planning Package      | **APPROVED**                               |
+| W3-O01                       | **APPROVED** · **CLOSED** by Product Owner |
+| W3-O02 Planning Package      | **APPROVED**                               |
+| W3-O02                       | **APPROVED** · **CLOSED** by Product Owner |
+| W3-O02-a…e                   | **COMPLETE** (APPROVED)                    |
+| W3-O03 Planning Package      | **APPROVED**                               |
+| W3-O03                       | **APPROVED** · **CLOSED** by Product Owner |
+| W3-O03-a…e                   | **COMPLETE** (APPROVED)                    |
+| W3-O04 Planning Package      | **APPROVED**                               |
+| W3-O04                       | **APPROVED** · **CLOSED** by Product Owner |
+| W3-O04-a…e                   | **COMPLETE** (APPROVED)                    |
+| W3-O05 Planning Package      | **APPROVED**                               |
+| W3-O05                       | **APPROVED** · **CLOSED** by Product Owner |
+| W3-O06                       | **Not opened**                             |
+| Wave 3                       | **COMPLETE**                               |
+| Wave 4 Planning Package      | **OPEN** (W4-E01 planning)                 |
+| Live Trading                 | **Not claimed**                            |
+| Wave 7 AI Platform Complete  | **Not claimed**                            |
+| Master Plan                  | **FROZEN** — unchanged                     |
 
 ---
 
@@ -86,14 +89,14 @@ Order is binding: **O01 → O02 → O03 → O04 → O05**.
 
 ## Current package
 
-| Field                     | Value                                                             |
-| ------------------------- | ----------------------------------------------------------------- |
-| **Package**               | Wave 3 Completion Review                                          |
-| **Master Plan / Roadmap** | V3-O01…O05 — Durability, Operations & Continuity                  |
-| **Stage**                 | W3-O05 **CLOSED** — Wave 3 Completion Review                      |
-| **Approval**              | All Wave 3 packages (O01–O05) **CLOSED** by Product Owner         |
-| **Predecessor**           | W3-O05 Monitoring & Security Health **CLOSED** by Product Owner   |
-| **Implementation slices** | All Wave 3 slices **COMPLETE** — Wave 3 COMPLETE **not declared** |
+| Field                     | Value                                                           |
+| ------------------------- | --------------------------------------------------------------- |
+| **Package**               | Wave 3 **COMPLETE** — Wave 4 Planning **OPEN** (W4-E01)         |
+| **Master Plan / Roadmap** | V3-O01…O05 — Durability, Operations & Continuity (CLOSED)       |
+| **Stage**                 | Wave 3 **COMPLETE**; Wave 4 Planning **OPEN**                   |
+| **Approval**              | All Wave 3 packages (O01–O05) **CLOSED** by Product Owner       |
+| **Predecessor**           | W3-O05 Monitoring & Security Health **CLOSED** by Product Owner |
+| **Implementation slices** | All Wave 3 slices **COMPLETE**; Wave 3 **COMPLETE**             |
 
 Companions:
 
@@ -183,10 +186,14 @@ W3-O05-e COMPLETE (Close Evidence assembled)
         ↓
 W3-O05 CLOSED by Product Owner
         ↓
-Wave 3 Completion Review
+Wave 3 COMPLETE (Product Owner)
         ↓
-STOP — Await Product Owner decision on Wave 3 COMPLETE
-Do not declare Wave 3 COMPLETE without Product Owner act
+Wave 4 Planning OPEN (W4-E01)
+        ↓
+STOP — Await Product Owner Planning Review for W4-E01
+Do not declare Planning Review PASS or Planning APPROVED
+Do not open W4-E01-a
+Do not begin Wave 4 implementation
 Do not declare Monitoring Complete or Security Health Complete
 Do not declare ADL-008 ACCEPTED (separate disposition act)
 Do not declare Production Restart Safe automatically
@@ -194,6 +201,7 @@ Do not declare Kill Switch execution COMPLETE (foundation only)
 Do not open W3-O06 without separate Product Owner sequencing
 (All Wave 3 packages O01–O05 CLOSED)
 (No Live Trading)
+(No Wave 4 Exchange Connectivity Complete)
 (No Business Continuity / High Availability)
 ```
 
@@ -203,7 +211,9 @@ Do not open W3-O06 without separate Product Owner sequencing
 
 | Claim                                      | Status                                        |
 | ------------------------------------------ | --------------------------------------------- |
-| Wave 3 COMPLETE                            | **Not claimed**                               |
+| Wave 3 COMPLETE                            | **COMPLETE** (Product Owner)                  |
+| Wave 4 Planning OPEN                       | **OPEN** (W4-E01)                             |
+| W4-E01 Planning APPROVED                   | **Not claimed**                               |
 | W3-O01 Closed                              | **CLOSED** (Product Owner)                    |
 | W3-O02 CLOSED                              | **CLOSED** (Product Owner)                    |
 | W3-O03 Planning Approved                   | **APPROVED**                                  |

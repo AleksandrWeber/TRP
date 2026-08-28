@@ -2,92 +2,80 @@
 
 **Audience:** Permanent AI Product Owner / Chief Architect
 **Nature:** Product Owner status reference
-**As-of:** 2026-08-27
+**As-of:** 2026-08-28
 **Do not:** predict implementation outcomes beyond approved planning
 
-Primary PO progress file: [`../wave-3/wave-3-progress.md`](../wave-3/wave-3-progress.md)
-Wave 3 planning summary: [`../wave-3/wave-3-planning-summary.md`](../wave-3/wave-3-planning-summary.md)
-W3-O03 planning summary: [`../wave-3/w3-o03-planning-summary.md`](../wave-3/w3-o03-planning-summary.md)
-W3-O02 planning summary: [`../wave-3/w3-o02-planning-summary.md`](../wave-3/w3-o02-planning-summary.md)
-Implementation Readiness (O01): [`../wave-3/implementation-readiness-checklist.md`](../wave-3/implementation-readiness-checklist.md)
+Primary PO progress file (Wave 4): [`../wave-4/wave-4-progress.md`](../wave-4/wave-4-progress.md)
+Wave 4 planning summary: [`../wave-4/wave-4-planning-summary.md`](../wave-4/wave-4-planning-summary.md)
+Implementation Readiness (E01): [`../wave-4/implementation-readiness-checklist.md`](../wave-4/implementation-readiness-checklist.md)
+Wave 3 completion: [`../wave-3-completion-report.md`](../wave-3-completion-report.md)
+Wave 3 progress (historical): [`../wave-3/wave-3-progress.md`](../wave-3/wave-3-progress.md)
 Wave 2 completion: [`../wave-2-completion-report.md`](../wave-2-completion-report.md)
-Wave 2 progress (historical): [`../wave-2/wave-2-progress.md`](../wave-2/wave-2-progress.md)
 
 ---
 
 ## Completed Waves
 
-| Wave  | Name                  | Status                 | Record                                                                                 |
-| ----- | --------------------- | ---------------------- | -------------------------------------------------------------------------------------- |
-| **1** | Security Foundation   | **CERTIFIED COMPLETE** | [`../version-3-wave-1-completion-report.md`](../version-3-wave-1-completion-report.md) |
-| **2** | Connection Management | **COMPLETE**           | [`../wave-2-completion-report.md`](../wave-2-completion-report.md)                     |
+| Wave  | Name                                | Status                 | Record                                                                                 |
+| ----- | ----------------------------------- | ---------------------- | -------------------------------------------------------------------------------------- |
+| **1** | Security Foundation                 | **CERTIFIED COMPLETE** | [`../version-3-wave-1-completion-report.md`](../version-3-wave-1-completion-report.md) |
+| **2** | Connection Management               | **COMPLETE**           | [`../wave-2-completion-report.md`](../wave-2-completion-report.md)                     |
+| **3** | Durability, Operations & Continuity | **COMPLETE**           | [`../wave-3-completion-report.md`](../wave-3-completion-report.md)                     |
 
-### Wave 1 packages (all Closed for Wave 1 scope)
+### Wave 3 packages (all Closed)
 
-| Package | Name                          | Close status                                                          |
-| ------- | ----------------------------- | --------------------------------------------------------------------- |
-| V3-S01  | Authentication & Session      | CLOSED                                                                |
-| V3-S02  | RBAC Product                  | CLOSED                                                                |
-| V3-S03  | Secret Vault & Encryption     | Platform Complete CLOSED (Customer Complete remains open under Vault) |
-| V3-S04  | OWASP & API Hardening         | CLOSED                                                                |
-| V3-S05  | Audit Trail Foundation        | CLOSED (Foundation; F-05)                                             |
-| V3-S06  | Workspace Isolation Hardening | CLOSED                                                                |
-
-### Wave 2 packages (all Closed)
-
-| Package | Name                             | Close status |
-| ------- | -------------------------------- | ------------ |
-| W2-S01  | Connection Management            | CLOSED       |
-| W2-S02  | Exchange Connectivity Foundation | CLOSED       |
-| W2-S03  | Market Data Foundation           | CLOSED       |
-| W2-S04  | Paper Trading Foundation         | CLOSED       |
-| W2-S05  | AI Connectivity Foundation       | CLOSED       |
+| Package | Name                              | Close status |
+| ------- | --------------------------------- | ------------ |
+| W3-O01  | Durable Analytical Stores         | CLOSED       |
+| W3-O02  | Notification Durable Queue        | CLOSED       |
+| W3-O03  | Recovery Residual US295 / ADL-008 | CLOSED       |
+| W3-O04  | Durable Kill Switch Product       | CLOSED       |
+| W3-O05  | Monitoring & Security Health      | CLOSED       |
 
 ---
 
 ## Current Wave
 
-| Field                          | Value                                                                                                         |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| **Wave**                       | **3 — Durability, Operations & Continuity**                                                                   |
-| **Wave Planning**              | **APPROVED**                                                                                                  |
-| **Wave COMPLETE claimed?**     | **No**                                                                                                        |
-| **Implementation authorized?** | **Partial** — W3-O01 **CLOSED**; W3-O02 **CLOSED**; W3-O03 planning open, **not** approved for implementation |
-| **Live Trading claimed?**      | **No**                                                                                                        |
-| **Next**                       | Product Owner Planning Review of W3-O03 before any implementation                                             |
+| Field                          | Value                                                             |
+| ------------------------------ | ----------------------------------------------------------------- |
+| **Wave**                       | **4 — Exchange Connectivity**                                     |
+| **Wave Planning**              | **OPEN**                                                          |
+| **Wave COMPLETE claimed?**     | **No**                                                            |
+| **Implementation authorized?** | **No** — W4-E01 planning **OPEN**; not APPROVED                   |
+| **Live Trading claimed?**      | **No**                                                            |
+| **Next**                       | Product Owner Planning Review of W4-E01 before any implementation |
 
 ---
 
 ## Current Package
 
-| Field                     | Value                                                                                                                  |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| **Package**               | **W3-O03 Recovery Residual (US295 / ADL-008)** (Master Plan **V3-O03**)                                                |
-| **Stage**                 | Planning **COMPLETE** — awaiting Product Owner Review and Approval                                                     |
-| **Persistence stance**    | Existing Runtime Recovery / Session / ADL ownership only — **no new persistence owner**; **no second recovery domain** |
-| **Implementation slices** | **Not opened** (a…e planned only)                                                                                      |
-| **Previous**              | W3-O02 Notification Durable Queue **CLOSED**                                                                           |
+| Field                     | Value                                                                                                          |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Package**               | **W4-E01 Binance Real I/O** (Master Plan **V3-E01** · CM-07)                                                   |
+| **Stage**                 | Planning **OPEN** — awaiting Product Owner Planning Review and Approval                                        |
+| **Exchange I/O stance**   | Extend Exchange Adapter factory only — **no engine clone**; Vault-backed credentials; Connected ≠ Live Trading |
+| **Implementation slices** | **Not opened** (a…e planned only)                                                                              |
+| **Previous**              | Wave 3 **COMPLETE**                                                                                            |
 
-Companions under [`../wave-3/`](../wave-3/):
+Companions under [`../wave-4/`](../wave-4/):
 
-- `w3-o03-implementation-package.md`
-- `w3-o03-product-scope.md`
-- `w3-o03-security-review.md`
-- `w3-o03-validation-plan.md`
-- `recovery-residual-overview.md`
-- `w3-o03-planning-summary.md`
-- `durability-overview.md`
-- `wave-3-progress.md`
+- `w4-e01-implementation-package.md`
+- `w4-e01-product-scope.md`
+- `w4-e01-security-review.md`
+- `w4-e01-validation-plan.md`
+- `w4-e01-overview.md`
+- `wave-4-planning-summary.md`
+- `wave-4-progress.md`
 
 ---
 
 ## STOP
 
-Do **not** approve or start W3-O03 implementation until Product Owner Planning Review.
-Do **not** create W3-O03-a until Product Owner Approves planning and writes / sequences an implementation task.
-Do **not** redesign US290–US294 recovery / Business Continuity / HA / Monitoring / Kill Switch from this package.
-Do **not** claim Live Trading.
-Do **not** claim Wave 7 AI Platform Complete.
+Do **not** declare Planning Review PASS or Planning APPROVED until Product Owner acts.
+Do **not** create W4-E01-a until Product Owner Approves planning and writes / sequences an implementation task.
+Do **not** claim Live Trading or live order submission.
+Do **not** claim Wave 4 Exchange Connectivity Complete.
+Do **not** claim Bybit / OKX / Kraken connected (E02–E04).
 Do **not** modify the Master Plan.
-Do **not** introduce a new persistence owner or second recovery domain.
-Do **not** declare Wave 3 COMPLETE.
+Do **not** introduce an engine clone per venue.
+Do **not** begin Wave 4 implementation until Planning is Approved.
