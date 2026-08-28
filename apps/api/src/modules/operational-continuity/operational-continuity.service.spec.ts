@@ -8,12 +8,20 @@ import { OperationalContinuityAudit } from './operational-continuity-audit';
 import { resetAnalyticalOwnerBootOutcomes } from '../../persistence/analytical-owner-continuity-status';
 import { resetMonitoringHealthContinuity } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
 import { resetKrakenExchangeConnectivityContinuity } from '../exchange-adapter/domain/kraken-exchange-connectivity-continuity-status';
+import {
+  recordVenuePermissionRecoveryStart,
+  recordVenuePermissionRecoverySuccess,
+  resetVenuePermissionContinuity,
+} from '../exchange-adapter/domain/venue-permission-continuity-status';
+import { buildVenuePermissionVerificationAnchorState } from '../exchange-adapter/domain/durable-venue-permission-verification-state';
+import { buildVenuePermissionVerificationRecoveryDiagnostics } from '../exchange-adapter/domain/venue-permission-restart-recovery';
 
 describe('OperationalContinuityService', () => {
   beforeEach(() => {
     resetAnalyticalOwnerBootOutcomes();
     resetMonitoringHealthContinuity();
     resetKrakenExchangeConnectivityContinuity();
+    resetVenuePermissionContinuity();
   });
 
   it('mixed owner states: unavailable + ready + degraded dependents', async () => {
@@ -75,6 +83,8 @@ describe('OperationalContinuityService', () => {
     expect(typeof projection.recoveryDurationMs).toBe('number');
     expect(projection.krakenExchangeConnectivity).toBeTruthy();
     expect(projection.krakenExchangeConnectivity?.operationalState).toBe('Unavailable');
+    expect(projection.venuePermissionVerification).toBeTruthy();
+    expect(projection.venuePermissionVerification?.operationalState).toBe('Unavailable');
   });
 
   it('workspace-safe projection is read-only (no mutation API on service)', () => {
@@ -83,5 +93,52 @@ describe('OperationalContinuityService', () => {
       recovering: false,
     });
     expect(Object.isFrozen(owners)).toBe(true);
+  });
+
+  it('includes venue permission verification continuity derived from W4-E05-c recovery record', async () => {
+    resetVenuePermissionContinuity();
+    const anchor = buildVenuePermissionVerificationAnchorState({
+      workspaceId: 'ws-1',
+      exchangeIdentifier: 'BINANCE',
+      connectionId: 'conn-1',
+      adapterExchangeConnectionId: 'ex-1',
+      permissionVerificationId: 'pv-1',
+      vendorPermissionHash: 'vendor-hash',
+      integrityMetadataHash: 'integrity-hash',
+      correlationId: 'corr-1',
+      recordedAt: '2026-08-29T10:00:00.000Z',
+      prior: null,
+    });
+    if (!anchor.ok) throw new Error('expected anchor');
+    recordVenuePermissionRecoveryStart();
+    recordVenuePermissionRecoverySuccess({
+      diagnostics: buildVenuePermissionVerificationRecoveryDiagnostics([anchor.state]),
+    });
+
+    const audit = {
+      recordOwnerState: vi.fn(async () => undefined),
+      recordRecoveryCompleted: vi.fn(async () => undefined),
+    } as unknown as OperationalContinuityAudit;
+    const service = new OperationalContinuityService(audit);
+    const projection = await service.applyBootOutcomesForTest(
+      (
+        [
+          'strategy-library',
+          'exchange-scope',
+          'knowledge-lake',
+          'market-profile',
+          'market-qualification',
+          'market-state',
+          'reporting',
+          'notification-delivery',
+          'trading-orchestrator',
+          'runtime-enforcement',
+        ] as const
+      ).map((owner) => ({ owner, outcome: 'ready' as const })),
+    );
+
+    expect(projection.venuePermissionVerification?.operationalState).toBe('Ready');
+    expect(projection.venuePermissionVerification?.verifiedAnchorCount).toBe(1);
+    expect(projection.platformState).toBe('Ready');
   });
 });

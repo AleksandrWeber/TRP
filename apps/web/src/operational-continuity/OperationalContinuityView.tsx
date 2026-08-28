@@ -437,6 +437,72 @@ export function OperationalContinuityView({ readiness }: Props) {
       </section>
 
       <section>
+        <h2 className="text-lg font-semibold text-slate-100">Venue Permission Verification</h2>
+        {readiness.venuePermissionVerification ? (
+          <dl
+            className="mt-4 grid gap-3 sm:grid-cols-2"
+            data-testid="venue-permission-verification-continuity"
+          >
+            <div>
+              <dt className="text-sm text-slate-400">
+                Venue Permission Verification operational state
+              </dt>
+              <dd className="text-slate-100" data-testid="venue-permission-verification-state">
+                {readiness.venuePermissionVerification.operationalState}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Owner readiness</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="venue-permission-verification-owner-readiness"
+              >
+                {readiness.venuePermissionVerification.ownerReadiness}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery timestamp</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="venue-permission-verification-recovery-timestamp"
+              >
+                {readiness.venuePermissionVerification.recoveryTimestamp ?? '—'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery duration</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="venue-permission-verification-recovery-duration"
+              >
+                {formatDuration(readiness.venuePermissionVerification.recoveryDurationMs)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Restored rows</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="venue-permission-verification-restored-count"
+              >
+                {readiness.venuePermissionVerification.restoredCount}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Verified anchors</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="venue-permission-verification-verified-anchor-count"
+              >
+                {readiness.venuePermissionVerification.verifiedAnchorCount}
+              </dd>
+            </div>
+          </dl>
+        ) : (
+          <p className="mt-2 text-slate-400">Not evaluated</p>
+        )}
+      </section>
+
+      <section>
         <h2 className="text-lg font-semibold text-slate-100">Owner operational state</h2>
         <table className="mt-3 w-full text-left text-sm text-slate-200">
           <thead className="text-slate-400">

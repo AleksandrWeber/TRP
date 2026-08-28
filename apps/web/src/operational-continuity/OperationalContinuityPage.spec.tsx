@@ -99,6 +99,16 @@ const ready: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: [],
   },
+  venuePermissionVerification: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:00:00.000Z',
+    recoveryDurationMs: 42,
+    restoredCount: 0,
+    verifiedAnchorCount: 0,
+    integrityVerified: true,
+    workspaceIds: [],
+  },
 };
 
 const degraded: OperationalContinuityReadinessView = {
@@ -204,6 +214,16 @@ const degraded: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: ['ws-1'],
   },
+  venuePermissionVerification: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:01:00.000Z',
+    recoveryDurationMs: 100,
+    restoredCount: 1,
+    verifiedAnchorCount: 1,
+    integrityVerified: true,
+    workspaceIds: ['ws-1'],
+  },
 };
 
 describe('OperationalContinuityView', () => {
@@ -288,5 +308,14 @@ describe('OperationalContinuityView', () => {
     expect(html).toContain('Connection anchors');
     expect(html).not.toContain('Connected');
     expect(html).not.toContain('Kraken Connected');
+  });
+
+  it('shows Venue Permission Verification operational state within platform readiness only', () => {
+    const html = renderToStaticMarkup(<OperationalContinuityView readiness={ready} />);
+    expect(html).toContain('Venue Permission Verification');
+    expect(html).toContain('Venue Permission Verification operational state');
+    expect(html).toContain('Verified anchors');
+    expect(html).not.toContain('Permission verified');
+    expect(html).not.toContain('Live Trading');
   });
 });

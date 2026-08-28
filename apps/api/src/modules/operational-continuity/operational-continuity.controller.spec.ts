@@ -20,6 +20,7 @@ describe('OperationalContinuityController', () => {
     bybitExchangeConnectivity: null,
     okxExchangeConnectivity: null,
     krakenExchangeConnectivity: null,
+    venuePermissionVerification: null,
   });
 
   let continuity: OperationalContinuityService;

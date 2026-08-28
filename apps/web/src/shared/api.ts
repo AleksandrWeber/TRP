@@ -1048,6 +1048,8 @@ export type OperationalContinuityReadinessView = {
   okxExchangeConnectivity: OkxExchangeConnectivityContinuityView | null;
   /** W4-E04-d — Kraken Exchange Connectivity operational continuity. */
   krakenExchangeConnectivity: KrakenExchangeConnectivityContinuityView | null;
+  /** W4-E05-d — Venue Permission Verification operational continuity. */
+  venuePermissionVerification: VenuePermissionContinuityView | null;
 };
 
 export type NotificationQueueContinuityView = {
@@ -1136,6 +1138,18 @@ export type KrakenExchangeConnectivityContinuityView = {
   restoredCount: number;
   connectionAnchorCount: number;
   adapterAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+};
+
+export type VenuePermissionContinuityView = {
+  operationalState: OperationalContinuityState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  verifiedAnchorCount: number;
   integrityVerified: boolean;
   workspaceIds: readonly string[];
 };

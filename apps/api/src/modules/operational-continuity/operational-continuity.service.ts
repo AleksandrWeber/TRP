@@ -9,6 +9,7 @@
  * W4-E02-d adds Bybit Exchange Connectivity operational continuity (derived).
  * W4-E03-d adds OKX Exchange Connectivity operational continuity (derived).
  * W4-E04-d adds Kraken Exchange Connectivity operational continuity (derived).
+ * W4-E05-d adds Venue Permission Verification operational continuity (derived).
  * Recovery itself remains W3-O01-c / W3-O02-c / W3-O04-c / W3-O05-c only. No new persistence / BC / HA / monitoring evaluation.
  */
 
@@ -38,6 +39,8 @@ import { getOkxExchangeConnectivityContinuityRecord } from '../exchange-adapter/
 import { buildOkxExchangeConnectivityContinuityProjection } from '../exchange-adapter/domain/okx-exchange-connectivity-operational-continuity';
 import { getKrakenExchangeConnectivityContinuityRecord } from '../exchange-adapter/domain/kraken-exchange-connectivity-continuity-status';
 import { buildKrakenExchangeConnectivityContinuityProjection } from '../exchange-adapter/domain/kraken-exchange-connectivity-operational-continuity';
+import { getVenuePermissionContinuityRecord } from '../exchange-adapter/domain/venue-permission-continuity-status';
+import { buildVenuePermissionContinuityProjection } from '../exchange-adapter/domain/venue-permission-operational-continuity';
 import { OperationalContinuityAudit } from './operational-continuity-audit';
 import {
   buildPlatformOperationalProjection,
@@ -91,6 +94,11 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         continuity: null,
       }),
       krakenExchangeConnectivity: buildKrakenExchangeConnectivityContinuityProjection({
+        recovering: true,
+        ownerReadiness: 'ready',
+        continuity: null,
+      }),
+      venuePermissionVerification: buildVenuePermissionContinuityProjection({
         recovering: true,
         ownerReadiness: 'ready',
         continuity: null,
@@ -203,6 +211,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildVenuePermissionView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getVenuePermissionContinuityRecord();
+    return buildVenuePermissionContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -266,6 +286,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       krakenExchangeConnectivity: this.buildKrakenExchangeConnectivityView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      venuePermissionVerification: this.buildVenuePermissionView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -377,6 +401,23 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           ? null
           : recoveryDurationMs),
     });
+    const venuePermissionVerificationBase = this.buildVenuePermissionView({
+      recovering: false,
+      ownerReadiness: 'ready',
+    });
+    const venuePermissionVerification = Object.freeze({
+      ...venuePermissionVerificationBase,
+      recoveryTimestamp:
+        venuePermissionVerificationBase.recoveryTimestamp ??
+        (venuePermissionVerificationBase.operationalState === 'Recovering'
+          ? null
+          : recoveryTimestamp),
+      recoveryDurationMs:
+        venuePermissionVerificationBase.recoveryDurationMs ??
+        (venuePermissionVerificationBase.operationalState === 'Recovering'
+          ? null
+          : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -388,6 +429,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       bybitExchangeConnectivity,
       okxExchangeConnectivity,
       krakenExchangeConnectivity,
+      venuePermissionVerification,
     });
     this.finalized = true;
 

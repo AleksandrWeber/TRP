@@ -2,7 +2,7 @@
 
 **Document:** W4-E05 Venue Permission Verification Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W4-E05 Planning **APPROVED** (2026-08-28). W4-E05-a inventory baseline **COMPLETE** (2026-08-28). W4-E05-b durable foundation **COMPLETE** (2026-08-28). W4-E05-c restart recovery **COMPLETE** (2026-08-28).
+**Status:** Product-facing record. W4-E05 Planning **APPROVED** (2026-08-28). W4-E05-a inventory baseline **COMPLETE** (2026-08-28). W4-E05-b durable foundation **COMPLETE** (2026-08-28). W4-E05-c restart recovery **COMPLETE** (2026-08-28). W4-E05-d operational continuity **COMPLETE** (2026-08-28).
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E05 (V3-E05 · feeds LT-02 later)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -115,6 +115,12 @@ W4-E05-c delivered deterministic restart recovery for W4-E05-b persisted venue p
 Implementation: [`w4-e05-c-implementation-report.md`](./w4-e05-c-implementation-report.md)
 Persistence foundation: [`w4-e05-b-implementation-report.md`](./w4-e05-b-implementation-report.md)
 
+## W4-E05-d status (operational continuity foundation)
+
+W4-E05-d delivered Venue Permission Verification operational readiness projection within Platform Operational Readiness. Readiness is derived exclusively from W4-E05-c recovery outcomes. No persistence changes, no restart recovery changes, no vendor permission probe I/O.
+
+Implementation: [`w4-e05-d-implementation-report.md`](./w4-e05-d-implementation-report.md)
+
 ---
 
 ## Explicit non-claims
@@ -123,7 +129,8 @@ Persistence foundation: [`w4-e05-b-implementation-report.md`](./w4-e05-b-impleme
 - W4-E05-a inventory baseline — **recorded**
 - W4-E05-b durable foundation — **recorded**
 - W4-E05-c restart recovery — **recorded**
-- W4-E05-d opened — **not claimed**
+- W4-E05-d operational continuity — **recorded**
+- W4-E05-e opened — **not claimed**
 - W4-E05 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -133,4 +140,4 @@ Persistence foundation: [`w4-e05-b-implementation-report.md`](./w4-e05-b-impleme
 
 ---
 
-**STOP.** W4-E05-c restart recovery **COMPLETE** (2026-08-28). Await Product Owner review before W4-E05-d. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.
+**STOP.** W4-E05-d operational continuity **COMPLETE** (2026-08-28). Await Product Owner review before W4-E05-e. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.
