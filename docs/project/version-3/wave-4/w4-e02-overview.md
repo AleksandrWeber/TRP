@@ -2,7 +2,7 @@
 
 **Document:** W4-E02 Bybit Real I/O Overview
 **Date:** 2026-08-28
-**Status:** Product-facing planning record. Planning **OPEN**. Awaiting Product Owner Review. Not implementation. Not Bybit Connected. Not Exchange Connectivity Complete.
+**Status:** Product-facing planning record. W4-E02-a inventory **COMPLETE**. Not Bybit Connected. Not Exchange Connectivity Complete.
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E02 (V3-E02 · CM-08)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -39,7 +39,17 @@ W4-E01 foundation is consumed — not redesigned.
 5. See **Error**, **Expired**, or permission problems when the vendor reports them.
 6. **Disconnect** without SSH or editing `.env`.
 
-**Not available today** — planning OPEN only. `BybitExchangeAdapter` remains a stub.
+**Not available today** — W4-E02-a inventory only. `BybitExchangeAdapter` remains a stub; validate returns planned `not_implemented`.
+
+---
+
+## W4-E02-a inventory baseline (2026-08-28)
+
+W4-E02-a catalogued all exchange connectivity artifacts for Bybit Real I/O. **No operator-visible behaviour changed.**
+
+Binding inventory finding: `BybitExchangeAdapter` remains a **stub** (simulated connect). Connection Management **validate** routes to `PlannedExchangeHandshakeAdapter(BYBIT)` which returns **not_implemented** — no real vendor round-trip. W4-E01 CLOSED foundation is **consumed** (structurally venue-capable; BYBIT anchors not evidenced). Exchange Connectivity **does not** survive restart from this slice.
+
+Inventory: [`w4-e02-a-exchange-connectivity-inventory.md`](./w4-e02-a-exchange-connectivity-inventory.md)
 
 ---
 
@@ -91,7 +101,8 @@ W4-E01 Binance Real I/O is **CLOSED** (foundation: inventory, durable persistenc
 
 ## Explicit non-claims
 
-- W4-E02 Planning APPROVED — **not claimed**
+- W4-E02 Planning APPROVED — **recorded**
+- W4-E02-a inventory — **COMPLETE**
 - W4-E02 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -102,4 +113,4 @@ W4-E01 Binance Real I/O is **CLOSED** (foundation: inventory, durable persistenc
 
 ---
 
-**STOP.** Planning **OPEN** only. Await Product Owner Planning Review. Do not open W4-E02-a.
+**STOP.** W4-E02-a **COMPLETE**. Await explicit Product Owner instruction before W4-E02-b. Do not declare Bybit Connected.

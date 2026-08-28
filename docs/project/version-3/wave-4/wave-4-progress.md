@@ -30,13 +30,13 @@
 
 ## Wave 4 packages (Master Plan / Execution Roadmap)
 
-| Package    | Roadmap ID | Name                          | Status                                    |
-| ---------- | ---------- | ----------------------------- | ----------------------------------------- |
-| **W4-E01** | **V3-E01** | Binance Real I/O              | **CLOSED** by Product Owner (2026-08-28)  |
-| **W4-E02** | **V3-E02** | Bybit Real I/O                | Planning **APPROVED** — Awaiting W4-E02-a |
-| **W4-E03** | **V3-E03** | OKX Real I/O                  | **Not opened**                            |
-| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **Not opened**                            |
-| **W4-E05** | **V3-E05** | Venue Permission Verification | **Not opened**                            |
+| Package    | Roadmap ID | Name                          | Status                                                    |
+| ---------- | ---------- | ----------------------------- | --------------------------------------------------------- |
+| **W4-E01** | **V3-E01** | Binance Real I/O              | **CLOSED** by Product Owner (2026-08-28)                  |
+| **W4-E02** | **V3-E02** | Bybit Real I/O                | W4-E02-a **COMPLETE** — awaiting **W4-E02-b** instruction |
+| **W4-E03** | **V3-E03** | OKX Real I/O                  | **Not opened**                                            |
+| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **Not opened**                                            |
+| **W4-E05** | **V3-E05** | Venue Permission Verification | **Not opened**                                            |
 
 Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
@@ -44,15 +44,15 @@ Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
 ## Current package
 
-| Field                     | Value                                  |
-| ------------------------- | -------------------------------------- |
-| **Package**               | **W4-E02** Bybit Real I/O              |
-| **Master Plan / Roadmap** | V3-E02 · CM-08                         |
-| **Stage**                 | **Awaiting W4-E02-a**                  |
-| **Approval**              | **RECORDED** — Planning **APPROVED**   |
-| **Implementation**        | **AUTHORIZED** — slices not yet opened |
-| **Predecessor**           | W4-E01 **CLOSED** by Product Owner     |
-| **Implementation slices** | **Not opened**                         |
+| Field                     | Value                                                     |
+| ------------------------- | --------------------------------------------------------- |
+| **Package**               | **W4-E02** Bybit Real I/O                                 |
+| **Master Plan / Roadmap** | V3-E02 · CM-08                                            |
+| **Stage**                 | W4-E02-a **COMPLETE** — awaiting **W4-E02-b** instruction |
+| **Approval**              | **RECORDED** — Planning **APPROVED**                      |
+| **Implementation**        | **AUTHORIZED** — W4-E02-a **COMPLETE**; b–e **closed**    |
+| **Predecessor**           | W4-E01 **CLOSED** by Product Owner                        |
+| **Implementation slices** | **W4-E02-a COMPLETE**; W4-E02-b…e remain **closed**       |
 
 Companions:
 
@@ -64,6 +64,8 @@ Companions:
 - [`w4-e02-planning-summary.md`](./w4-e02-planning-summary.md)
 - [`w4-e02-planning-review.md`](./w4-e02-planning-review.md)
 - [`w4-e02-planning-approval.md`](./w4-e02-planning-approval.md)
+- [`w4-e02-a-exchange-connectivity-inventory.md`](./w4-e02-a-exchange-connectivity-inventory.md)
+- [`w4-e02-a-validation-report.md`](./w4-e02-a-validation-report.md)
 - [`w4-e01-product-owner-close-record.md`](./w4-e01-product-owner-close-record.md)
 - [`wave-4-planning-summary.md`](./wave-4-planning-summary.md)
 
@@ -105,8 +107,10 @@ W4-E02 Planning Review PASS (2026-08-28)
         ↓
 W4-E02 Planning Approval RECORDED (2026-08-28)
         ↓
-STOP — Await W4-E02-a
-Implementation AUTHORIZED — W4-E02-a not yet opened
+W4-E02-a Inventory & Exchange Connectivity Baseline — COMPLETE (2026-08-28)
+        ↓
+STOP — Await explicit Product Owner instruction before W4-E02-b
+Do not open W4-E02-b until PO sequencing
 Do not open W4-E03…E05 without separate PO sequencing
 (No Live Trading)
 (No Wave 4 COMPLETE)
@@ -128,7 +132,8 @@ Do not open W4-E03…E05 without separate PO sequencing
 | W4-E02 Planning Review PASS    | **Recorded**    |
 | W4-E02 Planning APPROVED       | **Recorded**    |
 | W4-E02 Implementation          | **AUTHORIZED**  |
-| W4-E02-a opened                | **Not claimed** |
+| W4-E02-a COMPLETE              | **Recorded**    |
+| W4-E02-b opened                | **Not claimed** |
 | W4-E03 … E05 opened            | **Not claimed** |
 | Live Trading                   | **Not claimed** |
 | Production Ready               | **Not claimed** |
@@ -136,4 +141,4 @@ Do not open W4-E03…E05 without separate PO sequencing
 
 ---
 
-**STOP.** W4-E02 Planning **APPROVED**. Current stage: **Awaiting W4-E02-a**. Implementation **AUTHORIZED**. Do not open W4-E02-a without explicit Product Owner instruction. Do not open W4-E02-b…e. Do not declare Wave 4 COMPLETE.
+**STOP.** W4-E02-a **COMPLETE**. Await explicit Product Owner instruction before W4-E02-b. Do not open W4-E02-b…e. Do not declare Wave 4 COMPLETE or Bybit Connected.
