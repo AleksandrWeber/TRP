@@ -4,7 +4,7 @@
 **Audience:** Product Owner
 **Date:** 2026-08-28
 **Wave:** 5 — Notification Platform
-**Status:** W5-N01 **CLOSED** · W5-N02 Final Integration Verification **PASS** — Awaiting Product Owner Final Close
+**Status:** W5-N01 **CLOSED** · W5-N02 **CLOSED** — Awaiting Product Owner instruction for W5-N03 Planning Package
 **Nature:** Simple Product Owner status. Not an RC. Not an ADR. Not a Master Plan revision.
 
 **Overview:** [`wave-5-overview.md`](./wave-5-overview.md)
@@ -20,33 +20,33 @@
 
 ## Authority
 
-| Item                         | Status                                                   |
-| ---------------------------- | -------------------------------------------------------- |
-| Version 3                    | In progress                                              |
-| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**                                   |
-| Wave 2 Connection Management | **COMPLETE**                                             |
-| Wave 3 Durability & Ops      | **COMPLETE**                                             |
-| Wave 4 Exchange Connectivity | **CLOSED** by Product Owner (2026-08-28)                 |
-| Wave 5 Planning              | **APPROVED**                                             |
-| W5-N01                       | **CLOSED** by Product Owner (2026-08-28)                 |
-| W5-N02 Planning              | **APPROVED** (2026-08-28)                                |
-| W5-N02 Planning Review       | **PASS** (2026-08-28)                                    |
-| W5-N02 Planning Approval     | **RECORDED** (2026-08-28)                                |
-| W5-N02 Implementation        | **AUTHORIZED** — Final Integration Verification **PASS** |
-| W5-N03 / N04                 | **Not authorized**                                       |
-| Live Trading                 | **Not claimed**                                          |
-| Master Plan                  | **FROZEN** — unchanged                                   |
+| Item                         | Status                                   |
+| ---------------------------- | ---------------------------------------- |
+| Version 3                    | In progress                              |
+| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**                   |
+| Wave 2 Connection Management | **COMPLETE**                             |
+| Wave 3 Durability & Ops      | **COMPLETE**                             |
+| Wave 4 Exchange Connectivity | **CLOSED** by Product Owner (2026-08-28) |
+| Wave 5 Planning              | **APPROVED**                             |
+| W5-N01                       | **CLOSED** by Product Owner (2026-08-28) |
+| W5-N02                       | **CLOSED** by Product Owner (2026-08-28) |
+| W5-N02 Planning              | **APPROVED** (2026-08-28)                |
+| W5-N02 Planning Review       | **PASS** (2026-08-28)                    |
+| W5-N02 Planning Approval     | **RECORDED** (2026-08-28)                |
+| W5-N03 / N04                 | **Not authorized**                       |
+| Live Trading                 | **Not claimed**                          |
+| Master Plan                  | **FROZEN** — unchanged                   |
 
 ---
 
 ## Wave 5 packages (Master Plan / Execution Roadmap)
 
-| Package    | Roadmap ID | Name                        | Status                                                                       |
-| ---------- | ---------- | --------------------------- | ---------------------------------------------------------------------------- |
-| **W5-N01** | **V3-N01** | Production Telegram Bot API | **CLOSED** by Product Owner (2026-08-28)                                     |
-| **W5-N02** | **V3-N02** | Email (SMTP)                | Final Integration Verification **PASS** — Awaiting Product Owner Final Close |
-| **W5-N03** | **V3-N03** | Slack / Discord / Teams     | Not authorized                                                               |
-| **W5-N04** | **V3-N04** | Push                        | Not authorized                                                               |
+| Package    | Roadmap ID | Name                        | Status                                   |
+| ---------- | ---------- | --------------------------- | ---------------------------------------- |
+| **W5-N01** | **V3-N01** | Production Telegram Bot API | **CLOSED** by Product Owner (2026-08-28) |
+| **W5-N02** | **V3-N02** | Email (SMTP)                | **CLOSED** by Product Owner (2026-08-28) |
+| **W5-N03** | **V3-N03** | Slack / Discord / Teams     | Not authorized                           |
+| **W5-N04** | **V3-N04** | Push                        | Not authorized                           |
 
 Order is binding: **N01 → N02 → N03 → N04**.
 
@@ -78,21 +78,21 @@ Order is binding: **N01 → N02 → N03 → N04**.
 
 ## Wave status
 
-| Field                                 | Value                                                                                                       |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| **Wave**                              | **5 — Notification Platform** — **OPEN**                                                                    |
-| **Status**                            | W5-N01 **CLOSED** · W5-N02 Final Integration Verification **PASS** — Awaiting Product Owner Final Close     |
-| **First package**                     | **W5-N01** Production Telegram Bot API (V3-N01 · CM-11) — **CLOSED**                                        |
-| **Current package**                   | **W5-N02** Email SMTP (V3-N02 · CM-12) — Final Integration Verification **PASS**                            |
-| **Wave 5 Planning Review**            | **PASS** (2026-08-28) — [`wave-5-planning-review.md`](./wave-5-planning-review.md)                          |
-| **Wave 5 Planning Approval**          | **RECORDED** (2026-08-28) — [`wave-5-planning-approval.md`](./wave-5-planning-approval.md)                  |
-| **W5-N02 Planning Review**            | **PASS** (2026-08-28) — [`w5-n02-planning-review.md`](./w5-n02-planning-review.md)                          |
-| **W5-N02 Planning Approval**          | **RECORDED** (2026-08-28) — [`w5-n02-planning-approval.md`](./w5-n02-planning-approval.md)                  |
-| **Implementation authorized?**        | **Yes** — W5-N02-a/b/c/d/e complete; Final Integration Verification **PASS**                                |
-| **Implementation slices opened?**     | **Final Integration Verification PASS** — Awaiting Product Owner Final Close                                |
-| **W5-N02 Final Integration**          | [`w5-n02-final-integration-verification.md`](./w5-n02-final-integration-verification.md) — **PASS** (local) |
-| **W5-N01 Product Owner Close Record** | [`w5-n01-product-owner-close-record.md`](./w5-n01-product-owner-close-record.md) — **CLOSED** (2026-08-28)  |
-| **W5-N02 planning documents**         | [`w5-n02-planning-summary.md`](./w5-n02-planning-summary.md) and companions                                 |
+| Field                                 | Value                                                                                                           |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Wave**                              | **5 — Notification Platform** — **OPEN**                                                                        |
+| **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** — Awaiting Product Owner instruction for W5-N03 Planning Package          |
+| **First package**                     | **W5-N01** Production Telegram Bot API (V3-N01 · CM-11) — **CLOSED**                                            |
+| **Current package**                   | **W5-N02** Email SMTP (V3-N02 · CM-12) — **CLOSED**                                                             |
+| **Wave 5 Planning Review**            | **PASS** (2026-08-28) — [`wave-5-planning-review.md`](./wave-5-planning-review.md)                              |
+| **Wave 5 Planning Approval**          | **RECORDED** (2026-08-28) — [`wave-5-planning-approval.md`](./wave-5-planning-approval.md)                      |
+| **W5-N02 Planning Review**            | **PASS** (2026-08-28) — [`w5-n02-planning-review.md`](./w5-n02-planning-review.md)                              |
+| **W5-N02 Planning Approval**          | **RECORDED** (2026-08-28) — [`w5-n02-planning-approval.md`](./w5-n02-planning-approval.md)                      |
+| **Implementation authorized?**        | **Yes** — W5-N02-a/b/c/d/e complete; Final Integration Verification **PASS**                                    |
+| **W5-N02 Final Integration**          | [`w5-n02-final-integration-verification.md`](./w5-n02-final-integration-verification.md) — **PASS** (`5b72450`) |
+| **W5-N01 Product Owner Close Record** | [`w5-n01-product-owner-close-record.md`](./w5-n01-product-owner-close-record.md) — **CLOSED** (2026-08-28)      |
+| **W5-N02 Product Owner Close Record** | [`w5-n02-product-owner-close-record.md`](./w5-n02-product-owner-close-record.md) — **CLOSED** (2026-08-28)      |
+| **W5-N02 planning documents**         | [`w5-n02-planning-summary.md`](./w5-n02-planning-summary.md) and companions                                     |
 
 ---
 
@@ -139,44 +139,47 @@ W5-N02-d COMPLETE (b9f1a62) — Email Notification Operational Continuity Founda
         ↓
 W5-N02-e COMPLETE (09b7f10) — Package Close Evidence
         ↓
-Final Package Integration Verification PASS (local)
+Final Package Integration Verification PASS (5b72450)
         ↓
-STOP — Await Product Owner Final Close
+W5-N02 CLOSED by Product Owner (2026-08-28)
+        ↓
+STOP — Await Product Owner instruction for W5-N03 Planning Package
 (No SMTP implementation)
 (No email sending)
 (No outbound communication)
 (No Notification Platform Complete)
 (No Wave 5 COMPLETE)
 (No Live Trading)
+(No W5-N03 opened)
 ```
 
 ---
 
 ## Explicit non-claims
 
-| Claim                              | Status                             |
-| ---------------------------------- | ---------------------------------- |
-| Wave 5 COMPLETE                    | **Not claimed**                    |
-| W5-N01 CLOSED                      | **Recorded** (2026-08-28)          |
-| W5-N02 Planning APPROVED           | **Recorded** (2026-08-28)          |
-| W5-N02 Planning Review PASS        | **Recorded** (2026-08-28)          |
-| W5-N02 Implementation authorized   | **Recorded** — W5-N02-a/b/c/d only |
-| W5-N02-a COMPLETE                  | **Recorded** (`a7241ea`)           |
-| W5-N02-b COMPLETE                  | **Recorded** (`bbaa96c`)           |
-| W5-N02-c COMPLETE                  | **Recorded** (`d4d8bc3`)           |
-| W5-N02-d COMPLETE                  | **Recorded** (`b9f1a62`)           |
-| W5-N02-e COMPLETE                  | **Recorded** (`09b7f10`)           |
-| W5-N02 Final Integration PASS      | **Recorded** (local)               |
-| W5-N02 CLOSED                      | **Not claimed**                    |
-| Email SMTP implemented             | **Not claimed**                    |
-| Email notifications operational    | **Not claimed**                    |
-| Telegram Bot implemented           | **Not claimed**                    |
-| Telegram notifications operational | **Not claimed**                    |
-| Notification Platform Complete     | **Not claimed**                    |
-| Production Ready                   | **Not claimed**                    |
-| Live Notifications                 | **Not claimed**                    |
-| Master Plan changed                | **Not claimed**                    |
+| Claim                              | Status                    |
+| ---------------------------------- | ------------------------- |
+| Wave 5 COMPLETE                    | **Not claimed**           |
+| W5-N01 CLOSED                      | **Recorded** (2026-08-28) |
+| W5-N02 CLOSED                      | **Recorded** (2026-08-28) |
+| W5-N02 Planning APPROVED           | **Recorded** (2026-08-28) |
+| W5-N02 Planning Review PASS        | **Recorded** (2026-08-28) |
+| W5-N02-a COMPLETE                  | **Recorded** (`a7241ea`)  |
+| W5-N02-b COMPLETE                  | **Recorded** (`bbaa96c`)  |
+| W5-N02-c COMPLETE                  | **Recorded** (`d4d8bc3`)  |
+| W5-N02-d COMPLETE                  | **Recorded** (`b9f1a62`)  |
+| W5-N02-e COMPLETE                  | **Recorded** (`09b7f10`)  |
+| W5-N02 Final Integration PASS      | **Recorded** (`5b72450`)  |
+| W5-N03 opened                      | **Not claimed**           |
+| Email SMTP implemented             | **Not claimed**           |
+| Email notifications operational    | **Not claimed**           |
+| Telegram Bot implemented           | **Not claimed**           |
+| Telegram notifications operational | **Not claimed**           |
+| Notification Platform Complete     | **Not claimed**           |
+| Production Ready                   | **Not claimed**           |
+| Live Notifications                 | **Not claimed**           |
+| Master Plan changed                | **Not claimed**           |
 
 ---
 
-**STOP.** W5-N02 Final Integration Verification **PASS** (local). Await explicit Product Owner instruction before W5-N02 Product Owner Final Close. Do not create `w5-n02-product-owner-close-record.md`. Do not open W5-N03.
+**STOP.** W5-N02 is **CLOSED** by Product Owner. Await explicit Product Owner instruction before W5-N03 Planning Package. Do not open W5-N03. Do not begin W5-N03 implementation.

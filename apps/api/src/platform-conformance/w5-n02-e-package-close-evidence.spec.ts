@@ -178,8 +178,8 @@ describe('W5-N02-e package close evidence — integration / planning', () => {
     expect(existsSync(join(WAVE5, 'wave-5-validation-plan.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'wave-5-progress.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'wave-5-planning-approval.md'))).toBe(true);
-    expect(existsSync(join(WAVE5, 'w5-n02-product-owner-close-record.md'))).toBe(false);
-    expect(existsSync(join(WAVE5, 'w5-n02-final-integration-verification.md'))).toBe(false);
+    expect(existsSync(join(WAVE5, 'w5-n02-product-owner-close-record.md'))).toBe(true);
+    expect(existsSync(join(WAVE5, 'w5-n02-final-integration-verification.md'))).toBe(true);
   });
 
   it('transition / maturity / capability / debt registries are complete', () => {
@@ -208,26 +208,31 @@ describe('W5-N02-e package close evidence — integration / planning', () => {
     expect(view).not.toMatch(/Delivering|SMTP|Live Trading/i);
   });
 
-  it('status docs: W5-N02-e COMPLETE; package not CLOSED; Wave 5 COMPLETE not claimed', () => {
+  it('status docs: W5-N02 CLOSED by Product Owner; Wave 5 COMPLETE not claimed', () => {
     const progress = readWave5('wave-5-progress.md');
     const overview = readWave5('wave-5-overview.md');
     const close = readWave5('w5-n02-package-close-report.md');
     const summary = readWave5('w5-n02-package-summary.md');
-    expect(progress).toMatch(/W5-N02-e.*COMPLETE|COMPLETE.*W5-N02-e/i);
-    expect(progress).toMatch(/Awaiting Final Package Integration Verification/i);
-    expect(progress).toMatch(/W5-N02-a|W5-N02-b|W5-N02-c|W5-N02-d/);
-    expect(progress).not.toMatch(/W5-N02.*CLOSED by Product Owner/i);
+    const poClose = readWave5('w5-n02-product-owner-close-record.md');
+    const finalIntegration = readWave5('w5-n02-final-integration-verification.md');
+    expect(progress).toMatch(/CLOSED by Product Owner|Package \*\*CLOSED\*\*/);
+    expect(progress).toMatch(/W5-N02-a|W5-N02-b|W5-N02-c|W5-N02-d|W5-N02-e/);
+    expect(progress).toMatch(/Awaiting Product Owner instruction for W5-N03 Planning Package/i);
     expect(progress).toMatch(/Wave 5 COMPLETE[\s\S]*Not claimed|Not claimed[\s\S]*Wave 5 COMPLETE/);
-    expect(overview).toMatch(/W5-N02-e.*COMPLETE|Awaiting Final Package Integration Verification/i);
+    expect(overview).toMatch(/\*\*CLOSED\*\* by Product Owner|CLOSED by Product Owner/);
     expect(overview).toMatch(/STOP/);
     expect(overview).toMatch(
       /Email notifications operational[\s\S]*not claimed|not claimed[\s\S]*Email notifications operational/i,
     );
-    expect(close).toMatch(/Awaiting Final Package Integration Verification/i);
-    expect(close).not.toMatch(/CLOSED by Product Owner/);
+    expect(close).toMatch(
+      /Package \*\*CLOSED\*\* by Product Owner|\*\*CLOSED\*\* by Product Owner|CLOSED by Product Owner/,
+    );
     expect(close).toMatch(/Wave 5 COMPLETE[\s\S]*not claimed|not claimed[\s\S]*Wave 5 COMPLETE/i);
-    expect(summary).toMatch(/Awaiting Final Package Integration Verification/i);
-    expect(summary).not.toMatch(/CLOSED by Product Owner/);
+    expect(summary).toMatch(/\*\*CLOSED\*\* by Product Owner/);
+    expect(poClose).toMatch(
+      /officially CLOSED|Decision:\*\* \*\*CLOSED\*\*|Decision: \*\*CLOSED\*\*/,
+    );
+    expect(finalIntegration).toMatch(/Product Owner Final Close executed|CLOSED by Product Owner/);
     expect(W5_N02_E_ARCHITECTURE_CLAIMS.packageCloseEvidenceAssembled).toBe(true);
     expect(W5_N02_E_ARCHITECTURE_CLAIMS.packageDeclaredClosed).toBe(false);
   });

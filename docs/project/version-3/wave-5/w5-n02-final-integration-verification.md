@@ -299,11 +299,13 @@ Verify:
 
 **Technical debt delta:**
 
-| Kind           | Items                                                                  |
-| -------------- | ---------------------------------------------------------------------- |
-| **Resolved**   | Final Package Integration Verification (this document)                 |
-| **Introduced** | **None**                                                               |
-| **Deferred**   | Product Owner Final Close; SMTP I/O outcomes; W5-N03–N04 authorization |
+| Kind           | Items                                                  |
+| -------------- | ------------------------------------------------------ |
+| **Resolved**   | Final Package Integration Verification (this document) |
+| **Introduced** | **None**                                               |
+| **Deferred**   | SMTP I/O outcomes; W5-N03–N04 authorization            |
+
+**Post-Close note (2026-08-28):** Product Owner Final Close executed. W5-N02 **CLOSED** — see [`w5-n02-product-owner-close-record.md`](./w5-n02-product-owner-close-record.md).
 
 **PASS**
 
@@ -337,9 +339,7 @@ Engineering does **not** open W5-N03 or the next Wave package.
 
 **STOP.**
 
-Await explicit Product Owner instruction before W5-N02 Product Owner Final Close.
-
-Do **not** create `w5-n02-product-owner-close-record.md` without Product Owner act.
+W5-N02 **CLOSED** by Product Owner (2026-08-28).
 
 Do **not** declare Email SMTP implemented.
 
@@ -349,6 +349,4 @@ Do **not** declare Notification Platform Complete.
 
 Do **not** declare Wave 5 COMPLETE.
 
-Do **not** open W5-N03.
-
-Do **not** begin W5-N03 planning.
+Do **not** open W5-N03 without separate Product Owner instruction.

@@ -2,7 +2,7 @@
 
 **Document:** Wave 5 Notification Platform Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W5-N01 **CLOSED** by Product Owner (2026-08-28). Foundation scope only — not Bot API I/O, not Connected/Delivering product labels, not Notification Platform Complete.
+**Status:** Product-facing record. W5-N01 **CLOSED** · W5-N02 **CLOSED** by Product Owner (2026-08-28). Foundation scope only — not SMTP I/O, not Connected/Delivering product labels, not Notification Platform Complete.
 **Product:** Wave 5 — Notification Platform
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -37,20 +37,20 @@ It does NOT invent a second notification engine.
 5. **Disconnect** without SSH or editing `.env`.
 6. Receive routed alerts from the platform through active transports.
 
-**Not available today** — W5-N01 foundation is **CLOSED** (Telegram anchors only). W5-N02-e Email Close Evidence **COMPLETE** (local) — Email channel remains **reserved-inactive**; no production SMTP transport; Auth host mail is separate from Notification Email.
+**Not available today** — W5-N01 and W5-N02 foundations are **CLOSED** (Telegram and Email anchors only). Email channel remains **reserved-inactive**; no production SMTP transport; Auth host mail is separate from Notification Email.
 
 ---
 
 ## W5-N02-e status (Email package Close Evidence)
 
-W5-N02-e assembles complete engineering Close Evidence across slices a–d: operational chain verification, governance, architecture compliance, documentation completeness, validation completeness, and Honest Product enforcement. **No outbound Email delivery** was added. **Awaiting Final Package Integration Verification.**
+W5-N02-e assembles complete engineering Close Evidence across slices a–d: operational chain verification, governance, architecture compliance, documentation completeness, validation completeness, and Honest Product enforcement. Final Integration Verification **PASS**. Package **CLOSED** by Product Owner (2026-08-28).
 
 ```text
 Email channel = reserved-inactive today.
-Complete foundation journey evidenced: inventory → persistence → recovery → continuity → Platform Readiness.
+Complete foundation journey evidenced and CLOSED.
 SMTP transport and outbound delivery not claimed.
-Final Package Integration Verification not performed.
-Product Owner Package Close not recorded.
+Auth password-recovery mail ≠ Notification Email product.
+Connected/Delivering require real SMTP round-trip — not claimed.
 ```
 
 ---
@@ -105,12 +105,12 @@ Connected/Delivering require real SMTP round-trip — not claimed.
 
 ## Wave packages (Master Plan order)
 
-| Package | Name                        | What it delivers                                                                               | Status                                   |
-| ------- | --------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| W5-N01  | Production Telegram Bot API | Real Bot API connect / test / disconnect                                                       | **CLOSED** by Product Owner (2026-08-28) |
-| W5-N02  | Email (SMTP)                | W5-N02-e Close Evidence **COMPLETE** (local) — Awaiting Final Package Integration Verification | Planning **APPROVED**                    |
-| W5-N03  | Slack / Discord / Teams     | Real webhook transports                                                                        | Not authorized                           |
-| W5-N04  | Push                        | Real browser/device push                                                                       | Not authorized                           |
+| Package | Name                        | What it delivers                                                             | Status                                   |
+| ------- | --------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------- |
+| W5-N01  | Production Telegram Bot API | Real Bot API connect / test / disconnect                                     | **CLOSED** by Product Owner (2026-08-28) |
+| W5-N02  | Email (SMTP)                | Email Notification foundation — inventory, persistence, recovery, continuity | **CLOSED** by Product Owner (2026-08-28) |
+| W5-N03  | Slack / Discord / Teams     | Real webhook transports                                                      | Not authorized                           |
+| W5-N04  | Push                        | Real browser/device push                                                     | Not authorized                           |
 
 Order: **N01 → N02 → N03 → N04**.
 
@@ -150,6 +150,28 @@ W5-N01-e assembled complete engineering Close Evidence across slices a–d: oper
 
 ---
 
+## Customer journey (Email foundation — W5-N02)
+
+```text
+Email Notification inventory & honesty baseline (W5-N02-a)
+        ↓
+Persist canonical notification anchors (W5-N02-b)
+        ↓
+Restart application → recover anchors (W5-N02-c)
+        ↓
+Derive operational readiness (W5-N02-d)
+        ↓
+Platform Readiness emailNotification view
+        ↓
+Close Evidence + Final Integration Verification PASS
+        ↓
+Product Owner Close (2026-08-28)
+```
+
+W5-N02-e assembled complete engineering Close Evidence across slices a–d. Final Integration Verification **PASS**. Package **CLOSED** by Product Owner (2026-08-28). **Without:** SMTP I/O · Outbound Email delivery · Connected/Delivering labels · Email notifications operational.
+
+---
+
 ## Dependencies (already closed)
 
 | Wave / product               | What Wave 5 builds on                          |
@@ -171,9 +193,10 @@ W5-N01-e assembled complete engineering Close Evidence across slices a–d: oper
 - Notification Platform Complete — **not claimed**
 - Live Trading — **not claimed**
 - W5-N01 CLOSED — **recorded** (2026-08-28)
-- W5-N02-d COMPLETE — **recorded** (`b9f1a62`); not SMTP implemented
-- W5-N02-e COMPLETE (local) — **recorded**; not W5-N02 CLOSED
+- W5-N02 CLOSED — **recorded** (2026-08-28)
+- Email SMTP implemented — **not claimed**
+- Email notifications operational — **not claimed**
 
 ---
 
-**STOP.** W5-N02-e **COMPLETE** (local). Awaiting Final Package Integration Verification. Email channel remains reserved-inactive. Do not declare SMTP implemented. Do not declare Email notifications operational. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N02 **CLOSED** by Product Owner (2026-08-28). Email channel remains reserved-inactive. Do not declare Email SMTP implemented. Do not declare Email notifications operational. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Await explicit Product Owner instruction before W5-N03 Planning Package.

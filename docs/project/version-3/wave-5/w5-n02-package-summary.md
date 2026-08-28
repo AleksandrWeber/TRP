@@ -5,7 +5,7 @@
 **Master Plan / Roadmap:** V3-N02 · CM-12  
 **Evidence slice:** W5-N02-e  
 **Date:** 2026-08-28  
-**Status:** **Awaiting Final Package Integration Verification** — Product Owner Package Close not yet recorded.
+**Status:** **CLOSED** by Product Owner (2026-08-28). See [`w5-n02-product-owner-close-record.md`](./w5-n02-product-owner-close-record.md).
 
 ---
 
@@ -45,8 +45,8 @@
 | W5-N02-b | Durable Email Notification Persistence    | APPROVED / COMPLETE |
 | W5-N02-c | Email Notification Restart Recovery       | APPROVED / COMPLETE |
 | W5-N02-d | Email Notification Operational Continuity | APPROVED / COMPLETE |
-| W5-N02-e | Close Evidence                            | COMPLETE (local)    |
-| W5-N02   | Package                                   | **Not CLOSED**      |
+| W5-N02-e | Close Evidence                            | APPROVED / COMPLETE |
+| W5-N02   | Package                                   | **CLOSED**          |
 
 ---
 
@@ -59,4 +59,4 @@
 
 ---
 
-**STOP.** W5-N02-e Close Evidence assembled (local). Await Product Owner review before Final Package Integration Verification. Do not declare SMTP implemented. Do not declare Email notifications operational. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N02 **CLOSED** by Product Owner. Do not declare Email SMTP implemented. Do not declare Email notifications operational. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.
