@@ -2,7 +2,7 @@
 
 **Document:** W4-E01 Binance Real I/O Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W4-E01 Planning **APPROVED**. W4-E01-a inventory **COMPLETE**. W4-E01-b durable persistence **COMPLETE**. W4-E01-c restart recovery **COMPLETE**. W4-E01-d operational continuity **COMPLETE** (local; PO review pending). Not Package Close. Not real I/O.
+**Status:** Product-facing record. W4-E01 Planning **APPROVED**. Slices a–d **COMPLETE**. W4-E01-e Close Evidence **COMPLETE** (local; PO Package Review pending). W4-E01 **NOT CLOSED**. Not real I/O.
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E01 (V3-E01 · CM-07)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -114,15 +114,26 @@ Registry: `w4-e01-d-operational-continuity.ts`
 
 ---
 
+## W4-E01-e Close Evidence baseline (2026-08-28)
+
+W4-E01-e assembles package Close Evidence: operational walkthrough, package summary, close package report, and conformance registry verifying slices a–d form one internally consistent foundation. **W4-E01 is NOT CLOSED.** Awaiting Product Owner Package Review.
+
+Registry: `w4-e01-e-close-evidence.ts`
+
+---
+
 ## Explicit non-claims
 
 - Live Trading — **not claimed**
 - Live order submission — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
+- W4-E01 CLOSED / COMPLETE — **not claimed**
+- Exchange Connectivity Complete — **not claimed**
+- Binance Connected — **not claimed**
+- REST / WebSocket Complete — **not claimed**
 - Bybit / OKX / Kraken real I/O — **not claimed** (E02–E04)
-- W4-E01 APPROVED — **not claimed**
-- Implementation started — **not claimed**
+- Production Ready — **not claimed**
 
 ---
 
-**STOP.** Planning **OPEN** only. Await Product Owner Planning Review. Do not open W4-E01-a.
+**STOP.** Close Evidence assembled. Await Product Owner Package Review. Do not declare W4-E01 CLOSED. Do not open W4-E02.

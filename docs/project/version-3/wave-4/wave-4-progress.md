@@ -30,13 +30,13 @@
 
 ## Wave 4 packages (Master Plan / Execution Roadmap)
 
-| Package    | Roadmap ID | Name                          | Status                                                             |
-| ---------- | ---------- | ----------------------------- | ------------------------------------------------------------------ |
-| **W4-E01** | **V3-E01** | Binance Real I/O              | W4-E01-d **COMPLETE** (local) — awaiting PO review before W4-E01-e |
-| **W4-E02** | **V3-E02** | Bybit Real I/O                | **Not opened**                                                     |
-| **W4-E03** | **V3-E03** | OKX Real I/O                  | **Not opened**                                                     |
-| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **Not opened**                                                     |
-| **W4-E05** | **V3-E05** | Venue Permission Verification | **Not opened**                                                     |
+| Package    | Roadmap ID | Name                          | Status                                                                    |
+| ---------- | ---------- | ----------------------------- | ------------------------------------------------------------------------- |
+| **W4-E01** | **V3-E01** | Binance Real I/O              | W4-E01-e Close Evidence **COMPLETE** (local) — awaiting PO Package Review |
+| **W4-E02** | **V3-E02** | Bybit Real I/O                | **Not opened**                                                            |
+| **W4-E03** | **V3-E03** | OKX Real I/O                  | **Not opened**                                                            |
+| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **Not opened**                                                            |
+| **W4-E05** | **V3-E05** | Venue Permission Verification | **Not opened**                                                            |
 
 Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
@@ -44,15 +44,15 @@ Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
 ## Current package
 
-| Field                     | Value                                                              |
-| ------------------------- | ------------------------------------------------------------------ |
-| **Package**               | **W4-E01** Binance Real I/O                                        |
-| **Master Plan / Roadmap** | V3-E01 · CM-07                                                     |
-| **Stage**                 | W4-E01-d **COMPLETE** (local) — awaiting PO review before W4-E01-e |
-| **Approval**              | Planning Review **PASS**; Planning **APPROVED**                    |
-| **Implementation**        | **AUTHORIZED** — a–d **COMPLETE** (d local); e **closed**          |
-| **Predecessor**           | Wave 3 **COMPLETE**                                                |
-| **Implementation slices** | **W4-E01-a…d COMPLETE** (d local); **W4-E01-e closed**             |
+| Field                     | Value                                                                     |
+| ------------------------- | ------------------------------------------------------------------------- |
+| **Package**               | **W4-E01** Binance Real I/O                                               |
+| **Master Plan / Roadmap** | V3-E01 · CM-07                                                            |
+| **Stage**                 | W4-E01-e Close Evidence **COMPLETE** (local) — awaiting PO Package Review |
+| **Approval**              | Planning Review **PASS**; Planning **APPROVED**                           |
+| **Implementation**        | **AUTHORIZED** — a–e **COMPLETE** (e local); package **NOT CLOSED**       |
+| **Predecessor**           | Wave 3 **COMPLETE**                                                       |
+| **Implementation slices** | **W4-E01-a…e COMPLETE** (e local); package Close **pending PO**           |
 
 Companions:
 
@@ -64,9 +64,10 @@ Companions:
 - [`w4-e01-planning-review.md`](./w4-e01-planning-review.md)
 - [`w4-e01-planning-approval.md`](./w4-e01-planning-approval.md)
 - [`w4-e01-a-exchange-connectivity-inventory.md`](./w4-e01-a-exchange-connectivity-inventory.md)
-- [`w4-e01-b-implementation-report.md`](./w4-e01-b-implementation-report.md)
-- [`w4-e01-c-implementation-report.md`](./w4-e01-c-implementation-report.md)
-- [`w4-e01-d-implementation-report.md`](./w4-e01-d-implementation-report.md)
+- [`w4-e01-close-package-report.md`](./w4-e01-close-package-report.md)
+- [`w4-e01-package-summary.md`](./w4-e01-package-summary.md)
+- [`w4-e01-operational-walkthrough.md`](./w4-e01-operational-walkthrough.md)
+- [`w4-e01-e-implementation-report.md`](./w4-e01-e-implementation-report.md)
 - [`wave-4-planning-summary.md`](./wave-4-planning-summary.md)
 
 ---
@@ -88,14 +89,18 @@ W4-E01-b Durable Exchange Connectivity Foundation — COMPLETE
         ↓
 W4-E01-c Restart Recovery Foundation — COMPLETE
         ↓
-W4-E01-d Operational Continuity Foundation — COMPLETE (local)
+W4-E01-d Operational Continuity Foundation — COMPLETE
         ↓
-STOP — Await Product Owner review before W4-E01-e
-Do not open W4-E01-e
+W4-E01-e Package Close Evidence — COMPLETE (local)
+        ↓
+STOP — Await Product Owner Package Review
+Do not perform Final Package Integration Verification
+Do not create Product Owner Close Record
 Do not open W4-E02…E05
 (No Live Trading)
 (No Wave 4 COMPLETE)
 (No Exchange Connectivity Complete)
+(No W4-E01 CLOSED)
 (No engine clone per venue)
 ```
 
@@ -103,23 +108,24 @@ Do not open W4-E02…E05
 
 ## Explicit non-claims
 
-| Claim                              | Status                       |
-| ---------------------------------- | ---------------------------- |
-| Wave 4 COMPLETE                    | **Not claimed**              |
-| W4-E01 CLOSED / COMPLETE           | **Not claimed**              |
-| Binance Real I/O Complete          | **Not claimed**              |
-| Exchange Connectivity Complete     | **Not claimed**              |
-| Binance Connected (factory honest) | **Not claimed**              |
-| REST Complete                      | **Not claimed**              |
-| WebSocket Complete                 | **Not claimed**              |
-| Operational Continuity (product)   | **Platform Readiness only**  |
-| W4-E01-d committed / pushed        | **Not claimed** (local only) |
-| W4-E01-e authorized                | **Not claimed**              |
-| W4-E02 … E05 opened                | **Not claimed**              |
-| Live Trading                       | **Not claimed**              |
-| Production Ready                   | **Not claimed**              |
-| Master Plan changed                | **Not claimed**              |
+| Claim                                  | Status                       |
+| -------------------------------------- | ---------------------------- |
+| Wave 4 COMPLETE                        | **Not claimed**              |
+| W4-E01 CLOSED / COMPLETE               | **Not claimed**              |
+| Binance Real I/O Complete              | **Not claimed**              |
+| Exchange Connectivity Complete         | **Not claimed**              |
+| Binance Connected (factory honest)     | **Not claimed**              |
+| REST Complete                          | **Not claimed**              |
+| WebSocket Complete                     | **Not claimed**              |
+| Operational Continuity (product)       | **Platform Readiness only**  |
+| W4-E01-e committed / pushed            | **Not claimed** (local only) |
+| Final Package Integration Verification | **Not performed**            |
+| Product Owner Close Record             | **Not created**              |
+| W4-E02 … E05 opened                    | **Not claimed**              |
+| Live Trading                           | **Not claimed**              |
+| Production Ready                       | **Not claimed**              |
+| Master Plan changed                    | **Not claimed**              |
 
 ---
 
-**STOP.** W4-E01-d **COMPLETE** (local). Await Product Owner review before W4-E01-e. Do not begin W4-E01-e. Do not commit or push. Do not declare W4-E01 COMPLETE or Wave 4 COMPLETE.
+**STOP.** W4-E01-e Close Evidence **COMPLETE** (local). Await Product Owner Package Review. Do not commit or push. Do not declare W4-E01 CLOSED or Wave 4 COMPLETE.

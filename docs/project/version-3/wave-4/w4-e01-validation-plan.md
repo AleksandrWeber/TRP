@@ -3,7 +3,7 @@
 **Package:** W4-E01 Binance Real I/O
 **Wave:** 4 — Exchange Connectivity
 **Master Plan / Roadmap:** V3-E01 · CM-07
-**Status:** Planning **APPROVED**. W4-E01-a **COMPLETE**. W4-E01-b **COMPLETE**. W4-E01-c **COMPLETE**. W4-E01-d operational continuity **COMPLETE** (local; PO review pending). Package Close not opened.
+**Status:** Planning **APPROVED**. W4-E01-a–d **COMPLETE**. W4-E01-e Close Evidence **COMPLETE** (local; PO Package Review pending). W4-E01 **NOT CLOSED**.
 **Date:** 2026-08-28
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w4-e01-product-scope.md`](./w4-e01-product-scope.md)
@@ -27,8 +27,8 @@ Do not validate Bybit/OKX/Kraken (E02–E04), venue permission verification prod
 | W4-E01-a | Inventory & Exchange Connectivity Baseline | [`w4-e01-a-validation-report.md`](./w4-e01-a-validation-report.md) — **COMPLETE**         |
 | W4-E01-b | Durable Exchange Connectivity Foundation   | [`w4-e01-b-validation-report.md`](./w4-e01-b-validation-report.md) — **COMPLETE**         |
 | W4-E01-c | Restart Recovery Foundation                | [`w4-e01-c-validation-report.md`](./w4-e01-c-validation-report.md) — **COMPLETE**         |
-| W4-E01-d | Operational Continuity Foundation          | [`w4-e01-d-validation-report.md`](./w4-e01-d-validation-report.md) — **COMPLETE** (local) |
-| W4-E01-e | Package Close evidence                     | **Not opened**                                                                            |
+| W4-E01-d | Operational Continuity Foundation          | [`w4-e01-d-validation-report.md`](./w4-e01-d-validation-report.md) — **COMPLETE**         |
+| W4-E01-e | Package Close evidence                     | [`w4-e01-e-validation-report.md`](./w4-e01-e-validation-report.md) — **COMPLETE** (local) |
 
 ---
 
