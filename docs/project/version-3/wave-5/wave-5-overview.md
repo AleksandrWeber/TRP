@@ -2,7 +2,7 @@
 
 **Document:** Wave 5 Notification Platform Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W5-N01 foundation slices a–e **COMPLETE** (local). Close Evidence assembled. Production Telegram Bot API **not implemented**.
+**Status:** Product-facing record. W5-N01 **CLOSED** by Product Owner (2026-08-28). Foundation scope only — not Bot API I/O, not Connected/Delivering product labels, not Notification Platform Complete.
 **Product:** Wave 5 — Notification Platform
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -37,7 +37,7 @@ It does NOT invent a second notification engine.
 5. **Disconnect** without SSH or editing `.env`.
 6. Receive routed alerts from the platform through active transports.
 
-**Not available today** — W5-N01 foundation (inventory, durable anchors, restart recovery, operational continuity, Close Evidence) is complete locally. Transport remains in-memory; Bot API is not used. Real Telegram delivery awaits post-foundation product slices.
+**Not available today** — W5-N01 foundation (inventory, durable anchors, restart recovery, operational continuity, Close Evidence) is **CLOSED**. Transport remains in-memory; Bot API is not used. Real Telegram delivery awaits post-foundation product slices.
 
 ---
 
@@ -47,17 +47,18 @@ It does NOT invent a second notification engine.
 - Use Telegram to start, stop, or approve trades (forbidden forever).
 - Assume all reserved channels are shipped — unshipped ones stay honestly reserved.
 - Use notifications as a substitute for the Gate or Risk Engine.
+- Assume Telegram Bot API connect/test/disconnect is operational from W5-N01 alone (foundation CLOSED only).
 
 ---
 
 ## Wave packages (Master Plan order)
 
-| Package | Name                        | What it delivers                         |
-| ------- | --------------------------- | ---------------------------------------- |
-| W5-N01  | Production Telegram Bot API | Real Bot API connect / test / disconnect |
-| W5-N02  | Email (SMTP)                | Real SMTP transport                      |
-| W5-N03  | Slack / Discord / Teams     | Real webhook transports                  |
-| W5-N04  | Push                        | Real browser/device push                 |
+| Package | Name                        | What it delivers                         | Status                                   |
+| ------- | --------------------------- | ---------------------------------------- | ---------------------------------------- |
+| W5-N01  | Production Telegram Bot API | Real Bot API connect / test / disconnect | **CLOSED** by Product Owner (2026-08-28) |
+| W5-N02  | Email (SMTP)                | Real SMTP transport                      | Not authorized                           |
+| W5-N03  | Slack / Discord / Teams     | Real webhook transports                  | Not authorized                           |
+| W5-N04  | Push                        | Real browser/device push                 | Not authorized                           |
 
 Order: **N01 → N02 → N03 → N04**.
 
@@ -93,6 +94,8 @@ Sign in
   → Alerts route through PC-06 to active Telegram transport
 ```
 
+W5-N01-e assembled complete engineering Close Evidence across slices a–d: operational chain verification, governance, architecture compliance, and Honest Product enforcement. Final Integration Verification **PASS**. Package **CLOSED** by Product Owner (2026-08-28).
+
 ---
 
 ## Dependencies (already closed)
@@ -110,11 +113,13 @@ Sign in
 ## Explicit non-claims
 
 - Wave 5 COMPLETE — **not claimed**
-- Telegram real delivery — **not claimed** (planning only)
+- Telegram Bot implemented — **not claimed**
+- Telegram notifications operational — **not claimed**
 - Email / Slack / Discord / Teams / Push shipped — **not claimed**
+- Notification Platform Complete — **not claimed**
 - Live Trading — **not claimed**
-- Planning Review PASS — **not claimed**
+- W5-N01 CLOSED — **recorded** (2026-08-28)
 
 ---
 
-**STOP.** Wave 5 Planning **OPEN**. Await Product Owner Planning Review before implementation.
+**STOP.** W5-N01 **CLOSED** by Product Owner (2026-08-28). Do not declare Telegram Bot implemented. Do not declare Telegram notifications operational. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N02 without separate Product Owner authorization.

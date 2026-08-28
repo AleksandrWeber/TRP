@@ -309,11 +309,13 @@ Inventory (a) → Persistence (b) → Restart recovery (c) → Operational conti
 
 **Technical debt delta:**
 
-| Kind           | Items                                                                     |
-| -------------- | ------------------------------------------------------------------------- |
-| **Resolved**   | Final Package Integration Verification (this document)                    |
-| **Introduced** | **None**                                                                  |
-| **Deferred**   | Product Owner Final Close; Bot API I/O outcomes; W5-N02–N04 authorization |
+| Kind           | Items                                                                             |
+| -------------- | --------------------------------------------------------------------------------- |
+| **Resolved**   | Final Package Integration Verification (this document); Product Owner Final Close |
+| **Introduced** | **None**                                                                          |
+| **Deferred**   | Bot API I/O outcomes; W5-N02–N04 authorization                                    |
+
+**Post-Close note (2026-08-28):** Product Owner Final Close executed. W5-N01 **CLOSED** — see [`w5-n01-product-owner-close-record.md`](./w5-n01-product-owner-close-record.md).
 
 ---
 
@@ -325,9 +327,9 @@ Inventory (a) → Persistence (b) → Restart recovery (c) → Operational conti
 
 ## Engineering recommendation
 
-Engineering verification recommends **Product Owner Final Close**.
+Engineering verification recommends **Product Owner Final Close** — **executed 2026-08-28**.
 
-Engineering verification does **not** declare W5-N01 COMPLETE. Product Owner Close is a separate governance act — `w5-n01-product-owner-close-record.md` has **not** been created.
+Engineering verification does **not** declare W5-N01 COMPLETE. Product Owner Close is recorded in [`w5-n01-product-owner-close-record.md`](./w5-n01-product-owner-close-record.md).
 
 Engineering does **not** declare Telegram Bot implemented.
 
@@ -347,14 +349,14 @@ Engineering does **not** open W5-N02 or the next Wave package.
 
 **STOP.**
 
-Final Package Integration Verification **PASS**.
+W5-N01 **CLOSED** by Product Owner (2026-08-28).
 
-Await explicit Product Owner instruction before W5-N01 Product Owner Final Close.
+Do **not** declare Telegram Bot implemented.
 
-Do **not** create `w5-n01-product-owner-close-record.md` without Product Owner authorization.
+Do **not** declare Telegram notifications operational.
 
-Do **not** open W5-N02.
-
-Do **not** declare W5-N01 COMPLETE.
+Do **not** declare Notification Platform Complete.
 
 Do **not** declare Wave 5 COMPLETE.
+
+Do **not** open W5-N02 without separate Product Owner authorization.
