@@ -2,7 +2,7 @@
 
 **Document:** W4-E04 Kraken Adapter (factory) Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W4-E04-a inventory baseline **COMPLETE** — awaiting Product Owner review. Not Kraken Connected. Not W4-E04 CLOSED.
+**Status:** Product-facing record. W4-E04-a **COMPLETE**. W4-E04-b durable persistence **COMPLETE** — awaiting Product Owner review. Not Kraken Connected. Not W4-E04 CLOSED.
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E04 (V3-E04 · CM-10)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -109,12 +109,20 @@ Inventory: [`w4-e04-a-exchange-connectivity-inventory.md`](./w4-e04-a-exchange-c
 
 ---
 
+## W4-E04-b status (durable persistence foundation)
+
+W4-E04-b delivered durable workspace Kraken exchange connectivity anchors on the existing Exchange Adapter owner only. Canonical continuity anchors can be written to `workspace_kraken_exchange_connectivity_states`. No restart recovery, operational continuity, REST, WebSocket, or operator-visible behaviour changed.
+
+Report: [`w4-e04-b-implementation-report.md`](./w4-e04-b-implementation-report.md)
+
+---
+
 ## Explicit non-claims
 
 - W4-E04 Planning APPROVED — **recorded**
 - W4-E04-a inventory baseline — **recorded**
-- W4-E04-a opened for implementation review — **recorded**
-- W4-E04-b opened — **not claimed**
+- W4-E04-b durable persistence foundation — **recorded**
+- W4-E04-c opened — **not claimed**
 - W4-E04 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -124,4 +132,4 @@ Inventory: [`w4-e04-a-exchange-connectivity-inventory.md`](./w4-e04-a-exchange-c
 
 ---
 
-**STOP.** W4-E04-a inventory baseline recorded. Do not declare Kraken Connected, Exchange Connectivity Complete, or Wave 4 COMPLETE. Await Product Owner review before W4-E04-b.
+**STOP.** W4-E04-b durable persistence foundation recorded (local). Do not declare Kraken Connected, Exchange Connectivity Complete, restart recovery complete, or Wave 4 COMPLETE. Await Product Owner review before W4-E04-c.

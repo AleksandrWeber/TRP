@@ -542,14 +542,15 @@ export const W4_E04_A_EXCHANGE_CONNECTIVITY_INVENTORY: readonly W4E04AInventoryR
       artifact: 'Kraken connection continuity / restart recovery durable anchors',
       kind: 'persistence-candidate' as const,
       owner: 'exchange-adapter' as const,
-      durabilityClass: 'EPHEMERAL' as const,
+      durabilityClass: 'SURVIVE' as const,
       currentStatus:
-        'Missing — no prisma-kraken-exchange-connectivity-state.repository.ts or equivalent',
+        'Implemented — WorkspaceKrakenExchangeConnectivityState (W4-E04-b); restart hydrate is W4-E04-c',
       honestyRequirement:
-        'No Kraken continuity persistence; restart recovery is W4-E04-c not this slice',
+        'Persistence substrate only; no synthetic Connected; restart recovery is post-W4-E04-c',
       futureW4E04Responsibility: 'W4-E04-c' as const,
-      evidencePath: 'docs/project/version-3/wave-4/w4-e04-product-scope.md',
-      existsToday: false,
+      evidencePath:
+        'apps/api/src/modules/exchange-adapter/persistence/prisma-kraken-exchange-connectivity-state.repository.ts',
+      existsToday: true,
       isPaperProduct: true,
       authorizesExchangeConnectivityComplete: false,
     }),

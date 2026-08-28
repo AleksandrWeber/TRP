@@ -96,24 +96,24 @@ Full row detail: machine inventory `W4_E04_A_EXCHANGE_CONNECTIVITY_INVENTORY` an
 
 ## Kraken Exchange Connectivity EPHEMERAL artifacts (summary)
 
-| Artifact ID                                    | Owner                  | Justification                                |
-| ---------------------------------------------- | ---------------------- | -------------------------------------------- |
-| `rest-kraken-planned-handshake`                | exchange-connectivity  | **Missing** — KRAKEN not in provider catalog |
-| `rest-kraken-api-handshake-target`             | exchange-adapter       | **Missing** real Kraken REST                 |
-| `rest-exchanges-connect-kraken` / `disconnect` | exchange-adapter       | **Missing** — KRAKEN not in EXCHANGE_IDS     |
-| `ws-kraken-adapter-subscribe-stubs`            | exchange-adapter       | **Missing** KrakenExchangeAdapter class      |
-| `ws-kraken-authenticated-user-data`            | exchange-adapter       | **Missing**                                  |
-| `auth-vault-kraken-secret-type`                | secret-vault           | **Missing** HoldableSecretType.Kraken        |
-| `auth-kraken-request-signing`                  | exchange-adapter       | **Missing**                                  |
-| `runtime-kraken-adapter-stub-connected-flag`   | exchange-adapter       | **Missing** — no stub unlike OKX             |
-| `runtime-exchange-registry-kraken`             | exchange-adapter       | In-process; no KRAKEN entry                  |
-| `runtime-exchange-factory-kraken`              | exchange-adapter       | Factory cannot create KRAKEN                 |
-| `runtime-kraken-exchange-id`                   | exchange-adapter       | **Missing** from EXCHANGE_IDS                |
-| `persist-kraken-connection-continuity`         | exchange-adapter       | **Missing** — W4-E04-b target                |
-| `ui-connections-page-kraken`                   | connection-management  | KRAKEN not in Connections catalog            |
-| `ui-honest-connected-label-kraken`             | connection-management  | **Missing**                                  |
-| `dep-blocked-by-*` (4 rows)                    | various                | Active honesty blockers                      |
-| `dep-platform-readiness-exchange-connectivity` | operational-continuity | Aggregate only; no Kraken row                |
+| Artifact ID                                    | Owner                  | Justification                                                |
+| ---------------------------------------------- | ---------------------- | ------------------------------------------------------------ |
+| `rest-kraken-planned-handshake`                | exchange-connectivity  | **Missing** — KRAKEN not in provider catalog                 |
+| `rest-kraken-api-handshake-target`             | exchange-adapter       | **Missing** real Kraken REST                                 |
+| `rest-exchanges-connect-kraken` / `disconnect` | exchange-adapter       | **Missing** — KRAKEN not in EXCHANGE_IDS                     |
+| `ws-kraken-adapter-subscribe-stubs`            | exchange-adapter       | **Missing** KrakenExchangeAdapter class                      |
+| `ws-kraken-authenticated-user-data`            | exchange-adapter       | **Missing**                                                  |
+| `auth-vault-kraken-secret-type`                | secret-vault           | **Missing** HoldableSecretType.Kraken                        |
+| `auth-kraken-request-signing`                  | exchange-adapter       | **Missing**                                                  |
+| `runtime-kraken-adapter-stub-connected-flag`   | exchange-adapter       | **Missing** — no stub unlike OKX                             |
+| `runtime-exchange-registry-kraken`             | exchange-adapter       | In-process; no KRAKEN entry                                  |
+| `runtime-exchange-factory-kraken`              | exchange-adapter       | Factory cannot create KRAKEN                                 |
+| `runtime-kraken-exchange-id`                   | exchange-adapter       | **Missing** from EXCHANGE_IDS                                |
+| `persist-kraken-connection-continuity`         | exchange-adapter       | **SURVIVE** — W4-E04-b persistence; W4-E04-c restart hydrate |
+| `ui-connections-page-kraken`                   | connection-management  | KRAKEN not in Connections catalog                            |
+| `ui-honest-connected-label-kraken`             | connection-management  | **Missing**                                                  |
+| `dep-blocked-by-*` (4 rows)                    | various                | Active honesty blockers                                      |
+| `dep-platform-readiness-exchange-connectivity` | operational-continuity | Aggregate only; no Kraken row                                |
 
 ---
 

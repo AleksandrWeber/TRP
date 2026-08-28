@@ -132,13 +132,13 @@ Do not validate venue permission verification product (E05), Live Trading, Wave 
 
 ## 8. Slice validation records (planning — not created)
 
-| Slice    | Name                                              | Validation record                                                                          |
-| -------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| W4-E04-a | Kraken Inventory & Exchange Connectivity Baseline | [`w4-e04-a-validation-report.md`](./w4-e04-a-validation-report.md) — **PASS** (2026-08-28) |
-| W4-E04-b | Durable Kraken Exchange Connectivity Foundation   | **Not created**                                                                            |
-| W4-E04-c | Kraken Restart Recovery Foundation                | **Not created**                                                                            |
-| W4-E04-d | Kraken Operational Continuity Foundation          | **Not created**                                                                            |
-| W4-E04-e | Package Close evidence                            | **Not created**                                                                            |
+| Slice    | Name                                              | Validation record                                                                                 |
+| -------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| W4-E04-a | Kraken Inventory & Exchange Connectivity Baseline | [`w4-e04-a-validation-report.md`](./w4-e04-a-validation-report.md) — **PASS** (2026-08-28)        |
+| W4-E04-b | Durable Kraken Exchange Connectivity Foundation   | [`w4-e04-b-validation-report.md`](./w4-e04-b-validation-report.md) — **PASS** (2026-08-28, local) |
+| W4-E04-c | Kraken Restart Recovery Foundation                | **Not created**                                                                                   |
+| W4-E04-d | Kraken Operational Continuity Foundation          | **Not created**                                                                                   |
+| W4-E04-e | Package Close evidence                            | **Not created**                                                                                   |
 
 **Slices not opened.** Validation records created only after slice authorization.
 
@@ -162,12 +162,12 @@ Do not validate venue permission verification product (E05), Live Trading, Wave 
 - W4-E04 validation PASS — **not claimed** (planning only)
 - W4-E04 CLOSED — **not claimed**
 - W4-E04 Planning APPROVED — **recorded**
-- W4-E04-a inventory PASS — **recorded** (local; uncommitted)
-- W4-E04-a customer-visible feature — **not claimed**
+- W4-E04-a inventory PASS — **recorded**
+- W4-E04-b durable persistence PASS — **recorded** (local; uncommitted)
 - Wave 4 COMPLETE — **not claimed**
 - Kraken Connected — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
 
 ---
 
-**STOP.** W4-E04-a inventory validation **PASS** (local). Await Product Owner review before W4-E04-b. Do not declare Kraken Connected.
+**STOP.** W4-E04-b durable persistence validation **PASS** (local). Await Product Owner review before W4-E04-c. Do not declare Kraken Connected or restart recovery complete.

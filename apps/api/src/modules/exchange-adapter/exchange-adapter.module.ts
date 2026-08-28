@@ -15,6 +15,7 @@ import { BybitExchangeConnectivityPersistenceService } from './bybit-exchange-co
 import { OkxExchangeConnectivityPersistenceService } from './okx-exchange-connectivity-persistence.service';
 import { OkxExchangeConnectivityRecoveryStore } from './okx-exchange-connectivity-recovery-store';
 import { OkxExchangeConnectivityRestartRecoveryService } from './okx-exchange-connectivity-restart-recovery.service';
+import { KrakenExchangeConnectivityPersistenceService } from './kraken-exchange-connectivity-persistence.service';
 import { BybitExchangeConnectivityRecoveryStore } from './bybit-exchange-connectivity-recovery-store';
 import { BybitExchangeConnectivityRestartRecoveryService } from './bybit-exchange-connectivity-restart-recovery.service';
 import { ExchangeConnectivityRecoveryStore } from './exchange-connectivity-recovery-store';
@@ -22,9 +23,11 @@ import { ExchangeConnectivityRestartRecoveryService } from './exchange-connectiv
 import { EXCHANGE_CONNECTIVITY_STATE_REPOSITORY } from './domain/exchange-connectivity-state.repository';
 import { BYBIT_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY } from './domain/bybit-exchange-connectivity-state.repository';
 import { OKX_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY } from './domain/okx-exchange-connectivity-state.repository';
+import { KRAKEN_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY } from './domain/kraken-exchange-connectivity-state.repository';
 import { PrismaExchangeConnectivityStateRepository } from './persistence/prisma-exchange-connectivity-state.repository';
 import { PrismaBybitExchangeConnectivityStateRepository } from './persistence/prisma-bybit-exchange-connectivity-state.repository';
 import { PrismaOkxExchangeConnectivityStateRepository } from './persistence/prisma-okx-exchange-connectivity-state.repository';
+import { PrismaKrakenExchangeConnectivityStateRepository } from './persistence/prisma-kraken-exchange-connectivity-state.repository';
 
 /**
  * US209 Exchange Adapter Layer — Nest module.
@@ -57,9 +60,16 @@ import { PrismaOkxExchangeConnectivityStateRepository } from './persistence/pris
         new PrismaOkxExchangeConnectivityStateRepository(prisma),
       inject: [PrismaService],
     },
+    {
+      provide: KRAKEN_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
+      useFactory: (prisma: PrismaService) =>
+        new PrismaKrakenExchangeConnectivityStateRepository(prisma),
+      inject: [PrismaService],
+    },
     ExchangeConnectivityPersistenceService,
     BybitExchangeConnectivityPersistenceService,
     OkxExchangeConnectivityPersistenceService,
+    KrakenExchangeConnectivityPersistenceService,
     OkxExchangeConnectivityRecoveryStore,
     OkxExchangeConnectivityRestartRecoveryService,
     BybitExchangeConnectivityRecoveryStore,
@@ -83,9 +93,11 @@ import { PrismaOkxExchangeConnectivityStateRepository } from './persistence/pris
     EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
     BYBIT_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
     OKX_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
+    KRAKEN_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
     ExchangeConnectivityPersistenceService,
     BybitExchangeConnectivityPersistenceService,
     OkxExchangeConnectivityPersistenceService,
+    KrakenExchangeConnectivityPersistenceService,
     OkxExchangeConnectivityRecoveryStore,
     OkxExchangeConnectivityRestartRecoveryService,
     BybitExchangeConnectivityRecoveryStore,
