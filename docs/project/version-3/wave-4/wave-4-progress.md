@@ -14,17 +14,17 @@
 
 ## Authority
 
-| Item                         | Status                                           |
-| ---------------------------- | ------------------------------------------------ |
-| Version 3                    | In progress                                      |
-| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**                           |
-| Wave 2 Connection Management | **COMPLETE**                                     |
-| Wave 3 Durability & Ops      | **COMPLETE**                                     |
-| Wave 4 Planning Package      | **OPEN**                                         |
-| W4-E01                       | Planning **OPEN** — awaiting Review and Approval |
-| W4-E02 … W4-E05              | **Not opened**                                   |
-| Live Trading                 | **Not claimed**                                  |
-| Master Plan                  | **FROZEN** — unchanged                           |
+| Item                         | Status                                                |
+| ---------------------------- | ----------------------------------------------------- |
+| Version 3                    | In progress                                           |
+| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**                                |
+| Wave 2 Connection Management | **COMPLETE**                                          |
+| Wave 3 Durability & Ops      | **COMPLETE**                                          |
+| Wave 4 Planning Package      | **OPEN**                                              |
+| W4-E01                       | Planning Review **PASS** — awaiting Planning Approval |
+| W4-E02 … W4-E05              | **Not opened**                                        |
+| Live Trading                 | **Not claimed**                                       |
+| Master Plan                  | **FROZEN** — unchanged                                |
 
 ---
 
@@ -44,14 +44,14 @@ Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
 ## Current package
 
-| Field                     | Value                                                        |
-| ------------------------- | ------------------------------------------------------------ |
-| **Package**               | **Planning** — W4-E01 Binance Real I/O                       |
-| **Master Plan / Roadmap** | V3-E01 · CM-07                                               |
-| **Stage**                 | Wave 4 Planning **OPEN** — W4-E01 planning documents created |
-| **Approval**              | Planning Review **not performed**; Planning **not APPROVED** |
-| **Predecessor**           | Wave 3 **COMPLETE**                                          |
-| **Implementation slices** | **Not opened** (a–e planned only)                            |
+| Field                     | Value                                                 |
+| ------------------------- | ----------------------------------------------------- |
+| **Package**               | **Planning** — W4-E01 Binance Real I/O                |
+| **Master Plan / Roadmap** | V3-E01 · CM-07                                        |
+| **Stage**                 | Planning Review **PASS** — awaiting Planning Approval |
+| **Approval**              | Planning Review **PASS**; Planning **not APPROVED**   |
+| **Predecessor**           | Wave 3 **COMPLETE**                                   |
+| **Implementation slices** | **Not opened** (a–e planned only)                     |
 
 Companions:
 
@@ -60,6 +60,7 @@ Companions:
 - [`w4-e01-security-review.md`](./w4-e01-security-review.md)
 - [`w4-e01-validation-plan.md`](./w4-e01-validation-plan.md)
 - [`w4-e01-overview.md`](./w4-e01-overview.md)
+- [`w4-e01-planning-review.md`](./w4-e01-planning-review.md)
 - [`wave-4-planning-summary.md`](./wave-4-planning-summary.md)
 
 ---
@@ -75,10 +76,9 @@ Wave 3 COMPLETE
         ↓
 Wave 4 Planning OPEN
         ↓
-W4-E01 Planning OPEN (first package)
+W4-E01 Planning Review PASS (first package)
         ↓
-STOP — Await Product Owner Planning Review
-Do not declare Planning Review PASS
+STOP — Await Product Owner Planning Approval
 Do not declare Planning APPROVED
 Do not open W4-E01-a
 Do not begin implementation
@@ -105,4 +105,4 @@ Do not begin implementation
 
 ---
 
-**STOP.** Await Product Owner Planning Review and Approval for W4-E01. Do not open implementation slices.
+**STOP.** Planning Review **PASS**. Await Product Owner Planning Approval for W4-E01. Do not open implementation slices.
