@@ -267,19 +267,13 @@ Confidence residual (~4%): Product Owner Final Close declaration still pending (
 
 ## Engineering recommendation
 
-W3-O05 Monitoring & Security Health foundation is **internally consistent**, **fully integrated**, **regression-safe**, and **documentation-synchronized**. The operational journey from inventory through Platform Readiness projection to Close Evidence is **complete and honest**.
-
-Engineering recommends that the Product Owner may proceed to **Final Close** when ready.
-
-Engineering does **not** declare W3-O05 CLOSED.
+W3-O05 Monitoring & Security Health foundation was **closed by Product Owner** on 2026-08-28.
 
 ---
 
 **STOP.**
 
-Await Product Owner Final Close.
-
-Do **not** create `w3-o05-product-owner-close-record.md` (Product Owner act only).
+W3-O05 **CLOSED** by Product Owner.
 
 Do **not** declare Monitoring Complete.
 

@@ -3,7 +3,7 @@
 **Package:** W3-O05 Monitoring & Security Health  
 **Evidence slice:** W3-O05-e  
 **Date:** 2026-08-28  
-**Decision status:** Close Evidence assembled — **awaiting Product Owner Package Review**. Engineering must **not** declare W3-O05 CLOSED.
+**Decision status:** **CLOSED** by Product Owner (2026-08-28). See [`w3-o05-product-owner-close-record.md`](./w3-o05-product-owner-close-record.md).
 
 ---
 
@@ -57,27 +57,27 @@ This report indexes Close Evidence assembled in W3-O05-e for Product Owner Packa
 
 ## Close checklist (evidence)
 
-| Criterion                                                        | Status      |
-| ---------------------------------------------------------------- | ----------- |
-| Every approved slice validated (a–d PASS)                        | **Met**     |
-| Operational walkthrough completed                                | **Met**     |
-| Inventory / Persistence / Recovery / Continuity verified         | **Met**     |
-| Platform Readiness projection verified                           | **Met**     |
-| Honest Product enforcement intact                                | **Met**     |
-| Governance: security-platform sole owner; no duplicate authority | **Met**     |
-| Security Verification PASS                                       | **Met**     |
-| Architecture Verification PASS                                   | **Met**     |
-| Documentation consistency verified                               | **Met**     |
-| Package Summary completed                                        | **Met**     |
-| No new functionality in e                                        | **Met**     |
-| No ownership / architecture / Master Plan changes in e           | **Met**     |
-| Product Owner declares CLOSED                                    | **Pending** |
+| Criterion                                                        | Status  |
+| ---------------------------------------------------------------- | ------- |
+| Every approved slice validated (a–d PASS)                        | **Met** |
+| Operational walkthrough completed                                | **Met** |
+| Inventory / Persistence / Recovery / Continuity verified         | **Met** |
+| Platform Readiness projection verified                           | **Met** |
+| Honest Product enforcement intact                                | **Met** |
+| Governance: security-platform sole owner; no duplicate authority | **Met** |
+| Security Verification PASS                                       | **Met** |
+| Architecture Verification PASS                                   | **Met** |
+| Documentation consistency verified                               | **Met** |
+| Package Summary completed                                        | **Met** |
+| No new functionality in e                                        | **Met** |
+| No ownership / architecture / Master Plan changes in e           | **Met** |
+| Product Owner declares CLOSED                                    | **Met** |
 
 ---
 
 ## Explicit non-declarations
 
-- W3-O05 is **NOT** declared CLOSED by Engineering.
+- W3-O05 is **CLOSED** by Product Owner — foundation scope only.
 - Monitoring Complete is **NOT** declared.
 - Security Health Complete is **NOT** declared.
 - Production Restart Safe is **NOT** declared.
@@ -86,4 +86,4 @@ This report indexes Close Evidence assembled in W3-O05-e for Product Owner Packa
 
 ---
 
-**STOP.** Close Evidence assembled. Await Product Owner Package Review. Do not declare W3-O05 CLOSED. Do not declare Wave 3 COMPLETE.
+**STOP.** W3-O05 **CLOSED** by Product Owner. Do not declare Monitoring Complete. Do not declare Security Health Complete. Do not declare Wave 3 COMPLETE.

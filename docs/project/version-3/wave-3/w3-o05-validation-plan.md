@@ -3,7 +3,7 @@
 **Package:** W3-O05 Monitoring & Security Health  
 **Wave:** 3 — Durability, Operations & Continuity  
 **Master Plan / Roadmap:** V3-O05 · MN-02 · MN-03 · SEC-13 · SEC-15  
-**Status:** Planning **APPROVED**. W3-O05-a/b/c/d/e **COMPLETE**. Close Evidence assembled. Awaiting Product Owner Package Review.
+**Status:** Planning **APPROVED**. W3-O05-a/b/c/d/e **COMPLETE**. Package **CLOSED** by Product Owner (2026-08-28).
 **Date:** 2026-08-27  
 **Umbrella:** [`w3-o05-implementation-package.md`](./w3-o05-implementation-package.md)  
 **Scope:** [`w3-o05-product-scope.md`](./w3-o05-product-scope.md)  
@@ -262,4 +262,4 @@ Do **not** count as W3-O05 Close evidence during planning:
 
 ---
 
-**STOP.** W3-O05-e Close Evidence **COMPLETE**. Await Product Owner Package Review. Do not declare W3-O05 CLOSED. Do not declare Wave 3 COMPLETE.
+**STOP.** W3-O05 **CLOSED** by Product Owner. Do not declare Monitoring Complete. Do not declare Security Health Complete. Do not declare Wave 3 COMPLETE.

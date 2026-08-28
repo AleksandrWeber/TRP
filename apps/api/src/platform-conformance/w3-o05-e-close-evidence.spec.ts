@@ -205,23 +205,32 @@ describe('W3-O05-e package close evidence — integration / planning', () => {
     expect(view).not.toMatch(/Dashboard|Alert generation|Incident management/i);
   });
 
-  it('status docs: Close Evidence assembled; W3-O05 NOT CLOSED; Wave 3 NOT COMPLETE; W3-O06 NOT opened', () => {
+  it('status docs: W3-O05 CLOSED by Product Owner; Wave 3 COMPLETE not claimed; W3-O06 NOT opened', () => {
     const progress = readWave3('wave-3-progress.md');
     const overview = readWave3('monitoring-security-health-overview.md');
     const close = readWave3('w3-o05-close-package-report.md');
     const summary = readWave3('w3-o05-package-summary.md');
+    const poClose = readWave3('w3-o05-product-owner-close-record.md');
+    expect(progress).toMatch(/CLOSED by Product Owner|Package \*\*CLOSED\*\*/);
     expect(progress).toMatch(/W3-O05-a\/b\/c\/d/);
     expect(progress).toMatch(/Close Evidence|W3-O05-e/);
-    expect(progress).toMatch(/Not claimed|NOT.*CLOSED|not opened/i);
     expect(progress).toMatch(/Wave 3 COMPLETE[\s\S]*Not claimed|Not claimed[\s\S]*Wave 3 COMPLETE/);
-    expect(overview).toMatch(/Not Monitoring Complete|Not W3-O05 CLOSED/);
+    expect(overview).toMatch(/\*\*CLOSED\*\* by Product Owner|CLOSED by Product Owner/);
     expect(overview).toMatch(/STOP/);
-    expect(close).toMatch(/Product Owner Package Review|NOT.*CLOSED|not declare W3-O05 CLOSED/i);
+    expect(overview).toMatch(
+      /Monitoring Complete[\s\S]*Not claimed|Not claimed[\s\S]*Monitoring Complete/i,
+    );
+    expect(close).toMatch(/CLOSED by Product Owner/);
     expect(close).toMatch(
       /Wave 3 is \*\*NOT\*\* declared COMPLETE|Wave 3 is \*\*NOT\*\*|NOT.*Wave 3 COMPLETE/i,
     );
-    expect(summary).toMatch(/NOT.*CLOSED|not declare W3-O05 CLOSED|Ready for Product Owner/i);
+    expect(summary).toMatch(/\*\*CLOSED\*\* by Product Owner/);
+    expect(poClose).toMatch(
+      /officially CLOSED|Decision:\*\* \*\*CLOSED\*\*|Decision: \*\*CLOSED\*\*/,
+    );
     expect(W3_O05_E_ARCHITECTURE_CLAIMS.packageCloseEvidenceAssembled).toBe(true);
+    // W3-O05-e registry still records that the e slice itself did not declare Close;
+    // Product Owner Close is recorded in status docs.
     expect(W3_O05_E_ARCHITECTURE_CLAIMS.packageDeclaredClosed).toBe(false);
   });
 
