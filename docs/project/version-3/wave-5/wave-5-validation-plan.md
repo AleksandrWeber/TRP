@@ -115,6 +115,22 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
+## W5-N01-b validation (durable foundation slice — local)
+
+| Layer                          | Result   | Evidence                                                               |
+| ------------------------------ | -------- | ---------------------------------------------------------------------- |
+| Durable anchor persistence     | **PASS** | `workspace_telegram_notification_anchors` + persistence service        |
+| Canonical anchor fields        | **PASS** | workspaceId, notificationId, channel, type, recipient, template, state |
+| Ownership preserved            | **PASS** | Notification Delivery owner only; no new persistence owner             |
+| No Bot API / outbound delivery | **PASS** | Explicit OUT in conformance registry                                   |
+| Restart recovery not claimed   | **PASS** | Deferred to W5-N01-c                                                   |
+| Regression suite               | **PASS** | lint / typecheck / test / build                                        |
+| git diff --check               | **PASS** | No whitespace errors                                                   |
+
+**Explicit non-claim:** W5-N01-b does **not** authorize Telegram notifications operational, restart survival, or W5-N01 COMPLETE.
+
+---
+
 ## Explicit non-claims
 
 - Wave 5 validation PASS at Close — **not claimed**

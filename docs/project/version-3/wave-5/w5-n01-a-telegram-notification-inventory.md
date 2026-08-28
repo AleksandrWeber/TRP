@@ -46,13 +46,13 @@ Enumerate every Telegram notification artifact required to implement W5-N01: Bot
 
 ## Honest Product baseline
 
-| Category                | Summary                                                                                                                                                                                                     |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Implemented today**   | None — no customer-visible production Telegram notification functionality.                                                                                                                                  |
-| **Infrastructure only** | In-memory Telegram adapter, sync delivery pipeline, PC-06 routing, PC-07 connect UX, preferences, durable history/queue on existing owner, vault Telegram secret type, Platform Readiness queue projection. |
-| **Planned**             | W5-N01-b — Production Telegram Bot API connect / test / disconnect via vault-backed adapter.                                                                                                                |
-| **Not implemented**     | `api.telegram.org`, real chat bind, vault in delivery path, message template catalog, honest vendor Connected labels, converged vault + PC-07 path.                                                         |
-| **Future roadmap**      | W5-N01-c…e, W5-N02 Email, W5-N03 Slack/Discord/Teams, W5-N04 Push, Wave 6 Live Trading.                                                                                                                     |
+| Category                | Summary                                                                                                                                                                                                                                                  |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Implemented today**   | None — no customer-visible production Telegram notification functionality.                                                                                                                                                                               |
+| **Infrastructure only** | In-memory Telegram adapter, sync delivery pipeline, PC-06 routing, PC-07 connect UX, preferences, durable history/queue on existing owner, **W5-N01-b canonical notification anchors**, vault Telegram secret type, Platform Readiness queue projection. |
+| **Planned**             | W5-N01-c — Telegram notification restart recovery; later Bot API / real delivery slices.                                                                                                                                                                 |
+| **Not implemented**     | `api.telegram.org`, real chat bind, vault in delivery path, message template catalog, honest vendor Connected labels, converged vault + PC-07 path, restart hydrate of anchors.                                                                          |
+| **Future roadmap**      | W5-N01-c…e, W5-N02 Email, W5-N03 Slack/Discord/Teams, W5-N04 Push, Wave 6 Live Trading.                                                                                                                                                                  |
 
 ---
 
@@ -75,9 +75,19 @@ Full row detail: `W5_N01_A_TELEGRAM_NOTIFICATION_INVENTORY` and helpers `rowsSur
 
 ---
 
+## W5-N01-b durability update (post-slice b)
+
+| Artifact ID                            | Before (W5-N01-a) | After (W5-N01-b)                                                                |
+| -------------------------------------- | ----------------- | ------------------------------------------------------------------------------- |
+| `persist-telegram-notification-anchor` | Not in inventory  | **SURVIVE** — `workspace_telegram_notification_anchors`; canonical anchors only |
+
+**Binding finding (unchanged):** Production Telegram Bot API is **NOT implemented**. Anchor rows survive in storage, but **restart recovery is not claimed** until W5-N01-c.
+
+---
+
 ## Telegram notification SURVIVE artifacts (summary)
 
-Vault Telegram secret type, connection-catalog TELEGRAM mapping, durable notification store, delivery queue substrate, user preferences, PC-06/PC-07 product surfaces (metadata), workspace isolation consumption, security dependencies, and verified ownership rows.
+Vault Telegram secret type, connection-catalog TELEGRAM mapping, durable notification store, delivery queue substrate, **canonical notification anchors (W5-N01-b)**, user preferences, PC-06/PC-07 product surfaces (metadata), workspace isolation consumption, security dependencies, and verified ownership rows.
 
 ## Telegram notification EPHEMERAL artifacts (summary)
 
@@ -96,4 +106,4 @@ Vault Telegram secret type, connection-catalog TELEGRAM mapping, durable notific
 
 ---
 
-**STOP.** Await Product Owner review before W5-N01-b. Do not begin Bot API implementation from this inventory alone.
+**STOP.** W5-N01-a inventory baseline remains authoritative. W5-N01-b added durable anchor persistence only. Await Product Owner review before W5-N01-c. Do not begin restart recovery from inventory alone.

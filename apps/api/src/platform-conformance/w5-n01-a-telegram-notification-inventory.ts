@@ -501,6 +501,25 @@ export const W5_N01_A_TELEGRAM_NOTIFICATION_INVENTORY: readonly W5N01AInventoryR
       authorizesW5N01Complete: false,
     }),
     Object.freeze({
+      artifactId: 'persist-telegram-notification-anchor',
+      artifact:
+        'WorkspaceTelegramNotificationAnchor — canonical Telegram notification delivery anchors (W5-N01-b)',
+      kind: 'persistence-candidate' as const,
+      owner: 'notification-delivery' as const,
+      durabilityClass: 'SURVIVE' as const,
+      capabilityCategory: 'infrastructure-only' as const,
+      currentStatus:
+        'Implemented — workspace_telegram_notification_anchors; anchor-recorded only; no Bot API I/O',
+      honestyRequirement:
+        'Anchor persistence ≠ Telegram delivery Complete; restart hydrate is W5-N01-c',
+      futureW5N01Responsibility: 'W5-N01-c' as const,
+      evidencePath:
+        'apps/api/src/modules/notification-delivery/persistence/prisma-telegram-notification-anchor.repository.ts',
+      existsToday: true,
+      authorizesTelegramRealDelivery: false,
+      authorizesW5N01Complete: false,
+    }),
+    Object.freeze({
       artifactId: 'persist-vault-telegram-ciphertext',
       artifact: 'Vault ciphertext for HoldableSecretType.Telegram bot tokens',
       kind: 'persistence-candidate' as const,
