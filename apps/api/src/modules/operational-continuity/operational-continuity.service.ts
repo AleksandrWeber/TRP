@@ -10,6 +10,7 @@
  * W4-E03-d adds OKX Exchange Connectivity operational continuity (derived).
  * W4-E04-d adds Kraken Exchange Connectivity operational continuity (derived).
  * W4-E05-d adds Venue Permission Verification operational continuity (derived).
+ * W5-N01-d adds Telegram Notification operational continuity (derived).
  * Recovery itself remains W3-O01-c / W3-O02-c / W3-O04-c / W3-O05-c only. No new persistence / BC / HA / monitoring evaluation.
  */
 
@@ -27,6 +28,8 @@ import {
 } from '../../persistence/analytical-restart-recovery';
 import { getNotificationQueueContinuityRecord } from '../notification-delivery/domain/notification-queue-continuity-status';
 import { buildNotificationQueueContinuityProjection } from '../notification-delivery/domain/notification-queue-operational-continuity';
+import { getTelegramNotificationContinuityRecord } from '../notification-delivery/domain/telegram-notification-continuity-status';
+import { buildTelegramNotificationContinuityProjection } from '../notification-delivery/domain/telegram-notification-operational-continuity';
 import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
 import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
 import { getMonitoringHealthContinuityRecord } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
@@ -99,6 +102,11 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         continuity: null,
       }),
       venuePermissionVerification: buildVenuePermissionContinuityProjection({
+        recovering: true,
+        ownerReadiness: 'ready',
+        continuity: null,
+      }),
+      telegramNotification: buildTelegramNotificationContinuityProjection({
         recovering: true,
         ownerReadiness: 'ready',
         continuity: null,
@@ -223,6 +231,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildTelegramNotificationView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getTelegramNotificationContinuityRecord();
+    return buildTelegramNotificationContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -290,6 +310,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       venuePermissionVerification: this.buildVenuePermissionView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      telegramNotification: this.buildTelegramNotificationView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -418,6 +442,19 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           ? null
           : recoveryDurationMs),
     });
+    const telegramNotificationBase = this.buildTelegramNotificationView({
+      recovering: false,
+      ownerReadiness: 'ready',
+    });
+    const telegramNotification = Object.freeze({
+      ...telegramNotificationBase,
+      recoveryTimestamp:
+        telegramNotificationBase.recoveryTimestamp ??
+        (telegramNotificationBase.operationalState === 'Recovering' ? null : recoveryTimestamp),
+      recoveryDurationMs:
+        telegramNotificationBase.recoveryDurationMs ??
+        (telegramNotificationBase.operationalState === 'Recovering' ? null : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -430,6 +467,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       okxExchangeConnectivity,
       krakenExchangeConnectivity,
       venuePermissionVerification,
+      telegramNotification,
     });
     this.finalized = true;
 

@@ -117,6 +117,19 @@ export type VenuePermissionContinuityView = Readonly<{
   workspaceIds: readonly string[];
 }>;
 
+/** W5-N01-d — Telegram Notification continuity fields on platform readiness. */
+export type TelegramNotificationContinuityView = Readonly<{
+  operationalState: OperationalState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+}>;
+
 /** W3-O05-d — Monitoring & Security Health continuity fields on platform readiness. */
 export type MonitoringHealthContinuityView = Readonly<{
   operationalState: OperationalState;
@@ -168,6 +181,8 @@ export type PlatformOperationalProjection = Readonly<{
   krakenExchangeConnectivity: KrakenExchangeConnectivityContinuityView | null;
   /** W4-E05-d — Venue Permission Verification operational continuity (derived). */
   venuePermissionVerification: VenuePermissionContinuityView | null;
+  /** W5-N01-d — Telegram Notification operational continuity (derived). */
+  telegramNotification: TelegramNotificationContinuityView | null;
 }>;
 
 export type EvaluateOwnerReadinessInput = Readonly<{
@@ -262,6 +277,7 @@ export function buildPlatformOperationalProjection(input: {
   okxExchangeConnectivity?: OkxExchangeConnectivityContinuityView | null;
   krakenExchangeConnectivity?: KrakenExchangeConnectivityContinuityView | null;
   venuePermissionVerification?: VenuePermissionContinuityView | null;
+  telegramNotification?: TelegramNotificationContinuityView | null;
 }): PlatformOperationalProjection {
   const platformState = derivePlatformOperationalState(input.owners);
   assertOperationalState(platformState);
@@ -284,6 +300,7 @@ export function buildPlatformOperationalProjection(input: {
     okxExchangeConnectivity: input.okxExchangeConnectivity ?? null,
     krakenExchangeConnectivity: input.krakenExchangeConnectivity ?? null,
     venuePermissionVerification: input.venuePermissionVerification ?? null,
+    telegramNotification: input.telegramNotification ?? null,
   });
 }
 

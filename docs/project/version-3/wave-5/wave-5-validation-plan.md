@@ -151,6 +151,26 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
+## W5-N01-d validation (operational continuity slice — local)
+
+| Layer                             | Result   | Evidence                                                     |
+| --------------------------------- | -------- | ------------------------------------------------------------ |
+| Operational continuity domain     | **PASS** | `telegram-notification-operational-continuity.ts`            |
+| OperationalContinuityService      | **PASS** | `buildTelegramNotificationView()` integrated                 |
+| Platform readiness projection     | **PASS** | `TelegramNotificationContinuityView` on platform projection  |
+| Web UI projection                 | **PASS** | Telegram Notification section on Operational Continuity page |
+| Supported states only             | **PASS** | Recovering / Ready / Degraded / Unavailable                  |
+| Degraded never fabricates Ready   | **PASS** | Domain + conformance specs                                   |
+| Ownership preserved               | **PASS** | Notification Delivery owner only                             |
+| No Bot API / outbound delivery    | **PASS** | Explicit OUT in conformance registry                         |
+| Telegram delivery not implemented | **PASS** | Explicit non-claim                                           |
+| Regression suite                  | **PASS** | lint / typecheck / test / build                              |
+| git diff --check                  | **PASS** | No whitespace errors                                         |
+
+**Explicit non-claim:** W5-N01-d does **not** authorize Telegram notifications operational, Bot API I/O, or W5-N01 COMPLETE.
+
+---
+
 ## Explicit non-claims
 
 - Wave 5 validation PASS at Close — **not claimed**

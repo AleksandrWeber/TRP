@@ -21,6 +21,7 @@ describe('OperationalContinuityController', () => {
     okxExchangeConnectivity: null,
     krakenExchangeConnectivity: null,
     venuePermissionVerification: null,
+    telegramNotification: null,
   });
 
   let continuity: OperationalContinuityService;

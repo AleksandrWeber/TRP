@@ -503,6 +503,58 @@ export function OperationalContinuityView({ readiness }: Props) {
       </section>
 
       <section>
+        <h2 className="text-lg font-semibold text-slate-100">Telegram Notification</h2>
+        {readiness.telegramNotification ? (
+          <dl
+            className="mt-4 grid gap-3 sm:grid-cols-2"
+            data-testid="telegram-notification-continuity"
+          >
+            <div>
+              <dt className="text-sm text-slate-400">Telegram Notification operational state</dt>
+              <dd className="text-slate-100" data-testid="telegram-notification-state">
+                {readiness.telegramNotification.operationalState}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Owner readiness</dt>
+              <dd className="text-slate-100" data-testid="telegram-notification-owner-readiness">
+                {readiness.telegramNotification.ownerReadiness}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery timestamp</dt>
+              <dd className="text-slate-100" data-testid="telegram-notification-recovery-timestamp">
+                {readiness.telegramNotification.recoveryTimestamp ?? '—'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery duration</dt>
+              <dd className="text-slate-100" data-testid="telegram-notification-recovery-duration">
+                {formatDuration(readiness.telegramNotification.recoveryDurationMs)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Restored rows</dt>
+              <dd className="text-slate-100" data-testid="telegram-notification-restored-count">
+                {readiness.telegramNotification.restoredCount}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Canonical anchors</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="telegram-notification-canonical-anchor-count"
+              >
+                {readiness.telegramNotification.canonicalAnchorCount}
+              </dd>
+            </div>
+          </dl>
+        ) : (
+          <p className="mt-2 text-slate-400">Not evaluated</p>
+        )}
+      </section>
+
+      <section>
         <h2 className="text-lg font-semibold text-slate-100">Owner operational state</h2>
         <table className="mt-3 w-full text-left text-sm text-slate-200">
           <thead className="text-slate-400">

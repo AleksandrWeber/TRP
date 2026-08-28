@@ -15,6 +15,13 @@ import {
 } from '../exchange-adapter/domain/venue-permission-continuity-status';
 import { buildVenuePermissionVerificationAnchorState } from '../exchange-adapter/domain/durable-venue-permission-verification-state';
 import { buildVenuePermissionVerificationRecoveryDiagnostics } from '../exchange-adapter/domain/venue-permission-restart-recovery';
+import {
+  recordTelegramNotificationRecoveryStart,
+  recordTelegramNotificationRecoverySuccess,
+  resetTelegramNotificationContinuity,
+} from '../notification-delivery/domain/telegram-notification-continuity-status';
+import { buildTelegramNotificationAnchorState } from '../notification-delivery/domain/durable-telegram-notification-anchor';
+import { buildTelegramNotificationRecoveryDiagnostics } from '../notification-delivery/domain/telegram-notification-restart-recovery';
 
 describe('OperationalContinuityService', () => {
   beforeEach(() => {
@@ -22,6 +29,7 @@ describe('OperationalContinuityService', () => {
     resetMonitoringHealthContinuity();
     resetKrakenExchangeConnectivityContinuity();
     resetVenuePermissionContinuity();
+    resetTelegramNotificationContinuity();
   });
 
   it('mixed owner states: unavailable + ready + degraded dependents', async () => {
@@ -85,6 +93,7 @@ describe('OperationalContinuityService', () => {
     expect(projection.krakenExchangeConnectivity?.operationalState).toBe('Unavailable');
     expect(projection.venuePermissionVerification).toBeTruthy();
     expect(projection.venuePermissionVerification?.operationalState).toBe('Unavailable');
+    expect(projection.telegramNotification?.operationalState).toBe('Unavailable');
   });
 
   it('workspace-safe projection is read-only (no mutation API on service)', () => {
@@ -139,6 +148,53 @@ describe('OperationalContinuityService', () => {
 
     expect(projection.venuePermissionVerification?.operationalState).toBe('Ready');
     expect(projection.venuePermissionVerification?.verifiedAnchorCount).toBe(1);
+    expect(projection.platformState).toBe('Ready');
+  });
+
+  it('includes telegram notification continuity derived from W5-N01-c recovery record', async () => {
+    resetTelegramNotificationContinuity();
+    const anchor = buildTelegramNotificationAnchorState({
+      workspaceId: 'ws-1',
+      notificationId: 'ntf-1',
+      notificationChannel: 'telegram',
+      notificationType: 'report-complete',
+      recipientIdentifier: 'chat:123',
+      templateIdentifier: 'inline:report-complete',
+      correlationId: 'corr-1',
+      actorId: 'actor-1',
+      recordedAt: '2026-08-28T16:00:00.000Z',
+      prior: null,
+    });
+    if (!anchor.ok) throw new Error('expected anchor');
+    recordTelegramNotificationRecoveryStart();
+    recordTelegramNotificationRecoverySuccess({
+      diagnostics: buildTelegramNotificationRecoveryDiagnostics([anchor.anchor]),
+    });
+
+    const audit = {
+      recordOwnerState: vi.fn(async () => undefined),
+      recordRecoveryCompleted: vi.fn(async () => undefined),
+    } as unknown as OperationalContinuityAudit;
+    const service = new OperationalContinuityService(audit);
+    const projection = await service.applyBootOutcomesForTest(
+      (
+        [
+          'strategy-library',
+          'exchange-scope',
+          'knowledge-lake',
+          'market-profile',
+          'market-qualification',
+          'market-state',
+          'reporting',
+          'notification-delivery',
+          'trading-orchestrator',
+          'runtime-enforcement',
+        ] as const
+      ).map((owner) => ({ owner, outcome: 'ready' as const })),
+    );
+
+    expect(projection.telegramNotification?.operationalState).toBe('Ready');
+    expect(projection.telegramNotification?.canonicalAnchorCount).toBe(1);
     expect(projection.platformState).toBe('Ready');
   });
 });

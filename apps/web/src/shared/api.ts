@@ -1050,6 +1050,8 @@ export type OperationalContinuityReadinessView = {
   krakenExchangeConnectivity: KrakenExchangeConnectivityContinuityView | null;
   /** W4-E05-d — Venue Permission Verification operational continuity. */
   venuePermissionVerification: VenuePermissionContinuityView | null;
+  /** W5-N01-d — Telegram Notification operational continuity. */
+  telegramNotification: TelegramNotificationContinuityView | null;
 };
 
 export type NotificationQueueContinuityView = {
@@ -1150,6 +1152,18 @@ export type VenuePermissionContinuityView = {
   reason?: string;
   restoredCount: number;
   verifiedAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+};
+
+export type TelegramNotificationContinuityView = {
+  operationalState: OperationalContinuityState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
   integrityVerified: boolean;
   workspaceIds: readonly string[];
 };
