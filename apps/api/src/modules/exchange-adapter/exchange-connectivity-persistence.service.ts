@@ -9,6 +9,7 @@ import {
   EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
   type ExchangeConnectivityStateRepository,
 } from './domain/exchange-connectivity-state.repository';
+import { ExchangeConnectivityRecoveryStore } from './exchange-connectivity-recovery-store';
 
 export type PersistConnectionManagementAnchorCommand = Readonly<{
   workspaceId: string;
@@ -30,16 +31,22 @@ export type PersistAdapterLayerAnchorCommand = Readonly<{
 
 /**
  * W4-E01-b — durable exchange connectivity persistence on Exchange Adapter owner.
- * Storage only — no REST/WebSocket I/O, restart recovery, or operational continuity.
+ * W4-E01-c — write-through to recovery store after hydrate.
+ * Storage only — no REST/WebSocket I/O or operational continuity.
  */
 @Injectable()
 export class ExchangeConnectivityPersistenceService {
   constructor(
     @Inject(EXCHANGE_CONNECTIVITY_STATE_REPOSITORY)
     private readonly repository: ExchangeConnectivityStateRepository,
+    @Inject(ExchangeConnectivityRecoveryStore)
+    private readonly recoveryStore: ExchangeConnectivityRecoveryStore,
   ) {}
 
   async loadState(workspaceId: string): Promise<DurableExchangeConnectivityState | null> {
+    if (this.recoveryStore.hasHydrated()) {
+      return this.recoveryStore.get(workspaceId);
+    }
     return this.repository.loadExchangeConnectivityState(workspaceId);
   }
 
@@ -52,6 +59,7 @@ export class ExchangeConnectivityPersistenceService {
       return outcome;
     }
     await this.repository.saveExchangeConnectivityState(outcome.state);
+    this.recoveryStore.set(outcome.state);
     return outcome;
   }
 
@@ -64,6 +72,7 @@ export class ExchangeConnectivityPersistenceService {
       return outcome;
     }
     await this.repository.saveExchangeConnectivityState(outcome.state);
+    this.recoveryStore.set(outcome.state);
     return outcome;
   }
 }

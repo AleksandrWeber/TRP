@@ -2,7 +2,7 @@
 
 **Document:** W4-E01 Binance Real I/O Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W4-E01 Planning **APPROVED**. W4-E01-a inventory **COMPLETE**. W4-E01-b durable persistence **COMPLETE**. Not Package Close. Not real I/O.
+**Status:** Product-facing record. W4-E01 Planning **APPROVED**. W4-E01-a inventory **COMPLETE**. W4-E01-b durable persistence **COMPLETE**. W4-E01-c restart recovery **COMPLETE** (local; PO review pending). Not Package Close. Not real I/O.
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E01 (V3-E01 · CM-07)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -92,9 +92,17 @@ Inventory: [`w4-e01-a-exchange-connectivity-inventory.md`](./w4-e01-a-exchange-c
 
 ## W4-E01-b durable persistence baseline (2026-08-28)
 
-W4-E01-b added `workspace_exchange_connectivity_states` on the **Exchange Adapter** owner. Explicit connection and adapter anchors can be persisted per workspace. **No operator-visible behaviour changed.** No synthetic Connected flag. No restart recovery.
+W4-E01-b added `workspace_exchange_connectivity_states` on the **Exchange Adapter** owner. Explicit connection and adapter anchors can be persisted per workspace. **No operator-visible behaviour changed.** No synthetic Connected flag.
 
 Registry: `w4-e01-b-durable-exchange-connectivity.ts`
+
+---
+
+## W4-E01-c restart recovery baseline (2026-08-28)
+
+W4-E01-c restores W4-E01-b persisted exchange connectivity anchors after normal API restart via `ExchangeConnectivityRestartRecoveryService`. Recovery is deterministic, idempotent, and fail-honest on corruption. **No operator-visible behaviour changed.** No REST/WebSocket I/O. No operational continuity.
+
+Registry: `w4-e01-c-restart-recovery.ts`
 
 ---
 

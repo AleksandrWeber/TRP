@@ -11,6 +11,8 @@ import { ExchangeRegistry } from './exchange-registry';
 import { ExchangeRouter } from './exchange-router';
 import { PrismaExchangeAdapterRepository } from './prisma-exchange-adapter.repository';
 import { ExchangeConnectivityPersistenceService } from './exchange-connectivity-persistence.service';
+import { ExchangeConnectivityRecoveryStore } from './exchange-connectivity-recovery-store';
+import { ExchangeConnectivityRestartRecoveryService } from './exchange-connectivity-restart-recovery.service';
 import { EXCHANGE_CONNECTIVITY_STATE_REPOSITORY } from './domain/exchange-connectivity-state.repository';
 import { PrismaExchangeConnectivityStateRepository } from './persistence/prisma-exchange-connectivity-state.repository';
 
@@ -34,6 +36,8 @@ import { PrismaExchangeConnectivityStateRepository } from './persistence/prisma-
       inject: [PrismaService],
     },
     ExchangeConnectivityPersistenceService,
+    ExchangeConnectivityRecoveryStore,
+    ExchangeConnectivityRestartRecoveryService,
     ExchangeRegistry,
     ExchangeFactory,
     ExchangeRouter,
@@ -50,6 +54,8 @@ import { PrismaExchangeConnectivityStateRepository } from './persistence/prisma-
     EXCHANGE_ADAPTER_REPOSITORY,
     EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
     ExchangeConnectivityPersistenceService,
+    ExchangeConnectivityRecoveryStore,
+    ExchangeConnectivityRestartRecoveryService,
   ],
 })
 export class ExchangeAdapterModule {}

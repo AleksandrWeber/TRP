@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { ExchangeConnectivityPersistenceService } from './exchange-connectivity-persistence.service';
+import { ExchangeConnectivityRecoveryStore } from './exchange-connectivity-recovery-store';
 import type { ExchangeConnectivityStateRepository } from './domain/exchange-connectivity-state.repository';
 import type { DurableExchangeConnectivityState } from './domain/durable-exchange-connectivity-state';
 
@@ -21,10 +22,17 @@ function createRepository(): ExchangeConnectivityStateRepository & {
   };
 }
 
+function createService(repository: ExchangeConnectivityStateRepository) {
+  return new ExchangeConnectivityPersistenceService(
+    repository,
+    new ExchangeConnectivityRecoveryStore(),
+  );
+}
+
 describe('ExchangeConnectivityPersistenceService — W4-E01-b storage only', () => {
   it('persistConnectionManagementAnchor writes explicit connection anchor without connected flag', async () => {
     const repository = createRepository();
-    const service = new ExchangeConnectivityPersistenceService(repository);
+    const service = createService(repository);
 
     const outcome = await service.persistConnectionManagementAnchor({
       workspaceId: 'ws-1',
@@ -48,7 +56,7 @@ describe('ExchangeConnectivityPersistenceService — W4-E01-b storage only', () 
 
   it('persistAdapterLayerAnchor writes explicit adapter exchange_connection anchor', async () => {
     const repository = createRepository();
-    const service = new ExchangeConnectivityPersistenceService(repository);
+    const service = createService(repository);
 
     await service.persistConnectionManagementAnchor({
       workspaceId: 'ws-1',
@@ -76,7 +84,7 @@ describe('ExchangeConnectivityPersistenceService — W4-E01-b storage only', () 
 
   it('loadState returns null when workspace has no persisted row', async () => {
     const repository = createRepository();
-    const service = new ExchangeConnectivityPersistenceService(repository);
+    const service = createService(repository);
     expect(await service.loadState('ws-missing')).toBeNull();
   });
 });

@@ -8,6 +8,7 @@ import {
   type DurableExchangeConnectivityState,
 } from '../domain/durable-exchange-connectivity-state';
 import type { ExchangeConnectivityStateRepository } from '../domain/exchange-connectivity-state.repository';
+import { assertRecoverableExchangeConnectivityState } from '../domain/exchange-connectivity-restart-recovery';
 
 type ExchangeConnectivityStateRow = Prisma.WorkspaceExchangeConnectivityStateGetPayload<
   Record<string, never>
@@ -42,7 +43,9 @@ export class PrismaExchangeConnectivityStateRepository implements ExchangeConnec
     const rows = await this.prisma.workspaceExchangeConnectivityState.findMany({
       orderBy: { workspaceId: 'asc' },
     });
-    return Object.freeze(rows.map((row) => toDomain(row)));
+    return Object.freeze(
+      rows.map((row, index) => assertRecoverableExchangeConnectivityState(toDomain(row), index)),
+    );
   }
 }
 

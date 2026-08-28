@@ -3,7 +3,7 @@
 **Package:** W4-E01 Binance Real I/O
 **Wave:** 4 — Exchange Connectivity
 **Master Plan / Roadmap:** V3-E01 · CM-07
-**Status:** Planning **APPROVED**. W4-E01-a **COMPLETE**. W4-E01-b durable persistence **COMPLETE**. Restart recovery slices not opened.
+**Status:** Planning **APPROVED**. W4-E01-a **COMPLETE**. W4-E01-b durable persistence **COMPLETE**. W4-E01-c restart recovery **COMPLETE** (local; PO review pending). Operational continuity not opened.
 **Date:** 2026-08-28
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w4-e01-product-scope.md`](./w4-e01-product-scope.md)
@@ -22,13 +22,13 @@ Do not validate Bybit/OKX/Kraken (E02–E04), venue permission verification prod
 
 ### Slice progress
 
-| Slice    | Name                                       | Validation record                                                                 |
-| -------- | ------------------------------------------ | --------------------------------------------------------------------------------- |
-| W4-E01-a | Inventory & Exchange Connectivity Baseline | [`w4-e01-a-validation-report.md`](./w4-e01-a-validation-report.md) — **COMPLETE** |
-| W4-E01-b | Durable Exchange Connectivity Foundation   | [`w4-e01-b-validation-report.md`](./w4-e01-b-validation-report.md) — **COMPLETE** |
-| W4-E01-c | Restart Recovery Foundation                | **Not opened**                                                                    |
-| W4-E01-d | Operational Continuity Foundation          | **Not opened**                                                                    |
-| W4-E01-e | Package Close evidence                     | **Not opened**                                                                    |
+| Slice    | Name                                       | Validation record                                                                         |
+| -------- | ------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| W4-E01-a | Inventory & Exchange Connectivity Baseline | [`w4-e01-a-validation-report.md`](./w4-e01-a-validation-report.md) — **COMPLETE**         |
+| W4-E01-b | Durable Exchange Connectivity Foundation   | [`w4-e01-b-validation-report.md`](./w4-e01-b-validation-report.md) — **COMPLETE**         |
+| W4-E01-c | Restart Recovery Foundation                | [`w4-e01-c-validation-report.md`](./w4-e01-c-validation-report.md) — **COMPLETE** (local) |
+| W4-E01-d | Operational Continuity Foundation          | **Not opened**                                                                            |
+| W4-E01-e | Package Close evidence                     | **Not opened**                                                                            |
 
 ---
 
