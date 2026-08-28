@@ -77,6 +77,14 @@ Registry: `w4-e02-d-operational-continuity.ts`
 
 ---
 
+## W4-E02-e Close Evidence baseline (2026-08-28)
+
+W4-E02-e assembled package Close Evidence verifying slices a–d form one internally consistent Bybit Exchange Connectivity foundation. **No new runtime behaviour.** Package **not CLOSED** — awaiting Product Owner Package Review.
+
+Registry: `w4-e02-e-close-evidence.ts`
+
+---
+
 ## What the operator cannot do (still)
 
 - Start Live Trading or submit live orders to capital (Wave 6 + ADR).
@@ -130,6 +138,7 @@ W4-E01 Binance Real I/O is **CLOSED** (foundation: inventory, durable persistenc
 - W4-E02-b durable persistence — **COMPLETE**
 - W4-E02-c restart recovery — **COMPLETE**
 - W4-E02-d operational continuity — **COMPLETE**
+- W4-E02-e Close Evidence — **COMPLETE**
 - W4-E02 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -140,4 +149,4 @@ W4-E01 Binance Real I/O is **CLOSED** (foundation: inventory, durable persistenc
 
 ---
 
-**STOP.** W4-E02-d **COMPLETE**. Await explicit Product Owner review before W4-E02-e. Do not declare Bybit Connected.
+**STOP.** W4-E02-e Close Evidence **COMPLETE**. Await Product Owner Package Review. Do not declare Bybit Connected or W4-E02 CLOSED.
