@@ -19,6 +19,7 @@
 **Inventory (O01):** [`w3-o01-a-analytical-inventory.md`](./w3-o01-a-analytical-inventory.md)
 **Inventory (O02-a):** [`w3-o02-a-notification-queue-inventory.md`](./w3-o02-a-notification-queue-inventory.md)
 **Inventory (O03-a):** [`w3-o03-a-recovery-residual-inventory.md`](./w3-o03-a-recovery-residual-inventory.md)
+**Inventory (O05-a):** [`w3-o05-a-monitoring-inventory.md`](./w3-o05-a-monitoring-inventory.md)
 **Inventory (O04-a):** [`w3-o04-a-kill-switch-inventory.md`](./w3-o04-a-kill-switch-inventory.md)
 **Persistence (O04-b):** [`w3-o04-b-implementation-report.md`](./w3-o04-b-implementation-report.md)
 **Recovery (O04-c):** [`w3-o04-c-implementation-report.md`](./w3-o04-c-implementation-report.md)
@@ -41,28 +42,28 @@
 
 ## Authority
 
-| Item                         | Status                                                                |
-| ---------------------------- | --------------------------------------------------------------------- |
-| Version 3                    | In progress                                                           |
-| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**                                                |
-| Wave 2 Connection Management | **COMPLETE**                                                          |
-| Wave 3 Planning Package      | **APPROVED**                                                          |
-| W3-O01                       | **APPROVED** · **CLOSED** by Product Owner                            |
-| W3-O02 Planning Package      | **APPROVED**                                                          |
-| W3-O02                       | **APPROVED** · **CLOSED** by Product Owner                            |
-| W3-O02-a…e                   | **COMPLETE** (APPROVED)                                               |
-| W3-O03 Planning Package      | **APPROVED**                                                          |
-| W3-O03                       | **APPROVED** · **CLOSED** by Product Owner                            |
-| W3-O03-a…e                   | **COMPLETE** (APPROVED)                                               |
-| W3-O04 Planning Package      | **APPROVED**                                                          |
-| W3-O04                       | **APPROVED** · **CLOSED** by Product Owner                            |
-| W3-O04-a…e                   | **COMPLETE** (APPROVED)                                               |
-| W3-O05 Planning Package      | **APPROVED**                                                          |
-| W3-O05                       | Planning **APPROVED** · implementation **authorized** (W3-O05-a only) |
-| Wave 3 Implementation        | **In progress** (O01–O04 CLOSED; O05 Planning APPROVED)               |
-| Live Trading                 | **Not claimed**                                                       |
-| Wave 7 AI Platform Complete  | **Not claimed**                                                       |
-| Master Plan                  | **FROZEN** — unchanged                                                |
+| Item                         | Status                                                                             |
+| ---------------------------- | ---------------------------------------------------------------------------------- |
+| Version 3                    | In progress                                                                        |
+| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**                                                             |
+| Wave 2 Connection Management | **COMPLETE**                                                                       |
+| Wave 3 Planning Package      | **APPROVED**                                                                       |
+| W3-O01                       | **APPROVED** · **CLOSED** by Product Owner                                         |
+| W3-O02 Planning Package      | **APPROVED**                                                                       |
+| W3-O02                       | **APPROVED** · **CLOSED** by Product Owner                                         |
+| W3-O02-a…e                   | **COMPLETE** (APPROVED)                                                            |
+| W3-O03 Planning Package      | **APPROVED**                                                                       |
+| W3-O03                       | **APPROVED** · **CLOSED** by Product Owner                                         |
+| W3-O03-a…e                   | **COMPLETE** (APPROVED)                                                            |
+| W3-O04 Planning Package      | **APPROVED**                                                                       |
+| W3-O04                       | **APPROVED** · **CLOSED** by Product Owner                                         |
+| W3-O04-a…e                   | **COMPLETE** (APPROVED)                                                            |
+| W3-O05 Planning Package      | **APPROVED**                                                                       |
+| W3-O05                       | Planning **APPROVED** · W3-O05-a **COMPLETE** · awaiting PO review before W3-O05-b |
+| Wave 3 Implementation        | **In progress** (O01–O04 CLOSED; O05-a COMPLETE)                                   |
+| Live Trading                 | **Not claimed**                                                                    |
+| Wave 7 AI Platform Complete  | **Not claimed**                                                                    |
+| Master Plan                  | **FROZEN** — unchanged                                                             |
 
 ---
 
@@ -74,7 +75,7 @@
 | **W3-O02** | **V3-O02** | Notification Durable Queue        | Planning **APPROVED**. Slices a–e **APPROVED**. Package **CLOSED** by Product Owner.                                       |
 | **W3-O03** | **V3-O03** | Recovery Residual US295 / ADL-008 | Planning **APPROVED**. Slices a–e **COMPLETE**. Package **CLOSED** by Product Owner. ADL-008 disposition **not recorded**. |
 | **W3-O04** | **V3-O04** | Durable Kill Switch Product       | Planning **APPROVED**. W3-O04-a…e **COMPLETE**. Package **CLOSED** by Product Owner.                                       |
-| **W3-O05** | **V3-O05** | Monitoring & Security Health      | Planning **APPROVED**. Implementation **authorized** — **Awaiting W3-O05-a**.                                              |
+| **W3-O05** | **V3-O05** | Monitoring & Security Health      | Planning **APPROVED**. W3-O05-a **COMPLETE**. **Awaiting W3-O05-b** (not opened).                                          |
 
 Order is binding: **O01 → O02 → O03 → O04 → O05**.
 
@@ -82,14 +83,14 @@ Order is binding: **O01 → O02 → O03 → O04 → O05**.
 
 ## Current package
 
-| Field                     | Value                                                                                            |
-| ------------------------- | ------------------------------------------------------------------------------------------------ |
-| **Package**               | W3-O05 Monitoring & Security Health (V3-O05) — Planning **APPROVED**                             |
-| **Master Plan / Roadmap** | V3-O05 · MN-02 · MN-03 · SEC-13 · SEC-15 · Monitoring & security health                          |
-| **Stage**                 | **Awaiting W3-O05-a**                                                                            |
-| **Approval**              | Planning Review **PASS** · Planning **APPROVED** · Implementation **authorized** (W3-O05-a only) |
-| **Predecessor**           | W3-O04 Durable Kill Switch **CLOSED** by Product Owner                                           |
-| **Implementation slices** | **Not opened** — W3-O05-a authorized but not yet opened                                          |
+| Field                     | Value                                                                              |
+| ------------------------- | ---------------------------------------------------------------------------------- |
+| **Package**               | W3-O05 Monitoring & Security Health (V3-O05) — Planning **APPROVED**               |
+| **Master Plan / Roadmap** | V3-O05 · MN-02 · MN-03 · SEC-13 · SEC-15 · Monitoring & security health            |
+| **Stage**                 | W3-O05-a **COMPLETE** — awaiting Product Owner review before W3-O05-b              |
+| **Approval**              | Planning Review **PASS** · Planning **APPROVED** · W3-O05-a inventory **COMPLETE** |
+| **Predecessor**           | W3-O04 Durable Kill Switch **CLOSED** by Product Owner                             |
+| **Implementation slices** | W3-O05-a **COMPLETE** · W3-O05-b…e **not opened**                                  |
 
 Companions:
 
@@ -102,6 +103,8 @@ Companions:
 - [`w3-o05-planning-summary.md`](./w3-o05-planning-summary.md)
 - [`w3-o05-planning-review.md`](./w3-o05-planning-review.md)
 - [`w3-o05-planning-approval.md`](./w3-o05-planning-approval.md)
+- [`w3-o05-a-monitoring-inventory.md`](./w3-o05-a-monitoring-inventory.md)
+- [`w3-o05-a-implementation-report.md`](./w3-o05-a-implementation-report.md)
 - [`w3-o04-product-owner-close-record.md`](./w3-o04-product-owner-close-record.md)
 - [`durable-kill-switch-overview.md`](./durable-kill-switch-overview.md)
 - [`w3-o04-close-package-report.md`](./w3-o04-close-package-report.md)
@@ -155,14 +158,16 @@ W3-O04 CLOSED by Product Owner
         ↓
 W3-O05 Planning APPROVED
         ↓
-STOP — Awaiting W3-O05-a (authorized but not opened)
+W3-O05-a COMPLETE (monitoring & security health inventory & honesty baseline)
+        ↓
+STOP — Await Product Owner review before W3-O05-b
 Do not open W3-O05-b…e without separate Product Owner sequencing
 Do not declare ADL-008 ACCEPTED (separate disposition act)
 Do not declare Production Restart Safe automatically
 Do not declare Wave 3 COMPLETE
 Do not declare Kill Switch execution COMPLETE (foundation only)
 Do not declare Monitoring Complete
-(No W3-O05 implementation slices)
+(W3-O05-a COMPLETE; W3-O05-b…e not opened)
 (No Live Trading)
 (No Business Continuity / High Availability)
 ```
@@ -193,7 +198,9 @@ Do not declare Monitoring Complete
 | W3-O05 Planning Review PASS                | **PASS** (24/24)                              |
 | W3-O05 Planning APPROVED                   | **APPROVED**                                  |
 | W3-O05 implementation authorized           | **Yes** — W3-O05-a only                       |
-| W3-O05-a opened                            | **Not opened** — awaiting Product Owner task  |
+| W3-O05-a inventory foundation              | **COMPLETE**                                  |
+| W3-O05-b…e opened                          | **Not opened** — awaiting Product Owner       |
+| Monitoring Complete                        | **Not claimed**                               |
 | US295 / ADL-008 disposition                | **Not recorded** (ADL-008 remains DEFERRED)   |
 | Production restart-safety Complete         | **Not claimed** (separate governance surface) |
 | Kill Switch execution / admission block    | **Not claimed** (O04 foundation only)         |

@@ -3,7 +3,7 @@
 **Package:** W3-O05 Monitoring & Security Health  
 **Wave:** 3 — Durability, Operations & Continuity  
 **Master Plan / Roadmap:** V3-O05 · MN-02 · MN-03 · SEC-13 · SEC-15  
-**Status:** Planning **OPEN**. Awaiting Product Owner Review and Approval. Not implementation. Slices not opened.  
+**Status:** Planning **APPROVED**. W3-O05-a inventory **COMPLETE**. W3-O05-b…e not opened.
 **Date:** 2026-08-27  
 **Umbrella:** [`w3-o05-implementation-package.md`](./w3-o05-implementation-package.md)  
 **Scope:** [`w3-o05-product-scope.md`](./w3-o05-product-scope.md)  
@@ -138,7 +138,23 @@ Map to Product Acceptance Criteria in [`w3-o05-product-scope.md`](./w3-o05-produ
 
 ---
 
-## 10. Close checklist (planning)
+## 10. W3-O05-a inventory validation (COMPLETE)
+
+| Assertion                                        | Result |
+| ------------------------------------------------ | ------ |
+| Complete monitoring inventory exists             | PASS   |
+| SURVIVE / EPHEMERAL classification               | PASS   |
+| Ownership verified; no new persistence owner     | PASS   |
+| Honesty boundaries frozen                        | PASS   |
+| Monitoring Complete not claimed                  | PASS   |
+| Monitoring does not survive restart from slice a | PASS   |
+| No customer-visible monitoring feature           | PASS   |
+
+Evidence: [`w3-o05-a-validation-report.md`](./w3-o05-a-validation-report.md) · [`w3-o05-a-monitoring-inventory.md`](./w3-o05-a-monitoring-inventory.md)
+
+---
+
+## 11. Close checklist (planning)
 
 | Item                                           | Required at Close |
 | ---------------------------------------------- | ----------------- |
@@ -167,4 +183,4 @@ Do **not** count as W3-O05 Close evidence during planning:
 
 ---
 
-**STOP.** Planning **OPEN** only. Await Product Owner Planning Review. Do **not** open W3-O05-a. Do not declare Monitoring Complete. Do not declare Wave 3 COMPLETE.
+**STOP.** W3-O05-a inventory **COMPLETE**. Await Product Owner review before W3-O05-b. Do not declare Monitoring Complete. Do not declare Wave 3 COMPLETE.

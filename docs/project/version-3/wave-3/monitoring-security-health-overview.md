@@ -2,7 +2,7 @@
 
 **Document:** Version 3 Monitoring & Security Health Overview  
 **Date:** 2026-08-27  
-**Status:** Product-facing record. W3-O05 Planning **OPEN**. Awaiting Product Owner Review and Approval. Not approved. Not implementation. Not Monitoring Complete.  
+**Status:** Product-facing record. W3-O05 Planning **APPROVED**. W3-O05-a inventory **COMPLETE**. Not Monitoring Complete. Not W3-O05 CLOSED.
 **Product:** W3-O05 Monitoring & Security Health (V3-O05 · MN-02 · MN-03 · SEC-13 · SEC-15)  
 **Wave:** 3 — Durability, Operations & Continuity  
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.  
@@ -46,37 +46,43 @@ That is still not enough for **operational visibility**. Master Plan Wave 3 exit
 
 ---
 
-## Current package (W3-O05) — Planning OPEN
+## Current package (W3-O05) — Planning APPROVED · W3-O05-a COMPLETE
 
 | Capability                    | Status                                   |
 | ----------------------------- | ---------------------------------------- |
-| W3-O05 Planning Package       | **OPEN** — awaiting Product Owner Review |
-| Implementation slices         | Not opened                               |
+| W3-O05 Planning Package       | **APPROVED**                             |
+| W3-O05-a inventory foundation | **COMPLETE** — canonical baseline frozen |
+| W3-O05-b…e                    | Not opened                               |
 | Monitoring Complete           | **Not claimed**                          |
 | Live Trading                  | Out (Wave 6)                             |
 | Business Continuity / HA / DR | Out                                      |
+
+**Inventory baseline:** [`w3-o05-a-monitoring-inventory.md`](./w3-o05-a-monitoring-inventory.md)
+
+Binding inventory finding: monitoring product is **not Complete**; SEC-15 security health dashboard and operator incident UI are **missing**; Platform Readiness is an input substrate, not Monitoring Complete.
 
 ---
 
 ## Explicit non-claims
 
-| Claim                         | Status          |
-| ----------------------------- | --------------- |
-| W3-O05 APPROVED               | **Not claimed** |
-| W3-O05 CLOSED                 | **Not claimed** |
-| Monitoring Complete           | **Not claimed** |
-| Wave 3 COMPLETE               | **Not claimed** |
-| Live Trading enabled          | **Not claimed** |
-| Business Continuity / HA / DR | **Not claimed** |
+| Claim                         | Status                                 |
+| ----------------------------- | -------------------------------------- |
+| W3-O05 APPROVED               | **APPROVED**                           |
+| W3-O05-a inventory COMPLETE   | **COMPLETE** — not Monitoring Complete |
+| W3-O05 CLOSED                 | **Not claimed**                        |
+| Monitoring Complete           | **Not claimed**                        |
+| Wave 3 COMPLETE               | **Not claimed**                        |
+| Live Trading enabled          | **Not claimed**                        |
+| Business Continuity / HA / DR | **Not claimed**                        |
 
 ---
 
 ## What's Next
 
-1. Product Owner Planning Review of W3-O05 Planning Package
-2. Planning Approval — **not done**
-3. Implementation — **not opened**
+1. Product Owner review of W3-O05-a inventory foundation
+2. W3-O05-b — Durable Persistence Foundation — **not opened**
+3. Monitoring Complete — **not claimed**
 
 ---
 
-**STOP.** W3-O05 Planning **OPEN** only. Do not open W3-O05-a. Do not declare Monitoring Complete. Do not declare Wave 3 COMPLETE.
+**STOP.** W3-O05-a inventory **COMPLETE**. Do not open W3-O05-b without Product Owner instruction. Do not declare Monitoring Complete. Do not declare Wave 3 COMPLETE.
