@@ -5,6 +5,8 @@ import { LoggingModule } from '../logging/logging.module';
 import { PrismaService } from '../storage/prisma/prisma.module';
 import { MONITORING_HEALTH_STATE_REPOSITORY } from './monitoring-health/domain/monitoring-health-state.repository';
 import { MonitoringHealthPersistenceService } from './monitoring-health/monitoring-health-persistence.service';
+import { MonitoringHealthRecoveryStore } from './monitoring-health/monitoring-health-recovery-store';
+import { MonitoringHealthRestartRecoveryService } from './monitoring-health/monitoring-health-restart-recovery.service';
 import { PrismaMonitoringHealthStateRepository } from './monitoring-health/persistence/prisma-monitoring-health-state.repository';
 import { PlatformSecurityExceptionFilter } from './platform-security-exception.filter';
 import { SecurityPlatformBootstrap } from './security-platform.bootstrap';
@@ -24,11 +26,18 @@ import { SecurityPlatformBootstrap } from './security-platform.bootstrap';
       inject: [PrismaService],
     },
     MonitoringHealthPersistenceService,
+    MonitoringHealthRecoveryStore,
+    MonitoringHealthRestartRecoveryService,
     {
       provide: APP_FILTER,
       useClass: PlatformSecurityExceptionFilter,
     },
   ],
-  exports: [MONITORING_HEALTH_STATE_REPOSITORY, MonitoringHealthPersistenceService],
+  exports: [
+    MONITORING_HEALTH_STATE_REPOSITORY,
+    MonitoringHealthPersistenceService,
+    MonitoringHealthRecoveryStore,
+    MonitoringHealthRestartRecoveryService,
+  ],
 })
 export class SecurityPlatformModule {}

@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { MonitoringHealthPersistenceService } from '../security-platform/monitoring-health/monitoring-health-persistence.service';
+import { MonitoringHealthRecoveryStore } from '../security-platform/monitoring-health/monitoring-health-recovery-store';
 import { PrismaMonitoringHealthStateRepository } from '../security-platform/monitoring-health/persistence/prisma-monitoring-health-state.repository';
 import {
   W3_O05_A_MONITORING_INVENTORY,
@@ -55,7 +56,10 @@ describe('W3-O05-b durable monitoring persistence — unit', () => {
   it('persistence correctness: security health anchor write-through upserts workspace row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaMonitoringHealthStateRepository(prisma as never);
-    const service = new MonitoringHealthPersistenceService(repository);
+    const service = new MonitoringHealthPersistenceService(
+      repository,
+      new MonitoringHealthRecoveryStore(),
+    );
 
     const outcome = await service.persistSecurityHealthAnchor({
       workspaceId: 'ws-a',

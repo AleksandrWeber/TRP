@@ -3,7 +3,7 @@
 **Package:** W3-O05 Monitoring & Security Health  
 **Wave:** 3 — Durability, Operations & Continuity  
 **Master Plan / Roadmap:** V3-O05 · MN-02 · MN-03 · SEC-13 · SEC-15  
-**Status:** Planning **APPROVED**. W3-O05-a inventory **COMPLETE**. W3-O05-b persistence **COMPLETE**. W3-O05-c…e not opened.
+**Status:** Planning **APPROVED**. W3-O05-a inventory **COMPLETE**. W3-O05-b persistence **COMPLETE**. W3-O05-c restart recovery **COMPLETE**. W3-O05-d…e not opened.
 **Date:** 2026-08-27  
 **Umbrella:** [`w3-o05-implementation-package.md`](./w3-o05-implementation-package.md)  
 **Scope:** [`w3-o05-product-scope.md`](./w3-o05-product-scope.md)  
@@ -170,7 +170,25 @@ Evidence: [`w3-o05-b-validation-report.md`](./w3-o05-b-validation-report.md) · 
 
 ---
 
-## 12. Close checklist (planning)
+## 12. W3-O05-c restart recovery validation (COMPLETE)
+
+| Assertion                                              | Result |
+| ------------------------------------------------------ | ------ |
+| Monitoring state restored after normal process restart | PASS   |
+| Security Health anchor restored after normal restart   | PASS   |
+| Recovery deterministic (workspaceId order)             | PASS   |
+| Recovery idempotent                                    | PASS   |
+| Missing state not fabricated                           | PASS   |
+| Corrupt state not silently recovered                   | PASS   |
+| No operational continuity / evaluation / dashboard     | PASS   |
+| No customer-visible monitoring feature                 | PASS   |
+| No new persistence owner                               | PASS   |
+
+Evidence: [`w3-o05-c-validation-report.md`](./w3-o05-c-validation-report.md) · [`w3-o05-c-implementation-report.md`](./w3-o05-c-implementation-report.md)
+
+---
+
+## 13. Close checklist (planning)
 
 | Item                                           | Required at Close |
 | ---------------------------------------------- | ----------------- |
@@ -199,4 +217,4 @@ Do **not** count as W3-O05 Close evidence during planning:
 
 ---
 
-**STOP.** W3-O05-b persistence **COMPLETE**. Await Product Owner review before W3-O05-c. Do not declare Monitoring Complete. Do not declare Wave 3 COMPLETE.
+**STOP.** W3-O05-c restart recovery **COMPLETE**. Await Product Owner review before W3-O05-d. Do not declare Monitoring Complete. Do not declare Wave 3 COMPLETE.

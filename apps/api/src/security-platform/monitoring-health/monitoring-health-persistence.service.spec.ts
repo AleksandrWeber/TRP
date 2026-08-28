@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { MonitoringHealthPersistenceService } from './monitoring-health-persistence.service';
 import type { MonitoringHealthStateRepository } from './domain/monitoring-health-state.repository';
 import type { DurableMonitoringHealthState } from './domain/durable-monitoring-health-state';
+import { MonitoringHealthRecoveryStore } from './monitoring-health-recovery-store';
 
 function createInMemoryRepository(): MonitoringHealthStateRepository & {
   rows: Map<string, DurableMonitoringHealthState>;
@@ -26,7 +27,10 @@ function createInMemoryRepository(): MonitoringHealthStateRepository & {
 describe('MonitoringHealthPersistenceService — W3-O05-b storage only', () => {
   it('persists explicit security health anchor without fabricating connection anchor', async () => {
     const repository = createInMemoryRepository();
-    const service = new MonitoringHealthPersistenceService(repository);
+    const service = new MonitoringHealthPersistenceService(
+      repository,
+      new MonitoringHealthRecoveryStore(),
+    );
 
     const outcome = await service.persistSecurityHealthAnchor({
       workspaceId: 'ws-a',
@@ -47,7 +51,10 @@ describe('MonitoringHealthPersistenceService — W3-O05-b storage only', () => {
 
   it('persists explicit connection health anchor without fabricating security anchor', async () => {
     const repository = createInMemoryRepository();
-    const service = new MonitoringHealthPersistenceService(repository);
+    const service = new MonitoringHealthPersistenceService(
+      repository,
+      new MonitoringHealthRecoveryStore(),
+    );
 
     await service.persistSecurityHealthAnchor({
       workspaceId: 'ws-a',
@@ -71,7 +78,10 @@ describe('MonitoringHealthPersistenceService — W3-O05-b storage only', () => {
 
   it('does not create a row until explicit persist command', async () => {
     const repository = createInMemoryRepository();
-    const service = new MonitoringHealthPersistenceService(repository);
+    const service = new MonitoringHealthPersistenceService(
+      repository,
+      new MonitoringHealthRecoveryStore(),
+    );
     expect(await service.loadState('ws-empty')).toBeNull();
   });
 });

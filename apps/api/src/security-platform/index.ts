@@ -66,3 +66,14 @@ export {
   type PersistConnectionHealthAnchorCommand,
   type PersistSecurityHealthAnchorCommand,
 } from './monitoring-health/monitoring-health-persistence.service';
+export { MonitoringHealthRecoveryStore } from './monitoring-health/monitoring-health-recovery-store';
+export { MonitoringHealthRestartRecoveryService } from './monitoring-health/monitoring-health-restart-recovery.service';
+export {
+  MonitoringHealthRestartRecoveryError,
+  assertRecoverableMonitoringHealthState,
+  buildMonitoringHealthRecoveryDiagnostics,
+  prepareMonitoringHealthStatesForRecovery,
+  sortMonitoringHealthStatesDeterministically,
+  W3_O05_C_MONITORING_RECOVERY_OWNER,
+  type MonitoringHealthRecoveryDiagnostics,
+} from './monitoring-health/domain/monitoring-health-restart-recovery';

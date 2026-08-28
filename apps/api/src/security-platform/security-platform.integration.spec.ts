@@ -15,6 +15,32 @@ import {
   registerSecurityPlatformHttpHooks,
 } from './security-platform.http';
 import { SecurityPlatformModule } from './security-platform.module';
+import {
+  MONITORING_HEALTH_STATE_REPOSITORY,
+  type MonitoringHealthStateRepository,
+} from './monitoring-health/domain/monitoring-health-state.repository';
+
+function createEmptyMonitoringHealthRepository(): MonitoringHealthStateRepository {
+  return {
+    async saveMonitoringHealthState() {},
+    async loadMonitoringHealthState() {
+      return null;
+    },
+    async listAllMonitoringHealthStates() {
+      return Object.freeze([]);
+    },
+  };
+}
+
+function createSecurityPlatformTestModule(logger: RecordingLogger) {
+  return Test.createTestingModule({
+    imports: [LoggingModule, ValidationModule, SecurityPlatformModule],
+    controllers: [SecurityPlatformTestController],
+    providers: [{ provide: LOGGER, useValue: logger }],
+  })
+    .overrideProvider(MONITORING_HEALTH_STATE_REPOSITORY)
+    .useValue(createEmptyMonitoringHealthRepository());
+}
 
 class RecordingLogger implements Logger {
   readonly entries: Array<{ level: string; message: string }> = [];
@@ -63,11 +89,7 @@ describe('security-platform HTTP integration (V3-S04-a)', () => {
 
   beforeAll(async () => {
     const logger = new RecordingLogger();
-    const moduleRef = await Test.createTestingModule({
-      imports: [LoggingModule, ValidationModule, SecurityPlatformModule],
-      controllers: [SecurityPlatformTestController],
-      providers: [{ provide: LOGGER, useValue: logger }],
-    }).compile();
+    const moduleRef = await createSecurityPlatformTestModule(logger).compile();
 
     app = moduleRef.createNestApplication<NestFastifyApplication>(
       new FastifyAdapter({
@@ -182,11 +204,7 @@ describe('security-platform abuse flood integration (V3-S04-d)', () => {
 
   beforeAll(async () => {
     const logger = new RecordingLogger();
-    const moduleRef = await Test.createTestingModule({
-      imports: [LoggingModule, ValidationModule, SecurityPlatformModule],
-      controllers: [SecurityPlatformTestController],
-      providers: [{ provide: LOGGER, useValue: logger }],
-    }).compile();
+    const moduleRef = await createSecurityPlatformTestModule(logger).compile();
 
     app = moduleRef.createNestApplication<NestFastifyApplication>(
       new FastifyAdapter({

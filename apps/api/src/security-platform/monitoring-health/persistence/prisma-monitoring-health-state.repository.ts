@@ -7,6 +7,7 @@ import {
   MONITORING_HEALTH_STATE_SCHEMA_VERSION,
   type DurableMonitoringHealthState,
 } from '../domain/durable-monitoring-health-state';
+import { assertRecoverableMonitoringHealthState } from '../domain/monitoring-health-restart-recovery';
 import type { MonitoringHealthStateRepository } from '../domain/monitoring-health-state.repository';
 
 type MonitoringHealthStateRow = Prisma.WorkspaceMonitoringHealthStateGetPayload<
@@ -42,7 +43,9 @@ export class PrismaMonitoringHealthStateRepository implements MonitoringHealthSt
     const rows = await this.prisma.workspaceMonitoringHealthState.findMany({
       orderBy: { workspaceId: 'asc' },
     });
-    return Object.freeze(rows.map((row) => toDomain(row)));
+    return Object.freeze(
+      rows.map((row, index) => assertRecoverableMonitoringHealthState(toDomain(row), index)),
+    );
   }
 }
 

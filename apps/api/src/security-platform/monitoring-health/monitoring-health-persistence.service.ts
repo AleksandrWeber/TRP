@@ -9,6 +9,7 @@ import {
   MONITORING_HEALTH_STATE_REPOSITORY,
   type MonitoringHealthStateRepository,
 } from './domain/monitoring-health-state.repository';
+import { MonitoringHealthRecoveryStore } from './monitoring-health-recovery-store';
 
 export type PersistSecurityHealthAnchorCommand = Readonly<{
   workspaceId: string;
@@ -28,16 +29,22 @@ export type PersistConnectionHealthAnchorCommand = Readonly<{
 
 /**
  * W3-O05-b — durable monitoring health persistence on Security Platform owner.
- * Storage only — no health evaluation, restart recovery, or dashboard wiring.
+ * W3-O05-c — write-through to recovery store after hydrate.
+ * Storage only — no health evaluation, operational continuity, or dashboard wiring.
  */
 @Injectable()
 export class MonitoringHealthPersistenceService {
   constructor(
     @Inject(MONITORING_HEALTH_STATE_REPOSITORY)
     private readonly repository: MonitoringHealthStateRepository,
+    @Inject(MonitoringHealthRecoveryStore)
+    private readonly recoveryStore: MonitoringHealthRecoveryStore,
   ) {}
 
   async loadState(workspaceId: string): Promise<DurableMonitoringHealthState | null> {
+    if (this.recoveryStore.hasHydrated()) {
+      return this.recoveryStore.get(workspaceId);
+    }
     return this.repository.loadMonitoringHealthState(workspaceId);
   }
 
@@ -50,6 +57,7 @@ export class MonitoringHealthPersistenceService {
       return outcome;
     }
     await this.repository.saveMonitoringHealthState(outcome.state);
+    this.recoveryStore.set(outcome.state);
     return outcome;
   }
 
@@ -62,6 +70,7 @@ export class MonitoringHealthPersistenceService {
       return outcome;
     }
     await this.repository.saveMonitoringHealthState(outcome.state);
+    this.recoveryStore.set(outcome.state);
     return outcome;
   }
 }
