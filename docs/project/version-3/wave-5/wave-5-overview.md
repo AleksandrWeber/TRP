@@ -2,7 +2,7 @@
 
 **Document:** Wave 5 Notification Platform Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. Wave 5 Planning **OPEN**. Not implementation.
+**Status:** Product-facing record. W5-N01-a inventory **COMPLETE** (local). Production Telegram Bot API **not implemented**.
 **Product:** Wave 5 — Notification Platform
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -37,7 +37,7 @@ It does NOT invent a second notification engine.
 5. **Disconnect** without SSH or editing `.env`.
 6. Receive routed alerts from the platform through active transports.
 
-**Not available today** — Wave 5 Planning is **OPEN**; no implementation has started.
+**Not available today** — W5-N01-a established the engineering inventory only. Transport remains in-memory; Bot API is not used. Real Telegram delivery awaits W5-N01-b and later slices.
 
 ---
 

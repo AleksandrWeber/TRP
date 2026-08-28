@@ -100,6 +100,21 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
+## W5-N01-a validation (inventory slice — local)
+
+| Layer                           | Result   | Evidence                                                              |
+| ------------------------------- | -------- | --------------------------------------------------------------------- |
+| Telegram notification inventory | **PASS** | `w5-n01-a-telegram-notification-inventory.ts` (55 rows)               |
+| Conformance registry            | **PASS** | `w5-n01-a-telegram-notification.ts`                                   |
+| Ownership boundaries            | **PASS** | No new persistence owner; Exchange Adapter untouched                  |
+| Honest Product baseline         | **PASS** | Implemented today = None; infrastructure documented; Bot API deferred |
+| Regression suite                | **PASS** | lint / typecheck / test / build                                       |
+| git diff --check                | **PASS** | No whitespace errors                                                  |
+
+**Explicit non-claim:** W5-N01-a does **not** authorize Telegram real delivery, W5-N01 COMPLETE, or Wave 5 COMPLETE.
+
+---
+
 ## Explicit non-claims
 
 - Wave 5 validation PASS at Close — **not claimed**
