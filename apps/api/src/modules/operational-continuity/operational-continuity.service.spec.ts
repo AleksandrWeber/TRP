@@ -22,6 +22,13 @@ import {
 } from '../notification-delivery/domain/telegram-notification-continuity-status';
 import { buildTelegramNotificationAnchorState } from '../notification-delivery/domain/durable-telegram-notification-anchor';
 import { buildTelegramNotificationRecoveryDiagnostics } from '../notification-delivery/domain/telegram-notification-restart-recovery';
+import {
+  recordEmailNotificationRecoveryStart,
+  recordEmailNotificationRecoverySuccess,
+  resetEmailNotificationContinuity,
+} from '../notification-delivery/domain/email-notification-continuity-status';
+import { buildEmailNotificationAnchorState } from '../notification-delivery/domain/durable-email-notification-anchor';
+import { buildEmailNotificationRecoveryDiagnostics } from '../notification-delivery/domain/email-notification-restart-recovery';
 
 describe('OperationalContinuityService', () => {
   beforeEach(() => {
@@ -30,6 +37,7 @@ describe('OperationalContinuityService', () => {
     resetKrakenExchangeConnectivityContinuity();
     resetVenuePermissionContinuity();
     resetTelegramNotificationContinuity();
+    resetEmailNotificationContinuity();
   });
 
   it('mixed owner states: unavailable + ready + degraded dependents', async () => {
@@ -94,6 +102,7 @@ describe('OperationalContinuityService', () => {
     expect(projection.venuePermissionVerification).toBeTruthy();
     expect(projection.venuePermissionVerification?.operationalState).toBe('Unavailable');
     expect(projection.telegramNotification?.operationalState).toBe('Unavailable');
+    expect(projection.emailNotification?.operationalState).toBe('Unavailable');
   });
 
   it('workspace-safe projection is read-only (no mutation API on service)', () => {
@@ -195,6 +204,53 @@ describe('OperationalContinuityService', () => {
 
     expect(projection.telegramNotification?.operationalState).toBe('Ready');
     expect(projection.telegramNotification?.canonicalAnchorCount).toBe(1);
+    expect(projection.platformState).toBe('Ready');
+  });
+
+  it('includes email notification continuity derived from W5-N02-c recovery record', async () => {
+    resetEmailNotificationContinuity();
+    const anchor = buildEmailNotificationAnchorState({
+      workspaceId: 'ws-1',
+      notificationId: 'ntf-1',
+      notificationChannel: 'email',
+      notificationType: 'report-complete',
+      recipientIdentifier: 'user@example.com',
+      templateIdentifier: 'inline:report-complete',
+      correlationId: 'corr-1',
+      actorId: 'actor-1',
+      recordedAt: '2026-08-28T17:00:00.000Z',
+      prior: null,
+    });
+    if (!anchor.ok) throw new Error('expected anchor');
+    recordEmailNotificationRecoveryStart();
+    recordEmailNotificationRecoverySuccess({
+      diagnostics: buildEmailNotificationRecoveryDiagnostics([anchor.anchor]),
+    });
+
+    const audit = {
+      recordOwnerState: vi.fn(async () => undefined),
+      recordRecoveryCompleted: vi.fn(async () => undefined),
+    } as unknown as OperationalContinuityAudit;
+    const service = new OperationalContinuityService(audit);
+    const projection = await service.applyBootOutcomesForTest(
+      (
+        [
+          'strategy-library',
+          'exchange-scope',
+          'knowledge-lake',
+          'market-profile',
+          'market-qualification',
+          'market-state',
+          'reporting',
+          'notification-delivery',
+          'trading-orchestrator',
+          'runtime-enforcement',
+        ] as const
+      ).map((owner) => ({ owner, outcome: 'ready' as const })),
+    );
+
+    expect(projection.emailNotification?.operationalState).toBe('Ready');
+    expect(projection.emailNotification?.canonicalAnchorCount).toBe(1);
     expect(projection.platformState).toBe('Ready');
   });
 });
