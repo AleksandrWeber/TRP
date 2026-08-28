@@ -199,7 +199,7 @@ describe('W4-E01-e package close evidence — integration / planning', () => {
     expect(view).not.toMatch(/Test connection|Place order|Live Trading/i);
   });
 
-  it('status docs: W4-E01 CLOSED by Product Owner; Wave 4 COMPLETE not claimed; W4-E02 NOT opened', () => {
+  it('status docs: W4-E01 CLOSED by Product Owner; Wave 4 COMPLETE not claimed', () => {
     const progress = readWave4('wave-4-progress.md');
     const overview = readWave4('w4-e01-overview.md');
     const close = readWave4('w4-e01-close-package-report.md');

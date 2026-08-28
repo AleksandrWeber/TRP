@@ -7,7 +7,7 @@
 **Nature:** Simple Product Owner status. Not an RC. Not an ADR. Not a Master Plan revision.
 
 **Planning summary (wave):** [`wave-4-planning-summary.md`](./wave-4-planning-summary.md)
-**Implementation Readiness (E01):** [`implementation-readiness-checklist.md`](./implementation-readiness-checklist.md)
+**Planning summary (E02):** [`w4-e02-planning-summary.md`](./w4-e02-planning-summary.md)
 **Prior wave:** Wave 3 **COMPLETE** — [`../wave-3-completion-report.md`](../wave-3-completion-report.md)
 
 ---
@@ -20,9 +20,9 @@
 | Wave 1 Security Foundation   | **CERTIFIED COMPLETE**      |
 | Wave 2 Connection Management | **COMPLETE**                |
 | Wave 3 Durability & Ops      | **COMPLETE**                |
-| Wave 4 Planning Package      | **APPROVED** (W4-E01)       |
 | W4-E01                       | **CLOSED** by Product Owner |
-| W4-E02 … W4-E05              | **Not opened**              |
+| W4-E02 Planning Package      | **OPEN**                    |
+| W4-E03 … W4-E05              | **Not opened**              |
 | Live Trading                 | **Not claimed**             |
 | Master Plan                  | **FROZEN** — unchanged      |
 
@@ -33,7 +33,7 @@
 | Package    | Roadmap ID | Name                          | Status                                   |
 | ---------- | ---------- | ----------------------------- | ---------------------------------------- |
 | **W4-E01** | **V3-E01** | Binance Real I/O              | **CLOSED** by Product Owner (2026-08-28) |
-| **W4-E02** | **V3-E02** | Bybit Real I/O                | **Not opened**                           |
+| **W4-E02** | **V3-E02** | Bybit Real I/O                | Planning **OPEN**                        |
 | **W4-E03** | **V3-E03** | OKX Real I/O                  | **Not opened**                           |
 | **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **Not opened**                           |
 | **W4-E05** | **V3-E05** | Venue Permission Verification | **Not opened**                           |
@@ -44,27 +44,37 @@ Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
 ## Current package
 
-| Field                     | Value                                           |
-| ------------------------- | ----------------------------------------------- |
-| **Package**               | **W4-E01** Binance Real I/O — **CLOSED**        |
-| **Master Plan / Roadmap** | V3-E01 · CM-07                                  |
-| **Stage**                 | Awaiting **W4-E02** Planning Package            |
-| **Approval**              | Planning Review **PASS**; Planning **APPROVED** |
-| **Implementation**        | Slices a–e **COMPLETE**; package **CLOSED**     |
-| **Predecessor**           | Wave 3 **COMPLETE**                             |
-| **Implementation slices** | **W4-E01-a…e COMPLETE**; package **CLOSED**     |
+| Field                     | Value                               |
+| ------------------------- | ----------------------------------- |
+| **Package**               | **W4-E02** Bybit Real I/O           |
+| **Master Plan / Roadmap** | V3-E02 · CM-08                      |
+| **Stage**                 | Planning **OPEN**                   |
+| **Approval**              | Not granted — await Planning Review |
+| **Implementation**        | **Not started** — slices not opened |
+| **Predecessor**           | W4-E01 **CLOSED** by Product Owner  |
+| **Implementation slices** | **Not opened**                      |
 
 Companions:
 
-- [`w4-e01-implementation-package.md`](./w4-e01-implementation-package.md)
-- [`w4-e01-product-scope.md`](./w4-e01-product-scope.md)
+- [`w4-e02-implementation-package.md`](./w4-e02-implementation-package.md)
+- [`w4-e02-product-scope.md`](./w4-e02-product-scope.md)
+- [`w4-e02-security-review.md`](./w4-e02-security-review.md)
+- [`w4-e02-validation-plan.md`](./w4-e02-validation-plan.md)
+- [`w4-e02-overview.md`](./w4-e02-overview.md)
+- [`w4-e02-planning-summary.md`](./w4-e02-planning-summary.md)
 - [`w4-e01-product-owner-close-record.md`](./w4-e01-product-owner-close-record.md)
-- [`w4-e01-final-integration-verification.md`](./w4-e01-final-integration-verification.md)
-- [`w4-e01-package-summary.md`](./w4-e01-package-summary.md)
-- [`w4-e01-close-package-report.md`](./w4-e01-close-package-report.md)
-- [`w4-e01-operational-walkthrough.md`](./w4-e01-operational-walkthrough.md)
-- [`w4-e01-overview.md`](./w4-e01-overview.md)
 - [`wave-4-planning-summary.md`](./wave-4-planning-summary.md)
+
+---
+
+## W4-E01 status (closed)
+
+| Field                     | Value                                            |
+| ------------------------- | ------------------------------------------------ |
+| **Package**               | **W4-E01** Binance Real I/O — **CLOSED**         |
+| **Master Plan / Roadmap** | V3-E01 · CM-07                                   |
+| **Close date**            | 2026-08-28                                       |
+| **Implementation slices** | W4-E01-a…e **COMPLETE**; W4-E01-e Close Evidence |
 
 ---
 
@@ -79,12 +89,6 @@ Wave 3 COMPLETE
         ↓
 W4-E01 Planning APPROVED — Implementation AUTHORIZED
         ↓
-W4-E01-a Inventory & Exchange Connectivity Baseline — COMPLETE
-        ↓
-W4-E01-b Durable Exchange Connectivity Foundation — COMPLETE
-        ↓
-W4-E01-c Restart Recovery Foundation — COMPLETE
-        ↓
 W4-E01-d Operational Continuity Foundation — COMPLETE
         ↓
 W4-E01-e Package Close Evidence — COMPLETE
@@ -93,12 +97,15 @@ Final Package Integration Verification — PASS
         ↓
 W4-E01 CLOSED by Product Owner (2026-08-28)
         ↓
-STOP — Await W4-E02 Planning Package (not opened)
-Do not open W4-E02…E05 without separate PO sequencing
+W4-E02 Planning Package OPEN (2026-08-28)
+        ↓
+STOP — Await W4-E02 Planning Review
+Do not open W4-E02-a until Planning APPROVED
+Do not open W4-E03…E05 without separate PO sequencing
 (No Live Trading)
 (No Wave 4 COMPLETE)
 (No Exchange Connectivity Complete)
-(No Binance Connected)
+(No Bybit Connected)
 (No engine clone per venue)
 ```
 
@@ -106,20 +113,19 @@ Do not open W4-E02…E05 without separate PO sequencing
 
 ## Explicit non-claims
 
-| Claim                              | Status                                   |
-| ---------------------------------- | ---------------------------------------- |
-| Wave 4 COMPLETE                    | **Not claimed**                          |
-| Exchange Connectivity Complete     | **Not claimed**                          |
-| Binance Connected (factory honest) | **Not claimed**                          |
-| Binance Real I/O product outcomes  | **Not claimed** (foundation CLOSED only) |
-| REST Complete                      | **Not claimed**                          |
-| WebSocket Complete                 | **Not claimed**                          |
-| W4-E02 Planning OPEN               | **Not claimed**                          |
-| W4-E02 … E05 opened                | **Not claimed**                          |
-| Live Trading                       | **Not claimed**                          |
-| Production Ready                   | **Not claimed**                          |
-| Master Plan changed                | **Not claimed**                          |
+| Claim                          | Status          |
+| ------------------------------ | --------------- |
+| Wave 4 COMPLETE                | **Not claimed** |
+| Exchange Connectivity Complete | **Not claimed** |
+| Binance Connected              | **Not claimed** |
+| Bybit Connected                | **Not claimed** |
+| W4-E02 Planning APPROVED       | **Not claimed** |
+| W4-E02-a opened                | **Not claimed** |
+| W4-E03 … E05 opened            | **Not claimed** |
+| Live Trading                   | **Not claimed** |
+| Production Ready               | **Not claimed** |
+| Master Plan changed            | **Not claimed** |
 
 ---
 
-**STOP.** W4-E01 **CLOSED** by Product Owner. Await explicit Product Owner instruction to open W4-E02 Planning Package. Do not declare Wave 4 COMPLETE.
+**STOP.** W4-E02 Planning **OPEN**. Await explicit Product Owner instruction for W4-E02 Planning Review. Do not perform Planning Review. Do not perform Planning Approval. Do not open W4-E02-a. Do not declare Wave 4 COMPLETE.
