@@ -16,6 +16,8 @@ import { OkxExchangeConnectivityPersistenceService } from './okx-exchange-connec
 import { OkxExchangeConnectivityRecoveryStore } from './okx-exchange-connectivity-recovery-store';
 import { OkxExchangeConnectivityRestartRecoveryService } from './okx-exchange-connectivity-restart-recovery.service';
 import { KrakenExchangeConnectivityPersistenceService } from './kraken-exchange-connectivity-persistence.service';
+import { KrakenExchangeConnectivityRecoveryStore } from './kraken-exchange-connectivity-recovery-store';
+import { KrakenExchangeConnectivityRestartRecoveryService } from './kraken-exchange-connectivity-restart-recovery.service';
 import { BybitExchangeConnectivityRecoveryStore } from './bybit-exchange-connectivity-recovery-store';
 import { BybitExchangeConnectivityRestartRecoveryService } from './bybit-exchange-connectivity-restart-recovery.service';
 import { ExchangeConnectivityRecoveryStore } from './exchange-connectivity-recovery-store';
@@ -70,6 +72,8 @@ import { PrismaKrakenExchangeConnectivityStateRepository } from './persistence/p
     BybitExchangeConnectivityPersistenceService,
     OkxExchangeConnectivityPersistenceService,
     KrakenExchangeConnectivityPersistenceService,
+    KrakenExchangeConnectivityRecoveryStore,
+    KrakenExchangeConnectivityRestartRecoveryService,
     OkxExchangeConnectivityRecoveryStore,
     OkxExchangeConnectivityRestartRecoveryService,
     BybitExchangeConnectivityRecoveryStore,
@@ -98,6 +102,8 @@ import { PrismaKrakenExchangeConnectivityStateRepository } from './persistence/p
     BybitExchangeConnectivityPersistenceService,
     OkxExchangeConnectivityPersistenceService,
     KrakenExchangeConnectivityPersistenceService,
+    KrakenExchangeConnectivityRecoveryStore,
+    KrakenExchangeConnectivityRestartRecoveryService,
     OkxExchangeConnectivityRecoveryStore,
     OkxExchangeConnectivityRestartRecoveryService,
     BybitExchangeConnectivityRecoveryStore,

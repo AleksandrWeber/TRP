@@ -111,9 +111,17 @@ Inventory: [`w4-e04-a-exchange-connectivity-inventory.md`](./w4-e04-a-exchange-c
 
 ## W4-E04-b status (durable persistence foundation)
 
-W4-E04-b delivered durable workspace Kraken exchange connectivity anchors on the existing Exchange Adapter owner only. Canonical continuity anchors can be written to `workspace_kraken_exchange_connectivity_states`. No restart recovery, operational continuity, REST, WebSocket, or operator-visible behaviour changed.
+W4-E04-b delivered durable workspace Kraken exchange connectivity anchors on the existing Exchange Adapter owner only. Canonical continuity anchors can be written to `workspace_kraken_exchange_connectivity_states`. No operational continuity, REST, WebSocket, or operator-visible behaviour changed.
 
 Report: [`w4-e04-b-implementation-report.md`](./w4-e04-b-implementation-report.md)
+
+---
+
+## W4-E04-c status (restart recovery foundation)
+
+W4-E04-c delivered deterministic restart recovery for W4-E04-b persisted Kraken exchange connectivity anchors on the existing Exchange Adapter owner only. `hydrate()` restores previously persisted continuity anchors into an in-memory recovery store on module init. No operational continuity, REST, WebSocket, or operator-visible behaviour changed.
+
+Report: [`w4-e04-c-implementation-report.md`](./w4-e04-c-implementation-report.md)
 
 ---
 
@@ -122,7 +130,8 @@ Report: [`w4-e04-b-implementation-report.md`](./w4-e04-b-implementation-report.m
 - W4-E04 Planning APPROVED — **recorded**
 - W4-E04-a inventory baseline — **recorded**
 - W4-E04-b durable persistence foundation — **recorded**
-- W4-E04-c opened — **not claimed**
+- W4-E04-c restart recovery foundation — **recorded** (local)
+- W4-E04-d opened — **not claimed**
 - W4-E04 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -132,4 +141,4 @@ Report: [`w4-e04-b-implementation-report.md`](./w4-e04-b-implementation-report.m
 
 ---
 
-**STOP.** W4-E04-b durable persistence foundation recorded (local). Do not declare Kraken Connected, Exchange Connectivity Complete, restart recovery complete, or Wave 4 COMPLETE. Await Product Owner review before W4-E04-c.
+**STOP.** W4-E04-c restart recovery foundation recorded (local). Do not declare Kraken Connected, Exchange Connectivity Complete, operational continuity complete, or Wave 4 COMPLETE. Await Product Owner review before W4-E04-d.

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { KrakenExchangeConnectivityPersistenceService } from './kraken-exchange-connectivity-persistence.service';
+import { KrakenExchangeConnectivityRecoveryStore } from './kraken-exchange-connectivity-recovery-store';
 import type { KrakenExchangeConnectivityStateRepository } from './domain/kraken-exchange-connectivity-state.repository';
 import type { DurableKrakenExchangeConnectivityState } from './domain/durable-kraken-exchange-connectivity-state';
 
@@ -21,10 +22,17 @@ function createRepository(): KrakenExchangeConnectivityStateRepository & {
   };
 }
 
+function createService(repository: KrakenExchangeConnectivityStateRepository) {
+  return new KrakenExchangeConnectivityPersistenceService(
+    repository,
+    new KrakenExchangeConnectivityRecoveryStore(),
+  );
+}
+
 describe('KrakenExchangeConnectivityPersistenceService — W4-E04-b storage only', () => {
   it('persistConnectionManagementAnchor writes explicit KRAKEN connection anchor without connected flag', async () => {
     const repository = createRepository();
-    const service = new KrakenExchangeConnectivityPersistenceService(repository);
+    const service = createService(repository);
 
     const outcome = await service.persistConnectionManagementAnchor({
       workspaceId: 'ws-1',
@@ -47,7 +55,7 @@ describe('KrakenExchangeConnectivityPersistenceService — W4-E04-b storage only
 
   it('persistAdapterLayerAnchor writes explicit KRAKEN adapter exchange_connection anchor', async () => {
     const repository = createRepository();
-    const service = new KrakenExchangeConnectivityPersistenceService(repository);
+    const service = createService(repository);
 
     await service.persistConnectionManagementAnchor({
       workspaceId: 'ws-1',
@@ -73,7 +81,7 @@ describe('KrakenExchangeConnectivityPersistenceService — W4-E04-b storage only
 
   it('loadState returns null when workspace has no persisted row', async () => {
     const repository = createRepository();
-    const service = new KrakenExchangeConnectivityPersistenceService(repository);
+    const service = createService(repository);
     expect(await service.loadState('ws-missing')).toBeNull();
   });
 });

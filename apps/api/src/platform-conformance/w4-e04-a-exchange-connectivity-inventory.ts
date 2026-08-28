@@ -544,10 +544,10 @@ export const W4_E04_A_EXCHANGE_CONNECTIVITY_INVENTORY: readonly W4E04AInventoryR
       owner: 'exchange-adapter' as const,
       durabilityClass: 'SURVIVE' as const,
       currentStatus:
-        'Implemented — WorkspaceKrakenExchangeConnectivityState (W4-E04-b); restart hydrate is W4-E04-c',
+        'Implemented — WorkspaceKrakenExchangeConnectivityState (W4-E04-b); restart hydrate (W4-E04-c)',
       honestyRequirement:
-        'Persistence substrate only; no synthetic Connected; restart recovery is post-W4-E04-c',
-      futureW4E04Responsibility: 'W4-E04-c' as const,
+        'Persistence + restart recovery only; no synthetic Connected; operational continuity is W4-E04-d',
+      futureW4E04Responsibility: 'W4-E04-d' as const,
       evidencePath:
         'apps/api/src/modules/exchange-adapter/persistence/prisma-kraken-exchange-connectivity-state.repository.ts',
       existsToday: true,

@@ -4,11 +4,11 @@ import {
   type TransactionContext,
 } from '../../../storage/prisma/prisma-transaction.service';
 import {
-  assertPersistedKrakenExchangeConnectivityState,
   KRAKEN_EXCHANGE_CONNECTIVITY_EXCHANGE_IDENTIFIER,
   KRAKEN_EXCHANGE_CONNECTIVITY_STATE_SCHEMA_VERSION,
   type DurableKrakenExchangeConnectivityState,
 } from '../domain/durable-kraken-exchange-connectivity-state';
+import { assertRecoverableKrakenExchangeConnectivityState } from '../domain/kraken-exchange-connectivity-restart-recovery';
 import type { KrakenExchangeConnectivityStateRepository } from '../domain/kraken-exchange-connectivity-state.repository';
 
 type KrakenExchangeConnectivityStateRow = Prisma.WorkspaceKrakenExchangeConnectivityStateGetPayload<
@@ -48,7 +48,7 @@ export class PrismaKrakenExchangeConnectivityStateRepository implements KrakenEx
     });
     return Object.freeze(
       rows.map((row, index) =>
-        assertPersistedKrakenExchangeConnectivityState(toDomain(row), index),
+        assertRecoverableKrakenExchangeConnectivityState(toDomain(row), index),
       ),
     );
   }

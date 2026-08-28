@@ -9,6 +9,7 @@ import {
   KRAKEN_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
   type KrakenExchangeConnectivityStateRepository,
 } from './domain/kraken-exchange-connectivity-state.repository';
+import { KrakenExchangeConnectivityRecoveryStore } from './kraken-exchange-connectivity-recovery-store';
 
 export type PersistKrakenConnectionManagementAnchorCommand = Readonly<{
   workspaceId: string;
@@ -29,17 +30,23 @@ export type PersistKrakenAdapterLayerAnchorCommand = Readonly<{
 }>;
 
 /**
- * W4-E04-b — durable Kraken exchange connectivity persistence on Exchange Adapter owner.
- * Storage only — no REST/WebSocket I/O, restart recovery, or operational continuity.
+ * W4-E04-b/c — durable Kraken exchange connectivity persistence on Exchange Adapter owner.
+ * W4-E04-c — write-through to recovery store after hydrate.
+ * Storage only — no REST/WebSocket I/O or operational continuity.
  */
 @Injectable()
 export class KrakenExchangeConnectivityPersistenceService {
   constructor(
     @Inject(KRAKEN_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY)
     private readonly repository: KrakenExchangeConnectivityStateRepository,
+    @Inject(KrakenExchangeConnectivityRecoveryStore)
+    private readonly recoveryStore: KrakenExchangeConnectivityRecoveryStore,
   ) {}
 
   async loadState(workspaceId: string): Promise<DurableKrakenExchangeConnectivityState | null> {
+    if (this.recoveryStore.hasHydrated()) {
+      return this.recoveryStore.get(workspaceId);
+    }
     return this.repository.loadKrakenExchangeConnectivityState(workspaceId);
   }
 
@@ -52,6 +59,7 @@ export class KrakenExchangeConnectivityPersistenceService {
       return outcome;
     }
     await this.repository.saveKrakenExchangeConnectivityState(outcome.state);
+    this.recoveryStore.set(outcome.state);
     return outcome;
   }
 
@@ -64,6 +72,7 @@ export class KrakenExchangeConnectivityPersistenceService {
       return outcome;
     }
     await this.repository.saveKrakenExchangeConnectivityState(outcome.state);
+    this.recoveryStore.set(outcome.state);
     return outcome;
   }
 }

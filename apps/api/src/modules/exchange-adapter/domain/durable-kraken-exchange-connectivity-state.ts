@@ -128,31 +128,3 @@ export function buildKrakenAdapterLayerAnchorState(input: {
     }),
   });
 }
-
-/** Integrity gate for persisted Kraken exchange connectivity rows (W4-E04-b). */
-export function assertPersistedKrakenExchangeConnectivityState(
-  value: DurableKrakenExchangeConnectivityState,
-  index = 0,
-): DurableKrakenExchangeConnectivityState {
-  const prefix = `workspace[${index}]`;
-
-  if (!value.workspaceId.trim()) {
-    throw new Error(`Kraken exchange connectivity persistence refused empty ${prefix}.workspaceId`);
-  }
-
-  if (value.schemaVersion !== KRAKEN_EXCHANGE_CONNECTIVITY_STATE_SCHEMA_VERSION) {
-    throw new Error(
-      `Kraken exchange connectivity persistence refused unsupported schema at ${prefix}`,
-    );
-  }
-
-  if (value.exchangeIdentifier !== KRAKEN_EXCHANGE_CONNECTIVITY_EXCHANGE_IDENTIFIER) {
-    throw new Error(
-      `Kraken exchange connectivity persistence refused unsupported exchange identifier at ${prefix}`,
-    );
-  }
-
-  assertIso(value.updatedAt, `${prefix}.updatedAt`);
-
-  return value;
-}

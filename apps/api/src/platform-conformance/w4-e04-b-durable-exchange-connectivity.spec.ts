@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { KrakenExchangeConnectivityPersistenceService } from '../modules/exchange-adapter/kraken-exchange-connectivity-persistence.service';
+import { KrakenExchangeConnectivityRecoveryStore } from '../modules/exchange-adapter/kraken-exchange-connectivity-recovery-store';
 import { PrismaKrakenExchangeConnectivityStateRepository } from '../modules/exchange-adapter/persistence/prisma-kraken-exchange-connectivity-state.repository';
 import {
   rowsEphemeral,
@@ -53,7 +54,10 @@ describe('W4-E04-b durable Kraken exchange connectivity — unit', () => {
   it('persistence correctness: connection anchor write-through upserts workspace row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaKrakenExchangeConnectivityStateRepository(prisma as never);
-    const service = new KrakenExchangeConnectivityPersistenceService(repository);
+    const service = new KrakenExchangeConnectivityPersistenceService(
+      repository,
+      new KrakenExchangeConnectivityRecoveryStore(),
+    );
 
     const outcome = await service.persistConnectionManagementAnchor({
       workspaceId: 'ws-a',
