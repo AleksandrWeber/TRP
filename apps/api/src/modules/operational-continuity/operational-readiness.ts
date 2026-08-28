@@ -48,6 +48,20 @@ export type KillSwitchContinuityView = Readonly<{
   workspaceIds: readonly string[];
 }>;
 
+/** W4-E01-d — Exchange Connectivity continuity fields on platform readiness. */
+export type ExchangeConnectivityContinuityView = Readonly<{
+  operationalState: OperationalState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  connectionAnchorCount: number;
+  adapterAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+}>;
+
 /** W3-O05-d — Monitoring & Security Health continuity fields on platform readiness. */
 export type MonitoringHealthContinuityView = Readonly<{
   operationalState: OperationalState;
@@ -89,6 +103,8 @@ export type PlatformOperationalProjection = Readonly<{
   killSwitch: KillSwitchContinuityView | null;
   /** W3-O05-d — Monitoring & Security Health operational continuity (derived). */
   monitoringHealth: MonitoringHealthContinuityView | null;
+  /** W4-E01-d — Exchange Connectivity operational continuity (derived). */
+  exchangeConnectivity: ExchangeConnectivityContinuityView | null;
 }>;
 
 export type EvaluateOwnerReadinessInput = Readonly<{
@@ -178,6 +194,7 @@ export function buildPlatformOperationalProjection(input: {
   notificationQueue?: NotificationQueueContinuityView | null;
   killSwitch?: KillSwitchContinuityView | null;
   monitoringHealth?: MonitoringHealthContinuityView | null;
+  exchangeConnectivity?: ExchangeConnectivityContinuityView | null;
 }): PlatformOperationalProjection {
   const platformState = derivePlatformOperationalState(input.owners);
   assertOperationalState(platformState);
@@ -195,6 +212,7 @@ export function buildPlatformOperationalProjection(input: {
     notificationQueue: input.notificationQueue ?? null,
     killSwitch: input.killSwitch ?? null,
     monitoringHealth: input.monitoringHealth ?? null,
+    exchangeConnectivity: input.exchangeConnectivity ?? null,
   });
 }
 

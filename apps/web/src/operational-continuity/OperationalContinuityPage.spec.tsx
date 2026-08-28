@@ -55,6 +55,17 @@ const ready: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: [],
   },
+  exchangeConnectivity: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:00:00.000Z',
+    recoveryDurationMs: 42,
+    restoredCount: 0,
+    connectionAnchorCount: 0,
+    adapterAnchorCount: 0,
+    integrityVerified: true,
+    workspaceIds: [],
+  },
 };
 
 const degraded: OperationalContinuityReadinessView = {
@@ -116,6 +127,17 @@ const degraded: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: ['ws-1'],
   },
+  exchangeConnectivity: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:01:00.000Z',
+    recoveryDurationMs: 100,
+    restoredCount: 1,
+    connectionAnchorCount: 1,
+    adapterAnchorCount: 0,
+    integrityVerified: true,
+    workspaceIds: ['ws-1'],
+  },
 };
 
 describe('OperationalContinuityView', () => {
@@ -164,5 +186,14 @@ describe('OperationalContinuityView', () => {
     expect(html).toContain('Security health anchors');
     expect(html).not.toContain('Dashboard');
     expect(html).not.toContain('Alert');
+  });
+
+  it('shows exchange connectivity operational state within platform readiness only', () => {
+    const html = renderToStaticMarkup(<OperationalContinuityView readiness={ready} />);
+    expect(html).toContain('Exchange connectivity');
+    expect(html).toContain('Exchange connectivity operational state');
+    expect(html).toContain('Connection anchors');
+    expect(html).not.toContain('Connected');
+    expect(html).not.toContain('Binance');
   });
 });

@@ -1,7 +1,8 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { buildConnectionManagementAnchorState } from '../modules/exchange-adapter/domain/durable-exchange-connectivity-state';
+import { resetExchangeConnectivityContinuity } from '../modules/exchange-adapter/domain/exchange-connectivity-continuity-status';
 import {
   ExchangeConnectivityRestartRecoveryError,
   prepareExchangeConnectivityStatesForRecovery,
@@ -98,6 +99,10 @@ describe('W4-E01-c exchange connectivity restart recovery — unit', () => {
 });
 
 describe('W4-E01-c exchange connectivity restart recovery — integration', () => {
+  beforeEach(() => {
+    resetExchangeConnectivityContinuity();
+  });
+
   it('recover persisted exchange connectivity state after normal restart', async () => {
     const state = connectionAnchor('ws-1');
     const repository = new PrismaExchangeConnectivityStateRepository(

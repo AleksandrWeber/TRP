@@ -1,7 +1,11 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { buildConnectionManagementAnchorState } from './domain/durable-exchange-connectivity-state';
 import type { ExchangeConnectivityStateRepository } from './domain/exchange-connectivity-state.repository';
 import type { DurableExchangeConnectivityState } from './domain/durable-exchange-connectivity-state';
+import {
+  getExchangeConnectivityContinuityRecord,
+  resetExchangeConnectivityContinuity,
+} from './domain/exchange-connectivity-continuity-status';
 import { ExchangeConnectivityRecoveryStore } from './exchange-connectivity-recovery-store';
 import { ExchangeConnectivityRestartRecoveryService } from './exchange-connectivity-restart-recovery.service';
 import { ExchangeConnectivityPersistenceService } from './exchange-connectivity-persistence.service';
@@ -41,7 +45,11 @@ function createRepository(
   };
 }
 
-describe('ExchangeConnectivityRestartRecoveryService — W4-E01-c', () => {
+describe('ExchangeConnectivityRestartRecoveryService — W4-E01-c/d', () => {
+  beforeEach(() => {
+    resetExchangeConnectivityContinuity();
+  });
+
   it('hydrate restores persisted state into recovery store', async () => {
     const state = connectionAnchor('ws-1');
     const repository = createRepository([state]);
@@ -62,6 +70,18 @@ describe('ExchangeConnectivityRestartRecoveryService — W4-E01-c', () => {
     const diagnostics = await service.hydrate();
     expect(diagnostics.restoredCount).toBe(0);
     expect(service.getRecoveredState('ws-missing')).toBeNull();
+  });
+
+  it('hydrate records continuity success (W4-E01-d)', async () => {
+    const state = connectionAnchor('ws-1');
+    const service = new ExchangeConnectivityRestartRecoveryService(
+      createRepository([state]),
+      new ExchangeConnectivityRecoveryStore(),
+    );
+    await service.hydrate();
+    const continuity = getExchangeConnectivityContinuityRecord();
+    expect(continuity?.integrityVerified).toBe(true);
+    expect(continuity?.diagnostics?.restoredCount).toBe(1);
   });
 
   it('hydrate is idempotent', async () => {

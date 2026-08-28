@@ -1040,6 +1040,8 @@ export type OperationalContinuityReadinessView = {
   killSwitch: KillSwitchContinuityView | null;
   /** W3-O05-d — Monitoring & Security Health operational continuity. */
   monitoringHealth: MonitoringHealthContinuityView | null;
+  /** W4-E01-d — Exchange Connectivity operational continuity. */
+  exchangeConnectivity: ExchangeConnectivityContinuityView | null;
 };
 
 export type NotificationQueueContinuityView = {
@@ -1076,6 +1078,19 @@ export type MonitoringHealthContinuityView = {
   restoredCount: number;
   securityHealthAnchorCount: number;
   connectionHealthAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+};
+
+export type ExchangeConnectivityContinuityView = {
+  operationalState: OperationalContinuityState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  connectionAnchorCount: number;
+  adapterAnchorCount: number;
   integrityVerified: boolean;
   workspaceIds: readonly string[];
 };

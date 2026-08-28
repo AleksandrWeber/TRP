@@ -2,7 +2,7 @@
 
 **Document:** W4-E01 Binance Real I/O Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W4-E01 Planning **APPROVED**. W4-E01-a inventory **COMPLETE**. W4-E01-b durable persistence **COMPLETE**. W4-E01-c restart recovery **COMPLETE** (local; PO review pending). Not Package Close. Not real I/O.
+**Status:** Product-facing record. W4-E01 Planning **APPROVED**. W4-E01-a inventory **COMPLETE**. W4-E01-b durable persistence **COMPLETE**. W4-E01-c restart recovery **COMPLETE**. W4-E01-d operational continuity **COMPLETE** (local; PO review pending). Not Package Close. Not real I/O.
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E01 (V3-E01 · CM-07)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -100,9 +100,17 @@ Registry: `w4-e01-b-durable-exchange-connectivity.ts`
 
 ## W4-E01-c restart recovery baseline (2026-08-28)
 
-W4-E01-c restores W4-E01-b persisted exchange connectivity anchors after normal API restart via `ExchangeConnectivityRestartRecoveryService`. Recovery is deterministic, idempotent, and fail-honest on corruption. **No operator-visible behaviour changed.** No REST/WebSocket I/O. No operational continuity.
+W4-E01-c restores W4-E01-b persisted exchange connectivity anchors after normal API restart via `ExchangeConnectivityRestartRecoveryService`. Recovery is deterministic, idempotent, and fail-honest on corruption. **No operator-visible Connected behaviour.** No REST/WebSocket I/O.
 
 Registry: `w4-e01-c-restart-recovery.ts`
+
+---
+
+## W4-E01-d operational continuity baseline (2026-08-28)
+
+W4-E01-d projects Exchange Connectivity operational readiness (Recovering / Ready / Degraded / Unavailable) on Platform Readiness, derived exclusively from W4-E01-c recovery outcomes. Visible only within Platform Operational Continuity — not Connected, not REST/WebSocket I/O.
+
+Registry: `w4-e01-d-operational-continuity.ts`
 
 ---
 
