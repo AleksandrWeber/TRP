@@ -648,10 +648,10 @@ export const W3_O05_A_MONITORING_INVENTORY: readonly W3O05AInventoryRow[] = Obje
     owner: 'security-platform' as const,
     durabilityClass: 'SURVIVE' as const,
     currentStatus:
-      'Implemented — WorkspaceMonitoringHealthState (W3-O05-b) with restart hydrate (W3-O05-c)',
+      'Implemented — WorkspaceMonitoringHealthState (W3-O05-b) with restart hydrate (W3-O05-c) and operational continuity (W3-O05-d)',
     honestyRequirement:
-      'Persistence + recovery substrate only; no second store; operational continuity is W3-O05-d',
-    futureW3O05Responsibility: 'W3-O05-d' as const,
+      'Persistence + recovery + continuity substrate only; no second store; monitoring evaluation is post-O05',
+    futureW3O05Responsibility: 'W3-O05-e' as const,
     evidencePath:
       'apps/api/src/security-platform/monitoring-health/persistence/prisma-monitoring-health-state.repository.ts',
     existsToday: true,

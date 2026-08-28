@@ -15,6 +15,7 @@ describe('OperationalContinuityController', () => {
     recoveryDurationMs: 5,
     notificationQueue: null,
     killSwitch: null,
+    monitoringHealth: null,
   });
 
   let continuity: OperationalContinuityService;

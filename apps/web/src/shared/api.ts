@@ -1038,6 +1038,8 @@ export type OperationalContinuityReadinessView = {
   notificationQueue: NotificationQueueContinuityView | null;
   /** W3-O04-d — Kill Switch operational continuity. */
   killSwitch: KillSwitchContinuityView | null;
+  /** W3-O05-d — Monitoring & Security Health operational continuity. */
+  monitoringHealth: MonitoringHealthContinuityView | null;
 };
 
 export type NotificationQueueContinuityView = {
@@ -1061,6 +1063,19 @@ export type KillSwitchContinuityView = {
   reason?: string;
   restoredCount: number;
   armedCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+};
+
+export type MonitoringHealthContinuityView = {
+  operationalState: OperationalContinuityState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  securityHealthAnchorCount: number;
+  connectionHealthAnchorCount: number;
   integrityVerified: boolean;
   workspaceIds: readonly string[];
 };

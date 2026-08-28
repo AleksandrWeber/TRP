@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { resetMonitoringHealthContinuity } from './domain/monitoring-health-continuity-status';
 import { MonitoringHealthRestartRecoveryService } from './monitoring-health-restart-recovery.service';
 import { MonitoringHealthRecoveryStore } from './monitoring-health-recovery-store';
 import type { MonitoringHealthStateRepository } from './domain/monitoring-health-state.repository';
@@ -28,7 +29,10 @@ function createRepository(
   };
 }
 
-describe('MonitoringHealthRestartRecoveryService — W3-O05-c', () => {
+describe('MonitoringHealthRestartRecoveryService — W3-O05-c/d', () => {
+  beforeEach(() => {
+    resetMonitoringHealthContinuity();
+  });
   it('hydrate restores persisted monitoring state after simulated restart', async () => {
     const repository = createRepository([securityAnchor('ws-1')]);
     const recoveryStore = new MonitoringHealthRecoveryStore();

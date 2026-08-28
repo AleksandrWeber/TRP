@@ -77,3 +77,23 @@ export {
   W3_O05_C_MONITORING_RECOVERY_OWNER,
   type MonitoringHealthRecoveryDiagnostics,
 } from './monitoring-health/domain/monitoring-health-restart-recovery';
+export {
+  getMonitoringHealthContinuityRecord,
+  isMonitoringHealthRecovering,
+  recordMonitoringHealthIntegrityFailure,
+  recordMonitoringHealthRecoveryFailure,
+  recordMonitoringHealthRecoveryStart,
+  recordMonitoringHealthRecoverySuccess,
+  recordMonitoringHealthOwnerReadiness,
+  resetMonitoringHealthContinuity,
+  type MonitoringHealthContinuityRecord,
+  type MonitoringHealthOwnerReadiness,
+  type MonitoringHealthRecoveryOutcome,
+} from './monitoring-health/domain/monitoring-health-continuity-status';
+export {
+  buildMonitoringHealthContinuityProjection,
+  evaluateMonitoringHealthOperationalState,
+  monitoringHealthContinuesWhileOthersDegraded,
+  type MonitoringHealthContinuityProjection,
+  type MonitoringHealthOperationalState,
+} from './monitoring-health/domain/monitoring-health-operational-continuity';

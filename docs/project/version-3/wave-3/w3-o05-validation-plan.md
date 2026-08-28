@@ -3,7 +3,7 @@
 **Package:** W3-O05 Monitoring & Security Health  
 **Wave:** 3 — Durability, Operations & Continuity  
 **Master Plan / Roadmap:** V3-O05 · MN-02 · MN-03 · SEC-13 · SEC-15  
-**Status:** Planning **APPROVED**. W3-O05-a inventory **COMPLETE**. W3-O05-b persistence **COMPLETE**. W3-O05-c restart recovery **COMPLETE**. W3-O05-d…e not opened.
+**Status:** Planning **APPROVED**. W3-O05-a/b/c/d **COMPLETE**. W3-O05-e not opened.
 **Date:** 2026-08-27  
 **Umbrella:** [`w3-o05-implementation-package.md`](./w3-o05-implementation-package.md)  
 **Scope:** [`w3-o05-product-scope.md`](./w3-o05-product-scope.md)  
@@ -188,7 +188,22 @@ Evidence: [`w3-o05-c-validation-report.md`](./w3-o05-c-validation-report.md) · 
 
 ---
 
-## 13. Close checklist (planning)
+## 13. W3-O05-d operational continuity validation (COMPLETE)
+
+| Assertion                                                     | Result |
+| ------------------------------------------------------------- | ------ |
+| Monitoring health readiness derived from recovery             | PASS   |
+| Supported states: Recovering / Ready / Degraded / Unavailable | PASS   |
+| Degraded never fabricates Ready                               | PASS   |
+| Platform Readiness `monitoringHealth` projection              | PASS   |
+| No monitoring evaluation / dashboards / alerting              | PASS   |
+| No new persistence owner                                      | PASS   |
+
+Evidence: [`w3-o05-d-validation-report.md`](./w3-o05-d-validation-report.md) · [`w3-o05-d-implementation-report.md`](./w3-o05-d-implementation-report.md)
+
+---
+
+## 14. Close checklist (planning)
 
 | Item                                           | Required at Close |
 | ---------------------------------------------- | ----------------- |
@@ -217,4 +232,4 @@ Do **not** count as W3-O05 Close evidence during planning:
 
 ---
 
-**STOP.** W3-O05-c restart recovery **COMPLETE**. Await Product Owner review before W3-O05-d. Do not declare Monitoring Complete. Do not declare Wave 3 COMPLETE.
+**STOP.** W3-O05-d operational continuity **COMPLETE**. Await Product Owner review before W3-O05-e. Do not declare Monitoring Complete. Do not declare Wave 3 COMPLETE.

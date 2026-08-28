@@ -144,6 +144,52 @@ export function OperationalContinuityView({ readiness }: Props) {
       </section>
 
       <section>
+        <h2 className="text-lg font-semibold text-slate-100">Monitoring &amp; security health</h2>
+        {readiness.monitoringHealth ? (
+          <dl className="mt-4 grid gap-3 sm:grid-cols-2" data-testid="monitoring-health-continuity">
+            <div>
+              <dt className="text-sm text-slate-400">Monitoring operational state</dt>
+              <dd className="text-slate-100" data-testid="monitoring-health-state">
+                {readiness.monitoringHealth.operationalState}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Owner readiness</dt>
+              <dd className="text-slate-100" data-testid="monitoring-health-owner-readiness">
+                {readiness.monitoringHealth.ownerReadiness}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery timestamp</dt>
+              <dd className="text-slate-100" data-testid="monitoring-health-recovery-timestamp">
+                {readiness.monitoringHealth.recoveryTimestamp ?? '—'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery duration</dt>
+              <dd className="text-slate-100" data-testid="monitoring-health-recovery-duration">
+                {formatDuration(readiness.monitoringHealth.recoveryDurationMs)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Restored workspaces</dt>
+              <dd className="text-slate-100" data-testid="monitoring-health-restored-count">
+                {readiness.monitoringHealth.restoredCount}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Security health anchors</dt>
+              <dd className="text-slate-100" data-testid="monitoring-health-security-anchor-count">
+                {readiness.monitoringHealth.securityHealthAnchorCount}
+              </dd>
+            </div>
+          </dl>
+        ) : (
+          <p className="mt-2 text-slate-400">Not evaluated</p>
+        )}
+      </section>
+
+      <section>
         <h2 className="text-lg font-semibold text-slate-100">Owner operational state</h2>
         <table className="mt-3 w-full text-left text-sm text-slate-200">
           <thead className="text-slate-400">

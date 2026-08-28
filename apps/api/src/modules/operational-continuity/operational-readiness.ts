@@ -48,6 +48,20 @@ export type KillSwitchContinuityView = Readonly<{
   workspaceIds: readonly string[];
 }>;
 
+/** W3-O05-d — Monitoring & Security Health continuity fields on platform readiness. */
+export type MonitoringHealthContinuityView = Readonly<{
+  operationalState: OperationalState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  securityHealthAnchorCount: number;
+  connectionHealthAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+}>;
+
 /** W3-O02-d — Notification Durable Queue continuity fields on platform readiness. */
 export type NotificationQueueContinuityView = Readonly<{
   operationalState: OperationalState;
@@ -73,6 +87,8 @@ export type PlatformOperationalProjection = Readonly<{
   notificationQueue: NotificationQueueContinuityView | null;
   /** W3-O04-d — Kill Switch operational continuity (derived). */
   killSwitch: KillSwitchContinuityView | null;
+  /** W3-O05-d — Monitoring & Security Health operational continuity (derived). */
+  monitoringHealth: MonitoringHealthContinuityView | null;
 }>;
 
 export type EvaluateOwnerReadinessInput = Readonly<{
@@ -161,6 +177,7 @@ export function buildPlatformOperationalProjection(input: {
   recoveryDurationMs: number | null;
   notificationQueue?: NotificationQueueContinuityView | null;
   killSwitch?: KillSwitchContinuityView | null;
+  monitoringHealth?: MonitoringHealthContinuityView | null;
 }): PlatformOperationalProjection {
   const platformState = derivePlatformOperationalState(input.owners);
   assertOperationalState(platformState);
@@ -177,6 +194,7 @@ export function buildPlatformOperationalProjection(input: {
     recoveryDurationMs: input.recoveryDurationMs,
     notificationQueue: input.notificationQueue ?? null,
     killSwitch: input.killSwitch ?? null,
+    monitoringHealth: input.monitoringHealth ?? null,
   });
 }
 

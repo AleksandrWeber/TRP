@@ -1,10 +1,11 @@
 /**
- * W3-O01-d / W3-O02-d / W3-O04-d — Operational Continuity service.
+ * W3-O01-d / W3-O02-d / W3-O04-d / W3-O05-d — Operational Continuity service.
  *
  * Extends recovered analytical owners with readiness / graceful degradation projection.
  * W3-O02-d adds Notification Durable Queue operational continuity (derived).
  * W3-O04-d adds Kill Switch operational continuity (derived).
- * Recovery itself remains W3-O01-c / W3-O02-c / W3-O04-c only. No new persistence / BC / HA / monitoring.
+ * W3-O05-d adds Monitoring & Security Health operational continuity (derived).
+ * Recovery itself remains W3-O01-c / W3-O02-c / W3-O04-c / W3-O05-c only. No new persistence / BC / HA / monitoring evaluation.
  */
 
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
@@ -23,6 +24,8 @@ import { getNotificationQueueContinuityRecord } from '../notification-delivery/d
 import { buildNotificationQueueContinuityProjection } from '../notification-delivery/domain/notification-queue-operational-continuity';
 import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
 import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
+import { getMonitoringHealthContinuityRecord } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
+import { buildMonitoringHealthContinuityProjection } from '../../security-platform/monitoring-health/domain/monitoring-health-operational-continuity';
 import { OperationalContinuityAudit } from './operational-continuity-audit';
 import {
   buildPlatformOperationalProjection,
@@ -51,6 +54,11 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         continuity: null,
       }),
       killSwitch: buildKillSwitchContinuityProjection({
+        recovering: true,
+        ownerReadiness: 'ready',
+        continuity: null,
+      }),
+      monitoringHealth: buildMonitoringHealthContinuityProjection({
         recovering: true,
         ownerReadiness: 'ready',
         continuity: null,
@@ -103,6 +111,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildMonitoringHealthView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getMonitoringHealthContinuityRecord();
+    return buildMonitoringHealthContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -149,6 +169,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         recovering: true,
         ownerReadiness: 'ready',
       }),
+      monitoringHealth: this.buildMonitoringHealthView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
     });
 
     const owners = evaluateOwnerOperationalStates({
@@ -184,12 +208,26 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         killSwitchBase.recoveryDurationMs ??
         (killSwitchBase.operationalState === 'Recovering' ? null : recoveryDurationMs),
     });
+    const monitoringHealthBase = this.buildMonitoringHealthView({
+      recovering: false,
+      ownerReadiness: 'ready',
+    });
+    const monitoringHealth = Object.freeze({
+      ...monitoringHealthBase,
+      recoveryTimestamp:
+        monitoringHealthBase.recoveryTimestamp ??
+        (monitoringHealthBase.operationalState === 'Recovering' ? null : recoveryTimestamp),
+      recoveryDurationMs:
+        monitoringHealthBase.recoveryDurationMs ??
+        (monitoringHealthBase.operationalState === 'Recovering' ? null : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
       recoveryDurationMs,
       notificationQueue,
       killSwitch,
+      monitoringHealth,
     });
     this.finalized = true;
 

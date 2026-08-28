@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { resetMonitoringHealthContinuity } from '../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
 import { buildSecurityHealthAnchorState } from '../security-platform/monitoring-health/domain/durable-monitoring-health-state';
 import {
   MonitoringHealthRestartRecoveryError,
@@ -69,6 +70,10 @@ function toRow(state: ReturnType<typeof securityAnchor>) {
 }
 
 describe('W3-O05-c monitoring restart recovery — unit', () => {
+  beforeEach(() => {
+    resetMonitoringHealthContinuity();
+  });
+
   it('ownership remains security-platform only', () => {
     expect(W3_O05_C_MONITORING_OWNER).toBe('security-platform');
   });
@@ -96,6 +101,10 @@ describe('W3-O05-c monitoring restart recovery — unit', () => {
 });
 
 describe('W3-O05-c monitoring restart recovery — integration', () => {
+  beforeEach(() => {
+    resetMonitoringHealthContinuity();
+  });
+
   it('recover persisted monitoring state after normal restart (new store + hydrate)', async () => {
     const state = securityAnchor('ws-1');
     const repository = new PrismaMonitoringHealthStateRepository(

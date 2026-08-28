@@ -9,11 +9,17 @@ import {
   MONITORING_HEALTH_STATE_REPOSITORY,
   type MonitoringHealthStateRepository,
 } from './domain/monitoring-health-state.repository';
+import {
+  recordMonitoringHealthRecoveryFailure,
+  recordMonitoringHealthRecoveryStart,
+  recordMonitoringHealthRecoverySuccess,
+} from './domain/monitoring-health-continuity-status';
 import { MonitoringHealthRecoveryStore } from './monitoring-health-recovery-store';
 
 /**
- * W3-O05-c — deterministic restart recovery for durable monitoring health state.
- * Hydrates in-memory runtime cache from persistence. Does not evaluate health or continuity.
+ * W3-O05-c/d — deterministic restart recovery for durable monitoring health state.
+ * Hydrates in-memory runtime cache from persistence and records W3-O05-d continuity outcomes.
+ * Does not evaluate monitoring health, metrics, or dashboards.
  */
 @Injectable()
 export class MonitoringHealthRestartRecoveryService implements OnModuleInit {
@@ -33,10 +39,22 @@ export class MonitoringHealthRestartRecoveryService implements OnModuleInit {
    * Missing rows → empty runtime cache (no fabrication). Corrupt rows → throws.
    */
   async hydrate(): Promise<MonitoringHealthRecoveryDiagnostics> {
-    const persisted = await this.repository.listAllMonitoringHealthStates();
-    const recovered = prepareMonitoringHealthStatesForRecovery(persisted);
-    this.recoveryStore.replaceAll(recovered);
-    return buildMonitoringHealthRecoveryDiagnostics(recovered);
+    recordMonitoringHealthRecoveryStart();
+    try {
+      const persisted = await this.repository.listAllMonitoringHealthStates();
+      const recovered = prepareMonitoringHealthStatesForRecovery(persisted);
+      this.recoveryStore.replaceAll(recovered);
+      const diagnostics = buildMonitoringHealthRecoveryDiagnostics(recovered);
+      recordMonitoringHealthRecoverySuccess({
+        diagnostics,
+        reason: diagnostics.restoredCount === 0 ? 'missing-rows-empty' : 'hydrate-ok',
+      });
+      return diagnostics;
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : 'hydrate-failed';
+      recordMonitoringHealthRecoveryFailure({ reason });
+      throw error;
+    }
   }
 
   getRecoveredState(workspaceId: string): DurableMonitoringHealthState | null {

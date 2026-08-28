@@ -44,6 +44,17 @@ const ready: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: [],
   },
+  monitoringHealth: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:00:00.000Z',
+    recoveryDurationMs: 42,
+    restoredCount: 0,
+    securityHealthAnchorCount: 0,
+    connectionHealthAnchorCount: 0,
+    integrityVerified: true,
+    workspaceIds: [],
+  },
 };
 
 const degraded: OperationalContinuityReadinessView = {
@@ -94,6 +105,17 @@ const degraded: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: ['ws-1'],
   },
+  monitoringHealth: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:01:00.000Z',
+    recoveryDurationMs: 100,
+    restoredCount: 1,
+    securityHealthAnchorCount: 1,
+    connectionHealthAnchorCount: 0,
+    integrityVerified: true,
+    workspaceIds: ['ws-1'],
+  },
 };
 
 describe('OperationalContinuityView', () => {
@@ -133,5 +155,14 @@ describe('OperationalContinuityView', () => {
     expect(html).toContain('Armed workspaces');
     expect(html).not.toContain('Arm kill switch');
     expect(html).not.toContain('Command Center');
+  });
+
+  it('shows monitoring health operational state within platform readiness only', () => {
+    const html = renderToStaticMarkup(<OperationalContinuityView readiness={ready} />);
+    expect(html).toContain('Monitoring &amp; security health');
+    expect(html).toContain('Monitoring operational state');
+    expect(html).toContain('Security health anchors');
+    expect(html).not.toContain('Dashboard');
+    expect(html).not.toContain('Alert');
   });
 });

@@ -6,10 +6,12 @@ import {
 import { OperationalContinuityService } from './operational-continuity.service';
 import { OperationalContinuityAudit } from './operational-continuity-audit';
 import { resetAnalyticalOwnerBootOutcomes } from '../../persistence/analytical-owner-continuity-status';
+import { resetMonitoringHealthContinuity } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
 
 describe('OperationalContinuityService', () => {
   beforeEach(() => {
     resetAnalyticalOwnerBootOutcomes();
+    resetMonitoringHealthContinuity();
   });
 
   it('mixed owner states: unavailable + ready + degraded dependents', async () => {
