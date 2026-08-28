@@ -48,14 +48,14 @@
 
 ## Wave 4 packages (Master Plan / Execution Roadmap)
 
-| Package    | Roadmap ID | Name                          | Status                                                  |
-| ---------- | ---------- | ----------------------------- | ------------------------------------------------------- |
-| **W4-E01** | **V3-E01** | Binance Real I/O              | **CLOSED** by Product Owner (2026-08-28)                |
-| **W4-E02** | **V3-E02** | Bybit Real I/O                | **CLOSED** by Product Owner (2026-08-28)                |
-| **W4-E03** | **V3-E03** | OKX Real I/O                  | **CLOSED** by Product Owner (2026-08-28)                |
-| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **CLOSED** by Product Owner (2026-08-28)                |
-| **W4-E05** | **V3-E05** | Venue Permission Verification | **CLOSED** by Product Owner (2026-08-28)                |
-| **W4-E06** | —          | Wave 4 Completion Review      | W4-E06-c **COMPLETE** — Awaiting PO review (2026-08-28) |
+| Package    | Roadmap ID | Name                          | Status                                                                |
+| ---------- | ---------- | ----------------------------- | --------------------------------------------------------------------- |
+| **W4-E01** | **V3-E01** | Binance Real I/O              | **CLOSED** by Product Owner (2026-08-28)                              |
+| **W4-E02** | **V3-E02** | Bybit Real I/O                | **CLOSED** by Product Owner (2026-08-28)                              |
+| **W4-E03** | **V3-E03** | OKX Real I/O                  | **CLOSED** by Product Owner (2026-08-28)                              |
+| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **CLOSED** by Product Owner (2026-08-28)                              |
+| **W4-E05** | **V3-E05** | Venue Permission Verification | **CLOSED** by Product Owner (2026-08-28)                              |
+| **W4-E06** | —          | Wave 4 Completion Review      | W4-E06-a…e **COMPLETE** — FIV **PASS** — Awaiting PO Final Wave Close |
 
 Order is binding: **E01 → E02 → E03 → E04 → E05 → E06 (governance)**.
 
@@ -63,17 +63,17 @@ Order is binding: **E01 → E02 → E03 → E04 → E05 → E06 (governance)**.
 
 ## Current package
 
-| Field                     | Value                                                                         |
-| ------------------------- | ----------------------------------------------------------------------------- |
-| **Package**               | **W4-E06** Wave 4 Completion Review                                           |
-| **Master Plan / Roadmap** | Governance roll-up after **V3-E01…E05** (no new roadmap ID)                   |
-| **Stage**                 | W4-E06-e **COMPLETE** — Awaiting Product Owner review (2026-08-28)            |
-| **Approval**              | **RECORDED** — [`w4-e06-planning-approval.md`](./w4-e06-planning-approval.md) |
-| **Planning review**       | [`w4-e06-planning-review.md`](./w4-e06-planning-review.md)                    |
-| **Implementation**        | **AUTHORIZED** — W4-E06-a/b/c/d/e **COMPLETE**                                |
-| **Predecessor**           | W4-E05 **CLOSED** by Product Owner (2026-08-28)                               |
-| **Implementation slices** | W4-E06-a/b/c/d/e **COMPLETE**                                                 |
-| **Planning summary**      | [`w4-e06-planning-summary.md`](./w4-e06-planning-summary.md)                  |
+| Field                     | Value                                                                                               |
+| ------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Package**               | **W4-E06** Wave 4 Completion Review                                                                 |
+| **Master Plan / Roadmap** | Governance roll-up after **V3-E01…E05** (no new roadmap ID)                                         |
+| **Stage**                 | Final Wave Integration Verification **PASS** — Awaiting Product Owner Final Wave Close (2026-08-28) |
+| **Approval**              | **RECORDED** — [`w4-e06-planning-approval.md`](./w4-e06-planning-approval.md)                       |
+| **Planning review**       | [`w4-e06-planning-review.md`](./w4-e06-planning-review.md)                                          |
+| **Implementation**        | **AUTHORIZED** — W4-E06-a/b/c/d/e **COMPLETE**                                                      |
+| **Predecessor**           | W4-E05 **CLOSED** by Product Owner (2026-08-28)                                                     |
+| **Implementation slices** | W4-E06-a/b/c/d/e **COMPLETE**                                                                       |
+| **Planning summary**      | [`w4-e06-planning-summary.md`](./w4-e06-planning-summary.md)                                        |
 
 Companions:
 
@@ -115,6 +115,7 @@ Companions:
 - [`w4-e06-e-security-review.md`](./w4-e06-e-security-review.md)
 - [`w4-e06-e-product-review.md`](./w4-e06-e-product-review.md)
 - [`w4-e06-e-validation-report.md`](./w4-e06-e-validation-report.md)
+- [`wave-4-final-integration-verification.md`](./wave-4-final-integration-verification.md)
 - [`w4-e05-product-owner-close-record.md`](./w4-e05-product-owner-close-record.md)
 - [`w4-e05-implementation-package.md`](./w4-e05-implementation-package.md)
 - [`w4-e05-product-scope.md`](./w4-e05-product-scope.md)
@@ -403,12 +404,10 @@ W4-E06-d Wave Operational Continuity & Honest Product Review — COMPLETE (2026-
         ↓
 W4-E06-e Wave Completion Evidence Assembly — COMPLETE (2026-08-28)
         ↓
-STOP — Awaiting Product Owner review
-(No Final Wave Integration Verification)
-(No Live Trading)
+Final Wave Integration Verification — PASS (2026-08-28)
+        ↓
+STOP — Awaiting Product Owner Final Wave Close
 (No Wave 4 COMPLETE)
-(No Exchange Connectivity Complete)
-(No engine clone per venue)
 ```
 
 ---
@@ -475,11 +474,11 @@ STOP — Awaiting Product Owner review
 | W4-E06-c COMPLETE                           | **Recorded** (2026-08-28)                      |
 | W4-E06-d COMPLETE                           | **Recorded** (2026-08-28)                      |
 | W4-E06-e COMPLETE                           | **Recorded** (2026-08-28)                      |
-| Final Wave Integration Verification         | **Not claimed**                                |
+| Final Wave Integration Verification PASS    | **Recorded** (2026-08-28)                      |
 | Live Trading                                | **Not claimed**                                |
 | Production Ready                            | **Not claimed**                                |
 | Master Plan changed                         | **Not claimed**                                |
 
 ---
 
-**STOP.** W4-E06-e **COMPLETE** (2026-08-28). Await Product Owner review before Final Wave Integration Verification. Do not perform Final Wave Integration Verification without separate authorization. Do not declare Wave 4 COMPLETE, Exchange Connectivity Complete, Live Trading, or Production Ready.
+**STOP.** Final Wave Integration Verification **PASS** (2026-08-28). Await Product Owner Final Wave Close. Do not create `wave-4-product-owner-close-record.md` without separate authorization. Do not declare Wave 4 COMPLETE, Exchange Connectivity Complete, Live Trading, or Production Ready. Do not open the next Wave.
