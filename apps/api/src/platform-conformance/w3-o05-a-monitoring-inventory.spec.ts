@@ -99,7 +99,7 @@ describe('W3-O05-a monitoring inventory — unit', () => {
     expect(W3_O05_A_BINDING_FINDINGS.operatorIncidentUiExists).toBe(false);
     expect(W3_O05_A_BINDING_FINDINGS.platformReadinessUiExists).toBe(true);
     expect(W3_O05_A_BINDING_FINDINGS.runtimeHealthEndpointExists).toBe(true);
-    expect(W3_O05_A_BINDING_FINDINGS.inactiveMonitoringPersistence).toBe(true);
+    expect(W3_O05_A_BINDING_FINDINGS.inactiveMonitoringPersistence).toBe(false);
   });
 
   it('classification: SURVIVE vs EPHEMERAL partitions are non-empty and exclusive', () => {

@@ -50,3 +50,19 @@ export { registerSecurityPlatformHttpHooks } from './security-platform.http';
 export { PlatformSecurityExceptionFilter } from './platform-security-exception.filter';
 export { SecurityPlatformBootstrap } from './security-platform.bootstrap';
 export { SecurityPlatformModule } from './security-platform.module';
+export {
+  MONITORING_HEALTH_STATE_REPOSITORY,
+  type MonitoringHealthStateRepository,
+} from './monitoring-health/domain/monitoring-health-state.repository';
+export {
+  MONITORING_HEALTH_STATE_SCHEMA_VERSION,
+  buildConnectionHealthAnchorState,
+  buildSecurityHealthAnchorState,
+  type DurableMonitoringHealthState,
+  type MonitoringHealthPersistenceOutcome,
+} from './monitoring-health/domain/durable-monitoring-health-state';
+export {
+  MonitoringHealthPersistenceService,
+  type PersistConnectionHealthAnchorCommand,
+  type PersistSecurityHealthAnchorCommand,
+} from './monitoring-health/monitoring-health-persistence.service';

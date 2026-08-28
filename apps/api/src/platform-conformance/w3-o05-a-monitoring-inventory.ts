@@ -647,11 +647,13 @@ export const W3_O05_A_MONITORING_INVENTORY: readonly W3O05AInventoryRow[] = Obje
     kind: 'persistence-candidate' as const,
     owner: 'security-platform' as const,
     durabilityClass: 'SURVIVE' as const,
-    currentStatus: 'Not implemented — W3-O05-b target on existing owners only',
-    honestyRequirement: 'No second monitoring store; extend Security Platform / Audit substrate',
-    futureW3O05Responsibility: 'W3-O05-b' as const,
-    evidencePath: 'docs/project/version-3/wave-3/w3-o05-implementation-package.md',
-    existsToday: false,
+    currentStatus:
+      'Implemented — WorkspaceMonitoringHealthState on security-platform owner (W3-O05-b); restart hydrate deferred',
+    honestyRequirement: 'Persistence substrate only; no second store; restart recovery is W3-O05-c',
+    futureW3O05Responsibility: 'W3-O05-c' as const,
+    evidencePath:
+      'apps/api/src/security-platform/monitoring-health/persistence/prisma-monitoring-health-state.repository.ts',
+    existsToday: true,
     isPaperProduct: true,
     authorizesMonitoringComplete: false,
   }),
@@ -1135,7 +1137,7 @@ export const W3_O05_A_BINDING_FINDINGS = Object.freeze({
   runtimeHealthEndpointExists: true,
   prometheusMetricsExists: true,
   securityAuditStoreSurvivesRestart: true,
-  inactiveMonitoringPersistence: true,
+  inactiveMonitoringPersistence: false,
   platformReadinessNotMonitoringComplete: true,
 } as const);
 
