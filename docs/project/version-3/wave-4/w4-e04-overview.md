@@ -2,7 +2,7 @@
 
 **Document:** W4-E04 Kraken Adapter (factory) Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. Planning **OPEN**. Awaiting Product Owner Review and Approval. Not implementation.
+**Status:** Product-facing record. W4-E04-a inventory baseline **COMPLETE** — awaiting Product Owner review. Not Kraken Connected. Not W4-E04 CLOSED.
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E04 (V3-E04 · CM-10)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -101,12 +101,20 @@ W4-E01 Binance Real I/O, W4-E02 Bybit Real I/O, and W4-E03 OKX Real I/O are **CL
 
 ---
 
+## W4-E04-a status (inventory baseline)
+
+W4-E04-a delivered the machine-readable and human inventory baseline only. No REST, WebSocket, persistence, or runtime behaviour changed. Kraken remains the first label-only venue: Exchange Scope catalog label exists; no adapter, provider catalog entry, vault secret type, or Connections UI entry.
+
+Inventory: [`w4-e04-a-exchange-connectivity-inventory.md`](./w4-e04-a-exchange-connectivity-inventory.md)
+
+---
+
 ## Explicit non-claims
 
-- W4-E04 Planning OPEN — **recorded**
-- W4-E04 Planning Review PASS — **not claimed**
-- W4-E04 Planning APPROVED — **not claimed**
-- W4-E04-a opened — **not claimed**
+- W4-E04 Planning APPROVED — **recorded**
+- W4-E04-a inventory baseline — **recorded**
+- W4-E04-a opened for implementation review — **recorded**
+- W4-E04-b opened — **not claimed**
 - W4-E04 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -116,4 +124,4 @@ W4-E01 Binance Real I/O, W4-E02 Bybit Real I/O, and W4-E03 OKX Real I/O are **CL
 
 ---
 
-**STOP.** W4-E04 Planning is **OPEN**. Do not declare Kraken Connected, Exchange Connectivity Complete, or Wave 4 COMPLETE. Do not open W4-E04-a. Await Product Owner Planning Review.
+**STOP.** W4-E04-a inventory baseline recorded. Do not declare Kraken Connected, Exchange Connectivity Complete, or Wave 4 COMPLETE. Await Product Owner review before W4-E04-b.
