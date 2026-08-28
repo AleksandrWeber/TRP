@@ -17,32 +17,32 @@
 
 ## Authority
 
-| Item                         | Status                                             |
-| ---------------------------- | -------------------------------------------------- |
-| Version 3                    | In progress                                        |
-| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**                             |
-| Wave 2 Connection Management | **COMPLETE**                                       |
-| Wave 3 Durability & Ops      | **COMPLETE**                                       |
-| W4-E01                       | **CLOSED** by Product Owner                        |
-| W4-E02                       | **CLOSED** by Product Owner                        |
-| W4-E03                       | **CLOSED** by Product Owner                        |
-| W4-E03 Planning Package      | **APPROVED** — W4-E03 **CLOSED** (2026-08-28)      |
-| W4-E04                       | **CLOSED** by Product Owner                        |
-| W4-E04 Planning Package      | **APPROVED** — W4-E04 **CLOSED** (2026-08-28)      |
-| W4-E04 Planning Review       | **PASS** (2026-08-28)                              |
-| W4-E04 Planning Approval     | **RECORDED** (2026-08-28)                          |
-| W4-E04 Implementation        | **AUTHORIZED** — W4-E04-a/b/c/d/e **COMPLETE**     |
-| W4-E05                       | **CLOSED** by Product Owner                        |
-| W4-E05 Planning Package      | **APPROVED** — W4-E05 **CLOSED** (2026-08-28)      |
-| W4-E05 Planning Review       | **PASS** (2026-08-28)                              |
-| W4-E05 Planning Approval     | **RECORDED** (2026-08-28)                          |
-| W4-E05 Implementation        | **AUTHORIZED** — W4-E05-a/b/c/d/e **COMPLETE**     |
-| W4-E06 Planning Package      | **APPROVED** (2026-08-28)                          |
-| W4-E06 Planning Review       | **PASS** (2026-08-28)                              |
-| W4-E06 Planning Approval     | **RECORDED** (2026-08-28)                          |
-| W4-E06 Implementation        | **AUTHORIZED** — W4-E06-a **COMPLETE**; b…e closed |
-| Live Trading                 | **Not claimed**                                    |
-| Master Plan                  | **FROZEN** — unchanged                             |
+| Item                         | Status                                               |
+| ---------------------------- | ---------------------------------------------------- |
+| Version 3                    | In progress                                          |
+| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**                               |
+| Wave 2 Connection Management | **COMPLETE**                                         |
+| Wave 3 Durability & Ops      | **COMPLETE**                                         |
+| W4-E01                       | **CLOSED** by Product Owner                          |
+| W4-E02                       | **CLOSED** by Product Owner                          |
+| W4-E03                       | **CLOSED** by Product Owner                          |
+| W4-E03 Planning Package      | **APPROVED** — W4-E03 **CLOSED** (2026-08-28)        |
+| W4-E04                       | **CLOSED** by Product Owner                          |
+| W4-E04 Planning Package      | **APPROVED** — W4-E04 **CLOSED** (2026-08-28)        |
+| W4-E04 Planning Review       | **PASS** (2026-08-28)                                |
+| W4-E04 Planning Approval     | **RECORDED** (2026-08-28)                            |
+| W4-E04 Implementation        | **AUTHORIZED** — W4-E04-a/b/c/d/e **COMPLETE**       |
+| W4-E05                       | **CLOSED** by Product Owner                          |
+| W4-E05 Planning Package      | **APPROVED** — W4-E05 **CLOSED** (2026-08-28)        |
+| W4-E05 Planning Review       | **PASS** (2026-08-28)                                |
+| W4-E05 Planning Approval     | **RECORDED** (2026-08-28)                            |
+| W4-E05 Implementation        | **AUTHORIZED** — W4-E05-a/b/c/d/e **COMPLETE**       |
+| W4-E06 Planning Package      | **APPROVED** (2026-08-28)                            |
+| W4-E06 Planning Review       | **PASS** (2026-08-28)                                |
+| W4-E06 Planning Approval     | **RECORDED** (2026-08-28)                            |
+| W4-E06 Implementation        | **AUTHORIZED** — W4-E06-a/b **COMPLETE**; c…e closed |
+| Live Trading                 | **Not claimed**                                      |
+| Master Plan                  | **FROZEN** — unchanged                               |
 
 ---
 
@@ -55,7 +55,7 @@
 | **W4-E03** | **V3-E03** | OKX Real I/O                  | **CLOSED** by Product Owner (2026-08-28)                |
 | **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **CLOSED** by Product Owner (2026-08-28)                |
 | **W4-E05** | **V3-E05** | Venue Permission Verification | **CLOSED** by Product Owner (2026-08-28)                |
-| **W4-E06** | —          | Wave 4 Completion Review      | W4-E06-a **COMPLETE** — Awaiting PO review (2026-08-28) |
+| **W4-E06** | —          | Wave 4 Completion Review      | W4-E06-b **COMPLETE** — Awaiting PO review (2026-08-28) |
 
 Order is binding: **E01 → E02 → E03 → E04 → E05 → E06 (governance)**.
 
@@ -67,12 +67,12 @@ Order is binding: **E01 → E02 → E03 → E04 → E05 → E06 (governance)**.
 | ------------------------- | ----------------------------------------------------------------------------- |
 | **Package**               | **W4-E06** Wave 4 Completion Review                                           |
 | **Master Plan / Roadmap** | Governance roll-up after **V3-E01…E05** (no new roadmap ID)                   |
-| **Stage**                 | W4-E06-a **COMPLETE** — Awaiting Product Owner review (2026-08-28)            |
+| **Stage**                 | W4-E06-b **COMPLETE** — Awaiting Product Owner review (2026-08-28)            |
 | **Approval**              | **RECORDED** — [`w4-e06-planning-approval.md`](./w4-e06-planning-approval.md) |
 | **Planning review**       | [`w4-e06-planning-review.md`](./w4-e06-planning-review.md)                    |
-| **Implementation**        | **AUTHORIZED** — W4-E06-a **COMPLETE**; W4-E06-b…e **not opened**             |
+| **Implementation**        | **AUTHORIZED** — W4-E06-a/b **COMPLETE**; W4-E06-c…e **not opened**           |
 | **Predecessor**           | W4-E05 **CLOSED** by Product Owner (2026-08-28)                               |
-| **Implementation slices** | W4-E06-a **COMPLETE**; W4-E06-b/c/d/e **not opened**                          |
+| **Implementation slices** | W4-E06-a/b **COMPLETE**; W4-E06-c/d/e **not opened**                          |
 | **Planning summary**      | [`w4-e06-planning-summary.md`](./w4-e06-planning-summary.md)                  |
 
 Companions:
@@ -91,6 +91,12 @@ Companions:
 - [`w4-e06-a-security-review.md`](./w4-e06-a-security-review.md)
 - [`w4-e06-a-product-review.md`](./w4-e06-a-product-review.md)
 - [`w4-e06-a-validation-report.md`](./w4-e06-a-validation-report.md)
+- [`w4-e06-b-wave-exit-criteria.md`](./w4-e06-b-wave-exit-criteria.md)
+- [`w4-e06-b-implementation-report.md`](./w4-e06-b-implementation-report.md)
+- [`w4-e06-b-architecture-review.md`](./w4-e06-b-architecture-review.md)
+- [`w4-e06-b-security-review.md`](./w4-e06-b-security-review.md)
+- [`w4-e06-b-product-review.md`](./w4-e06-b-product-review.md)
+- [`w4-e06-b-validation-report.md`](./w4-e06-b-validation-report.md)
 - [`w4-e05-product-owner-close-record.md`](./w4-e05-product-owner-close-record.md)
 - [`w4-e05-implementation-package.md`](./w4-e05-implementation-package.md)
 - [`w4-e05-product-scope.md`](./w4-e05-product-scope.md)
@@ -371,8 +377,10 @@ W4-E06 Planning Approval RECORDED (2026-08-28)
         ↓
 W4-E06-a Wave 4 Package Roll-Up Inventory & Honest Product Baseline — COMPLETE (2026-08-28)
         ↓
+W4-E06-b Wave Exit Criteria Evidence Foundation — COMPLETE (2026-08-28)
+        ↓
 STOP — Awaiting Product Owner review
-(No W4-E06-b/c/d/e)
+(No W4-E06-c/d/e)
 (No Live Trading)
 (No Wave 4 COMPLETE)
 (No Exchange Connectivity Complete)
@@ -437,13 +445,14 @@ STOP — Awaiting Product Owner review
 | W4-E06 Planning Review PASS                 | **Recorded** (2026-08-28)                  |
 | W4-E06 Planning APPROVED                    | **Recorded** (2026-08-28)                  |
 | W4-E06 Planning Approval RECORDED           | **Recorded** (2026-08-28)                  |
-| W4-E06 Implementation                       | **AUTHORIZED** — W4-E06-a **COMPLETE**     |
+| W4-E06 Implementation                       | **AUTHORIZED** — W4-E06-a/b **COMPLETE**   |
 | W4-E06-a COMPLETE                           | **Recorded** (2026-08-28)                  |
-| W4-E06-b opened                             | **Not claimed**                            |
+| W4-E06-b COMPLETE                           | **Recorded** (2026-08-28)                  |
+| W4-E06-c opened                             | **Not claimed**                            |
 | Live Trading                                | **Not claimed**                            |
 | Production Ready                            | **Not claimed**                            |
 | Master Plan changed                         | **Not claimed**                            |
 
 ---
 
-**STOP.** W4-E06-a **COMPLETE** (2026-08-28). Await Product Owner review before W4-E06-b. Do not open W4-E06-b/c/d/e without separate authorization. Do not declare Wave 4 COMPLETE, Exchange Connectivity Complete, Live Trading, or Production Ready.
+**STOP.** W4-E06-b **COMPLETE** (2026-08-28). Await Product Owner review before W4-E06-c. Do not open W4-E06-c/d/e without separate authorization. Do not declare Wave 4 COMPLETE, Exchange Connectivity Complete, Live Trading, or Production Ready.
