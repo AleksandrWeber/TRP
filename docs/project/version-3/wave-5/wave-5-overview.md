@@ -37,13 +37,27 @@ It does NOT invent a second notification engine.
 5. **Disconnect** without SSH or editing `.env`.
 6. Receive routed alerts from the platform through active transports.
 
-**Not available today** — W5-N01 foundation is **CLOSED** (Telegram anchors only). W5-N02-a Email inventory **COMPLETE** (local) — Email channel remains **reserved-inactive**; no production SMTP transport; Auth host mail is separate from Notification Email.
+**Not available today** — W5-N01 foundation is **CLOSED** (Telegram anchors only). W5-N02-b durable Email anchor persistence **COMPLETE** (local) — Email channel remains **reserved-inactive**; no production SMTP transport; Auth host mail is separate from Notification Email.
+
+---
+
+## W5-N02-b status (Durable Email anchor foundation)
+
+W5-N02-b adds canonical Email notification anchor persistence on the existing Notification Delivery owner. **No customer-visible Email notification behaviour** was added. SMTP transport and restart recovery await W5-N02-c and later slices.
+
+```text
+Email channel = reserved-inactive today.
+Canonical anchors persist in workspace_email_notification_anchors.
+Restart hydrate not claimed until W5-N02-c.
+Auth password-recovery mail ≠ Notification Email product.
+Connected/Delivering require real SMTP round-trip — not claimed.
+```
 
 ---
 
 ## W5-N02-a status (Email inventory baseline)
 
-W5-N02-a catalogues every Email notification artifact with SURVIVE vs EPHEMERAL classification and Honest Product boundaries. **No customer-visible Email notification behaviour** was added. Production SMTP awaits W5-N02-b and later slices.
+W5-N02-a catalogues every Email notification artifact with SURVIVE vs EPHEMERAL classification and Honest Product boundaries. **No customer-visible Email notification behaviour** was added.
 
 ```text
 Email channel = reserved-inactive today.
@@ -65,12 +79,12 @@ Connected/Delivering require real SMTP round-trip — not claimed.
 
 ## Wave packages (Master Plan order)
 
-| Package | Name                        | What it delivers                                               | Status                                   |
-| ------- | --------------------------- | -------------------------------------------------------------- | ---------------------------------------- |
-| W5-N01  | Production Telegram Bot API | Real Bot API connect / test / disconnect                       | **CLOSED** by Product Owner (2026-08-28) |
-| W5-N02  | Email (SMTP)                | W5-N02-a inventory **COMPLETE** (local) — SMTP not implemented | Planning **APPROVED**                    |
-| W5-N03  | Slack / Discord / Teams     | Real webhook transports                                        | Not authorized                           |
-| W5-N04  | Push                        | Real browser/device push                                       | Not authorized                           |
+| Package | Name                        | What it delivers                                                     | Status                                   |
+| ------- | --------------------------- | -------------------------------------------------------------------- | ---------------------------------------- |
+| W5-N01  | Production Telegram Bot API | Real Bot API connect / test / disconnect                             | **CLOSED** by Product Owner (2026-08-28) |
+| W5-N02  | Email (SMTP)                | W5-N02-b durable anchors **COMPLETE** (local) — SMTP not implemented | Planning **APPROVED**                    |
+| W5-N03  | Slack / Discord / Teams     | Real webhook transports                                              | Not authorized                           |
+| W5-N04  | Push                        | Real browser/device push                                             | Not authorized                           |
 
 Order: **N01 → N02 → N03 → N04**.
 
@@ -131,8 +145,8 @@ W5-N01-e assembled complete engineering Close Evidence across slices a–d: oper
 - Notification Platform Complete — **not claimed**
 - Live Trading — **not claimed**
 - W5-N01 CLOSED — **recorded** (2026-08-28)
-- W5-N02-a COMPLETE (local) — **recorded**; not SMTP implemented
+- W5-N02-b COMPLETE (local) — **recorded**; not SMTP implemented
 
 ---
 
-**STOP.** W5-N02-a **COMPLETE** (local). Email channel remains reserved-inactive. Do not declare SMTP implemented. Do not declare Email notifications operational. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Await Product Owner review before W5-N02-b.
+**STOP.** W5-N02-b **COMPLETE** (local). Email channel remains reserved-inactive. Do not declare SMTP implemented. Do not declare Email notifications operational. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Await Product Owner review before W5-N02-c.

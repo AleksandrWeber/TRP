@@ -79,6 +79,26 @@ Full row detail: `W5_N02_A_EMAIL_NOTIFICATION_INVENTORY` and helpers `rowsSurviv
 
 ---
 
+## W5-N02-b durability update (post-slice b)
+
+| Artifact ID                         | Before (W5-N02-a) | After (W5-N02-b)                                                             |
+| ----------------------------------- | ----------------- | ---------------------------------------------------------------------------- |
+| `persist-email-notification-anchor` | EPHEMERAL         | **SURVIVE** — `workspace_email_notification_anchors`; canonical anchors only |
+
+**Binding finding (unchanged):** Production Email SMTP is **NOT implemented**. Anchor rows survive in storage, but **restart recovery is not claimed** until W5-N02-c.
+
+---
+
+## Email notification SURVIVE artifacts (summary)
+
+Vault SMTP secret type, connection-catalog SMTP mapping, durable notification store, delivery queue substrate, **canonical notification anchors (W5-N02-b)**, user preferences, PC-06/PC-07 product surfaces (metadata), workspace isolation consumption, security dependencies, and verified ownership rows.
+
+## Email notification EPHEMERAL artifacts (summary)
+
+`ReservedInactiveChannelAdapter` for email, sync delivery pipeline with email skip path, missing SMTP transport, missing vault retrieve in delivery path, inline message copy only, reserved-inactive channel stubs, and honesty blockers for fake Connected/Delivering labels.
+
+---
+
 ## Mandatory Questions (inventory echo)
 
 | Question                                      | Answer                                                                 |

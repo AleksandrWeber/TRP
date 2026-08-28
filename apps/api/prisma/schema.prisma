@@ -1821,3 +1821,25 @@ model WorkspaceTelegramNotificationAnchor {
   @@id([workspaceId, notificationId])
   @@map("workspace_telegram_notification_anchors")
 }
+
+/// W5-N02-b — Durable Email notification anchors on existing Notification Delivery owner.
+/// Canonical notification anchors only. No SMTP I/O. No outbound delivery execution.
+/// Persistence only — restart recovery and operational continuity are later slices.
+model WorkspaceEmailNotificationAnchor {
+  workspaceId           String   @map("workspace_id")
+  notificationId        String   @map("notification_id")
+  schemaVersion         Int      @default(1) @map("schema_version")
+  notificationChannel   String   @map("notification_channel")
+  notificationType      String   @map("notification_type")
+  recipientIdentifier   String?  @map("recipient_identifier")
+  templateIdentifier    String?  @map("template_identifier")
+  deliveryState         String   @map("delivery_state")
+  integrityMetadata     String?  @map("integrity_metadata")
+  correlationId         String?  @map("correlation_id")
+  recordedAt            DateTime @map("recorded_at")
+  recordedByActorId     String?  @map("recorded_by_actor_id")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, notificationId])
+  @@map("workspace_email_notification_anchors")
+}

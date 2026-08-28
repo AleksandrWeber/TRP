@@ -243,6 +243,21 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
+## W5-N02-b validation (2026-08-28 — local)
+
+| Layer                | Result   | Evidence                                       |
+| -------------------- | -------- | ---------------------------------------------- |
+| Durable anchor       | **PASS** | `WorkspaceEmailNotificationAnchor` + migration |
+| Conformance registry | **PASS** | `w5-n02-b-durable-email-notification.ts`       |
+| Slice reports        | **PASS** | w5-n02-b-* reports under wave-5                |
+| Architecture check   | **PASS** | Notification Delivery owner only; no SMTP I/O  |
+| Regression suite     | **PASS** | lint / typecheck / test / build                |
+| git diff --check     | **PASS** | No whitespace errors                           |
+
+**Explicit non-claim:** W5-N02-b does **not** authorize SMTP implemented, Email notifications operational, restart recovery, W5-N02 COMPLETE, or Wave 5 COMPLETE. Changes **local only** — not committed.
+
+---
+
 ## Explicit non-claims
 
 - Wave 5 validation PASS at Close — **not claimed**
@@ -250,9 +265,10 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 - W5-N01 CLOSED — **recorded** (2026-08-28)
 - Notification Platform Complete — **not claimed**
 - Live Trading validation — **not claimed**
-- W5-N02-a validation PASS — **recorded** (local)
-- W5-N02 opened — **in progress** (W5-N02-a local complete)
+- W5-N02-a validation PASS — **recorded** (`a7241ea`)
+- W5-N02-b validation PASS — **recorded** (local)
+- W5-N02 opened — **in progress** (W5-N02-b local complete)
 
 ---
 
-**STOP.** W5-N02-a **COMPLETE** (local). Await Product Owner review before W5-N02-b. Do not declare SMTP implemented or Email notifications operational.
+**STOP.** W5-N02-b **COMPLETE** (local). Await Product Owner review before W5-N02-c. Do not declare SMTP implemented or Email notifications operational.
