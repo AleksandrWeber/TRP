@@ -963,6 +963,25 @@ model WorkspaceKrakenExchangeConnectivityState {
   @@map("workspace_kraken_exchange_connectivity_states")
 }
 
+/// W4-E05-b — Durable venue permission verification state on existing Exchange Adapter owner.
+/// Workspace + exchange scoped permission verification anchors. No runtime permission cache.
+/// Persistence only — restart recovery and operational continuity are later slices.
+model WorkspaceVenuePermissionVerificationState {
+  workspaceId                   String   @map("workspace_id")
+  exchangeIdentifier            String   @map("exchange_identifier")
+  schemaVersion                 Int      @default(1) @map("schema_version")
+  connectionId                  String?  @map("connection_id")
+  adapterExchangeConnectionId   String?  @map("adapter_exchange_connection_id")
+  permissionVerificationId        String?  @map("permission_verification_id")
+  vendorPermissionHash          String?  @map("vendor_permission_hash")
+  integrityMetadataHash         String?  @map("integrity_metadata_hash")
+  correlationId                 String?  @map("correlation_id")
+  updatedAt                     DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, exchangeIdentifier])
+  @@map("workspace_venue_permission_verification_states")
+}
+
 /// RC-18 US292 durable RecoveryState (E17 §4.5 / P0-1).
 /// Source of truth for RecoveryPhase progress within Session RECOVERING.
 /// Distinct from Session lifecycle status and aggregate RecoveryStatus.

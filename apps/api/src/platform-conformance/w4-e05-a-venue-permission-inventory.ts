@@ -437,16 +437,19 @@ export const W4_E05_A_VENUE_PERMISSION_INVENTORY: readonly W4E05AInventoryRow[] 
     authorizesVenuePermissionVerificationComplete: false,
   }),
   Object.freeze({
-    artifactId: 'persist-venue-permission-verification-anchors',
-    artifact: 'Durable venue permission verification anchors (target)',
+    artifactId: 'persist-vendor-permission-verification',
+    artifact: 'Durable venue permission verification anchors on Exchange Adapter owner',
     kind: 'persistence-candidate' as const,
     owner: 'exchange-adapter' as const,
-    durabilityClass: 'EPHEMERAL' as const,
-    currentStatus: 'Missing — planned W4-E05-b on exchange-adapter owner',
-    honestyRequirement: 'Durable permission verification does not yet exist',
-    futureW4E05Responsibility: 'W4-E05-b' as const,
-    evidencePath: 'docs/project/version-3/wave-4/w4-e05-implementation-package.md',
-    existsToday: false,
+    durabilityClass: 'SURVIVE' as const,
+    currentStatus:
+      'Implemented — WorkspaceVenuePermissionVerificationState (W4-E05-b); restart recovery (W4-E05-c)',
+    honestyRequirement:
+      'Persistence only; canonical verification anchors; no runtime permission cache; operational continuity is W4-E05-d',
+    futureW4E05Responsibility: 'W4-E05-c' as const,
+    evidencePath:
+      'apps/api/src/modules/exchange-adapter/persistence/prisma-venue-permission-verification-state.repository.ts',
+    existsToday: true,
     isPaperProduct: true,
     authorizesVenuePermissionVerificationComplete: false,
   }),

@@ -136,7 +136,7 @@ describe('W4-E05-a venue permission inventory — unit', () => {
     expect(ids.has('runtime-read-api-permissions-fallback')).toBe(true);
     expect(ids.has('runtime-venue-adapter-default-api-permissions')).toBe(true);
     expect(ids.has('ephemeral-hardcoded-spot-read-spot-trade')).toBe(true);
-    expect(ids.has('persist-venue-permission-verification-anchors')).toBe(true);
+    expect(ids.has('persist-vendor-permission-verification')).toBe(true);
   });
 
   it('explicit OUT surfaces cover probe/persistence/recovery/continuity, E01–E04 reopen, engine clone, Live', () => {

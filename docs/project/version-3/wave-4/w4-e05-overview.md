@@ -2,7 +2,7 @@
 
 **Document:** W4-E05 Venue Permission Verification Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W4-E05 Planning **APPROVED** (2026-08-28). W4-E05-a inventory baseline **COMPLETE** (2026-08-28).
+**Status:** Product-facing record. W4-E05 Planning **APPROVED** (2026-08-28). W4-E05-a inventory baseline **COMPLETE** (2026-08-28). W4-E05-b durable foundation **COMPLETE** (2026-08-28).
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E05 (V3-E05 · feeds LT-02 later)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -102,13 +102,20 @@ W4-E05-a delivered the machine-readable and human inventory baseline only. No ve
 
 Inventory: [`w4-e05-a-venue-permission-inventory.md`](./w4-e05-a-venue-permission-inventory.md)
 
+## W4-E05-b status (durable persistence foundation)
+
+W4-E05-b delivered durable venue permission verification anchor persistence on the existing Exchange Adapter owner only. No vendor permission probe I/O, restart recovery, operational continuity, or operator-visible behaviour changed.
+
+Implementation: [`w4-e05-b-implementation-report.md`](./w4-e05-b-implementation-report.md)
+
 ---
 
 ## Explicit non-claims
 
 - W4-E05 Planning APPROVED — **recorded**
 - W4-E05-a inventory baseline — **recorded**
-- W4-E05-b opened — **not claimed**
+- W4-E05-b durable foundation — **recorded**
+- W4-E05-c opened — **not claimed**
 - W4-E05 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -118,4 +125,4 @@ Inventory: [`w4-e05-a-venue-permission-inventory.md`](./w4-e05-a-venue-permissio
 
 ---
 
-**STOP.** W4-E05-a inventory baseline **COMPLETE** (2026-08-28). Await Product Owner review before W4-E05-b. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.
+**STOP.** W4-E05-b durable foundation **COMPLETE** (2026-08-28). Await Product Owner review before W4-E05-c. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.

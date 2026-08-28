@@ -83,19 +83,19 @@ Full row detail: machine inventory `W4_E05_A_VENUE_PERMISSION_INVENTORY` and hel
 
 ## Venue Permission EPHEMERAL artifacts (summary)
 
-| Artifact ID                                     | Owner                 | Justification                                    |
-| ----------------------------------------------- | --------------------- | ------------------------------------------------ |
-| `cmd-vendor-permission-probe-*` (4 venues)      | exchange-adapter      | **Missing** real vendor permission probe         |
-| `runtime-read-api-permissions-fallback`         | exchange-adapter      | **Hardcoded** `[spot.read, spot.trade]` fallback |
-| `runtime-venue-adapter-default-api-permissions` | exchange-adapter      | **Hardcoded** default on stub adapters           |
-| `runtime-adapter-in-memory-connected`           | exchange-adapter      | Process-local lifecycle flag                     |
-| `runtime-exchange-registry`                     | exchange-adapter      | In-process registry                              |
-| `state-permission-verification-status`          | exchange-adapter      | **Missing** cross-venue verification state       |
-| `persist-venue-permission-verification-anchors` | exchange-adapter      | **Missing** — W4-E05-b target                    |
-| `persist-permission-integrity-anchors`          | exchange-adapter      | **Missing** — W4-E05-b target                    |
-| `ui-honest-permission-verified-label`           | connection-management | **Missing**                                      |
-| `ui-permission-problem-label`                   | connection-management | **Missing**                                      |
-| `dep-blocked-by-*` (2 rows)                     | exchange-adapter      | Active honesty blockers                          |
+| Artifact ID                                     | Owner                 | Justification                                        |
+| ----------------------------------------------- | --------------------- | ---------------------------------------------------- |
+| `cmd-vendor-permission-probe-*` (4 venues)      | exchange-adapter      | **Missing** real vendor permission probe             |
+| `runtime-read-api-permissions-fallback`         | exchange-adapter      | **Hardcoded** `[spot.read, spot.trade]` fallback     |
+| `runtime-venue-adapter-default-api-permissions` | exchange-adapter      | **Hardcoded** default on stub adapters               |
+| `runtime-adapter-in-memory-connected`           | exchange-adapter      | Process-local lifecycle flag                         |
+| `runtime-exchange-registry`                     | exchange-adapter      | In-process registry                                  |
+| `state-permission-verification-status`          | exchange-adapter      | **Missing** cross-venue verification state           |
+| `persist-vendor-permission-verification`        | exchange-adapter      | **SURVIVE** — W4-E05-b persistence implemented       |
+| `persist-permission-integrity-anchors`          | exchange-adapter      | **Missing** — integrity hash covered by W4-E05-b row |
+| `ui-honest-permission-verified-label`           | connection-management | **Missing**                                          |
+| `ui-permission-problem-label`                   | connection-management | **Missing**                                          |
+| `dep-blocked-by-*` (2 rows)                     | exchange-adapter      | Active honesty blockers                              |
 
 ---
 
@@ -121,8 +121,9 @@ Full row detail: machine inventory `W4_E05_A_VENUE_PERMISSION_INVENTORY` and hel
 - Wave 4 COMPLETE — **not claimed**
 - Live Trading — **not claimed**
 - Production Ready — **not claimed**
-- W4-E05-b opened — **not claimed**
+- W4-E05-b durable foundation — **recorded**
+- W4-E05-c opened — **not claimed**
 
 ---
 
-**STOP.** Inventory foundation only. Await Product Owner review before W4-E05-b. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.
+**STOP.** W4-E05-b durable foundation **COMPLETE** (2026-08-28). Await Product Owner review before W4-E05-c. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.

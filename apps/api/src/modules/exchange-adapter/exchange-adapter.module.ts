@@ -30,6 +30,9 @@ import { PrismaExchangeConnectivityStateRepository } from './persistence/prisma-
 import { PrismaBybitExchangeConnectivityStateRepository } from './persistence/prisma-bybit-exchange-connectivity-state.repository';
 import { PrismaOkxExchangeConnectivityStateRepository } from './persistence/prisma-okx-exchange-connectivity-state.repository';
 import { PrismaKrakenExchangeConnectivityStateRepository } from './persistence/prisma-kraken-exchange-connectivity-state.repository';
+import { PrismaVenuePermissionVerificationStateRepository } from './persistence/prisma-venue-permission-verification-state.repository';
+import { VenuePermissionVerificationPersistenceService } from './venue-permission-verification-persistence.service';
+import { VENUE_PERMISSION_VERIFICATION_STATE_REPOSITORY } from './domain/venue-permission-verification-state.repository';
 
 /**
  * US209 Exchange Adapter Layer — Nest module.
@@ -68,10 +71,17 @@ import { PrismaKrakenExchangeConnectivityStateRepository } from './persistence/p
         new PrismaKrakenExchangeConnectivityStateRepository(prisma),
       inject: [PrismaService],
     },
+    {
+      provide: VENUE_PERMISSION_VERIFICATION_STATE_REPOSITORY,
+      useFactory: (prisma: PrismaService) =>
+        new PrismaVenuePermissionVerificationStateRepository(prisma),
+      inject: [PrismaService],
+    },
     ExchangeConnectivityPersistenceService,
     BybitExchangeConnectivityPersistenceService,
     OkxExchangeConnectivityPersistenceService,
     KrakenExchangeConnectivityPersistenceService,
+    VenuePermissionVerificationPersistenceService,
     KrakenExchangeConnectivityRecoveryStore,
     KrakenExchangeConnectivityRestartRecoveryService,
     OkxExchangeConnectivityRecoveryStore,
@@ -98,10 +108,12 @@ import { PrismaKrakenExchangeConnectivityStateRepository } from './persistence/p
     BYBIT_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
     OKX_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
     KRAKEN_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
+    VENUE_PERMISSION_VERIFICATION_STATE_REPOSITORY,
     ExchangeConnectivityPersistenceService,
     BybitExchangeConnectivityPersistenceService,
     OkxExchangeConnectivityPersistenceService,
     KrakenExchangeConnectivityPersistenceService,
+    VenuePermissionVerificationPersistenceService,
     KrakenExchangeConnectivityRecoveryStore,
     KrakenExchangeConnectivityRestartRecoveryService,
     OkxExchangeConnectivityRecoveryStore,

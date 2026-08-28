@@ -135,12 +135,12 @@ Do not validate per-venue Real I/O product outcomes (E01–E04), Live Trading, W
 | Slice    | Name                                               | Validation record                                                                          |
 | -------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------ |
 | W4-E05-a | Venue Permission Inventory & Honesty Baseline      | [`w4-e05-a-validation-report.md`](./w4-e05-a-validation-report.md) — **PASS** (2026-08-28) |
-| W4-E05-b | Durable Venue Permission Verification Foundation   | Not created                                                                                |
+| W4-E05-b | Durable Venue Permission Verification Foundation   | [`w4-e05-b-validation-report.md`](./w4-e05-b-validation-report.md) — **PASS** (2026-08-28) |
 | W4-E05-c | Venue Permission Restart Recovery Foundation       | Not created                                                                                |
 | W4-E05-d | Venue Permission Operational Continuity Foundation | Not created                                                                                |
 | W4-E05-e | Package Close evidence                             | Not created                                                                                |
 
-**W4-E05-b…e not opened.** Validation records for later slices created only after slice authorization.
+**W4-E05-c…e not opened.** Validation records for later slices created only after slice authorization.
 
 ---
 
@@ -164,10 +164,11 @@ Do not validate per-venue Real I/O product outcomes (E01–E04), Live Trading, W
 - W4-E05 Planning APPROVED — **recorded**
 - W4-E05 Planning Review PASS — **recorded**
 - W4-E05-a inventory PASS — **recorded**
+- W4-E05-b durable foundation PASS — **recorded**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
 - Venue Permission Verification Complete — **not claimed**
 
 ---
 
-**STOP.** W4-E05-a inventory baseline **PASS** (2026-08-28). Await Product Owner review before W4-E05-b. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.
+**STOP.** W4-E05-b durable foundation **PASS** (2026-08-28). Await Product Owner review before W4-E05-c. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.
