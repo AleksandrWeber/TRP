@@ -3,7 +3,7 @@
 **Package:** W3-O05 Monitoring & Security Health  
 **Wave:** 3 — Durability, Operations & Continuity  
 **Master Plan / Roadmap:** V3-O05 · MN-02 · MN-03 · SEC-13 · SEC-15  
-**Status:** Planning **APPROVED**. W3-O05-a inventory **COMPLETE**. W3-O05-b…e not opened.
+**Status:** Planning **APPROVED**. W3-O05-a inventory **COMPLETE**. W3-O05-b persistence **COMPLETE**. W3-O05-c…e not opened.
 **Date:** 2026-08-27  
 **Umbrella:** [`w3-o05-implementation-package.md`](./w3-o05-implementation-package.md)  
 **Scope:** [`w3-o05-product-scope.md`](./w3-o05-product-scope.md)  
@@ -154,7 +154,23 @@ Evidence: [`w3-o05-a-validation-report.md`](./w3-o05-a-validation-report.md) · 
 
 ---
 
-## 11. Close checklist (planning)
+## 11. W3-O05-b persistence validation (COMPLETE)
+
+| Assertion                                           | Result |
+| --------------------------------------------------- | ------ |
+| Durable monitoring persistence on Security Platform | PASS   |
+| Only approved SURVIVE new artifact persisted        | PASS   |
+| Pre-existing Security Audit SURVIVE unchanged       | PASS   |
+| EPHEMERAL rows not persisted                        | PASS   |
+| No restart recovery / evaluation / dashboard        | PASS   |
+| Monitoring restart survival not claimed             | PASS   |
+| No customer-visible monitoring feature              | PASS   |
+
+Evidence: [`w3-o05-b-validation-report.md`](./w3-o05-b-validation-report.md) · [`w3-o05-b-implementation-report.md`](./w3-o05-b-implementation-report.md)
+
+---
+
+## 12. Close checklist (planning)
 
 | Item                                           | Required at Close |
 | ---------------------------------------------- | ----------------- |
@@ -183,4 +199,4 @@ Do **not** count as W3-O05 Close evidence during planning:
 
 ---
 
-**STOP.** W3-O05-a inventory **COMPLETE**. Await Product Owner review before W3-O05-b. Do not declare Monitoring Complete. Do not declare Wave 3 COMPLETE.
+**STOP.** W3-O05-b persistence **COMPLETE**. Await Product Owner review before W3-O05-c. Do not declare Monitoring Complete. Do not declare Wave 3 COMPLETE.

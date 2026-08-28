@@ -866,6 +866,24 @@ model WorkspaceKillSwitchState {
   @@map("workspace_kill_switch_states")
 }
 
+/// W3-O05-b — Durable monitoring health state on existing Security Platform owner.
+/// Workspace-scoped operational monitoring substrate. Distinct from audit/incident SoT.
+/// Persistence only — restart recovery and health evaluation are later slices.
+model WorkspaceMonitoringHealthState {
+  workspaceId                           String    @id @map("workspace_id")
+  schemaVersion                         Int       @default(1) @map("schema_version")
+  securityHealthAnchorIncidentId        String?   @map("security_health_anchor_incident_id")
+  securityHealthAnchorRecordedAt        DateTime? @map("security_health_anchor_recorded_at")
+  securityHealthAnchorRecordedByActorId String?   @map("security_health_anchor_recorded_by_actor_id")
+  connectionHealthAnchorSessionId       String?   @map("connection_health_anchor_session_id")
+  connectionHealthAnchorRecordedAt        DateTime? @map("connection_health_anchor_recorded_at")
+  connectionHealthAnchorRecordedByActorId String?   @map("connection_health_anchor_recorded_by_actor_id")
+  correlationId                         String?   @map("correlation_id")
+  updatedAt                             DateTime  @updatedAt @map("updated_at")
+
+  @@map("workspace_monitoring_health_states")
+}
+
 /// RC-18 US292 durable RecoveryState (E17 §4.5 / P0-1).
 /// Source of truth for RecoveryPhase progress within Session RECOVERING.
 /// Distinct from Session lifecycle status and aggregate RecoveryStatus.
