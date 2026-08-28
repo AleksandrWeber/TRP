@@ -2,7 +2,7 @@
 
 **Document:** W4-E05 Venue Permission Verification Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W4-E05 Planning **APPROVED** (2026-08-28). W4-E05-a inventory baseline **COMPLETE** (2026-08-28). W4-E05-b durable foundation **COMPLETE** (2026-08-28). W4-E05-c restart recovery **COMPLETE** (2026-08-28). W4-E05-d operational continuity **COMPLETE** (2026-08-28).
+**Status:** Product-facing record. W4-E05 Planning **APPROVED** (2026-08-28). W4-E05-a inventory baseline **COMPLETE** (2026-08-28). W4-E05-b durable foundation **COMPLETE** (2026-08-28). W4-E05-c restart recovery **COMPLETE** (2026-08-28). W4-E05-d operational continuity **COMPLETE** (2026-08-28). W4-E05-e Close Evidence **COMPLETE** (2026-08-28).
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E05 (V3-E05 · feeds LT-02 later)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -121,6 +121,14 @@ W4-E05-d delivered Venue Permission Verification operational readiness projectio
 
 Implementation: [`w4-e05-d-implementation-report.md`](./w4-e05-d-implementation-report.md)
 
+## W4-E05-e status (package Close Evidence)
+
+W4-E05-e assembled complete engineering Close Evidence across slices a–d: operational chain verification, governance, architecture compliance, and Honest Product enforcement. No runtime, persistence, recovery, or operational continuity changes. Awaiting Product Owner Package Review.
+
+Implementation: [`w4-e05-e-implementation-report.md`](./w4-e05-e-implementation-report.md)
+
+Close package report: [`w4-e05-close-package-report.md`](./w4-e05-close-package-report.md)
+
 ---
 
 ## Explicit non-claims
@@ -130,7 +138,7 @@ Implementation: [`w4-e05-d-implementation-report.md`](./w4-e05-d-implementation-
 - W4-E05-b durable foundation — **recorded**
 - W4-E05-c restart recovery — **recorded**
 - W4-E05-d operational continuity — **recorded**
-- W4-E05-e opened — **not claimed**
+- W4-E05-e Close Evidence — **recorded**
 - W4-E05 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -140,4 +148,4 @@ Implementation: [`w4-e05-d-implementation-report.md`](./w4-e05-d-implementation-
 
 ---
 
-**STOP.** W4-E05-d operational continuity **COMPLETE** (2026-08-28). Await Product Owner review before W4-E05-e. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.
+**STOP.** W4-E05-e Close Evidence **COMPLETE** (2026-08-28). Await Product Owner Package Review. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.

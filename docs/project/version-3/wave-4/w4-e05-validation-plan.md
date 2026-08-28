@@ -138,9 +138,9 @@ Do not validate per-venue Real I/O product outcomes (E01–E04), Live Trading, W
 | W4-E05-b | Durable Venue Permission Verification Foundation   | [`w4-e05-b-validation-report.md`](./w4-e05-b-validation-report.md) — **PASS** (2026-08-28) |
 | W4-E05-c | Venue Permission Restart Recovery Foundation       | [`w4-e05-c-validation-report.md`](./w4-e05-c-validation-report.md) — **PASS** (2026-08-28) |
 | W4-E05-d | Venue Permission Operational Continuity Foundation | [`w4-e05-d-validation-report.md`](./w4-e05-d-validation-report.md) — **PASS** (2026-08-28) |
-| W4-E05-e | Package Close evidence                             | Not created                                                                                |
+| W4-E05-e | Package Close evidence                             | [`w4-e05-e-validation-report.md`](./w4-e05-e-validation-report.md) — **PASS** (2026-08-28) |
 
-**W4-E05-e not opened.** Validation records for later slices created only after slice authorization.
+**W4-E05-e Close Evidence recorded.** Final Package Integration Verification and Product Owner Close remain separate governance steps.
 
 ---
 
@@ -167,10 +167,11 @@ Do not validate per-venue Real I/O product outcomes (E01–E04), Live Trading, W
 - W4-E05-b durable foundation PASS — **recorded**
 - W4-E05-c restart recovery PASS — **recorded**
 - W4-E05-d operational continuity PASS — **recorded**
+- W4-E05-e Close Evidence PASS — **recorded**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
 - Venue Permission Verification Complete — **not claimed**
 
 ---
 
-**STOP.** W4-E05-d operational continuity **PASS** (2026-08-28). Await Product Owner review before W4-E05-e. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.
+**STOP.** W4-E05-e Close Evidence **PASS** (2026-08-28). Await Product Owner Package Review. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.
