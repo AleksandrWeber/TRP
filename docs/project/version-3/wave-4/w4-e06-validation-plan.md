@@ -3,7 +3,7 @@
 **Package:** W4-E06 Wave 4 Completion Review
 **Wave:** 4 — Exchange Connectivity
 **Governance map:** Roll-up after Master Plan **V3-E01…E05**
-**Status:** W4-E06-d **COMPLETE** — awaiting Product Owner review. W4-E06-e not opened.
+**Status:** W4-E06-e **COMPLETE** — awaiting Product Owner review.
 **Date:** 2026-08-28
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w4-e06-product-scope.md`](./w4-e06-product-scope.md)
@@ -144,7 +144,7 @@ Do not validate Live Trading, Wave 5 transports, or Wave 4 COMPLETE from W4-E06 
 | W4-E06-b | Wave Exit Criteria Evidence Foundation              | [`w4-e06-b-validation-report.md`](./w4-e06-b-validation-report.md) — **PASS** |
 | W4-E06-c | Cross-Package Integration Verification Foundation   | [`w4-e06-c-validation-report.md`](./w4-e06-c-validation-report.md) — **PASS** |
 | W4-E06-d | Wave Operational Continuity & Honest Product Review | [`w4-e06-d-validation-report.md`](./w4-e06-d-validation-report.md) — **PASS** |
-| W4-E06-e | Wave Completion Evidence Assembly                   | _Not opened_                                                                  |
+| W4-E06-e | Wave Completion Evidence Assembly                   | [`w4-e06-e-validation-report.md`](./w4-e06-e-validation-report.md) — **PASS** |
 
 ---
 
@@ -165,11 +165,11 @@ Do not validate Live Trading, Wave 5 transports, or Wave 4 COMPLETE from W4-E06 
 
 - W4-E06 package validation PASS — **not claimed**
 - W4-E06 CLOSED — **not claimed**
-- W4-E06-e opened — **not claimed**
+- Final Wave Integration Verification performed — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
 - Live Trading — **not claimed**
 
 ---
 
-**STOP.** W4-E06-d validation **PASS**. Await Product Owner review before W4-E06-e. Do not declare Wave 4 COMPLETE.
+**STOP.** W4-E06-e validation **PASS**. Await Product Owner review before Final Wave Integration Verification. Do not declare Wave 4 COMPLETE.
