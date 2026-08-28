@@ -5,7 +5,7 @@
 **Master Plan / Roadmap:** V3-E04 · CM-10  
 **Evidence slice:** W4-E04-e  
 **Date:** 2026-08-28  
-**Status:** Close Evidence assembled — **awaiting Product Owner Package Review**. W4-E04 **not CLOSED**.
+**Status:** **CLOSED** by Product Owner (2026-08-28). See [`w4-e04-product-owner-close-record.md`](./w4-e04-product-owner-close-record.md).
 
 ---
 
@@ -45,18 +45,18 @@
 | W4-E04-b | Durable Kraken Persistence    | APPROVED / COMPLETE |
 | W4-E04-c | Kraken Restart Recovery       | APPROVED / COMPLETE |
 | W4-E04-d | Kraken Operational Continuity | APPROVED / COMPLETE |
-| W4-E04-e | Close Evidence                | COMPLETE (local)    |
-| W4-E04   | Package                       | **Not CLOSED**      |
+| W4-E04-e | Close Evidence                | APPROVED / COMPLETE |
+| W4-E04   | Package                       | **CLOSED**          |
 
 ---
 
 ## Capability Evolution
 
-| Stage                     | Capability                                                                                                                                                                                                                             |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Package opened            | Kraken catalog label with liveAdapter:false; no durable Kraken exchange connectivity store; no restart recovery; no Kraken operational continuity projection; Connected not honest without vendor round-trip.                          |
-| Package closed capability | Kraken Exchange Connectivity foundation evidenced for Product Owner Close: inventory, persistence, restart recovery, and operational continuity — without REST/WebSocket I/O, live connection, Connected fabrication, or Live Trading. |
+| Stage                     | Capability                                                                                                                                                                                                      |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Package opened            | Kraken catalog label with liveAdapter:false; no durable Kraken exchange connectivity store; no restart recovery; no Kraken operational continuity projection; Connected not honest without vendor round-trip.   |
+| Package closed capability | Kraken Exchange Connectivity foundation **CLOSED**: inventory, persistence, restart recovery, and operational continuity — without REST/WebSocket I/O, live connection, Connected fabrication, or Live Trading. |
 
 ---
 
-**STOP.** Await Product Owner Package Review. Do not declare W4-E04 CLOSED. Do not declare Exchange Connectivity Complete. Do not declare Kraken Connected. Do not declare Wave 4 COMPLETE.
+**STOP.** W4-E04 **CLOSED** by Product Owner. Do not declare Exchange Connectivity Complete. Do not declare Kraken Connected. Do not declare Wave 4 COMPLETE.

@@ -159,18 +159,19 @@ Do not validate venue permission verification product (E05), Live Trading, Wave 
 
 ## Explicit non-claims
 
-- W4-E04 validation PASS — **not claimed** (planning only)
-- W4-E04 CLOSED — **not claimed**
+- W4-E04 validation PASS — **recorded**
+- W4-E04 CLOSED — **recorded** (2026-08-28)
 - W4-E04 Planning APPROVED — **recorded**
 - W4-E04-a inventory PASS — **recorded**
-- W4-E04-b durable persistence PASS — **recorded** (local; uncommitted)
+- W4-E04-b durable persistence PASS — **recorded**
 - W4-E04-c restart recovery PASS — **recorded**
 - W4-E04-d operational continuity PASS — **recorded**
-- W4-E04-e close evidence PASS — **recorded** (local)
+- W4-E04-e close evidence PASS — **recorded**
+- Final Package Integration Verification PASS — **recorded**
 - Wave 4 COMPLETE — **not claimed**
 - Kraken Connected — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
 
 ---
 
-**STOP.** W4-E04-e close evidence validation **PASS** (local). Await Product Owner Package Review. Do not declare W4-E04 CLOSED, Kraken Connected, or Exchange Connectivity Complete.
+**STOP.** W4-E04 **CLOSED** by Product Owner (2026-08-28). Do not declare Kraken Connected, Exchange Connectivity Complete, or Wave 4 COMPLETE. Do not open W4-E05 without separate Product Owner sequencing.
