@@ -9,6 +9,7 @@ import {
   EMAIL_NOTIFICATION_ANCHOR_REPOSITORY,
   type EmailNotificationAnchorRepository,
 } from './domain/email-notification-anchor.repository';
+import { EmailNotificationRecoveryStore } from './email-notification-recovery-store';
 
 export type PersistEmailNotificationAnchorCommand = Readonly<{
   workspaceId: string;
@@ -24,20 +25,26 @@ export type PersistEmailNotificationAnchorCommand = Readonly<{
 }>;
 
 /**
- * W5-N02-b — durable Email notification anchor persistence on Notification Delivery owner.
- * Storage only — no SMTP I/O, outbound delivery, restart recovery, or operational continuity.
+ * W5-N02-b/c — durable Email notification anchor persistence on Notification Delivery owner.
+ * W5-N02-c — write-through to recovery store after hydrate.
+ * Storage only — no SMTP I/O, outbound delivery, or operational continuity.
  */
 @Injectable()
 export class EmailNotificationPersistenceService {
   constructor(
     @Inject(EMAIL_NOTIFICATION_ANCHOR_REPOSITORY)
     private readonly repository: EmailNotificationAnchorRepository,
+    @Inject(EmailNotificationRecoveryStore)
+    private readonly recoveryStore: EmailNotificationRecoveryStore,
   ) {}
 
   async loadAnchor(
     workspaceId: string,
     notificationId: string,
   ): Promise<DurableEmailNotificationAnchor | null> {
+    if (this.recoveryStore.hasHydrated()) {
+      return this.recoveryStore.get(workspaceId, notificationId);
+    }
     return this.repository.loadEmailNotificationAnchor(workspaceId, notificationId);
   }
 
@@ -50,6 +57,7 @@ export class EmailNotificationPersistenceService {
       return outcome;
     }
     await this.repository.saveEmailNotificationAnchor(outcome.anchor);
+    this.recoveryStore.set(outcome.anchor);
     return outcome;
   }
 }

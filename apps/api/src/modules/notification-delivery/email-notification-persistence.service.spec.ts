@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { EmailNotificationPersistenceService } from './email-notification-persistence.service';
 import type { DurableEmailNotificationAnchor } from './domain/durable-email-notification-anchor';
 import type { EmailNotificationAnchorRepository } from './domain/email-notification-anchor.repository';
+import { EmailNotificationRecoveryStore } from './email-notification-recovery-store';
 
 const recordedAt = '2026-08-28T15:00:00.000Z';
 
@@ -27,7 +28,10 @@ function createRepository(): EmailNotificationAnchorRepository & {
 describe('EmailNotificationPersistenceService — W5-N02-b storage only', () => {
   it('persistNotificationAnchor writes canonical anchors without delivery execution', async () => {
     const repository = createRepository();
-    const service = new EmailNotificationPersistenceService(repository);
+    const service = new EmailNotificationPersistenceService(
+      repository,
+      new EmailNotificationRecoveryStore(),
+    );
 
     const outcome = await service.persistNotificationAnchor({
       workspaceId: 'ws-1',
@@ -61,7 +65,10 @@ describe('EmailNotificationPersistenceService — W5-N02-b storage only', () => 
 
   it('does not claim delivered or connected flags on anchor rows', async () => {
     const repository = createRepository();
-    const service = new EmailNotificationPersistenceService(repository);
+    const service = new EmailNotificationPersistenceService(
+      repository,
+      new EmailNotificationRecoveryStore(),
+    );
 
     await service.persistNotificationAnchor({
       workspaceId: 'ws-1',
@@ -78,7 +85,10 @@ describe('EmailNotificationPersistenceService — W5-N02-b storage only', () => 
 
   it('rejects non-email notification channel', async () => {
     const repository = createRepository();
-    const service = new EmailNotificationPersistenceService(repository);
+    const service = new EmailNotificationPersistenceService(
+      repository,
+      new EmailNotificationRecoveryStore(),
+    );
 
     const outcome = await service.persistNotificationAnchor({
       workspaceId: 'ws-1',

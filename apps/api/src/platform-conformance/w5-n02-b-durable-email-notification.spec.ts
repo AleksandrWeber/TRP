@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { EmailNotificationPersistenceService } from '../modules/notification-delivery/email-notification-persistence.service';
 import { PrismaEmailNotificationAnchorRepository } from '../modules/notification-delivery/persistence/prisma-email-notification-anchor.repository';
+import { EmailNotificationRecoveryStore } from '../modules/notification-delivery/email-notification-recovery-store';
 import { rowsEphemeral } from './w5-n02-a-email-notification-inventory';
 import {
   W5_N02_B_ARCHITECTURE_CLAIMS,
@@ -63,7 +64,10 @@ describe('W5-N02-b durable email notification — unit', () => {
   it('persistence correctness: anchor write-through upserts workspace notification row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaEmailNotificationAnchorRepository(prisma as never);
-    const service = new EmailNotificationPersistenceService(repository);
+    const service = new EmailNotificationPersistenceService(
+      repository,
+      new EmailNotificationRecoveryStore(),
+    );
 
     const outcome = await service.persistNotificationAnchor({
       workspaceId: 'ws-a',

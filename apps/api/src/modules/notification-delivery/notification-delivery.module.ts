@@ -12,6 +12,8 @@ import { PrismaEmailNotificationAnchorRepository } from './persistence/prisma-em
 import { PrismaTelegramNotificationAnchorRepository } from './persistence/prisma-telegram-notification-anchor.repository';
 import { NOTIFICATION_SERVICE_PORT, TELEGRAM_CHANNEL_ADAPTER } from './ports/notification.port';
 import { EmailNotificationPersistenceService } from './email-notification-persistence.service';
+import { EmailNotificationRecoveryStore } from './email-notification-recovery-store';
+import { EmailNotificationRestartRecoveryService } from './email-notification-restart-recovery.service';
 import { TelegramNotificationPersistenceService } from './telegram-notification-persistence.service';
 import { TelegramNotificationRecoveryStore } from './telegram-notification-recovery-store';
 import { TelegramNotificationRestartRecoveryService } from './telegram-notification-restart-recovery.service';
@@ -25,6 +27,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
  * W5-N01-b: durable Telegram notification anchor persistence on this owner only.
  * W5-N01-c: deterministic restart recovery hydrate for canonical anchors on this owner only.
  * W5-N02-b: durable Email notification anchor persistence on this owner only.
+ * W5-N02-c: deterministic restart recovery hydrate for canonical Email anchors on this owner only.
  * Does not import Reporting / AI Analytics / Strategy Library / Runtime /
  * Trading Session / Orders / Ledger. Does not expose REST or trading commands.
  */
@@ -55,6 +58,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     TelegramNotificationRestartRecoveryService,
     TelegramNotificationPersistenceService,
     EmailNotificationPersistenceService,
+    EmailNotificationRecoveryStore,
+    EmailNotificationRestartRecoveryService,
     InMemoryTelegramAdapter,
     {
       provide: TELEGRAM_CHANNEL_ADAPTER,
@@ -78,6 +83,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     TelegramNotificationRestartRecoveryService,
     TelegramNotificationPersistenceService,
     EmailNotificationPersistenceService,
+    EmailNotificationRecoveryStore,
+    EmailNotificationRestartRecoveryService,
   ],
 })
 export class NotificationDeliveryModule {}

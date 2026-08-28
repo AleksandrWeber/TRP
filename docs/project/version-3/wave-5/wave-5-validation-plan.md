@@ -254,7 +254,22 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite     | **PASS** | lint / typecheck / test / build                |
 | git diff --check     | **PASS** | No whitespace errors                           |
 
-**Explicit non-claim:** W5-N02-b does **not** authorize SMTP implemented, Email notifications operational, restart recovery, W5-N02 COMPLETE, or Wave 5 COMPLETE. Changes **local only** — not committed.
+**Explicit non-claim:** W5-N02-b does **not** authorize SMTP implemented, Email notifications operational, restart recovery, W5-N02 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`bbaa96c`).
+
+---
+
+## W5-N02-c validation (2026-08-28 — local)
+
+| Layer                | Result   | Evidence                                            |
+| -------------------- | -------- | --------------------------------------------------- |
+| Restart recovery     | **PASS** | `EmailNotificationRestartRecoveryService` + hydrate |
+| Conformance registry | **PASS** | `w5-n02-c-email-notification-restart-recovery.ts`   |
+| Slice reports        | **PASS** | w5-n02-c-* reports under wave-5                     |
+| Architecture check   | **PASS** | Notification Delivery owner only; no SMTP I/O       |
+| Regression suite     | **PASS** | lint / typecheck / test / build                     |
+| git diff --check     | **PASS** | No whitespace errors                                |
+
+**Explicit non-claim:** W5-N02-c does **not** authorize SMTP implemented, Email notifications operational, operational continuity, W5-N02 COMPLETE, or Wave 5 COMPLETE. Changes **local only** — not committed.
 
 ---
 
@@ -266,9 +281,10 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 - Notification Platform Complete — **not claimed**
 - Live Trading validation — **not claimed**
 - W5-N02-a validation PASS — **recorded** (`a7241ea`)
-- W5-N02-b validation PASS — **recorded** (local)
-- W5-N02 opened — **in progress** (W5-N02-b local complete)
+- W5-N02-b validation PASS — **recorded** (`bbaa96c`)
+- W5-N02-c validation PASS — **recorded** (local)
+- W5-N02 opened — **in progress** (W5-N02-c local complete)
 
 ---
 
-**STOP.** W5-N02-b **COMPLETE** (local). Await Product Owner review before W5-N02-c. Do not declare SMTP implemented or Email notifications operational.
+**STOP.** W5-N02-c **COMPLETE** (local). Await Product Owner review before W5-N02-d. Do not declare SMTP implemented or Email notifications operational.
