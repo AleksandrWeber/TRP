@@ -287,6 +287,8 @@ Verify:
 
 **Residual risks (~4%):** Vendor permission probe I/O and honest Permission verified / Expired / permission problem product labels intentionally deferred to post-foundation scope; hardcoded `apiPermissions` defaults remain active until product I/O slice (honest per inventory).
 
+**Post-Close note (2026-08-28):** Product Owner Final Close executed. W4-E05 **CLOSED** — see [`w4-e05-product-owner-close-record.md`](./w4-e05-product-owner-close-record.md).
+
 | Question                                       | Answer  |
 | ---------------------------------------------- | ------- |
 | Is W4-E05 internally consistent?               | **Yes** |
@@ -298,11 +300,11 @@ Verify:
 
 **Technical debt delta:**
 
-| Kind           | Items                                                                                                   |
-| -------------- | ------------------------------------------------------------------------------------------------------- |
-| **Resolved**   | Final Package Integration Verification (this document)                                                  |
-| **Introduced** | **None**                                                                                                |
-| **Deferred**   | Product Owner Final Close; vendor permission probe I/O outcomes; Wave 4 Completion Review; Live Trading |
+| Kind           | Items                                                                             |
+| -------------- | --------------------------------------------------------------------------------- |
+| **Resolved**   | Final Package Integration Verification (this document); Product Owner Final Close |
+| **Introduced** | **None**                                                                          |
+| **Deferred**   | Vendor permission probe I/O outcomes; Wave 4 Completion Review; Live Trading      |
 
 ---
 
@@ -314,9 +316,9 @@ Verify:
 
 ## Engineering recommendation
 
-Engineering verification recommends **Product Owner Final Close**.
+Engineering verification recommends **Product Owner Final Close** — **executed 2026-08-28**.
 
-Engineering verification does **not** declare W4-E05 CLOSED.
+Engineering verification does **not** declare W4-E05 CLOSED. Product Owner Close is recorded in [`w4-e05-product-owner-close-record.md`](./w4-e05-product-owner-close-record.md).
 
 Engineering does **not** declare Venue Permission Verification Complete.
 
@@ -334,14 +336,12 @@ Engineering does **not** open the next Wave package.
 
 **STOP.**
 
-Final Package Integration Verification **PASS** (2026-08-28).
+W4-E05 **CLOSED** by Product Owner (2026-08-28).
 
-Await explicit Product Owner instruction before W4-E05 Product Owner Final Close.
-
-Do **not** create `w4-e05-product-owner-close-record.md` without Product Owner instruction.
-
-Do **not** declare Venue Permission Verification Complete.
+Do **not** declare Venue Permission Verification Complete (product).
 
 Do **not** declare Exchange Connectivity Complete.
 
 Do **not** declare Wave 4 COMPLETE.
+
+Do **not** open the next Wave Planning Package without separate Product Owner instruction.

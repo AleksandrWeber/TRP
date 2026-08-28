@@ -3,13 +3,13 @@
 **Package:** W4-E05 Venue Permission Verification  
 **Evidence slice:** W4-E05-e  
 **Date:** 2026-08-28  
-**Decision status:** Close Evidence assembled — **awaiting Product Owner Package Review**. Engineering must **not** declare W4-E05 CLOSED.
+**Decision status:** **CLOSED** by Product Owner (2026-08-28). See [`w4-e05-product-owner-close-record.md`](./w4-e05-product-owner-close-record.md).
 
 ---
 
 ## Purpose
 
-This report indexes Close Evidence assembled in W4-E05-e for Product Owner Package Review. Close is a Product Owner act. Engineering must **not** declare Venue Permission Verification Complete, Exchange Connectivity Complete, Production Ready, or Wave 4 COMPLETE.
+This report indexes Close Evidence assembled in W4-E05-e and records Product Owner Package Close. Close is a Product Owner act. Engineering must **not** declare Venue Permission Verification Complete (product), Exchange Connectivity Complete, Production Ready, or Wave 4 COMPLETE.
 
 ---
 
@@ -49,40 +49,40 @@ This report indexes Close Evidence assembled in W4-E05-e for Product Owner Packa
 | Second persistence owner               | **No**             |
 | Production Ready                       | **No**             |
 | Wave 4 COMPLETE                        | **No**             |
-| Final Package Integration Verification | **Not performed**  |
+| Final Package Integration Verification | **PASS**           |
 
 ---
 
 ## Close checklist (evidence)
 
-| Criterion                                                       | Status      |
-| --------------------------------------------------------------- | ----------- |
-| Every approved slice validated (a–d PASS)                       | **Met**     |
-| Operational walkthrough completed                               | **Met**     |
-| Inventory / Persistence / Recovery / Continuity verified        | **Met**     |
-| Platform Readiness projection verified                          | **Met**     |
-| Honest Product enforcement intact                               | **Met**     |
-| Governance: exchange-adapter sole owner; no duplicate authority | **Met**     |
-| Security Verification PASS                                      | **Met**     |
-| Architecture Verification PASS                                  | **Met**     |
-| Documentation consistency verified                              | **Met**     |
-| Package Summary completed                                       | **Met**     |
-| No new functionality in e                                       | **Met**     |
-| No ownership / architecture / Master Plan changes in e          | **Met**     |
-| Product Owner declares CLOSED                                   | **Pending** |
+| Criterion                                                       | Status  |
+| --------------------------------------------------------------- | ------- |
+| Every approved slice validated (a–d PASS)                       | **Met** |
+| Operational walkthrough completed                               | **Met** |
+| Inventory / Persistence / Recovery / Continuity verified        | **Met** |
+| Platform Readiness projection verified                          | **Met** |
+| Honest Product enforcement intact                               | **Met** |
+| Governance: exchange-adapter sole owner; no duplicate authority | **Met** |
+| Security Verification PASS                                      | **Met** |
+| Architecture Verification PASS                                  | **Met** |
+| Documentation consistency verified                              | **Met** |
+| Package Summary completed                                       | **Met** |
+| No new functionality in e                                       | **Met** |
+| No ownership / architecture / Master Plan changes in e          | **Met** |
+| Product Owner declares CLOSED                                   | **Met** |
 
 ---
 
 ## Explicit non-declarations
 
-- W4-E05 CLOSED — **not claimed**
+- W4-E05 CLOSED — **recorded** (2026-08-28)
 - Venue Permission Verification Complete — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
 - Production Ready — **not claimed**
 - Live Trading — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
-- Final Package Integration Verification PASS — **not performed**
+- Final Package Integration Verification PASS — **recorded**
 
 ---
 
-**STOP.** W4-E05-e Close Evidence **COMPLETE** (2026-08-28). Await Product Owner Package Review. Do not declare Venue Permission Verification Complete. Do not declare Exchange Connectivity Complete. Do not declare Wave 4 COMPLETE.
+**STOP.** W4-E05 **CLOSED** by Product Owner (2026-08-28). Do not declare Venue Permission Verification Complete (product). Do not declare Exchange Connectivity Complete. Do not declare Wave 4 COMPLETE.

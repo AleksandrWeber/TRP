@@ -178,7 +178,7 @@ describe('W4-E05-e package close evidence — integration / planning', () => {
     expect(existsSync(join(WAVE4, 'w4-e05-validation-plan.md'))).toBe(true);
     expect(existsSync(join(WAVE4, 'wave-4-progress.md'))).toBe(true);
     expect(existsSync(join(WAVE4, 'w4-e05-planning-approval.md'))).toBe(true);
-    expect(existsSync(join(WAVE4, 'w4-e05-product-owner-close-record.md'))).toBe(false);
+    expect(existsSync(join(WAVE4, 'w4-e05-product-owner-close-record.md'))).toBe(true);
   });
 
   it('transition / maturity / capability / debt registries are complete', () => {
@@ -207,24 +207,29 @@ describe('W4-E05-e package close evidence — integration / planning', () => {
     expect(view).not.toMatch(/Permission verified|Verify permissions|Live Trading|vendor probe/i);
   });
 
-  it('status docs: W4-E05-e COMPLETE; package CLOSED not claimed; Wave 4 COMPLETE not claimed', () => {
+  it('status docs: W4-E05 CLOSED by Product Owner; Wave 4 COMPLETE not claimed', () => {
     const progress = readWave4('wave-4-progress.md');
     const overview = readWave4('w4-e05-overview.md');
     const close = readWave4('w4-e05-close-package-report.md');
     const summary = readWave4('w4-e05-package-summary.md');
-    expect(progress).toMatch(/W4-E05-e|Close Evidence/);
+    const poClose = readWave4('w4-e05-product-owner-close-record.md');
+    expect(progress).toMatch(/CLOSED by Product Owner|Package \*\*CLOSED\*\*/);
     expect(progress).toMatch(/W4-E05-a|W4-E05-b|W4-E05-c|W4-E05-d/);
+    expect(progress).toMatch(/Close Evidence|W4-E05-e/);
     expect(progress).toMatch(/Wave 4 COMPLETE[\s\S]*Not claimed|Not claimed[\s\S]*Wave 4 COMPLETE/);
-    expect(progress).not.toMatch(/W4-E05 CLOSED by Product Owner/);
+    expect(overview).toMatch(/\*\*CLOSED\*\* by Product Owner|CLOSED by Product Owner/);
     expect(overview).toMatch(/STOP/);
     expect(overview).toMatch(
       /Venue Permission Verification Complete[\s\S]*not claimed|not claimed[\s\S]*Venue Permission Verification Complete/i,
     );
-    expect(overview).not.toMatch(/W4-E05 \*\*CLOSED\*\* by Product Owner/);
-    expect(close).toMatch(/awaiting Product Owner|Product Owner Package Review/i);
+    expect(close).toMatch(
+      /Package \*\*CLOSED\*\* by Product Owner|\*\*CLOSED\*\* by Product Owner|CLOSED by Product Owner/,
+    );
     expect(close).toMatch(/Wave 4 COMPLETE[\s\S]*not claimed|not claimed[\s\S]*Wave 4 COMPLETE/i);
-    expect(close).not.toMatch(/Decision:\*\* \*\*CLOSED\*\*/);
-    expect(summary).toMatch(/awaiting Product Owner|not claimed/i);
+    expect(summary).toMatch(/\*\*CLOSED\*\* by Product Owner/);
+    expect(poClose).toMatch(
+      /officially CLOSED|Decision:\*\* \*\*CLOSED\*\*|Decision: \*\*CLOSED\*\*/,
+    );
     expect(W4_E05_E_ARCHITECTURE_CLAIMS.packageCloseEvidenceAssembled).toBe(true);
     expect(W4_E05_E_ARCHITECTURE_CLAIMS.packageDeclaredClosed).toBe(false);
   });

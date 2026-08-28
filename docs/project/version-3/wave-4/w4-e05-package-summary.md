@@ -5,7 +5,7 @@
 **Master Plan / Roadmap:** V3-E05 · feeds LT-02 later  
 **Evidence slice:** W4-E05-e  
 **Date:** 2026-08-28  
-**Status:** Close Evidence assembled — **awaiting Product Owner Package Review**. Engineering must **not** declare W4-E05 CLOSED.
+**Status:** **CLOSED** by Product Owner (2026-08-28). See [`w4-e05-product-owner-close-record.md`](./w4-e05-product-owner-close-record.md).
 
 ---
 
@@ -21,7 +21,7 @@
    Persisted venue permission verification anchors can survive normal API restart and project honest operational readiness on Platform Readiness — without fabricating Permission verified or inventing a second permission subsystem.
 
 4. **What remains for later packages?**  
-   Vendor permission probe I/O and honest permission product labels; Final Package Integration Verification; Product Owner Package Close; Wave 6 Live Trading.
+   Vendor permission probe I/O and honest permission product labels; Wave 4 Completion Review; Wave 6 Live Trading.
 
 5. **Which package becomes available next?**  
    None within Wave 4 — W4-E05 is the final Wave 4 package. Wave 4 completion review remains a separate Product Owner governance step.
@@ -39,14 +39,14 @@
 
 ## Slice roll-up
 
-| Slice    | Outcome                                 | PO status                     |
-| -------- | --------------------------------------- | ----------------------------- |
-| W4-E05-a | Inventory Foundation                    | APPROVED / COMPLETE           |
-| W4-E05-b | Durable Venue Permission Persistence    | APPROVED / COMPLETE           |
-| W4-E05-c | Venue Permission Restart Recovery       | APPROVED / COMPLETE           |
-| W4-E05-d | Venue Permission Operational Continuity | APPROVED / COMPLETE           |
-| W4-E05-e | Close Evidence                          | COMPLETE — awaiting PO review |
-| W4-E05   | Package                                 | **Not CLOSED**                |
+| Slice    | Outcome                                 | PO status           |
+| -------- | --------------------------------------- | ------------------- |
+| W4-E05-a | Inventory Foundation                    | APPROVED / COMPLETE |
+| W4-E05-b | Durable Venue Permission Persistence    | APPROVED / COMPLETE |
+| W4-E05-c | Venue Permission Restart Recovery       | APPROVED / COMPLETE |
+| W4-E05-d | Venue Permission Operational Continuity | APPROVED / COMPLETE |
+| W4-E05-e | Close Evidence                          | APPROVED / COMPLETE |
+| W4-E05   | Package                                 | **CLOSED**          |
 
 ---
 
@@ -59,4 +59,4 @@
 
 ---
 
-**STOP.** W4-E05-e Close Evidence **COMPLETE** (2026-08-28). Await Product Owner Package Review. Do not declare Venue Permission Verification Complete. Do not declare Exchange Connectivity Complete. Do not declare Wave 4 COMPLETE.
+**STOP.** W4-E05 **CLOSED** by Product Owner. Do not declare Venue Permission Verification Complete (product). Do not declare Exchange Connectivity Complete. Do not declare Wave 4 COMPLETE.

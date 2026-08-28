@@ -160,7 +160,7 @@ Do not validate per-venue Real I/O product outcomes (E01–E04), Live Trading, W
 ## Explicit non-claims
 
 - W4-E05 validation PASS — **not claimed**
-- W4-E05 CLOSED — **not claimed**
+- W4-E05 CLOSED — **recorded** (2026-08-28)
 - W4-E05 Planning APPROVED — **recorded**
 - W4-E05 Planning Review PASS — **recorded**
 - W4-E05-a inventory PASS — **recorded**
@@ -174,4 +174,4 @@ Do not validate per-venue Real I/O product outcomes (E01–E04), Live Trading, W
 
 ---
 
-**STOP.** W4-E05-e Close Evidence **PASS** (2026-08-28). Await Product Owner Package Review. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.
+**STOP.** W4-E05 **CLOSED** by Product Owner (2026-08-28). Do not declare Venue Permission Verification Complete (product). Do not declare Exchange Connectivity Complete. Do not declare Wave 4 COMPLETE. Do not open the next Wave Planning Package without separate Product Owner sequencing.
