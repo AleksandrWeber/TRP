@@ -2,7 +2,7 @@
 
 **Document:** W4-E01 Binance Real I/O Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W4-E01 Planning **APPROVED**. W4-E01-a inventory baseline **COMPLETE**. Not Package Close. Not real I/O implementation.
+**Status:** Product-facing record. W4-E01 Planning **APPROVED**. W4-E01-a inventory **COMPLETE**. W4-E01-b durable persistence **COMPLETE**. Not Package Close. Not real I/O.
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E01 (V3-E01 · CM-07)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -87,6 +87,14 @@ W4-E01-a catalogued all exchange connectivity artifacts for Binance Real I/O. **
 Binding inventory finding: `BinanceExchangeAdapter` remains a **stub** (simulated connect). Connection Management **validate** performs real signed Binance REST via handshake adapter. Public market data REST/WS paths are **adjacent** — not credentialed Connected. Exchange Connectivity **does not** survive restart from this slice.
 
 Inventory: [`w4-e01-a-exchange-connectivity-inventory.md`](./w4-e01-a-exchange-connectivity-inventory.md)
+
+---
+
+## W4-E01-b durable persistence baseline (2026-08-28)
+
+W4-E01-b added `workspace_exchange_connectivity_states` on the **Exchange Adapter** owner. Explicit connection and adapter anchors can be persisted per workspace. **No operator-visible behaviour changed.** No synthetic Connected flag. No restart recovery.
+
+Registry: `w4-e01-b-durable-exchange-connectivity.ts`
 
 ---
 

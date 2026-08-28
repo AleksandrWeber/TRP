@@ -10,6 +10,9 @@ import { ExchangeManager } from './exchange-manager';
 import { ExchangeRegistry } from './exchange-registry';
 import { ExchangeRouter } from './exchange-router';
 import { PrismaExchangeAdapterRepository } from './prisma-exchange-adapter.repository';
+import { ExchangeConnectivityPersistenceService } from './exchange-connectivity-persistence.service';
+import { EXCHANGE_CONNECTIVITY_STATE_REPOSITORY } from './domain/exchange-connectivity-state.repository';
+import { PrismaExchangeConnectivityStateRepository } from './persistence/prisma-exchange-connectivity-state.repository';
 
 /**
  * US209 Exchange Adapter Layer — Nest module.
@@ -25,6 +28,12 @@ import { PrismaExchangeAdapterRepository } from './prisma-exchange-adapter.repos
       useFactory: (prisma: PrismaService) => new PrismaExchangeAdapterRepository(prisma),
       inject: [PrismaService],
     },
+    {
+      provide: EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
+      useFactory: (prisma: PrismaService) => new PrismaExchangeConnectivityStateRepository(prisma),
+      inject: [PrismaService],
+    },
+    ExchangeConnectivityPersistenceService,
     ExchangeRegistry,
     ExchangeFactory,
     ExchangeRouter,
@@ -39,6 +48,8 @@ import { PrismaExchangeAdapterRepository } from './prisma-exchange-adapter.repos
     ExchangeFactory,
     ExchangeRouter,
     EXCHANGE_ADAPTER_REPOSITORY,
+    EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
+    ExchangeConnectivityPersistenceService,
   ],
 })
 export class ExchangeAdapterModule {}

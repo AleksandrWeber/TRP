@@ -32,7 +32,7 @@
 
 | Package    | Roadmap ID | Name                          | Status                                                    |
 | ---------- | ---------- | ----------------------------- | --------------------------------------------------------- |
-| **W4-E01** | **V3-E01** | Binance Real I/O              | W4-E01-a **COMPLETE** — awaiting **W4-E01-b** instruction |
+| **W4-E01** | **V3-E01** | Binance Real I/O              | W4-E01-b **COMPLETE** — awaiting **W4-E01-c** instruction |
 | **W4-E02** | **V3-E02** | Bybit Real I/O                | **Not opened**                                            |
 | **W4-E03** | **V3-E03** | OKX Real I/O                  | **Not opened**                                            |
 | **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **Not opened**                                            |
@@ -44,15 +44,15 @@ Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
 ## Current package
 
-| Field                     | Value                                                     |
-| ------------------------- | --------------------------------------------------------- |
-| **Package**               | **W4-E01** Binance Real I/O                               |
-| **Master Plan / Roadmap** | V3-E01 · CM-07                                            |
-| **Stage**                 | W4-E01-a **COMPLETE** — awaiting **W4-E01-b** instruction |
-| **Approval**              | Planning Review **PASS**; Planning **APPROVED**           |
-| **Implementation**        | **AUTHORIZED** — W4-E01-a **COMPLETE**; b–e **closed**    |
-| **Predecessor**           | Wave 3 **COMPLETE**                                       |
-| **Implementation slices** | **W4-E01-a COMPLETE**; b–e remain **closed**              |
+| Field                     | Value                                                        |
+| ------------------------- | ------------------------------------------------------------ |
+| **Package**               | **W4-E01** Binance Real I/O                                  |
+| **Master Plan / Roadmap** | V3-E01 · CM-07                                               |
+| **Stage**                 | W4-E01-b **COMPLETE** — awaiting **W4-E01-c** instruction    |
+| **Approval**              | Planning Review **PASS**; Planning **APPROVED**              |
+| **Implementation**        | **AUTHORIZED** — a–b **COMPLETE**; c–e **closed**            |
+| **Predecessor**           | Wave 3 **COMPLETE**                                          |
+| **Implementation slices** | **W4-E01-a COMPLETE**; **W4-E01-b COMPLETE**; c–e **closed** |
 
 Companions:
 
@@ -64,6 +64,7 @@ Companions:
 - [`w4-e01-planning-review.md`](./w4-e01-planning-review.md)
 - [`w4-e01-planning-approval.md`](./w4-e01-planning-approval.md)
 - [`w4-e01-a-exchange-connectivity-inventory.md`](./w4-e01-a-exchange-connectivity-inventory.md)
+- [`w4-e01-b-implementation-report.md`](./w4-e01-b-implementation-report.md)
 - [`wave-4-planning-summary.md`](./wave-4-planning-summary.md)
 
 ---
@@ -81,8 +82,10 @@ W4-E01 Planning APPROVED — Implementation AUTHORIZED
         ↓
 W4-E01-a Inventory & Exchange Connectivity Baseline — COMPLETE
         ↓
-STOP — Await Product Owner instruction before W4-E01-b
-Do not open W4-E01-b…e
+W4-E01-b Durable Exchange Connectivity Foundation — COMPLETE
+        ↓
+STOP — Await Product Owner instruction before W4-E01-c
+Do not open W4-E01-c…e
 Do not open W4-E02…E05
 (No Live Trading)
 (No Wave 4 COMPLETE)
@@ -94,25 +97,24 @@ Do not open W4-E02…E05
 
 ## Explicit non-claims
 
-| Claim                                 | Status          |
-| ------------------------------------- | --------------- |
-| Wave 4 COMPLETE                       | **Not claimed** |
-| W4-E01 CLOSED / COMPLETE              | **Not claimed** |
-| Binance Real I/O Complete             | **Not claimed** |
-| Exchange Connectivity Complete        | **Not claimed** |
-| Binance Connected (factory honest)    | **Not claimed** |
-| REST Complete                         | **Not claimed** |
-| WebSocket Complete                    | **Not claimed** |
-| W4-E01-a committed / pushed           | **Recorded**    |
-| W4-E01-b … e authorized               | **Not claimed** |
-| W4-E02 … E05 opened                   | **Not claimed** |
-| Live Trading                          | **Not claimed** |
-| Live order submission                 | **Not claimed** |
-| Production Ready                      | **Not claimed** |
-| Bybit / OKX / Kraken real I/O         | **Not claimed** |
-| Wave 4 Exchange Connectivity Complete | **Not claimed** |
-| Master Plan changed                   | **Not claimed** |
+| Claim                              | Status          |
+| ---------------------------------- | --------------- |
+| Wave 4 COMPLETE                    | **Not claimed** |
+| W4-E01 CLOSED / COMPLETE           | **Not claimed** |
+| Binance Real I/O Complete          | **Not claimed** |
+| Exchange Connectivity Complete     | **Not claimed** |
+| Binance Connected (factory honest) | **Not claimed** |
+| REST Complete                      | **Not claimed** |
+| WebSocket Complete                 | **Not claimed** |
+| Restart Recovery                   | **Not claimed** |
+| Operational Continuity             | **Not claimed** |
+| W4-E01-b committed / pushed        | **Recorded**    |
+| W4-E01-c … e authorized            | **Not claimed** |
+| W4-E02 … E05 opened                | **Not claimed** |
+| Live Trading                       | **Not claimed** |
+| Production Ready                   | **Not claimed** |
+| Master Plan changed                | **Not claimed** |
 
 ---
 
-**STOP.** W4-E01-a **COMPLETE**. Await explicit Product Owner instruction before W4-E01-b. Do not begin W4-E01-b. Do not declare W4-E01 COMPLETE or Wave 4 COMPLETE.
+**STOP.** W4-E01-b **COMPLETE**. Await explicit Product Owner instruction before W4-E01-c. Do not begin W4-E01-c. Do not declare W4-E01 COMPLETE or Wave 4 COMPLETE.

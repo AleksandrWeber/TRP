@@ -517,12 +517,15 @@ export const W4_E01_A_EXCHANGE_CONNECTIVITY_INVENTORY: readonly W4E01AInventoryR
       artifact: 'Binance connection continuity / restart recovery durable state',
       kind: 'persistence-candidate' as const,
       owner: 'exchange-adapter' as const,
-      durabilityClass: 'EPHEMERAL' as const,
-      currentStatus: 'Missing — W4-E01-d target; not implemented in slice a',
-      honestyRequirement: 'Must not claim restart survival until W4-E01-d',
-      futureW4E01Responsibility: 'W4-E01-d' as const,
-      evidencePath: 'docs/project/version-3/wave-4/w4-e01-implementation-package.md',
-      existsToday: false,
+      durabilityClass: 'SURVIVE' as const,
+      currentStatus:
+        'Implemented — WorkspaceExchangeConnectivityState (W4-E01-b); restart hydrate is W4-E01-c',
+      honestyRequirement:
+        'Persistence substrate only; no synthetic Connected; restart recovery is post-W4-E01-c',
+      futureW4E01Responsibility: 'W4-E01-c' as const,
+      evidencePath:
+        'apps/api/src/modules/exchange-adapter/persistence/prisma-exchange-connectivity-state.repository.ts',
+      existsToday: true,
       isPaperProduct: true,
       authorizesExchangeConnectivityComplete: false,
     }),
