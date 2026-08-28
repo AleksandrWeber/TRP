@@ -1044,6 +1044,8 @@ export type OperationalContinuityReadinessView = {
   exchangeConnectivity: ExchangeConnectivityContinuityView | null;
   /** W4-E02-d — Bybit Exchange Connectivity operational continuity. */
   bybitExchangeConnectivity: BybitExchangeConnectivityContinuityView | null;
+  /** W4-E03-d — OKX Exchange Connectivity operational continuity. */
+  okxExchangeConnectivity: OkxExchangeConnectivityContinuityView | null;
 };
 
 export type NotificationQueueContinuityView = {
@@ -1098,6 +1100,19 @@ export type ExchangeConnectivityContinuityView = {
 };
 
 export type BybitExchangeConnectivityContinuityView = {
+  operationalState: OperationalContinuityState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  connectionAnchorCount: number;
+  adapterAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+};
+
+export type OkxExchangeConnectivityContinuityView = {
   operationalState: OperationalContinuityState;
   ownerReadiness: 'ready' | 'unavailable' | 'degraded';
   recoveryTimestamp: string | null;

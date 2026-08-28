@@ -18,6 +18,7 @@ describe('OperationalContinuityController', () => {
     monitoringHealth: null,
     exchangeConnectivity: null,
     bybitExchangeConnectivity: null,
+    okxExchangeConnectivity: null,
   });
 
   let continuity: OperationalContinuityService;

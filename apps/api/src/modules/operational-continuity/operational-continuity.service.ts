@@ -7,6 +7,7 @@
  * W3-O05-d adds Monitoring & Security Health operational continuity (derived).
  * W4-E01-d adds Exchange Connectivity operational continuity (derived).
  * W4-E02-d adds Bybit Exchange Connectivity operational continuity (derived).
+ * W4-E03-d adds OKX Exchange Connectivity operational continuity (derived).
  * Recovery itself remains W3-O01-c / W3-O02-c / W3-O04-c / W3-O05-c only. No new persistence / BC / HA / monitoring evaluation.
  */
 
@@ -32,6 +33,8 @@ import { getExchangeConnectivityContinuityRecord } from '../exchange-adapter/dom
 import { buildExchangeConnectivityContinuityProjection } from '../exchange-adapter/domain/exchange-connectivity-operational-continuity';
 import { getBybitExchangeConnectivityContinuityRecord } from '../exchange-adapter/domain/bybit-exchange-connectivity-continuity-status';
 import { buildBybitExchangeConnectivityContinuityProjection } from '../exchange-adapter/domain/bybit-exchange-connectivity-operational-continuity';
+import { getOkxExchangeConnectivityContinuityRecord } from '../exchange-adapter/domain/okx-exchange-connectivity-continuity-status';
+import { buildOkxExchangeConnectivityContinuityProjection } from '../exchange-adapter/domain/okx-exchange-connectivity-operational-continuity';
 import { OperationalContinuityAudit } from './operational-continuity-audit';
 import {
   buildPlatformOperationalProjection,
@@ -75,6 +78,11 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         continuity: null,
       }),
       bybitExchangeConnectivity: buildBybitExchangeConnectivityContinuityProjection({
+        recovering: true,
+        ownerReadiness: 'ready',
+        continuity: null,
+      }),
+      okxExchangeConnectivity: buildOkxExchangeConnectivityContinuityProjection({
         recovering: true,
         ownerReadiness: 'ready',
         continuity: null,
@@ -163,6 +171,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildOkxExchangeConnectivityView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getOkxExchangeConnectivityContinuityRecord();
+    return buildOkxExchangeConnectivityContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -218,6 +238,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       bybitExchangeConnectivity: this.buildBybitExchangeConnectivityView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      okxExchangeConnectivity: this.buildOkxExchangeConnectivityView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -299,6 +323,19 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           ? null
           : recoveryDurationMs),
     });
+    const okxExchangeConnectivityBase = this.buildOkxExchangeConnectivityView({
+      recovering: false,
+      ownerReadiness: 'ready',
+    });
+    const okxExchangeConnectivity = Object.freeze({
+      ...okxExchangeConnectivityBase,
+      recoveryTimestamp:
+        okxExchangeConnectivityBase.recoveryTimestamp ??
+        (okxExchangeConnectivityBase.operationalState === 'Recovering' ? null : recoveryTimestamp),
+      recoveryDurationMs:
+        okxExchangeConnectivityBase.recoveryDurationMs ??
+        (okxExchangeConnectivityBase.operationalState === 'Recovering' ? null : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -308,6 +345,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       monitoringHealth,
       exchangeConnectivity,
       bybitExchangeConnectivity,
+      okxExchangeConnectivity,
     });
     this.finalized = true;
 
