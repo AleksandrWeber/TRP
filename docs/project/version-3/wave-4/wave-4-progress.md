@@ -20,8 +20,8 @@
 | Wave 1 Security Foundation   | **CERTIFIED COMPLETE**                                |
 | Wave 2 Connection Management | **COMPLETE**                                          |
 | Wave 3 Durability & Ops      | **COMPLETE**                                          |
-| Wave 4 Planning Package      | **OPEN**                                              |
-| W4-E01                       | Planning Review **PASS** — awaiting Planning Approval |
+| Wave 4 Planning Package      | **APPROVED** (W4-E01)                                 |
+| W4-E01                       | Planning **APPROVED** — implementation **AUTHORIZED** |
 | W4-E02 … W4-E05              | **Not opened**                                        |
 | Live Trading                 | **Not claimed**                                       |
 | Master Plan                  | **FROZEN** — unchanged                                |
@@ -30,13 +30,13 @@
 
 ## Wave 4 packages (Master Plan / Execution Roadmap)
 
-| Package    | Roadmap ID | Name                          | Status            |
-| ---------- | ---------- | ----------------------------- | ----------------- |
-| **W4-E01** | **V3-E01** | Binance Real I/O              | Planning **OPEN** |
-| **W4-E02** | **V3-E02** | Bybit Real I/O                | **Not opened**    |
-| **W4-E03** | **V3-E03** | OKX Real I/O                  | **Not opened**    |
-| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **Not opened**    |
-| **W4-E05** | **V3-E05** | Venue Permission Verification | **Not opened**    |
+| Package    | Roadmap ID | Name                          | Status                                        |
+| ---------- | ---------- | ----------------------------- | --------------------------------------------- |
+| **W4-E01** | **V3-E01** | Binance Real I/O              | Planning **APPROVED** — awaiting **W4-E01-a** |
+| **W4-E02** | **V3-E02** | Bybit Real I/O                | **Not opened**                                |
+| **W4-E03** | **V3-E03** | OKX Real I/O                  | **Not opened**                                |
+| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **Not opened**                                |
+| **W4-E05** | **V3-E05** | Venue Permission Verification | **Not opened**                                |
 
 Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
@@ -44,14 +44,15 @@ Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
 ## Current package
 
-| Field                     | Value                                                 |
-| ------------------------- | ----------------------------------------------------- |
-| **Package**               | **Planning** — W4-E01 Binance Real I/O                |
-| **Master Plan / Roadmap** | V3-E01 · CM-07                                        |
-| **Stage**                 | Planning Review **PASS** — awaiting Planning Approval |
-| **Approval**              | Planning Review **PASS**; Planning **not APPROVED**   |
-| **Predecessor**           | Wave 3 **COMPLETE**                                   |
-| **Implementation slices** | **Not opened** (a–e planned only)                     |
+| Field                     | Value                                               |
+| ------------------------- | --------------------------------------------------- |
+| **Package**               | **W4-E01** Binance Real I/O                         |
+| **Master Plan / Roadmap** | V3-E01 · CM-07                                      |
+| **Stage**                 | Planning **APPROVED** — awaiting **W4-E01-a**       |
+| **Approval**              | Planning Review **PASS**; Planning **APPROVED**     |
+| **Implementation**        | **AUTHORIZED** — W4-E01-a **not yet opened**        |
+| **Predecessor**           | Wave 3 **COMPLETE**                                 |
+| **Implementation slices** | **W4-E01-a authorized only**; b–e remain **closed** |
 
 Companions:
 
@@ -61,6 +62,7 @@ Companions:
 - [`w4-e01-validation-plan.md`](./w4-e01-validation-plan.md)
 - [`w4-e01-overview.md`](./w4-e01-overview.md)
 - [`w4-e01-planning-review.md`](./w4-e01-planning-review.md)
+- [`w4-e01-planning-approval.md`](./w4-e01-planning-approval.md)
 - [`wave-4-planning-summary.md`](./wave-4-planning-summary.md)
 
 ---
@@ -76,12 +78,14 @@ Wave 3 COMPLETE
         ↓
 Wave 4 Planning OPEN
         ↓
-W4-E01 Planning Review PASS (first package)
+W4-E01 Planning Review PASS
         ↓
-STOP — Await Product Owner Planning Approval
-Do not declare Planning APPROVED
-Do not open W4-E01-a
-Do not begin implementation
+W4-E01 Planning APPROVED — Implementation AUTHORIZED
+        ↓
+STOP — Await Product Owner instruction for W4-E01-a
+Do not auto-open W4-E01-a
+Do not open W4-E01-b…e
+Do not open W4-E02…E05
 (No Live Trading)
 (No Wave 4 COMPLETE)
 (No engine clone per venue)
@@ -94,15 +98,18 @@ Do not begin implementation
 | Claim                                 | Status          |
 | ------------------------------------- | --------------- |
 | Wave 4 COMPLETE                       | **Not claimed** |
-| W4-E01 Planning APPROVED              | **Not claimed** |
-| W4-E01 implementation authorized      | **Not claimed** |
+| W4-E01 CLOSED / COMPLETE              | **Not claimed** |
+| Binance Real I/O Complete             | **Not claimed** |
+| W4-E01-a opened                       | **Not claimed** |
+| W4-E01-b … e authorized               | **Not claimed** |
 | W4-E02 … E05 opened                   | **Not claimed** |
 | Live Trading                          | **Not claimed** |
 | Live order submission                 | **Not claimed** |
+| Production Ready                      | **Not claimed** |
 | Bybit / OKX / Kraken real I/O         | **Not claimed** |
 | Wave 4 Exchange Connectivity Complete | **Not claimed** |
 | Master Plan changed                   | **Not claimed** |
 
 ---
 
-**STOP.** Planning Review **PASS**. Await Product Owner Planning Approval for W4-E01. Do not open implementation slices.
+**STOP.** Planning **APPROVED**. Implementation **AUTHORIZED** for W4-E01 only. Await Product Owner instruction before creating W4-E01-a. Do not begin implementation until that instruction is received.
