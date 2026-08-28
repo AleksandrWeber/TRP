@@ -2,7 +2,7 @@
 
 **Document:** Wave 5 Notification Platform Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W5-N01-a **COMPLETE**. W5-N01-b durable foundation **COMPLETE** (`22c748f`). W5-N01-c restart recovery **COMPLETE** (`61d4bea`). W5-N01-d operational continuity **COMPLETE** (local). Production Telegram Bot API **not implemented**.
+**Status:** Product-facing record. W5-N01 foundation slices a–e **COMPLETE** (local). Close Evidence assembled. Production Telegram Bot API **not implemented**.
 **Product:** Wave 5 — Notification Platform
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -37,7 +37,7 @@ It does NOT invent a second notification engine.
 5. **Disconnect** without SSH or editing `.env`.
 6. Receive routed alerts from the platform through active transports.
 
-**Not available today** — W5-N01-a established the engineering inventory. W5-N01-b established durable canonical notification anchors. W5-N01-c restores anchors after process restart. W5-N01-d exposes Telegram Notification operational readiness on Platform Readiness. Transport remains in-memory; Bot API is not used. Real Telegram delivery awaits later slices.
+**Not available today** — W5-N01 foundation (inventory, durable anchors, restart recovery, operational continuity, Close Evidence) is complete locally. Transport remains in-memory; Bot API is not used. Real Telegram delivery awaits post-foundation product slices.
 
 ---
 
