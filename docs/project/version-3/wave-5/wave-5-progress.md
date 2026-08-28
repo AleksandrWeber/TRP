@@ -4,7 +4,7 @@
 **Audience:** Product Owner
 **Date:** 2026-08-28
 **Wave:** 5 — Notification Platform
-**Status:** Planning **OPEN**
+**Status:** Planning Review **PASS** — Awaiting Planning Approval
 **Nature:** Simple Product Owner status. Not an RC. Not an ADR. Not a Master Plan revision.
 
 **Overview:** [`wave-5-overview.md`](./wave-5-overview.md)
@@ -24,8 +24,8 @@
 | Wave 2 Connection Management | **COMPLETE**                             |
 | Wave 3 Durability & Ops      | **COMPLETE**                             |
 | Wave 4 Exchange Connectivity | **CLOSED** by Product Owner (2026-08-28) |
-| Wave 5 Planning              | **OPEN**                                 |
-| W5-N01                       | Planning **OPEN** — not APPROVED         |
+| Wave 5 Planning              | Review **PASS** — Awaiting Approval      |
+| W5-N01                       | Planning Review **PASS** — not APPROVED  |
 | Live Trading                 | **Not claimed**                          |
 | Master Plan                  | **FROZEN** — unchanged                   |
 
@@ -49,9 +49,9 @@ Order is binding: **N01 → N02 → N03 → N04**.
 | Field                             | Value                                                                              |
 | --------------------------------- | ---------------------------------------------------------------------------------- |
 | **Wave**                          | **5 — Notification Platform**                                                      |
-| **Status**                        | Planning **OPEN**                                                                  |
+| **Status**                        | Planning Review **PASS** — Awaiting Planning Approval                              |
 | **First package**                 | **W5-N01** Production Telegram Bot API (V3-N01 · CM-11)                            |
-| **Planning Review**               | **Not performed**                                                                  |
+| **Planning Review**               | **PASS** (2026-08-28) — [`wave-5-planning-review.md`](./wave-5-planning-review.md) |
 | **Planning Approval**             | **Not granted**                                                                    |
 | **Implementation authorized?**    | **No**                                                                             |
 | **Implementation slices opened?** | **No**                                                                             |
@@ -61,6 +61,7 @@ Order is binding: **N01 → N02 → N03 → N04**.
 | **Product scope**                 | [`wave-5-product-scope.md`](./wave-5-product-scope.md)                             |
 | **Security review**               | [`wave-5-security-review.md`](./wave-5-security-review.md)                         |
 | **Readiness checklist**           | [`implementation-readiness-checklist.md`](./implementation-readiness-checklist.md) |
+| **Planning review**               | [`wave-5-planning-review.md`](./wave-5-planning-review.md)                         |
 
 ---
 
@@ -77,7 +78,9 @@ Wave 4 CLOSED by Product Owner (2026-08-28)
         ↓
 Wave 5 Planning Package OPEN (2026-08-28)
         ↓
-STOP — Planning Review not performed
+Wave 5 Planning Review PASS (2026-08-28)
+        ↓
+STOP — Awaiting Planning Approval
 (No implementation)
 (No slices opened)
 (No Live Trading)
@@ -87,19 +90,19 @@ STOP — Planning Review not performed
 
 ## Explicit non-claims
 
-| Claim                                          | Status             |
-| ---------------------------------------------- | ------------------ |
-| Wave 5 COMPLETE                                | **Not claimed**    |
-| W5-N01 Planning Review PASS                    | **Not claimed**    |
-| W5-N01 Planning APPROVED                       | **Not claimed**    |
-| W5-N01 Implementation                          | **Not authorized** |
-| W5-N01-a opened                                | **Not claimed**    |
-| Telegram real delivery                         | **Not claimed**    |
-| Email / Slack / Discord / Teams / Push shipped | **Not claimed**    |
-| Live Trading                                   | **Not claimed**    |
-| Production Ready                               | **Not claimed**    |
-| Master Plan changed                            | **Not claimed**    |
+| Claim                                          | Status                    |
+| ---------------------------------------------- | ------------------------- |
+| Wave 5 COMPLETE                                | **Not claimed**           |
+| W5-N01 Planning Review PASS                    | **Recorded** (2026-08-28) |
+| W5-N01 Planning APPROVED                       | **Not claimed**           |
+| W5-N01 Implementation                          | **Not authorized**        |
+| W5-N01-a opened                                | **Not claimed**           |
+| Telegram real delivery                         | **Not claimed**           |
+| Email / Slack / Discord / Teams / Push shipped | **Not claimed**           |
+| Live Trading                                   | **Not claimed**           |
+| Production Ready                               | **Not claimed**           |
+| Master Plan changed                            | **Not claimed**           |
 
 ---
 
-**STOP.** Wave 5 Planning **OPEN**. Await Product Owner Planning Review. Do not begin implementation. Do not open W5-N01-a.
+**STOP.** Planning Review **PASS**. Await Product Owner Planning Approval. Do not begin implementation. Do not open W5-N01-a.
