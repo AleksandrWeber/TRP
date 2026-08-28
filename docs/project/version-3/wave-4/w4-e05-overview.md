@@ -2,7 +2,7 @@
 
 **Document:** W4-E05 Venue Permission Verification Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W4-E05 Planning **APPROVED** (2026-08-28). W4-E05-a inventory baseline **COMPLETE** (2026-08-28). W4-E05-b durable foundation **COMPLETE** (2026-08-28).
+**Status:** Product-facing record. W4-E05 Planning **APPROVED** (2026-08-28). W4-E05-a inventory baseline **COMPLETE** (2026-08-28). W4-E05-b durable foundation **COMPLETE** (2026-08-28). W4-E05-c restart recovery **COMPLETE** (2026-08-28).
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E05 (V3-E05 · feeds LT-02 later)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -108,6 +108,13 @@ W4-E05-b delivered durable venue permission verification anchor persistence on t
 
 Implementation: [`w4-e05-b-implementation-report.md`](./w4-e05-b-implementation-report.md)
 
+## W4-E05-c status (restart recovery foundation)
+
+W4-E05-c delivered deterministic restart recovery for W4-E05-b persisted venue permission verification anchors. Hydrate runs on module init; integrity-verified rows restore into a single in-memory recovery store. No operational continuity or customer-visible behaviour changed.
+
+Implementation: [`w4-e05-c-implementation-report.md`](./w4-e05-c-implementation-report.md)
+Persistence foundation: [`w4-e05-b-implementation-report.md`](./w4-e05-b-implementation-report.md)
+
 ---
 
 ## Explicit non-claims
@@ -115,7 +122,8 @@ Implementation: [`w4-e05-b-implementation-report.md`](./w4-e05-b-implementation-
 - W4-E05 Planning APPROVED — **recorded**
 - W4-E05-a inventory baseline — **recorded**
 - W4-E05-b durable foundation — **recorded**
-- W4-E05-c opened — **not claimed**
+- W4-E05-c restart recovery — **recorded**
+- W4-E05-d opened — **not claimed**
 - W4-E05 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -125,4 +133,4 @@ Implementation: [`w4-e05-b-implementation-report.md`](./w4-e05-b-implementation-
 
 ---
 
-**STOP.** W4-E05-b durable foundation **COMPLETE** (2026-08-28). Await Product Owner review before W4-E05-c. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.
+**STOP.** W4-E05-c restart recovery **COMPLETE** (2026-08-28). Await Product Owner review before W4-E05-d. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.

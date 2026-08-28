@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { VenuePermissionVerificationPersistenceService } from '../modules/exchange-adapter/venue-permission-verification-persistence.service';
+import { VenuePermissionRecoveryStore } from '../modules/exchange-adapter/venue-permission-recovery-store';
 import { PrismaVenuePermissionVerificationStateRepository } from '../modules/exchange-adapter/persistence/prisma-venue-permission-verification-state.repository';
 import { rowsEphemeral, rowsVenuePermissionSurvive } from './w4-e05-a-venue-permission-inventory';
 import {
@@ -66,7 +67,10 @@ describe('W4-E05-b durable venue permission verification — unit', () => {
   it('persistence correctness: verification anchor write-through upserts workspace+exchange row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaVenuePermissionVerificationStateRepository(prisma as never);
-    const service = new VenuePermissionVerificationPersistenceService(repository);
+    const service = new VenuePermissionVerificationPersistenceService(
+      repository,
+      new VenuePermissionRecoveryStore(),
+    );
 
     const outcome = await service.persistVerificationAnchors({
       workspaceId: 'ws-a',

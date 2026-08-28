@@ -8,6 +8,7 @@ import {
   type DurableVenuePermissionVerificationState,
 } from '../domain/durable-venue-permission-verification-state';
 import type { VenuePermissionVerificationStateRepository } from '../domain/venue-permission-verification-state.repository';
+import { assertRecoverableVenuePermissionVerificationState } from '../domain/venue-permission-restart-recovery';
 
 type VenuePermissionVerificationStateRow =
   Prisma.WorkspaceVenuePermissionVerificationStateGetPayload<Record<string, never>>;
@@ -54,7 +55,11 @@ export class PrismaVenuePermissionVerificationStateRepository implements VenuePe
     const rows = await this.prisma.workspaceVenuePermissionVerificationState.findMany({
       orderBy: [{ workspaceId: 'asc' }, { exchangeIdentifier: 'asc' }],
     });
-    return Object.freeze(rows.map((row) => toDomain(row)));
+    return Object.freeze(
+      rows.map((row, index) =>
+        assertRecoverableVenuePermissionVerificationState(toDomain(row), index),
+      ),
+    );
   }
 }
 

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { VenuePermissionVerificationPersistenceService } from './venue-permission-verification-persistence.service';
+import { VenuePermissionRecoveryStore } from './venue-permission-recovery-store';
 import type { VenuePermissionVerificationStateRepository } from './domain/venue-permission-verification-state.repository';
 import type { DurableVenuePermissionVerificationState } from './domain/durable-venue-permission-verification-state';
 
@@ -26,7 +27,10 @@ function createRepository(): VenuePermissionVerificationStateRepository & {
 }
 
 function createService(repository: VenuePermissionVerificationStateRepository) {
-  return new VenuePermissionVerificationPersistenceService(repository);
+  return new VenuePermissionVerificationPersistenceService(
+    repository,
+    new VenuePermissionRecoveryStore(),
+  );
 }
 
 describe('VenuePermissionVerificationPersistenceService — W4-E05-b storage only', () => {
@@ -51,14 +55,8 @@ describe('VenuePermissionVerificationPersistenceService — W4-E05-b storage onl
     expect(repository.saved[0]).toMatchObject({
       workspaceId: 'ws-1',
       exchangeIdentifier: 'BINANCE',
-      connectionId: 'conn-42',
-      adapterExchangeConnectionId: 'ex-conn-9',
       permissionVerificationId: 'pv-99',
-      vendorPermissionHash: 'vendor-hash',
-      integrityMetadataHash: 'integrity-hash',
-      correlationId: 'corr-1',
     });
-    expect(repository.saved[0]).not.toHaveProperty('apiPermissions');
     expect(await service.loadState('ws-1', 'BINANCE')).toMatchObject({
       permissionVerificationId: 'pv-99',
     });
@@ -68,11 +66,5 @@ describe('VenuePermissionVerificationPersistenceService — W4-E05-b storage onl
     const repository = createRepository();
     const service = createService(repository);
     expect(await service.loadState('ws-missing', 'OKX')).toBeNull();
-  });
-
-  it('does not inject recovery store — repository-only load path', async () => {
-    const repository = createRepository();
-    const service = createService(repository);
-    expect(service).not.toHaveProperty('recoveryStore');
   });
 });

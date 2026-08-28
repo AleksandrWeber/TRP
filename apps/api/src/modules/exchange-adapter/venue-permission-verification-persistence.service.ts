@@ -8,6 +8,7 @@ import {
   VENUE_PERMISSION_VERIFICATION_STATE_REPOSITORY,
   type VenuePermissionVerificationStateRepository,
 } from './domain/venue-permission-verification-state.repository';
+import { VenuePermissionRecoveryStore } from './venue-permission-recovery-store';
 
 export type PersistVenuePermissionVerificationAnchorsCommand = Readonly<{
   workspaceId: string;
@@ -22,20 +23,26 @@ export type PersistVenuePermissionVerificationAnchorsCommand = Readonly<{
 }>;
 
 /**
- * W4-E05-b — durable venue permission verification persistence on Exchange Adapter owner.
- * Storage only — no recovery store, runtime cache, restart recovery, or operational continuity.
+ * W4-E05-b/c — durable venue permission verification persistence on Exchange Adapter owner.
+ * W4-E05-c — write-through to recovery store after hydrate.
+ * Storage only — no vendor permission probe I/O or operational continuity.
  */
 @Injectable()
 export class VenuePermissionVerificationPersistenceService {
   constructor(
     @Inject(VENUE_PERMISSION_VERIFICATION_STATE_REPOSITORY)
     private readonly repository: VenuePermissionVerificationStateRepository,
+    @Inject(VenuePermissionRecoveryStore)
+    private readonly recoveryStore: VenuePermissionRecoveryStore,
   ) {}
 
   async loadState(
     workspaceId: string,
     exchangeIdentifier: string,
   ): Promise<DurableVenuePermissionVerificationState | null> {
+    if (this.recoveryStore.hasHydrated()) {
+      return this.recoveryStore.get(workspaceId, exchangeIdentifier);
+    }
     return this.repository.loadVenuePermissionVerificationState(workspaceId, exchangeIdentifier);
   }
 
@@ -48,6 +55,7 @@ export class VenuePermissionVerificationPersistenceService {
       return outcome;
     }
     await this.repository.saveVenuePermissionVerificationState(outcome.state);
+    this.recoveryStore.set(outcome.state);
     return outcome;
   }
 }

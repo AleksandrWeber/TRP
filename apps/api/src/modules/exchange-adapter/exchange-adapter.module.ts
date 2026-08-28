@@ -32,6 +32,8 @@ import { PrismaOkxExchangeConnectivityStateRepository } from './persistence/pris
 import { PrismaKrakenExchangeConnectivityStateRepository } from './persistence/prisma-kraken-exchange-connectivity-state.repository';
 import { PrismaVenuePermissionVerificationStateRepository } from './persistence/prisma-venue-permission-verification-state.repository';
 import { VenuePermissionVerificationPersistenceService } from './venue-permission-verification-persistence.service';
+import { VenuePermissionRecoveryStore } from './venue-permission-recovery-store';
+import { VenuePermissionRestartRecoveryService } from './venue-permission-restart-recovery.service';
 import { VENUE_PERMISSION_VERIFICATION_STATE_REPOSITORY } from './domain/venue-permission-verification-state.repository';
 
 /**
@@ -82,6 +84,8 @@ import { VENUE_PERMISSION_VERIFICATION_STATE_REPOSITORY } from './domain/venue-p
     OkxExchangeConnectivityPersistenceService,
     KrakenExchangeConnectivityPersistenceService,
     VenuePermissionVerificationPersistenceService,
+    VenuePermissionRecoveryStore,
+    VenuePermissionRestartRecoveryService,
     KrakenExchangeConnectivityRecoveryStore,
     KrakenExchangeConnectivityRestartRecoveryService,
     OkxExchangeConnectivityRecoveryStore,
@@ -114,6 +118,8 @@ import { VENUE_PERMISSION_VERIFICATION_STATE_REPOSITORY } from './domain/venue-p
     OkxExchangeConnectivityPersistenceService,
     KrakenExchangeConnectivityPersistenceService,
     VenuePermissionVerificationPersistenceService,
+    VenuePermissionRecoveryStore,
+    VenuePermissionRestartRecoveryService,
     KrakenExchangeConnectivityRecoveryStore,
     KrakenExchangeConnectivityRestartRecoveryService,
     OkxExchangeConnectivityRecoveryStore,
