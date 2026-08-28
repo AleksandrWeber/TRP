@@ -61,6 +61,14 @@ Registry: `w4-e02-b-durable-exchange-connectivity.ts`
 
 ---
 
+## W4-E02-c restart recovery baseline (2026-08-28)
+
+W4-E02-c restores W4-E02-b persisted Bybit exchange connectivity anchors after a normal API process restart into a single in-memory recovery cache. Recovery is deterministic, idempotent, and fail-honest on corruption. **No operator-visible behaviour changed.** No synthetic Connected flag.
+
+Registry: `w4-e02-c-restart-recovery.ts`
+
+---
+
 ## What the operator cannot do (still)
 
 - Start Live Trading or submit live orders to capital (Wave 6 + ADR).
@@ -112,6 +120,7 @@ W4-E01 Binance Real I/O is **CLOSED** (foundation: inventory, durable persistenc
 - W4-E02 Planning APPROVED — **recorded**
 - W4-E02-a inventory — **COMPLETE**
 - W4-E02-b durable persistence — **COMPLETE**
+- W4-E02-c restart recovery — **COMPLETE**
 - W4-E02 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -122,4 +131,4 @@ W4-E01 Binance Real I/O is **CLOSED** (foundation: inventory, durable persistenc
 
 ---
 
-**STOP.** W4-E02-b **COMPLETE**. Await explicit Product Owner instruction before W4-E02-c. Do not declare Bybit Connected.
+**STOP.** W4-E02-c **COMPLETE**. Await explicit Product Owner review before W4-E02-d. Do not declare Bybit Connected.

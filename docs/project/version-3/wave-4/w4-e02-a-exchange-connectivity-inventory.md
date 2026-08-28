@@ -94,29 +94,29 @@ Full row detail: machine inventory `W4_E02_A_EXCHANGE_CONNECTIVITY_INVENTORY` an
 
 ## Bybit Exchange Connectivity EPHEMERAL artifacts (summary)
 
-| Artifact ID                                    | Owner                  | Justification                                        |
-| ---------------------------------------------- | ---------------------- | ---------------------------------------------------- |
-| `rest-bybit-planned-handshake`                 | exchange-connectivity  | not_implemented — active honesty blocker             |
-| `rest-bybit-planned-capability`                | exchange-connectivity  | Capability probe stub                                |
-| `rest-bybit-v5-api-handshake-target`           | exchange-adapter       | **Missing** real Bybit REST                          |
-| `rest-exchanges-connect-bybit` / `disconnect`  | exchange-adapter       | Stub simulated connect                               |
-| `rest-market-data-public-bybit`                | market-data-foundation | Planned public REST                                  |
-| `ws-bybit-public-stream`                       | live-market-data       | **Missing**                                          |
-| `ws-bybit-adapter-subscribe-stubs`             | exchange-adapter       | Noop subscription hooks                              |
-| `ws-bybit-authenticated-user-data`             | exchange-adapter       | **Missing**                                          |
-| `auth-handshake-vault-retrieve-bybit`          | exchange-connectivity  | Not reached — planned adapter fails                  |
-| `auth-bybit-request-signing`                   | exchange-adapter       | **Missing**                                          |
-| `lifecycle-exchange-manager-bybit`             | exchange-adapter       | Orchestrates stub connect                            |
-| `lifecycle-exchange-session-projection-bybit`  | exchange-connectivity  | VALIDATION_FAILED projection                         |
-| `runtime-bybit-adapter-stub-connected-flag`    | exchange-adapter       | Simulated in-memory flag                             |
-| `runtime-exchange-registry-bybit`              | exchange-adapter       | In-process; lost on restart                          |
-| `runtime-exchange-factory-bybit`               | exchange-adapter       | Stub factory entry point                             |
-| `persist-bybit-connection-continuity`          | exchange-adapter       | **Implemented** — W4-E02-b; restart hydrate W4-E02-c |
-| `ui-honest-connected-label-bybit`              | connection-management  | **Partial/missing**                                  |
-| `dep-platform-readiness-exchange-connectivity` | operational-continuity | Aggregate only; no BYBIT row                         |
-| `dep-blocked-by-planned-handshake`             | exchange-connectivity  | Active honesty blocker                               |
-| `dep-blocked-by-stub-adapter-bybit`            | exchange-adapter       | Active honesty blocker                               |
-| `dep-observed-by-live-trading-engine-bybit`    | live-trading-deferred  | Live-only consumer                                   |
+| Artifact ID                                    | Owner                  | Justification                                                    |
+| ---------------------------------------------- | ---------------------- | ---------------------------------------------------------------- |
+| `rest-bybit-planned-handshake`                 | exchange-connectivity  | not_implemented — active honesty blocker                         |
+| `rest-bybit-planned-capability`                | exchange-connectivity  | Capability probe stub                                            |
+| `rest-bybit-v5-api-handshake-target`           | exchange-adapter       | **Missing** real Bybit REST                                      |
+| `rest-exchanges-connect-bybit` / `disconnect`  | exchange-adapter       | Stub simulated connect                                           |
+| `rest-market-data-public-bybit`                | market-data-foundation | Planned public REST                                              |
+| `ws-bybit-public-stream`                       | live-market-data       | **Missing**                                                      |
+| `ws-bybit-adapter-subscribe-stubs`             | exchange-adapter       | Noop subscription hooks                                          |
+| `ws-bybit-authenticated-user-data`             | exchange-adapter       | **Missing**                                                      |
+| `auth-handshake-vault-retrieve-bybit`          | exchange-connectivity  | Not reached — planned adapter fails                              |
+| `auth-bybit-request-signing`                   | exchange-adapter       | **Missing**                                                      |
+| `lifecycle-exchange-manager-bybit`             | exchange-adapter       | Orchestrates stub connect                                        |
+| `lifecycle-exchange-session-projection-bybit`  | exchange-connectivity  | VALIDATION_FAILED projection                                     |
+| `runtime-bybit-adapter-stub-connected-flag`    | exchange-adapter       | Simulated in-memory flag                                         |
+| `runtime-exchange-registry-bybit`              | exchange-adapter       | In-process; lost on restart                                      |
+| `runtime-exchange-factory-bybit`               | exchange-adapter       | Stub factory entry point                                         |
+| `persist-bybit-connection-continuity`          | exchange-adapter       | **Implemented** — W4-E02-b persistence; W4-E02-c restart hydrate |
+| `ui-honest-connected-label-bybit`              | connection-management  | **Partial/missing**                                              |
+| `dep-platform-readiness-exchange-connectivity` | operational-continuity | Aggregate only; no BYBIT row                                     |
+| `dep-blocked-by-planned-handshake`             | exchange-connectivity  | Active honesty blocker                                           |
+| `dep-blocked-by-stub-adapter-bybit`            | exchange-adapter       | Active honesty blocker                                           |
+| `dep-observed-by-live-trading-engine-bybit`    | live-trading-deferred  | Live-only consumer                                               |
 
 ---
 

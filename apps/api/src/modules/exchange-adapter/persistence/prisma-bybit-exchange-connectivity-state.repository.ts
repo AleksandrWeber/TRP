@@ -9,6 +9,7 @@ import {
   type DurableBybitExchangeConnectivityState,
 } from '../domain/durable-bybit-exchange-connectivity-state';
 import type { BybitExchangeConnectivityStateRepository } from '../domain/bybit-exchange-connectivity-state.repository';
+import { assertRecoverableBybitExchangeConnectivityState } from '../domain/bybit-exchange-connectivity-restart-recovery';
 
 type BybitExchangeConnectivityStateRow = Prisma.WorkspaceBybitExchangeConnectivityStateGetPayload<
   Record<string, never>
@@ -45,7 +46,11 @@ export class PrismaBybitExchangeConnectivityStateRepository implements BybitExch
     const rows = await this.prisma.workspaceBybitExchangeConnectivityState.findMany({
       orderBy: { workspaceId: 'asc' },
     });
-    return Object.freeze(rows.map((row) => toDomain(row)));
+    return Object.freeze(
+      rows.map((row, index) =>
+        assertRecoverableBybitExchangeConnectivityState(toDomain(row), index),
+      ),
+    );
   }
 }
 

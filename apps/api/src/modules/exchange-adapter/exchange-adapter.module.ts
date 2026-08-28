@@ -12,6 +12,8 @@ import { ExchangeRouter } from './exchange-router';
 import { PrismaExchangeAdapterRepository } from './prisma-exchange-adapter.repository';
 import { ExchangeConnectivityPersistenceService } from './exchange-connectivity-persistence.service';
 import { BybitExchangeConnectivityPersistenceService } from './bybit-exchange-connectivity-persistence.service';
+import { BybitExchangeConnectivityRecoveryStore } from './bybit-exchange-connectivity-recovery-store';
+import { BybitExchangeConnectivityRestartRecoveryService } from './bybit-exchange-connectivity-restart-recovery.service';
 import { ExchangeConnectivityRecoveryStore } from './exchange-connectivity-recovery-store';
 import { ExchangeConnectivityRestartRecoveryService } from './exchange-connectivity-restart-recovery.service';
 import { EXCHANGE_CONNECTIVITY_STATE_REPOSITORY } from './domain/exchange-connectivity-state.repository';
@@ -46,6 +48,8 @@ import { PrismaBybitExchangeConnectivityStateRepository } from './persistence/pr
     },
     ExchangeConnectivityPersistenceService,
     BybitExchangeConnectivityPersistenceService,
+    BybitExchangeConnectivityRecoveryStore,
+    BybitExchangeConnectivityRestartRecoveryService,
     ExchangeConnectivityRecoveryStore,
     ExchangeConnectivityRestartRecoveryService,
     ExchangeRegistry,
@@ -66,6 +70,8 @@ import { PrismaBybitExchangeConnectivityStateRepository } from './persistence/pr
     BYBIT_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
     ExchangeConnectivityPersistenceService,
     BybitExchangeConnectivityPersistenceService,
+    BybitExchangeConnectivityRecoveryStore,
+    BybitExchangeConnectivityRestartRecoveryService,
     ExchangeConnectivityRecoveryStore,
     ExchangeConnectivityRestartRecoveryService,
   ],

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { BybitExchangeConnectivityPersistenceService } from './bybit-exchange-connectivity-persistence.service';
+import { BybitExchangeConnectivityRecoveryStore } from './bybit-exchange-connectivity-recovery-store';
 import type { BybitExchangeConnectivityStateRepository } from './domain/bybit-exchange-connectivity-state.repository';
 import type { DurableBybitExchangeConnectivityState } from './domain/durable-bybit-exchange-connectivity-state';
 
@@ -22,7 +23,10 @@ function createRepository(): BybitExchangeConnectivityStateRepository & {
 }
 
 function createService(repository: BybitExchangeConnectivityStateRepository) {
-  return new BybitExchangeConnectivityPersistenceService(repository);
+  return new BybitExchangeConnectivityPersistenceService(
+    repository,
+    new BybitExchangeConnectivityRecoveryStore(),
+  );
 }
 
 describe('BybitExchangeConnectivityPersistenceService — W4-E02-b storage only', () => {

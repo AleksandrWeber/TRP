@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { BybitExchangeConnectivityPersistenceService } from '../modules/exchange-adapter/bybit-exchange-connectivity-persistence.service';
+import { BybitExchangeConnectivityRecoveryStore } from '../modules/exchange-adapter/bybit-exchange-connectivity-recovery-store';
 import { PrismaBybitExchangeConnectivityStateRepository } from '../modules/exchange-adapter/persistence/prisma-bybit-exchange-connectivity-state.repository';
 import {
   rowsEphemeral,
@@ -53,7 +54,10 @@ describe('W4-E02-b durable Bybit exchange connectivity — unit', () => {
   it('persistence correctness: connection anchor write-through upserts workspace row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaBybitExchangeConnectivityStateRepository(prisma as never);
-    const service = new BybitExchangeConnectivityPersistenceService(repository);
+    const service = new BybitExchangeConnectivityPersistenceService(
+      repository,
+      new BybitExchangeConnectivityRecoveryStore(),
+    );
 
     const outcome = await service.persistConnectionManagementAnchor({
       workspaceId: 'ws-a',

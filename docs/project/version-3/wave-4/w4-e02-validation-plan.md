@@ -25,7 +25,7 @@ Do not validate OKX/Kraken (E03–E04), venue permission verification product (E
 | -------- | ------------------------------------------------ | --------------------------------------------------------------------------------- |
 | W4-E02-a | Bybit Inventory & Exchange Connectivity Baseline | [`w4-e02-a-validation-report.md`](./w4-e02-a-validation-report.md) — **COMPLETE** |
 | W4-E02-b | Durable Bybit Exchange Connectivity Foundation   | [`w4-e02-b-validation-report.md`](./w4-e02-b-validation-report.md) — **COMPLETE** |
-| W4-E02-c | Bybit Restart Recovery Foundation                | _Not started_                                                                     |
+| W4-E02-c | Bybit Restart Recovery Foundation                | [`w4-e02-c-validation-report.md`](./w4-e02-c-validation-report.md) — **COMPLETE** |
 | W4-E02-d | Bybit Operational Continuity Foundation          | _Not started_                                                                     |
 | W4-E02-e | Package Close evidence                           | _Not started_                                                                     |
 
