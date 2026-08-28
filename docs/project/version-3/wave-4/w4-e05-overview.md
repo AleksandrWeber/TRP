@@ -2,7 +2,7 @@
 
 **Document:** W4-E05 Venue Permission Verification Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. Planning **OPEN**. Not implementation. Slices not opened.
+**Status:** Product-facing record. W4-E05 Planning **APPROVED** (2026-08-28). W4-E05-a inventory baseline **COMPLETE** (2026-08-28).
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E05 (V3-E05 · feeds LT-02 later)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -96,11 +96,19 @@ Security Vision requires Wave 4 real permission verification (`spot.trade` from 
 
 ---
 
+## W4-E05-a status (inventory baseline)
+
+W4-E05-a delivered the machine-readable and human inventory baseline only. No vendor permission probe I/O, persistence, or runtime behaviour changed. Hardcoded `apiPermissions` defaults remain active in `VenueExchangeAdapter` and `ExchangeManager.readApiPermissions()`.
+
+Inventory: [`w4-e05-a-venue-permission-inventory.md`](./w4-e05-a-venue-permission-inventory.md)
+
+---
+
 ## Explicit non-claims
 
-- W4-E05 Planning APPROVED — **not claimed**
-- W4-E05 Planning Review PASS — **not claimed**
-- W4-E05-a opened — **not claimed**
+- W4-E05 Planning APPROVED — **recorded**
+- W4-E05-a inventory baseline — **recorded**
+- W4-E05-b opened — **not claimed**
 - W4-E05 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -110,4 +118,4 @@ Security Vision requires Wave 4 real permission verification (`spot.trade` from 
 
 ---
 
-**STOP.** Planning **OPEN** only. Await Product Owner Planning Review. Do not create W4-E05-a. Do not begin implementation.
+**STOP.** W4-E05-a inventory baseline **COMPLETE** (2026-08-28). Await Product Owner review before W4-E05-b. Do not declare Venue Permission Verification Complete or Exchange Connectivity Complete.
