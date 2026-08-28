@@ -6,6 +6,7 @@
  * W3-O04-d adds Kill Switch operational continuity (derived).
  * W3-O05-d adds Monitoring & Security Health operational continuity (derived).
  * W4-E01-d adds Exchange Connectivity operational continuity (derived).
+ * W4-E02-d adds Bybit Exchange Connectivity operational continuity (derived).
  * Recovery itself remains W3-O01-c / W3-O02-c / W3-O04-c / W3-O05-c only. No new persistence / BC / HA / monitoring evaluation.
  */
 
@@ -29,6 +30,8 @@ import { getMonitoringHealthContinuityRecord } from '../../security-platform/mon
 import { buildMonitoringHealthContinuityProjection } from '../../security-platform/monitoring-health/domain/monitoring-health-operational-continuity';
 import { getExchangeConnectivityContinuityRecord } from '../exchange-adapter/domain/exchange-connectivity-continuity-status';
 import { buildExchangeConnectivityContinuityProjection } from '../exchange-adapter/domain/exchange-connectivity-operational-continuity';
+import { getBybitExchangeConnectivityContinuityRecord } from '../exchange-adapter/domain/bybit-exchange-connectivity-continuity-status';
+import { buildBybitExchangeConnectivityContinuityProjection } from '../exchange-adapter/domain/bybit-exchange-connectivity-operational-continuity';
 import { OperationalContinuityAudit } from './operational-continuity-audit';
 import {
   buildPlatformOperationalProjection,
@@ -67,6 +70,11 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         continuity: null,
       }),
       exchangeConnectivity: buildExchangeConnectivityContinuityProjection({
+        recovering: true,
+        ownerReadiness: 'ready',
+        continuity: null,
+      }),
+      bybitExchangeConnectivity: buildBybitExchangeConnectivityContinuityProjection({
         recovering: true,
         ownerReadiness: 'ready',
         continuity: null,
@@ -143,6 +151,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildBybitExchangeConnectivityView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getBybitExchangeConnectivityContinuityRecord();
+    return buildBybitExchangeConnectivityContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -194,6 +214,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       exchangeConnectivity: this.buildExchangeConnectivityView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      bybitExchangeConnectivity: this.buildBybitExchangeConnectivityView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -258,6 +282,23 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         exchangeConnectivityBase.recoveryDurationMs ??
         (exchangeConnectivityBase.operationalState === 'Recovering' ? null : recoveryDurationMs),
     });
+    const bybitExchangeConnectivityBase = this.buildBybitExchangeConnectivityView({
+      recovering: false,
+      ownerReadiness: 'ready',
+    });
+    const bybitExchangeConnectivity = Object.freeze({
+      ...bybitExchangeConnectivityBase,
+      recoveryTimestamp:
+        bybitExchangeConnectivityBase.recoveryTimestamp ??
+        (bybitExchangeConnectivityBase.operationalState === 'Recovering'
+          ? null
+          : recoveryTimestamp),
+      recoveryDurationMs:
+        bybitExchangeConnectivityBase.recoveryDurationMs ??
+        (bybitExchangeConnectivityBase.operationalState === 'Recovering'
+          ? null
+          : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -266,6 +307,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       killSwitch,
       monitoringHealth,
       exchangeConnectivity,
+      bybitExchangeConnectivity,
     });
     this.finalized = true;
 

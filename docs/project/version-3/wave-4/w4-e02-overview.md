@@ -69,6 +69,14 @@ Registry: `w4-e02-c-restart-recovery.ts`
 
 ---
 
+## W4-E02-d operational continuity baseline (2026-08-28)
+
+W4-E02-d projects Bybit exchange connectivity operational readiness onto Platform Readiness, derived exclusively from W4-E02-c recovery outcomes. Supported states: Recovering, Ready, Degraded, Unavailable. **No Connected label.** No REST/WebSocket I/O.
+
+Registry: `w4-e02-d-operational-continuity.ts`
+
+---
+
 ## What the operator cannot do (still)
 
 - Start Live Trading or submit live orders to capital (Wave 6 + ADR).
@@ -121,6 +129,7 @@ W4-E01 Binance Real I/O is **CLOSED** (foundation: inventory, durable persistenc
 - W4-E02-a inventory — **COMPLETE**
 - W4-E02-b durable persistence — **COMPLETE**
 - W4-E02-c restart recovery — **COMPLETE**
+- W4-E02-d operational continuity — **COMPLETE**
 - W4-E02 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
@@ -131,4 +140,4 @@ W4-E01 Binance Real I/O is **CLOSED** (foundation: inventory, durable persistenc
 
 ---
 
-**STOP.** W4-E02-c **COMPLETE**. Await explicit Product Owner review before W4-E02-d. Do not declare Bybit Connected.
+**STOP.** W4-E02-d **COMPLETE**. Await explicit Product Owner review before W4-E02-e. Do not declare Bybit Connected.

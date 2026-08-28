@@ -6,7 +6,7 @@
 
 ## Delivered
 
-- `BybitExchangeConnectivityRestartRecoveryService` — `OnModuleInit` `hydrate()` loads persisted W4-E02-b state via existing repository.
+- `BybitExchangeConnectivityRestartRecoveryService` — `OnModuleInit` `hydrate()` loads persisted W4-E02-b state via existing repository; continuity outcomes recorded for W4-E02-d projection.
 - `BybitExchangeConnectivityRecoveryStore` — single in-memory recovery cache; deterministic workspaceId ordering.
 - `bybit-exchange-connectivity-restart-recovery.ts` — integrity gates, deterministic sort, fail-honest corruption handling.
 - Extended `BybitExchangeConnectivityPersistenceService` — write-through to recovery store; hydrated reads after recovery.

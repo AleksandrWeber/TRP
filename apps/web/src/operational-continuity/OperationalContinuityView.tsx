@@ -242,6 +242,72 @@ export function OperationalContinuityView({ readiness }: Props) {
       </section>
 
       <section>
+        <h2 className="text-lg font-semibold text-slate-100">Bybit exchange connectivity</h2>
+        {readiness.bybitExchangeConnectivity ? (
+          <dl
+            className="mt-4 grid gap-3 sm:grid-cols-2"
+            data-testid="bybit-exchange-connectivity-continuity"
+          >
+            <div>
+              <dt className="text-sm text-slate-400">
+                Bybit exchange connectivity operational state
+              </dt>
+              <dd className="text-slate-100" data-testid="bybit-exchange-connectivity-state">
+                {readiness.bybitExchangeConnectivity.operationalState}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Owner readiness</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="bybit-exchange-connectivity-owner-readiness"
+              >
+                {readiness.bybitExchangeConnectivity.ownerReadiness}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery timestamp</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="bybit-exchange-connectivity-recovery-timestamp"
+              >
+                {readiness.bybitExchangeConnectivity.recoveryTimestamp ?? '—'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery duration</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="bybit-exchange-connectivity-recovery-duration"
+              >
+                {formatDuration(readiness.bybitExchangeConnectivity.recoveryDurationMs)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Restored workspaces</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="bybit-exchange-connectivity-restored-count"
+              >
+                {readiness.bybitExchangeConnectivity.restoredCount}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Connection anchors</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="bybit-exchange-connectivity-connection-anchor-count"
+              >
+                {readiness.bybitExchangeConnectivity.connectionAnchorCount}
+              </dd>
+            </div>
+          </dl>
+        ) : (
+          <p className="mt-2 text-slate-400">Not evaluated</p>
+        )}
+      </section>
+
+      <section>
         <h2 className="text-lg font-semibold text-slate-100">Owner operational state</h2>
         <table className="mt-3 w-full text-left text-sm text-slate-200">
           <thead className="text-slate-400">

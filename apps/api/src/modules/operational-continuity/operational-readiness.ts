@@ -62,6 +62,20 @@ export type ExchangeConnectivityContinuityView = Readonly<{
   workspaceIds: readonly string[];
 }>;
 
+/** W4-E02-d — Bybit Exchange Connectivity continuity fields on platform readiness. */
+export type BybitExchangeConnectivityContinuityView = Readonly<{
+  operationalState: OperationalState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  connectionAnchorCount: number;
+  adapterAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+}>;
+
 /** W3-O05-d — Monitoring & Security Health continuity fields on platform readiness. */
 export type MonitoringHealthContinuityView = Readonly<{
   operationalState: OperationalState;
@@ -105,6 +119,8 @@ export type PlatformOperationalProjection = Readonly<{
   monitoringHealth: MonitoringHealthContinuityView | null;
   /** W4-E01-d — Exchange Connectivity operational continuity (derived). */
   exchangeConnectivity: ExchangeConnectivityContinuityView | null;
+  /** W4-E02-d — Bybit Exchange Connectivity operational continuity (derived). */
+  bybitExchangeConnectivity: BybitExchangeConnectivityContinuityView | null;
 }>;
 
 export type EvaluateOwnerReadinessInput = Readonly<{
@@ -195,6 +211,7 @@ export function buildPlatformOperationalProjection(input: {
   killSwitch?: KillSwitchContinuityView | null;
   monitoringHealth?: MonitoringHealthContinuityView | null;
   exchangeConnectivity?: ExchangeConnectivityContinuityView | null;
+  bybitExchangeConnectivity?: BybitExchangeConnectivityContinuityView | null;
 }): PlatformOperationalProjection {
   const platformState = derivePlatformOperationalState(input.owners);
   assertOperationalState(platformState);
@@ -213,6 +230,7 @@ export function buildPlatformOperationalProjection(input: {
     killSwitch: input.killSwitch ?? null,
     monitoringHealth: input.monitoringHealth ?? null,
     exchangeConnectivity: input.exchangeConnectivity ?? null,
+    bybitExchangeConnectivity: input.bybitExchangeConnectivity ?? null,
   });
 }
 

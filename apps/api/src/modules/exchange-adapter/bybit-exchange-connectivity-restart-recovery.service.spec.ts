@@ -1,7 +1,11 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { buildBybitConnectionManagementAnchorState } from './domain/durable-bybit-exchange-connectivity-state';
 import type { BybitExchangeConnectivityStateRepository } from './domain/bybit-exchange-connectivity-state.repository';
 import type { DurableBybitExchangeConnectivityState } from './domain/durable-bybit-exchange-connectivity-state';
+import {
+  getBybitExchangeConnectivityContinuityRecord,
+  resetBybitExchangeConnectivityContinuity,
+} from './domain/bybit-exchange-connectivity-continuity-status';
 import { BybitExchangeConnectivityRecoveryStore } from './bybit-exchange-connectivity-recovery-store';
 import { BybitExchangeConnectivityRestartRecoveryService } from './bybit-exchange-connectivity-restart-recovery.service';
 import { BybitExchangeConnectivityPersistenceService } from './bybit-exchange-connectivity-persistence.service';
@@ -40,7 +44,11 @@ function createRepository(
   };
 }
 
-describe('BybitExchangeConnectivityRestartRecoveryService — W4-E02-c', () => {
+describe('BybitExchangeConnectivityRestartRecoveryService — W4-E02-c/d', () => {
+  beforeEach(() => {
+    resetBybitExchangeConnectivityContinuity();
+  });
+
   it('hydrate restores persisted state into recovery store', async () => {
     const state = connectionAnchor('ws-1');
     const repository = createRepository([state]);
@@ -72,6 +80,18 @@ describe('BybitExchangeConnectivityRestartRecoveryService — W4-E02-c', () => {
     const first = await service.hydrate();
     const second = await service.hydrate();
     expect(first).toEqual(second);
+  });
+
+  it('hydrate records continuity success (W4-E02-d)', async () => {
+    const state = connectionAnchor('ws-1');
+    const service = new BybitExchangeConnectivityRestartRecoveryService(
+      createRepository([state]),
+      new BybitExchangeConnectivityRecoveryStore(),
+    );
+    await service.hydrate();
+    const continuity = getBybitExchangeConnectivityContinuityRecord();
+    expect(continuity?.integrityVerified).toBe(true);
+    expect(continuity?.diagnostics?.restoredCount).toBe(1);
   });
 });
 
