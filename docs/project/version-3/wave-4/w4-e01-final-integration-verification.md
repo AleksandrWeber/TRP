@@ -249,7 +249,9 @@ Undocumented technical debt introduced by this package: **None observed.**
 | Technical debt deferred           | PO Final Close; REST/WebSocket I/O; W4-E02…E05; Wave 4 COMPLETE                  |
 | Overall package confidence        | **96%**                                                                          |
 
-**Residual risks (~4%):** Product Owner Final Close declaration still pending (by design); REST/WebSocket I/O and honest Connected outcomes intentionally deferred to post-foundation scope; `BinanceExchangeAdapter` remains stub (honest per inventory).
+**Residual risks (~4%):** REST/WebSocket I/O and honest Connected outcomes intentionally deferred to post-foundation scope; `BinanceExchangeAdapter` remains stub (honest per inventory).
+
+**Post-Close note (2026-08-28):** Product Owner Final Close executed. W4-E01 **CLOSED** — see [`w4-e01-product-owner-close-record.md`](./w4-e01-product-owner-close-record.md).
 
 ---
 
@@ -268,19 +270,17 @@ Undocumented technical debt introduced by this package: **None observed.**
 
 ## Engineering recommendation
 
-**Ready for Product Owner Final Close.**
+**Ready for Product Owner Final Close** — **executed 2026-08-28.**
 
-Engineering does **not** declare W4-E01 CLOSED, Exchange Connectivity Complete, Binance Connected, Live Trading, Production Ready, or Wave 4 COMPLETE.
+Engineering verification does **not** declare W4-E01 CLOSED. Product Owner Close is recorded in [`w4-e01-product-owner-close-record.md`](./w4-e01-product-owner-close-record.md).
+
+Engineering does **not** declare Exchange Connectivity Complete, Binance Connected, Live Trading, Production Ready, or Wave 4 COMPLETE.
 
 ---
 
 **STOP.**
 
-Await Product Owner Final Close.
-
-Do **not** create `w4-e01-product-owner-close-record.md`.
-
-Do **not** declare W4-E01 CLOSED.
+W4-E01 **CLOSED** by Product Owner (2026-08-28).
 
 Do **not** declare Exchange Connectivity Complete.
 
@@ -288,4 +288,4 @@ Do **not** declare Binance Connected.
 
 Do **not** declare Wave 4 COMPLETE.
 
-Do **not** open W4-E02.
+Do **not** open W4-E02 without separate Product Owner instruction.

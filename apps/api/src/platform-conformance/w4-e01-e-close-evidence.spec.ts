@@ -199,22 +199,32 @@ describe('W4-E01-e package close evidence — integration / planning', () => {
     expect(view).not.toMatch(/Test connection|Place order|Live Trading/i);
   });
 
-  it('status docs: Close Evidence assembled; W4-E01 NOT CLOSED; Wave 4 NOT COMPLETE; W4-E02 NOT opened', () => {
+  it('status docs: W4-E01 CLOSED by Product Owner; Wave 4 COMPLETE not claimed; W4-E02 NOT opened', () => {
     const progress = readWave4('wave-4-progress.md');
     const overview = readWave4('w4-e01-overview.md');
     const close = readWave4('w4-e01-close-package-report.md');
     const summary = readWave4('w4-e01-package-summary.md');
-    expect(progress).toMatch(/W4-E01-e|Close Evidence/);
+    const poClose = readWave4('w4-e01-product-owner-close-record.md');
+    expect(progress).toMatch(/CLOSED by Product Owner|Package \*\*CLOSED\*\*/);
     expect(progress).toMatch(/W4-E01-a|W4-E01-b|W4-E01-c|W4-E01-d/);
+    expect(progress).toMatch(/Close Evidence|W4-E01-e/);
     expect(progress).toMatch(/Wave 4 COMPLETE[\s\S]*Not claimed|Not claimed[\s\S]*Wave 4 COMPLETE/);
-    expect(progress).toMatch(/W4-E01 CLOSED[\s\S]*Not claimed|Not claimed[\s\S]*W4-E01 CLOSED/i);
-    expect(overview).toMatch(/W4-E01-e|operational continuity|Close Evidence/i);
+    expect(overview).toMatch(/\*\*CLOSED\*\* by Product Owner|CLOSED by Product Owner/);
     expect(overview).toMatch(/STOP/);
-    expect(close).toMatch(/Product Owner Package Review|awaiting Product Owner/i);
-    expect(close).not.toMatch(/CLOSED by Product Owner/);
-    expect(summary).toMatch(/Ready for Product Owner|NOT.*CLOSED/i);
-    expect(summary).not.toMatch(/CLOSED by Product Owner/);
+    expect(overview).toMatch(
+      /Exchange Connectivity Complete[\s\S]*Not claimed|Not claimed[\s\S]*Exchange Connectivity Complete/i,
+    );
+    expect(close).toMatch(
+      /Package \*\*CLOSED\*\* by Product Owner|\*\*CLOSED\*\* by Product Owner|CLOSED by Product Owner/,
+    );
+    expect(close).toMatch(/Wave 4 COMPLETE[\s\S]*not claimed|not claimed[\s\S]*Wave 4 COMPLETE/i);
+    expect(summary).toMatch(/\*\*CLOSED\*\* by Product Owner/);
+    expect(poClose).toMatch(
+      /officially CLOSED|Decision:\*\* \*\*CLOSED\*\*|Decision: \*\*CLOSED\*\*/,
+    );
     expect(W4_E01_E_ARCHITECTURE_CLAIMS.packageCloseEvidenceAssembled).toBe(true);
+    // W4-E01-e registry still records that the e slice itself did not declare Close;
+    // Product Owner Close is recorded in status docs.
     expect(W4_E01_E_ARCHITECTURE_CLAIMS.packageDeclaredClosed).toBe(false);
   });
 

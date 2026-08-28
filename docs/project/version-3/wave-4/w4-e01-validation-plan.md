@@ -3,7 +3,7 @@
 **Package:** W4-E01 Binance Real I/O
 **Wave:** 4 — Exchange Connectivity
 **Master Plan / Roadmap:** V3-E01 · CM-07
-**Status:** Planning **APPROVED**. W4-E01-a–d **COMPLETE**. W4-E01-e Close Evidence **COMPLETE** (local; PO Package Review pending). W4-E01 **NOT CLOSED**.
+**Status:** Planning **APPROVED**. W4-E01-a–e **COMPLETE**. W4-E01 **CLOSED** by Product Owner (2026-08-28). See [`w4-e01-product-owner-close-record.md`](./w4-e01-product-owner-close-record.md).
 **Date:** 2026-08-28
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w4-e01-product-scope.md`](./w4-e01-product-scope.md)
@@ -22,13 +22,13 @@ Do not validate Bybit/OKX/Kraken (E02–E04), venue permission verification prod
 
 ### Slice progress
 
-| Slice    | Name                                       | Validation record                                                                         |
-| -------- | ------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| W4-E01-a | Inventory & Exchange Connectivity Baseline | [`w4-e01-a-validation-report.md`](./w4-e01-a-validation-report.md) — **COMPLETE**         |
-| W4-E01-b | Durable Exchange Connectivity Foundation   | [`w4-e01-b-validation-report.md`](./w4-e01-b-validation-report.md) — **COMPLETE**         |
-| W4-E01-c | Restart Recovery Foundation                | [`w4-e01-c-validation-report.md`](./w4-e01-c-validation-report.md) — **COMPLETE**         |
-| W4-E01-d | Operational Continuity Foundation          | [`w4-e01-d-validation-report.md`](./w4-e01-d-validation-report.md) — **COMPLETE**         |
-| W4-E01-e | Package Close evidence                     | [`w4-e01-e-validation-report.md`](./w4-e01-e-validation-report.md) — **COMPLETE** (local) |
+| Slice    | Name                                       | Validation record                                                                 |
+| -------- | ------------------------------------------ | --------------------------------------------------------------------------------- |
+| W4-E01-a | Inventory & Exchange Connectivity Baseline | [`w4-e01-a-validation-report.md`](./w4-e01-a-validation-report.md) — **COMPLETE** |
+| W4-E01-b | Durable Exchange Connectivity Foundation   | [`w4-e01-b-validation-report.md`](./w4-e01-b-validation-report.md) — **COMPLETE** |
+| W4-E01-c | Restart Recovery Foundation                | [`w4-e01-c-validation-report.md`](./w4-e01-c-validation-report.md) — **COMPLETE** |
+| W4-E01-d | Operational Continuity Foundation          | [`w4-e01-d-validation-report.md`](./w4-e01-d-validation-report.md) — **COMPLETE** |
+| W4-E01-e | Package Close evidence                     | [`w4-e01-e-validation-report.md`](./w4-e01-e-validation-report.md) — **COMPLETE** |
 
 ---
 
@@ -145,10 +145,11 @@ Copy and complete [`../version-3-product-checklist.md`](../version-3-product-che
 ## Explicit non-claims
 
 - W4-E01 validation PASS — **not claimed** (planning only)
-- W4-E01 CLOSED — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
-- Planning Review PASS — **not claimed**
+- Exchange Connectivity Complete — **not claimed**
+- Binance Connected — **not claimed**
+- W4-E02 Planning OPEN — **not claimed**
 
 ---
 
-**STOP.** Planning **OPEN** only. No slice validation reports exist yet.
+**STOP.** W4-E01 **CLOSED** by Product Owner. Do not declare Exchange Connectivity Complete. Do not declare Binance Connected. Do not declare Wave 4 COMPLETE. Do not open W4-E02.

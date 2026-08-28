@@ -2,7 +2,7 @@
 
 **Document:** W4-E01 Binance Real I/O Overview
 **Date:** 2026-08-28
-**Status:** Product-facing record. W4-E01 Planning **APPROVED**. Slices a–d **COMPLETE**. W4-E01-e Close Evidence **COMPLETE** (local; PO Package Review pending). W4-E01 **NOT CLOSED**. Not real I/O.
+**Status:** Product-facing record. W4-E01 **CLOSED** by Product Owner (2026-08-28). Foundation scope only — not REST/WebSocket I/O, not Binance Connected, not Exchange Connectivity Complete.
 **Product:** Wave 4 — Exchange Connectivity · Package W4-E01 (V3-E01 · CM-07)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -29,7 +29,11 @@ It does NOT invent a second trading engine.
 
 ---
 
-## What the operator can do (after W4-E01 Close — not yet)
+## What the operator can do (foundation closed — product I/O still pending)
+
+W4-E01 foundation (inventory, persistence, recovery, operational continuity) is **CLOSED**. Operator-visible Binance Real I/O outcomes (REST test, honest Connected) are **not yet delivered** — `BinanceExchangeAdapter` remains a stub per inventory.
+
+When future approved work delivers real I/O, the operator journey will be:
 
 1. Open Connections and select Binance.
 2. Use credentials already saved in the Vault from Wave 2 (or save new ones).
@@ -37,6 +41,8 @@ It does NOT invent a second trading engine.
 4. See **Connected** when Binance answers successfully.
 5. See **Error**, **Expired**, or permission problems when the vendor reports them.
 6. **Disconnect** without SSH or editing `.env`.
+
+**Not available today** — foundation Close does not authorize the above product outcomes.
 
 ---
 
@@ -116,9 +122,15 @@ Registry: `w4-e01-d-operational-continuity.ts`
 
 ## W4-E01-e Close Evidence baseline (2026-08-28)
 
-W4-E01-e assembles package Close Evidence: operational walkthrough, package summary, close package report, and conformance registry verifying slices a–d form one internally consistent foundation. **W4-E01 is NOT CLOSED.** Awaiting Product Owner Package Review.
+W4-E01-e assembled package Close Evidence verifying slices a–d form one internally consistent foundation.
 
 Registry: `w4-e01-e-close-evidence.ts`
+
+---
+
+## Product Owner Close (2026-08-28)
+
+W4-E01 Binance Real I/O **foundation** is **CLOSED** by Product Owner. Close record: [`w4-e01-product-owner-close-record.md`](./w4-e01-product-owner-close-record.md).
 
 ---
 
@@ -127,13 +139,14 @@ Registry: `w4-e01-e-close-evidence.ts`
 - Live Trading — **not claimed**
 - Live order submission — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
-- W4-E01 CLOSED / COMPLETE — **not claimed**
 - Exchange Connectivity Complete — **not claimed**
 - Binance Connected — **not claimed**
 - REST / WebSocket Complete — **not claimed**
+- Binance Real I/O product outcomes — **not claimed** (foundation CLOSED only)
 - Bybit / OKX / Kraken real I/O — **not claimed** (E02–E04)
 - Production Ready — **not claimed**
+- W4-E02 Planning OPEN — **not claimed**
 
 ---
 
-**STOP.** Close Evidence assembled. Await Product Owner Package Review. Do not declare W4-E01 CLOSED. Do not open W4-E02.
+**STOP.** W4-E01 **CLOSED** by Product Owner. Do not declare Exchange Connectivity Complete. Do not declare Binance Connected. Do not declare Wave 4 COMPLETE. Do not open W4-E02.

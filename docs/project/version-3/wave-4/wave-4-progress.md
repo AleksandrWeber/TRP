@@ -14,29 +14,29 @@
 
 ## Authority
 
-| Item                         | Status                                                |
-| ---------------------------- | ----------------------------------------------------- |
-| Version 3                    | In progress                                           |
-| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**                                |
-| Wave 2 Connection Management | **COMPLETE**                                          |
-| Wave 3 Durability & Ops      | **COMPLETE**                                          |
-| Wave 4 Planning Package      | **APPROVED** (W4-E01)                                 |
-| W4-E01                       | Planning **APPROVED** — implementation **AUTHORIZED** |
-| W4-E02 … W4-E05              | **Not opened**                                        |
-| Live Trading                 | **Not claimed**                                       |
-| Master Plan                  | **FROZEN** — unchanged                                |
+| Item                         | Status                      |
+| ---------------------------- | --------------------------- |
+| Version 3                    | In progress                 |
+| Wave 1 Security Foundation   | **CERTIFIED COMPLETE**      |
+| Wave 2 Connection Management | **COMPLETE**                |
+| Wave 3 Durability & Ops      | **COMPLETE**                |
+| Wave 4 Planning Package      | **APPROVED** (W4-E01)       |
+| W4-E01                       | **CLOSED** by Product Owner |
+| W4-E02 … W4-E05              | **Not opened**              |
+| Live Trading                 | **Not claimed**             |
+| Master Plan                  | **FROZEN** — unchanged      |
 
 ---
 
 ## Wave 4 packages (Master Plan / Execution Roadmap)
 
-| Package    | Roadmap ID | Name                          | Status                                                                    |
-| ---------- | ---------- | ----------------------------- | ------------------------------------------------------------------------- |
-| **W4-E01** | **V3-E01** | Binance Real I/O              | W4-E01-e Close Evidence **COMPLETE** (local) — awaiting PO Package Review |
-| **W4-E02** | **V3-E02** | Bybit Real I/O                | **Not opened**                                                            |
-| **W4-E03** | **V3-E03** | OKX Real I/O                  | **Not opened**                                                            |
-| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **Not opened**                                                            |
-| **W4-E05** | **V3-E05** | Venue Permission Verification | **Not opened**                                                            |
+| Package    | Roadmap ID | Name                          | Status                                   |
+| ---------- | ---------- | ----------------------------- | ---------------------------------------- |
+| **W4-E01** | **V3-E01** | Binance Real I/O              | **CLOSED** by Product Owner (2026-08-28) |
+| **W4-E02** | **V3-E02** | Bybit Real I/O                | **Not opened**                           |
+| **W4-E03** | **V3-E03** | OKX Real I/O                  | **Not opened**                           |
+| **W4-E04** | **V3-E04** | Kraken Adapter (factory)      | **Not opened**                           |
+| **W4-E05** | **V3-E05** | Venue Permission Verification | **Not opened**                           |
 
 Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
@@ -44,30 +44,26 @@ Order is binding: **E01 → E02 → E03 → E04 → E05**.
 
 ## Current package
 
-| Field                     | Value                                                                     |
-| ------------------------- | ------------------------------------------------------------------------- |
-| **Package**               | **W4-E01** Binance Real I/O                                               |
-| **Master Plan / Roadmap** | V3-E01 · CM-07                                                            |
-| **Stage**                 | W4-E01-e Close Evidence **COMPLETE** (local) — awaiting PO Package Review |
-| **Approval**              | Planning Review **PASS**; Planning **APPROVED**                           |
-| **Implementation**        | **AUTHORIZED** — a–e **COMPLETE** (e local); package **NOT CLOSED**       |
-| **Predecessor**           | Wave 3 **COMPLETE**                                                       |
-| **Implementation slices** | **W4-E01-a…e COMPLETE** (e local); package Close **pending PO**           |
+| Field                     | Value                                           |
+| ------------------------- | ----------------------------------------------- |
+| **Package**               | **W4-E01** Binance Real I/O — **CLOSED**        |
+| **Master Plan / Roadmap** | V3-E01 · CM-07                                  |
+| **Stage**                 | Awaiting **W4-E02** Planning Package            |
+| **Approval**              | Planning Review **PASS**; Planning **APPROVED** |
+| **Implementation**        | Slices a–e **COMPLETE**; package **CLOSED**     |
+| **Predecessor**           | Wave 3 **COMPLETE**                             |
+| **Implementation slices** | **W4-E01-a…e COMPLETE**; package **CLOSED**     |
 
 Companions:
 
 - [`w4-e01-implementation-package.md`](./w4-e01-implementation-package.md)
 - [`w4-e01-product-scope.md`](./w4-e01-product-scope.md)
-- [`w4-e01-security-review.md`](./w4-e01-security-review.md)
-- [`w4-e01-validation-plan.md`](./w4-e01-validation-plan.md)
-- [`w4-e01-overview.md`](./w4-e01-overview.md)
-- [`w4-e01-planning-review.md`](./w4-e01-planning-review.md)
-- [`w4-e01-planning-approval.md`](./w4-e01-planning-approval.md)
-- [`w4-e01-a-exchange-connectivity-inventory.md`](./w4-e01-a-exchange-connectivity-inventory.md)
-- [`w4-e01-close-package-report.md`](./w4-e01-close-package-report.md)
+- [`w4-e01-product-owner-close-record.md`](./w4-e01-product-owner-close-record.md)
+- [`w4-e01-final-integration-verification.md`](./w4-e01-final-integration-verification.md)
 - [`w4-e01-package-summary.md`](./w4-e01-package-summary.md)
+- [`w4-e01-close-package-report.md`](./w4-e01-close-package-report.md)
 - [`w4-e01-operational-walkthrough.md`](./w4-e01-operational-walkthrough.md)
-- [`w4-e01-e-implementation-report.md`](./w4-e01-e-implementation-report.md)
+- [`w4-e01-overview.md`](./w4-e01-overview.md)
 - [`wave-4-planning-summary.md`](./wave-4-planning-summary.md)
 
 ---
@@ -91,16 +87,18 @@ W4-E01-c Restart Recovery Foundation — COMPLETE
         ↓
 W4-E01-d Operational Continuity Foundation — COMPLETE
         ↓
-W4-E01-e Package Close Evidence — COMPLETE (local)
+W4-E01-e Package Close Evidence — COMPLETE
         ↓
-STOP — Await Product Owner Package Review
-Do not perform Final Package Integration Verification
-Do not create Product Owner Close Record
-Do not open W4-E02…E05
+Final Package Integration Verification — PASS
+        ↓
+W4-E01 CLOSED by Product Owner (2026-08-28)
+        ↓
+STOP — Await W4-E02 Planning Package (not opened)
+Do not open W4-E02…E05 without separate PO sequencing
 (No Live Trading)
 (No Wave 4 COMPLETE)
 (No Exchange Connectivity Complete)
-(No W4-E01 CLOSED)
+(No Binance Connected)
 (No engine clone per venue)
 ```
 
@@ -108,24 +106,20 @@ Do not open W4-E02…E05
 
 ## Explicit non-claims
 
-| Claim                                  | Status                       |
-| -------------------------------------- | ---------------------------- |
-| Wave 4 COMPLETE                        | **Not claimed**              |
-| W4-E01 CLOSED / COMPLETE               | **Not claimed**              |
-| Binance Real I/O Complete              | **Not claimed**              |
-| Exchange Connectivity Complete         | **Not claimed**              |
-| Binance Connected (factory honest)     | **Not claimed**              |
-| REST Complete                          | **Not claimed**              |
-| WebSocket Complete                     | **Not claimed**              |
-| Operational Continuity (product)       | **Platform Readiness only**  |
-| W4-E01-e committed / pushed            | **Not claimed** (local only) |
-| Final Package Integration Verification | **Not performed**            |
-| Product Owner Close Record             | **Not created**              |
-| W4-E02 … E05 opened                    | **Not claimed**              |
-| Live Trading                           | **Not claimed**              |
-| Production Ready                       | **Not claimed**              |
-| Master Plan changed                    | **Not claimed**              |
+| Claim                              | Status                                   |
+| ---------------------------------- | ---------------------------------------- |
+| Wave 4 COMPLETE                    | **Not claimed**                          |
+| Exchange Connectivity Complete     | **Not claimed**                          |
+| Binance Connected (factory honest) | **Not claimed**                          |
+| Binance Real I/O product outcomes  | **Not claimed** (foundation CLOSED only) |
+| REST Complete                      | **Not claimed**                          |
+| WebSocket Complete                 | **Not claimed**                          |
+| W4-E02 Planning OPEN               | **Not claimed**                          |
+| W4-E02 … E05 opened                | **Not claimed**                          |
+| Live Trading                       | **Not claimed**                          |
+| Production Ready                   | **Not claimed**                          |
+| Master Plan changed                | **Not claimed**                          |
 
 ---
 
-**STOP.** W4-E01-e Close Evidence **COMPLETE** (local). Await Product Owner Package Review. Do not commit or push. Do not declare W4-E01 CLOSED or Wave 4 COMPLETE.
+**STOP.** W4-E01 **CLOSED** by Product Owner. Await explicit Product Owner instruction to open W4-E02 Planning Package. Do not declare Wave 4 COMPLETE.

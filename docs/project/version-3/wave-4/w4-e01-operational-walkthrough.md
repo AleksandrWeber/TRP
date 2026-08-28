@@ -77,7 +77,7 @@ Do **not** expose Connected labels, REST test controls, WebSocket streams, order
 
 ### 7. Package integrity (W4-E01-e)
 
-Close Evidence verifies complete chain, governance, architecture, and Honest Product rules. Does not declare package CLOSED.
+Close Evidence verifies complete chain, governance, architecture, and Honest Product rules. Product Owner Close recorded separately — e slice registry does not declare package CLOSED.
 
 ---
 
@@ -95,4 +95,4 @@ Close Evidence verifies complete chain, governance, architecture, and Honest Pro
 
 ---
 
-**STOP.** Walkthrough evidences foundation scope only. Await Product Owner Package Review.
+**STOP.** Walkthrough evidences foundation scope only. W4-E01 **CLOSED** by Product Owner. Do not declare Exchange Connectivity Complete. Do not declare Binance Connected. Do not open W4-E02.

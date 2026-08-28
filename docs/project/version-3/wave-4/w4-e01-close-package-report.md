@@ -3,7 +3,7 @@
 **Package:** W4-E01 Binance Real I/O  
 **Evidence slice:** W4-E01-e  
 **Date:** 2026-08-28  
-**Decision status:** Close Evidence assembled — **awaiting Product Owner Package Review**. Engineering must **not** declare W4-E01 CLOSED.
+**Decision status:** **CLOSED** by Product Owner (2026-08-28). See [`w4-e01-product-owner-close-record.md`](./w4-e01-product-owner-close-record.md).
 
 ---
 
@@ -56,35 +56,35 @@ This report indexes Close Evidence assembled in W4-E01-e for Product Owner Packa
 
 ## Close checklist (evidence)
 
-| Criterion                                                       | Status      |
-| --------------------------------------------------------------- | ----------- |
-| Every approved slice validated (a–d PASS)                       | **Met**     |
-| Operational walkthrough completed                               | **Met**     |
-| Inventory / Persistence / Recovery / Continuity verified        | **Met**     |
-| Platform Readiness projection verified                          | **Met**     |
-| Honest Product enforcement intact                               | **Met**     |
-| Governance: exchange-adapter sole owner; no duplicate authority | **Met**     |
-| Security Verification PASS                                      | **Met**     |
-| Architecture Verification PASS                                  | **Met**     |
-| Documentation consistency verified                              | **Met**     |
-| Package Summary completed                                       | **Met**     |
-| No new functionality in e                                       | **Met**     |
-| No ownership / architecture / Master Plan changes in e          | **Met**     |
-| Product Owner declares CLOSED                                   | **Pending** |
+| Criterion                                                       | Status  |
+| --------------------------------------------------------------- | ------- |
+| Every approved slice validated (a–d PASS)                       | **Met** |
+| Operational walkthrough completed                               | **Met** |
+| Inventory / Persistence / Recovery / Continuity verified        | **Met** |
+| Platform Readiness projection verified                          | **Met** |
+| Honest Product enforcement intact                               | **Met** |
+| Governance: exchange-adapter sole owner; no duplicate authority | **Met** |
+| Security Verification PASS                                      | **Met** |
+| Architecture Verification PASS                                  | **Met** |
+| Documentation consistency verified                              | **Met** |
+| Package Summary completed                                       | **Met** |
+| No new functionality in e                                       | **Met** |
+| No ownership / architecture / Master Plan changes in e          | **Met** |
+| Product Owner declares CLOSED                                   | **Met** |
 
 ---
 
 ## Explicit non-declarations
 
-- W4-E01 is **NOT CLOSED** — foundation scope only; awaiting Product Owner Package Review.
+- W4-E01 is **CLOSED** by Product Owner — foundation scope only.
 - Exchange Connectivity Complete — **not claimed**
 - Binance Connected — **not claimed**
 - REST Complete / WebSocket Complete — **not claimed**
 - Live Trading — **not claimed**
 - Production Ready — **not claimed**
 - Wave 4 COMPLETE — **not claimed**
-- W4-E02 — **not opened**
+- W4-E02 Planning — **not opened**
 
 ---
 
-**STOP.** Await Product Owner Package Review. Do not perform Final Package Integration Verification without explicit instruction.
+**STOP.** W4-E01 **CLOSED** by Product Owner. Do not declare Exchange Connectivity Complete. Do not declare Binance Connected. Do not declare Wave 4 COMPLETE.
