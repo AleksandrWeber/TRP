@@ -13,6 +13,8 @@ import { PrismaExchangeAdapterRepository } from './prisma-exchange-adapter.repos
 import { ExchangeConnectivityPersistenceService } from './exchange-connectivity-persistence.service';
 import { BybitExchangeConnectivityPersistenceService } from './bybit-exchange-connectivity-persistence.service';
 import { OkxExchangeConnectivityPersistenceService } from './okx-exchange-connectivity-persistence.service';
+import { OkxExchangeConnectivityRecoveryStore } from './okx-exchange-connectivity-recovery-store';
+import { OkxExchangeConnectivityRestartRecoveryService } from './okx-exchange-connectivity-restart-recovery.service';
 import { BybitExchangeConnectivityRecoveryStore } from './bybit-exchange-connectivity-recovery-store';
 import { BybitExchangeConnectivityRestartRecoveryService } from './bybit-exchange-connectivity-restart-recovery.service';
 import { ExchangeConnectivityRecoveryStore } from './exchange-connectivity-recovery-store';
@@ -58,6 +60,8 @@ import { PrismaOkxExchangeConnectivityStateRepository } from './persistence/pris
     ExchangeConnectivityPersistenceService,
     BybitExchangeConnectivityPersistenceService,
     OkxExchangeConnectivityPersistenceService,
+    OkxExchangeConnectivityRecoveryStore,
+    OkxExchangeConnectivityRestartRecoveryService,
     BybitExchangeConnectivityRecoveryStore,
     BybitExchangeConnectivityRestartRecoveryService,
     ExchangeConnectivityRecoveryStore,
@@ -82,6 +86,8 @@ import { PrismaOkxExchangeConnectivityStateRepository } from './persistence/pris
     ExchangeConnectivityPersistenceService,
     BybitExchangeConnectivityPersistenceService,
     OkxExchangeConnectivityPersistenceService,
+    OkxExchangeConnectivityRecoveryStore,
+    OkxExchangeConnectivityRestartRecoveryService,
     BybitExchangeConnectivityRecoveryStore,
     BybitExchangeConnectivityRestartRecoveryService,
     ExchangeConnectivityRecoveryStore,

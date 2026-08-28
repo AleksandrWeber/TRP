@@ -9,6 +9,7 @@ import {
   OKX_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY,
   type OkxExchangeConnectivityStateRepository,
 } from './domain/okx-exchange-connectivity-state.repository';
+import { OkxExchangeConnectivityRecoveryStore } from './okx-exchange-connectivity-recovery-store';
 
 export type PersistOkxConnectionManagementAnchorCommand = Readonly<{
   workspaceId: string;
@@ -29,17 +30,23 @@ export type PersistOkxAdapterLayerAnchorCommand = Readonly<{
 }>;
 
 /**
- * W4-E03-b — durable OKX exchange connectivity persistence on Exchange Adapter owner.
- * Storage only — no REST/WebSocket I/O, restart recovery, or operational continuity.
+ * W4-E03-b/c — durable OKX exchange connectivity persistence on Exchange Adapter owner.
+ * W4-E03-c — write-through to recovery store after hydrate.
+ * Storage only — no REST/WebSocket I/O or operational continuity.
  */
 @Injectable()
 export class OkxExchangeConnectivityPersistenceService {
   constructor(
     @Inject(OKX_EXCHANGE_CONNECTIVITY_STATE_REPOSITORY)
     private readonly repository: OkxExchangeConnectivityStateRepository,
+    @Inject(OkxExchangeConnectivityRecoveryStore)
+    private readonly recoveryStore: OkxExchangeConnectivityRecoveryStore,
   ) {}
 
   async loadState(workspaceId: string): Promise<DurableOkxExchangeConnectivityState | null> {
+    if (this.recoveryStore.hasHydrated()) {
+      return this.recoveryStore.get(workspaceId);
+    }
     return this.repository.loadOkxExchangeConnectivityState(workspaceId);
   }
 
@@ -52,6 +59,7 @@ export class OkxExchangeConnectivityPersistenceService {
       return outcome;
     }
     await this.repository.saveOkxExchangeConnectivityState(outcome.state);
+    this.recoveryStore.set(outcome.state);
     return outcome;
   }
 
@@ -64,6 +72,7 @@ export class OkxExchangeConnectivityPersistenceService {
       return outcome;
     }
     await this.repository.saveOkxExchangeConnectivityState(outcome.state);
+    this.recoveryStore.set(outcome.state);
     return outcome;
   }
 }

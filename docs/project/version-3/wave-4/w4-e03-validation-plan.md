@@ -3,7 +3,7 @@
 **Package:** W4-E03 OKX Real I/O
 **Wave:** 4 — Exchange Connectivity
 **Master Plan / Roadmap:** V3-E03 · CM-09
-**Status:** W4-E03-b durable persistence **COMPLETE** (local). Awaiting Product Owner review. Not OKX Connected. Slices c…e not opened.
+**Status:** W4-E03-c restart recovery **COMPLETE** (local). Awaiting Product Owner review. Not OKX Connected. Slice d…e not opened.
 **Date:** 2026-08-28
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w4-e03-product-scope.md`](./w4-e03-product-scope.md)
@@ -25,7 +25,7 @@ Do not validate Kraken (E04), venue permission verification product (E05), Live 
 | -------- | ---------------------------------------------- | ------------------------------------------------------------------ |
 | W4-E03-a | OKX Inventory & Exchange Connectivity Baseline | [`w4-e03-a-validation-report.md`](./w4-e03-a-validation-report.md) |
 | W4-E03-b | Durable OKX Exchange Connectivity Foundation   | [`w4-e03-b-validation-report.md`](./w4-e03-b-validation-report.md) |
-| W4-E03-c | OKX Restart Recovery Foundation                | **Not opened**                                                     |
+| W4-E03-c | OKX Restart Recovery Foundation                | [`w4-e03-c-validation-report.md`](./w4-e03-c-validation-report.md) |
 | W4-E03-d | OKX Operational Continuity Foundation          | **Not opened**                                                     |
 | W4-E03-e | Package Close evidence                         | **Not opened**                                                     |
 

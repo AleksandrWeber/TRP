@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { OkxExchangeConnectivityPersistenceService } from '../modules/exchange-adapter/okx-exchange-connectivity-persistence.service';
+import { OkxExchangeConnectivityRecoveryStore } from '../modules/exchange-adapter/okx-exchange-connectivity-recovery-store';
 import { PrismaOkxExchangeConnectivityStateRepository } from '../modules/exchange-adapter/persistence/prisma-okx-exchange-connectivity-state.repository';
 import {
   rowsEphemeral,
@@ -53,7 +54,10 @@ describe('W4-E03-b durable OKX exchange connectivity — unit', () => {
   it('persistence correctness: connection anchor write-through upserts workspace row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaOkxExchangeConnectivityStateRepository(prisma as never);
-    const service = new OkxExchangeConnectivityPersistenceService(repository);
+    const service = new OkxExchangeConnectivityPersistenceService(
+      repository,
+      new OkxExchangeConnectivityRecoveryStore(),
+    );
 
     const outcome = await service.persistConnectionManagementAnchor({
       workspaceId: 'ws-a',

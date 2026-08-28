@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { OkxExchangeConnectivityPersistenceService } from './okx-exchange-connectivity-persistence.service';
+import { OkxExchangeConnectivityRecoveryStore } from './okx-exchange-connectivity-recovery-store';
 import type { OkxExchangeConnectivityStateRepository } from './domain/okx-exchange-connectivity-state.repository';
 import type { DurableOkxExchangeConnectivityState } from './domain/durable-okx-exchange-connectivity-state';
 
@@ -21,10 +22,17 @@ function createRepository(): OkxExchangeConnectivityStateRepository & {
   };
 }
 
+function createService(repository: OkxExchangeConnectivityStateRepository) {
+  return new OkxExchangeConnectivityPersistenceService(
+    repository,
+    new OkxExchangeConnectivityRecoveryStore(),
+  );
+}
+
 describe('OkxExchangeConnectivityPersistenceService — W4-E03-b storage only', () => {
   it('persistConnectionManagementAnchor writes explicit OKX connection anchor without connected flag', async () => {
     const repository = createRepository();
-    const service = new OkxExchangeConnectivityPersistenceService(repository);
+    const service = createService(repository);
 
     const outcome = await service.persistConnectionManagementAnchor({
       workspaceId: 'ws-1',
@@ -47,7 +55,7 @@ describe('OkxExchangeConnectivityPersistenceService — W4-E03-b storage only', 
 
   it('persistAdapterLayerAnchor writes explicit OKX adapter exchange_connection anchor', async () => {
     const repository = createRepository();
-    const service = new OkxExchangeConnectivityPersistenceService(repository);
+    const service = createService(repository);
 
     await service.persistConnectionManagementAnchor({
       workspaceId: 'ws-1',
@@ -73,7 +81,28 @@ describe('OkxExchangeConnectivityPersistenceService — W4-E03-b storage only', 
 
   it('loadState returns null when workspace has no persisted row', async () => {
     const repository = createRepository();
-    const service = new OkxExchangeConnectivityPersistenceService(repository);
+    const service = createService(repository);
     expect(await service.loadState('ws-missing')).toBeNull();
+  });
+
+  it('loadState reads from recovery store after hydrate without repository round-trip', async () => {
+    const repository = createRepository();
+    const recoveryStore = new OkxExchangeConnectivityRecoveryStore();
+    const service = new OkxExchangeConnectivityPersistenceService(repository, recoveryStore);
+
+    await service.persistConnectionManagementAnchor({
+      workspaceId: 'ws-1',
+      connectionId: 'conn-42',
+      actorId: 'actor-1',
+      recordedAt,
+    });
+
+    recoveryStore.replaceAll([repository.saved[0]!]);
+    repository.loadOkxExchangeConnectivityState = vi.fn(async () => null);
+
+    expect(await service.loadState('ws-1')).toMatchObject({
+      connectionAnchorConnectionId: 'conn-42',
+    });
+    expect(repository.loadOkxExchangeConnectivityState).not.toHaveBeenCalled();
   });
 });
