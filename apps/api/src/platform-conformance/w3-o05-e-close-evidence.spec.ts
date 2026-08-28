@@ -220,7 +220,9 @@ describe('W3-O05-e package close evidence — integration / planning', () => {
     expect(overview).toMatch(
       /Monitoring Complete[\s\S]*Not claimed|Not claimed[\s\S]*Monitoring Complete/i,
     );
-    expect(close).toMatch(/CLOSED by Product Owner/);
+    expect(close).toMatch(
+      /Package \*\*CLOSED\*\* by Product Owner|\*\*CLOSED\*\* by Product Owner|CLOSED by Product Owner/,
+    );
     expect(close).toMatch(
       /Wave 3 is \*\*NOT\*\* declared COMPLETE|Wave 3 is \*\*NOT\*\*|NOT.*Wave 3 COMPLETE/i,
     );

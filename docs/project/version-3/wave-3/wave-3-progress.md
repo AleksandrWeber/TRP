@@ -38,6 +38,7 @@
 **Operational State Matrix:** [`operational-state-matrix.md`](./operational-state-matrix.md)
 **Close Evidence (O01):** [`w3-o01-close-package-report.md`](./w3-o01-close-package-report.md) · [`w3-o01-package-summary.md`](./w3-o01-package-summary.md)
 **Prior wave:** Wave 2 **COMPLETE** — [`../wave-2-completion-report.md`](../wave-2-completion-report.md)
+**Completion Review:** [`wave-3-completion-review.md`](./wave-3-completion-review.md)
 
 ---
 
@@ -116,6 +117,7 @@ Companions:
 - [`w3-o05-operational-walkthrough.md`](./w3-o05-operational-walkthrough.md)
 - [`w3-o05-final-integration-verification.md`](./w3-o05-final-integration-verification.md)
 - [`w3-o05-product-owner-close-record.md`](./w3-o05-product-owner-close-record.md)
+- [`wave-3-completion-review.md`](./wave-3-completion-review.md)
 - [`w3-o04-product-owner-close-record.md`](./w3-o04-product-owner-close-record.md)
 - [`durable-kill-switch-overview.md`](./durable-kill-switch-overview.md)
 - [`w3-o04-close-package-report.md`](./w3-o04-close-package-report.md)
