@@ -312,6 +312,8 @@ Inventory (a) → Persistence (b) → Restart recovery (c) → Operational conti
 | -------------------------------- | ------- |
 | **Engineering confidence score** | **97%** |
 
+**Post-Close note (2026-08-29):** Product Owner Final Close executed. W5-N05 **CLOSED** — see [`w5-n05-product-owner-close-record.md`](./w5-n05-product-owner-close-record.md).
+
 **PASS**
 
 ---
@@ -352,9 +354,7 @@ Engineering does **not** open W5-N06 or the next Wave package.
 
 **STOP.**
 
-Await explicit Product Owner instruction before W5-N05 Product Owner Final Close.
-
-Do **not** create `w5-n05-product-owner-close-record.md` without Product Owner instruction.
+W5-N05 **CLOSED** by Product Owner (2026-08-29).
 
 Do **not** declare Notification Platform Integration implemented.
 

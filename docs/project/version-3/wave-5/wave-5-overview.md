@@ -454,10 +454,24 @@ W5-N05 Final Package Integration Verification **PASS** (2026-08-29). All slices 
 
 ```text
 Slice chain d6514ab → cbbf1d7 → 9b85628 → 2cdb0b7 → d89a076 → ae1104d verified on origin/main.
-Product Owner Close Record not created — W5-N05 not CLOSED.
+Product Owner Close Record created — W5-N05 CLOSED.
 W5-N06 — not opened.
 ```
 
 ---
 
-**STOP.** W5-N05 Final Integration Verification **PASS**. Await explicit Product Owner instruction before W5-N05 Product Owner Final Close. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Complete. Do not declare Push/Email/Slack/Discord/Teams implemented. Do not declare W5-N05 COMPLETE. Do not declare Wave 5 COMPLETE. Do not open W5-N06 without separate Product Owner instruction.
+## W5-N05 status (Notification Platform Integration — CLOSED)
+
+W5-N05 Notification Platform Integration foundation is **CLOSED** by Product Owner (2026-08-29). Delivered: inventory (a), durable persistence (b), restart recovery (c), operational continuity (d), Close Evidence (e), Final Integration Verification **PASS** (`ae1104d`).
+
+```text
+Foundation only — not platform integration I/O, not cross-channel delivery unification, not Connected/Delivering labels.
+Per-channel W5-N01…N04 transport stubs remain honest per inventory.
+Notification Platform Complete and Wave 5 COMPLETE not claimed.
+```
+
+See [`w5-n05-product-owner-close-record.md`](./w5-n05-product-owner-close-record.md).
+
+---
+
+**STOP.** W5-N05 is **CLOSED** by Product Owner. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Complete. Do not declare Push/Email/Slack/Discord/Teams implemented. Do not declare Wave 5 COMPLETE. Do not open W5-N06 without separate Product Owner instruction.
