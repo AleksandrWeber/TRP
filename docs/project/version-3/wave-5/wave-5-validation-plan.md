@@ -583,6 +583,21 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
+## W5-N06-a validation (2026-08-29 — local)
+
+| Layer                | Result   | Evidence                                               |
+| -------------------- | -------- | ------------------------------------------------------ |
+| Platform inventory   | **PASS** | `w5-n06-a-notification-platform-delivery-inventory.ts` |
+| Conformance registry | **PASS** | `w5-n06-a-notification-platform-delivery.ts`           |
+| Slice reports        | **PASS** | w5-n06-a-* reports under wave-5                        |
+| Architecture check   | **PASS** | No ownership drift; no delivery dispatcher/queue/retry |
+| Regression suite     | **PASS** | lint / typecheck / test / build                        |
+| git diff --check     | **PASS** | No whitespace errors                                   |
+
+**Explicit non-claim:** W5-N06-a does **not** authorize Notification Platform Delivery implemented, dispatcher implemented, queue orchestration implemented, Notification Platform Complete, W5-N06 COMPLETE, or Wave 5 COMPLETE. **Local only** — not committed.
+
+---
+
 ## W5-N05-a validation (2026-08-29 — recorded)
 
 | Layer                | Result   | Evidence                                                  |

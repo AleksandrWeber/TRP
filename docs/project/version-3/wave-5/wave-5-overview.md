@@ -367,6 +367,24 @@ W5-N05 — not opened.
 
 ---
 
+## W5-N06-a status (Notification Platform Delivery inventory & honesty baseline)
+
+W5-N06-a enumerates every Notification Platform Delivery artifact across Closed W5-N05 integration foundation, per-channel W5-N01…N04 foundations, PC-06 routing, PC-07 notification product, per-channel and integration operational continuity views, and missing unified platform delivery layer, dispatcher, scheduler, and retry orchestration. **No customer-visible Notification Platform Delivery behaviour** was added.
+
+```text
+W5-N05 integration foundation consumed as reference only — not reopened.
+Per-channel W5-N01…N04 foundations consumed as reference only.
+Unified platform delivery layer absent — EPHEMERAL until W5-N06-b.
+Platform delivery anchors, restart recovery, operational continuity, dispatcher, scheduler, and retry missing.
+TD-049 / TD-050 production transport I/O deferred.
+Notification Platform Delivery does NOT function after this slice.
+Durable foundation = W5-N06-b (not claimed from this slice).
+```
+
+See [`w5-n06-a-notification-platform-delivery-inventory.md`](./w5-n06-a-notification-platform-delivery-inventory.md).
+
+---
+
 ## W5-N05-a status (Notification Platform Integration inventory & honesty baseline)
 
 W5-N05-a enumerates every Notification Platform Integration artifact across W5-N01…N04 per-channel foundations, PC-06 routing, PC-07 notification product, per-channel operational continuity views, and missing unified platform integration layer. **No customer-visible Notification Platform Integration behaviour** was added.
@@ -455,7 +473,10 @@ W5-N05 Final Package Integration Verification **PASS** (2026-08-29). All slices 
 ```text
 Slice chain d6514ab → cbbf1d7 → 9b85628 → 2cdb0b7 → d89a076 → ae1104d verified on origin/main.
 Product Owner Close Record created — W5-N05 CLOSED.
-W5-N06 — not opened.
+W5-N06 Planning APPROVED (2026-08-29).
+W5-N06-a COMPLETE (local) — Notification Platform Delivery Inventory & Honest Product Baseline.
+Awaiting Product Owner Review before W5-N06-b.
+W5-N06 — not CLOSED.
 ```
 
 ---
