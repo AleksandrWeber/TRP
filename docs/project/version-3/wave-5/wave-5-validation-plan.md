@@ -889,7 +889,24 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite        | **PASS** | lint / typecheck / test / build                                    |
 | git diff --check        | **PASS** | No whitespace errors                                               |
 
-**Explicit non-claim:** W5-N09-d does **not** authorize Notification Platform Workers implemented, worker execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N09 COMPLETE, or Wave 5 COMPLETE. **Local only — not committed.**
+**Explicit non-claim:** W5-N09-d does **not** authorize Notification Platform Workers implemented, worker execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N09 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`8dd654a`).
+
+---
+
+## W5-N09-e validation (2026-08-29 — local, awaiting Product Owner Review)
+
+| Layer                    | Result   | Evidence                                        |
+| ------------------------ | -------- | ----------------------------------------------- |
+| Close Evidence registry  | **PASS** | `w5-n09-e-package-close-evidence.ts`            |
+| Implementation chain     | **PASS** | slices a–d PASS                                 |
+| Dependency chain         | **PASS** | W5-N01…N08 CLOSED consumed                      |
+| Workers foundation chain | **PASS** | inventory → persistence → recovery → continuity |
+| Package documentation    | **PASS** | close report, summary, walkthrough              |
+| Architecture check       | **PASS** | No ownership drift; evidence only               |
+| Regression suite         | **PASS** | lint / typecheck / test / build                 |
+| git diff --check         | **PASS** | No whitespace errors                            |
+
+**Explicit non-claim:** W5-N09-e does **not** authorize Notification Platform Workers implemented, Notification Platform Complete, W5-N09 COMPLETE, or Wave 5 COMPLETE. Final Package Integration Verification **not performed**. **Local only — not committed.**
 
 ---
 
