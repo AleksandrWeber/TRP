@@ -574,8 +574,9 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 - W5-N04 Final Integration PASS — **recorded** (`2488d4f`)
 - W5-N04 CLOSED — **recorded** (2026-08-29)
 - W5-N05-a validation PASS — **recorded** (`d6514ab`)
-- W5-N05-b validation PASS — **recorded** (`c3cf254`)
-- W5-N05-c opened — **not claimed**
+- W5-N05-b validation PASS — **recorded** (`cbbf1d7`)
+- W5-N05-c validation PASS — **recorded**
+- W5-N05-d opened — **not claimed**
 
 ---
 
@@ -606,8 +607,24 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite     | **PASS** | lint / typecheck / test / build                               |
 | git diff --check     | **PASS** | No whitespace errors                                          |
 
-**Explicit non-claim:** W5-N05-b does **not** authorize Notification Platform Integration implemented, Notification Platform Complete, restart recovery, W5-N05 COMPLETE, or Wave 5 COMPLETE. **Local only — not committed.**
+**Explicit non-claim:** W5-N05-b does **not** authorize Notification Platform Integration implemented, Notification Platform Complete, restart recovery, W5-N05 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`cbbf1d7`).
 
 ---
 
-**STOP.** W5-N05-b is **COMPLETE** (`c3cf254`). Await explicit Product Owner instruction before opening W5-N05-c. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N05-c without separate Product Owner instruction.
+## W5-N05-c validation (2026-08-29 — recorded)
+
+| Layer                | Result   | Evidence                                                                              |
+| -------------------- | -------- | ------------------------------------------------------------------------------------- |
+| Restart recovery     | **PASS** | `NotificationPlatformIntegrationRestartRecoveryService` + recovery store              |
+| Conformance registry | **PASS** | `w5-n05-c-notification-platform-integration-restart-recovery.ts`                      |
+| Slice reports        | **PASS** | w5-n05-c-* reports under wave-5                                                       |
+| Architecture check   | **PASS** | Notification Delivery owner only; recovery store not SoT                              |
+| Persistence hydrate  | **PASS** | Write-through + hydrated reads on `NotificationPlatformIntegrationPersistenceService` |
+| Regression suite     | **PASS** | lint / typecheck / test / build                                                       |
+| git diff --check     | **PASS** | No whitespace errors                                                                  |
+
+**Explicit non-claim:** W5-N05-c does **not** authorize Notification Platform Integration implemented, Notification Platform Complete, operational continuity, W5-N05 COMPLETE, or Wave 5 COMPLETE. **Recorded.**
+
+---
+
+**STOP.** W5-N05-c is **COMPLETE**. Await explicit Product Owner instruction before opening W5-N05-d. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N05-d without separate Product Owner instruction.

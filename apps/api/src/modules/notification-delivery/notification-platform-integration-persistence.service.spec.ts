@@ -5,6 +5,7 @@ import {
 } from './domain/durable-notification-platform-integration-anchor';
 import type { NotificationPlatformIntegrationAnchorRepository } from './domain/notification-platform-integration-anchor.repository';
 import { NotificationPlatformIntegrationPersistenceService } from './notification-platform-integration-persistence.service';
+import { NotificationPlatformIntegrationRecoveryStore } from './notification-platform-integration-recovery-store';
 
 const recordedAt = '2026-08-29T18:00:00.000Z';
 
@@ -31,7 +32,10 @@ function createRepository(): NotificationPlatformIntegrationAnchorRepository & {
 describe('NotificationPlatformIntegrationPersistenceService — W5-N05-b storage only', () => {
   it('persistIntegrationAnchor writes canonical platform integration anchors without runtime I/O', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformIntegrationPersistenceService(repository);
+    const service = new NotificationPlatformIntegrationPersistenceService(
+      repository,
+      new NotificationPlatformIntegrationRecoveryStore(),
+    );
 
     const outcome = await service.persistIntegrationAnchor({
       workspaceId: 'ws-1',
@@ -61,7 +65,10 @@ describe('NotificationPlatformIntegrationPersistenceService — W5-N05-b storage
 
   it('does not persist delivery state, transport secrets, or process-local runtime fields', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformIntegrationPersistenceService(repository);
+    const service = new NotificationPlatformIntegrationPersistenceService(
+      repository,
+      new NotificationPlatformIntegrationRecoveryStore(),
+    );
 
     await service.persistIntegrationAnchor({
       workspaceId: 'ws-1',

@@ -400,4 +400,20 @@ See [`w5-n05-b-implementation-report.md`](./w5-n05-b-implementation-report.md).
 
 ---
 
-**STOP.** W5-N05-b is **COMPLETE** (`c3cf254`). Await explicit Product Owner instruction before opening W5-N05-c. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Complete. Do not declare Push/Email/Slack/Discord/Teams implemented. Do not declare W5-N05 COMPLETE. Do not declare Wave 5 COMPLETE. Do not open W5-N05-c without separate Product Owner instruction.
+## W5-N05-c status (Notification Platform Restart Recovery Integration foundation)
+
+W5-N05-c adds deterministic restart recovery hydrate for W5-N05-b canonical Notification Platform Integration anchors on the existing Notification Delivery owner. **No customer-visible Notification Platform Integration behaviour** was added.
+
+```text
+OnModuleInit hydrate loads persisted integration anchors into process-local recovery store.
+Deterministic order: workspaceId ascending, then integrationAnchorId.
+Missing rows → empty cache (no fabrication). Corrupt rows → fail-honest throw.
+Operational continuity = W5-N05-d (not claimed from this slice).
+Notification Platform Integration does NOT function after this slice.
+```
+
+See [`w5-n05-c-implementation-report.md`](./w5-n05-c-implementation-report.md).
+
+---
+
+**STOP.** W5-N05-c is **COMPLETE**. Await explicit Product Owner instruction before opening W5-N05-d. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Complete. Do not declare Push/Email/Slack/Discord/Teams implemented. Do not declare W5-N05 COMPLETE. Do not declare Wave 5 COMPLETE. Do not open W5-N05-d without separate Product Owner instruction.

@@ -23,6 +23,8 @@ import { SlackDiscordTeamsNotificationRecoveryStore } from './slack-discord-team
 import { SlackDiscordTeamsNotificationRestartRecoveryService } from './slack-discord-teams-notification-restart-recovery.service';
 import { PushNotificationPersistenceService } from './push-notification-persistence.service';
 import { NotificationPlatformIntegrationPersistenceService } from './notification-platform-integration-persistence.service';
+import { NotificationPlatformIntegrationRecoveryStore } from './notification-platform-integration-recovery-store';
+import { NotificationPlatformIntegrationRestartRecoveryService } from './notification-platform-integration-restart-recovery.service';
 import { PushNotificationRecoveryStore } from './push-notification-recovery-store';
 import { PushNotificationRestartRecoveryService } from './push-notification-restart-recovery.service';
 import { EmailNotificationRecoveryStore } from './email-notification-recovery-store';
@@ -46,6 +48,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
  * W5-N04-b: durable Push notification anchor persistence on this owner only.
  * W5-N04-c: deterministic restart recovery hydrate for canonical Push anchors on this owner only.
  * W5-N05-b: durable Notification Platform Integration anchor persistence on this owner only.
+ * W5-N05-c: deterministic restart recovery hydrate for canonical platform integration anchors on this owner only.
  * Does not import Reporting / AI Analytics / Strategy Library / Runtime /
  * Trading Session / Orders / Ledger. Does not expose REST or trading commands.
  */
@@ -100,6 +103,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     PushNotificationRecoveryStore,
     PushNotificationRestartRecoveryService,
     NotificationPlatformIntegrationPersistenceService,
+    NotificationPlatformIntegrationRecoveryStore,
+    NotificationPlatformIntegrationRestartRecoveryService,
     EmailNotificationRecoveryStore,
     EmailNotificationRestartRecoveryService,
     InMemoryTelegramAdapter,
@@ -135,6 +140,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     PushNotificationRecoveryStore,
     PushNotificationRestartRecoveryService,
     NotificationPlatformIntegrationPersistenceService,
+    NotificationPlatformIntegrationRecoveryStore,
+    NotificationPlatformIntegrationRestartRecoveryService,
     EmailNotificationRecoveryStore,
     EmailNotificationRestartRecoveryService,
   ],
