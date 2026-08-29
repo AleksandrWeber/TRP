@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PrismaNotificationPlatformDispatchAnchorRepository } from '../modules/notification-delivery/persistence/prisma-notification-platform-dispatch-anchor.repository';
 import { NotificationPlatformDispatchPersistenceService } from '../modules/notification-delivery/notification-platform-dispatch-persistence.service';
+import { NotificationPlatformDispatchRecoveryStore } from '../modules/notification-delivery/notification-platform-dispatch-recovery-store';
 import { rowsEphemeral } from './w5-n07-a-notification-platform-dispatch-inventory';
 import {
   W5_N07_B_ARCHITECTURE_CLAIMS,
@@ -64,7 +65,10 @@ describe('W5-N07-b durable notification platform dispatch — unit', () => {
   it('persistence correctness: anchor write-through upserts workspace dispatch row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaNotificationPlatformDispatchAnchorRepository(prisma as never);
-    const service = new NotificationPlatformDispatchPersistenceService(repository);
+    const service = new NotificationPlatformDispatchPersistenceService(
+      repository,
+      new NotificationPlatformDispatchRecoveryStore(),
+    );
 
     const outcome = await service.persistDispatchAnchor({
       workspaceId: 'ws-a',

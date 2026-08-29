@@ -719,7 +719,24 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite    | **PASS** | lint / typecheck / test / build                         |
 | git diff --check    | **PASS** | No whitespace errors                                    |
 
-**Explicit non-claim:** W5-N07-b does **not** authorize Notification Platform Dispatch implemented, dispatcher implemented, queue orchestration implemented, restart recovery, Notification Platform Complete, W5-N07 COMPLETE, or Wave 5 COMPLETE. **Local only** — awaiting Product Owner review; not committed.
+**Explicit non-claim:** W5-N07-b does **not** authorize Notification Platform Dispatch implemented, dispatcher implemented, queue orchestration implemented, restart recovery, Notification Platform Complete, W5-N07 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`4cb4a77`).
+
+---
+
+## W5-N07-c validation (2026-08-29 — local only)
+
+| Layer                   | Result   | Evidence                                                      |
+| ----------------------- | -------- | ------------------------------------------------------------- |
+| Restart recovery        | **PASS** | `w5-n07-c-notification-platform-dispatch-restart-recovery.ts` |
+| Recovery store          | **PASS** | `notification-platform-dispatch-recovery-store.ts`            |
+| Recovery service        | **PASS** | `notification-platform-dispatch-restart-recovery.service.ts`  |
+| Persistence integration | **PASS** | `notification-platform-dispatch-persistence.service.ts`       |
+| Slice reports           | **PASS** | w5-n07-c-* reports under wave-5                               |
+| Architecture check      | **PASS** | No ownership drift; no dispatch execution/dispatcher          |
+| Regression suite        | **PASS** | lint / typecheck / test / build                               |
+| git diff --check        | **PASS** | No whitespace errors                                          |
+
+**Explicit non-claim:** W5-N07-c does **not** authorize Notification Platform Dispatch implemented, operational continuity, dispatcher implemented, queue orchestration implemented, Notification Platform Complete, W5-N07 COMPLETE, or Wave 5 COMPLETE. **Local only** — awaiting Product Owner review; not committed.
 
 ---
 
