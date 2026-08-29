@@ -823,9 +823,26 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-| W5-N08 opened | **Yes** | W5-N08-c **COMPLETE** — awaiting explicit Product Owner instruction before W5-N08-d |
+| W5-N08 opened | **Yes** | W5-N08-d **COMPLETE** — Awaiting Product Owner Review |
 
 **Explicit non-claim:** Product Owner Close does **not** authorize Notification Platform Queue implemented, Notification Platform Complete, queue workers implemented, queue orchestration implemented, retry implemented, scheduler implemented, Production Ready, Live Notifications, or Wave 5 COMPLETE.
+
+---
+
+## W5-N08-d validation (2026-08-29 — recorded)
+
+| Layer                | Result   | Evidence                                                         |
+| -------------------- | -------- | ---------------------------------------------------------------- |
+| Operational domain   | **PASS** | `notification-platform-queue-operational-continuity.ts`          |
+| Platform integration | **PASS** | `operational-continuity.service.ts`                              |
+| Conformance registry | **PASS** | `w5-n08-d-notification-platform-queue-operational-continuity.ts` |
+| Web projection       | **PASS** | `OperationalContinuityView.tsx`                                  |
+| Slice reports        | **PASS** | w5-n08-d-* reports under wave-5                                  |
+| Architecture check   | **PASS** | No ownership drift; no queue execution/workers                   |
+| Regression suite     | **PASS** | lint / typecheck / test / build                                  |
+| git diff --check     | **PASS** | No whitespace errors                                             |
+
+**Explicit non-claim:** W5-N08-d does **not** authorize Notification Platform Queue implemented, queue execution implemented, queue workers implemented, Notification Platform Complete, W5-N08 COMPLETE, or Wave 5 COMPLETE. Changes **local only** — not committed. **Recorded**.
 
 ---
 

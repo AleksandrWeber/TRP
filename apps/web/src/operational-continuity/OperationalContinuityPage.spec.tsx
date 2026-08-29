@@ -179,6 +179,16 @@ const ready: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: [],
   },
+  notificationPlatformQueue: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:00:00.000Z',
+    recoveryDurationMs: 42,
+    restoredCount: 0,
+    canonicalAnchorCount: 0,
+    integrityVerified: true,
+    workspaceIds: [],
+  },
 };
 
 const degraded: OperationalContinuityReadinessView = {
@@ -364,6 +374,16 @@ const degraded: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: ['ws-1'],
   },
+  notificationPlatformQueue: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:01:00.000Z',
+    recoveryDurationMs: 100,
+    restoredCount: 1,
+    canonicalAnchorCount: 1,
+    integrityVerified: true,
+    workspaceIds: ['ws-1'],
+  },
 };
 
 describe('OperationalContinuityView', () => {
@@ -522,6 +542,16 @@ describe('OperationalContinuityView', () => {
     expect(html).toContain('Notification Platform Dispatch operational state');
     expect(html).toContain('Canonical anchors');
     expect(html).not.toContain('Dispatching');
+    expect(html).not.toContain('Implemented');
+    expect(html).not.toContain('Cross-channel');
+  });
+
+  it('shows Notification Platform Queue operational state within platform readiness only', () => {
+    const html = renderToStaticMarkup(<OperationalContinuityView readiness={ready} />);
+    expect(html).toContain('Notification Platform Queue');
+    expect(html).toContain('Notification Platform Queue operational state');
+    expect(html).toContain('Canonical anchors');
+    expect(html).not.toContain('Queueing');
     expect(html).not.toContain('Implemented');
     expect(html).not.toContain('Cross-channel');
   });
