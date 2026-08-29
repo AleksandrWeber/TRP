@@ -583,7 +583,24 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N06-d validation (2026-08-29 — local)
+## W5-N06-e validation (2026-08-29 — local)
+
+| Layer                  | Result   | Evidence                                             |
+| ---------------------- | -------- | ---------------------------------------------------- |
+| Package close evidence | **PASS** | `w5-n06-e-package-close-evidence.ts`                 |
+| Implementation chain   | **PASS** | Slices a–d recorded PASS                             |
+| Dependency chain       | **PASS** | W5-N01…N05 closed and consumed, not reopened         |
+| Operational chain      | **PASS** | Inventory → persistence → recovery → continuity      |
+| Package documents      | **PASS** | w5-n06-package-* and w5-n06-e-* reports              |
+| Architecture check     | **PASS** | No ownership drift; no delivery execution/dispatcher |
+| Regression suite       | **PASS** | lint / typecheck / test / build                      |
+| git diff --check       | **PASS** | No whitespace errors                                 |
+
+**Explicit non-claim:** W5-N06-e does **not** authorize W5-N06 COMPLETE, Final Package Integration Verification performed, Product Owner Close Record, Notification Platform Delivery implemented, Notification Platform complete, or Wave 5 COMPLETE. **Local only** — not committed.
+
+---
+
+## W5-N06-d validation (2026-08-29 — recorded `09b8c0f`)
 
 | Layer                   | Result   | Evidence                                                            |
 | ----------------------- | -------- | ------------------------------------------------------------------- |
@@ -596,7 +613,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite        | **PASS** | lint / typecheck / test / build                                     |
 | git diff --check        | **PASS** | No whitespace errors                                                |
 
-**Explicit non-claim:** W5-N06-d does **not** authorize Notification Platform Delivery implemented, dispatcher implemented, queue implemented, retry implemented, scheduler implemented, W5-N06 COMPLETE, or Wave 5 COMPLETE. **Local only** — not committed.
+**Explicit non-claim:** W5-N06-d does **not** authorize Notification Platform Delivery implemented, dispatcher implemented, queue implemented, retry implemented, scheduler implemented, W5-N06 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`09b8c0f`).
 
 ---
 
