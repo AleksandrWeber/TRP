@@ -736,7 +736,24 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite        | **PASS** | lint / typecheck / test / build                               |
 | git diff --check        | **PASS** | No whitespace errors                                          |
 
-**Explicit non-claim:** W5-N07-c does **not** authorize Notification Platform Dispatch implemented, operational continuity, dispatcher implemented, queue orchestration implemented, Notification Platform Complete, W5-N07 COMPLETE, or Wave 5 COMPLETE. **Local only** — awaiting Product Owner review; not committed.
+**Explicit non-claim:** W5-N07-c does **not** authorize Notification Platform Dispatch implemented, operational continuity, dispatcher implemented, queue orchestration implemented, Notification Platform Complete, W5-N07 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`07cbaca`).
+
+---
+
+## W5-N07-d validation (2026-08-29 — local only)
+
+| Layer                   | Result   | Evidence                                                            |
+| ----------------------- | -------- | ------------------------------------------------------------------- |
+| Operational continuity  | **PASS** | `notification-platform-dispatch-operational-continuity.ts`          |
+| Platform readiness wire | **PASS** | `operational-readiness.ts`, `operational-continuity.service.ts`     |
+| Conformance registry    | **PASS** | `w5-n07-d-notification-platform-dispatch-operational-continuity.ts` |
+| Web projection          | **PASS** | `OperationalContinuityView.tsx`                                     |
+| Slice reports           | **PASS** | w5-n07-d-* reports under wave-5                                     |
+| Architecture check      | **PASS** | No ownership drift; no dispatcher/queue/retry/scheduler             |
+| Regression suite        | **PASS** | lint / typecheck / test / build                                     |
+| git diff --check        | **PASS** | No whitespace errors                                                |
+
+**Explicit non-claim:** W5-N07-d does **not** authorize Notification Platform Dispatch implemented, dispatcher implemented, queue orchestration implemented, retry implemented, scheduler implemented, Notification Platform Complete, W5-N07 COMPLETE, or Wave 5 COMPLETE. **Local only** — awaiting Product Owner review; not committed.
 
 ---
 

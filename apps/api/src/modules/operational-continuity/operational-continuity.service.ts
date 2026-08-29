@@ -44,6 +44,8 @@ import { getNotificationPlatformIntegrationContinuityRecord } from '../notificat
 import { buildNotificationPlatformIntegrationContinuityProjection } from '../notification-delivery/domain/notification-platform-integration-operational-continuity';
 import { getNotificationPlatformDeliveryContinuityRecord } from '../notification-delivery/domain/notification-platform-delivery-continuity-status';
 import { buildNotificationPlatformDeliveryContinuityProjection } from '../notification-delivery/domain/notification-platform-delivery-operational-continuity';
+import { getNotificationPlatformDispatchContinuityRecord } from '../notification-delivery/domain/notification-platform-dispatch-continuity-status';
+import { buildNotificationPlatformDispatchContinuityProjection } from '../notification-delivery/domain/notification-platform-dispatch-operational-continuity';
 import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
 import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
 import { getMonitoringHealthContinuityRecord } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
@@ -146,6 +148,11 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         continuity: null,
       }),
       notificationPlatformDelivery: buildNotificationPlatformDeliveryContinuityProjection({
+        recovering: true,
+        ownerReadiness: 'ready',
+        continuity: null,
+      }),
+      notificationPlatformDispatch: buildNotificationPlatformDispatchContinuityProjection({
         recovering: true,
         ownerReadiness: 'ready',
         continuity: null,
@@ -342,6 +349,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildNotificationPlatformDispatchView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getNotificationPlatformDispatchContinuityRecord();
+    return buildNotificationPlatformDispatchContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -433,6 +452,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       notificationPlatformDelivery: this.buildNotificationPlatformDeliveryView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      notificationPlatformDispatch: this.buildNotificationPlatformDispatchView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -651,6 +674,23 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           ? null
           : recoveryDurationMs),
     });
+    const notificationPlatformDispatchBase = this.buildNotificationPlatformDispatchView({
+      recovering: false,
+      ownerReadiness: 'ready',
+    });
+    const notificationPlatformDispatch = Object.freeze({
+      ...notificationPlatformDispatchBase,
+      recoveryTimestamp:
+        notificationPlatformDispatchBase.recoveryTimestamp ??
+        (notificationPlatformDispatchBase.operationalState === 'Recovering'
+          ? null
+          : recoveryTimestamp),
+      recoveryDurationMs:
+        notificationPlatformDispatchBase.recoveryDurationMs ??
+        (notificationPlatformDispatchBase.operationalState === 'Recovering'
+          ? null
+          : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -669,6 +709,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       pushNotification,
       notificationPlatformIntegration,
       notificationPlatformDelivery,
+      notificationPlatformDispatch,
     });
     this.finalized = true;
 
