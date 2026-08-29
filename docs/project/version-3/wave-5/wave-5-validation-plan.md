@@ -580,7 +580,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 - W5-N05-e validation PASS — **recorded** (`d89a076`)
 - W5-N05 Final Integration Verification — **PASS** (`ae1104d`)
 - W5-N06 Final Integration Verification — **PASS** (`52151cb`)
-- W5-N06 CLOSED — **recorded** (`3183a14`)
+- W5-N06 CLOSED — **recorded** (`60c5b91`)
 
 ---
 
@@ -619,7 +619,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite                | **PASS** | lint / typecheck / test / build                                                   |
 | git diff --check                | **PASS** | No whitespace errors                                                              |
 
-**Explicit non-claim:** Product Owner Close does **not** declare Notification Platform Delivery implemented, Notification Platform Delivery complete, Notification Platform implemented, Notification Platform complete, dispatcher implemented, queue implemented, retry implemented, scheduler implemented, Production Ready, Live Notifications, or Wave 5 COMPLETE. **Recorded** (`3183a14`).
+**Explicit non-claim:** Product Owner Close does **not** declare Notification Platform Delivery implemented, Notification Platform Delivery complete, Notification Platform implemented, Notification Platform complete, dispatcher implemented, queue implemented, retry implemented, scheduler implemented, Production Ready, Live Notifications, or Wave 5 COMPLETE. **Recorded** (`60c5b91`).
 
 ---
 

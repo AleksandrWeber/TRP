@@ -4,7 +4,7 @@
 **Decision:** **CLOSED**  
 **Date:** 2026-08-29  
 **Authority:** Product Owner  
-**Acceptance commit hash:** `3183a14`
+**Acceptance commit hash:** `60c5b91`
 
 ---
 
