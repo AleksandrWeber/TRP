@@ -13,7 +13,7 @@
 
 **Safety commit (pre-step):** `f745524` — W5-N08-e Package Close Evidence pushed to `origin/main`. Repository clean; `origin/main` up to date.
 
-**Slice commit chain on `origin/main`:** `8477bb8` (a) → `e71c247` (b) → `6399a99` (c) → `35ca6de` (d) → `f745524` (e) → Final Integration Verification (local, uncommitted).
+**Slice commit chain on `origin/main`:** `8477bb8` (a) → `e71c247` (b) → `6399a99` (c) → `35ca6de` (d) → `f745524` (e) → `96cf13f` — Final Integration Verification.
 
 ---
 
@@ -378,3 +378,5 @@ Do **not** declare Notification Platform Complete.
 Do **not** declare Wave 5 COMPLETE.
 
 Do **not** open W5-N09 without separate Product Owner instruction.
+
+**Post-Close note (2026-08-29):** Product Owner Final Close executed. W5-N08 **CLOSED** — see [`w5-n08-product-owner-close-record.md`](./w5-n08-product-owner-close-record.md).

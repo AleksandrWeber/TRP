@@ -693,6 +693,14 @@ W5-N07-d COMPLETE (`d8bffa6`) — Notification Platform Dispatch Operational Con
 W5-N07-e COMPLETE (`cd86057`) — Package Close Evidence.
 W5-N07 Final Integration Verification PASS (`aa41a3d`).
 W5-N07 CLOSED by Product Owner (2026-08-29).
+W5-N08 Planning APPROVED (2026-08-29).
+W5-N08-a COMPLETE (`8477bb8`) — Notification Platform Queue Inventory & Honest Product Baseline.
+W5-N08-b COMPLETE (`e71c247`) — Durable Notification Platform Queue Foundation.
+W5-N08-c COMPLETE (`6399a99`) — Notification Platform Queue Restart Recovery Foundation.
+W5-N08-d COMPLETE (`35ca6de`) — Notification Platform Queue Operational Continuity Foundation.
+W5-N08-e COMPLETE (`f745524`) — Package Close Evidence.
+W5-N08 Final Integration Verification PASS (`96cf13f`).
+W5-N08 CLOSED by Product Owner (2026-08-29).
 ```
 
 ---
@@ -799,14 +807,29 @@ See [`w5-n08-e-implementation-report.md`](./w5-n08-e-implementation-report.md).
 W5-N08 Final Package Integration Verification **PASS** (2026-08-29). All slices a–e form one internally consistent package. Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**. Engineering confidence: **97%**.
 
 ```text
-Slice chain 8477bb8 → e71c247 → 6399a99 → 35ca6de → f745524 verified on origin/main.
+Slice chain 8477bb8 → e71c247 → 6399a99 → 35ca6de → f745524 → 96cf13f verified on origin/main.
 W5-N08-e COMPLETE (`f745524`) — Package Close Evidence.
-Final Integration Verification PASS (local, uncommitted).
-Product Owner Close Record not created — awaiting Product Owner Final Close.
+Final Integration Verification PASS (`96cf13f`).
+Product Owner Close Record created — W5-N08 CLOSED (2026-08-29).
 ```
 
 See [`w5-n08-final-integration-verification.md`](./w5-n08-final-integration-verification.md).
 
 ---
 
-**STOP.** W5-N05 is **CLOSED** by Product Owner. W5-N06 is **CLOSED** by Product Owner. W5-N07 is **CLOSED** by Product Owner. W5-N08-a is **COMPLETE** (`8477bb8`). W5-N08-b is **COMPLETE** (`e71c247`). W5-N08-c is **COMPLETE** (`6399a99`). W5-N08-d is **COMPLETE** (`35ca6de`). W5-N08-e is **COMPLETE** (`f745524`). Final Integration Verification **PASS** — Awaiting Product Owner Final Close. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Queue execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Notification Platform Complete. Do not declare W5-N08 COMPLETE. Do not declare Wave 5 COMPLETE. Do not create Product Owner Close Record without separate Product Owner instruction.
+## W5-N08 status (Notification Platform Queue — CLOSED)
+
+W5-N08 Notification Platform Queue Foundation is **CLOSED** by Product Owner (2026-08-29). Delivered: inventory (a), durable persistence (b), restart recovery (c), operational continuity (d), Close Evidence (e), Final Integration Verification **PASS** (`96cf13f`).
+
+```text
+Foundation only — not platform queue execution, not queue workers, not queue orchestration, not retry, not scheduler.
+Closed W5-N05 integration, W5-N06 delivery, and W5-N07 dispatch foundations consumed; per-channel W5-N01…N04 transport stubs remain honest per inventory.
+Notification Platform Queue complete and Notification Platform Complete not claimed.
+Wave 5 COMPLETE not claimed.
+```
+
+See [`w5-n08-product-owner-close-record.md`](./w5-n08-product-owner-close-record.md).
+
+---
+
+**STOP.** W5-N05 is **CLOSED** by Product Owner. W5-N06 is **CLOSED** by Product Owner. W5-N07 is **CLOSED** by Product Owner. W5-N08 is **CLOSED** by Product Owner. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Queue execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N09 without separate Product Owner instruction.

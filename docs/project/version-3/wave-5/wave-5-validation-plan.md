@@ -808,6 +808,15 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Wave documentation sync    | **PASS** | overview / validation-plan / progress                    |
 | W5-N07 officially CLOSED   | **PASS** | Product Owner decision **CLOSED**                        |
 
+## W5-N08 Product Owner Close (2026-08-29)
+
+| Layer                      | Result   | Evidence                                                 |
+| -------------------------- | -------- | -------------------------------------------------------- |
+| Product Owner Close Record | **PASS** | `w5-n08-product-owner-close-record.md`                   |
+| Package documentation sync | **PASS** | summary / close report / walkthrough / final integration |
+| Wave documentation sync    | **PASS** | overview / validation-plan / progress                    |
+| W5-N08 officially CLOSED   | **PASS** | Product Owner decision **CLOSED**                        |
+
 ## W5-N08-a validation (2026-08-29 — recorded)
 
 | Layer                | Result   | Evidence                                            |
@@ -823,7 +832,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-| W5-N08 opened | **Yes** | Final Integration Verification **PASS** — Awaiting Product Owner Final Close |
+| W5-N08 opened | **Yes** | W5-N08 **CLOSED** by Product Owner (2026-08-29) |
 
 **Explicit non-claim:** Product Owner Close does **not** authorize Notification Platform Queue implemented, Notification Platform Complete, queue workers implemented, queue orchestration implemented, retry implemented, scheduler implemented, Production Ready, Live Notifications, W5-N08 COMPLETE, or Wave 5 COMPLETE.
 
@@ -848,7 +857,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 **Engineering verdict:** **READY FOR PRODUCT OWNER FINAL CLOSE**
 **Engineering confidence:** **97%**
 
-**Explicit non-claim:** Final Integration Verification does **not** authorize W5-N08 COMPLETE, Notification Platform Queue implemented, Notification Platform Complete, Wave 5 COMPLETE, or Product Owner Close Record. Changes **local only** — not committed. **Recorded**.
+**Explicit non-claim:** Final Integration Verification does **not** authorize W5-N08 COMPLETE, Notification Platform Queue implemented, Notification Platform Complete, Wave 5 COMPLETE, or Product Owner Close Record. **Recorded** (`96cf13f`).
 
 ---
 
