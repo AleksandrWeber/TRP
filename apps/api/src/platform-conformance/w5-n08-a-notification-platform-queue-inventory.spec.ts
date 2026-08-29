@@ -65,6 +65,7 @@ describe('W5-N08-a notification platform queue inventory — unit', () => {
     const ownership = rowsByKind('ownership');
     const coreIds = [
       'own-platform-queue-layer',
+      'own-platform-queue-persistence',
       'own-notification-delivery-domain',
       'own-pc06-routing-delivery',
       'own-w5-n06-delivery-foundation-consume',
@@ -100,7 +101,8 @@ describe('W5-N08-a notification platform queue inventory — unit', () => {
     expect(ids.has('missing-platform-queue-operational-continuity')).toBe(true);
     expect(ids.has('consume-w5-n06-delivery-anchor')).toBe(true);
     expect(ids.has('consume-w5-n07-dispatch-anchor')).toBe(true);
-    expect(ids.has('missing-platform-queue-durable-anchors')).toBe(true);
+    expect(ids.has('persist-notification-platform-queue-anchor')).toBe(true);
+    expect(ids.has('own-platform-queue-persistence')).toBe(true);
     expect(ids.has('runtime-pc06-resolve-delivery-routing')).toBe(true);
     expect(ids.has('continuity-telegram-notification-view')).toBe(true);
     expect(ids.has('continuity-push-notification-view')).toBe(true);
@@ -125,7 +127,7 @@ describe('W5-N08-a notification platform queue inventory — unit', () => {
     expect(ids.has('missing-production-transport-delivery')).toBe(true);
     expect(ids.has('consume-w5-n06-delivery-anchor')).toBe(true);
     expect(ids.has('consume-w5-n07-dispatch-anchor')).toBe(true);
-    expect(ids.has('missing-platform-queue-durable-anchors')).toBe(true);
+    expect(ids.has('persist-notification-platform-queue-anchor')).toBe(true);
     expect(ids.has('missing-platform-queue-ui')).toBe(true);
   });
 
@@ -135,7 +137,7 @@ describe('W5-N08-a notification platform queue inventory — unit', () => {
     expect(W5_N08_A_BINDING_FINDINGS.customerVisibleFeatureFromSliceA).toBe(false);
     expect(W5_N08_A_BINDING_FINDINGS.w5N05IntegrationFoundationExists).toBe(true);
     expect(W5_N08_A_BINDING_FINDINGS.unifiedPlatformQueueLayerMissing).toBe(true);
-    expect(W5_N08_A_BINDING_FINDINGS.platformQueueAnchorsMissing).toBe(true);
+    expect(W5_N08_A_BINDING_FINDINGS.platformQueueAnchorsMissing).toBe(false);
     expect(W5_N08_A_BINDING_FINDINGS.w5N07DispatchFoundationExists).toBe(true);
     expect(W5_N08_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
   });

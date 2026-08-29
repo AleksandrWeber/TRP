@@ -823,9 +823,26 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-| W5-N08 opened | **Yes** | W5-N08-a **COMPLETE** — awaiting explicit Product Owner instruction before W5-N08-b |
+| W5-N08 opened | **Yes** | W5-N08-b **COMPLETE** — awaiting explicit Product Owner instruction before W5-N08-c |
 
-**Explicit non-claim:** Product Owner Close does **not** authorize Notification Platform Dispatch implemented, Notification Platform Complete, dispatcher implemented, queue orchestration implemented, retry implemented, scheduler implemented, Production Ready, Live Notifications, or Wave 5 COMPLETE.
+**Explicit non-claim:** Product Owner Close does **not** authorize Notification Platform Queue implemented, Notification Platform Complete, queue workers implemented, queue orchestration implemented, retry implemented, scheduler implemented, Production Ready, Live Notifications, or Wave 5 COMPLETE.
+
+---
+
+## W5-N08-b validation (2026-08-29 — recorded)
+
+| Layer                | Result   | Evidence                                                  |
+| -------------------- | -------- | --------------------------------------------------------- |
+| Durable persistence  | **PASS** | `durable-notification-platform-queue-anchor.ts`           |
+| Repository + Prisma  | **PASS** | `prisma-notification-platform-queue-anchor.repository.ts` |
+| Persistence service  | **PASS** | `notification-platform-queue-persistence.service.ts`      |
+| Conformance registry | **PASS** | `w5-n08-b-durable-notification-platform-queue.ts`         |
+| Inventory sync       | **PASS** | W5-N08-a inventory SURVIVE rows updated                   |
+| Architecture check   | **PASS** | No ownership drift; no queue execution/workers            |
+| Regression suite     | **PASS** | lint / typecheck / test / build                           |
+| git diff --check     | **PASS** | No whitespace errors                                      |
+
+**Explicit non-claim:** W5-N08-b does **not** authorize Notification Platform Queue implemented, queue execution implemented, restart recovery, Notification Platform Complete, W5-N08 COMPLETE, or Wave 5 COMPLETE. **Recorded**.
 
 ---
 
