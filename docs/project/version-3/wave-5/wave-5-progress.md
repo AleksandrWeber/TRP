@@ -97,7 +97,7 @@
 | **W5-N07** | **V3-N07** | Notification Platform Dispatch Foundation         | **CLOSED** by Product Owner (2026-08-29)                      |
 | **W5-N08** | **V3-N08** | Notification Platform Queue Foundation            | **CLOSED** by Product Owner (2026-08-29)                      |
 | **W5-N09** | **V3-N09** | Notification Platform Workers Foundation          | **CLOSED** by Product Owner (2026-08-29)                      |
-| **W5-N10** | **V3-N10** | Notification Platform Worker Execution Foundation | W5-N10-a **COMPLETE** (local) — Awaiting Product Owner Review |
+| **W5-N10** | **V3-N10** | Notification Platform Worker Execution Foundation | W5-N10-b **COMPLETE** (local) — Awaiting Product Owner Review |
 
 Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 → N09 → N10**.
 
@@ -220,13 +220,14 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 
 | **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 **CLOSED** by Product Owner (2026-08-29) · W5-N08 **CLOSED** by Product Owner (2026-08-29) · W5-N09 **CLOSED** by Product Owner (2026-08-29) |
 | **First package**                     | **W5-N01** Production Telegram Bot API (V3-N01 · CM-11) — **CLOSED**                                                                                                                                                                                                                                                                    |
 | **Previous package**                  | **W5-N09** Notification Platform Workers Foundation (V3-N09 · CM-20) — **CLOSED** by Product Owner (2026-08-29)                                                                                                                                                                                                                         |
-| **Current package**                   | **W5-N10** Notification Platform Worker Execution Foundation (V3-N10 · CM-20) — W5-N10-a **COMPLETE** (local) — Awaiting Product Owner Review                                                                                                                                                                                           |
+| **Current package**                   | **W5-N10** Notification Platform Worker Execution Foundation (V3-N10 · CM-20) — W5-N10-b **COMPLETE** (local) — Awaiting Product Owner Review                                                                                                                                                                                           |
 | **W5-N10 Planning Package**           | **APPROVED** (2026-08-29) — [`w5-n10-planning-summary.md`](./w5-n10-planning-summary.md)                                                                                                                                                                                                                                                |
 | **W5-N10 Planning Review**            | **PASS** (2026-08-29) — [`w5-n10-planning-review.md`](./w5-n10-planning-review.md)                                                                                                                                                                                                                                                      |
 | **W5-N10 Planning Approval**          | **RECORDED** (2026-08-29) — [`w5-n10-planning-approval.md`](./w5-n10-planning-approval.md)                                                                                                                                                                                                                                              |
 | **W5-N10-a inventory**                | [`w5-n10-a-notification-platform-worker-execution-inventory.md`](./w5-n10-a-notification-platform-worker-execution-inventory.md)                                                                                                                                                                                                        |
 | **W5-N10-a implementation report**    | [`w5-n10-a-implementation-report.md`](./w5-n10-a-implementation-report.md)                                                                                                                                                                                                                                                              |
-| **Implementation authorized?**        | **Yes** — W5-N10-a **COMPLETE** (local, uncommitted); W5-N10-b…e **not authorized**; repository synchronization pending Product Owner Review                                                                                                                                                                                            |
+| **W5-N10-b implementation report**    | [`w5-n10-b-implementation-report.md`](./w5-n10-b-implementation-report.md)                                                                                                                                                                                                                                                              |
+| **Implementation authorized?**        | **Yes** — W5-N10-a **COMPLETE** (`6443c6e`); W5-N10-b **COMPLETE** (local, uncommitted); W5-N10-c…e **not authorized**; repository synchronization pending Product Owner Review                                                                                                                                                         |
 | **W5-N09-a inventory**                | [`w5-n09-a-notification-platform-workers-inventory.md`](./w5-n09-a-notification-platform-workers-inventory.md)                                                                                                                                                                                                                          |
 | **W5-N09-a implementation report**    | [`w5-n09-a-implementation-report.md`](./w5-n09-a-implementation-report.md)                                                                                                                                                                                                                                                              |
 | **W5-N09-b implementation report**    | [`w5-n09-b-implementation-report.md`](./w5-n09-b-implementation-report.md)                                                                                                                                                                                                                                                              |
@@ -519,10 +520,12 @@ W5-N10 Planning Review PASS (2026-08-29)
         ↓
 W5-N10 Planning APPROVED (2026-08-29)
         ↓
-W5-N10-a COMPLETE (local) — Notification Platform Worker Execution Inventory & Honest Product Baseline
+W5-N10-a COMPLETE (`6443c6e`) — Notification Platform Worker Execution Inventory & Honest Product Baseline
+        ↓
+W5-N10-b COMPLETE (local) — Durable Notification Platform Worker Execution Foundation
         ↓
 STOP — Await Product Owner Review before Repository Synchronization
-(No W5-N10-b / c / d / e authorized)
+(No W5-N10-c / d / e authorized)
 (No worker runtime execution / orchestration / retry / scheduler / dead-letter)
 (No production transport I/O)
 (No Notification Platform Complete)
@@ -645,8 +648,9 @@ STOP — Await Product Owner Review before Repository Synchronization
 | W5-N10 Planning Review PASS           | **Recorded** (2026-08-29) |
 | W5-N10 Planning APPROVED              | **Recorded** (2026-08-29) |
 | W5-N10-a authorized                   | **Recorded** (2026-08-29) |
-| W5-N10-a COMPLETE (local)             | **Recorded** (2026-08-29) |
-| W5-N10-a opened                       | **Recorded** (local)      |
+| W5-N10-a COMPLETE (`6443c6e`)         | **Recorded** (2026-08-29) |
+| W5-N10-b COMPLETE (local)             | **Recorded** (2026-08-29) |
+| W5-N10-b opened                       | **Recorded** (local)      |
 | Worker runtime execution implemented  | **Not claimed**           |
 | Queue execution implemented           | **Not claimed**           |
 | Dispatcher implemented                | **Not claimed**           |
@@ -669,4 +673,4 @@ STOP — Await Product Owner Review before Repository Synchronization
 
 ---
 
-**STOP.** W5-N10-a is **COMPLETE** (local, uncommitted) — Awaiting Product Owner Review. Do not declare Notification Platform Worker Execution Foundation implemented. Do not declare Worker runtime execution implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not commit or push without Product Owner instruction. Do not open W5-N10-b through W5-N10-e.
+**STOP.** W5-N10-b is **COMPLETE** (local, uncommitted) — Awaiting Product Owner Review. Do not declare Notification Platform Worker Execution Foundation implemented. Do not declare Worker runtime execution implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Restart Recovery implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not commit or push without Product Owner instruction. Do not open W5-N10-c through W5-N10-e.

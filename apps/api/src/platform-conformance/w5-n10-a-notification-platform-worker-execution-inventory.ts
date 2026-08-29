@@ -253,6 +253,29 @@ export const W5_N10_A_NOTIFICATION_PLATFORM_WORKER_EXECUTION_INVENTORY: readonly
     Object.freeze({
       authorizesPlatformWorkerExecutionFunctional: false as const,
       authorizesW5N10Complete: false as const,
+      artifactId: 'own-platform-worker-execution-persistence',
+      artifact:
+        'Platform worker execution anchors — workspace-scoped durable worker execution state',
+      kind: 'ownership' as const,
+      owner: 'notification-delivery' as const,
+      durabilityClass: 'SURVIVE' as const,
+      capabilityCategory: 'infrastructure-only' as const,
+      currentStatus:
+        'Implemented — workspace_notification_platform_worker_execution_anchors on notification-delivery owner',
+      honestyRequirement:
+        'Worker execution anchor persistence on notification-delivery owner only; hydrate is W5-N10-c',
+      futureW5N10Responsibility: 'W5-N10-c' as const,
+      evidencePath:
+        'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-worker-execution-anchor.repository.ts',
+      existsToday: true as const,
+      persistenceResponsibility: 'notification-delivery' as const,
+      recoveryResponsibility: 'w5-n10-c' as const,
+      operationalContinuityResponsibility: 'platform-readiness' as const,
+      honestProductState: 'infrastructure-only' as const,
+    }),
+    Object.freeze({
+      authorizesPlatformWorkerExecutionFunctional: false as const,
+      authorizesW5N10Complete: false as const,
       artifactId: 'own-notification-delivery-domain',
       artifact: 'Notification Delivery — deliver / test / queue / connection domain owner',
       kind: 'ownership' as const,
@@ -1496,18 +1519,20 @@ export const W5_N10_A_NOTIFICATION_PLATFORM_WORKER_EXECUTION_INVENTORY: readonly
         'WorkspaceNotificationPlatformWorkerExecutionAnchor — canonical worker execution anchors (W5-N10-b)',
       kind: 'persistence-candidate' as const,
       owner: 'notification-delivery' as const,
-      durabilityClass: 'EPHEMERAL' as const,
-      capabilityCategory: 'not-implemented' as const,
-      currentStatus: 'Missing — worker execution anchors deferred to W5-N10-b durable foundation',
+      durabilityClass: 'SURVIVE' as const,
+      capabilityCategory: 'infrastructure-only' as const,
+      currentStatus:
+        'Implemented — workspace_notification_platform_worker_execution_anchors; anchor-recorded only; no worker runtime',
       honestyRequirement:
         'Worker execution anchor persistence ≠ worker execution functional; restart hydrate is W5-N10-c',
       futureW5N10Responsibility: 'W5-N10-c' as const,
-      evidencePath: 'docs/project/version-3/wave-5/w5-n10-planning-summary.md',
-      existsToday: false as const,
-      persistenceResponsibility: 'w5-n10-b' as const,
+      evidencePath:
+        'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-worker-execution-anchor.repository.ts',
+      existsToday: true as const,
+      persistenceResponsibility: 'notification-delivery' as const,
       recoveryResponsibility: 'w5-n10-c' as const,
-      operationalContinuityResponsibility: 'w5-n10-d' as const,
-      honestProductState: 'planned' as const,
+      operationalContinuityResponsibility: 'platform-readiness' as const,
+      honestProductState: 'infrastructure-only' as const,
     }),
     Object.freeze({
       authorizesPlatformWorkerExecutionFunctional: false as const,
@@ -2023,7 +2048,7 @@ export const W5_N10_A_BINDING_FINDINGS = Object.freeze({
   w5N08QueueFoundationExists: true,
   w5N09WorkersFoundationExists: true,
   unifiedPlatformWorkerExecutionLayerMissing: true,
-  platformWorkerExecutionAnchorsMissing: true,
+  platformWorkerExecutionAnchorsMissing: false,
   productionTransportsDeferred: true,
   ownershipBoundariesVerified: true,
   ownershipBoundariesChanged: false,

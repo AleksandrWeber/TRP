@@ -946,7 +946,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N10-a validation (2026-08-29 — local, uncommitted)
+## W5-N10-a validation (2026-08-29 — `6443c6e`)
 
 | Layer                | Result   | Evidence                                                       |
 | -------------------- | -------- | -------------------------------------------------------------- |
@@ -957,9 +957,24 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite     | **PASS** | lint / typecheck / test / build                                |
 | git diff --check     | **PASS** | No whitespace errors                                           |
 
-**Explicit non-claim:** W5-N10-a does **not** authorize Notification Platform Worker Execution implemented, worker runtime implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N10 COMPLETE, or Wave 5 COMPLETE.
+**Explicit non-claim:** W5-N10-a does **not** authorize Notification Platform Worker Execution implemented, worker runtime implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N10 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`6443c6e`).
 
-**STOP.** W5-N10-a is **COMPLETE** (local, uncommitted) — Awaiting Product Owner Review. Do not commit or push without Product Owner instruction.
+---
+
+## W5-N10-b validation (2026-08-29 — local, uncommitted)
+
+| Layer               | Result   | Evidence                                                        |
+| ------------------- | -------- | --------------------------------------------------------------- |
+| Durable persistence | **PASS** | `w5-n10-b-durable-notification-platform-worker-execution.ts`    |
+| Persistence service | **PASS** | `notification-platform-worker-execution-persistence.service.ts` |
+| Inventory sync      | **PASS** | W5-N10-a inventory promoted to SURVIVE                          |
+| Architecture check  | **PASS** | No ownership drift; no worker runtime execution                 |
+| Regression suite    | **PASS** | lint / typecheck / test / build                                 |
+| git diff --check    | **PASS** | No whitespace errors                                            |
+
+**Explicit non-claim:** W5-N10-b does **not** authorize Notification Platform Worker Execution implemented, restart recovery implemented, worker runtime implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N10 COMPLETE, or Wave 5 COMPLETE.
+
+**STOP.** W5-N10-b is **COMPLETE** (local, uncommitted) — Awaiting Product Owner Review. Do not commit or push without Product Owner instruction.
 
 ---
 

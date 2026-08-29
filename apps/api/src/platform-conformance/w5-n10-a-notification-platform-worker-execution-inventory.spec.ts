@@ -140,7 +140,7 @@ describe('W5-N10-a notification platform worker execution inventory — unit', (
     expect(W5_N10_A_BINDING_FINDINGS.w5N05IntegrationFoundationExists).toBe(true);
     expect(W5_N10_A_BINDING_FINDINGS.w5N09WorkersFoundationExists).toBe(true);
     expect(W5_N10_A_BINDING_FINDINGS.unifiedPlatformWorkerExecutionLayerMissing).toBe(true);
-    expect(W5_N10_A_BINDING_FINDINGS.platformWorkerExecutionAnchorsMissing).toBe(true);
+    expect(W5_N10_A_BINDING_FINDINGS.platformWorkerExecutionAnchorsMissing).toBe(false);
     expect(W5_N10_A_BINDING_FINDINGS.w5N08QueueFoundationExists).toBe(true);
     expect(W5_N10_A_BINDING_FINDINGS.w5N07DispatchFoundationExists).toBe(true);
     expect(W5_N10_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
