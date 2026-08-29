@@ -218,7 +218,7 @@ describe('W5-N02-e package close evidence — integration / planning', () => {
     expect(progress).toMatch(/CLOSED by Product Owner|Package \*\*CLOSED\*\*/);
     expect(progress).toMatch(/W5-N02-a|W5-N02-b|W5-N02-c|W5-N02-d|W5-N02-e/);
     expect(progress).toMatch(
-      /Awaiting Product Owner instruction for W5-N03 Planning Package|Awaiting W5-N03-a|W5-N03-a \*\*COMPLETE\*\*|Awaiting Product Owner Review/i,
+      /Awaiting Product Owner instruction for W5-N03 Planning Package|Awaiting W5-N03-a|W5-N03-a \*\*COMPLETE\*\*|Awaiting Product Owner Review|W5-N03 \*\*CLOSED\*\*|Awaiting Product Owner instruction for W5-N04/i,
     );
     expect(progress).toMatch(/Wave 5 COMPLETE[\s\S]*Not claimed|Not claimed[\s\S]*Wave 5 COMPLETE/);
     expect(overview).toMatch(/\*\*CLOSED\*\* by Product Owner|CLOSED by Product Owner/);

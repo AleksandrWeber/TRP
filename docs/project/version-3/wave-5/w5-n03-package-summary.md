@@ -5,7 +5,7 @@
 **Master Plan / Roadmap:** V3-N03 · CM-13, CM-14, CM-15  
 **Evidence slice:** W5-N03-e  
 **Date:** 2026-08-29  
-**Status:** Close Evidence assembled — **awaiting Product Owner Package Review**. Package **not** CLOSED.
+**Status:** **CLOSED** by Product Owner (2026-08-29). Close Evidence assembled; Final Integration Verification **PASS** (`7f17a26`).
 
 ---
 
@@ -45,8 +45,8 @@
 | W5-N03-b | Durable Slack / Discord / Teams Notification Persistence | APPROVED / COMPLETE |
 | W5-N03-c | Slack / Discord / Teams Restart Recovery                 | APPROVED / COMPLETE |
 | W5-N03-d | Slack / Discord / Teams Operational Continuity           | APPROVED / COMPLETE |
-| W5-N03-e | Close Evidence                                           | COMPLETE (local)    |
-| W5-N03   | Package                                                  | **Not CLOSED**      |
+| W5-N03-e | Close Evidence                                           | APPROVED / COMPLETE |
+| W5-N03   | Package                                                  | **CLOSED**          |
 
 ---
 
@@ -59,4 +59,4 @@
 
 ---
 
-**STOP.** Engineering does **not** declare W5-N03 CLOSED from this summary alone.
+**STOP.** W5-N03 is **CLOSED** by Product Owner (2026-08-29). Engineering does **not** declare Slack / Discord / Teams notifications operational from this summary alone.

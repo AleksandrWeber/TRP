@@ -313,6 +313,8 @@ Verify:
 | **Introduced** | **None**                                               |
 | **Deferred**   | Webhook I/O outcomes; W5-N04 authorization             |
 
+**Post-Close note (2026-08-29):** Product Owner Final Close executed. W5-N03 **CLOSED** — see [`w5-n03-product-owner-close-record.md`](./w5-n03-product-owner-close-record.md).
+
 **PASS**
 
 ---
@@ -349,7 +351,7 @@ Engineering does **not** open W5-N04 or the next Wave package.
 
 **STOP.**
 
-Await explicit Product Owner instruction before W5-N03 Product Owner Final Close.
+W5-N03 **CLOSED** by Product Owner (2026-08-29).
 
 Do **not** declare Slack implemented.
 
