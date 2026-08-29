@@ -9,6 +9,7 @@ import {
   SLACK_DISCORD_TEAMS_NOTIFICATION_ANCHOR_REPOSITORY,
   type SlackDiscordTeamsNotificationAnchorRepository,
 } from './domain/slack-discord-teams-notification-anchor.repository';
+import { SlackDiscordTeamsNotificationRecoveryStore } from './slack-discord-teams-notification-recovery-store';
 
 export type PersistSlackDiscordTeamsNotificationAnchorCommand = Readonly<{
   workspaceId: string;
@@ -24,20 +25,26 @@ export type PersistSlackDiscordTeamsNotificationAnchorCommand = Readonly<{
 }>;
 
 /**
- * W5-N03-b — durable Slack / Discord / Teams notification anchor persistence on Notification Delivery owner.
- * Storage only — no webhook I/O, outbound delivery, or restart recovery.
+ * W5-N03-b/c — durable Slack / Discord / Teams notification anchor persistence on Notification Delivery owner.
+ * W5-N03-c — write-through to recovery store after hydrate.
+ * Storage only — no webhook I/O, outbound delivery, or operational continuity.
  */
 @Injectable()
 export class SlackDiscordTeamsNotificationPersistenceService {
   constructor(
     @Inject(SLACK_DISCORD_TEAMS_NOTIFICATION_ANCHOR_REPOSITORY)
     private readonly repository: SlackDiscordTeamsNotificationAnchorRepository,
+    @Inject(SlackDiscordTeamsNotificationRecoveryStore)
+    private readonly recoveryStore: SlackDiscordTeamsNotificationRecoveryStore,
   ) {}
 
   async loadAnchor(
     workspaceId: string,
     notificationId: string,
   ): Promise<DurableSlackDiscordTeamsNotificationAnchor | null> {
+    if (this.recoveryStore.hasHydrated()) {
+      return this.recoveryStore.get(workspaceId, notificationId);
+    }
     return this.repository.loadSlackDiscordTeamsNotificationAnchor(workspaceId, notificationId);
   }
 
@@ -50,6 +57,7 @@ export class SlackDiscordTeamsNotificationPersistenceService {
       return outcome;
     }
     await this.repository.saveSlackDiscordTeamsNotificationAnchor(outcome.anchor);
+    this.recoveryStore.set(outcome.anchor);
     return outcome;
   }
 }

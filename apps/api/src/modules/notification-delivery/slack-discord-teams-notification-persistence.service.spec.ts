@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { DurableSlackDiscordTeamsNotificationAnchor } from './domain/durable-slack-discord-teams-notification-anchor';
 import type { SlackDiscordTeamsNotificationAnchorRepository } from './domain/slack-discord-teams-notification-anchor.repository';
 import { SlackDiscordTeamsNotificationPersistenceService } from './slack-discord-teams-notification-persistence.service';
+import { SlackDiscordTeamsNotificationRecoveryStore } from './slack-discord-teams-notification-recovery-store';
 
 const recordedAt = '2026-08-29T16:00:00.000Z';
 
@@ -27,7 +28,10 @@ function createRepository(): SlackDiscordTeamsNotificationAnchorRepository & {
 describe('SlackDiscordTeamsNotificationPersistenceService — W5-N03-b storage only', () => {
   it('persistNotificationAnchor writes canonical anchors without delivery execution', async () => {
     const repository = createRepository();
-    const service = new SlackDiscordTeamsNotificationPersistenceService(repository);
+    const service = new SlackDiscordTeamsNotificationPersistenceService(
+      repository,
+      new SlackDiscordTeamsNotificationRecoveryStore(),
+    );
 
     const outcome = await service.persistNotificationAnchor({
       workspaceId: 'ws-1',
@@ -61,7 +65,10 @@ describe('SlackDiscordTeamsNotificationPersistenceService — W5-N03-b storage o
 
   it('accepts discord and teams notification channels', async () => {
     const repository = createRepository();
-    const service = new SlackDiscordTeamsNotificationPersistenceService(repository);
+    const service = new SlackDiscordTeamsNotificationPersistenceService(
+      repository,
+      new SlackDiscordTeamsNotificationRecoveryStore(),
+    );
 
     for (const [notificationId, notificationChannel] of [
       ['ntf-discord', 'discord'],
@@ -82,7 +89,10 @@ describe('SlackDiscordTeamsNotificationPersistenceService — W5-N03-b storage o
 
   it('does not claim delivered or connected flags on anchor rows', async () => {
     const repository = createRepository();
-    const service = new SlackDiscordTeamsNotificationPersistenceService(repository);
+    const service = new SlackDiscordTeamsNotificationPersistenceService(
+      repository,
+      new SlackDiscordTeamsNotificationRecoveryStore(),
+    );
 
     await service.persistNotificationAnchor({
       workspaceId: 'ws-1',
@@ -99,7 +109,10 @@ describe('SlackDiscordTeamsNotificationPersistenceService — W5-N03-b storage o
 
   it('rejects non-webhook notification channel', async () => {
     const repository = createRepository();
-    const service = new SlackDiscordTeamsNotificationPersistenceService(repository);
+    const service = new SlackDiscordTeamsNotificationPersistenceService(
+      repository,
+      new SlackDiscordTeamsNotificationRecoveryStore(),
+    );
 
     const outcome = await service.persistNotificationAnchor({
       workspaceId: 'ws-1',

@@ -243,7 +243,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N03-b validation (2026-08-29)
+## W5-N03-b validation (2026-08-29 — `bfb2844`)
 
 | Layer              | Result   | Evidence                                                          |
 | ------------------ | -------- | ----------------------------------------------------------------- |
@@ -256,6 +256,22 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | git diff --check   | **PASS** | No whitespace errors                                              |
 
 **Explicit non-claim:** W5-N03-b does **not** authorize Slack implemented, Discord implemented, Microsoft Teams implemented, Slack/Discord/Teams notifications operational, restart survival, W5-N03 COMPLETE, or Wave 5 COMPLETE.
+
+---
+
+## W5-N03-c validation (2026-08-29)
+
+| Layer               | Result   | Evidence                                                                |
+| ------------------- | -------- | ----------------------------------------------------------------------- |
+| Restart recovery    | **PASS** | `w5-n03-c-slack-discord-teams-notification-restart-recovery.ts`         |
+| Hydrate integrity   | **PASS** | `slack-discord-teams-notification-restart-recovery.service.ts`          |
+| Persistence hydrate | **PASS** | `slack-discord-teams-notification-persistence.service.ts` write-through |
+| Slice reports       | **PASS** | w5-n03-c-* reports under wave-5                                         |
+| Architecture check  | **PASS** | No ownership drift; no webhook I/O                                      |
+| Regression suite    | **PASS** | lint / typecheck / test / build                                         |
+| git diff --check    | **PASS** | No whitespace errors                                                    |
+
+**Explicit non-claim:** W5-N03-c does **not** authorize Slack implemented, Discord implemented, Microsoft Teams implemented, Slack/Discord/Teams notifications operational, operational continuity, W5-N03 COMPLETE, or Wave 5 COMPLETE.
 
 ---
 

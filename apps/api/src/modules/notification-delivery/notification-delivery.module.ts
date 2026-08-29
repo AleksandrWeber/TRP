@@ -15,6 +15,8 @@ import { PrismaTelegramNotificationAnchorRepository } from './persistence/prisma
 import { NOTIFICATION_SERVICE_PORT, TELEGRAM_CHANNEL_ADAPTER } from './ports/notification.port';
 import { EmailNotificationPersistenceService } from './email-notification-persistence.service';
 import { SlackDiscordTeamsNotificationPersistenceService } from './slack-discord-teams-notification-persistence.service';
+import { SlackDiscordTeamsNotificationRecoveryStore } from './slack-discord-teams-notification-recovery-store';
+import { SlackDiscordTeamsNotificationRestartRecoveryService } from './slack-discord-teams-notification-restart-recovery.service';
 import { EmailNotificationRecoveryStore } from './email-notification-recovery-store';
 import { EmailNotificationRestartRecoveryService } from './email-notification-restart-recovery.service';
 import { TelegramNotificationPersistenceService } from './telegram-notification-persistence.service';
@@ -32,6 +34,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
  * W5-N02-b: durable Email notification anchor persistence on this owner only.
  * W5-N02-c: deterministic restart recovery hydrate for canonical Email anchors on this owner only.
  * W5-N03-b: durable Slack / Discord / Teams notification anchor persistence on this owner only.
+ * W5-N03-c: deterministic restart recovery hydrate for canonical Slack / Discord / Teams anchors on this owner only.
  * Does not import Reporting / AI Analytics / Strategy Library / Runtime /
  * Trading Session / Orders / Ledger. Does not expose REST or trading commands.
  */
@@ -69,6 +72,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     TelegramNotificationPersistenceService,
     EmailNotificationPersistenceService,
     SlackDiscordTeamsNotificationPersistenceService,
+    SlackDiscordTeamsNotificationRecoveryStore,
+    SlackDiscordTeamsNotificationRestartRecoveryService,
     EmailNotificationRecoveryStore,
     EmailNotificationRestartRecoveryService,
     InMemoryTelegramAdapter,
@@ -96,6 +101,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     TelegramNotificationPersistenceService,
     EmailNotificationPersistenceService,
     SlackDiscordTeamsNotificationPersistenceService,
+    SlackDiscordTeamsNotificationRecoveryStore,
+    SlackDiscordTeamsNotificationRestartRecoveryService,
     EmailNotificationRecoveryStore,
     EmailNotificationRestartRecoveryService,
   ],

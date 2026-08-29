@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PrismaSlackDiscordTeamsNotificationAnchorRepository } from '../modules/notification-delivery/persistence/prisma-slack-discord-teams-notification-anchor.repository';
 import { SlackDiscordTeamsNotificationPersistenceService } from '../modules/notification-delivery/slack-discord-teams-notification-persistence.service';
+import { SlackDiscordTeamsNotificationRecoveryStore } from '../modules/notification-delivery/slack-discord-teams-notification-recovery-store';
 import { rowsEphemeral } from './w5-n03-a-slack-discord-teams-notification-inventory';
 import {
   W5_N03_B_ARCHITECTURE_CLAIMS,
@@ -63,7 +64,10 @@ describe('W5-N03-b durable slack/discord/teams notification — unit', () => {
   it('persistence correctness: anchor write-through upserts workspace notification row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaSlackDiscordTeamsNotificationAnchorRepository(prisma as never);
-    const service = new SlackDiscordTeamsNotificationPersistenceService(repository);
+    const service = new SlackDiscordTeamsNotificationPersistenceService(
+      repository,
+      new SlackDiscordTeamsNotificationRecoveryStore(),
+    );
 
     const outcome = await service.persistNotificationAnchor({
       workspaceId: 'ws-a',
