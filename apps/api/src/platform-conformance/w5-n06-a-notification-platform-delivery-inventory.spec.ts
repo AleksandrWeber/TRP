@@ -96,8 +96,8 @@ describe('W5-N06-a notification platform delivery inventory — unit', () => {
     expect(ids.has('missing-unified-platform-delivery-view')).toBe(true);
     expect(ids.has('missing-platform-delivery-restart-recovery')).toBe(true);
     expect(ids.has('missing-platform-delivery-operational-continuity')).toBe(true);
-    expect(ids.has('missing-platform-delivery-durable-anchors')).toBe(true);
-    expect(ids.has('persist-notification-platform-delivery-anchor')).toBe(false);
+    expect(ids.has('persist-notification-platform-delivery-anchor')).toBe(true);
+    expect(ids.has('missing-platform-delivery-durable-anchors')).toBe(false);
     expect(ids.has('runtime-pc06-resolve-delivery-routing')).toBe(true);
     expect(ids.has('continuity-telegram-notification-view')).toBe(true);
     expect(ids.has('continuity-push-notification-view')).toBe(true);
@@ -120,8 +120,8 @@ describe('W5-N06-a notification platform delivery inventory — unit', () => {
     expect(ids.has('missing-platform-delivery-operational-continuity')).toBe(true);
     expect(ids.has('missing-cross-channel-delivery-honesty-unification')).toBe(true);
     expect(ids.has('missing-production-transport-delivery')).toBe(true);
-    expect(ids.has('missing-platform-delivery-durable-anchors')).toBe(true);
-    expect(ids.has('persist-notification-platform-delivery-anchor')).toBe(false);
+    expect(ids.has('persist-notification-platform-delivery-anchor')).toBe(true);
+    expect(ids.has('missing-platform-delivery-durable-anchors')).toBe(false);
     expect(ids.has('missing-platform-delivery-ui')).toBe(true);
   });
 
@@ -131,7 +131,7 @@ describe('W5-N06-a notification platform delivery inventory — unit', () => {
     expect(W5_N06_A_BINDING_FINDINGS.customerVisibleFeatureFromSliceA).toBe(false);
     expect(W5_N06_A_BINDING_FINDINGS.w5N05IntegrationFoundationExists).toBe(true);
     expect(W5_N06_A_BINDING_FINDINGS.unifiedPlatformDeliveryLayerMissing).toBe(true);
-    expect(W5_N06_A_BINDING_FINDINGS.platformDeliveryAnchorsMissing).toBe(true);
+    expect(W5_N06_A_BINDING_FINDINGS.platformDeliveryAnchorsMissing).toBe(false);
     expect(W5_N06_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
   });
 

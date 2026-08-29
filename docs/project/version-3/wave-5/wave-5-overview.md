@@ -385,6 +385,22 @@ See [`w5-n06-a-notification-platform-delivery-inventory.md`](./w5-n06-a-notifica
 
 ---
 
+## W5-N06-b status (Durable Notification Platform Delivery foundation)
+
+W5-N06-b adds canonical Notification Platform Delivery anchor persistence on the existing **Notification Delivery** owner via `WorkspaceNotificationPlatformDeliveryAnchor`. **No customer-visible Notification Platform Delivery behaviour** was added.
+
+```text
+Canonical platform delivery anchors persisted — anchor-recorded only.
+No delivery execution, dispatcher, queue workers, retry, or scheduler.
+No restart recovery hydrate — W5-N06-c.
+Platform delivery does NOT function after this slice.
+Notification Platform Delivery implemented — NOT claimed.
+```
+
+See [`w5-n06-b-implementation-report.md`](./w5-n06-b-implementation-report.md).
+
+---
+
 ## W5-N05-a status (Notification Platform Integration inventory & honesty baseline)
 
 W5-N05-a enumerates every Notification Platform Integration artifact across W5-N01…N04 per-channel foundations, PC-06 routing, PC-07 notification product, per-channel operational continuity views, and missing unified platform integration layer. **No customer-visible Notification Platform Integration behaviour** was added.
@@ -474,8 +490,9 @@ W5-N05 Final Package Integration Verification **PASS** (2026-08-29). All slices 
 Slice chain d6514ab → cbbf1d7 → 9b85628 → 2cdb0b7 → d89a076 → ae1104d verified on origin/main.
 Product Owner Close Record created — W5-N05 CLOSED.
 W5-N06 Planning APPROVED (2026-08-29).
-W5-N06-a COMPLETE (local) — Notification Platform Delivery Inventory & Honest Product Baseline.
-Awaiting Product Owner Review before W5-N06-b.
+W5-N06-a COMPLETE (`6d6c504`) — Notification Platform Delivery Inventory & Honest Product Baseline.
+W5-N06-b COMPLETE (local) — Durable Notification Platform Delivery Foundation.
+Awaiting Product Owner Review before Repository Synchronization.
 W5-N06 — not CLOSED.
 ```
 

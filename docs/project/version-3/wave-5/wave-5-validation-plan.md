@@ -583,7 +583,24 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N06-a validation (2026-08-29 — local)
+## W5-N06-b validation (2026-08-29 — local)
+
+| Layer               | Result   | Evidence                                                |
+| ------------------- | -------- | ------------------------------------------------------- |
+| Durable foundation  | **PASS** | `w5-n06-b-durable-notification-platform-delivery.ts`    |
+| Prisma schema       | **PASS** | `WorkspaceNotificationPlatformDeliveryAnchor`           |
+| Persistence service | **PASS** | `notification-platform-delivery-persistence.service.ts` |
+| Inventory sync      | **PASS** | `persist-notification-platform-delivery-anchor` SURVIVE |
+| Slice reports       | **PASS** | w5-n06-b-* reports under wave-5                         |
+| Architecture check  | **PASS** | No ownership drift; no delivery execution/dispatcher    |
+| Regression suite    | **PASS** | lint / typecheck / test / build                         |
+| git diff --check    | **PASS** | No whitespace errors                                    |
+
+**Explicit non-claim:** W5-N06-b does **not** authorize Notification Platform Delivery implemented, dispatcher implemented, queue orchestration implemented, restart recovery, Notification Platform Complete, W5-N06 COMPLETE, or Wave 5 COMPLETE. **Local only** — not committed.
+
+---
+
+## W5-N06-a validation (2026-08-29 — recorded `6d6c504`)
 
 | Layer                | Result   | Evidence                                               |
 | -------------------- | -------- | ------------------------------------------------------ |
@@ -594,7 +611,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite     | **PASS** | lint / typecheck / test / build                        |
 | git diff --check     | **PASS** | No whitespace errors                                   |
 
-**Explicit non-claim:** W5-N06-a does **not** authorize Notification Platform Delivery implemented, dispatcher implemented, queue orchestration implemented, Notification Platform Complete, W5-N06 COMPLETE, or Wave 5 COMPLETE. **Local only** — not committed.
+**Explicit non-claim:** W5-N06-a does **not** authorize Notification Platform Delivery implemented, dispatcher implemented, queue orchestration implemented, Notification Platform Complete, W5-N06 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`6d6c504`).
 
 ---
 

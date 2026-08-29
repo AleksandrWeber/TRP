@@ -1904,3 +1904,23 @@ model WorkspaceNotificationPlatformIntegrationAnchor {
   @@id([workspaceId, integrationAnchorId])
   @@map("workspace_notification_platform_integration_anchors")
 }
+
+/// Canonical platform delivery anchor state only. No runtime execution. No dispatcher state.
+/// No retry state. No scheduler state. No queue workers. No transport execution.
+/// Persistence only — restart recovery and operational continuity are later slices.
+model WorkspaceNotificationPlatformDeliveryAnchor {
+  workspaceId            String   @map("workspace_id")
+  deliveryAnchorId       String   @map("delivery_anchor_id")
+  schemaVersion          Int      @default(1) @map("schema_version")
+  platformDeliveryType   String   @map("platform_delivery_type")
+  deliveryState          String   @map("delivery_state")
+  channelScope           String?  @map("channel_scope")
+  integrityMetadata      String?  @map("integrity_metadata")
+  correlationId          String?  @map("correlation_id")
+  recordedAt             DateTime @map("recorded_at")
+  recordedByActorId      String?  @map("recorded_by_actor_id")
+  updatedAt              DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, deliveryAnchorId])
+  @@map("workspace_notification_platform_delivery_anchors")
+}

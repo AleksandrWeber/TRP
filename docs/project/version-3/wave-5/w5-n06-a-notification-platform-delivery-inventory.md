@@ -39,7 +39,8 @@ Enumerate every Notification Platform Delivery artifact required to implement W5
 - Closed W5-N05 integration foundation exists — consumed as reference patterns only (anchors, restart recovery, operational continuity).
 - Per-channel W5-N01…N04 foundations exist and are **CLOSED** — consumed as reference patterns only.
 - PC-06 routing and PC-07 notification product are **implemented** — they decide routes and expose per-channel settings but do not constitute unified platform delivery.
-- **No** unified cross-channel platform delivery layer, durable platform delivery anchors, platform delivery restart recovery, platform delivery operational continuity projection, dispatcher, scheduler, or retry orchestration exists.
+- **No** unified cross-channel platform delivery layer, platform delivery restart recovery, platform delivery operational continuity projection, dispatcher, scheduler, or retry orchestration exists.
+- **W5-N06-b** durable platform delivery anchors exist on `notification-delivery` owner — canonical anchor state only; restart hydrate is W5-N06-c.
 - W3-O02 durable notification queue exists on `notification-delivery` owner — queue work survives restart; platform delivery orchestration is still absent.
 - TD-049 / TD-050 production transport I/O remains deferred — not claimed from this inventory.
 
@@ -47,13 +48,13 @@ Enumerate every Notification Platform Delivery artifact required to implement W5
 
 ## Honest Product baseline
 
-| Category                | Summary                                                                                                                                                                                                                                                    |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Implemented today**   | None — no customer-visible Notification Platform Delivery functionality.                                                                                                                                                                                   |
-| **Infrastructure only** | Per-channel N01…N04 anchors, W5-N05 integration anchors/recovery/continuity, per-channel and integration continuity projections, PC-06 routing, PC-07 notification product, NOTIFICATION_CHANNEL_CATALOG, durable queue/history, W5-N01…N05-a inventories. |
-| **Planned**             | W5-N06-b — Durable Notification Platform Delivery Foundation.                                                                                                                                                                                              |
-| **Not implemented**     | Unified platform delivery layer, durable platform delivery anchors, platform delivery restart recovery, platform delivery operational continuity, dispatcher, scheduler, retry orchestration, operator platform delivery UI, production transport I/O.     |
-| **Future roadmap**      | W5-N06-c…e, Wave 6 Live Trading, Wave 7 OpenAI (out of W5-N06 scope).                                                                                                                                                                                      |
+| Category                | Summary                                                                                                                                                                                                                                                                                                |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Implemented today**   | None — no customer-visible Notification Platform Delivery functionality.                                                                                                                                                                                                                               |
+| **Infrastructure only** | Per-channel N01…N04 anchors, W5-N05 integration anchors/recovery/continuity, W5-N06-b durable platform delivery anchors, per-channel and integration continuity projections, PC-06 routing, PC-07 notification product, NOTIFICATION_CHANNEL_CATALOG, durable queue/history, W5-N01…N05-a inventories. |
+| **Planned**             | W5-N06-c — Notification Platform Delivery Restart Recovery Foundation.                                                                                                                                                                                                                                 |
+| **Not implemented**     | Unified platform delivery layer, platform delivery restart recovery, platform delivery operational continuity, dispatcher, scheduler, retry orchestration, operator platform delivery UI, production transport I/O.                                                                                    |
+| **Future roadmap**      | W5-N06-c…e, Wave 6 Live Trading, Wave 7 OpenAI (out of W5-N06 scope).                                                                                                                                                                                                                                  |
 
 ---
 
@@ -64,7 +65,7 @@ Enumerate every Notification Platform Delivery artifact required to implement W5
 | `own-platform-delivery-layer`               | notification-delivery | EPHEMERAL | Deferred W5-N06-b          | Deferred W5-N06-c       | Deferred W5-N06-d                     |
 | `own-notification-delivery-domain`          | notification-delivery | SURVIVE   | notification-delivery      | notification-delivery   | platform-readiness                    |
 | `own-pc06-routing-delivery`                 | notification-delivery | SURVIVE   | notification-delivery      | notification-delivery   | platform-readiness                    |
-| `own-platform-delivery-persistence`         | notification-delivery | EPHEMERAL | Deferred W5-N06-b          | Deferred W5-N06-c       | Deferred W5-N06-d                     |
+| `own-platform-delivery-persistence`         | notification-delivery | SURVIVE   | notification-delivery      | w5-n06-c                | platform-readiness                    |
 | `own-w5-n05-integration-foundation-consume` | notification-delivery | SURVIVE   | notification-delivery      | notification-delivery   | platform-readiness                    |
 | `own-per-channel-foundations-reference`     | notification-delivery | SURVIVE   | notification-delivery      | notification-delivery   | platform-readiness                    |
 | `own-notification-durable-queue`            | notification-delivery | SURVIVE   | notification-delivery      | notification-delivery   | platform-readiness                    |
@@ -75,7 +76,7 @@ Full row detail: `W5_N06_A_NOTIFICATION_PLATFORM_DELIVERY_INVENTORY` and helpers
 
 ## Notification Platform Delivery SURVIVE artifacts (summary)
 
-Notification Delivery ownership, PC-06 routing substrate, durable notification store, delivery queue, per-channel W5-N01…N04 anchors, W5-N05 integration anchors/recovery/continuity, per-channel and integration operational continuity views, user preferences, delivery metadata, workspace isolation consumption, channel catalog, and verified ownership rows on existing owners.
+Notification Delivery ownership, PC-06 routing substrate, durable notification store, delivery queue, per-channel W5-N01…N04 anchors, W5-N05 integration anchors/recovery/continuity, W5-N06-b platform delivery anchors, per-channel and integration operational continuity views, user preferences, delivery metadata, workspace isolation consumption, channel catalog, and verified ownership rows on existing owners.
 
 See `rowsNotificationPlatformDeliverySurvive()` for the full machine-readable list.
 
@@ -83,7 +84,7 @@ See `rowsNotificationPlatformDeliverySurvive()` for the full machine-readable li
 
 ## Notification Platform Delivery EPHEMERAL artifacts (summary)
 
-Missing unified platform delivery layer, missing platform delivery durable anchors, missing platform delivery restart recovery, missing platform delivery operational continuity, missing dispatcher/scheduler/retry/orchestration, missing cross-channel delivery honesty unification, missing platform delivery UI, missing production transport delivery (TD-049/TD-050), and honesty blockers.
+Missing unified platform delivery layer, missing platform delivery restart recovery, missing platform delivery operational continuity, missing dispatcher/scheduler/retry/orchestration, missing cross-channel delivery honesty unification, missing platform delivery UI, missing production transport delivery (TD-049/TD-050), and honesty blockers.
 
 See `rowsNotificationPlatformDeliveryEphemeral()` for the full machine-readable list.
 
