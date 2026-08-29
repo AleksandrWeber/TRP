@@ -473,7 +473,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite     | **PASS** | lint / typecheck / test / build               |
 | git diff --check     | **PASS** | No whitespace errors                          |
 
-**Explicit non-claim:** W5-N04-b does **not** authorize Push implemented, Web Push implemented, FCM implemented, browser notifications operational, device token registry implemented, restart recovery, W5-N04 COMPLETE, or Wave 5 COMPLETE. Changes **local only** — not committed.
+**Explicit non-claim:** W5-N04-b does **not** authorize Push implemented, Web Push implemented, FCM implemented, browser notifications operational, device token registry implemented, restart recovery, W5-N04 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`0720bda`).
 
 ---
 
@@ -508,7 +508,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N04-e validation (2026-08-29 — local)
+## W5-N04-e validation (2026-08-29 — `d20ea88`)
 
 | Layer                     | Result   | Evidence                                                        |
 | ------------------------- | -------- | --------------------------------------------------------------- |
@@ -521,7 +521,21 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite          | **PASS** | lint / typecheck / test / build                                 |
 | git diff --check          | **PASS** | No whitespace errors                                            |
 
-**Explicit non-claim:** W5-N04-e does **not** authorize W5-N04 CLOSED, Push notifications operational, Notification Platform Complete, Final Package Integration Verification performed, or Wave 5 COMPLETE. Changes **local only** — not committed.
+**Explicit non-claim:** W5-N04-e does **not** authorize W5-N04 CLOSED, Push notifications operational, Notification Platform Complete, Final Package Integration Verification performed, or Wave 5 COMPLETE. **Recorded** (`d20ea88`).
+
+---
+
+## W5-N04 Final Integration Verification (2026-08-29 — local)
+
+| Layer                         | Result   | Evidence                                   |
+| ----------------------------- | -------- | ------------------------------------------ |
+| Package implementation a→e    | **PASS** | `w5-n04-final-integration-verification.md` |
+| Dependency / architecture     | **PASS** | Close Evidence registries + slice reviews  |
+| Documentation synchronization | **PASS** | wave-5-* + w5-n04-package-* aligned        |
+| Regression suite              | **PASS** | lint / typecheck / test / build            |
+| Engineering verdict           | **PASS** | READY FOR PRODUCT OWNER FINAL CLOSE        |
+
+**Explicit non-claim:** Final Integration Verification does **not** declare W5-N04 CLOSED, Push implemented, Web Push implemented, FCM implemented, browser notifications operational, device token registry implemented, Push notifications operational, Notification Platform Complete, or Wave 5 COMPLETE.
 
 ---
 
@@ -540,7 +554,15 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 - W5-N02 Final Integration PASS — **recorded** (`5b72450`)
 - W5-N02 CLOSED — **recorded** (2026-08-28)
 - W5-N03 opened — **not claimed**
+- W5-N04-a validation PASS — **recorded** (`d8c6158`)
+- W5-N04-b validation PASS — **recorded** (`0720bda`)
+- W5-N04-c validation PASS — **recorded** (`37e245c`)
+- W5-N04-d validation PASS — **recorded** (`a06a4c5`)
+- W5-N04-e validation PASS — **recorded** (`d20ea88`)
+- W5-N04 Final Integration PASS — **recorded** (local)
+- W5-N04 CLOSED — **not claimed**
+- W5-N05 opened — **not claimed**
 
 ---
 
-**STOP.** W5-N02 **CLOSED** by Product Owner. Await explicit Product Owner instruction before W5-N03 Planning Package. Do not declare Email SMTP implemented or Email notifications operational.
+**STOP.** W5-N04 Final Integration Verification **PASS** (local). Await explicit Product Owner instruction before W5-N04 Product Owner Final Close. Do not declare W5-N04 CLOSED. Do not declare Push implemented. Do not declare Web Push implemented. Do not declare FCM implemented. Do not declare browser notifications operational. Do not declare device token registry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N05.
