@@ -834,12 +834,12 @@ See [`w5-n08-product-owner-close-record.md`](./w5-n08-product-owner-close-record
 
 ## W5-N09 status (Notification Platform Workers — Planning APPROVED)
 
-W5-N09 Notification Platform Workers Foundation Planning is **APPROVED** (2026-08-29). W5-N09-a inventory baseline **COMPLETE** (`0dfe0a4`). W5-N09-b durable persistence **COMPLETE** (local) — Awaiting Product Owner Review. **No worker runtime execution.** **No W5-N09-c opened.**
+W5-N09 Notification Platform Workers Foundation Planning is **APPROVED** (2026-08-29). W5-N09-a inventory baseline **COMPLETE** (`0dfe0a4`). W5-N09-b durable persistence **COMPLETE** (`6f9f778`). W5-N09-c restart recovery **COMPLETE** (local) — Awaiting Product Owner Review. **No worker runtime execution.** **No W5-N09-d opened.**
 
 ```text
-Durable persistence only — not worker execution.
+Restart recovery only — not worker execution.
 Not worker scheduler / retry / dead-letter / orchestration / telemetry / scaling implementation.
-Not platform workers restart recovery (W5-N09-c).
+Not platform workers operational continuity (W5-N09-d).
 Not Notification Platform Workers functional.
 Not W5-N09 COMPLETE.
 Customer-visible platform workers remain unchanged until later slices + Product Owner Close.
@@ -883,16 +883,33 @@ See [`w5-n09-b-implementation-report.md`](./w5-n09-b-implementation-report.md).
 
 ---
 
+## W5-N09-c status (Notification Platform Workers Restart Recovery Foundation)
+
+W5-N09-c adds deterministic restart recovery for W5-N09-b canonical Notification Platform Workers anchors on the existing Notification Delivery owner. **No customer-visible Notification Platform Workers behaviour** was added.
+
+```text
+Restart recovery only — not worker execution.
+Not worker scheduler / retry / dead-letter / orchestration / runtime / telemetry / scaling implementation.
+Not platform workers operational continuity (W5-N09-d).
+Not Notification Platform Workers functional.
+Not W5-N09 COMPLETE.
+Customer-visible platform workers remains unchanged until later slices + Product Owner Close.
+```
+
+See [`w5-n09-c-implementation-report.md`](./w5-n09-c-implementation-report.md).
+
+---
+
 ## W5-N09 implementation slices
 
 | Slice    | Name                                                              | Status                                    |
 | -------- | ----------------------------------------------------------------- | ----------------------------------------- |
 | W5-N09-a | Notification Platform Workers Inventory & Honest Product Baseline | **COMPLETE** (`0dfe0a4`)                  |
-| W5-N09-b | Durable Notification Platform Workers Foundation                  | **COMPLETE** (local) — Awaiting PO Review |
-| W5-N09-c | Notification Platform Workers Restart Recovery Foundation         | **Not opened**                            |
+| W5-N09-b | Durable Notification Platform Workers Foundation                  | **COMPLETE** (`6f9f778`)                  |
+| W5-N09-c | Notification Platform Workers Restart Recovery Foundation         | **COMPLETE** (local) — Awaiting PO Review |
 | W5-N09-d | Notification Platform Workers Operational Continuity Foundation   | **Not opened**                            |
 | W5-N09-e | Package Close Evidence                                            | **Not opened**                            |
 
 ---
 
-**STOP.** W5-N05 is **CLOSED** by Product Owner. W5-N06 is **CLOSED** by Product Owner. W5-N07 is **CLOSED** by Product Owner. W5-N08 is **CLOSED** by Product Owner. W5-N09 Planning is **APPROVED**. W5-N09-a is **COMPLETE** (`0dfe0a4`). W5-N09-b is **COMPLETE** (local) — Awaiting Product Owner Review. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Restart recovery implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not commit or push until Product Owner Review. Do not open W5-N09-c.
+**STOP.** W5-N05 is **CLOSED** by Product Owner. W5-N06 is **CLOSED** by Product Owner. W5-N07 is **CLOSED** by Product Owner. W5-N08 is **CLOSED** by Product Owner. W5-N09 Planning is **APPROVED**. W5-N09-a is **COMPLETE** (`0dfe0a4`). W5-N09-b is **COMPLETE** (`6f9f778`). W5-N09-c is **COMPLETE** (local) — Awaiting Product Owner Review. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Operational Continuity implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not commit or push until Product Owner Review. Do not open W5-N09-d.

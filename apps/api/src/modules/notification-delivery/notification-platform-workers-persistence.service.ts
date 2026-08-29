@@ -9,6 +9,7 @@ import {
   NOTIFICATION_PLATFORM_WORKERS_ANCHOR_REPOSITORY,
   type NotificationPlatformWorkersAnchorRepository,
 } from './domain/notification-platform-workers-anchor.repository';
+import { NotificationPlatformWorkersRecoveryStore } from './notification-platform-workers-recovery-store';
 
 export type PersistNotificationPlatformWorkersAnchorCommand = Readonly<{
   workspaceId: string;
@@ -22,21 +23,26 @@ export type PersistNotificationPlatformWorkersAnchorCommand = Readonly<{
 }>;
 
 /**
- * W5-N09-b — durable Notification Platform Workers anchor persistence on Notification Delivery owner.
- * Storage only — no worker execution, scheduler, retry, dead-letter processing, orchestration,
- * restart recovery, or operational continuity.
+ * W5-N09-b/c — durable Notification Platform Workers anchor persistence on Notification Delivery owner.
+ * W5-N09-c — write-through to recovery store after hydrate.
+ * Storage only — no worker execution, scheduler, retry, dead-letter processing, orchestration, or operational continuity.
  */
 @Injectable()
 export class NotificationPlatformWorkersPersistenceService {
   constructor(
     @Inject(NOTIFICATION_PLATFORM_WORKERS_ANCHOR_REPOSITORY)
     private readonly repository: NotificationPlatformWorkersAnchorRepository,
+    @Inject(NotificationPlatformWorkersRecoveryStore)
+    private readonly recoveryStore: NotificationPlatformWorkersRecoveryStore,
   ) {}
 
   async loadAnchor(
     workspaceId: string,
     workersAnchorId: string,
   ): Promise<DurableNotificationPlatformWorkersAnchor | null> {
+    if (this.recoveryStore.hasHydrated()) {
+      return this.recoveryStore.get(workspaceId, workersAnchorId);
+    }
     return this.repository.loadNotificationPlatformWorkersAnchor(workspaceId, workersAnchorId);
   }
 
@@ -49,6 +55,7 @@ export class NotificationPlatformWorkersPersistenceService {
       return outcome;
     }
     await this.repository.saveNotificationPlatformWorkersAnchor(outcome.anchor);
+    this.recoveryStore.set(outcome.anchor);
     return outcome;
   }
 }

@@ -35,6 +35,8 @@ import { NotificationPlatformDeliveryPersistenceService } from './notification-p
 import { NotificationPlatformDispatchPersistenceService } from './notification-platform-dispatch-persistence.service';
 import { NotificationPlatformQueuePersistenceService } from './notification-platform-queue-persistence.service';
 import { NotificationPlatformWorkersPersistenceService } from './notification-platform-workers-persistence.service';
+import { NotificationPlatformWorkersRecoveryStore } from './notification-platform-workers-recovery-store';
+import { NotificationPlatformWorkersRestartRecoveryService } from './notification-platform-workers-restart-recovery.service';
 import { NotificationPlatformQueueRecoveryStore } from './notification-platform-queue-recovery-store';
 import { NotificationPlatformQueueRestartRecoveryService } from './notification-platform-queue-restart-recovery.service';
 import { NotificationPlatformDispatchRecoveryStore } from './notification-platform-dispatch-recovery-store';
@@ -74,6 +76,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
  * W5-N08-b: durable Notification Platform Queue anchor persistence on this owner only.
  * W5-N08-c: deterministic restart recovery hydrate for canonical platform queue anchors on this owner only.
  * W5-N09-b: durable Notification Platform Workers anchor persistence on this owner only.
+ * W5-N09-c: deterministic restart recovery hydrate for canonical platform workers anchors on this owner only.
  * Does not import Reporting / AI Analytics / Strategy Library / Runtime /
  * Trading Session / Orders / Ledger. Does not expose REST or trading commands.
  */
@@ -156,6 +159,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformDispatchPersistenceService,
     NotificationPlatformQueuePersistenceService,
     NotificationPlatformWorkersPersistenceService,
+    NotificationPlatformWorkersRecoveryStore,
+    NotificationPlatformWorkersRestartRecoveryService,
     NotificationPlatformQueueRecoveryStore,
     NotificationPlatformQueueRestartRecoveryService,
     NotificationPlatformDispatchRecoveryStore,
@@ -207,6 +212,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformDispatchPersistenceService,
     NotificationPlatformQueuePersistenceService,
     NotificationPlatformWorkersPersistenceService,
+    NotificationPlatformWorkersRecoveryStore,
+    NotificationPlatformWorkersRestartRecoveryService,
     NotificationPlatformQueueRecoveryStore,
     NotificationPlatformQueueRestartRecoveryService,
     NotificationPlatformDispatchRecoveryStore,

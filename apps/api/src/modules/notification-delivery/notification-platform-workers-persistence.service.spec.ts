@@ -5,6 +5,7 @@ import {
 } from './domain/durable-notification-platform-workers-anchor';
 import type { NotificationPlatformWorkersAnchorRepository } from './domain/notification-platform-workers-anchor.repository';
 import { NotificationPlatformWorkersPersistenceService } from './notification-platform-workers-persistence.service';
+import { NotificationPlatformWorkersRecoveryStore } from './notification-platform-workers-recovery-store';
 
 const recordedAt = '2026-08-29T21:00:00.000Z';
 
@@ -28,10 +29,13 @@ function createRepository(): NotificationPlatformWorkersAnchorRepository & {
   };
 }
 
-describe('NotificationPlatformWorkersPersistenceService — W5-N09-b storage only', () => {
+describe('NotificationPlatformWorkersPersistenceService — W5-N09-b/c storage only', () => {
   it('persistWorkersAnchor writes canonical platform workers anchors without runtime I/O', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformWorkersPersistenceService(repository);
+    const service = new NotificationPlatformWorkersPersistenceService(
+      repository,
+      new NotificationPlatformWorkersRecoveryStore(),
+    );
 
     const outcome = await service.persistWorkersAnchor({
       workspaceId: 'ws-1',
@@ -61,7 +65,10 @@ describe('NotificationPlatformWorkersPersistenceService — W5-N09-b storage onl
 
   it('does not persist worker execution, scheduler, retry, dead-letter, orchestration, or transport fields', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformWorkersPersistenceService(repository);
+    const service = new NotificationPlatformWorkersPersistenceService(
+      repository,
+      new NotificationPlatformWorkersRecoveryStore(),
+    );
 
     await service.persistWorkersAnchor({
       workspaceId: 'ws-1',

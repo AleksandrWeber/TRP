@@ -847,7 +847,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N09-b validation (2026-08-29 — local, awaiting Product Owner Review)
+## W5-N09-b validation (2026-08-29 — `6f9f778`)
 
 | Layer               | Result   | Evidence                                               |
 | ------------------- | -------- | ------------------------------------------------------ |
@@ -858,7 +858,22 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite    | **PASS** | lint / typecheck / test / build                        |
 | git diff --check    | **PASS** | No whitespace errors                                   |
 
-**Explicit non-claim:** W5-N09-b does **not** authorize Notification Platform Workers implemented, worker execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, restart recovery implemented, Notification Platform Complete, W5-N09 COMPLETE, or Wave 5 COMPLETE. **Local only — not committed.**
+**Explicit non-claim:** W5-N09-b does **not** authorize Notification Platform Workers implemented, worker execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, restart recovery implemented, Notification Platform Complete, W5-N09 COMPLETE, or Wave 5 COMPLETE.
+
+---
+
+## W5-N09-c validation (2026-08-29 — local, awaiting Product Owner Review)
+
+| Layer               | Result   | Evidence                                                     |
+| ------------------- | -------- | ------------------------------------------------------------ |
+| Restart recovery    | **PASS** | `w5-n09-c-notification-platform-workers-restart-recovery.ts` |
+| Recovery store      | **PASS** | `notification-platform-workers-recovery-store.ts`            |
+| Persistence hydrate | **PASS** | write-through + hydrated reads in persistence service        |
+| Architecture check  | **PASS** | No ownership drift; no operational continuity                |
+| Regression suite    | **PASS** | lint / typecheck / test / build                              |
+| git diff --check    | **PASS** | No whitespace errors                                         |
+
+**Explicit non-claim:** W5-N09-c does **not** authorize Notification Platform Workers implemented, operational continuity implemented, worker execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N09 COMPLETE, or Wave 5 COMPLETE. **Local only — not committed.**
 
 ---
 
