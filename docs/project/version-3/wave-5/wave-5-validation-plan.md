@@ -740,7 +740,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N07-d validation (2026-08-29 — local only)
+## W5-N07-d validation (2026-08-29 — recorded `d8bffa6`)
 
 | Layer                   | Result   | Evidence                                                            |
 | ----------------------- | -------- | ------------------------------------------------------------------- |
@@ -753,7 +753,24 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite        | **PASS** | lint / typecheck / test / build                                     |
 | git diff --check        | **PASS** | No whitespace errors                                                |
 
-**Explicit non-claim:** W5-N07-d does **not** authorize Notification Platform Dispatch implemented, dispatcher implemented, queue orchestration implemented, retry implemented, scheduler implemented, Notification Platform Complete, W5-N07 COMPLETE, or Wave 5 COMPLETE. **Local only** — awaiting Product Owner review; not committed.
+**Explicit non-claim:** W5-N07-d does **not** authorize Notification Platform Dispatch implemented, dispatcher implemented, queue orchestration implemented, retry implemented, scheduler implemented, Notification Platform Complete, W5-N07 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`d8bffa6`).
+
+---
+
+## W5-N07-e validation (2026-08-29 — local only)
+
+| Layer                  | Result   | Evidence                                        |
+| ---------------------- | -------- | ----------------------------------------------- |
+| Package close evidence | **PASS** | `w5-n07-e-package-close-evidence.ts`            |
+| Implementation chain   | **PASS** | Slices a–d PASS                                 |
+| Dependency chain       | **PASS** | W5-N01…N06 closed, not reopened                 |
+| Dispatch foundation    | **PASS** | Inventory → persistence → recovery → continuity |
+| Slice reports          | **PASS** | w5-n07-e-* and package docs under wave-5        |
+| Architecture check     | **PASS** | No ownership drift; no dispatch execution       |
+| Regression suite       | **PASS** | lint / typecheck / test / build                 |
+| git diff --check       | **PASS** | No whitespace errors                            |
+
+**Explicit non-claim:** W5-N07-e does **not** authorize Notification Platform Dispatch implemented, W5-N07 COMPLETE, Notification Platform Complete, dispatcher implemented, queue orchestration implemented, retry implemented, scheduler implemented, Final Package Integration Verification performed, Product Owner Close Record created, or Wave 5 COMPLETE. **Local only** — awaiting Product Owner review; not committed.
 
 ---
 
