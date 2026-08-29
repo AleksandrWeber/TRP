@@ -167,28 +167,27 @@ describe('W5-N10-c notification platform worker execution restart recovery — i
     ]);
   });
 
-  it('transition matrix: persistence + recovery; operational continuity still missing', () => {
+  it('transition matrix: persistence + recovery; package close still missing', () => {
     expect(W5_N10_C_TRANSITION_MATRIX.before).toContain('Durable persistence (W5-N10-b)');
     expect(W5_N10_C_TRANSITION_MATRIX.after).toContain('Restart recovery (W5-N10-c)');
     expect(
-      W5_N10_C_TRANSITION_MATRIX.stillMissing.some((item) => item.includes('Operational')),
+      W5_N10_C_TRANSITION_MATRIX.stillMissing.some((item) => item.includes('Package Close')),
     ).toBe(true);
   });
 
-  it('technical debt delta: restart recovery resolved; continuity deferred', () => {
+  it('technical debt delta: restart recovery resolved; package close deferred', () => {
     expect(W5_N10_C_TECHNICAL_DEBT_DELTA.resolved.length).toBeGreaterThan(0);
     expect(W5_N10_C_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(
-      W5_N10_C_TECHNICAL_DEBT_DELTA.deferred.some((item) =>
-        item.toLowerCase().includes('continuity'),
-      ),
+      W5_N10_C_TECHNICAL_DEBT_DELTA.deferred.some((item) => item.toLowerCase().includes('close')),
     ).toBe(true);
   });
 
-  it('explicit OUT covers operational continuity and W5-N10-d', () => {
+  it('explicit OUT covers worker execution runtime only (not operational continuity)', () => {
     expect(W5_N10_C_EXPLICIT_OUT).toEqual(
-      expect.arrayContaining(['operational-continuity', 'w5-n10-d']),
+      expect.arrayContaining(['platform-worker-execution-runtime']),
     );
+    expect(W5_N10_C_EXPLICIT_OUT).not.toContain('w5-n10-d');
   });
 
   it('required reports and recovery files exist', () => {

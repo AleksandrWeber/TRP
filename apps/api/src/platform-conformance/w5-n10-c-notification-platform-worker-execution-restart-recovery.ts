@@ -55,7 +55,6 @@ export const W5_N10_C_ARCHITECTURE_CLAIMS = Object.freeze({
 } as const);
 
 export const W5_N10_C_EXPLICIT_OUT = Object.freeze([
-  'operational-continuity',
   'platform-worker-execution-runtime',
   'worker-runtime-implementation',
   'scheduler-implementation',
@@ -64,7 +63,6 @@ export const W5_N10_C_EXPLICIT_OUT = Object.freeze([
   'production-transport-i/o',
   'runtime-notifications',
   'second-recovery-engine',
-  'w5-n10-d',
 ] as const);
 
 export const W5_N10_C_TECHNICAL_DEBT_DELTA = Object.freeze({
@@ -72,10 +70,7 @@ export const W5_N10_C_TECHNICAL_DEBT_DELTA = Object.freeze({
     'Notification Platform Worker Execution Restart Recovery Foundation',
   ] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze([
-    'W5-N10-d — Notification Platform Worker Execution Operational Continuity Foundation',
-    'W5-N10-e — Package Close Evidence',
-  ] as const),
+  deferred: Object.freeze(['W5-N10-e — Package Close Evidence'] as const),
 } as const);
 
 export const W5_N10_C_TRANSITION_MATRIX = Object.freeze({
@@ -91,7 +86,6 @@ export const W5_N10_C_TRANSITION_MATRIX = Object.freeze({
     'Recovery deterministic, idempotent, fail-honest on corruption',
   ] as const),
   stillMissing: Object.freeze([
-    'Operational Continuity (W5-N10-d)',
     'Package Close (W5-N10-e)',
     'Platform worker execution runtime, scheduler, retry, and dead-letter processing',
   ] as const),

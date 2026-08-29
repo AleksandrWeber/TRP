@@ -51,6 +51,8 @@ import { getNotificationPlatformQueueContinuityRecord } from '../notification-de
 import { buildNotificationPlatformQueueContinuityProjection } from '../notification-delivery/domain/notification-platform-queue-operational-continuity';
 import { getNotificationPlatformWorkersContinuityRecord } from '../notification-delivery/domain/notification-platform-workers-continuity-status';
 import { buildNotificationPlatformWorkersContinuityProjection } from '../notification-delivery/domain/notification-platform-workers-operational-continuity';
+import { getNotificationPlatformWorkerExecutionContinuityRecord } from '../notification-delivery/domain/notification-platform-worker-execution-continuity-status';
+import { buildNotificationPlatformWorkerExecutionContinuityProjection } from '../notification-delivery/domain/notification-platform-worker-execution-operational-continuity';
 import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
 import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
 import { getMonitoringHealthContinuityRecord } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
@@ -172,6 +174,12 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
         continuity: null,
       }),
+      notificationPlatformWorkerExecution:
+        buildNotificationPlatformWorkerExecutionContinuityProjection({
+          recovering: true,
+          ownerReadiness: 'ready',
+          continuity: null,
+        }),
     });
   }
 
@@ -400,6 +408,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildNotificationPlatformWorkerExecutionView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getNotificationPlatformWorkerExecutionContinuityRecord();
+    return buildNotificationPlatformWorkerExecutionContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -503,6 +523,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       notificationPlatformWorkers: this.buildNotificationPlatformWorkersView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      notificationPlatformWorkerExecution: this.buildNotificationPlatformWorkerExecutionView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -772,6 +796,24 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           ? null
           : recoveryDurationMs),
     });
+    const notificationPlatformWorkerExecutionBase =
+      this.buildNotificationPlatformWorkerExecutionView({
+        recovering: false,
+        ownerReadiness: 'ready',
+      });
+    const notificationPlatformWorkerExecution = Object.freeze({
+      ...notificationPlatformWorkerExecutionBase,
+      recoveryTimestamp:
+        notificationPlatformWorkerExecutionBase.recoveryTimestamp ??
+        (notificationPlatformWorkerExecutionBase.operationalState === 'Recovering'
+          ? null
+          : recoveryTimestamp),
+      recoveryDurationMs:
+        notificationPlatformWorkerExecutionBase.recoveryDurationMs ??
+        (notificationPlatformWorkerExecutionBase.operationalState === 'Recovering'
+          ? null
+          : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -793,6 +835,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       notificationPlatformDispatch,
       notificationPlatformQueue,
       notificationPlatformWorkers,
+      notificationPlatformWorkerExecution,
     });
     this.finalized = true;
 

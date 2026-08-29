@@ -234,6 +234,19 @@ export type NotificationPlatformWorkersContinuityView = Readonly<{
   workspaceIds: readonly string[];
 }>;
 
+/** W5-N10-d — Notification Platform Worker Execution continuity fields on platform readiness. */
+export type NotificationPlatformWorkerExecutionContinuityView = Readonly<{
+  operationalState: OperationalState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+}>;
+
 /** W3-O05-d — Monitoring & Security Health continuity fields on platform readiness. */
 export type MonitoringHealthContinuityView = Readonly<{
   operationalState: OperationalState;
@@ -303,6 +316,8 @@ export type PlatformOperationalProjection = Readonly<{
   notificationPlatformQueue: NotificationPlatformQueueContinuityView | null;
   /** W5-N09-d — Notification Platform Workers operational continuity (derived). */
   notificationPlatformWorkers: NotificationPlatformWorkersContinuityView | null;
+  /** W5-N10-d — Notification Platform Worker Execution operational continuity (derived). */
+  notificationPlatformWorkerExecution: NotificationPlatformWorkerExecutionContinuityView | null;
 }>;
 
 export type EvaluateOwnerReadinessInput = Readonly<{
@@ -406,6 +421,7 @@ export function buildPlatformOperationalProjection(input: {
   notificationPlatformDispatch?: NotificationPlatformDispatchContinuityView | null;
   notificationPlatformQueue?: NotificationPlatformQueueContinuityView | null;
   notificationPlatformWorkers?: NotificationPlatformWorkersContinuityView | null;
+  notificationPlatformWorkerExecution?: NotificationPlatformWorkerExecutionContinuityView | null;
 }): PlatformOperationalProjection {
   const platformState = derivePlatformOperationalState(input.owners);
   assertOperationalState(platformState);
@@ -437,6 +453,7 @@ export function buildPlatformOperationalProjection(input: {
     notificationPlatformDispatch: input.notificationPlatformDispatch ?? null,
     notificationPlatformQueue: input.notificationPlatformQueue ?? null,
     notificationPlatformWorkers: input.notificationPlatformWorkers ?? null,
+    notificationPlatformWorkerExecution: input.notificationPlatformWorkerExecution ?? null,
   });
 }
 

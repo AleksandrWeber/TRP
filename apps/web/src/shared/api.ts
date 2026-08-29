@@ -1068,6 +1068,8 @@ export type OperationalContinuityReadinessView = {
   notificationPlatformQueue: NotificationPlatformQueueContinuityView | null;
   /** W5-N09-d — Notification Platform Workers operational continuity. */
   notificationPlatformWorkers: NotificationPlatformWorkersContinuityView | null;
+  /** W5-N10-d — Notification Platform Worker Execution operational continuity. */
+  notificationPlatformWorkerExecution: NotificationPlatformWorkerExecutionContinuityView | null;
 };
 
 export type NotificationQueueContinuityView = {
@@ -1269,6 +1271,18 @@ export type NotificationPlatformQueueContinuityView = {
 };
 
 export type NotificationPlatformWorkersContinuityView = {
+  operationalState: OperationalContinuityState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+};
+
+export type NotificationPlatformWorkerExecutionContinuityView = {
   operationalState: OperationalContinuityState;
   ownerReadiness: 'ready' | 'unavailable' | 'degraded';
   recoveryTimestamp: string | null;
