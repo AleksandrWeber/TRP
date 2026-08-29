@@ -5,7 +5,7 @@
 **Master Plan / Roadmap:** V3-N10 · CM-20  
 **Evidence slice:** W5-N10-e  
 **Date:** 2026-08-29  
-**Status:** Close Evidence assembled — **Awaiting Product Owner Review**. Final Package Integration Verification **not performed**.
+**Status:** **CLOSED** by Product Owner (2026-08-29). Final Integration Verification **PASS** (`0dd1ab9`).
 
 ---
 
@@ -21,10 +21,10 @@
    Persisted Notification Platform Worker Execution anchors can survive normal API restart and project honest operational readiness on Platform Readiness — without fabricating Executing labels or inventing a second notification subsystem.
 
 4. **What remains for later packages?**  
-   Platform worker execution runtime, worker runtime, retry, scheduler, and dead-letter outcomes; Final Package Integration Verification; Product Owner Package Close; Wave 5 completion review.
+   Platform worker execution runtime, worker runtime, retry, scheduler, and dead-letter outcomes; Wave 5 completion review.
 
 5. **Which package becomes available next?**  
-   None opened by this Close act — Final Package Integration Verification requires separate Product Owner authorization.
+   None opened by this Close act — **W5-N11** requires separate Product Owner authorization.
 
 6. **Was the Master Plan followed?**  
    **Yes.** W5-N10 / V3-N10 only; Master Plan unchanged; Wave 1–4 and closed W5-N01…N09 consumed not redesigned; Wave 5 package order preserved.
@@ -39,14 +39,14 @@
 
 ## Slice roll-up
 
-| Slice    | Outcome                                                                  | PO status                       |
-| -------- | ------------------------------------------------------------------------ | ------------------------------- |
-| W5-N10-a | Inventory & Honest Product Baseline                                      | APPROVED / COMPLETE (`6443c6e`) |
-| W5-N10-b | Durable Notification Platform Worker Execution Foundation                | APPROVED / COMPLETE (`e7dff2f`) |
-| W5-N10-c | Notification Platform Worker Execution Restart Recovery Foundation       | APPROVED / COMPLETE (`84925c1`) |
-| W5-N10-d | Notification Platform Worker Execution Operational Continuity Foundation | APPROVED / COMPLETE (`7f7e5b3`) |
-| W5-N10-e | Close Evidence                                                           | COMPLETE (local)                |
-| W5-N10   | Package                                                                  | **OPEN** — Awaiting PO Review   |
+| Slice    | Outcome                                                                  | PO status                                |
+| -------- | ------------------------------------------------------------------------ | ---------------------------------------- |
+| W5-N10-a | Inventory & Honest Product Baseline                                      | APPROVED / COMPLETE (`6443c6e`)          |
+| W5-N10-b | Durable Notification Platform Worker Execution Foundation                | APPROVED / COMPLETE (`e7dff2f`)          |
+| W5-N10-c | Notification Platform Worker Execution Restart Recovery Foundation       | APPROVED / COMPLETE (`84925c1`)          |
+| W5-N10-d | Notification Platform Worker Execution Operational Continuity Foundation | APPROVED / COMPLETE (`7f7e5b3`)          |
+| W5-N10-e | Close Evidence                                                           | COMPLETE (`ba53fcc`)                     |
+| W5-N10   | Package                                                                  | **CLOSED** by Product Owner (2026-08-29) |
 
 ---
 
@@ -59,4 +59,4 @@
 
 ---
 
-**STOP.** Do **not** declare Notification Platform Worker Execution implemented, Notification Platform Complete, or Wave 5 COMPLETE from this summary alone.
+**STOP.** W5-N10 is **CLOSED** by Product Owner. Do **not** declare Notification Platform Worker Execution implemented, Notification Platform Complete, or Wave 5 COMPLETE from this summary alone.

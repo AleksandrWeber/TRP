@@ -1039,45 +1039,45 @@ See [`w5-n10-e-implementation-report.md`](./w5-n10-e-implementation-report.md).
 
 ## W5-N10 Final Integration Verification status
 
-W5-N10 Final Package Integration Verification **PASS** (2026-08-29, local). All slices a–e form one internally consistent package. Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**. Engineering confidence: **97%**.
+W5-N10 Final Package Integration Verification **PASS** (2026-08-29, `0dd1ab9`). All slices a–e form one internally consistent package. Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**. Engineering confidence: **97%**. Product Owner Final Close executed.
 
 ```text
-Slice chain 6443c6e → e7dff2f → 84925c1 → 7f7e5b3 → ba53fcc verified on origin/main.
+Slice chain 6443c6e → e7dff2f → 84925c1 → 7f7e5b3 → ba53fcc → 0dd1ab9 verified on origin/main.
 W5-N10-e COMPLETE (`ba53fcc`) — Package Close Evidence.
-Final Integration Verification PASS (local, uncommitted).
-Awaiting Product Owner Final Close — not CLOSED.
+Final Integration Verification PASS (`0dd1ab9`).
+W5-N10 CLOSED by Product Owner (2026-08-29).
 ```
 
 See [`w5-n10-final-integration-verification.md`](./w5-n10-final-integration-verification.md).
 
 ---
 
-## W5-N10 status (Notification Platform Worker Execution — Final Integration Verification PASS local)
+## W5-N10 status (Notification Platform Worker Execution — CLOSED)
 
-W5-N10 Notification Platform Worker Execution Foundation: Planning **APPROVED**; W5-N10-a **COMPLETE** (`6443c6e`); W5-N10-b **COMPLETE** (`e7dff2f`); W5-N10-c **COMPLETE** (`84925c1`); W5-N10-d **COMPLETE** (`7f7e5b3`); W5-N10-e **COMPLETE** (`ba53fcc`); Final Integration Verification **PASS** (local, uncommitted) — Awaiting Product Owner Final Close.
+W5-N10 Notification Platform Worker Execution Foundation is **CLOSED** by Product Owner (2026-08-29). Delivered: inventory (a), durable persistence (b), restart recovery (c), operational continuity (d), Close Evidence (e), Final Integration Verification **PASS** (`0dd1ab9`).
 
 ```text
-Final Integration Verification only — not worker runtime execution, orchestration, retry, scheduler, or dead-letter processing.
+Foundation only — not platform worker execution runtime, not worker runtime, not execution orchestration, not retry, not scheduler, not dead-letter processing.
 Closed W5-N05…N09 foundations consumed; per-channel W5-N01…N04 transport stubs remain honest per inventory.
 Notification Platform Worker Execution complete and Notification Platform Complete not claimed.
 Wave 5 COMPLETE not claimed.
 ```
 
-See [`w5-n10-planning-summary.md`](./w5-n10-planning-summary.md).
+See [`w5-n10-product-owner-close-record.md`](./w5-n10-product-owner-close-record.md).
 
 ---
 
 ## W5-N10 implementation slices
 
-| Slice    | Name                                                                       | Status                                        |
-| -------- | -------------------------------------------------------------------------- | --------------------------------------------- |
-| W5-N10-a | Notification Platform Worker Execution Inventory & Honest Product Baseline | **COMPLETE** (`6443c6e`)                      |
-| W5-N10-b | Durable Notification Platform Worker Execution Foundation                  | **COMPLETE** (`e7dff2f`)                      |
-| W5-N10-c | Notification Platform Worker Execution Restart Recovery Foundation         | **COMPLETE** (`84925c1`)                      |
-| W5-N10-d | Notification Platform Worker Execution Operational Continuity Foundation   | **COMPLETE** (`7f7e5b3`)                      |
-| W5-N10-e | Package Close Evidence                                                     | **COMPLETE** (`ba53fcc`)                      |
-| W5-N10   | Package                                                                    | **OPEN** — Awaiting Product Owner Final Close |
+| Slice    | Name                                                                       | Status                                   |
+| -------- | -------------------------------------------------------------------------- | ---------------------------------------- |
+| W5-N10-a | Notification Platform Worker Execution Inventory & Honest Product Baseline | **COMPLETE** (`6443c6e`)                 |
+| W5-N10-b | Durable Notification Platform Worker Execution Foundation                  | **COMPLETE** (`e7dff2f`)                 |
+| W5-N10-c | Notification Platform Worker Execution Restart Recovery Foundation         | **COMPLETE** (`84925c1`)                 |
+| W5-N10-d | Notification Platform Worker Execution Operational Continuity Foundation   | **COMPLETE** (`7f7e5b3`)                 |
+| W5-N10-e | Package Close Evidence                                                     | **COMPLETE** (`ba53fcc`)                 |
+| W5-N10   | Package                                                                    | **CLOSED** by Product Owner (2026-08-29) |
 
 ---
 
-**STOP.** W5-N10 Final Integration Verification is **PASS** (local, uncommitted) — Awaiting Product Owner Final Close. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not commit or push without Product Owner instruction. Do not create Product Owner Close Record.
+**STOP.** W5-N10 is **CLOSED** by Product Owner. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N11 without separate Product Owner instruction.
