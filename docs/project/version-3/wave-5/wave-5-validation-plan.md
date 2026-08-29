@@ -228,18 +228,34 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N03-a validation (2026-08-29 — local)
+## W5-N03-a validation (2026-08-29 — `b27d19f`)
 
 | Layer                | Result   | Evidence                                                           |
 | -------------------- | -------- | ------------------------------------------------------------------ |
-| Webhook inventory    | **PASS** | `w5-n03-a-slack-discord-teams-notification-inventory.ts` (81 rows) |
+| Webhook inventory    | **PASS** | `w5-n03-a-slack-discord-teams-notification-inventory.ts` (82 rows) |
 | Conformance registry | **PASS** | `w5-n03-a-slack-discord-teams-notification.ts`                     |
 | Slice reports        | **PASS** | w5-n03-a-* reports under wave-5                                    |
 | Architecture check   | **PASS** | No ownership drift; no webhook I/O                                 |
 | Regression suite     | **PASS** | lint / typecheck / test / build                                    |
 | git diff --check     | **PASS** | No whitespace errors                                               |
 
-**Explicit non-claim:** W5-N03-a does **not** authorize Slack implemented, Discord implemented, Microsoft Teams implemented, Slack/Discord/Teams notifications operational, W5-N03 COMPLETE, or Wave 5 COMPLETE. Changes **local only** — not committed.
+**Explicit non-claim:** W5-N03-a does **not** authorize Slack implemented, Discord implemented, Microsoft Teams implemented, Slack/Discord/Teams notifications operational, W5-N03 COMPLETE, or Wave 5 COMPLETE.
+
+---
+
+## W5-N03-b validation (2026-08-29)
+
+| Layer              | Result   | Evidence                                                          |
+| ------------------ | -------- | ----------------------------------------------------------------- |
+| Durable foundation | **PASS** | `w5-n03-b-durable-slack-discord-teams-notification.ts`            |
+| Anchor persistence | **PASS** | `slack-discord-teams-notification-persistence.service.spec.ts`    |
+| Prisma migration   | **PASS** | `20260829160000_w5_n03_b_slack_discord_teams_notification_anchor` |
+| Slice reports      | **PASS** | w5-n03-b-* reports under wave-5                                   |
+| Architecture check | **PASS** | No ownership drift; no webhook I/O                                |
+| Regression suite   | **PASS** | lint / typecheck / test / build                                   |
+| git diff --check   | **PASS** | No whitespace errors                                              |
+
+**Explicit non-claim:** W5-N03-b does **not** authorize Slack implemented, Discord implemented, Microsoft Teams implemented, Slack/Discord/Teams notifications operational, restart survival, W5-N03 COMPLETE, or Wave 5 COMPLETE.
 
 ---
 

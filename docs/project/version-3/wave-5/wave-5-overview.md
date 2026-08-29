@@ -81,6 +81,19 @@ W5-N02-b adds canonical Email notification anchor persistence on the existing No
 
 ---
 
+## W5-N03-b status (Slack / Discord / Teams durable foundation)
+
+W5-N03-b adds canonical Slack / Discord / Teams notification anchor persistence on the existing Notification Delivery owner. **No customer-visible Slack / Discord / Teams notification behaviour** was added.
+
+```text
+Slack / Discord / Microsoft Teams channels = reserved-inactive today.
+Webhook transport = not implemented.
+Connected/Delivering require real webhook round-trip — not claimed.
+Restart survival = W5-N03-c (not claimed from this slice).
+```
+
+---
+
 ## W5-N03-a status (Slack / Discord / Teams inventory baseline)
 
 W5-N03-a catalogues every Slack / Discord / Teams notification artifact with SURVIVE vs EPHEMERAL classification and Honest Product boundaries. **No customer-visible Slack / Discord / Teams notification behaviour** was added.
@@ -118,12 +131,12 @@ Connected/Delivering require real SMTP round-trip — not claimed.
 
 ## Wave packages (Master Plan order)
 
-| Package | Name                        | What it delivers                                                             | Status                                                |
-| ------- | --------------------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------- |
-| W5-N01  | Production Telegram Bot API | Real Bot API connect / test / disconnect                                     | **CLOSED** by Product Owner (2026-08-28)              |
-| W5-N02  | Email (SMTP)                | Email Notification foundation — inventory, persistence, recovery, continuity | **CLOSED** by Product Owner (2026-08-28)              |
-| W5-N03  | Slack / Discord / Teams     | Real webhook transports                                                      | Planning **APPROVED** · W5-N03-a **COMPLETE** (local) |
-| W5-N04  | Push                        | Real browser/device push                                                     | Not authorized                                        |
+| Package | Name                        | What it delivers                                                             | Status                                                                            |
+| ------- | --------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| W5-N01  | Production Telegram Bot API | Real Bot API connect / test / disconnect                                     | **CLOSED** by Product Owner (2026-08-28)                                          |
+| W5-N02  | Email (SMTP)                | Email Notification foundation — inventory, persistence, recovery, continuity | **CLOSED** by Product Owner (2026-08-28)                                          |
+| W5-N03  | Slack / Discord / Teams     | Real webhook transports                                                      | Planning **APPROVED** · W5-N03-a **COMPLETE** (`b27d19f`) · W5-N03-b **COMPLETE** |
+| W5-N04  | Push                        | Real browser/device push                                                     | Not authorized                                                                    |
 
 Order: **N01 → N02 → N03 → N04**.
 
@@ -214,4 +227,4 @@ W5-N02-e assembled complete engineering Close Evidence across slices a–d. Fina
 
 ---
 
-**STOP.** W5-N03-a **COMPLETE** (local). Slack / Discord / Microsoft Teams channels remain reserved-inactive. Do not declare Slack implemented. Do not declare Discord implemented. Do not declare Microsoft Teams implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Await Product Owner review before W5-N03-b.
+**STOP.** W5-N03-b **COMPLETE**. Slack / Discord / Microsoft Teams channels remain reserved-inactive. Do not declare Slack implemented. Do not declare Discord implemented. Do not declare Microsoft Teams implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Await Product Owner review before W5-N03-c.

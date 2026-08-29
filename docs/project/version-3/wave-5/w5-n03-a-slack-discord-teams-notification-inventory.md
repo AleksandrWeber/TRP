@@ -39,7 +39,7 @@ Enumerate every Slack / Discord / Teams notification artifact required to implem
 - Vault has **no** Slack / Discord / Teams webhook secret types — only Telegram, SMTP, exchange keys, OpenRouter today.
 - PC-06 routing and user preferences are **implemented** — they decide routes/skips but do not send via production webhooks.
 - W3-O02 durable notification queue exists on `notification-delivery` owner — delivery work can survive restart; webhook transport is still reserved-inactive.
-- **No** durable Slack / Discord / Teams notification anchors yet — W5-N03-b planned (mirrors W5-N01/W5-N02 patterns).
+- **No** production webhook connect / test / disconnect yet — W5-N03-b adds durable anchors only; webhook I/O remains deferred.
 - W5-N01 Telegram and W5-N02 Email foundations are **reference only** — consumed not reopened.
 - Exchange Adapter / Wave 4 exchange I/O is **reference only** — untouched by this inventory.
 
@@ -76,6 +76,16 @@ Full row detail: `W5_N03_A_SLACK_DISCORD_TEAMS_NOTIFICATION_INVENTORY` and helpe
 
 ---
 
+## W5-N03-b durability update (post-slice b)
+
+| Artifact ID                                       | Before (W5-N03-a) | After (W5-N03-b)                                                                                           |
+| ------------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| `persist-slack-discord-teams-notification-anchor` | EPHEMERAL         | **SURVIVE** — `workspace_slack_discord_teams_notification_anchors`; canonical anchors only; no webhook I/O |
+
+**Binding finding (unchanged):** Production Slack / Discord / Teams webhooks are **NOT implemented**. Anchor rows survive in storage, but **restart recovery is not claimed** until W5-N03-c.
+
+---
+
 ## Per-channel coverage (summary)
 
 | Channel             | Binding                          | Credentials                              | Mapping                 | Endpoint                      | Delivery metadata          |
@@ -88,11 +98,11 @@ Full row detail: `W5_N03_A_SLACK_DISCORD_TEAMS_NOTIFICATION_INVENTORY` and helpe
 
 ## Slack / Discord / Teams notification SURVIVE artifacts (summary)
 
-PC-06 routing substrate, durable notification store, delivery queue, user preferences, delivery metadata (`DeliveryResult` / `ChannelDeliveryAttempt`), workspace isolation consumption, security dependencies, and verified ownership rows on existing Notification Delivery / Connection / Vault owners.
+PC-06 routing substrate, durable notification store, delivery queue, user preferences, delivery metadata (`DeliveryResult` / `ChannelDeliveryAttempt`), **canonical notification anchors (W5-N03-b)**, workspace isolation consumption, security dependencies, and verified ownership rows on existing Notification Delivery / Connection / Vault owners.
 
 ## Slack / Discord / Teams notification EPHEMERAL artifacts (summary)
 
-`ReservedInactiveChannelAdapter` for slack/discord/teams, missing webhook transports, missing vault webhook secret types, missing webhook anchors, missing connect/test product, and honesty blockers for fake Connected/Delivering labels.
+`ReservedInactiveChannelAdapter` for slack/discord/teams, missing webhook transports, missing vault webhook secret types, missing connect/test product, and honesty blockers for fake Connected/Delivering labels.
 
 ---
 
@@ -104,8 +114,7 @@ PC-06 routing substrate, durable notification store, delivery queue, user prefer
 | Missing runtime webhook delivery      | Active — skip path only  |
 | Missing restart recovery              | W5-N03-c deferred        |
 | Missing operational continuity        | W5-N03-d deferred        |
-| Missing durable webhook anchors       | W5-N03-b deferred        |
-| Missing webhook delivery execution    | W5-N03-b deferred        |
+| Missing webhook delivery execution    | W5-N03-b+ deferred       |
 
 ---
 

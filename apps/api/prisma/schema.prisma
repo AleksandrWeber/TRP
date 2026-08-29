@@ -1843,3 +1843,22 @@ model WorkspaceEmailNotificationAnchor {
   @@id([workspaceId, notificationId])
   @@map("workspace_email_notification_anchors")
 }
+
+model WorkspaceSlackDiscordTeamsNotificationAnchor {
+  workspaceId           String   @map("workspace_id")
+  notificationId        String   @map("notification_id")
+  schemaVersion         Int      @default(1) @map("schema_version")
+  notificationChannel   String   @map("notification_channel")
+  notificationType      String   @map("notification_type")
+  recipientIdentifier   String?  @map("recipient_identifier")
+  templateIdentifier    String?  @map("template_identifier")
+  deliveryState         String   @map("delivery_state")
+  integrityMetadata     String?  @map("integrity_metadata")
+  correlationId         String?  @map("correlation_id")
+  recordedAt            DateTime @map("recorded_at")
+  recordedByActorId     String?  @map("recorded_by_actor_id")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, notificationId])
+  @@map("workspace_slack_discord_teams_notification_anchors")
+}

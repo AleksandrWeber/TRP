@@ -874,19 +874,20 @@ export const W5_N03_A_SLACK_DISCORD_TEAMS_NOTIFICATION_INVENTORY: readonly W5N03
       authorizesW5N03Complete: false,
     }),
     Object.freeze({
-      artifactId: 'persist-webhook-notification-anchor',
+      artifactId: 'persist-slack-discord-teams-notification-anchor',
       artifact:
-        'WorkspaceWebhookNotificationAnchor — canonical Slack/Discord/Teams delivery anchors (W5-N03-b)',
+        'WorkspaceSlackDiscordTeamsNotificationAnchor — canonical Slack/Discord/Teams delivery anchors (W5-N03-b)',
       kind: 'persistence-candidate' as const,
       owner: 'notification-delivery' as const,
-      durabilityClass: 'EPHEMERAL' as const,
-      capabilityCategory: 'not-implemented' as const,
+      durabilityClass: 'SURVIVE' as const,
+      capabilityCategory: 'infrastructure-only' as const,
       currentStatus:
-        'Missing — no slack/discord/teams anchor repository; N01/N02 anchor patterns exist as reference',
+        'Implemented — workspace_slack_discord_teams_notification_anchors; anchor-recorded only; no webhook I/O',
       honestyRequirement: 'Anchor persistence ≠ webhook delivery Complete; hydrate is W5-N03-c',
-      futureW5N03Responsibility: 'W5-N03-b' as const,
-      evidencePath: 'apps/api/src/modules/notification-delivery/notification-delivery.module.ts',
-      existsToday: false,
+      futureW5N03Responsibility: 'W5-N03-c' as const,
+      evidencePath:
+        'apps/api/src/modules/notification-delivery/persistence/prisma-slack-discord-teams-notification-anchor.repository.ts',
+      existsToday: true,
       authorizesWebhookRealDelivery: false,
       authorizesW5N03Complete: false,
     }),
