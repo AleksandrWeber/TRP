@@ -807,7 +807,23 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Package documentation sync | **PASS** | summary / close report / walkthrough / final integration |
 | Wave documentation sync    | **PASS** | overview / validation-plan / progress                    |
 | W5-N07 officially CLOSED   | **PASS** | Product Owner decision **CLOSED**                        |
-| W5-N08 opened              | **No**   | Awaiting separate Product Owner instruction              |
+
+## W5-N08-a validation (2026-08-29 — recorded)
+
+| Layer                | Result   | Evidence                                            |
+| -------------------- | -------- | --------------------------------------------------- |
+| Platform inventory   | **PASS** | `w5-n08-a-notification-platform-queue-inventory.ts` |
+| Conformance registry | **PASS** | `w5-n08-a-notification-platform-queue.ts`           |
+| Slice reports        | **PASS** | w5-n08-a-* reports under wave-5                     |
+| Architecture check   | **PASS** | No ownership drift; no queue execution/workers      |
+| Regression suite     | **PASS** | lint / typecheck / test / build                     |
+| git diff --check     | **PASS** | No whitespace errors                                |
+
+**Explicit non-claim:** W5-N08-a does **not** authorize Notification Platform Queue implemented, queue execution implemented, queue workers implemented, Notification Platform Complete, W5-N08 COMPLETE, or Wave 5 COMPLETE. **Recorded**.
+
+---
+
+| W5-N08 opened | **Yes** | W5-N08-a **COMPLETE** — awaiting explicit Product Owner instruction before W5-N08-b |
 
 **Explicit non-claim:** Product Owner Close does **not** authorize Notification Platform Dispatch implemented, Notification Platform Complete, dispatcher implemented, queue orchestration implemented, retry implemented, scheduler implemented, Production Ready, Live Notifications, or Wave 5 COMPLETE.
 

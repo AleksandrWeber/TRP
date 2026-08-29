@@ -4,7 +4,7 @@
 **Audience:** Product Owner
 **Date:** 2026-08-29
 **Wave:** 5 — Notification Platform
-**Status:** W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 **CLOSED** by Product Owner (2026-08-29) · W5-N08 Planning **APPROVED** — Awaiting W5-N08-a
+**Status:** W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 **CLOSED** by Product Owner (2026-08-29) · W5-N08-a **COMPLETE**
 **Nature:** Simple Product Owner status. Not an RC. Not an ADR. Not a Master Plan revision.
 
 **Overview:** [`wave-5-overview.md`](./wave-5-overview.md)
@@ -78,16 +78,16 @@
 
 ## Wave 5 packages (Master Plan / Execution Roadmap)
 
-| Package    | Roadmap ID | Name                                      | Status                                    |
-| ---------- | ---------- | ----------------------------------------- | ----------------------------------------- |
-| **W5-N01** | **V3-N01** | Production Telegram Bot API               | **CLOSED** by Product Owner (2026-08-28)  |
-| **W5-N02** | **V3-N02** | Email (SMTP)                              | **CLOSED** by Product Owner (2026-08-28)  |
-| **W5-N03** | **V3-N03** | Slack / Discord / Teams                   | **CLOSED** by Product Owner (2026-08-29)  |
-| **W5-N04** | **V3-N04** | Push                                      | **CLOSED** by Product Owner (2026-08-29)  |
-| **W5-N05** | **V3-N05** | Notification Platform Integration         | **CLOSED** by Product Owner (2026-08-29)  |
-| **W5-N06** | **V3-N06** | Notification Platform Delivery Foundation | **CLOSED** by Product Owner (2026-08-29)  |
-| **W5-N07** | **V3-N07** | Notification Platform Dispatch Foundation | **CLOSED** by Product Owner (2026-08-29)  |
-| **W5-N08** | **V3-N08** | Notification Platform Queue Foundation    | Planning **APPROVED** — Awaiting W5-N08-a |
+| Package    | Roadmap ID | Name                                      | Status                                                                              |
+| ---------- | ---------- | ----------------------------------------- | ----------------------------------------------------------------------------------- |
+| **W5-N01** | **V3-N01** | Production Telegram Bot API               | **CLOSED** by Product Owner (2026-08-28)                                            |
+| **W5-N02** | **V3-N02** | Email (SMTP)                              | **CLOSED** by Product Owner (2026-08-28)                                            |
+| **W5-N03** | **V3-N03** | Slack / Discord / Teams                   | **CLOSED** by Product Owner (2026-08-29)                                            |
+| **W5-N04** | **V3-N04** | Push                                      | **CLOSED** by Product Owner (2026-08-29)                                            |
+| **W5-N05** | **V3-N05** | Notification Platform Integration         | **CLOSED** by Product Owner (2026-08-29)                                            |
+| **W5-N06** | **V3-N06** | Notification Platform Delivery Foundation | **CLOSED** by Product Owner (2026-08-29)                                            |
+| **W5-N07** | **V3-N07** | Notification Platform Dispatch Foundation | **CLOSED** by Product Owner (2026-08-29)                                            |
+| **W5-N08** | **V3-N08** | Notification Platform Queue Foundation    | W5-N08-a **COMPLETE** — Awaiting explicit Product Owner instruction before W5-N08-b |
 
 Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08**.
 
@@ -179,13 +179,13 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08*
 
 ## W5-N08 slice status
 
-| Slice    | Name                                                            | Status     |
-| -------- | --------------------------------------------------------------- | ---------- |
-| W5-N08-a | Notification Platform Queue Inventory & Honest Product Baseline | Not opened |
-| W5-N08-b | Durable Notification Platform Queue Foundation                  | Not opened |
-| W5-N08-c | Notification Platform Queue Restart Recovery Foundation         | Not opened |
-| W5-N08-d | Notification Platform Queue Operational Continuity Foundation   | Not opened |
-| W5-N08-e | Package Close Evidence                                          | Not opened |
+| Slice    | Name                                                            | Status       |
+| -------- | --------------------------------------------------------------- | ------------ |
+| W5-N08-a | Notification Platform Queue Inventory & Honest Product Baseline | **COMPLETE** |
+| W5-N08-b | Durable Notification Platform Queue Foundation                  | Not opened   |
+| W5-N08-c | Notification Platform Queue Restart Recovery Foundation         | Not opened   |
+| W5-N08-d | Notification Platform Queue Operational Continuity Foundation   | Not opened   |
+| W5-N08-e | Package Close Evidence                                          | Not opened   |
 
 ---
 
@@ -194,15 +194,16 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08*
 | Field                                 | Value                                                                                                                                                                                                                                                                                         |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Wave**                              | **5 — Notification Platform** — **OPEN**                                                                                                                                                                                                                                                      |
-| **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 **CLOSED** by Product Owner (2026-08-29) · W5-N08 Planning **APPROVED** — Awaiting W5-N08-a        |
+| **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 **CLOSED** by Product Owner (2026-08-29) · W5-N08-a **COMPLETE**                                   |
 | **First package**                     | **W5-N01** Production Telegram Bot API (V3-N01 · CM-11) — **CLOSED**                                                                                                                                                                                                                          |
 | **Previous package**                  | **W5-N07** Notification Platform Dispatch Foundation (V3-N07 · CM-19) — **CLOSED** by Product Owner (2026-08-29)                                                                                                                                                                              |
-| **Current package**                   | **W5-N08** Notification Platform Queue Foundation (V3-N08 · CM-20) — Planning **APPROVED** — Awaiting W5-N08-a                                                                                                                                                                                |
+| **Current package**                   | **W5-N08** Notification Platform Queue Foundation (V3-N08 · CM-20) — W5-N08-a **COMPLETE** — Awaiting explicit Product Owner instruction before W5-N08-b                                                                                                                                      |
+| **W5-N08-a inventory**                | [`w5-n08-a-notification-platform-queue-inventory.md`](./w5-n08-a-notification-platform-queue-inventory.md)                                                                                                                                                                                    |
+| **W5-N08-a implementation report**    | [`w5-n08-a-implementation-report.md`](./w5-n08-a-implementation-report.md)                                                                                                                                                                                                                    |
 | **W5-N08 Planning Package**           | **APPROVED** (2026-08-29) — [`w5-n08-planning-summary.md`](./w5-n08-planning-summary.md)                                                                                                                                                                                                      |
 | **W5-N08 Planning Review**            | **PASS** (2026-08-29) — [`w5-n08-planning-review.md`](./w5-n08-planning-review.md)                                                                                                                                                                                                            |
 | **W5-N08 Planning Approval**          | **RECORDED** (2026-08-29) — [`w5-n08-planning-approval.md`](./w5-n08-planning-approval.md)                                                                                                                                                                                                    |
-| **W5-N08 planning documents**         | [`w5-n08-planning-summary.md`](./w5-n08-planning-summary.md) and companions                                                                                                                                                                                                                   |
-| **Implementation authorized?**        | **Yes** — W5-N08-a **may open**; W5-N08-b…e **not authorized**; W5-N08-a **not yet opened**                                                                                                                                                                                                   |
+| **Implementation authorized?**        | **Yes** — W5-N08-a **COMPLETE**; W5-N08-b…e **not authorized**; W5-N08-b **not opened**                                                                                                                                                                                                       |
 | **W5-N07 Product Owner Close Record** | [`w5-n07-product-owner-close-record.md`](./w5-n07-product-owner-close-record.md) — **CLOSED** (2026-08-29)                                                                                                                                                                                    |
 | **W5-N05-b durable foundation**       | [`w5-n05-b-implementation-report.md`](./w5-n05-b-implementation-report.md)                                                                                                                                                                                                                    |
 | **W5-N05-c restart recovery**         | [`w5-n05-c-implementation-report.md`](./w5-n05-c-implementation-report.md)                                                                                                                                                                                                                    |
@@ -429,10 +430,11 @@ W5-N08 Planning Review PASS (2026-08-29)
         ↓
 W5-N08 Planning APPROVED (2026-08-29)
         ↓
-STOP — Awaiting W5-N08-a
-(W5-N08-a authorized — not opened)
+W5-N08-a COMPLETE — Notification Platform Queue Inventory & Honest Product Baseline
+        ↓
+STOP — Awaiting Product Owner Review
 (W5-N08-b…e not authorized)
-(No queue execution / orchestration / retry / scheduler)
+(No queue execution / workers / orchestration / retry / scheduler)
 (No production transport I/O)
 (No Notification Platform Complete)
 (No Wave 5 COMPLETE)
@@ -523,7 +525,9 @@ STOP — Awaiting W5-N08-a
 | W5-N08 Planning Review PASS           | **Recorded** (2026-08-29) |
 | W5-N08 Planning APPROVED              | **Recorded** (2026-08-29) |
 | W5-N08-a authorized                   | **Recorded** (2026-08-29) |
-| W5-N08-a opened                       | **Not claimed**           |
+| W5-N08-a opened                       | **Recorded**              |
+| W5-N08-a complete                     | **Recorded**              |
+| W5-N08-b opened                       | **Not claimed**           |
 | W5-N08-b opened                       | **Not claimed**           |
 | W5-N08-c opened                       | **Not claimed**           |
 | W5-N08-d opened                       | **Not claimed**           |
@@ -549,4 +553,4 @@ STOP — Awaiting W5-N08-a
 
 ---
 
-**STOP.** W5-N08 Planning is **APPROVED**. Implementation is **AUTHORIZED** for **W5-N08-a only**. Await explicit Product Owner instruction before opening W5-N08-a. Do not open W5-N08-b through W5-N08-e. Do not begin implementation automatically. Do not declare Notification Platform Queue implemented. Do not declare Queue execution implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N08-a is **COMPLETE**. Awaiting explicit Product Owner instruction before W5-N08-b. Do not open W5-N08-b through W5-N08-e without separate Product Owner instruction. Do not declare Notification Platform Queue implemented. Do not declare Queue execution implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.

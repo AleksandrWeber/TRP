@@ -711,4 +711,21 @@ See [`w5-n05-product-owner-close-record.md`](./w5-n05-product-owner-close-record
 
 ---
 
-**STOP.** W5-N05 is **CLOSED** by Product Owner. W5-N06 is **CLOSED** by Product Owner. W5-N07 is **CLOSED** by Product Owner. Awaiting explicit Product Owner instruction before W5-N08 Planning Package. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Dispatcher implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N08 without separate Product Owner instruction.
+## W5-N08-a status (Notification Platform Queue inventory & honesty baseline)
+
+W5-N08-a enumerates every Notification Platform Queue artifact across Closed W5-N05 integration foundation, Closed W5-N06 delivery foundation, Closed W5-N07 dispatch foundation, per-channel W5-N01…N04 foundations, PC-06 routing, PC-07 notification product, per-channel/integration/delivery/dispatch operational continuity views, W3-O02 durable queue substrate, and missing unified platform queue layer, queue workers execution, queue orchestration, retry, and scheduler. **No customer-visible Notification Platform Queue behaviour** was added.
+
+```text
+Inventory only — not queue execution.
+Not queue workers / orchestration / retry / scheduler implementation.
+Not platform queue anchors (W5-N08-b).
+Not Notification Platform Queue functional.
+Not W5-N08 COMPLETE.
+Customer-visible platform queue remains unchanged until later slices + Product Owner Close.
+```
+
+See [`w5-n08-a-notification-platform-queue-inventory.md`](./w5-n08-a-notification-platform-queue-inventory.md).
+
+---
+
+**STOP.** W5-N05 is **CLOSED** by Product Owner. W5-N06 is **CLOSED** by Product Owner. W5-N07 is **CLOSED** by Product Owner. W5-N08-a is **COMPLETE**. Awaiting explicit Product Owner instruction before W5-N08-b. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Queue execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N08-b without separate Product Owner instruction.
