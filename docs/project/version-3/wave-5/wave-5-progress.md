@@ -4,7 +4,7 @@
 **Audience:** Product Owner
 **Date:** 2026-08-29
 **Wave:** 5 — Notification Platform
-**Status:** W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 Planning **APPROVED** · W5-N03-a **COMPLETE** (`b27d19f`) · W5-N03-b **COMPLETE** (`bfb2844`) · W5-N03-c **COMPLETE** (`1984e10`) · W5-N03-d **COMPLETE** (`12ca6c4`) · W5-N03-e **COMPLETE** — Awaiting Final Package Integration Verification
+**Status:** W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 Planning **APPROVED** · W5-N03-a **COMPLETE** (`b27d19f`) · W5-N03-b **COMPLETE** (`bfb2844`) · W5-N03-c **COMPLETE** (`1984e10`) · W5-N03-d **COMPLETE** (`12ca6c4`) · W5-N03-e **COMPLETE** (`80c9d0e`) · W5-N03 Final Integration Verification **PASS** — Awaiting Product Owner Final Close
 **Nature:** Simple Product Owner status. Not an RC. Not an ADR. Not a Master Plan revision.
 
 **Overview:** [`wave-5-overview.md`](./wave-5-overview.md)
@@ -96,31 +96,32 @@ Order is binding: **N01 → N02 → N03 → N04**.
 
 ## Wave status
 
-| Field                                 | Value                                                                                                                                               |
-| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Wave**                              | **5 — Notification Platform** — **OPEN**                                                                                                            |
-| **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03-d **COMPLETE** (`12ca6c4`) · W5-N03-e **COMPLETE** — Awaiting Final Package Integration Verification |
-| **First package**                     | **W5-N01** Production Telegram Bot API (V3-N01 · CM-11) — **CLOSED**                                                                                |
-| **Previous package**                  | **W5-N02** Email SMTP (V3-N02 · CM-12) — **CLOSED**                                                                                                 |
-| **Current package**                   | **W5-N03** Slack / Discord / Teams (V3-N03 · CM-13, CM-14, CM-15) — W5-N03-e **COMPLETE**                                                           |
-| **W5-N03-a inventory**                | [`w5-n03-a-slack-discord-teams-notification-inventory.md`](./w5-n03-a-slack-discord-teams-notification-inventory.md)                                |
-| **W5-N03-b durable foundation**       | [`w5-n03-b-implementation-report.md`](./w5-n03-b-implementation-report.md)                                                                          |
-| **W5-N03-c restart recovery**         | [`w5-n03-c-implementation-report.md`](./w5-n03-c-implementation-report.md)                                                                          |
-| **W5-N03-d operational continuity**   | [`w5-n03-d-implementation-report.md`](./w5-n03-d-implementation-report.md)                                                                          |
-| **W5-N03-e close evidence**           | [`w5-n03-e-implementation-report.md`](./w5-n03-e-implementation-report.md)                                                                          |
-| **W5-N03 package close report**       | [`w5-n03-package-close-report.md`](./w5-n03-package-close-report.md)                                                                                |
-| **Wave 5 Planning Review**            | **PASS** (2026-08-28) — [`wave-5-planning-review.md`](./wave-5-planning-review.md)                                                                  |
-| **Wave 5 Planning Approval**          | **RECORDED** (2026-08-28) — [`wave-5-planning-approval.md`](./wave-5-planning-approval.md)                                                          |
-| **W5-N02 Planning Review**            | **PASS** (2026-08-28) — [`w5-n02-planning-review.md`](./w5-n02-planning-review.md)                                                                  |
-| **W5-N02 Planning Approval**          | **RECORDED** (2026-08-28) — [`w5-n02-planning-approval.md`](./w5-n02-planning-approval.md)                                                          |
-| **W5-N03 Planning Package**           | **OPEN** (2026-08-29) — [`w5-n03-planning-summary.md`](./w5-n03-planning-summary.md)                                                                |
-| **W5-N03 Planning Review**            | **PASS** (2026-08-29) — [`w5-n03-planning-review.md`](./w5-n03-planning-review.md)                                                                  |
-| **W5-N03 Planning Approval**          | **RECORDED** (2026-08-29) — [`w5-n03-planning-approval.md`](./w5-n03-planning-approval.md)                                                          |
-| **Implementation authorized?**        | **Yes** — W5-N03-e complete; Final Package Integration Verification not authorized                                                                  |
-| **W5-N02 Final Integration**          | [`w5-n02-final-integration-verification.md`](./w5-n02-final-integration-verification.md) — **PASS** (`5b72450`)                                     |
-| **W5-N01 Product Owner Close Record** | [`w5-n01-product-owner-close-record.md`](./w5-n01-product-owner-close-record.md) — **CLOSED** (2026-08-28)                                          |
-| **W5-N02 Product Owner Close Record** | [`w5-n02-product-owner-close-record.md`](./w5-n02-product-owner-close-record.md) — **CLOSED** (2026-08-28)                                          |
-| **W5-N03 planning documents**         | [`w5-n03-planning-summary.md`](./w5-n03-planning-summary.md) and companions                                                                         |
+| Field                                 | Value                                                                                                                                                           |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Wave**                              | **5 — Notification Platform** — **OPEN**                                                                                                                        |
+| **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03-e **COMPLETE** (`80c9d0e`) · W5-N03 Final Integration Verification **PASS** — Awaiting Product Owner Final Close |
+| **First package**                     | **W5-N01** Production Telegram Bot API (V3-N01 · CM-11) — **CLOSED**                                                                                            |
+| **Previous package**                  | **W5-N02** Email SMTP (V3-N02 · CM-12) — **CLOSED**                                                                                                             |
+| **Current package**                   | **W5-N03** Slack / Discord / Teams (V3-N03 · CM-13, CM-14, CM-15) — Final Integration Verification **PASS**                                                     |
+| **W5-N03-a inventory**                | [`w5-n03-a-slack-discord-teams-notification-inventory.md`](./w5-n03-a-slack-discord-teams-notification-inventory.md)                                            |
+| **W5-N03-b durable foundation**       | [`w5-n03-b-implementation-report.md`](./w5-n03-b-implementation-report.md)                                                                                      |
+| **W5-N03-c restart recovery**         | [`w5-n03-c-implementation-report.md`](./w5-n03-c-implementation-report.md)                                                                                      |
+| **W5-N03-d operational continuity**   | [`w5-n03-d-implementation-report.md`](./w5-n03-d-implementation-report.md)                                                                                      |
+| **W5-N03-e close evidence**           | [`w5-n03-e-implementation-report.md`](./w5-n03-e-implementation-report.md)                                                                                      |
+| **W5-N03 package close report**       | [`w5-n03-package-close-report.md`](./w5-n03-package-close-report.md)                                                                                            |
+| **W5-N03 Final Integration**          | [`w5-n03-final-integration-verification.md`](./w5-n03-final-integration-verification.md) — **PASS** (local)                                                     |
+| **Wave 5 Planning Review**            | **PASS** (2026-08-28) — [`wave-5-planning-review.md`](./wave-5-planning-review.md)                                                                              |
+| **Wave 5 Planning Approval**          | **RECORDED** (2026-08-28) — [`wave-5-planning-approval.md`](./wave-5-planning-approval.md)                                                                      |
+| **W5-N02 Planning Review**            | **PASS** (2026-08-28) — [`w5-n02-planning-review.md`](./w5-n02-planning-review.md)                                                                              |
+| **W5-N02 Planning Approval**          | **RECORDED** (2026-08-28) — [`w5-n02-planning-approval.md`](./w5-n02-planning-approval.md)                                                                      |
+| **W5-N03 Planning Package**           | **OPEN** (2026-08-29) — [`w5-n03-planning-summary.md`](./w5-n03-planning-summary.md)                                                                            |
+| **W5-N03 Planning Review**            | **PASS** (2026-08-29) — [`w5-n03-planning-review.md`](./w5-n03-planning-review.md)                                                                              |
+| **W5-N03 Planning Approval**          | **RECORDED** (2026-08-29) — [`w5-n03-planning-approval.md`](./w5-n03-planning-approval.md)                                                                      |
+| **Implementation authorized?**        | **Yes** — Final Integration Verification PASS; Product Owner Final Close not authorized                                                                         |
+| **W5-N02 Final Integration**          | [`w5-n02-final-integration-verification.md`](./w5-n02-final-integration-verification.md) — **PASS** (`5b72450`)                                                 |
+| **W5-N01 Product Owner Close Record** | [`w5-n01-product-owner-close-record.md`](./w5-n01-product-owner-close-record.md) — **CLOSED** (2026-08-28)                                                      |
+| **W5-N02 Product Owner Close Record** | [`w5-n02-product-owner-close-record.md`](./w5-n02-product-owner-close-record.md) — **CLOSED** (2026-08-28)                                                      |
+| **W5-N03 planning documents**         | [`w5-n03-planning-summary.md`](./w5-n03-planning-summary.md) and companions                                                                                     |
 
 ---
 
@@ -185,9 +186,11 @@ W5-N03-c COMPLETE (1984e10) — Slack / Discord / Teams Restart Recovery Foundat
         ↓
 W5-N03-d COMPLETE (12ca6c4) — Slack / Discord / Teams Operational Continuity Foundation
         ↓
-W5-N03-e COMPLETE — Package Close Evidence
+W5-N03-e COMPLETE (80c9d0e) — Package Close Evidence
         ↓
-STOP — Await Product Owner review before Final Package Integration Verification
+W5-N03 Final Integration Verification PASS
+        ↓
+STOP — Await Product Owner Final Close
 (No Slack implementation)
 (No Discord implementation)
 (No Microsoft Teams implementation)
@@ -217,10 +220,11 @@ STOP — Await Product Owner review before Final Package Integration Verificatio
 | W5-N03-c opened                        | **Recorded**              |
 | W5-N03-d COMPLETE                      | **Recorded** (`12ca6c4`)  |
 | W5-N03-d opened                        | **Recorded**              |
-| W5-N03-e COMPLETE                      | **Recorded**              |
+| W5-N03-e COMPLETE                      | **Recorded** (`80c9d0e`)  |
 | W5-N03-e opened                        | **Recorded**              |
+| W5-N03 Final Integration Verification  | **PASS**                  |
 | W5-N03 CLOSED                          | **Not claimed**           |
-| Final Package Integration Verification | **Not claimed**           |
+| Final Package Integration Verification | **Recorded**              |
 | Slack implemented                      | **Not claimed**           |
 | Discord implemented                    | **Not claimed**           |
 | Microsoft Teams implemented            | **Not claimed**           |
@@ -235,4 +239,4 @@ STOP — Await Product Owner review before Final Package Integration Verificatio
 
 ---
 
-**STOP.** W5-N03-e **COMPLETE**. Await Product Owner review before Final Package Integration Verification. Do not perform Final Package Integration Verification. Do not declare Slack implemented. Do not declare Discord implemented. Do not declare Microsoft Teams implemented. Do not declare W5-N03 COMPLETE or Wave 5 COMPLETE.
+**STOP.** W5-N03 Final Integration Verification **PASS**. Await Product Owner Final Close. Do not declare W5-N03 CLOSED. Do not declare Slack implemented. Do not declare Discord implemented. Do not declare Microsoft Teams implemented. Do not declare W5-N03 COMPLETE or Wave 5 COMPLETE. Do not open W5-N04.
