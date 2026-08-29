@@ -83,17 +83,17 @@
 
 ## Wave 5 packages (Master Plan / Execution Roadmap)
 
-| Package    | Roadmap ID | Name                                      | Status                                                        |
-| ---------- | ---------- | ----------------------------------------- | ------------------------------------------------------------- |
-| **W5-N01** | **V3-N01** | Production Telegram Bot API               | **CLOSED** by Product Owner (2026-08-28)                      |
-| **W5-N02** | **V3-N02** | Email (SMTP)                              | **CLOSED** by Product Owner (2026-08-28)                      |
-| **W5-N03** | **V3-N03** | Slack / Discord / Teams                   | **CLOSED** by Product Owner (2026-08-29)                      |
-| **W5-N04** | **V3-N04** | Push                                      | **CLOSED** by Product Owner (2026-08-29)                      |
-| **W5-N05** | **V3-N05** | Notification Platform Integration         | **CLOSED** by Product Owner (2026-08-29)                      |
-| **W5-N06** | **V3-N06** | Notification Platform Delivery Foundation | **CLOSED** by Product Owner (2026-08-29)                      |
-| **W5-N07** | **V3-N07** | Notification Platform Dispatch Foundation | **CLOSED** by Product Owner (2026-08-29)                      |
-| **W5-N08** | **V3-N08** | Notification Platform Queue Foundation    | **CLOSED** by Product Owner (2026-08-29)                      |
-| **W5-N09** | **V3-N09** | Notification Platform Workers Foundation  | W5-N09-e **COMPLETE** (local) — Awaiting Product Owner Review |
+| Package    | Roadmap ID | Name                                      | Status                                                                               |
+| ---------- | ---------- | ----------------------------------------- | ------------------------------------------------------------------------------------ |
+| **W5-N01** | **V3-N01** | Production Telegram Bot API               | **CLOSED** by Product Owner (2026-08-28)                                             |
+| **W5-N02** | **V3-N02** | Email (SMTP)                              | **CLOSED** by Product Owner (2026-08-28)                                             |
+| **W5-N03** | **V3-N03** | Slack / Discord / Teams                   | **CLOSED** by Product Owner (2026-08-29)                                             |
+| **W5-N04** | **V3-N04** | Push                                      | **CLOSED** by Product Owner (2026-08-29)                                             |
+| **W5-N05** | **V3-N05** | Notification Platform Integration         | **CLOSED** by Product Owner (2026-08-29)                                             |
+| **W5-N06** | **V3-N06** | Notification Platform Delivery Foundation | **CLOSED** by Product Owner (2026-08-29)                                             |
+| **W5-N07** | **V3-N07** | Notification Platform Dispatch Foundation | **CLOSED** by Product Owner (2026-08-29)                                             |
+| **W5-N08** | **V3-N08** | Notification Platform Queue Foundation    | **CLOSED** by Product Owner (2026-08-29)                                             |
+| **W5-N09** | **V3-N09** | Notification Platform Workers Foundation  | Final Integration Verification **PASS** (local) — Awaiting Product Owner Final Close |
 
 Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 → N09**.
 
@@ -197,13 +197,13 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 
 
 ## W5-N09 slice status
 
-| Slice    | Name                                                              | Status                                               |
-| -------- | ----------------------------------------------------------------- | ---------------------------------------------------- |
-| W5-N09-a | Notification Platform Workers Inventory & Honest Product Baseline | **COMPLETE** (`0dfe0a4`)                             |
-| W5-N09-b | Durable Notification Platform Workers Foundation                  | **COMPLETE** (`6f9f778`)                             |
-| W5-N09-c | Notification Platform Workers Restart Recovery Foundation         | **COMPLETE** (`3ba7eb7`)                             |
-| W5-N09-d | Notification Platform Workers Operational Continuity Foundation   | **COMPLETE** (`8dd654a`)                             |
-| W5-N09-e | Package Close Evidence                                            | **COMPLETE** (local — awaiting Product Owner Review) |
+| Slice    | Name                                                              | Status                   |
+| -------- | ----------------------------------------------------------------- | ------------------------ |
+| W5-N09-a | Notification Platform Workers Inventory & Honest Product Baseline | **COMPLETE** (`0dfe0a4`) |
+| W5-N09-b | Durable Notification Platform Workers Foundation                  | **COMPLETE** (`6f9f778`) |
+| W5-N09-c | Notification Platform Workers Restart Recovery Foundation         | **COMPLETE** (`3ba7eb7`) |
+| W5-N09-d | Notification Platform Workers Operational Continuity Foundation   | **COMPLETE** (`8dd654a`) |
+| W5-N09-e | Package Close Evidence                                            | **COMPLETE** (`4c3ac68`) |
 
 ---
 
@@ -215,7 +215,7 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 
 | **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 **CLOSED** by Product Owner (2026-08-29) · W5-N08 **CLOSED** by Product Owner (2026-08-29)         |
 | **First package**                     | **W5-N01** Production Telegram Bot API (V3-N01 · CM-11) — **CLOSED**                                                                                                                                                                                                                          |
 | **Previous package**                  | **W5-N08** Notification Platform Queue Foundation (V3-N08 · CM-20) — **CLOSED** by Product Owner (2026-08-29)                                                                                                                                                                                 |
-| **Current package**                   | **W5-N09** Notification Platform Workers Foundation (V3-N09 · CM-20) — W5-N09-e **COMPLETE** (local) — Awaiting Product Owner Review                                                                                                                                                          |
+| **Current package**                   | **W5-N09** Notification Platform Workers Foundation (V3-N09 · CM-20) — Final Integration Verification **PASS** (local) — Awaiting Product Owner Final Close                                                                                                                                   |
 | **W5-N09-a inventory**                | [`w5-n09-a-notification-platform-workers-inventory.md`](./w5-n09-a-notification-platform-workers-inventory.md)                                                                                                                                                                                |
 | **W5-N09-a implementation report**    | [`w5-n09-a-implementation-report.md`](./w5-n09-a-implementation-report.md)                                                                                                                                                                                                                    |
 | **W5-N09-b implementation report**    | [`w5-n09-b-implementation-report.md`](./w5-n09-b-implementation-report.md)                                                                                                                                                                                                                    |
@@ -226,7 +226,8 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 
 | **W5-N09 Planning Review**            | **PASS** (2026-08-29) — [`w5-n09-planning-review.md`](./w5-n09-planning-review.md)                                                                                                                                                                                                            |
 | **W5-N09 Planning Approval**          | **RECORDED** (2026-08-29) — [`w5-n09-planning-approval.md`](./w5-n09-planning-approval.md)                                                                                                                                                                                                    |
 | **W5-N09 planning documents**         | [`w5-n09-planning-summary.md`](./w5-n09-planning-summary.md) and companions                                                                                                                                                                                                                   |
-| **Implementation authorized?**        | **Yes** — W5-N09-a **COMPLETE** (`0dfe0a4`); W5-N09-b **COMPLETE** (`6f9f778`); W5-N09-c **COMPLETE** (`3ba7eb7`); W5-N09-d **COMPLETE** (`8dd654a`); W5-N09-e **COMPLETE** (local)                                                                                                           |
+| **Implementation authorized?**        | **Yes** — W5-N09-a **COMPLETE** (`0dfe0a4`); W5-N09-b **COMPLETE** (`6f9f778`); W5-N09-c **COMPLETE** (`3ba7eb7`); W5-N09-d **COMPLETE** (`8dd654a`); W5-N09-e **COMPLETE** (`4c3ac68`); Final Integration Verification **PASS** (local)                                                      |
+| **W5-N09 Final Integration**          | [`w5-n09-final-integration-verification.md`](./w5-n09-final-integration-verification.md) — **PASS** (local)                                                                                                                                                                                   |
 | **W5-N08 Final Integration**          | [`w5-n08-final-integration-verification.md`](./w5-n08-final-integration-verification.md) — **PASS** (`96cf13f`)                                                                                                                                                                               |
 | **W5-N08 Product Owner Close Record** | [`w5-n08-product-owner-close-record.md`](./w5-n08-product-owner-close-record.md)                                                                                                                                                                                                              |
 | **W5-N08-e implementation report**    | [`w5-n08-e-implementation-report.md`](./w5-n08-e-implementation-report.md)                                                                                                                                                                                                                    |
@@ -494,15 +495,17 @@ W5-N09-c COMPLETE (`3ba7eb7`) — Notification Platform Workers Restart Recovery
         ↓
 W5-N09-d COMPLETE (`8dd654a`) — Notification Platform Workers Operational Continuity Foundation
         ↓
-W5-N09-e COMPLETE (local) — Package Close Evidence
+W5-N09-e COMPLETE (`4c3ac68`) — Package Close Evidence
         ↓
-STOP — Awaiting Product Owner Review
+W5-N09 Final Integration Verification PASS (local)
+        ↓
+STOP — Awaiting Product Owner Final Close
 (No worker runtime execution / orchestration / retry / scheduler / dead-letter)
 (No production transport I/O)
 (No Notification Platform Complete)
 (No Wave 5 COMPLETE)
 (No Live Trading)
-(Final Package Integration Verification not performed)
+(Product Owner Close Record not created)
 (No commit / push — local only)
 ```
 
@@ -633,4 +636,4 @@ STOP — Awaiting Product Owner Review
 
 ---
 
-**STOP.** W5-N08 is **CLOSED** by Product Owner. W5-N09 Planning is **APPROVED**. W5-N09-a is **COMPLETE** (`0dfe0a4`). W5-N09-b is **COMPLETE** (`6f9f778`). W5-N09-c is **COMPLETE** (`3ba7eb7`). W5-N09-d is **COMPLETE** (`8dd654a`). W5-N09-e is **COMPLETE** (local) — Awaiting Product Owner Review. Do not declare Notification Platform Workers implemented. Do not declare Worker runtime execution implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not commit or push until Product Owner Review. Do not perform Final Package Integration Verification. Do not create Product Owner Close Record.
+**STOP.** W5-N08 is **CLOSED** by Product Owner. W5-N09 Planning is **APPROVED**. W5-N09-a is **COMPLETE** (`0dfe0a4`). W5-N09-b is **COMPLETE** (`6f9f778`). W5-N09-c is **COMPLETE** (`3ba7eb7`). W5-N09-d is **COMPLETE** (`8dd654a`). W5-N09-e is **COMPLETE** (`4c3ac68`). Final Integration Verification **PASS** (local) — Awaiting Product Owner Final Close. Do not declare Notification Platform Workers implemented. Do not declare Worker runtime execution implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not commit or push until Product Owner Review. Do not create Product Owner Close Record. Do not open W5-N10.
