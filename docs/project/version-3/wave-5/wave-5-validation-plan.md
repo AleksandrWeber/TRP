@@ -823,9 +823,25 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-| W5-N08 opened | **Yes** | W5-N08-d **COMPLETE** — Awaiting Product Owner Review |
+| W5-N08 opened | **Yes** | W5-N08-e **COMPLETE** — Awaiting Product Owner Review |
 
 **Explicit non-claim:** Product Owner Close does **not** authorize Notification Platform Queue implemented, Notification Platform Complete, queue workers implemented, queue orchestration implemented, retry implemented, scheduler implemented, Production Ready, Live Notifications, or Wave 5 COMPLETE.
+
+---
+
+## W5-N08-e validation (2026-08-29 — recorded)
+
+| Layer              | Result   | Evidence                                          |
+| ------------------ | -------- | ------------------------------------------------- |
+| Close Evidence     | **PASS** | `w5-n08-e-package-close-evidence.ts`              |
+| Conformance tests  | **PASS** | `w5-n08-e-package-close-evidence.spec.ts`         |
+| Package documents  | **PASS** | w5-n08-package-* + w5-n08-operational-walkthrough |
+| Slice reports a–d  | **PASS** | w5-n08-{a,b,c,d}-* reports under wave-5           |
+| Architecture check | **PASS** | No ownership drift; no queue execution/workers    |
+| Regression suite   | **PASS** | lint / typecheck / test / build                   |
+| git diff --check   | **PASS** | No whitespace errors                              |
+
+**Explicit non-claim:** W5-N08-e does **not** authorize Notification Platform Queue implemented, Notification Platform Complete, W5-N08 COMPLETE, Wave 5 COMPLETE, Final Package Integration Verification, or Product Owner Close Record. Changes **local only** — not committed. **Recorded**.
 
 ---
 
