@@ -139,6 +139,16 @@ const ready: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: [],
   },
+  pushNotification: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:00:00.000Z',
+    recoveryDurationMs: 42,
+    restoredCount: 0,
+    canonicalAnchorCount: 0,
+    integrityVerified: true,
+    workspaceIds: [],
+  },
 };
 
 const degraded: OperationalContinuityReadinessView = {
@@ -284,6 +294,16 @@ const degraded: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: ['ws-1'],
   },
+  pushNotification: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:01:00.000Z',
+    recoveryDurationMs: 100,
+    restoredCount: 1,
+    canonicalAnchorCount: 1,
+    integrityVerified: true,
+    workspaceIds: ['ws-1'],
+  },
 };
 
 describe('OperationalContinuityView', () => {
@@ -404,5 +424,15 @@ describe('OperationalContinuityView', () => {
     expect(html).toContain('Canonical anchors');
     expect(html).not.toContain('Delivering');
     expect(html).not.toContain('Webhook');
+  });
+
+  it('shows Push Notification operational state within platform readiness only', () => {
+    const html = renderToStaticMarkup(<OperationalContinuityView readiness={ready} />);
+    expect(html).toContain('Push Notification');
+    expect(html).toContain('Push Notification operational state');
+    expect(html).toContain('Canonical anchors');
+    expect(html).not.toContain('Delivering');
+    expect(html).not.toContain('FCM');
+    expect(html).not.toContain('Web Push');
   });
 });

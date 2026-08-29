@@ -675,6 +675,52 @@ export function OperationalContinuityView({ readiness }: Props) {
       </section>
 
       <section>
+        <h2 className="text-lg font-semibold text-slate-100">Push Notification</h2>
+        {readiness.pushNotification ? (
+          <dl className="mt-4 grid gap-3 sm:grid-cols-2" data-testid="push-notification-continuity">
+            <div>
+              <dt className="text-sm text-slate-400">Push Notification operational state</dt>
+              <dd className="text-slate-100" data-testid="push-notification-state">
+                {readiness.pushNotification.operationalState}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Owner readiness</dt>
+              <dd className="text-slate-100" data-testid="push-notification-owner-readiness">
+                {readiness.pushNotification.ownerReadiness}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery timestamp</dt>
+              <dd className="text-slate-100" data-testid="push-notification-recovery-timestamp">
+                {readiness.pushNotification.recoveryTimestamp ?? '—'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery duration</dt>
+              <dd className="text-slate-100" data-testid="push-notification-recovery-duration">
+                {formatDuration(readiness.pushNotification.recoveryDurationMs)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Restored rows</dt>
+              <dd className="text-slate-100" data-testid="push-notification-restored-count">
+                {readiness.pushNotification.restoredCount}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Canonical anchors</dt>
+              <dd className="text-slate-100" data-testid="push-notification-canonical-anchor-count">
+                {readiness.pushNotification.canonicalAnchorCount}
+              </dd>
+            </div>
+          </dl>
+        ) : (
+          <p className="mt-2 text-slate-400">Not evaluated</p>
+        )}
+      </section>
+
+      <section>
         <h2 className="text-lg font-semibold text-slate-100">Owner operational state</h2>
         <table className="mt-3 w-full text-left text-sm text-slate-200">
           <thead className="text-slate-400">

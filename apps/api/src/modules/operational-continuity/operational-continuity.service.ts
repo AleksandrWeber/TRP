@@ -13,6 +13,7 @@
  * W5-N01-d adds Telegram Notification operational continuity (derived).
  * W5-N02-d adds Email Notification operational continuity (derived).
  * W5-N03-d adds Slack / Discord / Teams Notification operational continuity (derived).
+ * W5-N04-d adds Push Notification operational continuity (derived).
  * Recovery itself remains W3-O01-c / W3-O02-c / W3-O04-c / W3-O05-c only. No new persistence / BC / HA / monitoring evaluation.
  */
 
@@ -36,6 +37,8 @@ import { getEmailNotificationContinuityRecord } from '../notification-delivery/d
 import { buildEmailNotificationContinuityProjection } from '../notification-delivery/domain/email-notification-operational-continuity';
 import { getSlackDiscordTeamsNotificationContinuityRecord } from '../notification-delivery/domain/slack-discord-teams-notification-continuity-status';
 import { buildSlackDiscordTeamsNotificationContinuityProjection } from '../notification-delivery/domain/slack-discord-teams-notification-operational-continuity';
+import { getPushNotificationContinuityRecord } from '../notification-delivery/domain/push-notification-continuity-status';
+import { buildPushNotificationContinuityProjection } from '../notification-delivery/domain/push-notification-operational-continuity';
 import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
 import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
 import { getMonitoringHealthContinuityRecord } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
@@ -123,6 +126,11 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         continuity: null,
       }),
       slackDiscordTeamsNotification: buildSlackDiscordTeamsNotificationContinuityProjection({
+        recovering: true,
+        ownerReadiness: 'ready',
+        continuity: null,
+      }),
+      pushNotification: buildPushNotificationContinuityProjection({
         recovering: true,
         ownerReadiness: 'ready',
         continuity: null,
@@ -283,6 +291,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildPushNotificationView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getPushNotificationContinuityRecord();
+    return buildPushNotificationContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -362,6 +382,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       slackDiscordTeamsNotification: this.buildSlackDiscordTeamsNotificationView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      pushNotification: this.buildPushNotificationView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -533,6 +557,19 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           ? null
           : recoveryDurationMs),
     });
+    const pushNotificationBase = this.buildPushNotificationView({
+      recovering: false,
+      ownerReadiness: 'ready',
+    });
+    const pushNotification = Object.freeze({
+      ...pushNotificationBase,
+      recoveryTimestamp:
+        pushNotificationBase.recoveryTimestamp ??
+        (pushNotificationBase.operationalState === 'Recovering' ? null : recoveryTimestamp),
+      recoveryDurationMs:
+        pushNotificationBase.recoveryDurationMs ??
+        (pushNotificationBase.operationalState === 'Recovering' ? null : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -548,6 +585,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       telegramNotification,
       emailNotification,
       slackDiscordTeamsNotification,
+      pushNotification,
     });
     this.finalized = true;
 

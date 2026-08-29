@@ -488,7 +488,23 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite     | **PASS** | lint / typecheck / test / build                       |
 | git diff --check     | **PASS** | No whitespace errors                                  |
 
-**Explicit non-claim:** W5-N04-c does **not** authorize Push implemented, Web Push implemented, FCM implemented, browser notifications operational, device token registry implemented, operational continuity, W5-N04 COMPLETE, or Wave 5 COMPLETE. Changes **local only** — not committed.
+**Explicit non-claim:** W5-N04-c does **not** authorize Push implemented, Web Push implemented, FCM implemented, browser notifications operational, device token registry implemented, operational continuity, W5-N04 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`37e245c`).
+
+---
+
+## W5-N04-d validation (2026-08-29 — local)
+
+| Layer                  | Result   | Evidence                                               |
+| ---------------------- | -------- | ------------------------------------------------------ |
+| Operational continuity | **PASS** | `push-notification-operational-continuity.ts`          |
+| Platform projection    | **PASS** | `PushNotificationContinuityView` on readiness model    |
+| Web projection         | **PASS** | `OperationalContinuityView.tsx` Push section           |
+| Conformance registry   | **PASS** | `w5-n04-d-push-notification-operational-continuity.ts` |
+| Slice reports          | **PASS** | w5-n04-d-* reports under wave-5                        |
+| Regression suite       | **PASS** | lint / typecheck / test / build                        |
+| git diff --check       | **PASS** | No whitespace errors                                   |
+
+**Explicit non-claim:** W5-N04-d does **not** authorize Push implemented, Web Push implemented, FCM implemented, browser notifications operational, device token registry implemented, W5-N04 COMPLETE, or Wave 5 COMPLETE. Changes **local only** — not committed.
 
 ---
 

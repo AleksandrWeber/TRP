@@ -156,6 +156,19 @@ export type SlackDiscordTeamsNotificationContinuityView = Readonly<{
   workspaceIds: readonly string[];
 }>;
 
+/** W5-N04-d — Push Notification continuity fields on platform readiness. */
+export type PushNotificationContinuityView = Readonly<{
+  operationalState: OperationalState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+}>;
+
 /** W3-O05-d — Monitoring & Security Health continuity fields on platform readiness. */
 export type MonitoringHealthContinuityView = Readonly<{
   operationalState: OperationalState;
@@ -213,6 +226,8 @@ export type PlatformOperationalProjection = Readonly<{
   emailNotification: EmailNotificationContinuityView | null;
   /** W5-N03-d — Slack / Discord / Teams Notification operational continuity (derived). */
   slackDiscordTeamsNotification: SlackDiscordTeamsNotificationContinuityView | null;
+  /** W5-N04-d — Push Notification operational continuity (derived). */
+  pushNotification: PushNotificationContinuityView | null;
 }>;
 
 export type EvaluateOwnerReadinessInput = Readonly<{
@@ -310,6 +325,7 @@ export function buildPlatformOperationalProjection(input: {
   telegramNotification?: TelegramNotificationContinuityView | null;
   emailNotification?: EmailNotificationContinuityView | null;
   slackDiscordTeamsNotification?: SlackDiscordTeamsNotificationContinuityView | null;
+  pushNotification?: PushNotificationContinuityView | null;
 }): PlatformOperationalProjection {
   const platformState = derivePlatformOperationalState(input.owners);
   assertOperationalState(platformState);
@@ -335,6 +351,7 @@ export function buildPlatformOperationalProjection(input: {
     telegramNotification: input.telegramNotification ?? null,
     emailNotification: input.emailNotification ?? null,
     slackDiscordTeamsNotification: input.slackDiscordTeamsNotification ?? null,
+    pushNotification: input.pushNotification ?? null,
   });
 }
 

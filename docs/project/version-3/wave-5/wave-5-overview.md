@@ -303,4 +303,20 @@ Operational continuity = W5-N04-d (not claimed from this slice).
 
 ---
 
-**STOP.** W5-N04-c **COMPLETE** (local). Deterministic restart recovery hydrate for Push notification anchors on Notification Delivery owner. Push channel remains reserved-inactive. Do not declare Push implemented. Do not declare Web Push implemented. Do not declare FCM implemented. Do not declare browser notifications operational. Do not declare device token registry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Awaiting Product Owner Review before W5-N04-d.
+---
+
+## W5-N04-d status (Push operational continuity foundation)
+
+W5-N04-d projects derived Push Notification operational readiness (Recovering / Ready / Degraded / Unavailable) into Platform Operational Readiness from W5-N04-c recovery state. **No outbound Push delivery** was added.
+
+```text
+Readiness derived from W5-N04-c continuity record only.
+Degraded never fabricates Ready.
+Missing continuity never fabricates Ready.
+Web Push / FCM / device token registry do not influence readiness.
+Package Close = W5-N04-e (not claimed from this slice).
+```
+
+---
+
+**STOP.** W5-N04-d **COMPLETE** (local). Push Notification operational readiness projected on Platform Operational Readiness. Push channel remains reserved-inactive. Do not declare Push implemented. Do not declare Web Push implemented. Do not declare FCM implemented. Do not declare browser notifications operational. Do not declare device token registry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Awaiting Product Owner Review before W5-N04-e.
