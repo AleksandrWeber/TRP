@@ -287,4 +287,4 @@ W5-N02-e assembled complete engineering Close Evidence across slices a–d. Fina
 
 ---
 
-**STOP.** W5-N04-a **COMPLETE** (local). Push channel remains reserved-inactive. Do not declare Push implemented. Do not declare Web Push implemented. Do not declare FCM implemented. Do not declare browser notifications operational. Do not declare device token registry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Awaiting Product Owner Review before W5-N04-b.
+**STOP.** W5-N04-b **COMPLETE** (local). Durable Push notification anchors persist on Notification Delivery owner. Push channel remains reserved-inactive. Do not declare Push implemented. Do not declare Web Push implemented. Do not declare FCM implemented. Do not declare browser notifications operational. Do not declare device token registry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Awaiting Product Owner Review before W5-N04-c.

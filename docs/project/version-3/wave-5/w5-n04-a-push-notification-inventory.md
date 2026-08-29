@@ -96,9 +96,19 @@ See `rowsPushNotificationSurvive()` for the full machine-readable list.
 
 ---
 
+## W5-N04-b durability update (post-slice b)
+
+| Artifact ID                        | Before (W5-N04-a) | After (W5-N04-b)                                                                                 |
+| ---------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------ |
+| `persist-push-notification-anchor` | EPHEMERAL         | **SURVIVE** — `workspace_push_notification_anchors`; canonical anchors only; no Web Push/FCM I/O |
+
+**Binding finding (unchanged):** Production Push notifications are **NOT implemented**. Anchor rows survive in storage, but **restart recovery is not claimed** until W5-N04-c.
+
+---
+
 ## Push notification EPHEMERAL artifacts (summary)
 
-Reserved-inactive push transport path, missing Web Push/FCM transports, missing vault VAPID/FCM types, missing device token registry, missing browser registration, missing push anchors, missing connect product, UI-only reserved channel views, and honesty blockers.
+Reserved-inactive push transport path, missing Web Push/FCM transports, missing vault VAPID/FCM types, missing device token registry, missing browser registration, missing connect product, UI-only reserved channel views, and honesty blockers.
 
 See `rowsPushNotificationEphemeral()` for the full machine-readable list.
 

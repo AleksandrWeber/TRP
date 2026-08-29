@@ -458,7 +458,22 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite     | **PASS** | lint / typecheck / test / build           |
 | git diff --check     | **PASS** | No whitespace errors                      |
 
-**Explicit non-claim:** W5-N04-a does **not** authorize Push implemented, Web Push implemented, FCM implemented, browser notifications operational, device token registry implemented, W5-N04 COMPLETE, or Wave 5 COMPLETE. Changes **local only** — not committed.
+**Explicit non-claim:** W5-N04-a does **not** authorize Push implemented, Web Push implemented, FCM implemented, browser notifications operational, device token registry implemented, W5-N04 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`d8c6158`).
+
+---
+
+## W5-N04-b validation (2026-08-29 — local)
+
+| Layer                | Result   | Evidence                                      |
+| -------------------- | -------- | --------------------------------------------- |
+| Durable anchor       | **PASS** | `WorkspacePushNotificationAnchor` + migration |
+| Conformance registry | **PASS** | `w5-n04-b-durable-push-notification.ts`       |
+| Slice reports        | **PASS** | w5-n04-b-* reports under wave-5               |
+| Architecture check   | **PASS** | Notification Delivery owner only; no push I/O |
+| Regression suite     | **PASS** | lint / typecheck / test / build               |
+| git diff --check     | **PASS** | No whitespace errors                          |
+
+**Explicit non-claim:** W5-N04-b does **not** authorize Push implemented, Web Push implemented, FCM implemented, browser notifications operational, device token registry implemented, restart recovery, W5-N04 COMPLETE, or Wave 5 COMPLETE. Changes **local only** — not committed.
 
 ---
 
