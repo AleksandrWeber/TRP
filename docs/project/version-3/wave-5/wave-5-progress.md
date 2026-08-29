@@ -537,7 +537,7 @@ W5-N10-e COMPLETE (`ba53fcc`) — Package Close Evidence
         ↓
 W5-N10 Final Integration Verification PASS (`0dd1ab9`)
         ↓
-W5-N10 CLOSED by Product Owner (2026-08-29)
+W5-N10 CLOSED by Product Owner (2026-08-29) (`51ad013`)
         ↓
 STOP — Await explicit Product Owner instruction before W5-N11 Planning Package
 (No worker runtime execution / orchestration / retry / scheduler / dead-letter)
@@ -668,7 +668,7 @@ STOP — Await explicit Product Owner instruction before W5-N11 Planning Package
 | W5-N10-d COMPLETE (`7f7e5b3`)         | **Recorded** (2026-08-29) |
 | W5-N10-e COMPLETE (`ba53fcc`)         | **Recorded** (2026-08-29) |
 | W5-N10 Final Integration Verification | **PASS** (`0dd1ab9`)      |
-| W5-N10 CLOSED                         | **Recorded** (2026-08-29) |
+| W5-N10 CLOSED                         | **Recorded** (`51ad013`)  |
 | Worker runtime execution implemented  | **Not claimed**           |
 | Queue execution implemented           | **Not claimed**           |
 | Dispatcher implemented                | **Not claimed**           |
