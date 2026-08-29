@@ -186,7 +186,7 @@ describe('W5-N05-e package close evidence — integration / planning', () => {
     expect(existsSync(join(WAVE5, 'wave-5-progress.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'w5-n05-planning-approval.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'w5-n05-product-owner-close-record.md'))).toBe(false);
-    expect(existsSync(join(WAVE5, 'w5-n05-final-integration-verification.md'))).toBe(false);
+    expect(existsSync(join(WAVE5, 'w5-n05-final-integration-verification.md'))).toBe(true);
   });
 
   it('documentation integrity helper verifies slice and package reports', () => {
@@ -224,13 +224,18 @@ describe('W5-N05-e package close evidence — integration / planning', () => {
     expect(view).not.toMatch(/Delivering|Live Trading/i);
   });
 
-  it('status docs: W5-N05 slices a–e recorded; awaiting Final Package Integration Verification', () => {
+  it('status docs: W5-N05 slices a–e recorded; Final Integration Verification PASS; awaiting Product Owner Final Close', () => {
     const progress = readWave5('wave-5-progress.md');
     const overview = readWave5('wave-5-overview.md');
     const close = readWave5('w5-n05-package-close-report.md');
     const summary = readWave5('w5-n05-package-summary.md');
+    const finalIntegration = readWave5('w5-n05-final-integration-verification.md');
     expect(progress).toMatch(/W5-N05-a|W5-N05-b|W5-N05-c|W5-N05-d|W5-N05-e/);
-    expect(progress).toMatch(/Final Package Integration Verification|Awaiting Final Package/i);
+    expect(progress).toMatch(
+      /Final Integration Verification[\s\S]*PASS|Final Package Integration Verification[\s\S]*PASS/i,
+    );
+    expect(progress).toMatch(/Awaiting Product Owner Final Close|Product Owner Final Close/i);
+    expect(finalIntegration).toMatch(/READY FOR PRODUCT OWNER FINAL CLOSE/i);
     expect(progress).toMatch(/Wave 5 COMPLETE[\s\S]*Not claimed|Not claimed[\s\S]*Wave 5 COMPLETE/);
     expect(overview).toMatch(/STOP/);
     expect(overview).toMatch(
