@@ -384,4 +384,20 @@ See [`w5-n05-a-notification-platform-integration-inventory.md`](./w5-n05-a-notif
 
 ---
 
-**STOP.** W5-N05-a is **COMPLETE** (`885a084`). Await explicit Product Owner instruction before opening W5-N05-b. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Complete. Do not declare Push/Email/Slack/Discord/Teams implemented. Do not declare W5-N05 COMPLETE. Do not declare Wave 5 COMPLETE. Do not open W5-N05-b without separate Product Owner instruction.
+## W5-N05-b status (Durable Notification Platform Integration foundation)
+
+W5-N05-b adds canonical Notification Platform Integration anchor persistence on the existing Notification Delivery owner via `WorkspaceNotificationPlatformIntegrationAnchor`. **No customer-visible Notification Platform Integration behaviour** was added.
+
+```text
+Canonical integration anchors persist in workspace_notification_platform_integration_anchors.
+Integration state only — no delivery state, runtime state, or transport I/O.
+Restart recovery = W5-N05-c (not claimed from this slice).
+Operational continuity = W5-N05-d (not claimed from this slice).
+Notification Platform Integration does NOT function after this slice.
+```
+
+See [`w5-n05-b-implementation-report.md`](./w5-n05-b-implementation-report.md).
+
+---
+
+**STOP.** W5-N05-b is **COMPLETE** (`c3cf254`). Await explicit Product Owner instruction before opening W5-N05-c. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Complete. Do not declare Push/Email/Slack/Discord/Teams implemented. Do not declare W5-N05 COMPLETE. Do not declare Wave 5 COMPLETE. Do not open W5-N05-c without separate Product Owner instruction.

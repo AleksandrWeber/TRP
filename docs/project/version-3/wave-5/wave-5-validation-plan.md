@@ -573,12 +573,13 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 - W5-N04-e validation PASS — **recorded** (`d20ea88`)
 - W5-N04 Final Integration PASS — **recorded** (`2488d4f`)
 - W5-N04 CLOSED — **recorded** (2026-08-29)
-- W5-N05-a validation PASS — **recorded** (`885a084`)
-- W5-N05-b opened — **not claimed**
+- W5-N05-a validation PASS — **recorded** (`d6514ab`)
+- W5-N05-b validation PASS — **recorded** (`c3cf254`)
+- W5-N05-c opened — **not claimed**
 
 ---
 
-## W5-N05-a validation (2026-08-29 — local)
+## W5-N05-a validation (2026-08-29 — recorded)
 
 | Layer                | Result   | Evidence                                                  |
 | -------------------- | -------- | --------------------------------------------------------- |
@@ -589,8 +590,24 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite     | **PASS** | lint / typecheck / test / build                           |
 | git diff --check     | **PASS** | No whitespace errors                                      |
 
-**Explicit non-claim:** W5-N05-a does **not** authorize Notification Platform Integration implemented, Notification Platform Complete, Push/Email/Slack/Discord/Teams implemented, W5-N05 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`885a084`).
+**Explicit non-claim:** W5-N05-a does **not** authorize Notification Platform Integration implemented, Notification Platform Complete, Push/Email/Slack/Discord/Teams implemented, W5-N05 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`d6514ab`).
 
 ---
 
-**STOP.** W5-N05-a is **COMPLETE** (`885a084`). Await explicit Product Owner instruction before opening W5-N05-b. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N05-b without separate Product Owner instruction.
+## W5-N05-b validation (2026-08-29 — local)
+
+| Layer                | Result   | Evidence                                                      |
+| -------------------- | -------- | ------------------------------------------------------------- |
+| Durable anchor       | **PASS** | `WorkspaceNotificationPlatformIntegrationAnchor` + migration  |
+| Conformance registry | **PASS** | `w5-n05-b-durable-notification-platform-integration.ts`       |
+| Slice reports        | **PASS** | w5-n05-b-* reports under wave-5                               |
+| Architecture check   | **PASS** | Notification Delivery owner only; no platform integration I/O |
+| Inventory sync       | **PASS** | Canonical anchor EPHEMERAL → SURVIVE                          |
+| Regression suite     | **PASS** | lint / typecheck / test / build                               |
+| git diff --check     | **PASS** | No whitespace errors                                          |
+
+**Explicit non-claim:** W5-N05-b does **not** authorize Notification Platform Integration implemented, Notification Platform Complete, restart recovery, W5-N05 COMPLETE, or Wave 5 COMPLETE. **Local only — not committed.**
+
+---
+
+**STOP.** W5-N05-b is **COMPLETE** (`c3cf254`). Await explicit Product Owner instruction before opening W5-N05-c. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N05-c without separate Product Owner instruction.

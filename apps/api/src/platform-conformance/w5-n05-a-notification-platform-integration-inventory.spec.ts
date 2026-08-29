@@ -91,7 +91,8 @@ describe('W5-N05-a notification platform integration inventory — unit', () => 
     expect(ids.has('missing-unified-platform-integration-view')).toBe(true);
     expect(ids.has('missing-platform-integration-restart-recovery')).toBe(true);
     expect(ids.has('missing-platform-integration-operational-continuity')).toBe(true);
-    expect(ids.has('missing-durable-platform-integration-anchors')).toBe(true);
+    expect(ids.has('missing-durable-platform-integration-anchors')).toBe(false);
+    expect(ids.has('persist-notification-platform-integration-anchor')).toBe(true);
     expect(ids.has('runtime-pc06-resolve-delivery-routing')).toBe(true);
     expect(ids.has('continuity-telegram-notification-view')).toBe(true);
     expect(ids.has('continuity-push-notification-view')).toBe(true);
@@ -114,7 +115,8 @@ describe('W5-N05-a notification platform integration inventory — unit', () => 
     expect(ids.has('missing-platform-integration-operational-continuity')).toBe(true);
     expect(ids.has('missing-cross-channel-honesty-unification')).toBe(true);
     expect(ids.has('missing-production-transport-integration')).toBe(true);
-    expect(ids.has('missing-durable-platform-integration-anchors')).toBe(true);
+    expect(ids.has('missing-durable-platform-integration-anchors')).toBe(false);
+    expect(ids.has('persist-notification-platform-integration-anchor')).toBe(true);
     expect(ids.has('missing-platform-integration-ui')).toBe(true);
   });
 
@@ -124,7 +126,7 @@ describe('W5-N05-a notification platform integration inventory — unit', () => 
     expect(W5_N05_A_BINDING_FINDINGS.customerVisibleFeatureFromSliceA).toBe(false);
     expect(W5_N05_A_BINDING_FINDINGS.perChannelFoundationsExist).toBe(true);
     expect(W5_N05_A_BINDING_FINDINGS.unifiedPlatformIntegrationLayerMissing).toBe(true);
-    expect(W5_N05_A_BINDING_FINDINGS.platformIntegrationAnchorsMissing).toBe(true);
+    expect(W5_N05_A_BINDING_FINDINGS.platformIntegrationAnchorsMissing).toBe(false);
     expect(W5_N05_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
   });
 

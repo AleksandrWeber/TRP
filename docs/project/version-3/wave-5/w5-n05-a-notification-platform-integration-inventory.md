@@ -65,7 +65,7 @@ Enumerate every Notification Platform Integration artifact required to implement
 | `own-platform-integration-layer`        | notification-delivery | EPHEMERAL | Platform integration owner — layer missing today            |
 | `own-notification-delivery-domain`      | notification-delivery | SURVIVE   | Delivery domain owner — extend integration only             |
 | `own-pc06-routing-integration`          | notification-delivery | SURVIVE   | PC-06 routing SoT — consumed unchanged                      |
-| `own-platform-integration-persistence`  | notification-delivery | EPHEMERAL | Planned W5-N05-b — no platform integration anchors today    |
+| `own-platform-integration-persistence`  | notification-delivery | SURVIVE   | Implemented — W5-N05-b canonical anchor persistence         |
 | `own-secret-vault-consume`              | secret-vault          | SURVIVE   | Vault substrate — consumed not extended                     |
 | `own-connection-management-consume`     | connection-management | SURVIVE   | Connect product facade — consumed not extended for platform |
 | `own-workspace-isolation-notifications` | workspace-isolation   | SURVIVE   | A↛B notification credentials and delivery state             |
@@ -102,6 +102,17 @@ See `rowsNotificationPlatformIntegrationSurvive()` for the full machine-readable
 Missing unified platform integration layer, missing platform integration anchors, missing platform restart recovery, missing platform operational continuity, missing cross-channel honesty unification, missing platform integration UI, missing production transport integration (TD-049/TD-050), and honesty blockers.
 
 See `rowsNotificationPlatformIntegrationEphemeral()` for the full machine-readable list.
+
+---
+
+## W5-N05-b durability update (post-slice b)
+
+| Artifact ID                                        | Before (W5-N05-a) | After (W5-N05-b)                                                                                      |
+| -------------------------------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------- |
+| `persist-notification-platform-integration-anchor` | EPHEMERAL         | **SURVIVE** — `workspace_notification_platform_integration_anchors`; canonical integration state only |
+| `own-platform-integration-persistence`             | EPHEMERAL         | **SURVIVE** — notification-delivery owner; no platform integration I/O                                |
+
+**Binding finding (unchanged):** Notification Platform Integration is **NOT implemented**. Anchor rows survive in storage, but **restart recovery is not claimed** until W5-N05-c.
 
 ---
 

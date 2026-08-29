@@ -1884,3 +1884,23 @@ model WorkspacePushNotificationAnchor {
   @@id([workspaceId, notificationId])
   @@map("workspace_push_notification_anchors")
 }
+
+/// W5-N05-b — Durable Notification Platform Integration anchors on existing Notification Delivery owner.
+/// Canonical platform integration state only. No delivery state. No runtime state. No transport I/O.
+/// Persistence only — restart recovery and operational continuity are later slices.
+model WorkspaceNotificationPlatformIntegrationAnchor {
+  workspaceId               String   @map("workspace_id")
+  integrationAnchorId       String   @map("integration_anchor_id")
+  schemaVersion             Int      @default(1) @map("schema_version")
+  platformIntegrationType   String   @map("platform_integration_type")
+  integrationState          String   @map("integration_state")
+  channelScope              String?  @map("channel_scope")
+  integrityMetadata         String?  @map("integrity_metadata")
+  correlationId             String?  @map("correlation_id")
+  recordedAt                DateTime @map("recorded_at")
+  recordedByActorId         String?  @map("recorded_by_actor_id")
+  updatedAt                 DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, integrationAnchorId])
+  @@map("workspace_notification_platform_integration_anchors")
+}
