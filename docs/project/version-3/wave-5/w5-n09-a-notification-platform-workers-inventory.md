@@ -60,14 +60,15 @@ Enumerate every Notification Platform Workers artifact required to implement W5-
 
 ## Required ownership inventory (summary)
 
-| Artifact ID                              | Owner                 | Class     | Persistence responsibility | Recovery responsibility | Operational continuity responsibility |
-| ---------------------------------------- | --------------------- | --------- | -------------------------- | ----------------------- | ------------------------------------- |
-| `own-platform-workers-layer`             | notification-delivery | EPHEMERAL | Deferred W5-N09-b          | Deferred W5-N09-c       | Deferred W5-N09-d                     |
-| `own-notification-delivery-domain`       | notification-delivery | SURVIVE   | notification-delivery      | notification-delivery   | platform-readiness                    |
-| `own-w5-n08-queue-foundation-consume`    | w5-n08-reference      | SURVIVE   | w5-n08-reference           | w5-n08-reference        | w5-n08-reference                      |
-| `own-w5-n07-dispatch-foundation-consume` | w5-n07-reference      | SURVIVE   | w5-n07-reference           | w5-n07-reference        | w5-n07-reference                      |
-| `own-platform-workers-persistence`       | notification-delivery | EPHEMERAL | Deferred W5-N09-b          | none-missing            | none-missing                          |
-| `own-notification-durable-queue`         | notification-delivery | SURVIVE   | notification-delivery      | notification-delivery   | platform-readiness                    |
+| Artifact ID                                    | Owner                 | Class     | Persistence responsibility       | Recovery responsibility | Operational continuity responsibility |
+| ---------------------------------------------- | --------------------- | --------- | -------------------------------- | ----------------------- | ------------------------------------- |
+| `own-platform-workers-layer`                   | notification-delivery | EPHEMERAL | Deferred W5-N09-b                | Deferred W5-N09-c       | Deferred W5-N09-d                     |
+| `own-notification-delivery-domain`             | notification-delivery | SURVIVE   | notification-delivery            | notification-delivery   | platform-readiness                    |
+| `own-w5-n08-queue-foundation-consume`          | w5-n08-reference      | SURVIVE   | w5-n08-reference                 | w5-n08-reference        | w5-n08-reference                      |
+| `own-w5-n07-dispatch-foundation-consume`       | w5-n07-reference      | SURVIVE   | w5-n07-reference                 | w5-n07-reference        | w5-n07-reference                      |
+| `own-platform-workers-persistence`             | notification-delivery | SURVIVE   | notification-delivery (W5-N09-b) | w5-n09-c                | platform-readiness                    |
+| `persist-notification-platform-workers-anchor` | notification-delivery | SURVIVE   | notification-delivery (W5-N09-b) | w5-n09-c                | platform-readiness                    |
+| `own-notification-durable-queue`               | notification-delivery | SURVIVE   | notification-delivery            | notification-delivery   | platform-readiness                    |
 
 Full row detail: `W5_N09_A_NOTIFICATION_PLATFORM_WORKERS_INVENTORY` and helpers `rowsSurvive()`, `rowsEphemeral()`, `rowsNotificationPlatformWorkersSurvive()`, `rowsNotificationPlatformWorkersEphemeral()`.
 

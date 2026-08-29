@@ -137,7 +137,7 @@ describe('W5-N09-a notification platform workers inventory — unit', () => {
     expect(W5_N09_A_BINDING_FINDINGS.customerVisibleFeatureFromSliceA).toBe(false);
     expect(W5_N09_A_BINDING_FINDINGS.w5N05IntegrationFoundationExists).toBe(true);
     expect(W5_N09_A_BINDING_FINDINGS.unifiedPlatformWorkersLayerMissing).toBe(true);
-    expect(W5_N09_A_BINDING_FINDINGS.platformWorkersAnchorsMissing).toBe(true);
+    expect(W5_N09_A_BINDING_FINDINGS.platformWorkersAnchorsMissing).toBe(false);
     expect(W5_N09_A_BINDING_FINDINGS.w5N08QueueFoundationExists).toBe(true);
     expect(W5_N09_A_BINDING_FINDINGS.w5N07DispatchFoundationExists).toBe(true);
     expect(W5_N09_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);

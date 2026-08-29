@@ -832,7 +832,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N09-a validation (2026-08-29 — local, awaiting Product Owner Review)
+## W5-N09-a validation (2026-08-29 — `0dfe0a4`)
 
 | Layer                | Result   | Evidence                                              |
 | -------------------- | -------- | ----------------------------------------------------- |
@@ -843,7 +843,22 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite     | **PASS** | lint / typecheck / test / build                       |
 | git diff --check     | **PASS** | No whitespace errors                                  |
 
-**Explicit non-claim:** W5-N09-a does **not** authorize Notification Platform Workers implemented, worker execution implemented, scheduler implemented, retry implemented, dead-letter queue implemented, Notification Platform Complete, W5-N09 COMPLETE, or Wave 5 COMPLETE. **Local only — not committed.**
+**Explicit non-claim:** W5-N09-a does **not** authorize Notification Platform Workers implemented, worker execution implemented, scheduler implemented, retry implemented, dead-letter queue implemented, Notification Platform Complete, W5-N09 COMPLETE, or Wave 5 COMPLETE.
+
+---
+
+## W5-N09-b validation (2026-08-29 — local, awaiting Product Owner Review)
+
+| Layer               | Result   | Evidence                                               |
+| ------------------- | -------- | ------------------------------------------------------ |
+| Durable persistence | **PASS** | `w5-n09-b-durable-notification-platform-workers.ts`    |
+| Persistence service | **PASS** | `notification-platform-workers-persistence.service.ts` |
+| Inventory sync      | **PASS** | W5-N09-a inventory promoted to SURVIVE                 |
+| Architecture check  | **PASS** | No ownership drift; no worker runtime execution        |
+| Regression suite    | **PASS** | lint / typecheck / test / build                        |
+| git diff --check    | **PASS** | No whitespace errors                                   |
+
+**Explicit non-claim:** W5-N09-b does **not** authorize Notification Platform Workers implemented, worker execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, restart recovery implemented, Notification Platform Complete, W5-N09 COMPLETE, or Wave 5 COMPLETE. **Local only — not committed.**
 
 ---
 

@@ -1958,3 +1958,20 @@ model WorkspaceNotificationPlatformQueueAnchor {
   @@id([workspaceId, queueAnchorId])
   @@map("workspace_notification_platform_queue_anchors")
 }
+
+model WorkspaceNotificationPlatformWorkersAnchor {
+  workspaceId         String   @map("workspace_id")
+  workersAnchorId     String   @map("workers_anchor_id")
+  schemaVersion       Int      @default(1) @map("schema_version")
+  platformWorkerType  String   @map("platform_worker_type")
+  workersState        String   @map("workers_state")
+  channelScope        String?  @map("channel_scope")
+  integrityMetadata   String?  @map("integrity_metadata")
+  correlationId       String?  @map("correlation_id")
+  recordedAt          DateTime @map("recorded_at")
+  recordedByActorId   String?  @map("recorded_by_actor_id")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, workersAnchorId])
+  @@map("workspace_notification_platform_workers_anchors")
+}
