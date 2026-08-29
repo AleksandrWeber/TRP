@@ -862,7 +862,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N09-c validation (2026-08-29 — local, awaiting Product Owner Review)
+## W5-N09-c validation (2026-08-29 — `3ba7eb7`)
 
 | Layer               | Result   | Evidence                                                     |
 | ------------------- | -------- | ------------------------------------------------------------ |
@@ -873,11 +873,11 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite    | **PASS** | lint / typecheck / test / build                              |
 | git diff --check    | **PASS** | No whitespace errors                                         |
 
-**Explicit non-claim:** W5-N09-c does **not** authorize Notification Platform Workers implemented, operational continuity implemented, worker execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N09 COMPLETE, or Wave 5 COMPLETE. **Local only — not committed.**
+**Explicit non-claim:** W5-N09-c does **not** authorize Notification Platform Workers implemented, operational continuity implemented, worker execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N09 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`3ba7eb7`).
 
 ---
 
-## W5-N09-d validation (2026-08-29 — local, awaiting Product Owner Review)
+## W5-N09-d validation (2026-08-29 — `8dd654a`)
 
 | Layer                   | Result   | Evidence                                                           |
 | ----------------------- | -------- | ------------------------------------------------------------------ |
@@ -893,7 +893,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N09-e validation (2026-08-29 — local, awaiting Product Owner Review)
+## W5-N09-e validation (2026-08-29 — `4c3ac68`)
 
 | Layer                    | Result   | Evidence                                        |
 | ------------------------ | -------- | ----------------------------------------------- |
@@ -910,7 +910,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N09 Final Integration Verification (2026-08-29 — local, awaiting Product Owner Final Close)
+## W5-N09 Final Integration Verification (2026-08-29 — `f650069`)
 
 | Layer                     | Result   | Evidence                                        |
 | ------------------------- | -------- | ----------------------------------------------- |
@@ -929,7 +929,20 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 **Engineering verdict:** READY FOR PRODUCT OWNER FINAL CLOSE
 **Engineering confidence:** 97%
 
-**Explicit non-claim:** Final Integration Verification does **not** authorize W5-N09 CLOSED, Notification Platform Workers implemented, Notification Platform Complete, Wave 5 COMPLETE, or Product Owner Close Record. **Local only — not committed.**
+**Explicit non-claim:** Final Integration Verification does **not** authorize W5-N09 CLOSED, Notification Platform Workers implemented, Notification Platform Complete, Wave 5 COMPLETE, or Product Owner Close Record. **Recorded** (`f650069`).
+
+---
+
+## W5-N09 Product Owner Close (2026-08-29)
+
+| Layer                      | Result   | Evidence                                                 |
+| -------------------------- | -------- | -------------------------------------------------------- |
+| Product Owner Close Record | **PASS** | `w5-n09-product-owner-close-record.md`                   |
+| Package documentation sync | **PASS** | summary / close report / walkthrough / final integration |
+| Wave documentation sync    | **PASS** | overview / validation-plan / progress                    |
+| W5-N09 officially CLOSED   | **PASS** | Product Owner decision **CLOSED**                        |
+
+**Explicit non-claim:** Product Owner Close does **not** authorize Notification Platform Workers implemented, Notification Platform Complete, worker runtime execution implemented, workers orchestration implemented, retry implemented, scheduler implemented, dead-letter processing implemented, Production Ready, Live Notifications, W5-N09 COMPLETE, or Wave 5 COMPLETE.
 
 ---
 

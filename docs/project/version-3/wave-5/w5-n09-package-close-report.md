@@ -3,7 +3,7 @@
 **Package:** W5-N09 Notification Platform Workers Foundation  
 **Evidence slice:** W5-N09-e  
 **Date:** 2026-08-29  
-**Decision status:** Close Evidence assembled — **Awaiting Product Owner Review**. Package **not CLOSED**. Final Package Integration Verification **not performed**.
+**Decision status:** Package **CLOSED** by Product Owner (2026-08-29). Final Integration Verification **PASS** (`f650069`).
 
 ---
 
@@ -15,20 +15,22 @@ This report indexes Close Evidence assembled in W5-N09-e for Product Owner Packa
 
 ## Evidence index
 
-| Artifact                | Path                                                                                                           |
-| ----------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Package Summary         | [`w5-n09-package-summary.md`](./w5-n09-package-summary.md)                                                     |
-| Operational Walkthrough | [`w5-n09-operational-walkthrough.md`](./w5-n09-operational-walkthrough.md)                                     |
-| Inventory               | [`w5-n09-a-notification-platform-workers-inventory.md`](./w5-n09-a-notification-platform-workers-inventory.md) |
-| Validation Plan         | [`wave-5-validation-plan.md`](./wave-5-validation-plan.md)                                                     |
-| Wave 5 Overview         | [`wave-5-overview.md`](./wave-5-overview.md)                                                                   |
-| Wave 5 Progress         | [`wave-5-progress.md`](./wave-5-progress.md)                                                                   |
-| W5-N09-e Implementation | [`w5-n09-e-implementation-report.md`](./w5-n09-e-implementation-report.md)                                     |
-| W5-N09-e Architecture   | [`w5-n09-e-architecture-review.md`](./w5-n09-e-architecture-review.md)                                         |
-| W5-N09-e Security       | [`w5-n09-e-security-review.md`](./w5-n09-e-security-review.md)                                                 |
-| W5-N09-e Product        | [`w5-n09-e-product-review.md`](./w5-n09-e-product-review.md)                                                   |
-| W5-N09-e Validation     | [`w5-n09-e-validation-report.md`](./w5-n09-e-validation-report.md)                                             |
-| Slice a–d reports       | `w5-n09-{a,b,c,d}-*.md`                                                                                        |
+| Artifact                       | Path                                                                                                           |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| Package Summary                | [`w5-n09-package-summary.md`](./w5-n09-package-summary.md)                                                     |
+| Operational Walkthrough        | [`w5-n09-operational-walkthrough.md`](./w5-n09-operational-walkthrough.md)                                     |
+| Inventory                      | [`w5-n09-a-notification-platform-workers-inventory.md`](./w5-n09-a-notification-platform-workers-inventory.md) |
+| Validation Plan                | [`wave-5-validation-plan.md`](./wave-5-validation-plan.md)                                                     |
+| Wave 5 Overview                | [`wave-5-overview.md`](./wave-5-overview.md)                                                                   |
+| Wave 5 Progress                | [`wave-5-progress.md`](./wave-5-progress.md)                                                                   |
+| W5-N09-e Implementation        | [`w5-n09-e-implementation-report.md`](./w5-n09-e-implementation-report.md)                                     |
+| W5-N09-e Architecture          | [`w5-n09-e-architecture-review.md`](./w5-n09-e-architecture-review.md)                                         |
+| W5-N09-e Security              | [`w5-n09-e-security-review.md`](./w5-n09-e-security-review.md)                                                 |
+| W5-N09-e Product               | [`w5-n09-e-product-review.md`](./w5-n09-e-product-review.md)                                                   |
+| W5-N09-e Validation            | [`w5-n09-e-validation-report.md`](./w5-n09-e-validation-report.md)                                             |
+| Product Owner Close Record     | [`w5-n09-product-owner-close-record.md`](./w5-n09-product-owner-close-record.md)                               |
+| Final Integration Verification | [`w5-n09-final-integration-verification.md`](./w5-n09-final-integration-verification.md)                       |
+| Slice a–d reports              | `w5-n09-{a,b,c,d}-*.md`                                                                                        |
 
 ---
 
@@ -54,27 +56,27 @@ This report indexes Close Evidence assembled in W5-N09-e for Product Owner Packa
 | Second persistence owner               | **No**             |
 | Production Ready                       | **No**             |
 | Wave 5 COMPLETE                        | **No**             |
-| Final Package Integration Verification | **Not performed**  |
+| Final Package Integration Verification | **PASS**           |
 
 ---
 
 ## Close checklist (evidence)
 
-| Criterion                                                            | Status      |
-| -------------------------------------------------------------------- | ----------- |
-| Every approved slice validated (a–d PASS)                            | **Met**     |
-| Operational walkthrough completed                                    | **Met**     |
-| Inventory / Persistence / Recovery / Continuity verified             | **Met**     |
-| Platform Readiness projection verified                               | **Met**     |
-| Honest Product enforcement intact                                    | **Met**     |
-| Governance: notification-delivery sole owner; no duplicate authority | **Met**     |
-| Security Verification PASS (slices a–e evidence)                     | **Met**     |
-| Architecture Verification PASS (slices a–e evidence)                 | **Met**     |
-| Documentation consistency verified                                   | **Met**     |
-| Package Summary completed                                            | **Met**     |
-| Final Package Integration Verification                               | **Pending** |
-| Product Owner declares CLOSED                                        | **Pending** |
-| No new functionality in Close act                                    | **Met**     |
-| No ownership / architecture / Master Plan changes in Close act       | **Met**     |
+| Criterion                                                            | Status  |
+| -------------------------------------------------------------------- | ------- |
+| Every approved slice validated (a–d PASS)                            | **Met** |
+| Operational walkthrough completed                                    | **Met** |
+| Inventory / Persistence / Recovery / Continuity verified             | **Met** |
+| Platform Readiness projection verified                               | **Met** |
+| Honest Product enforcement intact                                    | **Met** |
+| Governance: notification-delivery sole owner; no duplicate authority | **Met** |
+| Security Verification PASS (slices a–e evidence)                     | **Met** |
+| Architecture Verification PASS (slices a–e evidence)                 | **Met** |
+| Documentation consistency verified                                   | **Met** |
+| Package Summary completed                                            | **Met** |
+| Final Package Integration Verification                               | **Met** |
+| Product Owner declares CLOSED                                        | **Met** |
+| No new functionality in Close act                                    | **Met** |
+| No ownership / architecture / Master Plan changes in Close act       | **Met** |
 
-**STOP.** Await Product Owner Review. Do not perform Final Package Integration Verification from this report alone.
+**STOP.** W5-N09 is **CLOSED** by Product Owner. Await explicit Product Owner instruction before W5-N10 Planning Package.

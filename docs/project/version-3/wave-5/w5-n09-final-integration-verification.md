@@ -371,11 +371,7 @@ Engineering does **not** open W5-N10 or the next Wave package.
 
 **STOP.**
 
-Final Integration Verification **PASS** — Awaiting Product Owner Final Close.
-
-Do **not** create the Product Owner Close Record from this verification act.
-
-Do **not** declare W5-N09 CLOSED.
+Final Integration Verification **PASS** — Product Owner Final Close executed.
 
 Do **not** declare Notification Platform Workers implemented.
 
@@ -384,3 +380,5 @@ Do **not** declare Notification Platform Complete.
 Do **not** declare Wave 5 COMPLETE.
 
 Do **not** open W5-N10 without separate Product Owner instruction.
+
+**Post-Close note (2026-08-29):** Product Owner Final Close executed. W5-N09 **CLOSED** — see [`w5-n09-product-owner-close-record.md`](./w5-n09-product-owner-close-record.md).

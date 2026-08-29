@@ -5,7 +5,7 @@
 **Master Plan / Roadmap:** V3-N09 · CM-20  
 **Evidence slice:** W5-N09-e  
 **Date:** 2026-08-29  
-**Status:** Close Evidence assembled — **Awaiting Product Owner Review**. Package **not CLOSED**.
+**Status:** **CLOSED** by Product Owner (2026-08-29). Final Integration Verification **PASS** (`f650069`).
 
 ---
 
@@ -24,7 +24,7 @@
    Platform workers execution, worker runtime, retry, scheduler, and dead-letter outcomes; Wave 5 completion review.
 
 5. **Which package becomes available next?**  
-   None opened by this Close Evidence act — Final Package Integration Verification and Product Owner Package Close are separate acts.
+   None opened by this Close act — **W5-N10** requires separate Product Owner authorization.
 
 6. **Was the Master Plan followed?**  
    **Yes.** W5-N09 / V3-N09 only; Master Plan unchanged; Wave 1–4 and closed W5-N01…N08 consumed not redesigned; Wave 5 package order preserved.
@@ -39,14 +39,14 @@
 
 ## Slice roll-up
 
-| Slice    | Outcome                                                         | PO status                             |
-| -------- | --------------------------------------------------------------- | ------------------------------------- |
-| W5-N09-a | Inventory & Honest Product Baseline                             | APPROVED / COMPLETE (`0dfe0a4`)       |
-| W5-N09-b | Durable Notification Platform Workers Foundation                | APPROVED / COMPLETE (`6f9f778`)       |
-| W5-N09-c | Notification Platform Workers Restart Recovery Foundation       | APPROVED / COMPLETE (`3ba7eb7`)       |
-| W5-N09-d | Notification Platform Workers Operational Continuity Foundation | APPROVED / COMPLETE (`8dd654a`)       |
-| W5-N09-e | Close Evidence                                                  | COMPLETE (local) — Awaiting PO Review |
-| W5-N09   | Package                                                         | **Not CLOSED**                        |
+| Slice    | Outcome                                                         | PO status                       |
+| -------- | --------------------------------------------------------------- | ------------------------------- |
+| W5-N09-a | Inventory & Honest Product Baseline                             | APPROVED / COMPLETE (`0dfe0a4`) |
+| W5-N09-b | Durable Notification Platform Workers Foundation                | APPROVED / COMPLETE (`6f9f778`) |
+| W5-N09-c | Notification Platform Workers Restart Recovery Foundation       | APPROVED / COMPLETE (`3ba7eb7`) |
+| W5-N09-d | Notification Platform Workers Operational Continuity Foundation | APPROVED / COMPLETE (`8dd654a`) |
+| W5-N09-e | Close Evidence                                                  | COMPLETE (`4c3ac68`)            |
+| W5-N09   | Package                                                         | **CLOSED**                      |
 
 ---
 
@@ -59,4 +59,4 @@
 
 ---
 
-**STOP.** W5-N09 is **not CLOSED**. Do **not** declare Notification Platform Workers implemented, Notification Platform Complete, or Wave 5 COMPLETE from this summary alone.
+**STOP.** W5-N09 is **CLOSED** by Product Owner. Do **not** declare Notification Platform Workers implemented, Notification Platform Complete, or Wave 5 COMPLETE from this summary alone.
