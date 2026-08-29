@@ -5,6 +5,7 @@ import {
 } from './domain/durable-notification-platform-worker-execution-anchor';
 import type { NotificationPlatformWorkerExecutionAnchorRepository } from './domain/notification-platform-worker-execution-anchor.repository';
 import { NotificationPlatformWorkerExecutionPersistenceService } from './notification-platform-worker-execution-persistence.service';
+import { NotificationPlatformWorkerExecutionRecoveryStore } from './notification-platform-worker-execution-recovery-store';
 
 const recordedAt = '2026-08-29T22:00:00.000Z';
 
@@ -24,13 +25,17 @@ function createRepository(): NotificationPlatformWorkerExecutionAnchorRepository
       async (workspaceId, workerExecutionAnchorId) =>
         byKey.get(`${workspaceId}:${workerExecutionAnchorId}`) ?? null,
     ),
+    listAllNotificationPlatformWorkerExecutionAnchors: vi.fn(async () => saved),
   };
 }
 
-describe('NotificationPlatformWorkerExecutionPersistenceService — W5-N10-b storage only', () => {
+describe('NotificationPlatformWorkerExecutionPersistenceService — W5-N10-b/c storage only', () => {
   it('persistWorkerExecutionAnchor writes canonical platform worker execution anchors without runtime I/O', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformWorkerExecutionPersistenceService(repository);
+    const service = new NotificationPlatformWorkerExecutionPersistenceService(
+      repository,
+      new NotificationPlatformWorkerExecutionRecoveryStore(),
+    );
 
     const outcome = await service.persistWorkerExecutionAnchor({
       workspaceId: 'ws-1',
@@ -60,7 +65,10 @@ describe('NotificationPlatformWorkerExecutionPersistenceService — W5-N10-b sto
 
   it('does not persist worker runtime, scheduler, retry, dead-letter, orchestration, or transport fields', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformWorkerExecutionPersistenceService(repository);
+    const service = new NotificationPlatformWorkerExecutionPersistenceService(
+      repository,
+      new NotificationPlatformWorkerExecutionRecoveryStore(),
+    );
 
     await service.persistWorkerExecutionAnchor({
       workspaceId: 'ws-1',

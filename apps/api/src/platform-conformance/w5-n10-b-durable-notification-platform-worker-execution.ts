@@ -119,14 +119,12 @@ export const W5_N10_B_EXPLICIT_OUT = Object.freeze([
   'runtime-notifications',
   'live-trading-enablement',
   'second-persistence-owner',
-  'w5-n10-c',
 ] as const);
 
 export const W5_N10_B_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Notification Platform Worker Execution Durable Foundation'] as const),
   introduced: Object.freeze([] as const),
   deferred: Object.freeze([
-    'W5-N10-c — Notification Platform Worker Execution Restart Recovery Foundation',
     'W5-N10-d — Notification Platform Worker Execution Operational Continuity Foundation',
     'W5-N10-e — Package Close Evidence',
   ] as const),
@@ -136,7 +134,6 @@ export const W5_N10_B_TRANSITION_MATRIX = Object.freeze({
   before: 'Inventory (W5-N10-a)',
   after: 'Durable Persistence (W5-N10-b)',
   stillMissing: Object.freeze([
-    'Restart Recovery (W5-N10-c)',
     'Operational Continuity (W5-N10-d)',
     'Package Close (W5-N10-e)',
   ] as const),

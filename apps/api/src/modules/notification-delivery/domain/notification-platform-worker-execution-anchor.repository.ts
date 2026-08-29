@@ -15,6 +15,11 @@ export interface NotificationPlatformWorkerExecutionAnchorRepository {
     workspaceId: string,
     workerExecutionAnchorId: string,
   ): Promise<DurableNotificationPlatformWorkerExecutionAnchor | null>;
+
+  /** Deterministic load for restart recovery (W5-N10-c). */
+  listAllNotificationPlatformWorkerExecutionAnchors(): Promise<
+    readonly DurableNotificationPlatformWorkerExecutionAnchor[]
+  >;
 }
 
 export const NOTIFICATION_PLATFORM_WORKER_EXECUTION_ANCHOR_REPOSITORY = Symbol(

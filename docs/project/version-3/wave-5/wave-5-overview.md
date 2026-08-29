@@ -993,12 +993,27 @@ See [`w5-n10-b-implementation-report.md`](./w5-n10-b-implementation-report.md).
 
 ---
 
-## W5-N10 status (Notification Platform Worker Execution — W5-N10-b COMPLETE local)
+## W5-N10-c status (Notification Platform Worker Execution Restart Recovery Foundation)
 
-W5-N10 Notification Platform Worker Execution Foundation: Planning **APPROVED**; W5-N10-a **COMPLETE** (`6443c6e`); W5-N10-b **COMPLETE** (local, uncommitted) — Awaiting Product Owner Review.
+W5-N10-c restores previously persisted Notification Platform Worker Execution anchors after normal process restart via deterministic, idempotent, fail-honest hydrate into `NotificationPlatformWorkerExecutionRecoveryStore`. **No customer-visible Notification Platform Worker Execution behaviour** was added.
 
 ```text
-W5-N10-b durable anchors only — not worker runtime execution, orchestration, retry, scheduler, or dead-letter processing.
+Restart recovery only — not worker runtime / scheduler / retry / dead-letter / orchestration.
+Not operational continuity (W5-N10-d).
+Not Notification Platform Worker Execution functional.
+Not W5-N10 COMPLETE.
+```
+
+See [`w5-n10-c-implementation-report.md`](./w5-n10-c-implementation-report.md).
+
+---
+
+## W5-N10 status (Notification Platform Worker Execution — W5-N10-c COMPLETE local)
+
+W5-N10 Notification Platform Worker Execution Foundation: Planning **APPROVED**; W5-N10-a **COMPLETE** (`6443c6e`); W5-N10-b **COMPLETE** (`e7dff2f`); W5-N10-c **COMPLETE** (local, uncommitted) — Awaiting Product Owner Review.
+
+```text
+W5-N10-c restart recovery only — not worker runtime execution, orchestration, retry, scheduler, or dead-letter processing.
 Closed W5-N05…N09 foundations consumed; per-channel W5-N01…N04 transport stubs remain honest per inventory.
 Notification Platform Worker Execution complete and Notification Platform Complete not claimed.
 Wave 5 COMPLETE not claimed.
@@ -1008,16 +1023,16 @@ See [`w5-n10-planning-summary.md`](./w5-n10-planning-summary.md).
 
 ---
 
-## W5-N10 implementation slices (slices a–b local)
+## W5-N10 implementation slices (slices a–c local)
 
 | Slice    | Name                                                                       | Status                                    |
 | -------- | -------------------------------------------------------------------------- | ----------------------------------------- |
 | W5-N10-a | Notification Platform Worker Execution Inventory & Honest Product Baseline | **COMPLETE** (`6443c6e`)                  |
-| W5-N10-b | Durable Notification Platform Worker Execution Foundation                  | **COMPLETE** (local) — Awaiting PO Review |
-| W5-N10-c | Notification Platform Worker Execution Restart Recovery Foundation         | **Not opened**                            |
+| W5-N10-b | Durable Notification Platform Worker Execution Foundation                  | **COMPLETE** (`e7dff2f`)                  |
+| W5-N10-c | Notification Platform Worker Execution Restart Recovery Foundation         | **COMPLETE** (local) — Awaiting PO Review |
 | W5-N10-d | Notification Platform Worker Execution Operational Continuity Foundation   | **Not opened**                            |
 | W5-N10-e | Package Close Evidence                                                     | **Not opened**                            |
 
 ---
 
-**STOP.** W5-N10-b is **COMPLETE** (local, uncommitted) — Awaiting Product Owner Review. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution Foundation implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not commit or push without Product Owner instruction. Do not open W5-N10-c through W5-N10-e.
+**STOP.** W5-N10-c is **COMPLETE** (local, uncommitted) — Awaiting Product Owner Review. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution Foundation implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Operational Continuity implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not commit or push without Product Owner instruction. Do not open W5-N10-d through W5-N10-e.

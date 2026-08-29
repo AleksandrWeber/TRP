@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PrismaNotificationPlatformWorkerExecutionAnchorRepository } from '../modules/notification-delivery/persistence/prisma-notification-platform-worker-execution-anchor.repository';
 import { NotificationPlatformWorkerExecutionPersistenceService } from '../modules/notification-delivery/notification-platform-worker-execution-persistence.service';
+import { NotificationPlatformWorkerExecutionRecoveryStore } from '../modules/notification-delivery/notification-platform-worker-execution-recovery-store';
 import { rowsEphemeral } from './w5-n10-a-notification-platform-worker-execution-inventory';
 import {
   W5_N10_B_ARCHITECTURE_CLAIMS,
@@ -71,7 +72,10 @@ describe('W5-N10-b durable notification platform worker execution — unit', () 
     const repository = new PrismaNotificationPlatformWorkerExecutionAnchorRepository(
       prisma as never,
     );
-    const service = new NotificationPlatformWorkerExecutionPersistenceService(repository);
+    const service = new NotificationPlatformWorkerExecutionPersistenceService(
+      repository,
+      new NotificationPlatformWorkerExecutionRecoveryStore(),
+    );
 
     const outcome = await service.persistWorkerExecutionAnchor({
       workspaceId: 'ws-a',
@@ -155,12 +159,12 @@ describe('W5-N10-b durable notification platform worker execution — unit', () 
     expect(sync.noPlatformWorkerExecutionAuthorization).toBe(true);
   });
 
-  it('transition matrix: inventory → durable persistence → restart recovery still missing', () => {
+  it('transition matrix: inventory → durable persistence → operational continuity still missing', () => {
     expect(W5_N10_B_TRANSITION_MATRIX.before).toContain('Inventory');
     expect(W5_N10_B_TRANSITION_MATRIX.after).toContain('Durable Persistence');
-    expect(W5_N10_B_TRANSITION_MATRIX.stillMissing.some((item) => item.includes('Restart'))).toBe(
-      true,
-    );
+    expect(
+      W5_N10_B_TRANSITION_MATRIX.stillMissing.some((item) => item.includes('Operational')),
+    ).toBe(true);
   });
 });
 
@@ -181,21 +185,22 @@ describe('W5-N10-b durable notification platform worker execution — integratio
     expect(W5_N10_B_ARCHITECTURE_CLAIMS.exchangeAdapterUntouched).toBe(true);
   });
 
-  it('technical debt delta: durable foundation resolved; recovery deferred', () => {
+  it('technical debt delta: durable foundation resolved; continuity deferred', () => {
     expect(W5_N10_B_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Notification Platform Worker Execution Durable Foundation',
     );
     expect(W5_N10_B_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(
-      W5_N10_B_TECHNICAL_DEBT_DELTA.deferred.some((item) => item.toLowerCase().includes('restart')),
+      W5_N10_B_TECHNICAL_DEBT_DELTA.deferred.some((item) =>
+        item.toLowerCase().includes('continuity'),
+      ),
     ).toBe(true);
   });
 
-  it('explicit OUT covers restart recovery and W5-N10-c', () => {
+  it('explicit OUT covers restart recovery (W5-N10-b scope)', () => {
     expect(W5_N10_B_EXPLICIT_OUT).toEqual(
       expect.arrayContaining([
         'restart-recovery',
-        'w5-n10-c',
         'platform-worker-execution-runtime',
         'worker-runtime-implementation',
         'production-transport-i/o',

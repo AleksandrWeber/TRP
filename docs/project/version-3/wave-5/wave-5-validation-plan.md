@@ -961,7 +961,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N10-b validation (2026-08-29 — local, uncommitted)
+## W5-N10-b validation (2026-08-29 — `e7dff2f`)
 
 | Layer               | Result   | Evidence                                                        |
 | ------------------- | -------- | --------------------------------------------------------------- |
@@ -972,9 +972,25 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite    | **PASS** | lint / typecheck / test / build                                 |
 | git diff --check    | **PASS** | No whitespace errors                                            |
 
-**Explicit non-claim:** W5-N10-b does **not** authorize Notification Platform Worker Execution implemented, restart recovery implemented, worker runtime implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N10 COMPLETE, or Wave 5 COMPLETE.
+**Explicit non-claim:** W5-N10-b does **not** authorize Notification Platform Worker Execution implemented, restart recovery implemented, worker runtime implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N10 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`e7dff2f`).
 
-**STOP.** W5-N10-b is **COMPLETE** (local, uncommitted) — Awaiting Product Owner Review. Do not commit or push without Product Owner instruction.
+---
+
+## W5-N10-c validation (2026-08-29 — local, uncommitted)
+
+| Layer               | Result   | Evidence                                                              |
+| ------------------- | -------- | --------------------------------------------------------------------- |
+| Restart recovery    | **PASS** | `notification-platform-worker-execution-restart-recovery.service.ts`  |
+| Recovery store      | **PASS** | `notification-platform-worker-execution-recovery-store.ts`            |
+| Persistence hydrate | **PASS** | write-through + hydrated reads in persistence service                 |
+| Conformance         | **PASS** | `w5-n10-c-notification-platform-worker-execution-restart-recovery.ts` |
+| Architecture check  | **PASS** | No ownership drift; no operational continuity                         |
+| Regression suite    | **PASS** | lint / typecheck / test / build                                       |
+| git diff --check    | **PASS** | No whitespace errors                                                  |
+
+**Explicit non-claim:** W5-N10-c does **not** authorize Notification Platform Worker Execution implemented, operational continuity implemented, worker runtime implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N10 COMPLETE, or Wave 5 COMPLETE.
+
+**STOP.** W5-N10-c is **COMPLETE** (local, uncommitted) — Awaiting Product Owner Review. Do not commit or push without Product Owner instruction.
 
 ---
 
