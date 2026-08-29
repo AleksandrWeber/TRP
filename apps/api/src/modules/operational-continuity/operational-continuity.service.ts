@@ -12,6 +12,7 @@
  * W4-E05-d adds Venue Permission Verification operational continuity (derived).
  * W5-N01-d adds Telegram Notification operational continuity (derived).
  * W5-N02-d adds Email Notification operational continuity (derived).
+ * W5-N03-d adds Slack / Discord / Teams Notification operational continuity (derived).
  * Recovery itself remains W3-O01-c / W3-O02-c / W3-O04-c / W3-O05-c only. No new persistence / BC / HA / monitoring evaluation.
  */
 
@@ -33,6 +34,8 @@ import { getTelegramNotificationContinuityRecord } from '../notification-deliver
 import { buildTelegramNotificationContinuityProjection } from '../notification-delivery/domain/telegram-notification-operational-continuity';
 import { getEmailNotificationContinuityRecord } from '../notification-delivery/domain/email-notification-continuity-status';
 import { buildEmailNotificationContinuityProjection } from '../notification-delivery/domain/email-notification-operational-continuity';
+import { getSlackDiscordTeamsNotificationContinuityRecord } from '../notification-delivery/domain/slack-discord-teams-notification-continuity-status';
+import { buildSlackDiscordTeamsNotificationContinuityProjection } from '../notification-delivery/domain/slack-discord-teams-notification-operational-continuity';
 import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
 import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
 import { getMonitoringHealthContinuityRecord } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
@@ -115,6 +118,11 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         continuity: null,
       }),
       emailNotification: buildEmailNotificationContinuityProjection({
+        recovering: true,
+        ownerReadiness: 'ready',
+        continuity: null,
+      }),
+      slackDiscordTeamsNotification: buildSlackDiscordTeamsNotificationContinuityProjection({
         recovering: true,
         ownerReadiness: 'ready',
         continuity: null,
@@ -263,6 +271,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildSlackDiscordTeamsNotificationView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getSlackDiscordTeamsNotificationContinuityRecord();
+    return buildSlackDiscordTeamsNotificationContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -338,6 +358,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       emailNotification: this.buildEmailNotificationView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      slackDiscordTeamsNotification: this.buildSlackDiscordTeamsNotificationView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -492,6 +516,23 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         emailNotificationBase.recoveryDurationMs ??
         (emailNotificationBase.operationalState === 'Recovering' ? null : recoveryDurationMs),
     });
+    const slackDiscordTeamsNotificationBase = this.buildSlackDiscordTeamsNotificationView({
+      recovering: false,
+      ownerReadiness: 'ready',
+    });
+    const slackDiscordTeamsNotification = Object.freeze({
+      ...slackDiscordTeamsNotificationBase,
+      recoveryTimestamp:
+        slackDiscordTeamsNotificationBase.recoveryTimestamp ??
+        (slackDiscordTeamsNotificationBase.operationalState === 'Recovering'
+          ? null
+          : recoveryTimestamp),
+      recoveryDurationMs:
+        slackDiscordTeamsNotificationBase.recoveryDurationMs ??
+        (slackDiscordTeamsNotificationBase.operationalState === 'Recovering'
+          ? null
+          : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -506,6 +547,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       venuePermissionVerification,
       telegramNotification,
       emailNotification,
+      slackDiscordTeamsNotification,
     });
     this.finalized = true;
 

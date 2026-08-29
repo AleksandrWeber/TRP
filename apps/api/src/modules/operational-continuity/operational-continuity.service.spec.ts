@@ -29,6 +29,13 @@ import {
 } from '../notification-delivery/domain/email-notification-continuity-status';
 import { buildEmailNotificationAnchorState } from '../notification-delivery/domain/durable-email-notification-anchor';
 import { buildEmailNotificationRecoveryDiagnostics } from '../notification-delivery/domain/email-notification-restart-recovery';
+import {
+  recordSlackDiscordTeamsNotificationRecoveryStart,
+  recordSlackDiscordTeamsNotificationRecoverySuccess,
+  resetSlackDiscordTeamsNotificationContinuity,
+} from '../notification-delivery/domain/slack-discord-teams-notification-continuity-status';
+import { buildSlackDiscordTeamsNotificationAnchorState } from '../notification-delivery/domain/durable-slack-discord-teams-notification-anchor';
+import { buildSlackDiscordTeamsNotificationRecoveryDiagnostics } from '../notification-delivery/domain/slack-discord-teams-notification-restart-recovery';
 
 describe('OperationalContinuityService', () => {
   beforeEach(() => {
@@ -103,6 +110,7 @@ describe('OperationalContinuityService', () => {
     expect(projection.venuePermissionVerification?.operationalState).toBe('Unavailable');
     expect(projection.telegramNotification?.operationalState).toBe('Unavailable');
     expect(projection.emailNotification?.operationalState).toBe('Unavailable');
+    expect(projection.slackDiscordTeamsNotification?.operationalState).toBe('Unavailable');
   });
 
   it('workspace-safe projection is read-only (no mutation API on service)', () => {
@@ -251,6 +259,53 @@ describe('OperationalContinuityService', () => {
 
     expect(projection.emailNotification?.operationalState).toBe('Ready');
     expect(projection.emailNotification?.canonicalAnchorCount).toBe(1);
+    expect(projection.platformState).toBe('Ready');
+  });
+
+  it('includes slack discord teams notification continuity derived from W5-N03-c recovery record', async () => {
+    resetSlackDiscordTeamsNotificationContinuity();
+    const anchor = buildSlackDiscordTeamsNotificationAnchorState({
+      workspaceId: 'ws-1',
+      notificationId: 'ntf-1',
+      notificationChannel: 'slack',
+      notificationType: 'report-complete',
+      recipientIdentifier: 'https://hooks.slack.com/services/example',
+      templateIdentifier: 'inline:report-complete',
+      correlationId: 'corr-1',
+      actorId: 'actor-1',
+      recordedAt: '2026-08-28T17:00:00.000Z',
+      prior: null,
+    });
+    if (!anchor.ok) throw new Error('expected anchor');
+    recordSlackDiscordTeamsNotificationRecoveryStart();
+    recordSlackDiscordTeamsNotificationRecoverySuccess({
+      diagnostics: buildSlackDiscordTeamsNotificationRecoveryDiagnostics([anchor.anchor]),
+    });
+
+    const audit = {
+      recordOwnerState: vi.fn(async () => undefined),
+      recordRecoveryCompleted: vi.fn(async () => undefined),
+    } as unknown as OperationalContinuityAudit;
+    const service = new OperationalContinuityService(audit);
+    const projection = await service.applyBootOutcomesForTest(
+      (
+        [
+          'strategy-library',
+          'exchange-scope',
+          'knowledge-lake',
+          'market-profile',
+          'market-qualification',
+          'market-state',
+          'reporting',
+          'notification-delivery',
+          'trading-orchestrator',
+          'runtime-enforcement',
+        ] as const
+      ).map((owner) => ({ owner, outcome: 'ready' as const })),
+    );
+
+    expect(projection.slackDiscordTeamsNotification?.operationalState).toBe('Ready');
+    expect(projection.slackDiscordTeamsNotification?.canonicalAnchorCount).toBe(1);
     expect(projection.platformState).toBe('Ready');
   });
 });

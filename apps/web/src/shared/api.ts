@@ -1054,6 +1054,8 @@ export type OperationalContinuityReadinessView = {
   telegramNotification: TelegramNotificationContinuityView | null;
   /** W5-N02-d — Email Notification operational continuity. */
   emailNotification: EmailNotificationContinuityView | null;
+  /** W5-N03-d — Slack / Discord / Teams Notification operational continuity. */
+  slackDiscordTeamsNotification: SlackDiscordTeamsNotificationContinuityView | null;
 };
 
 export type NotificationQueueContinuityView = {
@@ -1171,6 +1173,18 @@ export type TelegramNotificationContinuityView = {
 };
 
 export type EmailNotificationContinuityView = {
+  operationalState: OperationalContinuityState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+};
+
+export type SlackDiscordTeamsNotificationContinuityView = {
   operationalState: OperationalContinuityState;
   ownerReadiness: 'ready' | 'unavailable' | 'degraded';
   recoveryTimestamp: string | null;

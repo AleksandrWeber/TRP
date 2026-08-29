@@ -23,6 +23,7 @@ describe('OperationalContinuityController', () => {
     venuePermissionVerification: null,
     telegramNotification: null,
     emailNotification: null,
+    slackDiscordTeamsNotification: null,
   });
 
   let continuity: OperationalContinuityService;
