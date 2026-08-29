@@ -5,7 +5,7 @@
 **Master Plan / Roadmap:** V3-N04 · CM-16  
 **Evidence slice:** W5-N04-e  
 **Date:** 2026-08-29  
-**Status:** Close Evidence assembled; Final Package Integration Verification **not performed**.
+**Status:** **CLOSED** by Product Owner (2026-08-29). Final Integration Verification **PASS** (`2488d4f`).
 
 ---
 
@@ -39,14 +39,14 @@
 
 ## Slice roll-up
 
-| Slice    | Outcome                               | PO status           |
-| -------- | ------------------------------------- | ------------------- |
-| W5-N04-a | Inventory Foundation                  | APPROVED / COMPLETE |
-| W5-N04-b | Durable Push Notification Persistence | APPROVED / COMPLETE |
-| W5-N04-c | Push Restart Recovery                 | APPROVED / COMPLETE |
-| W5-N04-d | Push Operational Continuity           | APPROVED / COMPLETE |
-| W5-N04-e | Close Evidence                        | APPROVED / COMPLETE |
-| W5-N04   | Package                               | **Not CLOSED**      |
+| Slice    | Outcome                               | PO status                                |
+| -------- | ------------------------------------- | ---------------------------------------- |
+| W5-N04-a | Inventory Foundation                  | APPROVED / COMPLETE                      |
+| W5-N04-b | Durable Push Notification Persistence | APPROVED / COMPLETE                      |
+| W5-N04-c | Push Restart Recovery                 | APPROVED / COMPLETE                      |
+| W5-N04-d | Push Operational Continuity           | APPROVED / COMPLETE                      |
+| W5-N04-e | Close Evidence                        | APPROVED / COMPLETE                      |
+| W5-N04   | Package                               | **CLOSED** by Product Owner (2026-08-29) |
 
 ---
 
@@ -59,4 +59,4 @@
 
 ---
 
-**STOP.** W5-N04 is **not CLOSED**. Engineering does **not** declare Push notifications operational from this summary alone.
+**STOP.** W5-N04 is **CLOSED** by Product Owner (2026-08-29). Engineering does **not** declare Push notifications operational from this summary alone.

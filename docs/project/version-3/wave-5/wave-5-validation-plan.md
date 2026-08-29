@@ -525,7 +525,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N04 Final Integration Verification (2026-08-29 — local)
+## W5-N04 Final Integration Verification (2026-08-29 — `2488d4f`)
 
 | Layer                         | Result   | Evidence                                   |
 | ----------------------------- | -------- | ------------------------------------------ |
@@ -535,7 +535,19 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite              | **PASS** | lint / typecheck / test / build            |
 | Engineering verdict           | **PASS** | READY FOR PRODUCT OWNER FINAL CLOSE        |
 
-**Explicit non-claim:** Final Integration Verification does **not** declare W5-N04 CLOSED, Push implemented, Web Push implemented, FCM implemented, browser notifications operational, device token registry implemented, Push notifications operational, Notification Platform Complete, or Wave 5 COMPLETE.
+**Explicit non-claim:** Final Integration Verification does **not** declare W5-N04 CLOSED, Push implemented, Web Push implemented, FCM implemented, browser notifications operational, device token registry implemented, Push notifications operational, Notification Platform Complete, or Wave 5 COMPLETE. **Recorded** (`2488d4f`).
+
+---
+
+## W5-N04 Product Owner Close (2026-08-29)
+
+| Layer                           | Result   | Evidence                                    |
+| ------------------------------- | -------- | ------------------------------------------- |
+| Product Owner Close Record      | **PASS** | `w5-n04-product-owner-close-record.md`      |
+| Package administratively closed | **PASS** | W5-N04 **CLOSED** by Product Owner          |
+| W5-N05 opened                   | **No**   | Awaiting separate Product Owner instruction |
+
+**Explicit non-claim:** Product Owner Close does **not** declare Push implemented, Web Push implemented, FCM implemented, browser notifications operational, device token registry implemented, Push notifications operational, Notification Platform Complete, Production Ready, Live Notifications, or Wave 5 COMPLETE.
 
 ---
 
@@ -559,10 +571,10 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 - W5-N04-c validation PASS — **recorded** (`37e245c`)
 - W5-N04-d validation PASS — **recorded** (`a06a4c5`)
 - W5-N04-e validation PASS — **recorded** (`d20ea88`)
-- W5-N04 Final Integration PASS — **recorded** (local)
-- W5-N04 CLOSED — **not claimed**
+- W5-N04 Final Integration PASS — **recorded** (`2488d4f`)
+- W5-N04 CLOSED — **recorded** (2026-08-29)
 - W5-N05 opened — **not claimed**
 
 ---
 
-**STOP.** W5-N04 Final Integration Verification **PASS** (local). Await explicit Product Owner instruction before W5-N04 Product Owner Final Close. Do not declare W5-N04 CLOSED. Do not declare Push implemented. Do not declare Web Push implemented. Do not declare FCM implemented. Do not declare browser notifications operational. Do not declare device token registry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N05.
+**STOP.** W5-N04 is **CLOSED** by Product Owner (2026-08-29). Awaiting Product Owner instruction for W5-N05 Planning Package. Do not declare Push implemented. Do not declare Web Push implemented. Do not declare FCM implemented. Do not declare browser notifications operational. Do not declare device token registry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N05 without separate Product Owner instruction.

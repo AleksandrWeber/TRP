@@ -187,12 +187,12 @@ Connected/Delivering require real SMTP round-trip — not claimed.
 
 ## Wave packages (Master Plan order)
 
-| Package | Name                        | What it delivers                                                             | Status                                                                       |
-| ------- | --------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| W5-N01  | Production Telegram Bot API | Real Bot API connect / test / disconnect                                     | **CLOSED** by Product Owner (2026-08-28)                                     |
-| W5-N02  | Email (SMTP)                | Email Notification foundation — inventory, persistence, recovery, continuity | **CLOSED** by Product Owner (2026-08-28)                                     |
-| W5-N03  | Slack / Discord / Teams     | Real webhook transports                                                      | **CLOSED** by Product Owner (2026-08-29)                                     |
-| W5-N04  | Push                        | Push Notification foundation — inventory, persistence, recovery, continuity  | Final Integration Verification **PASS** — Awaiting Product Owner Final Close |
+| Package | Name                        | What it delivers                                                             | Status                                   |
+| ------- | --------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------- |
+| W5-N01  | Production Telegram Bot API | Real Bot API connect / test / disconnect                                     | **CLOSED** by Product Owner (2026-08-28) |
+| W5-N02  | Email (SMTP)                | Email Notification foundation — inventory, persistence, recovery, continuity | **CLOSED** by Product Owner (2026-08-28) |
+| W5-N03  | Slack / Discord / Teams     | Real webhook transports                                                      | **CLOSED** by Product Owner (2026-08-29) |
+| W5-N04  | Push                        | Push Notification foundation — inventory, persistence, recovery, continuity  | **CLOSED** by Product Owner (2026-08-29) |
 
 Order: **N01 → N02 → N03 → N04**.
 
@@ -341,17 +341,30 @@ Product Owner Package Close — not performed.
 
 ---
 
-## W5-N04 Final Integration Verification status
+## W5-N04 status (Push — CLOSED)
 
-W5-N04 Final Package Integration Verification **PASS** (2026-08-29). All slices a–e form one internally consistent package: inventory (a), durable persistence (b), restart recovery (c), operational continuity (d), Close Evidence (e). Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**. **Without:** Web Push / FCM I/O · Device token registry · Outbound Push delivery · Push notifications operational · Notification Platform Complete.
+W5-N04 Push Notification foundation is **CLOSED** by Product Owner (2026-08-29). Delivered: inventory (a), durable persistence (b), restart recovery (c), operational continuity (d), Close Evidence (e), Final Integration Verification **PASS** (`2488d4f`).
 
 ```text
-Slice chain d8c6158 → 0720bda → 37e245c → a06a4c5 → d20ea88 verified on origin/main.
-Operational journey Inventory → Persistence → Recovery → Continuity → Close Evidence → FIV PASS.
-Product Owner Close Record — not created.
+Foundation only — not Web Push / FCM I/O, not outbound delivery, not Connected/Delivering labels.
+Push channel remains reserved-inactive.
+Notification Platform Complete and Wave 5 COMPLETE not claimed.
+```
+
+See [`w5-n04-product-owner-close-record.md`](./w5-n04-product-owner-close-record.md).
+
+---
+
+## W5-N04 Final Integration Verification status
+
+W5-N04 Final Package Integration Verification **PASS** (2026-08-29). All slices a–e form one internally consistent package. Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE** — executed 2026-08-29.
+
+```text
+Slice chain d8c6158 → 0720bda → 37e245c → a06a4c5 → d20ea88 → 2488d4f verified on origin/main.
+Product Owner Close Record created — W5-N04 CLOSED.
 W5-N05 — not opened.
 ```
 
 ---
 
-**STOP.** W5-N04 Final Integration Verification **PASS** (local). Awaiting Product Owner Final Close. Do not declare W5-N04 CLOSED. Do not declare Push implemented. Do not declare Web Push implemented. Do not declare FCM implemented. Do not declare browser notifications operational. Do not declare device token registry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N05.
+**STOP.** W5-N04 is **CLOSED** by Product Owner (2026-08-29). Awaiting Product Owner instruction for W5-N05 Planning Package. Do not declare Push implemented. Do not declare Web Push implemented. Do not declare FCM implemented. Do not declare browser notifications operational. Do not declare device token registry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N05 without separate Product Owner instruction.

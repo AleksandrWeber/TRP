@@ -11,7 +11,7 @@
 **Notification Platform declared COMPLETE:** No  
 **Wave 5 declared COMPLETE:** No
 
-**Safety commit (pre-step):** `d20ea88` — W5-N04-e Close Evidence pushed to `origin/main`. Repository clean; `origin/main` up to date.
+**Safety commit (pre-step):** `2488d4f` — W5-N04 Final Integration Verification pushed to `origin/main`. Repository clean; `origin/main` up to date.
 
 **Slice commit chain on `origin/main`:** `d8c6158` (a) → `0720bda` (b) → `37e245c` (c) → `a06a4c5` (d) → `d20ea88` (e).
 
@@ -318,6 +318,8 @@ Verify:
 | **Introduced** | **None**                                               |
 | **Deferred**   | Web Push / FCM I/O outcomes; Wave 5 completion review  |
 
+**Post-Close note (2026-08-29):** Product Owner Final Close executed. W5-N04 **CLOSED** — see [`w5-n04-product-owner-close-record.md`](./w5-n04-product-owner-close-record.md).
+
 **PASS**
 
 ---
@@ -358,11 +360,7 @@ Engineering does **not** open W5-N05 or the next Wave package.
 
 **STOP.**
 
-Await explicit Product Owner instruction before W5-N04 Product Owner Final Close.
-
-Do **not** create `w5-n04-product-owner-close-record.md`.
-
-Do **not** declare W5-N04 COMPLETE.
+W5-N04 **CLOSED** by Product Owner (2026-08-29).
 
 Do **not** declare Push implemented.
 
@@ -378,4 +376,4 @@ Do **not** declare Notification Platform Complete.
 
 Do **not** declare Wave 5 COMPLETE.
 
-Do **not** open W5-N05.
+Do **not** open W5-N05 without separate Product Owner instruction.
