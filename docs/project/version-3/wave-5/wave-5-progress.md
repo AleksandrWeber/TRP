@@ -4,13 +4,14 @@
 **Audience:** Product Owner
 **Date:** 2026-08-29
 **Wave:** 5 — Notification Platform
-**Status:** W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 Planning Package **OPEN** — Awaiting Planning Review
+**Status:** W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 Planning Review **PASS** — Awaiting Planning Approval
 **Nature:** Simple Product Owner status. Not an RC. Not an ADR. Not a Master Plan revision.
 
 **Overview:** [`wave-5-overview.md`](./wave-5-overview.md)
 **Validation:** [`wave-5-validation-plan.md`](./wave-5-validation-plan.md)
 **Planning summary:** [`wave-5-planning-summary.md`](./wave-5-planning-summary.md)
 **W5-N03 planning:** [`w5-n03-planning-summary.md`](./w5-n03-planning-summary.md)
+**W5-N03 Planning Review:** [`w5-n03-planning-review.md`](./w5-n03-planning-review.md)
 **W5-N02 planning:** [`w5-n02-planning-summary.md`](./w5-n02-planning-summary.md)
 **W5-N02 Planning Review:** [`w5-n02-planning-review.md`](./w5-n02-planning-review.md)
 **W5-N02 Planning Approval:** [`w5-n02-planning-approval.md`](./w5-n02-planning-approval.md)
@@ -35,7 +36,7 @@
 | W5-N02 Planning Review       | **PASS** (2026-08-28)                    |
 | W5-N02 Planning Approval     | **RECORDED** (2026-08-28)                |
 | W5-N03 Planning              | **OPEN** (2026-08-29)                    |
-| W5-N03 Planning Review       | **Not performed**                        |
+| W5-N03 Planning Review       | **PASS** (2026-08-29)                    |
 | W5-N03 Planning Approval     | **Not granted**                          |
 | W5-N04                       | **Not authorized**                       |
 | Live Trading                 | **Not claimed**                          |
@@ -49,7 +50,7 @@
 | ---------- | ---------- | --------------------------- | ---------------------------------------- |
 | **W5-N01** | **V3-N01** | Production Telegram Bot API | **CLOSED** by Product Owner (2026-08-28) |
 | **W5-N02** | **V3-N02** | Email (SMTP)                | **CLOSED** by Product Owner (2026-08-28) |
-| **W5-N03** | **V3-N03** | Slack / Discord / Teams     | Planning **OPEN** (2026-08-29)           |
+| **W5-N03** | **V3-N03** | Slack / Discord / Teams     | Planning Review **PASS** (2026-08-29)    |
 | **W5-N04** | **V3-N04** | Push                        | Not authorized                           |
 
 Order is binding: **N01 → N02 → N03 → N04**.
@@ -97,16 +98,16 @@ Order is binding: **N01 → N02 → N03 → N04**.
 | Field                                 | Value                                                                                                           |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | **Wave**                              | **5 — Notification Platform** — **OPEN**                                                                        |
-| **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 Planning Package **OPEN** — Awaiting Planning Review             |
+| **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 Planning Review **PASS** — Awaiting Planning Approval            |
 | **First package**                     | **W5-N01** Production Telegram Bot API (V3-N01 · CM-11) — **CLOSED**                                            |
 | **Previous package**                  | **W5-N02** Email SMTP (V3-N02 · CM-12) — **CLOSED**                                                             |
-| **Current package**                   | **W5-N03** Slack / Discord / Teams (V3-N03 · CM-13, CM-14, CM-15) — Planning **OPEN**                           |
+| **Current package**                   | **W5-N03** Slack / Discord / Teams (V3-N03 · CM-13, CM-14, CM-15) — Planning Review **PASS**                    |
 | **Wave 5 Planning Review**            | **PASS** (2026-08-28) — [`wave-5-planning-review.md`](./wave-5-planning-review.md)                              |
 | **Wave 5 Planning Approval**          | **RECORDED** (2026-08-28) — [`wave-5-planning-approval.md`](./wave-5-planning-approval.md)                      |
 | **W5-N02 Planning Review**            | **PASS** (2026-08-28) — [`w5-n02-planning-review.md`](./w5-n02-planning-review.md)                              |
 | **W5-N02 Planning Approval**          | **RECORDED** (2026-08-28) — [`w5-n02-planning-approval.md`](./w5-n02-planning-approval.md)                      |
 | **W5-N03 Planning Package**           | **OPEN** (2026-08-29) — [`w5-n03-planning-summary.md`](./w5-n03-planning-summary.md)                            |
-| **W5-N03 Planning Review**            | **Not performed**                                                                                               |
+| **W5-N03 Planning Review**            | **PASS** (2026-08-29) — [`w5-n03-planning-review.md`](./w5-n03-planning-review.md)                              |
 | **W5-N03 Planning Approval**          | **Not granted**                                                                                                 |
 | **Implementation authorized?**        | **No** — W5-N03 planning only; slices not opened                                                                |
 | **W5-N02 Final Integration**          | [`w5-n02-final-integration-verification.md`](./w5-n02-final-integration-verification.md) — **PASS** (`5b72450`) |
@@ -165,7 +166,9 @@ W5-N02 CLOSED by Product Owner (2026-08-28)
         ↓
 W5-N03 Planning Package OPEN (2026-08-29)
         ↓
-STOP — Await Product Owner instruction for W5-N03 Planning Review
+W5-N03 Planning Review PASS (2026-08-29)
+        ↓
+STOP — Await Product Owner instruction for W5-N03 Planning Approval
 (No Slack implementation)
 (No Discord implementation)
 (No Microsoft Teams implementation)
@@ -187,7 +190,7 @@ STOP — Await Product Owner instruction for W5-N03 Planning Review
 | W5-N01 CLOSED                      | **Recorded** (2026-08-28) |
 | W5-N02 CLOSED                      | **Recorded** (2026-08-28) |
 | W5-N03 Planning OPEN               | **Recorded** (2026-08-29) |
-| W5-N03 Planning Review PASS        | **Not claimed**           |
+| W5-N03 Planning Review PASS        | **Recorded** (2026-08-29) |
 | W5-N03 Planning APPROVED           | **Not claimed**           |
 | W5-N03-a opened                    | **Not claimed**           |
 | Slack implemented                  | **Not claimed**           |
@@ -204,4 +207,4 @@ STOP — Await Product Owner instruction for W5-N03 Planning Review
 
 ---
 
-**STOP.** W5-N03 Planning Package is **OPEN**. Await explicit Product Owner instruction before W5-N03 Planning Review. Do not perform Planning Review. Do not perform Planning Approval. Do not create W5-N03-a. Do not begin W5-N03 implementation.
+**STOP.** W5-N03 Planning Review **PASS**. Await explicit Product Owner instruction before W5-N03 Planning Approval. Do not perform Planning Approval. Do not create W5-N03-a. Do not begin W5-N03 implementation.
