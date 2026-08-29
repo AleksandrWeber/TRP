@@ -81,6 +81,19 @@ W5-N02-b adds canonical Email notification anchor persistence on the existing No
 
 ---
 
+## W5-N03-a status (Slack / Discord / Teams inventory baseline)
+
+W5-N03-a catalogues every Slack / Discord / Teams notification artifact with SURVIVE vs EPHEMERAL classification and Honest Product boundaries. **No customer-visible Slack / Discord / Teams notification behaviour** was added.
+
+```text
+Slack / Discord / Microsoft Teams channels = reserved-inactive today.
+Vault webhook secret types = absent today.
+Connected/Delivering require real webhook round-trip — not claimed.
+Team chat channels are delivery-only — never a control plane.
+```
+
+---
+
 ## W5-N02-a status (Email inventory baseline)
 
 W5-N02-a catalogues every Email notification artifact with SURVIVE vs EPHEMERAL classification and Honest Product boundaries. **No customer-visible Email notification behaviour** was added.
@@ -105,12 +118,12 @@ Connected/Delivering require real SMTP round-trip — not claimed.
 
 ## Wave packages (Master Plan order)
 
-| Package | Name                        | What it delivers                                                             | Status                                   |
-| ------- | --------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------- |
-| W5-N01  | Production Telegram Bot API | Real Bot API connect / test / disconnect                                     | **CLOSED** by Product Owner (2026-08-28) |
-| W5-N02  | Email (SMTP)                | Email Notification foundation — inventory, persistence, recovery, continuity | **CLOSED** by Product Owner (2026-08-28) |
-| W5-N03  | Slack / Discord / Teams     | Real webhook transports                                                      | Not authorized                           |
-| W5-N04  | Push                        | Real browser/device push                                                     | Not authorized                           |
+| Package | Name                        | What it delivers                                                             | Status                                                |
+| ------- | --------------------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------- |
+| W5-N01  | Production Telegram Bot API | Real Bot API connect / test / disconnect                                     | **CLOSED** by Product Owner (2026-08-28)              |
+| W5-N02  | Email (SMTP)                | Email Notification foundation — inventory, persistence, recovery, continuity | **CLOSED** by Product Owner (2026-08-28)              |
+| W5-N03  | Slack / Discord / Teams     | Real webhook transports                                                      | Planning **APPROVED** · W5-N03-a **COMPLETE** (local) |
+| W5-N04  | Push                        | Real browser/device push                                                     | Not authorized                                        |
 
 Order: **N01 → N02 → N03 → N04**.
 
@@ -153,6 +166,8 @@ W5-N01-e assembled complete engineering Close Evidence across slices a–d: oper
 ## Customer journey (Email foundation — W5-N02)
 
 ```text
+Slack / Discord / Teams Notification inventory & honesty baseline (W5-N03-a)
+
 Email Notification inventory & honesty baseline (W5-N02-a)
         ↓
 Persist canonical notification anchors (W5-N02-b)
@@ -199,4 +214,4 @@ W5-N02-e assembled complete engineering Close Evidence across slices a–d. Fina
 
 ---
 
-**STOP.** W5-N02 **CLOSED** by Product Owner (2026-08-28). Email channel remains reserved-inactive. Do not declare Email SMTP implemented. Do not declare Email notifications operational. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Await explicit Product Owner instruction before W5-N03 Planning Package.
+**STOP.** W5-N03-a **COMPLETE** (local). Slack / Discord / Microsoft Teams channels remain reserved-inactive. Do not declare Slack implemented. Do not declare Discord implemented. Do not declare Microsoft Teams implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Await Product Owner review before W5-N03-b.

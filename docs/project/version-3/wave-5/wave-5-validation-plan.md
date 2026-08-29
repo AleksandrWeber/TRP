@@ -228,6 +228,21 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
+## W5-N03-a validation (2026-08-29 — local)
+
+| Layer                | Result   | Evidence                                                           |
+| -------------------- | -------- | ------------------------------------------------------------------ |
+| Webhook inventory    | **PASS** | `w5-n03-a-slack-discord-teams-notification-inventory.ts` (81 rows) |
+| Conformance registry | **PASS** | `w5-n03-a-slack-discord-teams-notification.ts`                     |
+| Slice reports        | **PASS** | w5-n03-a-* reports under wave-5                                    |
+| Architecture check   | **PASS** | No ownership drift; no webhook I/O                                 |
+| Regression suite     | **PASS** | lint / typecheck / test / build                                    |
+| git diff --check     | **PASS** | No whitespace errors                                               |
+
+**Explicit non-claim:** W5-N03-a does **not** authorize Slack implemented, Discord implemented, Microsoft Teams implemented, Slack/Discord/Teams notifications operational, W5-N03 COMPLETE, or Wave 5 COMPLETE. Changes **local only** — not committed.
+
+---
+
 ## W5-N02-a validation (2026-08-28 — local)
 
 | Layer                | Result   | Evidence                                             |
