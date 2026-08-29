@@ -721,6 +721,138 @@ export function OperationalContinuityView({ readiness }: Props) {
       </section>
 
       <section>
+        <h2 className="text-lg font-semibold text-slate-100">Notification Platform Integration</h2>
+        {readiness.notificationPlatformIntegration ? (
+          <dl
+            className="mt-4 grid gap-3 sm:grid-cols-2"
+            data-testid="notification-platform-integration-continuity"
+          >
+            <div>
+              <dt className="text-sm text-slate-400">
+                Notification Platform Integration operational state
+              </dt>
+              <dd className="text-slate-100" data-testid="notification-platform-integration-state">
+                {readiness.notificationPlatformIntegration.operationalState}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Owner readiness</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-integration-owner-readiness"
+              >
+                {readiness.notificationPlatformIntegration.ownerReadiness}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery timestamp</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-integration-recovery-timestamp"
+              >
+                {readiness.notificationPlatformIntegration.recoveryTimestamp ?? '—'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery duration</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-integration-recovery-duration"
+              >
+                {formatDuration(readiness.notificationPlatformIntegration.recoveryDurationMs)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Restored rows</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-integration-restored-count"
+              >
+                {readiness.notificationPlatformIntegration.restoredCount}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Canonical anchors</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-integration-canonical-anchor-count"
+              >
+                {readiness.notificationPlatformIntegration.canonicalAnchorCount}
+              </dd>
+            </div>
+          </dl>
+        ) : (
+          <p className="mt-2 text-slate-400">Not evaluated</p>
+        )}
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold text-slate-100">Notification Platform Integration</h2>
+        {readiness.notificationPlatformIntegration ? (
+          <dl
+            className="mt-4 grid gap-3 sm:grid-cols-2"
+            data-testid="notification-platform-integration-continuity"
+          >
+            <div>
+              <dt className="text-sm text-slate-400">
+                Notification Platform Integration operational state
+              </dt>
+              <dd className="text-slate-100" data-testid="notification-platform-integration-state">
+                {readiness.notificationPlatformIntegration.operationalState}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Owner readiness</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-integration-owner-readiness"
+              >
+                {readiness.notificationPlatformIntegration.ownerReadiness}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery timestamp</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-integration-recovery-timestamp"
+              >
+                {readiness.notificationPlatformIntegration.recoveryTimestamp ?? '—'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery duration</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-integration-recovery-duration"
+              >
+                {formatDuration(readiness.notificationPlatformIntegration.recoveryDurationMs)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Restored rows</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-integration-restored-count"
+              >
+                {readiness.notificationPlatformIntegration.restoredCount}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Canonical anchors</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-integration-canonical-anchor-count"
+              >
+                {readiness.notificationPlatformIntegration.canonicalAnchorCount}
+              </dd>
+            </div>
+          </dl>
+        ) : (
+          <p className="mt-2 text-slate-400">Not evaluated</p>
+        )}
+      </section>
+
+      <section>
         <h2 className="text-lg font-semibold text-slate-100">Owner operational state</h2>
         <table className="mt-3 w-full text-left text-sm text-slate-200">
           <thead className="text-slate-400">

@@ -14,6 +14,7 @@
  * W5-N02-d adds Email Notification operational continuity (derived).
  * W5-N03-d adds Slack / Discord / Teams Notification operational continuity (derived).
  * W5-N04-d adds Push Notification operational continuity (derived).
+ * W5-N05-d adds Notification Platform Integration operational continuity (derived).
  * Recovery itself remains W3-O01-c / W3-O02-c / W3-O04-c / W3-O05-c only. No new persistence / BC / HA / monitoring evaluation.
  */
 
@@ -39,6 +40,8 @@ import { getSlackDiscordTeamsNotificationContinuityRecord } from '../notificatio
 import { buildSlackDiscordTeamsNotificationContinuityProjection } from '../notification-delivery/domain/slack-discord-teams-notification-operational-continuity';
 import { getPushNotificationContinuityRecord } from '../notification-delivery/domain/push-notification-continuity-status';
 import { buildPushNotificationContinuityProjection } from '../notification-delivery/domain/push-notification-operational-continuity';
+import { getNotificationPlatformIntegrationContinuityRecord } from '../notification-delivery/domain/notification-platform-integration-continuity-status';
+import { buildNotificationPlatformIntegrationContinuityProjection } from '../notification-delivery/domain/notification-platform-integration-operational-continuity';
 import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
 import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
 import { getMonitoringHealthContinuityRecord } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
@@ -131,6 +134,11 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         continuity: null,
       }),
       pushNotification: buildPushNotificationContinuityProjection({
+        recovering: true,
+        ownerReadiness: 'ready',
+        continuity: null,
+      }),
+      notificationPlatformIntegration: buildNotificationPlatformIntegrationContinuityProjection({
         recovering: true,
         ownerReadiness: 'ready',
         continuity: null,
@@ -303,6 +311,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildNotificationPlatformIntegrationView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getNotificationPlatformIntegrationContinuityRecord();
+    return buildNotificationPlatformIntegrationContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -386,6 +406,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       pushNotification: this.buildPushNotificationView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      notificationPlatformIntegration: this.buildNotificationPlatformIntegrationView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -570,6 +594,23 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         pushNotificationBase.recoveryDurationMs ??
         (pushNotificationBase.operationalState === 'Recovering' ? null : recoveryDurationMs),
     });
+    const notificationPlatformIntegrationBase = this.buildNotificationPlatformIntegrationView({
+      recovering: false,
+      ownerReadiness: 'ready',
+    });
+    const notificationPlatformIntegration = Object.freeze({
+      ...notificationPlatformIntegrationBase,
+      recoveryTimestamp:
+        notificationPlatformIntegrationBase.recoveryTimestamp ??
+        (notificationPlatformIntegrationBase.operationalState === 'Recovering'
+          ? null
+          : recoveryTimestamp),
+      recoveryDurationMs:
+        notificationPlatformIntegrationBase.recoveryDurationMs ??
+        (notificationPlatformIntegrationBase.operationalState === 'Recovering'
+          ? null
+          : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -586,6 +627,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       emailNotification,
       slackDiscordTeamsNotification,
       pushNotification,
+      notificationPlatformIntegration,
     });
     this.finalized = true;
 
