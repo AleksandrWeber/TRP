@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { DurablePushNotificationAnchor } from './domain/durable-push-notification-anchor';
 import type { PushNotificationAnchorRepository } from './domain/push-notification-anchor.repository';
 import { PushNotificationPersistenceService } from './push-notification-persistence.service';
+import { PushNotificationRecoveryStore } from './push-notification-recovery-store';
 
 const recordedAt = '2026-08-29T17:00:00.000Z';
 
@@ -27,7 +28,10 @@ function createRepository(): PushNotificationAnchorRepository & {
 describe('PushNotificationPersistenceService — W5-N04-b storage only', () => {
   it('persistNotificationAnchor writes canonical anchors without delivery execution', async () => {
     const repository = createRepository();
-    const service = new PushNotificationPersistenceService(repository);
+    const service = new PushNotificationPersistenceService(
+      repository,
+      new PushNotificationRecoveryStore(),
+    );
 
     const outcome = await service.persistNotificationAnchor({
       workspaceId: 'ws-1',
@@ -61,7 +65,10 @@ describe('PushNotificationPersistenceService — W5-N04-b storage only', () => {
 
   it('does not persist browser subscription payload or transport secrets', async () => {
     const repository = createRepository();
-    const service = new PushNotificationPersistenceService(repository);
+    const service = new PushNotificationPersistenceService(
+      repository,
+      new PushNotificationRecoveryStore(),
+    );
 
     await service.persistNotificationAnchor({
       workspaceId: 'ws-1',
@@ -81,7 +88,10 @@ describe('PushNotificationPersistenceService — W5-N04-b storage only', () => {
 
   it('rejects non-push notification channel', async () => {
     const repository = createRepository();
-    const service = new PushNotificationPersistenceService(repository);
+    const service = new PushNotificationPersistenceService(
+      repository,
+      new PushNotificationRecoveryStore(),
+    );
 
     const outcome = await service.persistNotificationAnchor({
       workspaceId: 'ws-1',

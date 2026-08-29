@@ -20,6 +20,8 @@ import { SlackDiscordTeamsNotificationPersistenceService } from './slack-discord
 import { SlackDiscordTeamsNotificationRecoveryStore } from './slack-discord-teams-notification-recovery-store';
 import { SlackDiscordTeamsNotificationRestartRecoveryService } from './slack-discord-teams-notification-restart-recovery.service';
 import { PushNotificationPersistenceService } from './push-notification-persistence.service';
+import { PushNotificationRecoveryStore } from './push-notification-recovery-store';
+import { PushNotificationRestartRecoveryService } from './push-notification-restart-recovery.service';
 import { EmailNotificationRecoveryStore } from './email-notification-recovery-store';
 import { EmailNotificationRestartRecoveryService } from './email-notification-restart-recovery.service';
 import { TelegramNotificationPersistenceService } from './telegram-notification-persistence.service';
@@ -39,6 +41,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
  * W5-N03-b: durable Slack / Discord / Teams notification anchor persistence on this owner only.
  * W5-N03-c: deterministic restart recovery hydrate for canonical Slack / Discord / Teams anchors on this owner only.
  * W5-N04-b: durable Push notification anchor persistence on this owner only.
+ * W5-N04-c: deterministic restart recovery hydrate for canonical Push anchors on this owner only.
  * Does not import Reporting / AI Analytics / Strategy Library / Runtime /
  * Trading Session / Orders / Ledger. Does not expose REST or trading commands.
  */
@@ -84,6 +87,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     SlackDiscordTeamsNotificationRecoveryStore,
     SlackDiscordTeamsNotificationRestartRecoveryService,
     PushNotificationPersistenceService,
+    PushNotificationRecoveryStore,
+    PushNotificationRestartRecoveryService,
     EmailNotificationRecoveryStore,
     EmailNotificationRestartRecoveryService,
     InMemoryTelegramAdapter,
@@ -115,6 +120,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     SlackDiscordTeamsNotificationRecoveryStore,
     SlackDiscordTeamsNotificationRestartRecoveryService,
     PushNotificationPersistenceService,
+    PushNotificationRecoveryStore,
+    PushNotificationRestartRecoveryService,
     EmailNotificationRecoveryStore,
     EmailNotificationRestartRecoveryService,
   ],

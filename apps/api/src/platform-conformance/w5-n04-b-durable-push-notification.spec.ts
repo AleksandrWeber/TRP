@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PrismaPushNotificationAnchorRepository } from '../modules/notification-delivery/persistence/prisma-push-notification-anchor.repository';
 import { PushNotificationPersistenceService } from '../modules/notification-delivery/push-notification-persistence.service';
+import { PushNotificationRecoveryStore } from '../modules/notification-delivery/push-notification-recovery-store';
 import { rowsEphemeral } from './w5-n04-a-push-notification-inventory';
 import {
   W5_N04_B_ARCHITECTURE_CLAIMS,
@@ -63,7 +64,10 @@ describe('W5-N04-b durable push notification — unit', () => {
   it('persistence correctness: anchor write-through upserts workspace notification row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaPushNotificationAnchorRepository(prisma as never);
-    const service = new PushNotificationPersistenceService(repository);
+    const service = new PushNotificationPersistenceService(
+      repository,
+      new PushNotificationRecoveryStore(),
+    );
 
     const outcome = await service.persistNotificationAnchor({
       workspaceId: 'ws-a',

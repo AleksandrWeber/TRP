@@ -477,6 +477,21 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
+## W5-N04-c validation (2026-08-29 — local)
+
+| Layer                | Result   | Evidence                                              |
+| -------------------- | -------- | ----------------------------------------------------- |
+| Restart recovery     | **PASS** | `push-notification-restart-recovery.ts` + service     |
+| Conformance registry | **PASS** | `w5-n04-c-push-notification-restart-recovery.ts`      |
+| Slice reports        | **PASS** | w5-n04-c-* reports under wave-5                       |
+| Architecture check   | **PASS** | Notification Delivery owner only; no Web Push/FCM I/O |
+| Regression suite     | **PASS** | lint / typecheck / test / build                       |
+| git diff --check     | **PASS** | No whitespace errors                                  |
+
+**Explicit non-claim:** W5-N04-c does **not** authorize Push implemented, Web Push implemented, FCM implemented, browser notifications operational, device token registry implemented, operational continuity, W5-N04 COMPLETE, or Wave 5 COMPLETE. Changes **local only** — not committed.
+
+---
+
 ## Explicit non-claims
 
 - Wave 5 validation PASS at Close — **not claimed**

@@ -287,4 +287,20 @@ W5-N02-e assembled complete engineering Close Evidence across slices a–d. Fina
 
 ---
 
-**STOP.** W5-N04-b **COMPLETE** (local). Durable Push notification anchors persist on Notification Delivery owner. Push channel remains reserved-inactive. Do not declare Push implemented. Do not declare Web Push implemented. Do not declare FCM implemented. Do not declare browser notifications operational. Do not declare device token registry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Awaiting Product Owner Review before W5-N04-c.
+---
+
+## W5-N04-c status (Push restart recovery foundation)
+
+W5-N04-c adds deterministic restart recovery hydrate for W5-N04-b canonical Push notification anchors on the existing Notification Delivery owner. **No customer-visible Push notification behaviour** was added.
+
+```text
+Canonical anchors restore into recovery cache after normal process restart.
+Recovery is deterministic and idempotent.
+Missing rows → empty cache (no fabrication).
+Corrupt rows → PushNotificationRestartRecoveryError.
+Operational continuity = W5-N04-d (not claimed from this slice).
+```
+
+---
+
+**STOP.** W5-N04-c **COMPLETE** (local). Deterministic restart recovery hydrate for Push notification anchors on Notification Delivery owner. Push channel remains reserved-inactive. Do not declare Push implemented. Do not declare Web Push implemented. Do not declare FCM implemented. Do not declare browser notifications operational. Do not declare device token registry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Awaiting Product Owner Review before W5-N04-d.
