@@ -50,6 +50,13 @@ import {
 } from '../notification-delivery/domain/notification-platform-integration-continuity-status';
 import { buildNotificationPlatformIntegrationAnchorState } from '../notification-delivery/domain/durable-notification-platform-integration-anchor';
 import { buildNotificationPlatformIntegrationRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-integration-restart-recovery';
+import {
+  recordNotificationPlatformDeliveryRecoveryStart,
+  recordNotificationPlatformDeliveryRecoverySuccess,
+  resetNotificationPlatformDeliveryContinuity,
+} from '../notification-delivery/domain/notification-platform-delivery-continuity-status';
+import { buildNotificationPlatformDeliveryAnchorState } from '../notification-delivery/domain/durable-notification-platform-delivery-anchor';
+import { buildNotificationPlatformDeliveryRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-delivery-restart-recovery';
 
 describe('OperationalContinuityService', () => {
   beforeEach(() => {
@@ -127,6 +134,7 @@ describe('OperationalContinuityService', () => {
     expect(projection.slackDiscordTeamsNotification?.operationalState).toBe('Unavailable');
     expect(projection.pushNotification?.operationalState).toBe('Unavailable');
     expect(projection.notificationPlatformIntegration?.operationalState).toBe('Unavailable');
+    expect(projection.notificationPlatformDelivery?.operationalState).toBe('Unavailable');
   });
 
   it('workspace-safe projection is read-only (no mutation API on service)', () => {
@@ -413,6 +421,50 @@ describe('OperationalContinuityService', () => {
 
     expect(projection.notificationPlatformIntegration?.operationalState).toBe('Ready');
     expect(projection.notificationPlatformIntegration?.canonicalAnchorCount).toBe(1);
+    expect(projection.platformState).toBe('Ready');
+  });
+
+  it('includes notification platform delivery continuity derived from W5-N06-c recovery record', async () => {
+    resetNotificationPlatformDeliveryContinuity();
+    const anchor = buildNotificationPlatformDeliveryAnchorState({
+      workspaceId: 'ws-1',
+      deliveryAnchorId: 'del-1',
+      platformDeliveryType: 'unified-platform-delivery',
+      correlationId: 'corr-1',
+      actorId: 'actor-1',
+      recordedAt: '2026-08-29T19:00:00.000Z',
+      prior: null,
+    });
+    if (!anchor.ok) throw new Error('expected anchor');
+    recordNotificationPlatformDeliveryRecoveryStart();
+    recordNotificationPlatformDeliveryRecoverySuccess({
+      diagnostics: buildNotificationPlatformDeliveryRecoveryDiagnostics([anchor.anchor]),
+    });
+
+    const audit = {
+      recordOwnerState: vi.fn(async () => undefined),
+      recordRecoveryCompleted: vi.fn(async () => undefined),
+    } as unknown as OperationalContinuityAudit;
+    const service = new OperationalContinuityService(audit);
+    const projection = await service.applyBootOutcomesForTest(
+      (
+        [
+          'strategy-library',
+          'exchange-scope',
+          'knowledge-lake',
+          'market-profile',
+          'market-qualification',
+          'market-state',
+          'reporting',
+          'notification-delivery',
+          'trading-orchestrator',
+          'runtime-enforcement',
+        ] as const
+      ).map((owner) => ({ owner, outcome: 'ready' as const })),
+    );
+
+    expect(projection.notificationPlatformDelivery?.operationalState).toBe('Ready');
+    expect(projection.notificationPlatformDelivery?.canonicalAnchorCount).toBe(1);
     expect(projection.platformState).toBe('Ready');
   });
 });

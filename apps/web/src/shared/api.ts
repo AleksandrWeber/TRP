@@ -1060,6 +1060,8 @@ export type OperationalContinuityReadinessView = {
   pushNotification: PushNotificationContinuityView | null;
   /** W5-N05-d — Notification Platform Integration operational continuity. */
   notificationPlatformIntegration: NotificationPlatformIntegrationContinuityView | null;
+  /** W5-N06-d — Notification Platform Delivery operational continuity. */
+  notificationPlatformDelivery: NotificationPlatformDeliveryContinuityView | null;
 };
 
 export type NotificationQueueContinuityView = {
@@ -1213,6 +1215,18 @@ export type PushNotificationContinuityView = {
 };
 
 export type NotificationPlatformIntegrationContinuityView = {
+  operationalState: OperationalContinuityState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+};
+
+export type NotificationPlatformDeliveryContinuityView = {
   operationalState: OperationalContinuityState;
   ownerReadiness: 'ready' | 'unavailable' | 'degraded';
   recoveryTimestamp: string | null;

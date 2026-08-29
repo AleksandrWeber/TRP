@@ -26,6 +26,7 @@ describe('OperationalContinuityController', () => {
     slackDiscordTeamsNotification: null,
     pushNotification: null,
     notificationPlatformIntegration: null,
+    notificationPlatformDelivery: null,
   });
 
   let continuity: OperationalContinuityService;
