@@ -832,4 +832,33 @@ See [`w5-n08-product-owner-close-record.md`](./w5-n08-product-owner-close-record
 
 ---
 
-**STOP.** W5-N05 is **CLOSED** by Product Owner. W5-N06 is **CLOSED** by Product Owner. W5-N07 is **CLOSED** by Product Owner. W5-N08 is **CLOSED** by Product Owner. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Queue execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N09 without separate Product Owner instruction.
+## W5-N09 status (Notification Platform Workers — Planning OPEN)
+
+W5-N09 Notification Platform Workers Foundation Planning Package is **OPEN** (2026-08-29). Awaiting Planning Review. **No implementation.** **No slices opened.**
+
+```text
+Planning only — not worker runtime execution.
+Not queue orchestration / retry / scheduler implementation.
+Not platform workers anchors (W5-N09-b).
+Not Notification Platform Workers functional.
+Not W5-N09 COMPLETE.
+Customer-visible platform workers remain unchanged until later slices + Product Owner Close.
+```
+
+See [`w5-n09-planning-summary.md`](./w5-n09-planning-summary.md).
+
+---
+
+## W5-N09 implementation slices (planning only — not opened)
+
+| Slice    | Name                                                              |
+| -------- | ----------------------------------------------------------------- |
+| W5-N09-a | Notification Platform Workers Inventory & Honest Product Baseline |
+| W5-N09-b | Durable Notification Platform Workers Foundation                  |
+| W5-N09-c | Notification Platform Workers Restart Recovery Foundation         |
+| W5-N09-d | Notification Platform Workers Operational Continuity Foundation   |
+| W5-N09-e | Package Close Evidence                                            |
+
+---
+
+**STOP.** W5-N05 is **CLOSED** by Product Owner. W5-N06 is **CLOSED** by Product Owner. W5-N07 is **CLOSED** by Product Owner. W5-N08 is **CLOSED** by Product Owner. W5-N09 Planning Package is **OPEN** — Awaiting Planning Review. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not perform W5-N09 Planning Review without explicit Product Owner instruction. Do not open W5-N09-a.
