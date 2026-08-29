@@ -5,6 +5,7 @@ import {
 } from './domain/durable-notification-platform-queue-anchor';
 import type { NotificationPlatformQueueAnchorRepository } from './domain/notification-platform-queue-anchor.repository';
 import { NotificationPlatformQueuePersistenceService } from './notification-platform-queue-persistence.service';
+import { NotificationPlatformQueueRecoveryStore } from './notification-platform-queue-recovery-store';
 
 const recordedAt = '2026-08-29T20:00:00.000Z';
 
@@ -27,10 +28,13 @@ function createRepository(): NotificationPlatformQueueAnchorRepository & {
   };
 }
 
-describe('NotificationPlatformQueuePersistenceService — W5-N08-b storage only', () => {
+describe('NotificationPlatformQueuePersistenceService — W5-N08-b/c storage only', () => {
   it('persistQueueAnchor writes canonical platform queue anchors without runtime I/O', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformQueuePersistenceService(repository);
+    const service = new NotificationPlatformQueuePersistenceService(
+      repository,
+      new NotificationPlatformQueueRecoveryStore(),
+    );
 
     const outcome = await service.persistQueueAnchor({
       workspaceId: 'ws-1',
@@ -60,7 +64,10 @@ describe('NotificationPlatformQueuePersistenceService — W5-N08-b storage only'
 
   it('does not persist queue workers, retry, scheduler, dispatcher, or transport execution fields', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformQueuePersistenceService(repository);
+    const service = new NotificationPlatformQueuePersistenceService(
+      repository,
+      new NotificationPlatformQueueRecoveryStore(),
+    );
 
     await service.persistQueueAnchor({
       workspaceId: 'ws-1',
