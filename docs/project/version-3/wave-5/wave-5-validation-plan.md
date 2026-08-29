@@ -578,7 +578,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 - W5-N05-c validation PASS — **recorded** (`9b85628`)
 - W5-N05-d validation PASS — **recorded**
 - W5-N05-e validation PASS — **recorded** (`d89a076`)
-- W5-N05 Final Integration Verification — **PASS** (`088e8d2`)
+- W5-N05 Final Integration Verification — **PASS** (`ae1104d`)
 
 ---
 
@@ -662,7 +662,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N05 Final Integration Verification (2026-08-29 — `088e8d2`)
+## W5-N05 Final Integration Verification (2026-08-29 — `ae1104d`)
 
 | Layer                         | Result   | Evidence                                   |
 | ----------------------------- | -------- | ------------------------------------------ |
@@ -672,7 +672,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite              | **PASS** | lint / typecheck / test / build            |
 | Engineering verdict           | **PASS** | READY FOR PRODUCT OWNER FINAL CLOSE        |
 
-**Explicit non-claim:** Final Integration Verification does **not** declare W5-N05 CLOSED, Notification Platform Integration implemented, Notification Platform Complete, Push/Email/Slack/Discord/Teams implemented, Production Ready, Live Notifications, or Wave 5 COMPLETE. **Recorded** (`088e8d2`).
+**Explicit non-claim:** Final Integration Verification does **not** declare W5-N05 CLOSED, Notification Platform Integration implemented, Notification Platform Complete, Push/Email/Slack/Discord/Teams implemented, Production Ready, Live Notifications, or Wave 5 COMPLETE. **Recorded** (`ae1104d`).
 
 ---
 

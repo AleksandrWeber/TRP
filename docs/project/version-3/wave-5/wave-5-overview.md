@@ -453,7 +453,7 @@ See [`w5-n05-e-implementation-report.md`](./w5-n05-e-implementation-report.md).
 W5-N05 Final Package Integration Verification **PASS** (2026-08-29). All slices a–e form one internally consistent package. Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**.
 
 ```text
-Slice chain d6514ab → cbbf1d7 → 9b85628 → 2cdb0b7 → d89a076 → 088e8d2 verified on origin/main.
+Slice chain d6514ab → cbbf1d7 → 9b85628 → 2cdb0b7 → d89a076 → ae1104d verified on origin/main.
 Product Owner Close Record not created — W5-N05 not CLOSED.
 W5-N06 — not opened.
 ```
