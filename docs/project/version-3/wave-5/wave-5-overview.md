@@ -367,4 +367,21 @@ W5-N05 — not opened.
 
 ---
 
-**STOP.** W5-N04 is **CLOSED** by Product Owner (2026-08-29). Awaiting Product Owner instruction for W5-N05 Planning Package. Do not declare Push implemented. Do not declare Web Push implemented. Do not declare FCM implemented. Do not declare browser notifications operational. Do not declare device token registry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N05 without separate Product Owner instruction.
+## W5-N05-a status (Notification Platform Integration inventory & honesty baseline)
+
+W5-N05-a enumerates every Notification Platform Integration artifact across W5-N01…N04 per-channel foundations, PC-06 routing, PC-07 notification product, per-channel operational continuity views, and missing unified platform integration layer. **No customer-visible Notification Platform Integration behaviour** was added.
+
+```text
+Per-channel W5-N01…N04 foundations consumed as reference only — not reopened.
+Unified platform integration layer absent — EPHEMERAL until W5-N05-b.
+Platform integration anchors, restart recovery, and operational continuity missing.
+TD-049 / TD-050 production transport I/O deferred.
+Notification Platform Integration does NOT function after this slice.
+Durable foundation = W5-N05-b (not claimed from this slice).
+```
+
+See [`w5-n05-a-notification-platform-integration-inventory.md`](./w5-n05-a-notification-platform-integration-inventory.md).
+
+---
+
+**STOP.** W5-N05-a is **COMPLETE** (`885a084`). Await explicit Product Owner instruction before opening W5-N05-b. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Complete. Do not declare Push/Email/Slack/Discord/Teams implemented. Do not declare W5-N05 COMPLETE. Do not declare Wave 5 COMPLETE. Do not open W5-N05-b without separate Product Owner instruction.
