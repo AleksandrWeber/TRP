@@ -13,7 +13,7 @@
 
 **Safety commit (pre-step):** `cd86057` — W5-N07-e Package Close Evidence pushed to `origin/main`. Repository clean; `origin/main` up to date.
 
-**Slice commit chain on `origin/main`:** `51ed6e8` (a) → `4cb4a77` (b) → `07cbaca` (c) → `d8bffa6` (d) → `cd86057` (e).
+**Slice commit chain on `origin/main`:** `51ed6e8` (a) → `4cb4a77` (b) → `07cbaca` (c) → `d8bffa6` (d) → `cd86057` (e) → `aa41a3d` (Final Integration Verification).
 
 ---
 

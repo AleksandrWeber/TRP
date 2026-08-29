@@ -241,7 +241,7 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07**.
 | **W5-N07 Planning Approval**          | **RECORDED** (2026-08-29) — [`w5-n07-planning-approval.md`](./w5-n07-planning-approval.md)                                                                                                                                                                                                                                                                                                                                                                  |
 | **W5-N07 planning documents**         | [`w5-n07-planning-summary.md`](./w5-n07-planning-summary.md) and companions                                                                                                                                                                                                                                                                                                                                                                                 |
 | **Implementation authorized?**        | **Yes** — W5-N07-a **COMPLETE** (`51ed6e8`); W5-N07-b **COMPLETE** (`4cb4a77`); W5-N07-c **COMPLETE** (`07cbaca`); W5-N07-d **COMPLETE** (`d8bffa6`); W5-N07-e **COMPLETE** (`cd86057`); Final Integration Verification **PASS**                                                                                                                                                                                                                            |
-| **W5-N07 Final Integration**          | [`w5-n07-final-integration-verification.md`](./w5-n07-final-integration-verification.md) — **PASS**                                                                                                                                                                                                                                                                                                                                                         |
+| **W5-N07 Final Integration**          | [`w5-n07-final-integration-verification.md`](./w5-n07-final-integration-verification.md) — **PASS** (`aa41a3d`)                                                                                                                                                                                                                                                                                                                                             |
 | **W5-N07-e package close evidence**   | [`w5-n07-e-implementation-report.md`](./w5-n07-e-implementation-report.md)                                                                                                                                                                                                                                                                                                                                                                                  |
 | **W5-N07-d operational continuity**   | [`w5-n07-d-implementation-report.md`](./w5-n07-d-implementation-report.md)                                                                                                                                                                                                                                                                                                                                                                                  |
 | **W5-N07-c implementation report**    | [`w5-n07-c-implementation-report.md`](./w5-n07-c-implementation-report.md)                                                                                                                                                                                                                                                                                                                                                                                  |
@@ -394,7 +394,7 @@ W5-N07-d COMPLETE (`d8bffa6`) — Notification Platform Dispatch Operational Con
         ↓
 W5-N07-e COMPLETE (`cd86057`) — Package Close Evidence
         ↓
-W5-N07 Final Integration Verification PASS
+W5-N07 Final Integration Verification PASS (`aa41a3d`)
         ↓
 STOP — Awaiting Product Owner Final Close
 (No platform dispatch execution)
@@ -483,7 +483,7 @@ STOP — Awaiting Product Owner Final Close
 | W5-N07-d complete                     | **Recorded** (`d8bffa6`)  |
 | W5-N07-e opened                       | **Recorded** (local)      |
 | W5-N07-e complete                     | **Recorded** (`cd86057`)  |
-| W5-N07 Final Integration Verification | **PASS**                  |
+| W5-N07 Final Integration Verification | **PASS** (`aa41a3d`)      |
 | Dispatcher implemented                | **Not claimed**           |
 | Queue implemented                     | **Not claimed**           |
 | Retry implemented                     | **Not claimed**           |

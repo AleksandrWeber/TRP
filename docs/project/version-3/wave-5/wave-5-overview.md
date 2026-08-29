@@ -454,9 +454,9 @@ See [`w5-n07-e-implementation-report.md`](./w5-n07-e-implementation-report.md).
 W5-N07 Final Package Integration Verification **PASS** (2026-08-29). All slices a–e form one internally consistent package. Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**. Engineering confidence: **97%**.
 
 ```text
-Slice chain 51ed6e8 → 4cb4a77 → 07cbaca → d8bffa6 → cd86057 verified on origin/main.
+Slice chain 51ed6e8 → 4cb4a77 → 07cbaca → d8bffa6 → cd86057 → aa41a3d verified on origin/main.
 W5-N07-e COMPLETE (`cd86057`) — Package Close Evidence.
-Final Integration Verification PASS.
+Final Integration Verification PASS (`aa41a3d`).
 Product Owner Close Record not created — awaiting Product Owner Final Close.
 ```
 
@@ -676,7 +676,7 @@ W5-N07-b COMPLETE (`4cb4a77`) — Durable Notification Platform Dispatch Foundat
 W5-N07-c COMPLETE (`07cbaca`) — Notification Platform Dispatch Restart Recovery Foundation.
 W5-N07-d COMPLETE (`d8bffa6`) — Notification Platform Dispatch Operational Continuity Foundation.
 W5-N07-e COMPLETE (`cd86057`) — Package Close Evidence.
-W5-N07 Final Integration Verification PASS.
+W5-N07 Final Integration Verification PASS (`aa41a3d`).
 ```
 
 ---
