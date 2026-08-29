@@ -386,6 +386,22 @@ See [`w5-n07-a-notification-platform-dispatch-inventory.md`](./w5-n07-a-notifica
 
 ---
 
+## W5-N07-b status (Durable Notification Platform Dispatch foundation)
+
+W5-N07-b adds canonical Notification Platform Dispatch anchor persistence on the existing **Notification Delivery** owner via `WorkspaceNotificationPlatformDispatchAnchor`. **No customer-visible Notification Platform Dispatch behaviour** was added.
+
+```text
+Canonical platform dispatch anchors persisted — anchor-recorded only.
+No dispatch execution, dispatcher, queue workers, retry, or scheduler.
+No restart recovery hydrate — W5-N07-c.
+Platform dispatch does NOT function after this slice.
+Notification Platform Dispatch implemented — NOT claimed.
+```
+
+See [`w5-n07-b-implementation-report.md`](./w5-n07-b-implementation-report.md).
+
+---
+
 ## W5-N06-a status (Notification Platform Delivery inventory & honesty baseline)
 
 W5-N06-a enumerates every Notification Platform Delivery artifact across Closed W5-N05 integration foundation, per-channel W5-N01…N04 foundations, PC-06 routing, PC-07 notification product, per-channel and integration operational continuity views, and missing unified platform delivery layer, dispatcher, scheduler, and retry orchestration. **No customer-visible Notification Platform Delivery behaviour** was added.
@@ -593,7 +609,8 @@ W5-N06-e COMPLETE (`68b277b`) — Package Close Evidence.
 W5-N06 Final Integration Verification PASS (`52151cb`).
 W5-N06 CLOSED by Product Owner (2026-08-29).
 W5-N07 Planning APPROVED (2026-08-29).
-W5-N07-a COMPLETE (local) — Notification Platform Dispatch Inventory & Honest Product Baseline.
+W5-N07-a COMPLETE (`51ed6e8`) — Notification Platform Dispatch Inventory & Honest Product Baseline.
+W5-N07-b COMPLETE (local) — Durable Notification Platform Dispatch Foundation.
 ```
 
 ---
@@ -612,4 +629,4 @@ See [`w5-n05-product-owner-close-record.md`](./w5-n05-product-owner-close-record
 
 ---
 
-**STOP.** W5-N05 is **CLOSED** by Product Owner. W5-N06 is **CLOSED** by Product Owner. W5-N07-a is **COMPLETE** (local). Awaiting Product Owner Review before Repository Synchronization. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Dispatcher implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N05 is **CLOSED** by Product Owner. W5-N06 is **CLOSED** by Product Owner. W5-N07-a is **COMPLETE** (`51ed6e8`). W5-N07-b is **COMPLETE** (local). Awaiting Product Owner Review before Repository Synchronization. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Dispatcher implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.

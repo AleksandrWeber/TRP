@@ -133,7 +133,7 @@ describe('W5-N07-a notification platform dispatch inventory — unit', () => {
     expect(W5_N07_A_BINDING_FINDINGS.customerVisibleFeatureFromSliceA).toBe(false);
     expect(W5_N07_A_BINDING_FINDINGS.w5N05IntegrationFoundationExists).toBe(true);
     expect(W5_N07_A_BINDING_FINDINGS.unifiedPlatformDispatchLayerMissing).toBe(true);
-    expect(W5_N07_A_BINDING_FINDINGS.platformDispatchAnchorsMissing).toBe(true);
+    expect(W5_N07_A_BINDING_FINDINGS.platformDispatchAnchorsMissing).toBe(false);
     expect(W5_N07_A_BINDING_FINDINGS.w5N06DeliveryFoundationExists).toBe(true);
     expect(W5_N07_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
   });

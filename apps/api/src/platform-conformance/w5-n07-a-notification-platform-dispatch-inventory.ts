@@ -273,6 +273,28 @@ export const W5_N07_A_NOTIFICATION_PLATFORM_DISPATCH_INVENTORY: readonly W5N07AI
     Object.freeze({
       authorizesPlatformDispatchFunctional: false as const,
       authorizesW5N07Complete: false as const,
+      artifactId: 'own-platform-dispatch-persistence',
+      artifact: 'Platform dispatch anchors — workspace-scoped durable dispatch state',
+      kind: 'ownership' as const,
+      owner: 'notification-delivery' as const,
+      durabilityClass: 'SURVIVE' as const,
+      capabilityCategory: 'infrastructure-only' as const,
+      currentStatus:
+        'Implemented — workspace_notification_platform_dispatch_anchors on notification-delivery owner',
+      honestyRequirement:
+        'Dispatch anchor persistence on notification-delivery owner only; hydrate is W5-N07-c',
+      futureW5N07Responsibility: 'W5-N07-c' as const,
+      evidencePath:
+        'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-dispatch-anchor.repository.ts',
+      existsToday: true as const,
+      persistenceResponsibility: 'notification-delivery' as const,
+      recoveryResponsibility: 'w5-n07-c' as const,
+      operationalContinuityResponsibility: 'platform-readiness' as const,
+      honestProductState: 'infrastructure-only' as const,
+    }),
+    Object.freeze({
+      authorizesPlatformDispatchFunctional: false as const,
+      authorizesW5N07Complete: false as const,
       artifactId: 'own-w5-n06-delivery-foundation-consume',
       artifact: 'W5-N06 Notification Platform Delivery foundation — consumed not reopened',
       kind: 'ownership' as const,
@@ -1295,10 +1317,34 @@ export const W5_N07_A_NOTIFICATION_PLATFORM_DISPATCH_INVENTORY: readonly W5N07AI
       capabilityCategory: 'infrastructure-only' as const,
       currentStatus:
         'Implemented — W5-N06 CLOSED; delivery anchors on notification-delivery owner; dispatch slice a consumes only',
-      honestyRequirement: 'Delivery anchor consumed; dispatch anchors deferred to W5-N07-b',
+      honestyRequirement:
+        'Delivery anchor consumed; dispatch anchors on W5-N07-b durable foundation',
       futureW5N07Responsibility: 'w5-n06-reference' as const,
       evidencePath:
         'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-delivery-anchor.repository.ts',
+      existsToday: true as const,
+      persistenceResponsibility: 'notification-delivery' as const,
+      recoveryResponsibility: 'w5-n07-c' as const,
+      operationalContinuityResponsibility: 'platform-readiness' as const,
+      honestProductState: 'infrastructure-only' as const,
+    }),
+    Object.freeze({
+      authorizesPlatformDispatchFunctional: false as const,
+      authorizesW5N07Complete: false as const,
+      artifactId: 'persist-notification-platform-dispatch-anchor',
+      artifact:
+        'WorkspaceNotificationPlatformDispatchAnchor — canonical platform dispatch anchors (W5-N07-b)',
+      kind: 'persistence-candidate' as const,
+      owner: 'notification-delivery' as const,
+      durabilityClass: 'SURVIVE' as const,
+      capabilityCategory: 'infrastructure-only' as const,
+      currentStatus:
+        'Implemented — workspace_notification_platform_dispatch_anchors; anchor-recorded only; no dispatch execution',
+      honestyRequirement:
+        'Dispatch anchor persistence ≠ platform dispatch functional; restart hydrate is W5-N07-c',
+      futureW5N07Responsibility: 'W5-N07-c' as const,
+      evidencePath:
+        'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-dispatch-anchor.repository.ts',
       existsToday: true as const,
       persistenceResponsibility: 'notification-delivery' as const,
       recoveryResponsibility: 'w5-n07-c' as const,
@@ -1795,7 +1841,7 @@ export const W5_N07_A_BINDING_FINDINGS = Object.freeze({
   w5N05IntegrationFoundationExists: true,
   w5N06DeliveryFoundationExists: true,
   unifiedPlatformDispatchLayerMissing: true,
-  platformDispatchAnchorsMissing: true,
+  platformDispatchAnchorsMissing: false,
   productionTransportsDeferred: true,
   ownershipBoundariesVerified: true,
   ownershipBoundariesChanged: false,

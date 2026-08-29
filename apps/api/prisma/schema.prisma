@@ -1924,3 +1924,20 @@ model WorkspaceNotificationPlatformDeliveryAnchor {
   @@id([workspaceId, deliveryAnchorId])
   @@map("workspace_notification_platform_delivery_anchors")
 }
+
+model WorkspaceNotificationPlatformDispatchAnchor {
+  workspaceId           String   @map("workspace_id")
+  dispatchAnchorId      String   @map("dispatch_anchor_id")
+  schemaVersion         Int      @default(1) @map("schema_version")
+  platformDispatchType  String   @map("platform_dispatch_type")
+  dispatchState         String   @map("dispatch_state")
+  channelScope          String?  @map("channel_scope")
+  integrityMetadata     String?  @map("integrity_metadata")
+  correlationId         String?  @map("correlation_id")
+  recordedAt            DateTime @map("recorded_at")
+  recordedByActorId     String?  @map("recorded_by_actor_id")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, dispatchAnchorId])
+  @@map("workspace_notification_platform_dispatch_anchors")
+}
