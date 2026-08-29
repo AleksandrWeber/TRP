@@ -960,4 +960,39 @@ See [`w5-n09-product-owner-close-record.md`](./w5-n09-product-owner-close-record
 
 ---
 
-**STOP.** W5-N05 is **CLOSED** by Product Owner. W5-N06 is **CLOSED** by Product Owner. W5-N07 is **CLOSED** by Product Owner. W5-N08 is **CLOSED** by Product Owner. W5-N09 is **CLOSED** by Product Owner (2026-08-29). Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N10 without separate Product Owner instruction.
+## W5-N10 status (Notification Platform Worker Execution — Planning OPEN)
+
+W5-N10 Notification Platform Worker Execution Foundation Planning Package is **OPEN** (2026-08-29). Awaiting Planning Review. Not approved. Not implementation.
+
+```text
+Planning only — not worker execution implementation.
+Not worker runtime execution, orchestration, retry, scheduler, or dead-letter processing.
+Not platform worker execution anchors (W5-N10-b).
+Not Notification Platform Worker Execution functional.
+Not W5-N10 COMPLETE.
+Customer-visible platform worker execution remains unchanged until later slices + Product Owner Close.
+Closed W5-N05 integration, W5-N06 delivery, W5-N07 dispatch, W5-N08 queue, and W5-N09 workers foundations consumed; per-channel W5-N01…N04 transport stubs remain honest per inventory.
+Notification Platform Worker Execution complete and Notification Platform Complete not claimed.
+Wave 5 COMPLETE not claimed.
+```
+
+See [`w5-n10-planning-summary.md`](./w5-n10-planning-summary.md).
+
+---
+
+## W5-N10 implementation slices (planning only — not opened)
+
+| Slice    | Name                                                                       | Status                                       |
+| -------- | -------------------------------------------------------------------------- | -------------------------------------------- |
+| W5-N10-a | Notification Platform Worker Execution Inventory & Honest Product Baseline | **Not opened**                               |
+| W5-N10-b | Durable Notification Platform Worker Execution Foundation                  | **Not opened**                               |
+| W5-N10-c | Notification Platform Worker Execution Restart Recovery Foundation         | **Not opened**                               |
+| W5-N10-d | Notification Platform Worker Execution Operational Continuity Foundation   | **Not opened**                               |
+| W5-N10-e | Package Close Evidence                                                     | **Not opened**                               |
+| W5-N10   | Package                                                                    | Planning **OPEN** — Awaiting Planning Review |
+
+See [`w5-n10-planning-summary.md`](./w5-n10-planning-summary.md).
+
+---
+
+**STOP.** W5-N05 is **CLOSED** by Product Owner. W5-N06 is **CLOSED** by Product Owner. W5-N07 is **CLOSED** by Product Owner. W5-N08 is **CLOSED** by Product Owner. W5-N09 is **CLOSED** by Product Owner (2026-08-29). W5-N10 Planning Package is **OPEN** — Awaiting Planning Review. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution Foundation implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not perform W5-N10 Planning Review. Do not perform W5-N10 Planning Approval. Do not open W5-N10-a without separate Product Owner instruction.
