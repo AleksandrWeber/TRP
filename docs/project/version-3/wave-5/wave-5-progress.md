@@ -4,7 +4,7 @@
 **Audience:** Product Owner
 **Date:** 2026-08-29
 **Wave:** 5 — Notification Platform
-**Status:** W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 Planning **APPROVED** — Awaiting W5-N07-a
+**Status:** W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07-a **COMPLETE** (local) — Awaiting Product Owner Review
 **Nature:** Simple Product Owner status. Not an RC. Not an ADR. Not a Master Plan revision.
 
 **Overview:** [`wave-5-overview.md`](./wave-5-overview.md)
@@ -158,15 +158,15 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07**.
 
 ---
 
-## W5-N07 planning slice status (planning only — not opened)
+## W5-N07 slice status
 
-| Slice    | Name (planning)                                                    | Status     |
-| -------- | ------------------------------------------------------------------ | ---------- |
-| W5-N07-a | Notification Platform Dispatch Inventory & Honest Product Baseline | Not opened |
-| W5-N07-b | Durable Notification Platform Dispatch Foundation                  | Not opened |
-| W5-N07-c | Notification Platform Dispatch Restart Recovery Foundation         | Not opened |
-| W5-N07-d | Notification Platform Dispatch Operational Continuity Foundation   | Not opened |
-| W5-N07-e | Package Close Evidence                                             | Not opened |
+| Slice    | Name                                                               | Status               |
+| -------- | ------------------------------------------------------------------ | -------------------- |
+| W5-N07-a | Notification Platform Dispatch Inventory & Honest Product Baseline | **COMPLETE** (local) |
+| W5-N07-b | Durable Notification Platform Dispatch Foundation                  | Not opened           |
+| W5-N07-c | Notification Platform Dispatch Restart Recovery Foundation         | Not opened           |
+| W5-N07-d | Notification Platform Dispatch Operational Continuity Foundation   | Not opened           |
+| W5-N07-e | Package Close Evidence                                             | Not opened           |
 
 ---
 
@@ -175,10 +175,10 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07**.
 | Field                                 | Value                                                                                                                                                                                                                                                                                         |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Wave**                              | **5 — Notification Platform** — **OPEN**                                                                                                                                                                                                                                                      |
-| **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 Planning **APPROVED** — Awaiting W5-N07-a                                                          |
+| **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07-a **COMPLETE** (local) — Awaiting Product Owner Review                                             |
 | **First package**                     | **W5-N01** Production Telegram Bot API (V3-N01 · CM-11) — **CLOSED**                                                                                                                                                                                                                          |
 | **Previous package**                  | **W5-N06** Notification Platform Delivery Foundation (V3-N06 · CM-18) — **CLOSED** by Product Owner (2026-08-29)                                                                                                                                                                              |
-| **Current package**                   | **W5-N07** Notification Platform Dispatch Foundation (V3-N07 · CM-19) — Planning **APPROVED** — Awaiting W5-N07-a                                                                                                                                                                             |
+| **Current package**                   | **W5-N07** Notification Platform Dispatch Foundation (V3-N07 · CM-19) — W5-N07-a **COMPLETE** (local) — Awaiting Product Owner Review                                                                                                                                                         |
 | **W5-N05-b durable foundation**       | [`w5-n05-b-implementation-report.md`](./w5-n05-b-implementation-report.md)                                                                                                                                                                                                                    |
 | **W5-N05-c restart recovery**         | [`w5-n05-c-implementation-report.md`](./w5-n05-c-implementation-report.md)                                                                                                                                                                                                                    |
 | **W5-N05-d operational continuity**   | [`w5-n05-d-implementation-report.md`](./w5-n05-d-implementation-report.md)                                                                                                                                                                                                                    |
@@ -240,7 +240,9 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07**.
 | **W5-N07 Planning Review**            | **PASS** (2026-08-29) — [`w5-n07-planning-review.md`](./w5-n07-planning-review.md)                                                                                                                                                                                                            |
 | **W5-N07 Planning Approval**          | **RECORDED** (2026-08-29) — [`w5-n07-planning-approval.md`](./w5-n07-planning-approval.md)                                                                                                                                                                                                    |
 | **W5-N07 planning documents**         | [`w5-n07-planning-summary.md`](./w5-n07-planning-summary.md) and companions                                                                                                                                                                                                                   |
-| **Implementation authorized?**        | **Yes** — W5-N07-a **authorized** only; W5-N07-b…e **not authorized**; W5-N07-a **not yet opened**                                                                                                                                                                                            |
+| **Implementation authorized?**        | **Yes** — W5-N07-a **COMPLETE** (local); W5-N07-b…e **not authorized**                                                                                                                                                                                                                        |
+| **W5-N07-a inventory**                | [`w5-n07-a-notification-platform-dispatch-inventory.md`](./w5-n07-a-notification-platform-dispatch-inventory.md)                                                                                                                                                                              |
+| **W5-N07-a implementation report**    | [`w5-n07-a-implementation-report.md`](./w5-n07-a-implementation-report.md)                                                                                                                                                                                                                    |
 
 ---
 
@@ -377,8 +379,9 @@ W5-N07 Planning Review PASS (2026-08-29)
         ↓
 W5-N07 Planning APPROVED (2026-08-29)
         ↓
-STOP — Awaiting explicit Product Owner instruction for W5-N07-a
-(W5-N07-a authorized — not yet opened)
+W5-N07-a COMPLETE (local) — Notification Platform Dispatch Inventory & Honest Product Baseline
+        ↓
+STOP — Awaiting Product Owner Review before Repository Synchronization
 (W5-N07-b…e not authorized)
 (No platform dispatch execution)
 (No dispatcher / queue / retry / scheduler)
@@ -456,7 +459,8 @@ STOP — Awaiting explicit Product Owner instruction for W5-N07-a
 | W5-N07 Planning Review PASS           | **Recorded** (2026-08-29) |
 | W5-N07 Planning APPROVED              | **Recorded** (2026-08-29) |
 | W5-N07-a authorized                   | **Recorded** (2026-08-29) |
-| W5-N07-a opened                       | **Not claimed**           |
+| W5-N07-a opened                       | **Recorded** (local)      |
+| W5-N07-a complete                     | **Recorded** (local)      |
 | Dispatcher implemented                | **Not claimed**           |
 | Queue implemented                     | **Not claimed**           |
 | Retry implemented                     | **Not claimed**           |
@@ -477,4 +481,4 @@ STOP — Awaiting explicit Product Owner instruction for W5-N07-a
 
 ---
 
-**STOP.** W5-N07 Planning is **APPROVED**. Implementation is **AUTHORIZED** for **W5-N07-a only**. Await explicit Product Owner instruction before opening W5-N07-a. Do not open W5-N07-b through W5-N07-e. Do not begin implementation automatically. Do not declare Notification Platform Dispatch implemented. Do not declare Dispatcher implemented. Do not declare Queue implemented. Do not declare Retry implemented. Do not declare Scheduler implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N07-a is **COMPLETE** (local). Awaiting Product Owner Review before Repository Synchronization. Do not commit or push without explicit Product Owner instruction. Do not open W5-N07-b through W5-N07-e. Do not declare Notification Platform Dispatch implemented. Do not declare Dispatcher implemented. Do not declare Queue implemented. Do not declare Retry implemented. Do not declare Scheduler implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.
