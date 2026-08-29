@@ -335,7 +335,9 @@ Conformance specs: `w5-n07-{a,b,c,d,e}-*.spec.ts` — all pass in aggregate test
 | -------------------------------- | ------- |
 | **Engineering confidence score** | **97%** |
 
-**Engineering confidence:** **97%**
+**Post-Close note (2026-08-29):** Product Owner Final Close executed. W5-N07 **CLOSED** — see [`w5-n07-product-owner-close-record.md`](./w5-n07-product-owner-close-record.md).
+
+**PASS**
 
 **Engineering readiness verdict:** **READY FOR PRODUCT OWNER FINAL CLOSE**
 
@@ -367,9 +369,9 @@ Engineering does **not** open W5-N08 or the next Wave package.
 
 **STOP.**
 
-Await explicit Product Owner instruction before W5-N07 Product Owner Final Close.
+W5-N07 **CLOSED** by Product Owner (2026-08-29).
 
-Do **not** create the Product Owner Close Record from this verification act.
+Do **not** create the Product Owner Close Record from this verification act — see [`w5-n07-product-owner-close-record.md`](./w5-n07-product-owner-close-record.md).
 
 Do **not** declare Notification Platform Dispatch implemented.
 

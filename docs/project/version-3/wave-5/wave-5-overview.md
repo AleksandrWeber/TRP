@@ -457,10 +457,25 @@ W5-N07 Final Package Integration Verification **PASS** (2026-08-29). All slices 
 Slice chain 51ed6e8 → 4cb4a77 → 07cbaca → d8bffa6 → cd86057 → aa41a3d verified on origin/main.
 W5-N07-e COMPLETE (`cd86057`) — Package Close Evidence.
 Final Integration Verification PASS (`aa41a3d`).
-Product Owner Close Record not created — awaiting Product Owner Final Close.
+Product Owner Close Record created — W5-N07 CLOSED (2026-08-29).
 ```
 
 See [`w5-n07-final-integration-verification.md`](./w5-n07-final-integration-verification.md).
+
+---
+
+## W5-N07 status (Notification Platform Dispatch — CLOSED)
+
+W5-N07 Notification Platform Dispatch Foundation is **CLOSED** by Product Owner (2026-08-29). Delivered: inventory (a), durable persistence (b), restart recovery (c), operational continuity (d), Close Evidence (e), Final Integration Verification **PASS** (`aa41a3d`).
+
+```text
+Foundation only — not platform dispatch execution, not dispatcher, not queue, not retry, not scheduler.
+Closed W5-N05 integration and W5-N06 delivery foundations consumed; per-channel W5-N01…N04 transport stubs remain honest per inventory.
+Notification Platform Dispatch complete and Notification Platform Complete not claimed.
+Wave 5 COMPLETE not claimed.
+```
+
+See [`w5-n07-product-owner-close-record.md`](./w5-n07-product-owner-close-record.md).
 
 ---
 
@@ -677,6 +692,7 @@ W5-N07-c COMPLETE (`07cbaca`) — Notification Platform Dispatch Restart Recover
 W5-N07-d COMPLETE (`d8bffa6`) — Notification Platform Dispatch Operational Continuity Foundation.
 W5-N07-e COMPLETE (`cd86057`) — Package Close Evidence.
 W5-N07 Final Integration Verification PASS (`aa41a3d`).
+W5-N07 CLOSED by Product Owner (2026-08-29).
 ```
 
 ---
@@ -695,4 +711,4 @@ See [`w5-n05-product-owner-close-record.md`](./w5-n05-product-owner-close-record
 
 ---
 
-**STOP.** W5-N05 is **CLOSED** by Product Owner. W5-N06 is **CLOSED** by Product Owner. W5-N07-a is **COMPLETE** (`51ed6e8`). W5-N07-b is **COMPLETE** (`4cb4a77`). W5-N07-c is **COMPLETE** (`07cbaca`). W5-N07-d is **COMPLETE** (`d8bffa6`). W5-N07-e is **COMPLETE** (`cd86057`). W5-N07 Final Integration Verification **PASS**. Awaiting Product Owner Final Close. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Dispatcher implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N08.
+**STOP.** W5-N05 is **CLOSED** by Product Owner. W5-N06 is **CLOSED** by Product Owner. W5-N07 is **CLOSED** by Product Owner. Awaiting explicit Product Owner instruction before W5-N08 Planning Package. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Dispatcher implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N08 without separate Product Owner instruction.

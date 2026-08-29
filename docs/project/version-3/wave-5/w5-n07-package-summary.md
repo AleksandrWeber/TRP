@@ -5,7 +5,7 @@
 **Master Plan / Roadmap:** V3-N07 · CM-19  
 **Evidence slice:** W5-N07-e  
 **Date:** 2026-08-29  
-**Status:** Awaiting Final Package Integration Verification. Product Owner Close Record **not** created.
+**Status:** **CLOSED** by Product Owner (2026-08-29). Final Integration Verification **PASS** (`aa41a3d`).
 
 ---
 
@@ -21,10 +21,10 @@
    Persisted Notification Platform Dispatch anchors can survive normal API restart and project honest operational readiness on Platform Readiness — without fabricating Dispatching labels or inventing a second notification subsystem.
 
 4. **What remains for later packages?**  
-   Platform dispatch execution, dispatcher, queue, retry, and scheduler outcomes; Final Package Integration Verification; Product Owner Package Close; Wave 5 completion review.
+   Platform dispatch execution, dispatcher, queue, retry, and scheduler outcomes; Wave 5 completion review.
 
 5. **Which package becomes available next?**  
-   None opened by this Close Evidence act — further Wave 5 packages require separate Product Owner authorization.
+   None opened by this Close act — **W5-N08** requires separate Product Owner authorization.
 
 6. **Was the Master Plan followed?**  
    **Yes.** W5-N07 / V3-N07 only; Master Plan unchanged; Wave 1–4 and closed W5-N01…N06 consumed not redesigned; Wave 5 package order preserved.
@@ -45,8 +45,8 @@
 | W5-N07-b | Durable Notification Platform Dispatch Foundation                | APPROVED / COMPLETE |
 | W5-N07-c | Notification Platform Dispatch Restart Recovery Foundation       | APPROVED / COMPLETE |
 | W5-N07-d | Notification Platform Dispatch Operational Continuity Foundation | APPROVED / COMPLETE |
-| W5-N07-e | Close Evidence                                                   | COMPLETE (local)    |
-| W5-N07   | Package                                                          | **OPEN**            |
+| W5-N07-e | Close Evidence                                                   | COMPLETE            |
+| W5-N07   | Package                                                          | **CLOSED**          |
 
 ---
 
@@ -59,4 +59,4 @@
 
 ---
 
-**STOP.** W5-N07 is **not CLOSED**. Do **not** declare Notification Platform Dispatch implemented, Notification Platform Complete, or Wave 5 COMPLETE from this summary alone.
+**STOP.** W5-N07 is **CLOSED** by Product Owner. Do **not** declare Notification Platform Dispatch implemented, Notification Platform Complete, or Wave 5 COMPLETE from this summary alone.
