@@ -452,13 +452,28 @@ See [`w5-n06-e-implementation-report.md`](./w5-n06-e-implementation-report.md).
 W5-N06 Final Package Integration Verification **PASS** (2026-08-29). All slices a–e form one internally consistent package. Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**.
 
 ```text
-Slice chain 6d6c504 → ed7149e → 19a2ac8 → 09b8c0f → 68b277b verified on origin/main.
+Slice chain 6d6c504 → ed7149e → 19a2ac8 → 09b8c0f → 68b277b → 52151cb verified on origin/main.
 W5-N06-e COMPLETE (`68b277b`) — Package Close Evidence.
-Final Integration Verification PASS (local) — Awaiting Product Owner Final Close.
-W5-N06 — not CLOSED.
+Final Integration Verification PASS (`52151cb`).
+Product Owner Close Record created — W5-N06 CLOSED (2026-08-29).
 ```
 
 See [`w5-n06-final-integration-verification.md`](./w5-n06-final-integration-verification.md).
+
+---
+
+## W5-N06 status (Notification Platform Delivery — CLOSED)
+
+W5-N06 Notification Platform Delivery Foundation is **CLOSED** by Product Owner (2026-08-29). Delivered: inventory (a), durable persistence (b), restart recovery (c), operational continuity (d), Close Evidence (e), Final Integration Verification **PASS** (`52151cb`).
+
+```text
+Foundation only — not platform delivery execution, not dispatcher, not queue, not retry, not scheduler.
+Closed W5-N05 integration foundation consumed; per-channel W5-N01…N04 transport stubs remain honest per inventory.
+Notification Platform Delivery complete and Notification Platform Complete not claimed.
+Wave 5 COMPLETE not claimed.
+```
+
+See [`w5-n06-product-owner-close-record.md`](./w5-n06-product-owner-close-record.md).
 
 ---
 
@@ -556,8 +571,8 @@ W5-N06-b COMPLETE (`ed7149e`) — Durable Notification Platform Delivery Foundat
 W5-N06-c COMPLETE (`19a2ac8`) — Notification Platform Delivery Restart Recovery Foundation.
 W5-N06-d COMPLETE (`09b8c0f`) — Notification Platform Delivery Operational Continuity Foundation.
 W5-N06-e COMPLETE (`68b277b`) — Package Close Evidence.
-W5-N06 Final Integration Verification PASS (local) — Awaiting Product Owner Final Close.
-W5-N06 — not CLOSED.
+W5-N06 Final Integration Verification PASS (`52151cb`).
+W5-N06 CLOSED by Product Owner (2026-08-29).
 ```
 
 ---
@@ -576,4 +591,4 @@ See [`w5-n05-product-owner-close-record.md`](./w5-n05-product-owner-close-record
 
 ---
 
-**STOP.** W5-N05 is **CLOSED** by Product Owner. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Complete. Do not declare Push/Email/Slack/Discord/Teams implemented. Do not declare Wave 5 COMPLETE. Do not open W5-N06 without separate Product Owner instruction.
+**STOP.** W5-N05 is **CLOSED** by Product Owner. W5-N06 is **CLOSED** by Product Owner. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Delivery complete. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N07 without separate Product Owner instruction.

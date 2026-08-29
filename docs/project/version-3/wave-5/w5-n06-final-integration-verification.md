@@ -245,18 +245,18 @@ Binding findings from W5-N06-a preserved: `platformDeliveryFunctionalAuthorized:
 
 Verify all package documents synchronized:
 
-| Document                                               | Status alignment                                                  |
-| ------------------------------------------------------ | ----------------------------------------------------------------- |
-| `wave-5-overview.md`                                   | a…e COMPLETE; Final Integration Verification PASS; **NOT CLOSED** |
-| `wave-5-validation-plan.md`                            | a…e COMPLETE / PASS; Final Integration Verification recorded      |
-| `wave-5-progress.md`                                   | Final Integration Verification PASS; Awaiting PO Final Close      |
-| `w5-n06-package-summary.md`                            | Close Evidence; awaiting PO Final Close; not CLOSED               |
-| `w5-n06-package-close-report.md`                       | Evidence Met; PO Close Pending                                    |
-| `w5-n06-operational-walkthrough.md`                    | Journey PASS; STOP without Close declaration                      |
-| Implementation / review reports a–e                    | Present; consistent non-claims                                    |
-| `w5-n06-planning-approval.md`                          | APPROVED; frozen planning baseline                                |
-| `w5-n06-a-notification-platform-delivery-inventory.md` | Inventory baseline aligned                                        |
-| `w5-n06-product-owner-close-record.md`                 | **Not created** (deferred to PO act)                              |
+| Document                                               | Status alignment                                              |
+| ------------------------------------------------------ | ------------------------------------------------------------- |
+| `wave-5-overview.md`                                   | a…e COMPLETE; Final Integration Verification PASS; **CLOSED** |
+| `wave-5-validation-plan.md`                            | a…e COMPLETE / PASS; Final Integration Verification recorded  |
+| `wave-5-progress.md`                                   | Final Integration Verification PASS; W5-N06 **CLOSED**        |
+| `w5-n06-package-summary.md`                            | **CLOSED** by Product Owner                                   |
+| `w5-n06-package-close-report.md`                       | Evidence Met; PO Close **Met**                                |
+| `w5-n06-operational-walkthrough.md`                    | Journey PASS; W5-N06 **CLOSED**                               |
+| Implementation / review reports a–e                    | Present; consistent non-claims                                |
+| `w5-n06-planning-approval.md`                          | APPROVED; frozen planning baseline                            |
+| `w5-n06-a-notification-platform-delivery-inventory.md` | Inventory baseline aligned                                    |
+| `w5-n06-product-owner-close-record.md`                 | **Created** — PO Close executed                               |
 
 **PASS**
 
@@ -323,6 +323,8 @@ Close Evidence diagnostics: `buildCloseEvidenceDiagnostics()` — implementation
 | -------------------------------- | ------- |
 | **Engineering confidence score** | **97%** |
 
+**Post-Close note (2026-08-29):** Product Owner Final Close executed. W5-N06 **CLOSED** — see [`w5-n06-product-owner-close-record.md`](./w5-n06-product-owner-close-record.md).
+
 **PASS**
 
 ---
@@ -365,16 +367,14 @@ Engineering does **not** open W5-N07 or the next Wave package.
 
 **STOP.**
 
-W5-N06 is **not CLOSED**.
-
-Awaiting Product Owner Final Close.
+W5-N06 **CLOSED** by Product Owner (2026-08-29).
 
 Do **not** declare Notification Platform Delivery implemented.
+
+Do **not** declare Notification Platform Delivery complete.
 
 Do **not** declare Notification Platform Complete.
 
 Do **not** declare Wave 5 COMPLETE.
-
-Do **not** create Product Owner Close Record from this verification alone.
 
 Do **not** open W5-N07 without separate Product Owner instruction.

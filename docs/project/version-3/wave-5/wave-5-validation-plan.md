@@ -579,11 +579,12 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 - W5-N05-d validation PASS — **recorded**
 - W5-N05-e validation PASS — **recorded** (`d89a076`)
 - W5-N05 Final Integration Verification — **PASS** (`ae1104d`)
-- W5-N05 CLOSED — **recorded** (2026-08-29)
+- W5-N06 Final Integration Verification — **PASS** (`52151cb`)
+- W5-N06 CLOSED — **recorded** (`3183a14`)
 
 ---
 
-## W5-N06 Final Integration Verification (2026-08-29 — local)
+## W5-N06 Final Integration Verification (2026-08-29 — recorded `52151cb`)
 
 | Layer                         | Result   | Evidence                                        |
 | ----------------------------- | -------- | ----------------------------------------------- |
@@ -600,7 +601,25 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 **Engineering confidence:** **97%**
 **Engineering verdict:** **READY FOR PRODUCT OWNER FINAL CLOSE**
 
-**Explicit non-claim:** Final Integration Verification does **not** declare W5-N06 CLOSED, Notification Platform Delivery implemented, Notification Platform Delivery complete, Notification Platform complete, dispatcher implemented, queue implemented, retry implemented, scheduler implemented, Production Ready, Live Notifications, or Wave 5 COMPLETE. **Local only** — not committed.
+**Explicit non-claim:** Final Integration Verification does **not** declare W5-N06 CLOSED, Notification Platform Delivery implemented, Notification Platform Delivery complete, Notification Platform complete, dispatcher implemented, queue implemented, retry implemented, scheduler implemented, Production Ready, Live Notifications, or Wave 5 COMPLETE. **Recorded** (`52151cb`).
+
+---
+
+## W5-N06 Product Owner Final Close (2026-08-29)
+
+| Layer                           | Result   | Evidence                                                                          |
+| ------------------------------- | -------- | --------------------------------------------------------------------------------- |
+| Product Owner Close Record      | **PASS** | `w5-n06-product-owner-close-record.md`                                            |
+| Package administratively closed | **PASS** | W5-N06 **CLOSED** by Product Owner                                                |
+| Documentation synchronized      | **PASS** | Package summary, close report, walkthrough, final integration, progress, overview |
+| Conformance assertions          | **PASS** | `w5-n06-e-package-close-evidence.spec.ts` synchronized                            |
+| W5-N07 opened                   | **No**   | Awaiting separate Product Owner instruction                                       |
+| Ownership boundaries            | **PASS** | No change at Close act                                                            |
+| Architecture deviations         | **PASS** | None at Close act                                                                 |
+| Regression suite                | **PASS** | lint / typecheck / test / build                                                   |
+| git diff --check                | **PASS** | No whitespace errors                                                              |
+
+**Explicit non-claim:** Product Owner Close does **not** declare Notification Platform Delivery implemented, Notification Platform Delivery complete, Notification Platform implemented, Notification Platform complete, dispatcher implemented, queue implemented, retry implemented, scheduler implemented, Production Ready, Live Notifications, or Wave 5 COMPLETE. **Recorded** (`3183a14`).
 
 ---
 
@@ -783,14 +802,14 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ## W5-N05 Product Owner Close (2026-08-29)
 
-| Layer                           | Result   | Evidence                                                                            |
-| ------------------------------- | -------- | ----------------------------------------------------------------------------------- |
-| Product Owner Close Record      | **PASS** | `w5-n05-product-owner-close-record.md`                                              |
-| Package administratively closed | **PASS** | W5-N05 **CLOSED** by Product Owner                                                  |
-| W5-N06 opened                   | **Yes**  | Planning APPROVED; slices a–e COMPLETE; Final Integration Verification PASS (local) |
+| Layer                           | Result   | Evidence                                                                                |
+| ------------------------------- | -------- | --------------------------------------------------------------------------------------- |
+| Product Owner Close Record      | **PASS** | `w5-n05-product-owner-close-record.md`                                                  |
+| Package administratively closed | **PASS** | W5-N05 **CLOSED** by Product Owner                                                      |
+| W5-N06 opened                   | **Yes**  | Planning APPROVED; slices a–e COMPLETE; Final Integration Verification PASS (`52151cb`) |
 
 **Explicit non-claim:** Product Owner Close does **not** declare Notification Platform Integration implemented, Notification Platform Complete, Push/Email/Slack/Discord/Teams implemented, Production Ready, Live Notifications, or Wave 5 COMPLETE.
 
 ---
 
-**STOP.** W5-N05 is **CLOSED** by Product Owner. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N06 without separate Product Owner instruction.
+**STOP.** W5-N06 is **CLOSED** by Product Owner. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Delivery complete. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N07 without separate Product Owner instruction.
