@@ -4,7 +4,7 @@
 **Audience:** Product Owner
 **Date:** 2026-08-29
 **Wave:** 5 — Notification Platform
-**Status:** W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · Awaiting explicit Product Owner instruction for W5-N06 Planning Package
+**Status:** W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 Planning Package **OPEN** · Awaiting Planning Review
 **Nature:** Simple Product Owner status. Not an RC. Not an ADR. Not a Master Plan revision.
 
 **Overview:** [`wave-5-overview.md`](./wave-5-overview.md)
@@ -15,6 +15,7 @@
 **W5-N05 planning:** [`w5-n05-planning-summary.md`](./w5-n05-planning-summary.md)
 **W5-N05 Planning Review:** [`w5-n05-planning-review.md`](./w5-n05-planning-review.md)
 **W5-N05 Planning Approval:** [`w5-n05-planning-approval.md`](./w5-n05-planning-approval.md)
+**W5-N06 planning:** [`w5-n06-planning-summary.md`](./w5-n06-planning-summary.md)
 **W5-N04 Planning Review:** [`w5-n04-planning-review.md`](./w5-n04-planning-review.md)
 **W5-N04 Planning Approval:** [`w5-n04-planning-approval.md`](./w5-n04-planning-approval.md)
 **W5-N03 Planning Review:** [`w5-n03-planning-review.md`](./w5-n03-planning-review.md)
@@ -60,15 +61,16 @@
 
 ## Wave 5 packages (Master Plan / Execution Roadmap)
 
-| Package    | Roadmap ID | Name                              | Status                                   |
-| ---------- | ---------- | --------------------------------- | ---------------------------------------- |
-| **W5-N01** | **V3-N01** | Production Telegram Bot API       | **CLOSED** by Product Owner (2026-08-28) |
-| **W5-N02** | **V3-N02** | Email (SMTP)                      | **CLOSED** by Product Owner (2026-08-28) |
-| **W5-N03** | **V3-N03** | Slack / Discord / Teams           | **CLOSED** by Product Owner (2026-08-29) |
-| **W5-N04** | **V3-N04** | Push                              | **CLOSED** by Product Owner (2026-08-29) |
-| **W5-N05** | **V3-N05** | Notification Platform Integration | **CLOSED** by Product Owner (2026-08-29) |
+| Package    | Roadmap ID | Name                                      | Status                                   |
+| ---------- | ---------- | ----------------------------------------- | ---------------------------------------- |
+| **W5-N01** | **V3-N01** | Production Telegram Bot API               | **CLOSED** by Product Owner (2026-08-28) |
+| **W5-N02** | **V3-N02** | Email (SMTP)                              | **CLOSED** by Product Owner (2026-08-28) |
+| **W5-N03** | **V3-N03** | Slack / Discord / Teams                   | **CLOSED** by Product Owner (2026-08-29) |
+| **W5-N04** | **V3-N04** | Push                                      | **CLOSED** by Product Owner (2026-08-29) |
+| **W5-N05** | **V3-N05** | Notification Platform Integration         | **CLOSED** by Product Owner (2026-08-29) |
+| **W5-N06** | **V3-N06** | Notification Platform Delivery Foundation | Planning **OPEN** — Awaiting Review      |
 
-Order is binding: **N01 → N02 → N03 → N04 → N05**.
+Order is binding: **N01 → N02 → N03 → N04 → N05 → N06**.
 
 ---
 
@@ -132,15 +134,27 @@ Order is binding: **N01 → N02 → N03 → N04 → N05**.
 
 ---
 
+## W5-N06 slice status (planning only — not opened)
+
+| Slice    | Name                                                               | Status     |
+| -------- | ------------------------------------------------------------------ | ---------- |
+| W5-N06-a | Notification Platform Delivery Inventory & Honest Product Baseline | Not opened |
+| W5-N06-b | Durable Notification Platform Delivery Foundation                  | Not opened |
+| W5-N06-c | Notification Platform Delivery Restart Recovery Foundation         | Not opened |
+| W5-N06-d | Notification Platform Delivery Operational Continuity Foundation   | Not opened |
+| W5-N06-e | Package Close Evidence                                             | Not opened |
+
+---
+
 ## Wave status
 
 | Field                                 | Value                                                                                                                                                                                                                                                                                         |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Wave**                              | **5 — Notification Platform** — **OPEN**                                                                                                                                                                                                                                                      |
-| **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · Awaiting explicit Product Owner instruction for W5-N06 Planning Package                                                                                     |
+| **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 Planning Package **OPEN** · Awaiting Planning Review                                                                                                 |
 | **First package**                     | **W5-N01** Production Telegram Bot API (V3-N01 · CM-11) — **CLOSED**                                                                                                                                                                                                                          |
-| **Previous package**                  | **W5-N04** Push (V3-N04 · CM-16) — **CLOSED** by Product Owner (2026-08-29)                                                                                                                                                                                                                   |
-| **Current package**                   | **W5-N05** Notification Platform Integration (V3-N05 · CM-17) — **CLOSED** by Product Owner (2026-08-29)                                                                                                                                                                                      |
+| **Previous package**                  | **W5-N05** Notification Platform Integration (V3-N05 · CM-17) — **CLOSED** by Product Owner (2026-08-29)                                                                                                                                                                                      |
+| **Current package**                   | **W5-N06** Notification Platform Delivery Foundation (V3-N06 · CM-18) — Planning **OPEN** · Awaiting Planning Review                                                                                                                                                                          |
 | **W5-N05-b durable foundation**       | [`w5-n05-b-implementation-report.md`](./w5-n05-b-implementation-report.md)                                                                                                                                                                                                                    |
 | **W5-N05-c restart recovery**         | [`w5-n05-c-implementation-report.md`](./w5-n05-c-implementation-report.md)                                                                                                                                                                                                                    |
 | **W5-N05-d operational continuity**   | [`w5-n05-d-implementation-report.md`](./w5-n05-d-implementation-report.md)                                                                                                                                                                                                                    |
@@ -186,6 +200,9 @@ Order is binding: **N01 → N02 → N03 → N04 → N05**.
 | **W5-N05 Planning Approval**          | **RECORDED** (2026-08-29) — [`w5-n05-planning-approval.md`](./w5-n05-planning-approval.md)                                                                                                                                                                                                    |
 | **Implementation authorized?**        | **Yes** — W5-N05-a **COMPLETE** (`d6514ab`); W5-N05-b **COMPLETE** (`cbbf1d7`); W5-N05-c **COMPLETE** (`9b85628`); W5-N05-d **COMPLETE** (`2cdb0b7`); W5-N05-e **COMPLETE** (`d89a076`); Final Integration Verification **PASS** (`ae1104d`); W5-N05 **CLOSED** by Product Owner (2026-08-29) |
 | **W5-N05 planning documents**         | [`w5-n05-planning-summary.md`](./w5-n05-planning-summary.md) and companions                                                                                                                                                                                                                   |
+| **W5-N06 Planning Package**           | **OPEN** (2026-08-29) — [`w5-n06-planning-summary.md`](./w5-n06-planning-summary.md)                                                                                                                                                                                                          |
+| **W5-N06 planning documents**         | [`w5-n06-planning-summary.md`](./w5-n06-planning-summary.md) and companions                                                                                                                                                                                                                   |
+| **Implementation authorized?**        | **No** — W5-N06 Planning **OPEN**; slices not opened; Awaiting Planning Review                                                                                                                                                                                                                |
 
 ---
 
@@ -296,9 +313,13 @@ W5-N05 Final Integration Verification PASS (ae1104d)
         ↓
 W5-N05 CLOSED by Product Owner (2026-08-29)
         ↓
-STOP — Awaiting explicit Product Owner instruction for W5-N06 Planning Package
-(No W5-N06 opened)
-(No platform integration implementation)
+W5-N06 Planning Package OPEN (2026-08-29)
+        ↓
+STOP — Awaiting Planning Review
+(No W5-N06 Planning Review)
+(No W5-N06 Planning Approval)
+(No W5-N06-a opened)
+(No platform delivery foundation implementation)
 (No production transport I/O)
 (No Notification Platform Complete)
 (No Wave 5 COMPLETE)
@@ -353,6 +374,10 @@ STOP — Awaiting explicit Product Owner instruction for W5-N06 Planning Package
 | W5-N05-e complete                     | **Recorded** (`d89a076`)  |
 | W5-N05 Final Integration Verification | **PASS** (`ae1104d`)      |
 | W5-N05 CLOSED                         | **Recorded** (2026-08-29) |
+| W5-N06 Planning OPEN                  | **Recorded** (2026-08-29) |
+| W5-N06 Planning Review PASS           | **Not claimed**           |
+| W5-N06 Planning APPROVED              | **Not claimed**           |
+| W5-N06-a opened                       | **Not claimed**           |
 | Push implemented                      | **Not claimed**           |
 | Push notifications operational        | **Not claimed**           |
 | Slack implemented                     | **Not claimed**           |
@@ -369,4 +394,4 @@ STOP — Awaiting explicit Product Owner instruction for W5-N06 Planning Package
 
 ---
 
-**STOP.** W5-N05 is **CLOSED** by Product Owner. Await explicit Product Owner instruction before opening W5-N06 Planning Package. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N06 without separate Product Owner instruction.
+**STOP.** W5-N06 Planning Package is **OPEN**. Await explicit Product Owner instruction before W5-N06 Planning Review. Do not perform Planning Review. Do not perform Planning Approval. Do not create W5-N06-a. Do not declare Notification Platform Delivery Foundation implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.
