@@ -9,6 +9,7 @@ import {
   NOTIFICATION_PLATFORM_DELIVERY_ANCHOR_REPOSITORY,
   type NotificationPlatformDeliveryAnchorRepository,
 } from './domain/notification-platform-delivery-anchor.repository';
+import { NotificationPlatformDeliveryRecoveryStore } from './notification-platform-delivery-recovery-store';
 
 export type PersistNotificationPlatformDeliveryAnchorCommand = Readonly<{
   workspaceId: string;
@@ -22,20 +23,26 @@ export type PersistNotificationPlatformDeliveryAnchorCommand = Readonly<{
 }>;
 
 /**
- * W5-N06-b — durable Notification Platform Delivery anchor persistence on Notification Delivery owner.
- * Storage only — no delivery execution, dispatcher, queue workers, retry, scheduler, or recovery hydrate.
+ * W5-N06-b/c — durable Notification Platform Delivery anchor persistence on Notification Delivery owner.
+ * W5-N06-c — write-through to recovery store after hydrate.
+ * Storage only — no delivery execution, dispatcher, queue workers, retry, scheduler, or operational continuity.
  */
 @Injectable()
 export class NotificationPlatformDeliveryPersistenceService {
   constructor(
     @Inject(NOTIFICATION_PLATFORM_DELIVERY_ANCHOR_REPOSITORY)
     private readonly repository: NotificationPlatformDeliveryAnchorRepository,
+    @Inject(NotificationPlatformDeliveryRecoveryStore)
+    private readonly recoveryStore: NotificationPlatformDeliveryRecoveryStore,
   ) {}
 
   async loadAnchor(
     workspaceId: string,
     deliveryAnchorId: string,
   ): Promise<DurableNotificationPlatformDeliveryAnchor | null> {
+    if (this.recoveryStore.hasHydrated()) {
+      return this.recoveryStore.get(workspaceId, deliveryAnchorId);
+    }
     return this.repository.loadNotificationPlatformDeliveryAnchor(workspaceId, deliveryAnchorId);
   }
 
@@ -48,6 +55,7 @@ export class NotificationPlatformDeliveryPersistenceService {
       return outcome;
     }
     await this.repository.saveNotificationPlatformDeliveryAnchor(outcome.anchor);
+    this.recoveryStore.set(outcome.anchor);
     return outcome;
   }
 }

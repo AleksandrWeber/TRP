@@ -583,7 +583,24 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N06-b validation (2026-08-29 — local)
+## W5-N06-c validation (2026-08-29 — local)
+
+| Layer               | Result   | Evidence                                                      |
+| ------------------- | -------- | ------------------------------------------------------------- |
+| Restart recovery    | **PASS** | `w5-n06-c-notification-platform-delivery-restart-recovery.ts` |
+| Recovery store      | **PASS** | `notification-platform-delivery-recovery-store.ts`            |
+| Hydrate service     | **PASS** | `notification-platform-delivery-restart-recovery.service.ts`  |
+| Persistence hydrate | **PASS** | `notification-platform-delivery-persistence.service.ts`       |
+| Slice reports       | **PASS** | w5-n06-c-* reports under wave-5                               |
+| Architecture check  | **PASS** | No ownership drift; no delivery execution/dispatcher          |
+| Regression suite    | **PASS** | lint / typecheck / test / build                               |
+| git diff --check    | **PASS** | No whitespace errors                                          |
+
+**Explicit non-claim:** W5-N06-c does **not** authorize Notification Platform Delivery implemented, operational continuity, dispatcher, queue orchestration, retry, scheduler, W5-N06 COMPLETE, or Wave 5 COMPLETE. **Local only** — not committed.
+
+---
+
+## W5-N06-b validation (2026-08-29 — recorded `ed7149e`)
 
 | Layer               | Result   | Evidence                                                |
 | ------------------- | -------- | ------------------------------------------------------- |
@@ -596,7 +613,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite    | **PASS** | lint / typecheck / test / build                         |
 | git diff --check    | **PASS** | No whitespace errors                                    |
 
-**Explicit non-claim:** W5-N06-b does **not** authorize Notification Platform Delivery implemented, dispatcher implemented, queue orchestration implemented, restart recovery, Notification Platform Complete, W5-N06 COMPLETE, or Wave 5 COMPLETE. **Local only** — not committed.
+**Explicit non-claim:** W5-N06-b does **not** authorize Notification Platform Delivery implemented, dispatcher implemented, queue orchestration implemented, restart recovery, Notification Platform Complete, W5-N06 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`ed7149e`).
 
 ---
 

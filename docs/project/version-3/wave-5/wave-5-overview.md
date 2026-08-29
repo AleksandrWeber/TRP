@@ -401,6 +401,22 @@ See [`w5-n06-b-implementation-report.md`](./w5-n06-b-implementation-report.md).
 
 ---
 
+## W5-N06-c status (Notification Platform Delivery restart recovery foundation)
+
+W5-N06-c adds deterministic restart recovery hydrate for W5-N06-b canonical Notification Platform Delivery anchors on the existing **Notification Delivery** owner. **No customer-visible Notification Platform Delivery behaviour** was added.
+
+```text
+Canonical platform delivery anchors restored after normal process restart.
+Recovery deterministic, idempotent, fail-honest on corruption.
+Missing rows → empty cache (no fabrication).
+No operational continuity — W5-N06-d.
+Platform delivery execution / dispatcher / scheduler / retry — NOT claimed.
+```
+
+See [`w5-n06-c-implementation-report.md`](./w5-n06-c-implementation-report.md).
+
+---
+
 ## W5-N05-a status (Notification Platform Integration inventory & honesty baseline)
 
 W5-N05-a enumerates every Notification Platform Integration artifact across W5-N01…N04 per-channel foundations, PC-06 routing, PC-07 notification product, per-channel operational continuity views, and missing unified platform integration layer. **No customer-visible Notification Platform Integration behaviour** was added.
@@ -491,7 +507,8 @@ Slice chain d6514ab → cbbf1d7 → 9b85628 → 2cdb0b7 → d89a076 → ae1104d 
 Product Owner Close Record created — W5-N05 CLOSED.
 W5-N06 Planning APPROVED (2026-08-29).
 W5-N06-a COMPLETE (`6d6c504`) — Notification Platform Delivery Inventory & Honest Product Baseline.
-W5-N06-b COMPLETE (local) — Durable Notification Platform Delivery Foundation.
+W5-N06-b COMPLETE (`ed7149e`) — Durable Notification Platform Delivery Foundation.
+W5-N06-c COMPLETE (local) — Notification Platform Delivery Restart Recovery Foundation.
 Awaiting Product Owner Review before Repository Synchronization.
 W5-N06 — not CLOSED.
 ```
