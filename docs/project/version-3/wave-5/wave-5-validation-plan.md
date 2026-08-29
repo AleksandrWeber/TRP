@@ -504,7 +504,24 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite       | **PASS** | lint / typecheck / test / build                        |
 | git diff --check       | **PASS** | No whitespace errors                                   |
 
-**Explicit non-claim:** W5-N04-d does **not** authorize Push implemented, Web Push implemented, FCM implemented, browser notifications operational, device token registry implemented, W5-N04 COMPLETE, or Wave 5 COMPLETE. Changes **local only** — not committed.
+**Explicit non-claim:** W5-N04-d does **not** authorize Push implemented, Web Push implemented, FCM implemented, browser notifications operational, device token registry implemented, W5-N04 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`a06a4c5`).
+
+---
+
+## W5-N04-e validation (2026-08-29 — local)
+
+| Layer                     | Result   | Evidence                                                        |
+| ------------------------- | -------- | --------------------------------------------------------------- |
+| Package Close Evidence    | **PASS** | `w5-n04-e-package-close-evidence.ts`                            |
+| Operational chain a→d     | **PASS** | `verifyOperationalChain()`                                      |
+| Governance / architecture | **PASS** | `verifyGovernanceIntegrity()` / `verifyArchitectureIntegrity()` |
+| Honest Product            | **PASS** | `verifyHonestProduct()`                                         |
+| Package documents         | **PASS** | `w5-n04-package-*` + `w5-n04-operational-walkthrough.md`        |
+| Slice reports             | **PASS** | `w5-n04-e-*` + `w5-n04-{a,b,c,d}-*`                             |
+| Regression suite          | **PASS** | lint / typecheck / test / build                                 |
+| git diff --check          | **PASS** | No whitespace errors                                            |
+
+**Explicit non-claim:** W5-N04-e does **not** authorize W5-N04 CLOSED, Push notifications operational, Notification Platform Complete, Final Package Integration Verification performed, or Wave 5 COMPLETE. Changes **local only** — not committed.
 
 ---
 
