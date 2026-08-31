@@ -1080,4 +1080,41 @@ See [`w5-n10-product-owner-close-record.md`](./w5-n10-product-owner-close-record
 
 ---
 
-**STOP.** W5-N10 is **CLOSED** by Product Owner. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N11 without separate Product Owner instruction.
+---
+
+## W5-N11 status (Notification Platform Worker Runtime — Planning OPEN)
+
+W5-N11 Notification Platform Worker Runtime Foundation Planning Package is **OPEN** (2026-08-31). Awaiting Planning Review. Not approved. Not implementation.
+
+```text
+Planning only — not worker runtime implementation.
+Not worker runtime execution, orchestration, retry, scheduler, or dead-letter processing.
+Not platform worker runtime anchors (W5-N11-b).
+Not Notification Platform Worker Runtime functional.
+Not W5-N11 COMPLETE.
+Customer-visible platform worker runtime remains unchanged until later slices + Product Owner Close.
+Closed W5-N05 integration, W5-N06 delivery, W5-N07 dispatch, W5-N08 queue, W5-N09 workers, and W5-N10 worker execution foundations consumed; per-channel W5-N01…N04 transport stubs remain honest per inventory.
+Notification Platform Worker Runtime complete and Notification Platform Complete not claimed.
+Wave 5 COMPLETE not claimed.
+```
+
+See [`w5-n11-planning-summary.md`](./w5-n11-planning-summary.md).
+
+---
+
+## W5-N11 implementation slices (planning only — not opened)
+
+| Slice    | Name                                                                     | Status                                       |
+| -------- | ------------------------------------------------------------------------ | -------------------------------------------- |
+| W5-N11-a | Notification Platform Worker Runtime Inventory & Honest Product Baseline | **Not opened**                               |
+| W5-N11-b | Durable Notification Platform Worker Runtime Foundation                  | **Not opened**                               |
+| W5-N11-c | Notification Platform Worker Runtime Restart Recovery Foundation         | **Not opened**                               |
+| W5-N11-d | Notification Platform Worker Runtime Operational Continuity Foundation   | **Not opened**                               |
+| W5-N11-e | Package Close Evidence                                                   | **Not opened**                               |
+| W5-N11   | Package                                                                  | Planning **OPEN** — Awaiting Planning Review |
+
+See [`w5-n11-planning-summary.md`](./w5-n11-planning-summary.md).
+
+---
+
+**STOP.** W5-N10 is **CLOSED** by Product Owner. W5-N11 Planning Package is **OPEN** — Awaiting Planning Review. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution implemented. Do not declare Notification Platform Worker Runtime Foundation implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not perform W5-N11 Planning Review. Do not perform W5-N11 Planning Approval. Do not open W5-N11-a without separate Product Owner instruction.
