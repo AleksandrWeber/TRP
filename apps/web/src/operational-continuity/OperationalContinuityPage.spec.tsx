@@ -229,6 +229,16 @@ const ready: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: [],
   },
+  notificationPlatformRetry: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:00:00.000Z',
+    recoveryDurationMs: 42,
+    restoredCount: 0,
+    canonicalAnchorCount: 0,
+    integrityVerified: true,
+    workspaceIds: [],
+  },
 };
 
 const degraded: OperationalContinuityReadinessView = {
@@ -464,6 +474,16 @@ const degraded: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: ['ws-1'],
   },
+  notificationPlatformRetry: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:01:00.000Z',
+    recoveryDurationMs: 100,
+    restoredCount: 1,
+    canonicalAnchorCount: 1,
+    integrityVerified: true,
+    workspaceIds: ['ws-1'],
+  },
 };
 
 describe('OperationalContinuityView', () => {
@@ -491,9 +511,9 @@ describe('OperationalContinuityView', () => {
     expect(html).toContain('Notification queue');
     expect(html).toContain('Queue operational state');
     expect(html).toContain('Owner readiness');
-    expect(html).not.toContain('Retry');
     expect(html).not.toContain('Scheduling engine');
     expect(html).toContain('Notification Platform Scheduler operational state');
+    expect(html).toContain('Notification Platform Retry operational state');
   });
 
   it('shows kill switch operational state, owner readiness, and recovery timing', () => {
@@ -671,6 +691,16 @@ describe('OperationalContinuityView', () => {
     const html = renderToStaticMarkup(<OperationalContinuityView readiness={ready} />);
     expect(html).toContain('Notification Platform Scheduler');
     expect(html).toContain('Notification Platform Scheduler operational state');
+    expect(html).toContain('Canonical anchors');
+    expect(html).not.toContain('Executing');
+    expect(html).not.toContain('Implemented');
+    expect(html).not.toContain('Cross-channel');
+  });
+
+  it('shows Notification Platform Retry operational state within platform readiness only', () => {
+    const html = renderToStaticMarkup(<OperationalContinuityView readiness={ready} />);
+    expect(html).toContain('Notification Platform Retry');
+    expect(html).toContain('Notification Platform Retry operational state');
     expect(html).toContain('Canonical anchors');
     expect(html).not.toContain('Executing');
     expect(html).not.toContain('Implemented');

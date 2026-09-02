@@ -1259,6 +1259,72 @@ export function OperationalContinuityView({ readiness }: Props) {
       </section>
 
       <section>
+        <h2 className="text-lg font-semibold text-slate-100">Notification Platform Retry</h2>
+        {readiness.notificationPlatformRetry ? (
+          <dl
+            className="mt-4 grid gap-3 sm:grid-cols-2"
+            data-testid="notification-platform-retry-continuity"
+          >
+            <div>
+              <dt className="text-sm text-slate-400">
+                Notification Platform Retry operational state
+              </dt>
+              <dd className="text-slate-100" data-testid="notification-platform-retry-state">
+                {readiness.notificationPlatformRetry.operationalState}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Owner readiness</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-retry-owner-readiness"
+              >
+                {readiness.notificationPlatformRetry.ownerReadiness}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery timestamp</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-retry-recovery-timestamp"
+              >
+                {readiness.notificationPlatformRetry.recoveryTimestamp ?? '—'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery duration</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-retry-recovery-duration"
+              >
+                {formatDuration(readiness.notificationPlatformRetry.recoveryDurationMs)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Restored rows</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-retry-restored-count"
+              >
+                {readiness.notificationPlatformRetry.restoredCount}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Canonical anchors</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-retry-canonical-anchor-count"
+              >
+                {readiness.notificationPlatformRetry.canonicalAnchorCount}
+              </dd>
+            </div>
+          </dl>
+        ) : (
+          <p className="mt-2 text-slate-400">Not evaluated</p>
+        )}
+      </section>
+
+      <section>
         <h2 className="text-lg font-semibold text-slate-100">Owner operational state</h2>
         <table className="mt-3 w-full text-left text-sm text-slate-200">
           <thead className="text-slate-400">

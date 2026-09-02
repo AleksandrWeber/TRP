@@ -70,10 +70,7 @@ export const W5_N13_C_EXPLICIT_OUT = Object.freeze([
 export const W5_N13_C_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Notification Platform Retry Restart Recovery Foundation'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze([
-    'W5-N13-d — Notification Platform Retry Operational Continuity Foundation',
-    'W5-N13-e — Package Close Evidence',
-  ] as const),
+  deferred: Object.freeze(['W5-N13-e — Package Close Evidence'] as const),
 } as const);
 
 export const W5_N13_C_TRANSITION_MATRIX = Object.freeze({
@@ -89,7 +86,6 @@ export const W5_N13_C_TRANSITION_MATRIX = Object.freeze({
     'Recovery deterministic, idempotent, fail-honest on corruption',
   ] as const),
   stillMissing: Object.freeze([
-    'Operational Continuity (W5-N13-d)',
     'Package Close (W5-N13-e)',
     'Retry runtime, retry execution, retry scheduling, retry queue processing, and dead-letter processing',
   ] as const),

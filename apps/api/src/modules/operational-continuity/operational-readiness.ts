@@ -273,6 +273,19 @@ export type NotificationPlatformSchedulerContinuityView = Readonly<{
   workspaceIds: readonly string[];
 }>;
 
+/** W5-N13-d — Notification Platform Retry continuity fields on platform readiness. */
+export type NotificationPlatformRetryContinuityView = Readonly<{
+  operationalState: OperationalState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+}>;
+
 /** W3-O05-d — Monitoring & Security Health continuity fields on platform readiness. */
 export type MonitoringHealthContinuityView = Readonly<{
   operationalState: OperationalState;
@@ -348,6 +361,8 @@ export type PlatformOperationalProjection = Readonly<{
   notificationPlatformWorkerRuntime: NotificationPlatformWorkerRuntimeContinuityView | null;
   /** W5-N12-d — Notification Platform Scheduler operational continuity (derived). */
   notificationPlatformScheduler: NotificationPlatformSchedulerContinuityView | null;
+  /** W5-N13-d — Notification Platform Retry operational continuity (derived). */
+  notificationPlatformRetry: NotificationPlatformRetryContinuityView | null;
 }>;
 
 export type EvaluateOwnerReadinessInput = Readonly<{
@@ -454,6 +469,7 @@ export function buildPlatformOperationalProjection(input: {
   notificationPlatformWorkerExecution?: NotificationPlatformWorkerExecutionContinuityView | null;
   notificationPlatformWorkerRuntime?: NotificationPlatformWorkerRuntimeContinuityView | null;
   notificationPlatformScheduler?: NotificationPlatformSchedulerContinuityView | null;
+  notificationPlatformRetry?: NotificationPlatformRetryContinuityView | null;
 }): PlatformOperationalProjection {
   const platformState = derivePlatformOperationalState(input.owners);
   assertOperationalState(platformState);
@@ -488,6 +504,7 @@ export function buildPlatformOperationalProjection(input: {
     notificationPlatformWorkerExecution: input.notificationPlatformWorkerExecution ?? null,
     notificationPlatformWorkerRuntime: input.notificationPlatformWorkerRuntime ?? null,
     notificationPlatformScheduler: input.notificationPlatformScheduler ?? null,
+    notificationPlatformRetry: input.notificationPlatformRetry ?? null,
   });
 }
 

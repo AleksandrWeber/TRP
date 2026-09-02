@@ -1009,16 +1009,18 @@ export const W5_N13_A_NOTIFICATION_PLATFORM_RETRY_INVENTORY: readonly W5N13AInve
       kind: 'operational' as const,
       owner: 'platform-readiness' as const,
       durabilityClass: 'EPHEMERAL' as const,
-      capabilityCategory: 'not-implemented' as const,
-      currentStatus: 'Missing — operational-continuity.service has no platform retry builder',
-      honestyRequirement: 'Dispatch continuity follows queue recovery (W5-N13-c/d)',
-      futureW5N13Responsibility: 'W5-N13-d' as const,
-      evidencePath: 'apps/api/src/modules/operational-continuity/operational-continuity.service.ts',
-      existsToday: false as const,
+      capabilityCategory: 'infrastructure-only' as const,
+      currentStatus:
+        'Implemented — buildNotificationPlatformRetryView derives readiness from W5-N13-c recovery record',
+      honestyRequirement: 'Retry continuity follows restart recovery (W5-N13-c/d)',
+      futureW5N13Responsibility: 'W5-N13-e' as const,
+      evidencePath:
+        'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-operational-continuity.ts',
+      existsToday: true as const,
       persistenceResponsibility: 'none-missing' as const,
       recoveryResponsibility: 'none-missing' as const,
-      operationalContinuityResponsibility: 'w5-n13-d' as const,
-      honestProductState: 'not-implemented' as const,
+      operationalContinuityResponsibility: 'platform-readiness' as const,
+      honestProductState: 'infrastructure-only' as const,
     }),
     Object.freeze({
       authorizesPlatformRetryFunctional: false as const,
@@ -2434,6 +2436,7 @@ export const W5_N13_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N12 platform scheduler anchors, recovery, and continuity on notification-delivery owner (consumed)',
     'W5-N13-b platform retry anchors on notification-delivery owner (anchor-recorded only)',
     'W5-N13-c platform retry restart recovery hydrate on notification-delivery owner',
+    'W5-N13-d platform retry operational continuity projection on Platform Readiness',
     'Platform Readiness notificationPlatformWorkerRuntime — W5-N11-d projection — W5-N10-d projection',
     'Platform Readiness notificationPlatformDelivery, notificationPlatformDispatch, and notificationPlatformQueue projections',
     'Per-channel, integration, delivery, dispatch, queue, and workers operational continuity projections in Platform Readiness',
@@ -2444,12 +2447,9 @@ export const W5_N13_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N01…N11-a machine inventories — foundation reference patterns',
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
-  plannedCapabilities: Object.freeze([
-    'W5-N13-d — Notification Platform Retry Operational Continuity Foundation',
-  ] as const),
+  plannedCapabilities: Object.freeze(['W5-N13-e — Package Close Evidence'] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform retry layer',
-    'Platform retry operational continuity projection',
     'Cross-channel honest retry rule unification',
     'Retry engine',
     'Retry execution',
@@ -2464,8 +2464,6 @@ export const W5_N13_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Notification Platform Complete',
   ] as const),
   futureRoadmapCapabilities: Object.freeze([
-    'W5-N13-c — Platform retry restart recovery',
-    'W5-N13-d — Platform retry operational continuity',
     'W5-N13-e — Package Close Evidence',
     'Wave 6 — Live Trading (LT-02)',
     'Wave 7 — Anthropic / AI Gateway (out of W5-N13 scope)',
@@ -2475,10 +2473,7 @@ export const W5_N13_A_HONEST_PRODUCT_BASELINE = Object.freeze({
 export const W5_N13_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Notification Platform Retry Inventory Foundation'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze([
-    'W5-N13-d — Notification Platform Retry Operational Continuity Foundation',
-    'W5-N13-e — Package Close Evidence',
-  ] as const),
+  deferred: Object.freeze(['W5-N13-e — Package Close Evidence'] as const),
 } as const);
 
 export function artifactIds(): readonly string[] {

@@ -4,7 +4,7 @@
 **Audience:** Product Owner
 **Date:** 2026-08-29
 **Wave:** 5 — Notification Platform
-**Status:** W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 **CLOSED** by Product Owner (2026-08-29) · W5-N08 **CLOSED** by Product Owner (2026-08-29) · W5-N09 **CLOSED** by Product Owner (2026-08-29) · W5-N10 **CLOSED** by Product Owner (2026-08-29) · W5-N11 **CLOSED** by Product Owner (2026-09-02) · W5-N12 **CLOSED** by Product Owner (2026-09-02) · W5-N13-c **COMPLETE** — Awaiting Product Owner Review
+**Status:** W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 **CLOSED** by Product Owner (2026-08-29) · W5-N08 **CLOSED** by Product Owner (2026-08-29) · W5-N09 **CLOSED** by Product Owner (2026-08-29) · W5-N10 **CLOSED** by Product Owner (2026-08-29) · W5-N11 **CLOSED** by Product Owner (2026-09-02) · W5-N12 **CLOSED** by Product Owner (2026-09-02) · W5-N13-d **COMPLETE** — Awaiting Product Owner Review
 **Nature:** Simple Product Owner status. Not an RC. Not an ADR. Not a Master Plan revision.
 
 **Overview:** [`wave-5-overview.md`](./wave-5-overview.md)
@@ -41,6 +41,7 @@
 **W5-N13-a inventory:** [`w5-n13-a-notification-platform-retry-inventory.md`](./w5-n13-a-notification-platform-retry-inventory.md)
 **W5-N13-b implementation report:** [`w5-n13-b-implementation-report.md`](./w5-n13-b-implementation-report.md)
 **W5-N13-c implementation report:** [`w5-n13-c-implementation-report.md`](./w5-n13-c-implementation-report.md)
+**W5-N13-d implementation report:** [`w5-n13-d-implementation-report.md`](./w5-n13-d-implementation-report.md)
 **W5-N04 Planning Review:** [`w5-n04-planning-review.md`](./w5-n04-planning-review.md)
 **W5-N04 Planning Approval:** [`w5-n04-planning-approval.md`](./w5-n04-planning-approval.md)
 **W5-N03 Planning Review:** [`w5-n03-planning-review.md`](./w5-n03-planning-review.md)
@@ -111,7 +112,7 @@
 | **W5-N10** | **V3-N10** | Notification Platform Worker Execution Foundation | **CLOSED** by Product Owner (2026-08-29)              |
 | **W5-N11** | **V3-N11** | Notification Platform Worker Runtime Foundation   | **CLOSED** by Product Owner (2026-09-02)              |
 | **W5-N12** | **V3-N12** | Notification Platform Scheduler Foundation        | **CLOSED** by Product Owner (2026-09-02)              |
-| **W5-N13** | **V3-N13** | Notification Platform Retry Foundation            | W5-N13-c **COMPLETE** — Awaiting Product Owner Review |
+| **W5-N13** | **V3-N13** | Notification Platform Retry Foundation            | W5-N13-d **COMPLETE** — Awaiting Product Owner Review |
 
 Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 → N09 → N10 → N11 → N12 → N13**.
 
@@ -258,10 +259,10 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 
 | -------- | --------------------------------------------------------------- | ------------------------------------------------------------- |
 | W5-N13-a | Notification Platform Retry Inventory & Honest Product Baseline | **COMPLETE** (`b8cc7d7`)                                      |
 | W5-N13-b | Durable Notification Platform Retry Foundation                  | **COMPLETE** (`ddb462f`)                                      |
-| W5-N13-c | Notification Platform Retry Restart Recovery Foundation         | **COMPLETE** — Awaiting Product Owner Review (local)          |
-| W5-N13-d | Notification Platform Retry Operational Continuity Foundation   | Not authorized                                                |
+| W5-N13-c | Notification Platform Retry Restart Recovery Foundation         | **COMPLETE** (`31d8e7c`)                                      |
+| W5-N13-d | Notification Platform Retry Operational Continuity Foundation   | **COMPLETE** — Awaiting Product Owner Review (local)          |
 | W5-N13-e | Package Close Evidence                                          | Not authorized                                                |
-| W5-N13   | Package                                                         | W5-N13-c **COMPLETE** — Awaiting Product Owner Review (local) |
+| W5-N13   | Package                                                         | W5-N13-d **COMPLETE** — Awaiting Product Owner Review (local) |
 
 ---
 
@@ -270,10 +271,10 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 
 | Field                                 | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Wave**                              | **5 — Notification Platform** — **OPEN**                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 **CLOSED** by Product Owner (2026-08-29) · W5-N08 **CLOSED** by Product Owner (2026-08-29) · W5-N09 **CLOSED** by Product Owner (2026-08-29) · W5-N10 **CLOSED** by Product Owner (2026-08-29) · W5-N11 **CLOSED** by Product Owner (2026-09-02) · W5-N12 **CLOSED** by Product Owner (2026-09-02) · W5-N13-c **COMPLETE** |
+| **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 **CLOSED** by Product Owner (2026-08-29) · W5-N08 **CLOSED** by Product Owner (2026-08-29) · W5-N09 **CLOSED** by Product Owner (2026-08-29) · W5-N10 **CLOSED** by Product Owner (2026-08-29) · W5-N11 **CLOSED** by Product Owner (2026-09-02) · W5-N12 **CLOSED** by Product Owner (2026-09-02) · W5-N13-d **COMPLETE** |
 | **First package**                     | **W5-N01** Production Telegram Bot API (V3-N01 · CM-11) — **CLOSED**                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | **Previous package**                  | **W5-N12** Notification Platform Scheduler Foundation (V3-N12 · CM-22) — **CLOSED** by Product Owner (2026-09-02)                                                                                                                                                                                                                                                                                                                                                                                                     |
-| **Current package**                   | **W5-N13** Notification Platform Retry Foundation (V3-N13 · CM-23) — W5-N13-c **COMPLETE** — Awaiting Product Owner Review (local)                                                                                                                                                                                                                                                                                                                                                                                    |
+| **Current package**                   | **W5-N13** Notification Platform Retry Foundation (V3-N13 · CM-23) — W5-N13-d **COMPLETE** — Awaiting Product Owner Review (local)                                                                                                                                                                                                                                                                                                                                                                                    |
 | **W5-N13 Planning Package**           | **APPROVED** (2026-09-02) — [`w5-n13-planning-summary.md`](./w5-n13-planning-summary.md)                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | **W5-N13 Planning Review**            | **PASS** (2026-09-02) — [`w5-n13-planning-review.md`](./w5-n13-planning-review.md)                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | **W5-N13 Planning Approval**          | **RECORDED** (2026-09-02) — [`w5-n13-planning-approval.md`](./w5-n13-planning-approval.md)                                                                                                                                                                                                                                                                                                                                                                                                                            |
@@ -281,8 +282,9 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 
 | **W5-N13-a implementation report**    | [`w5-n13-a-implementation-report.md`](./w5-n13-a-implementation-report.md)                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | **W5-N13-b implementation report**    | [`w5-n13-b-implementation-report.md`](./w5-n13-b-implementation-report.md)                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | **W5-N13-c implementation report**    | [`w5-n13-c-implementation-report.md`](./w5-n13-c-implementation-report.md)                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| **W5-N13-d implementation report**    | [`w5-n13-d-implementation-report.md`](./w5-n13-d-implementation-report.md)                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | **W5-N13 planning documents**         | [`w5-n13-planning-summary.md`](./w5-n13-planning-summary.md) and companions                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| **Implementation authorized?**        | **Yes** — W5-N13-a **COMPLETE** (`b8cc7d7`); W5-N13-b **COMPLETE** (`ddb462f`); W5-N13-c **COMPLETE** (local); W5-N13-d…e not authorized; not opened                                                                                                                                                                                                                                                                                                                                                                  |
+| **Implementation authorized?**        | **Yes** — W5-N13-a **COMPLETE** (`b8cc7d7`); W5-N13-b **COMPLETE** (`ddb462f`); W5-N13-c **COMPLETE** (`31d8e7c`); W5-N13-d **COMPLETE** (local); W5-N13-e not authorized; not opened                                                                                                                                                                                                                                                                                                                                 |
 | **W5-N12 Planning Package**           | **APPROVED** (2026-09-02) — [`w5-n12-planning-summary.md`](./w5-n12-planning-summary.md)                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | **W5-N12 Planning Review**            | **PASS** (2026-09-02) — [`w5-n12-planning-review.md`](./w5-n12-planning-review.md)                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | **W5-N12 Planning Approval**          | **RECORDED** (2026-09-02) — [`w5-n12-planning-approval.md`](./w5-n12-planning-approval.md)                                                                                                                                                                                                                                                                                                                                                                                                                            |
@@ -677,10 +679,12 @@ W5-N13-a COMPLETE — Notification Platform Retry Inventory & Honest Product Bas
         ↓
 W5-N13-b COMPLETE — Durable Notification Platform Retry Foundation (`ddb462f`)
         ↓
-W5-N13-c COMPLETE — Notification Platform Retry Restart Recovery Foundation (local)
+W5-N13-c COMPLETE — Notification Platform Retry Restart Recovery Foundation (`31d8e7c`)
+        ↓
+W5-N13-d COMPLETE — Notification Platform Retry Operational Continuity Foundation (local)
         ↓
 STOP — Awaiting Product Owner Review before Repository Synchronization
-(Do not open W5-N13-d)
+(Do not open W5-N13-e)
 (No retry engine / retry execution)
 (No Notification Platform Complete)
 (No Wave 5 COMPLETE)
@@ -847,7 +851,7 @@ STOP — Awaiting Product Owner Review before Repository Synchronization
 | W5-N13-a authorized                   | **Recorded** (2026-09-02) |
 | W5-N13-a COMPLETE                     | **Recorded** (`b8cc7d7`)  |
 | W5-N13-b COMPLETE                     | **Recorded** (`ddb462f`)  |
-| W5-N13-c COMPLETE                     | **Recorded** (local)      |
+| W5-N13-d COMPLETE                     | **Recorded** (local)      |
 | Scheduler runtime implemented         | **Not claimed**           |
 | Scheduler execution implemented       | **Not claimed**           |
 | Worker runtime execution implemented  | **Not claimed**           |
@@ -872,4 +876,4 @@ STOP — Awaiting Product Owner Review before Repository Synchronization
 
 ---
 
-**STOP.** W5-N13-c is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N13-d. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N13-d is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N13-e. Do not declare Wave 5 COMPLETE.

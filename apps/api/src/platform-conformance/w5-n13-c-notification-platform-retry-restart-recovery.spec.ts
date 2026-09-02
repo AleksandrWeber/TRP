@@ -160,24 +160,20 @@ describe('W5-N13-c notification platform retry restart recovery — integration'
     expect(W5_N13_C_RECOVERED_ARTIFACT_IDS).toEqual(['persist-notification-platform-retry-anchor']);
   });
 
-  it('transition matrix: persistence + recovery; operational continuity still missing', () => {
+  it('transition matrix: persistence + recovery; package close still missing', () => {
     expect(W5_N13_C_TRANSITION_MATRIX.before).toContain('Durable persistence (W5-N13-b)');
     expect(W5_N13_C_TRANSITION_MATRIX.after).toContain('Restart recovery (W5-N13-c)');
     expect(
-      W5_N13_C_TRANSITION_MATRIX.stillMissing.some((item) =>
-        item.includes('Operational Continuity'),
-      ),
+      W5_N13_C_TRANSITION_MATRIX.stillMissing.some((item) => item.includes('Package Close')),
     ).toBe(true);
   });
 
-  it('technical debt delta: restart recovery resolved; operational continuity deferred', () => {
+  it('technical debt delta: restart recovery resolved; package close deferred', () => {
     expect(W5_N13_C_TECHNICAL_DEBT_DELTA.resolved.length).toBeGreaterThan(0);
     expect(W5_N13_C_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(
-      W5_N13_C_TECHNICAL_DEBT_DELTA.deferred.some((item) =>
-        item.toLowerCase().includes('operational continuity'),
-      ),
-    ).toBe(true);
+    expect(W5_N13_C_TECHNICAL_DEBT_DELTA.deferred.some((item) => item.includes('W5-N13-e'))).toBe(
+      true,
+    );
   });
 
   it('explicit OUT covers retry runtime only (not operational continuity)', () => {

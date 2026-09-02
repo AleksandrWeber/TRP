@@ -1373,7 +1373,27 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 **Explicit non-claim:** W5-N13-c does **not** authorize Notification Platform Retry implemented, retry runtime implemented, retry execution implemented, retry scheduler implemented, dead-letter processing implemented, Notification Platform Complete, W5-N13 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
 
-**STOP.** W5-N13-c is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N13-d.
+**STOP.** W5-N13-c is **COMPLETE** (`31d8e7c`). Do not open W5-N13-d.
+
+---
+
+## W5-N13-d validation (2026-09-02 — local)
+
+| Layer                  | Result   | Evidence                                                               |
+| ---------------------- | -------- | ---------------------------------------------------------------------- |
+| Operational continuity | **PASS** | `notification-platform-retry-operational-continuity.ts`                |
+| Platform Readiness     | **PASS** | `NotificationPlatformRetryContinuityView` on projection                |
+| Service wiring         | **PASS** | `buildNotificationPlatformRetryView()` in continuity service           |
+| Web projection         | **PASS** | Notification Platform Retry section in `OperationalContinuityView.tsx` |
+| Conformance            | **PASS** | `w5-n13-d-notification-platform-retry-operational-continuity.ts`       |
+| W5-N13-c sync          | **PASS** | deferred / transition matrix updated                                   |
+| Architecture check     | **PASS** | No ownership drift; no retry runtime                                   |
+| Regression suite       | **PASS** | lint / typecheck / test / build                                        |
+| git diff --check       | **PASS** | No whitespace errors                                                   |
+
+**Explicit non-claim:** W5-N13-d does **not** authorize Notification Platform Retry implemented, retry runtime implemented, retry execution implemented, retry scheduler implemented, dead-letter processing implemented, Notification Platform Complete, W5-N13 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
+
+**STOP.** W5-N13-d is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N13-e.
 
 ---
 
