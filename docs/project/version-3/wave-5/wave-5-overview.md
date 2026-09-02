@@ -1334,36 +1334,50 @@ See [`w5-n12-e-implementation-report.md`](./w5-n12-e-implementation-report.md).
 
 ---
 
-## W5-N13 status (Notification Platform Retry — W5-N13-e COMPLETE)
+## W5-N13 status (Notification Platform Retry — Final Integration Verification PASS)
 
-W5-N13 Notification Platform Retry Foundation — W5-N13-e **COMPLETE** (local, 2026-09-02). Awaiting Product Owner Review before Repository Synchronization. Package close evidence only. No retry runtime. No retry execution. No retry scheduling. No production transport I/O. No outbound notifications.
+W5-N13 Notification Platform Retry Foundation — W5-N13-e **COMPLETE** (`b55bf94`, 2026-09-02). Final Package Integration Verification **PASS** (local, 2026-09-02). Awaiting Product Owner Final Close. No retry runtime. No retry execution. No retry scheduling. No production transport I/O. No outbound notifications.
 
 ```text
-Package close evidence only — not retry engine, retry execution, retry scheduling, or dead-letter processing.
+Package close evidence + final integration verification — not retry engine, retry execution, retry scheduling, or dead-letter processing.
 Closed W5-N05…N12 foundations consumed; per-channel W5-N01…N04 transport stubs remain honest per inventory.
 Platform retry anchors implemented (platformRetryAnchorsMissing: false) with deterministic restart hydrate.
 Operational readiness projection derived from W5-N13-c recovery record on Platform Readiness.
-Complete foundation chain evidenced: inventory → persistence → recovery → continuity → Close Evidence.
-Final Package Integration Verification not performed.
+Complete foundation chain verified: inventory → persistence → recovery → continuity → Close Evidence → Final Integration Verification.
 Notification Platform Retry complete and Notification Platform Complete not claimed.
-Wave 5 COMPLETE not claimed.
+W5-N13 CLOSED not claimed. Wave 5 COMPLETE not claimed.
 ```
 
 See [`w5-n13-e-implementation-report.md`](./w5-n13-e-implementation-report.md).
 
 ---
 
-## W5-N13 implementation slices
+## W5-N13 Final Integration Verification status
 
-| Slice    | Name                                                            | Status                                                |
-| -------- | --------------------------------------------------------------- | ----------------------------------------------------- |
-| W5-N13-a | Notification Platform Retry Inventory & Honest Product Baseline | **COMPLETE** (`b8cc7d7`)                              |
-| W5-N13-b | Durable Notification Platform Retry Foundation                  | **COMPLETE** (`ddb462f`)                              |
-| W5-N13-c | Notification Platform Retry Restart Recovery Foundation         | **COMPLETE** (`31d8e7c`)                              |
-| W5-N13-d | Notification Platform Retry Operational Continuity Foundation   | **COMPLETE** (`cf23a88`)                              |
-| W5-N13-e | Package Close Evidence                                          | **COMPLETE** — Awaiting Product Owner Review (local)  |
-| W5-N13   | Package                                                         | W5-N13-e **COMPLETE** — Awaiting Product Owner Review |
+W5-N13 Final Package Integration Verification **PASS** (2026-09-02, local). All slices a–e form one internally consistent package. Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**. Engineering confidence: **97%**. Product Owner Final Close **not executed**.
+
+```text
+Slice chain b8cc7d7 → ddb462f → 31d8e7c → cf23a88 → b55bf94 verified on origin/main.
+W5-N13-e COMPLETE (`b55bf94`) — Package Close Evidence.
+Final Integration Verification PASS (local).
+Awaiting Product Owner Final Close.
+```
+
+See [`w5-n13-final-integration-verification.md`](./w5-n13-final-integration-verification.md).
 
 ---
 
-**STOP.** W5-N13-e is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not perform Final Package Integration Verification. Do not declare Notification Platform Retry Foundation implemented. Do not declare Retry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not declare Production Ready. Do not declare Live Notifications.
+## W5-N13 implementation slices
+
+| Slice    | Name                                                            | Status                                                                       |
+| -------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| W5-N13-a | Notification Platform Retry Inventory & Honest Product Baseline | **COMPLETE** (`b8cc7d7`)                                                     |
+| W5-N13-b | Durable Notification Platform Retry Foundation                  | **COMPLETE** (`ddb462f`)                                                     |
+| W5-N13-c | Notification Platform Retry Restart Recovery Foundation         | **COMPLETE** (`31d8e7c`)                                                     |
+| W5-N13-d | Notification Platform Retry Operational Continuity Foundation   | **COMPLETE** (`cf23a88`)                                                     |
+| W5-N13-e | Package Close Evidence                                          | **COMPLETE** (`b55bf94`)                                                     |
+| W5-N13   | Package                                                         | Final Integration Verification **PASS** — Awaiting Product Owner Final Close |
+
+---
+
+**STOP.** W5-N13 Final Integration Verification **PASS** (local). Await Product Owner Final Close before Repository Synchronization. Do not create Product Owner Close Record. Do not declare Notification Platform Retry Foundation implemented. Do not declare Retry implemented. Do not declare Notification Platform Complete. Do not declare W5-N13 CLOSED. Do not declare Wave 5 COMPLETE. Do not declare Production Ready. Do not declare Live Notifications. Do not open W5-N14.

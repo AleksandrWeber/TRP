@@ -244,8 +244,38 @@ describe('W5-N13-e package close evidence — integration / planning', () => {
     expect(existsSync(join(WAVE5, 'wave-5-validation-plan.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'wave-5-progress.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'w5-n13-planning-approval.md'))).toBe(true);
-    expect(existsSync(join(WAVE5, 'w5-n13-final-integration-verification.md'))).toBe(false);
+    expect(existsSync(join(WAVE5, 'w5-n13-final-integration-verification.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'w5-n13-product-owner-close-record.md'))).toBe(false);
+  });
+
+  it('status docs: W5-N13 Final Integration Verification PASS; package not CLOSED; Wave 5 COMPLETE not claimed', () => {
+    const progress = readWave5('wave-5-progress.md');
+    const overview = readWave5('wave-5-overview.md');
+    const close = readWave5('w5-n13-package-close-report.md');
+    const summary = readWave5('w5-n13-package-summary.md');
+    const finalIntegration = readWave5('w5-n13-final-integration-verification.md');
+    expect(progress).toMatch(/W5-N13-a|W5-N13-b|W5-N13-c|W5-N13-d|W5-N13-e/);
+    expect(progress).toMatch(/Final Integration Verification[\s\S]*PASS/i);
+    const packageRow = progress.match(/\| W5-N13\s+\| Package[^|\n]*\|[^|\n]*\|/)?.[0] ?? '';
+    expect(packageRow).not.toMatch(/CLOSED by Product Owner/);
+    expect(packageRow).not.toMatch(/\*\*CLOSED\*\*/);
+    expect(progress).toMatch(/Wave 5 COMPLETE[\s\S]*Not claimed|Not claimed[\s\S]*Wave 5 COMPLETE/);
+    expect(overview).toMatch(
+      /Final Integration Verification[\s\S]*PASS|PASS[\s\S]*Final Integration Verification/i,
+    );
+    expect(overview).toMatch(/STOP/);
+    expect(overview).toMatch(
+      /Notification Platform Retry Foundation implemented[\s\S]*not|not[\s\S]*Notification Platform Retry Foundation implemented|Do not declare Notification Platform Retry Foundation implemented/i,
+    );
+    expect(close).not.toMatch(/CLOSED by Product Owner/);
+    expect(summary).not.toMatch(/\*\*CLOSED\*\* by Product Owner/);
+    expect(finalIntegration).toMatch(/READY FOR PRODUCT OWNER FINAL CLOSE/);
+    expect(finalIntegration).toMatch(/97%/);
+    expect(finalIntegration).not.toMatch(
+      /Product Owner Final Close executed|CLOSED by Product Owner/,
+    );
+    expect(W5_N13_E_ARCHITECTURE_CLAIMS.packageCloseEvidenceAssembled).toBe(true);
+    expect(W5_N13_E_ARCHITECTURE_CLAIMS.packageDeclaredClosed).toBe(false);
   });
 
   it('documentation integrity helper verifies slice and package reports', () => {
