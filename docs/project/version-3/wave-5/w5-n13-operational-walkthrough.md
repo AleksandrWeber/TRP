@@ -3,7 +3,7 @@
 **Package:** W5-N13 Notification Platform Retry Foundation  
 **Evidence slice:** W5-N13-e  
 **Date:** 2026-09-02  
-**Status:** Close Evidence **COMPLETE** (local) — Awaiting Product Owner Review.  
+**Status:** **CLOSED** by Product Owner (2026-09-02). Final Package Integration Verification **PASS** (`69c82a3`).
 **Nature:** Package operational verification walkthrough. Not retry runtime. Not retry execution / retry scheduling / dead-letter. Not Production Ready.
 
 ---
@@ -25,11 +25,11 @@ Platform operational (GET /v1/operational-continuity/readiness + UI notification
         ↓
 Package operational integrity (W5-N13-e — Close Evidence)
         ↓
-Awaiting Product Owner Review
+Final Package Integration Verification PASS (`69c82a3`)
         ↓
-Final Package Integration Verification (not performed)
+W5-N13 CLOSED by Product Owner (2026-09-02)
         ↓
-Product Owner Final Close (not performed)
+Awaiting W5-N14 Planning Package (not opened)
 ```
 
 **Without:** Retry runtime · Retry execution · Retry scheduling · Retry queue processing · Dead-letter processing · Production transport I/O · Runtime notification retry · Executing label fabrication · Live Trading · Notification Platform Retry functional · Production Ready
@@ -86,6 +86,10 @@ Readiness projection only — no retry controls, no runtime controls.
 
 `buildCloseEvidenceDiagnostics()` verifies implementation chain, dependency chain, retry foundation chain, governance, architecture, Honest Product, and documentation integrity across slices a–d.
 
+### 8. Product Owner Close
+
+Product Owner decision **CLOSED** — see [`w5-n13-product-owner-close-record.md`](./w5-n13-product-owner-close-record.md).
+
 ---
 
-**STOP.** W5-N13-e Close Evidence is **COMPLETE** (local). Do not declare Notification Platform Retry implemented. Do not perform Final Package Integration Verification without Product Owner instruction.
+**STOP.** W5-N13 is **CLOSED** by Product Owner. Do not declare Notification Platform Retry implemented. Do not declare Wave 5 COMPLETE. Do not open W5-N14.

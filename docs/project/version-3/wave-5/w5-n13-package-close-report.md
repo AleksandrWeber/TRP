@@ -3,13 +3,13 @@
 **Package:** W5-N13 Notification Platform Retry Foundation  
 **Evidence slice:** W5-N13-e  
 **Date:** 2026-09-02  
-**Decision status:** Close Evidence **assembled** — Awaiting Product Owner Review. Final Package Integration Verification **not performed**.
+**Decision status:** **CLOSED** by Product Owner (2026-09-02). Final Package Integration Verification **PASS** (`69c82a3`).
 
 ---
 
 ## Purpose
 
-This report indexes Close Evidence assembled in W5-N13-e for Product Owner Package Review. Engineering must **not** declare Notification Platform Retry implemented, Notification Platform Complete, Production Ready, W5-N13 COMPLETE, or Wave 5 COMPLETE.
+This report indexes Close Evidence assembled in W5-N13-e and Product Owner acceptance recorded in W5-N13 Product Owner Close. Engineering must **not** declare Notification Platform Retry implemented, Notification Platform Complete, Production Ready, or Wave 5 COMPLETE.
 
 ---
 
@@ -19,6 +19,8 @@ This report indexes Close Evidence assembled in W5-N13-e for Product Owner Packa
 | ----------------------- | ---------------------------------------------------------------------------------------------------------- |
 | Package Summary         | [`w5-n13-package-summary.md`](./w5-n13-package-summary.md)                                                 |
 | Operational Walkthrough | [`w5-n13-operational-walkthrough.md`](./w5-n13-operational-walkthrough.md)                                 |
+| Final Integration       | [`w5-n13-final-integration-verification.md`](./w5-n13-final-integration-verification.md)                   |
+| Product Owner Close     | [`w5-n13-product-owner-close-record.md`](./w5-n13-product-owner-close-record.md)                           |
 | Inventory               | [`w5-n13-a-notification-platform-retry-inventory.md`](./w5-n13-a-notification-platform-retry-inventory.md) |
 | Validation Plan         | [`wave-5-validation-plan.md`](./wave-5-validation-plan.md)                                                 |
 | Wave 5 Overview         | [`wave-5-overview.md`](./wave-5-overview.md)                                                               |
@@ -55,27 +57,27 @@ This report indexes Close Evidence assembled in W5-N13-e for Product Owner Packa
 | Second persistence owner               | **No**             |
 | Production Ready                       | **No**             |
 | Wave 5 COMPLETE                        | **No**             |
-| Final Package Integration Verification | **Not performed**  |
+| Final Package Integration Verification | **PASS**           |
 
 ---
 
 ## Close checklist (evidence)
 
-| Criterion                                                            | Status              |
-| -------------------------------------------------------------------- | ------------------- |
-| Every approved slice validated (a–d PASS)                            | **Met**             |
-| Operational walkthrough completed                                    | **Met**             |
-| Inventory / Persistence / Recovery / Continuity verified             | **Met**             |
-| Platform Readiness projection verified                               | **Met**             |
-| Honest Product enforcement intact                                    | **Met**             |
-| Governance: notification-delivery sole owner; no duplicate authority | **Met**             |
-| Security Verification PASS (slices a–e evidence)                     | **Met**             |
-| Architecture Verification PASS (slices a–e evidence)                 | **Met**             |
-| Documentation consistency verified                                   | **Met**             |
-| Package Summary completed                                            | **Met**             |
-| Final Package Integration Verification                               | **Not performed**   |
-| Product Owner declares CLOSED                                        | **Awaiting review** |
-| No new functionality in Close act                                    | **Met**             |
-| No ownership / architecture / Master Plan changes in Close act       | **Met**             |
+| Criterion                                                            | Status     |
+| -------------------------------------------------------------------- | ---------- |
+| Every approved slice validated (a–d PASS)                            | **Met**    |
+| Operational walkthrough completed                                    | **Met**    |
+| Inventory / Persistence / Recovery / Continuity verified             | **Met**    |
+| Platform Readiness projection verified                               | **Met**    |
+| Honest Product enforcement intact                                    | **Met**    |
+| Governance: notification-delivery sole owner; no duplicate authority | **Met**    |
+| Security Verification PASS (slices a–e evidence)                     | **Met**    |
+| Architecture Verification PASS (slices a–e evidence)                 | **Met**    |
+| Documentation consistency verified                                   | **Met**    |
+| Package Summary completed                                            | **Met**    |
+| Final Package Integration Verification                               | **PASS**   |
+| Product Owner declares CLOSED                                        | **CLOSED** |
+| No new functionality in Close act                                    | **Met**    |
+| No ownership / architecture / Master Plan changes in Close act       | **Met**    |
 
-**STOP.** W5-N13-e Close Evidence is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not declare Notification Platform Retry implemented. Do not declare Wave 5 COMPLETE. Do not perform Final Package Integration Verification without Product Owner instruction.
+**STOP.** W5-N13 is **CLOSED** by Product Owner. Do not declare Notification Platform Retry implemented. Do not declare Wave 5 COMPLETE. Do not open W5-N14.
