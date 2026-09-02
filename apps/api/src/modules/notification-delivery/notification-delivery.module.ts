@@ -53,6 +53,8 @@ import { NotificationPlatformSchedulerPersistenceService } from './notification-
 import { NotificationPlatformRetryPersistenceService } from './notification-platform-retry-persistence.service';
 import { NotificationPlatformDeadLetterPersistenceService } from './notification-platform-dead-letter-persistence.service';
 import { NotificationPlatformTelemetryPersistenceService } from './notification-platform-telemetry-persistence.service';
+import { NotificationPlatformTelemetryRecoveryStore } from './domain/notification-platform-telemetry-recovery-store';
+import { NotificationPlatformTelemetryRestartRecoveryService } from './domain/notification-platform-telemetry-restart-recovery.service';
 import { NotificationPlatformDeadLetterRecoveryStore } from './domain/notification-platform-dead-letter-recovery-store';
 import { NotificationPlatformDeadLetterRestartRecoveryService } from './domain/notification-platform-dead-letter-restart-recovery.service';
 import { NotificationPlatformRetryRecoveryStore } from './domain/notification-platform-retry-recovery-store';
@@ -233,6 +235,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetryPersistenceService,
     NotificationPlatformDeadLetterPersistenceService,
     NotificationPlatformTelemetryPersistenceService,
+    NotificationPlatformTelemetryRecoveryStore,
+    NotificationPlatformTelemetryRestartRecoveryService,
     NotificationPlatformDeadLetterRecoveryStore,
     NotificationPlatformDeadLetterRestartRecoveryService,
     NotificationPlatformRetryRecoveryStore,
@@ -304,6 +308,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetryPersistenceService,
     NotificationPlatformDeadLetterPersistenceService,
     NotificationPlatformTelemetryPersistenceService,
+    NotificationPlatformTelemetryRecoveryStore,
+    NotificationPlatformTelemetryRestartRecoveryService,
     NotificationPlatformDeadLetterRecoveryStore,
     NotificationPlatformDeadLetterRestartRecoveryService,
     NotificationPlatformRetryRecoveryStore,

@@ -9,6 +9,7 @@ import {
   NOTIFICATION_PLATFORM_TELEMETRY_ANCHOR_REPOSITORY,
   type NotificationPlatformTelemetryAnchorRepository,
 } from './domain/notification-platform-telemetry-anchor.repository';
+import { NotificationPlatformTelemetryRecoveryStore } from './domain/notification-platform-telemetry-recovery-store';
 
 export type PersistNotificationPlatformTelemetryAnchorCommand = Readonly<{
   workspaceId: string;
@@ -22,22 +23,34 @@ export type PersistNotificationPlatformTelemetryAnchorCommand = Readonly<{
 }>;
 
 /**
- * W5-N15-b — durable Notification Platform Telemetry anchor persistence on Notification Delivery owner.
+ * W5-N15-b/c — durable Notification Platform Telemetry anchor persistence on Notification Delivery owner.
+ * W5-N15-c — write-through to recovery store after hydrate.
  * Storage only — no metrics collection, exporters, dashboards, runtime aggregation,
- * recovery store, restart recovery, or operational continuity.
+ * or operational continuity.
  */
 @Injectable()
 export class NotificationPlatformTelemetryPersistenceService {
   constructor(
     @Inject(NOTIFICATION_PLATFORM_TELEMETRY_ANCHOR_REPOSITORY)
     private readonly repository: NotificationPlatformTelemetryAnchorRepository,
+    @Inject(NotificationPlatformTelemetryRecoveryStore)
+    private readonly recoveryStore: NotificationPlatformTelemetryRecoveryStore,
   ) {}
 
   async loadAnchor(
     workspaceId: string,
     telemetryAnchorId: string,
   ): Promise<DurableNotificationPlatformTelemetryAnchor | null> {
+    if (this.recoveryStore.hasHydrated()) {
+      return this.recoveryStore.get(workspaceId, telemetryAnchorId);
+    }
     return this.repository.loadNotificationPlatformTelemetryAnchor(workspaceId, telemetryAnchorId);
+  }
+
+  async listAllNotificationPlatformTelemetryAnchors(): Promise<
+    readonly DurableNotificationPlatformTelemetryAnchor[]
+  > {
+    return this.repository.listAllNotificationPlatformTelemetryAnchors();
   }
 
   async persistTelemetryAnchor(
@@ -49,6 +62,7 @@ export class NotificationPlatformTelemetryPersistenceService {
       return outcome;
     }
     await this.repository.saveNotificationPlatformTelemetryAnchor(outcome.anchor);
+    this.recoveryStore.set(outcome.anchor);
     return outcome;
   }
 }

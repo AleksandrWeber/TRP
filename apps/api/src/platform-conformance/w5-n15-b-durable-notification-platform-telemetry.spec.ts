@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PrismaNotificationPlatformTelemetryAnchorRepository } from '../modules/notification-delivery/persistence/prisma-notification-platform-telemetry-anchor.repository';
+import { NotificationPlatformTelemetryRecoveryStore } from '../modules/notification-delivery/domain/notification-platform-telemetry-recovery-store';
 import { NotificationPlatformTelemetryPersistenceService } from '../modules/notification-delivery/notification-platform-telemetry-persistence.service';
 import { rowsEphemeral } from './w5-n15-a-notification-platform-telemetry-inventory';
 import {
@@ -69,7 +70,10 @@ describe('W5-N15-b durable notification platform telemetry — unit', () => {
   it('persistence correctness: anchor upserts workspace telemetry row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaNotificationPlatformTelemetryAnchorRepository(prisma as never);
-    const service = new NotificationPlatformTelemetryPersistenceService(repository);
+    const service = new NotificationPlatformTelemetryPersistenceService(
+      repository,
+      new NotificationPlatformTelemetryRecoveryStore(),
+    );
 
     const outcome = await service.persistTelemetryAnchor({
       workspaceId: 'ws-a',
@@ -153,7 +157,7 @@ describe('W5-N15-b durable notification platform telemetry — unit', () => {
     expect(sync.noPlatformTelemetryAuthorization).toBe(true);
   });
 
-  it('transition matrix: inventory → durable persistence; restart recovery still missing', () => {
+  it('transition matrix: inventory → durable persistence; restart recovery complete', () => {
     expect(W5_N15_B_TRANSITION_MATRIX.before).toContain('Inventory');
     expect(W5_N15_B_TRANSITION_MATRIX.after).toContain('Durable Persistence');
     expect(

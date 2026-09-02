@@ -1853,4 +1853,25 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 **Explicit non-claim:** W5-N15-b does **not** authorize Notification Platform Telemetry implemented, metrics collection implemented, exporters implemented, dashboards implemented, restart recovery implemented, Notification Platform Complete, W5-N15 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
 
-**STOP.** W5-N15-b is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N15-c.
+**STOP.** W5-N15-b is **COMPLETE** (`5bf8b1b`). Do not open W5-N15-c without authorization.
+
+---
+
+## W5-N15-c validation (2026-09-02 — local)
+
+| Layer                     | Result   | Evidence                                                                            |
+| ------------------------- | -------- | ----------------------------------------------------------------------------------- |
+| Restart recovery hydrate  | **PASS** | `NotificationPlatformTelemetryRestartRecoveryService`                               |
+| Integrity verification    | **PASS** | Fail-honest corruption handling; no fabrication                                     |
+| Persistence integration   | **PASS** | Hydrated reads + write-through on `NotificationPlatformTelemetryPersistenceService` |
+| Inventory synchronization | **PASS** | Restart recovery row implemented; deferred recovery cleared                         |
+| Architecture integrity    | **PASS** | No ownership drift; Exchange Adapter untouched                                      |
+| Ownership boundaries      | **PASS** | No new persistence owner                                                            |
+| Conformance tests         | **PASS** | `w5-n15-c-notification-platform-telemetry-restart-recovery*.spec.ts`                |
+| Slice reports             | **PASS** | w5-n15-c-* reports under wave-5                                                     |
+| Regression suite          | **PASS** | lint / typecheck / test / build                                                     |
+| git diff --check          | **PASS** | No whitespace errors                                                                |
+
+**Explicit non-claim:** W5-N15-c does **not** authorize Notification Platform Telemetry implemented, metrics collection implemented, exporters implemented, dashboards implemented, operational continuity implemented, Notification Platform Complete, W5-N15 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
+
+**STOP.** W5-N15-c is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N15-d.

@@ -4,6 +4,7 @@ import {
   type DurableNotificationPlatformTelemetryAnchor,
 } from './domain/durable-notification-platform-telemetry-anchor';
 import type { NotificationPlatformTelemetryAnchorRepository } from './domain/notification-platform-telemetry-anchor.repository';
+import { NotificationPlatformTelemetryRecoveryStore } from './domain/notification-platform-telemetry-recovery-store';
 import { NotificationPlatformTelemetryPersistenceService } from './notification-platform-telemetry-persistence.service';
 
 const recordedAt = '2026-09-02T18:00:00.000Z';
@@ -39,7 +40,10 @@ function createRepository(): NotificationPlatformTelemetryAnchorRepository & {
 describe('NotificationPlatformTelemetryPersistenceService — W5-N15-b storage only', () => {
   it('persistTelemetryAnchor writes canonical platform telemetry anchors without runtime I/O', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformTelemetryPersistenceService(repository);
+    const service = new NotificationPlatformTelemetryPersistenceService(
+      repository,
+      new NotificationPlatformTelemetryRecoveryStore(),
+    );
     const outcome = await service.persistTelemetryAnchor({
       workspaceId: 'ws-1',
       telemetryAnchorId: 'telemetry-1',
@@ -68,7 +72,10 @@ describe('NotificationPlatformTelemetryPersistenceService — W5-N15-b storage o
 
   it('does not persist metrics collection, exporters, dashboards, aggregation, or transport fields', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformTelemetryPersistenceService(repository);
+    const service = new NotificationPlatformTelemetryPersistenceService(
+      repository,
+      new NotificationPlatformTelemetryRecoveryStore(),
+    );
 
     await service.persistTelemetryAnchor({
       workspaceId: 'ws-1',

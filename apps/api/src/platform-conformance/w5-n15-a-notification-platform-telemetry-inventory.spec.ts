@@ -222,7 +222,7 @@ describe('W5-N15-a notification platform telemetry inventory — unit', () => {
       'Notification Platform Telemetry Inventory Foundation',
     );
     expect(W5_N15_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N15_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(4);
+    expect(W5_N15_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(2);
   });
 });
 

@@ -1084,7 +1084,7 @@ export const W5_N15_A_NOTIFICATION_PLATFORM_TELEMETRY_INVENTORY: readonly W5N15A
       authorizesPlatformTelemetryFunctional: false as const,
       authorizesW5N15Complete: false as const,
       artifactId: 'missing-platform-telemetry-restart-recovery',
-      artifact: 'Platform telemetry restart recovery — hydrate dead-letter anchors',
+      artifact: 'Platform telemetry restart recovery — hydrate telemetry anchors',
       kind: 'runtime' as const,
       owner: 'notification-delivery' as const,
       durabilityClass: 'EPHEMERAL' as const,
@@ -1094,7 +1094,8 @@ export const W5_N15_A_NOTIFICATION_PLATFORM_TELEMETRY_INVENTORY: readonly W5N15A
       honestyRequirement:
         'Restart recovery restores canonical anchors only; operational continuity is W5-N15-d',
       futureW5N15Responsibility: 'W5-N15-d' as const,
-      evidencePath: 'docs/project/version-3/wave-5/w5-n15-implementation-package.md',
+      evidencePath:
+        'apps/api/src/modules/notification-delivery/domain/notification-platform-telemetry-restart-recovery.service.ts',
       existsToday: true as const,
       persistenceResponsibility: 'notification-delivery' as const,
       recoveryResponsibility: 'notification-delivery' as const,
@@ -2797,7 +2798,7 @@ export const W5_N15_A_HONEST_PRODUCT_BASELINE = Object.freeze({
 export const W5_N15_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Notification Platform Telemetry Inventory Foundation'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N15-b', 'W5-N15-c', 'W5-N15-d', 'W5-N15-e'] as const),
+  deferred: Object.freeze(['W5-N15-d', 'W5-N15-e'] as const),
 } as const);
 
 export function artifactIds(): readonly string[] {
