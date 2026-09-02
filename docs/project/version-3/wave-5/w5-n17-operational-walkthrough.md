@@ -87,8 +87,10 @@ Read-only — no runtime controls.
 
 ### 8. Final Integration Verification
 
-**Not performed** — separate act after Product Owner Package Review.
+Engineering verification confirms slices a–e form one coherent package. Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**. Document: `w5-n17-final-integration-verification.md` — **PASS** (local).
+
+Product Owner Final Close remains a separate act — **not performed**.
 
 ---
 
-**STOP.** Close Evidence assembled. Do not declare W5-N17 CLOSED. Do not declare Delivery Reliability implemented. Do not declare Wave 5 COMPLETE. Await Product Owner Package Review.
+**STOP.** Final Integration Verification **PASS** (local). Do not declare W5-N17 CLOSED. Do not declare Delivery Reliability implemented. Do not declare Wave 5 COMPLETE. Await Product Owner Final Close.

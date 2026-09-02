@@ -293,4 +293,16 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ---
 
-**STOP.** W5-N17-e Close Evidence is **COMPLETE** (local). Await Product Owner Package Review. Do not declare W5-N17 CLOSED. Do not perform Final Package Integration Verification. Do not declare Delivery Reliability implemented.
+## W5-N17 Final Integration Verification (2026-09-02)
+
+| Layer                                  | Result          | Evidence                                    |
+| -------------------------------------- | --------------- | ------------------------------------------- |
+| Final Package Integration Verification | **PASS**        | w5-n17-final-integration-verification.md    |
+| Slices a–e internally consistent       | **PASS**        | buildCloseEvidenceDiagnostics()             |
+| Regression suite                       | **PASS**        | lint / typecheck / test / web build         |
+| Product Owner Final Close              | **Pending**     | not performed from engineering verification |
+| W5-N17 CLOSED                          | **Not claimed** | awaiting Product Owner Final Review         |
+
+---
+
+**STOP.** Final Integration Verification **PASS** (local). Await Product Owner Final Review. Do not declare W5-N17 CLOSED. Do not perform Product Owner Final Close. Do not declare Delivery Reliability implemented.

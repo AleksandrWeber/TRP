@@ -259,23 +259,26 @@ describe('W5-N17-e package close evidence — integration / planning', () => {
     expect(existsSync(join(WAVE5, 'w5-n17-planning-summary.md'))).toBe(true);
   });
 
-  it('status docs: W5-N17 slices evidenced; package NOT CLOSED; Wave 5 COMPLETE not claimed', () => {
+  it('status docs: W5-N17 slices evidenced; Final Integration PASS; package NOT CLOSED', () => {
     const progress = readWave5('wave-5-progress.md');
     const overview = readWave5('notification-delivery-reliability-overview.md');
     const close = readWave5('w5-n17-close-package-report.md');
     const summary = readWave5('w5-n17-package-summary.md');
+    const finalIntegration = readWave5('w5-n17-final-integration-verification.md');
     expect(progress).toMatch(/W5-N17-a|W5-N17-b|W5-N17-c|W5-N17-d|W5-N17-e/);
+    expect(progress).toMatch(/Final Integration Verification[\s\S]*PASS/i);
     expect(progress).not.toMatch(/W5-N17\s+\*\*CLOSED\*\* by Product Owner/i);
     expect(progress).toMatch(/Wave 5 COMPLETE[\s\S]*Not claimed|Not claimed[\s\S]*Wave 5 COMPLETE/);
     expect(overview).toMatch(/STOP/);
-    expect(overview).toMatch(
-      /Delivery Reliability implemented[\s\S]*not|not[\s\S]*Delivery Reliability implemented|Do not declare Delivery Reliability implemented/i,
-    );
+    expect(overview).toMatch(/Final Integration Verification[\s\S]*PASS/i);
+    expect(overview).not.toMatch(/W5-N17\s+\*\*CLOSED\*\*/i);
     expect(close).toMatch(/Close Evidence|evidence assembled/i);
     expect(close).not.toMatch(/CLOSED by Product Owner/);
     expect(summary).toMatch(/Close Evidence/);
+    expect(summary).toMatch(/Final Integration Verification[\s\S]*PASS/i);
     expect(summary).not.toMatch(/\*\*CLOSED\*\* by Product Owner/);
-    expect(existsSync(join(WAVE5, 'w5-n17-final-integration-verification.md'))).toBe(false);
+    expect(finalIntegration).toMatch(/READY FOR PRODUCT OWNER FINAL CLOSE/i);
+    expect(existsSync(join(WAVE5, 'w5-n17-final-integration-verification.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'w5-n17-product-owner-close-record.md'))).toBe(false);
     expect(W5_N17_E_ARCHITECTURE_CLAIMS.packageCloseEvidenceAssembled).toBe(true);
     expect(W5_N17_E_ARCHITECTURE_CLAIMS.packageDeclaredClosed).toBe(false);

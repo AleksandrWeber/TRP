@@ -5,7 +5,7 @@
 **Master Plan / Roadmap:** V3-N17 · CM-27  
 **Evidence slice:** W5-N17-e  
 **Date:** 2026-09-02  
-**Status:** Close Evidence **COMPLETE** (local) · Final Integration Verification **not performed** · **NOT CLOSED** — awaiting Product Owner Package Review.
+**Status:** Close Evidence **COMPLETE** (`33e771b`) · Final Integration Verification **PASS** (local) · **NOT CLOSED** — awaiting Product Owner Final Close.
 
 ---
 
@@ -39,14 +39,14 @@
 
 ## Slice roll-up
 
-| Slice    | Outcome                                                                        | Status                                      |
-| -------- | ------------------------------------------------------------------------------ | ------------------------------------------- |
-| W5-N17-a | Notification Platform Delivery Reliability Inventory & Honest Product Baseline | **COMPLETE** (`ac832d5`)                    |
-| W5-N17-b | Durable Notification Platform Delivery Reliability Foundation                  | **COMPLETE** (`67c685f`)                    |
-| W5-N17-c | Notification Platform Delivery Reliability Restart Recovery Foundation         | **COMPLETE** (`b020bc6`)                    |
-| W5-N17-d | Notification Platform Delivery Reliability Operational Continuity Foundation   | **COMPLETE** (`61be07a`)                    |
-| W5-N17-e | Package Close Evidence                                                         | **COMPLETE** (local)                        |
-| W5-N17   | Package                                                                        | **NOT CLOSED** — awaiting PO Package Review |
+| Slice    | Outcome                                                                        | Status                                                           |
+| -------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| W5-N17-a | Notification Platform Delivery Reliability Inventory & Honest Product Baseline | **COMPLETE** (`ac832d5`)                                         |
+| W5-N17-b | Durable Notification Platform Delivery Reliability Foundation                  | **COMPLETE** (`67c685f`)                                         |
+| W5-N17-c | Notification Platform Delivery Reliability Restart Recovery Foundation         | **COMPLETE** (`b020bc6`)                                         |
+| W5-N17-d | Notification Platform Delivery Reliability Operational Continuity Foundation   | **COMPLETE** (`61be07a`)                                         |
+| W5-N17-e | Package Close Evidence                                                         | **COMPLETE** (`33e771b`)                                         |
+| W5-N17   | Package                                                                        | Final Integration Verification **PASS** (local) · **NOT CLOSED** |
 
 ---
 
@@ -59,4 +59,4 @@
 
 ---
 
-**STOP.** Close Evidence assembled. Do **not** declare W5-N17 CLOSED, Delivery Reliability implemented, Notification Platform Complete, or Wave 5 COMPLETE. Await Product Owner Package Review.
+**STOP.** Final Integration Verification **PASS** (local). Do **not** declare W5-N17 CLOSED, Delivery Reliability implemented, Notification Platform Complete, or Wave 5 COMPLETE. Await Product Owner Final Close.
