@@ -4,6 +4,7 @@ import {
   type DurableNotificationPlatformSchedulerAnchor,
 } from './domain/durable-notification-platform-scheduler-anchor';
 import type { NotificationPlatformSchedulerAnchorRepository } from './domain/notification-platform-scheduler-anchor.repository';
+import { NotificationPlatformSchedulerRecoveryStore } from './domain/notification-platform-scheduler-recovery-store';
 import { NotificationPlatformSchedulerPersistenceService } from './notification-platform-scheduler-persistence.service';
 
 const recordedAt = '2026-09-02T14:00:00.000Z';
@@ -31,7 +32,10 @@ function createRepository(): NotificationPlatformSchedulerAnchorRepository & {
 describe('NotificationPlatformSchedulerPersistenceService — W5-N12-b storage only', () => {
   it('persistSchedulerAnchor writes canonical platform scheduler anchors without runtime I/O', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformSchedulerPersistenceService(repository);
+    const service = new NotificationPlatformSchedulerPersistenceService(
+      repository,
+      new NotificationPlatformSchedulerRecoveryStore(),
+    );
     const outcome = await service.persistSchedulerAnchor({
       workspaceId: 'ws-1',
       schedulerAnchorId: 'scheduler-1',
@@ -60,7 +64,10 @@ describe('NotificationPlatformSchedulerPersistenceService — W5-N12-b storage o
 
   it('does not persist scheduler runtime, execution loop, retry, dead-letter, orchestration, or transport fields', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformSchedulerPersistenceService(repository);
+    const service = new NotificationPlatformSchedulerPersistenceService(
+      repository,
+      new NotificationPlatformSchedulerRecoveryStore(),
+    );
 
     await service.persistSchedulerAnchor({
       workspaceId: 'ws-1',

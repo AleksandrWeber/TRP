@@ -1238,16 +1238,31 @@ See [`w5-n12-b-implementation-report.md`](./w5-n12-b-implementation-report.md).
 
 ---
 
-## W5-N12 implementation slices
+## W5-N12-c status (Notification Platform Scheduler Restart Recovery Foundation)
 
-| Slice    | Name                                                                | Status             |
-| -------- | ------------------------------------------------------------------- | ------------------ |
-| W5-N12-a | Notification Platform Scheduler Inventory & Honest Product Baseline | **COMPLETE**       |
-| W5-N12-b | Durable Notification Platform Scheduler Foundation                  | **COMPLETE**       |
-| W5-N12-c | Notification Platform Scheduler Restart Recovery Foundation         | **NOT AUTHORIZED** |
-| W5-N12-d | Notification Platform Scheduler Operational Continuity Foundation   | **NOT AUTHORIZED** |
-| W5-N12-e | Package Close Evidence                                              | **NOT AUTHORIZED** |
+W5-N12-c restores previously persisted Notification Platform Scheduler anchors after normal process restart via deterministic, idempotent, fail-honest hydrate into `NotificationPlatformSchedulerRecoveryStore`. **No customer-visible Notification Platform Scheduler behaviour** was added.
+
+```text
+Restart recovery only — not scheduler runtime / scheduling engine / execution loop / retry / dead-letter / orchestration.
+Not operational continuity (W5-N12-d).
+Not Notification Platform Scheduler functional.
+Not W5-N12 COMPLETE.
+```
+
+See [`w5-n12-c-implementation-report.md`](./w5-n12-c-implementation-report.md).
 
 ---
 
-**STOP.** W5-N12-b is **COMPLETE**. Await explicit Product Owner instruction before W5-N12-c. Do not open W5-N12-c. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution implemented. Do not declare Notification Platform Worker Runtime Foundation implemented. Do not declare Notification Platform Scheduler Foundation implemented. Do not declare Scheduler runtime implemented. Do not declare Scheduler execution implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.
+## W5-N12 implementation slices
+
+| Slice    | Name                                                                | Status                                       |
+| -------- | ------------------------------------------------------------------- | -------------------------------------------- |
+| W5-N12-a | Notification Platform Scheduler Inventory & Honest Product Baseline | **COMPLETE**                                 |
+| W5-N12-b | Durable Notification Platform Scheduler Foundation                  | **COMPLETE**                                 |
+| W5-N12-c | Notification Platform Scheduler Restart Recovery Foundation         | **COMPLETE** — Awaiting Product Owner Review |
+| W5-N12-d | Notification Platform Scheduler Operational Continuity Foundation   | **NOT AUTHORIZED**                           |
+| W5-N12-e | Package Close Evidence                                              | **NOT AUTHORIZED**                           |
+
+---
+
+**STOP.** W5-N12-c is **COMPLETE**. Await Product Owner Review before Repository Synchronization. Do not open W5-N12-d. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution implemented. Do not declare Notification Platform Worker Runtime Foundation implemented. Do not declare Notification Platform Scheduler Foundation implemented. Do not declare Scheduler runtime implemented. Do not declare Scheduler execution implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.

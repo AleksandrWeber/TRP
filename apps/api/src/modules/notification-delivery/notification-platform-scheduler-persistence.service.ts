@@ -9,6 +9,7 @@ import {
   NOTIFICATION_PLATFORM_SCHEDULER_ANCHOR_REPOSITORY,
   type NotificationPlatformSchedulerAnchorRepository,
 } from './domain/notification-platform-scheduler-anchor.repository';
+import { NotificationPlatformSchedulerRecoveryStore } from './domain/notification-platform-scheduler-recovery-store';
 
 export type PersistNotificationPlatformSchedulerAnchorCommand = Readonly<{
   workspaceId: string;
@@ -22,21 +23,27 @@ export type PersistNotificationPlatformSchedulerAnchorCommand = Readonly<{
 }>;
 
 /**
- * W5-N12-b — durable Notification Platform Scheduler anchor persistence on Notification Delivery owner.
+ * W5-N12-b/c — durable Notification Platform Scheduler anchor persistence on Notification Delivery owner.
+ * W5-N12-c — write-through to recovery store after hydrate.
  * Storage only — no scheduler runtime, scheduling engine, execution loop, retry, dead-letter processing,
- * recovery store, restart recovery, or operational continuity.
+ * orchestration, or operational continuity.
  */
 @Injectable()
 export class NotificationPlatformSchedulerPersistenceService {
   constructor(
     @Inject(NOTIFICATION_PLATFORM_SCHEDULER_ANCHOR_REPOSITORY)
     private readonly repository: NotificationPlatformSchedulerAnchorRepository,
+    @Inject(NotificationPlatformSchedulerRecoveryStore)
+    private readonly recoveryStore: NotificationPlatformSchedulerRecoveryStore,
   ) {}
 
   async loadAnchor(
     workspaceId: string,
     schedulerAnchorId: string,
   ): Promise<DurableNotificationPlatformSchedulerAnchor | null> {
+    if (this.recoveryStore.hasHydrated()) {
+      return this.recoveryStore.get(workspaceId, schedulerAnchorId);
+    }
     return this.repository.loadNotificationPlatformSchedulerAnchor(workspaceId, schedulerAnchorId);
   }
 
@@ -49,6 +56,7 @@ export class NotificationPlatformSchedulerPersistenceService {
       return outcome;
     }
     await this.repository.saveNotificationPlatformSchedulerAnchor(outcome.anchor);
+    this.recoveryStore.set(outcome.anchor);
     return outcome;
   }
 }

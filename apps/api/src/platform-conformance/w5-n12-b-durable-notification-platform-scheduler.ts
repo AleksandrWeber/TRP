@@ -126,7 +126,6 @@ export const W5_N12_B_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Notification Platform Scheduler Durable Foundation'] as const),
   introduced: Object.freeze([] as const),
   deferred: Object.freeze([
-    'W5-N12-c — Notification Platform Scheduler Restart Recovery Foundation',
     'W5-N12-d — Notification Platform Scheduler Operational Continuity Foundation',
     'W5-N12-e — Package Close Evidence',
   ] as const),
@@ -136,7 +135,6 @@ export const W5_N12_B_TRANSITION_MATRIX = Object.freeze({
   before: 'Inventory (W5-N12-a)',
   after: 'Durable Persistence (W5-N12-b)',
   stillMissing: Object.freeze([
-    'Restart Recovery (W5-N12-c)',
     'Operational Continuity (W5-N12-d)',
     'Package Close (W5-N12-e)',
   ] as const),

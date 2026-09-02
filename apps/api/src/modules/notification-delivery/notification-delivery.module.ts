@@ -44,6 +44,8 @@ import { NotificationPlatformWorkersPersistenceService } from './notification-pl
 import { NotificationPlatformWorkerExecutionPersistenceService } from './notification-platform-worker-execution-persistence.service';
 import { NotificationPlatformWorkerRuntimePersistenceService } from './notification-platform-worker-runtime-persistence.service';
 import { NotificationPlatformSchedulerPersistenceService } from './notification-platform-scheduler-persistence.service';
+import { NotificationPlatformSchedulerRecoveryStore } from './domain/notification-platform-scheduler-recovery-store';
+import { NotificationPlatformSchedulerRestartRecoveryService } from './domain/notification-platform-scheduler-restart-recovery.service';
 import { NotificationPlatformWorkerRuntimeRecoveryStore } from './notification-platform-worker-runtime-recovery-store';
 import { NotificationPlatformWorkerRuntimeRestartRecoveryService } from './notification-platform-worker-runtime-restart-recovery.service';
 import { NotificationPlatformWorkerExecutionRecoveryStore } from './notification-platform-worker-execution-recovery-store';
@@ -197,6 +199,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformWorkerExecutionPersistenceService,
     NotificationPlatformWorkerRuntimePersistenceService,
     NotificationPlatformSchedulerPersistenceService,
+    NotificationPlatformSchedulerRecoveryStore,
+    NotificationPlatformSchedulerRestartRecoveryService,
     NotificationPlatformWorkerRuntimeRecoveryStore,
     NotificationPlatformWorkerRuntimeRestartRecoveryService,
     NotificationPlatformWorkerExecutionRecoveryStore,
@@ -259,6 +263,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformWorkerExecutionPersistenceService,
     NotificationPlatformWorkerRuntimePersistenceService,
     NotificationPlatformSchedulerPersistenceService,
+    NotificationPlatformSchedulerRecoveryStore,
+    NotificationPlatformSchedulerRestartRecoveryService,
     NotificationPlatformWorkerRuntimeRecoveryStore,
     NotificationPlatformWorkerRuntimeRestartRecoveryService,
     NotificationPlatformWorkerExecutionRecoveryStore,

@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PrismaNotificationPlatformSchedulerAnchorRepository } from '../modules/notification-delivery/persistence/prisma-notification-platform-scheduler-anchor.repository';
+import { NotificationPlatformSchedulerRecoveryStore } from '../modules/notification-delivery/domain/notification-platform-scheduler-recovery-store';
 import { NotificationPlatformSchedulerPersistenceService } from '../modules/notification-delivery/notification-platform-scheduler-persistence.service';
 import { rowsEphemeral } from './w5-n12-a-notification-platform-scheduler-inventory';
 import {
@@ -69,7 +70,10 @@ describe('W5-N12-b durable notification platform scheduler — unit', () => {
   it('persistence correctness: anchor upserts workspace scheduler row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaNotificationPlatformSchedulerAnchorRepository(prisma as never);
-    const service = new NotificationPlatformSchedulerPersistenceService(repository);
+    const service = new NotificationPlatformSchedulerPersistenceService(
+      repository,
+      new NotificationPlatformSchedulerRecoveryStore(),
+    );
 
     const outcome = await service.persistSchedulerAnchor({
       workspaceId: 'ws-a',
@@ -153,12 +157,14 @@ describe('W5-N12-b durable notification platform scheduler — unit', () => {
     expect(sync.noPlatformSchedulerAuthorization).toBe(true);
   });
 
-  it('transition matrix: inventory → durable persistence → restart recovery still missing', () => {
+  it('transition matrix: inventory → durable persistence; operational continuity still missing', () => {
     expect(W5_N12_B_TRANSITION_MATRIX.before).toContain('Inventory');
     expect(W5_N12_B_TRANSITION_MATRIX.after).toContain('Durable Persistence');
-    expect(W5_N12_B_TRANSITION_MATRIX.stillMissing.some((item) => item.includes('Restart'))).toBe(
-      true,
-    );
+    expect(
+      W5_N12_B_TRANSITION_MATRIX.stillMissing.some((item) =>
+        item.includes('Operational Continuity'),
+      ),
+    ).toBe(true);
   });
 });
 
@@ -180,14 +186,14 @@ describe('W5-N12-b durable notification platform scheduler — integration', () 
     expect(W5_N12_B_ARCHITECTURE_CLAIMS.exchangeAdapterUntouched).toBe(true);
   });
 
-  it('technical debt delta: durable foundation resolved; restart recovery deferred', () => {
+  it('technical debt delta: durable foundation resolved; operational continuity deferred', () => {
     expect(W5_N12_B_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Notification Platform Scheduler Durable Foundation',
     );
     expect(W5_N12_B_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(
       W5_N12_B_TECHNICAL_DEBT_DELTA.deferred.some((item) =>
-        item.toLowerCase().includes('restart recovery'),
+        item.toLowerCase().includes('continuity'),
       ),
     ).toBe(true);
   });
