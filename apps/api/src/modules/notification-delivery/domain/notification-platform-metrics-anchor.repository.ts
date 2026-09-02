@@ -15,6 +15,11 @@ export interface NotificationPlatformMetricsAnchorRepository {
     workspaceId: string,
     metricsAnchorId: string,
   ): Promise<DurableNotificationPlatformMetricsAnchor | null>;
+
+  /** Deterministic load for restart recovery (W5-N16-c). */
+  listAllNotificationPlatformMetricsAnchors(): Promise<
+    readonly DurableNotificationPlatformMetricsAnchor[]
+  >;
 }
 
 export const NOTIFICATION_PLATFORM_METRICS_ANCHOR_REPOSITORY = Symbol(

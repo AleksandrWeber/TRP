@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PrismaNotificationPlatformMetricsAnchorRepository } from '../modules/notification-delivery/persistence/prisma-notification-platform-metrics-anchor.repository';
+import { NotificationPlatformMetricsRecoveryStore } from '../modules/notification-delivery/domain/notification-platform-metrics-recovery-store';
 import { NotificationPlatformMetricsPersistenceService } from '../modules/notification-delivery/notification-platform-metrics-persistence.service';
 import { rowsEphemeral } from './w5-n16-a-notification-platform-metrics-inventory';
 import {
@@ -69,7 +70,10 @@ describe('W5-N16-b durable notification platform metrics — unit', () => {
   it('persistence correctness: anchor upserts workspace metrics row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaNotificationPlatformMetricsAnchorRepository(prisma as never);
-    const service = new NotificationPlatformMetricsPersistenceService(repository);
+    const service = new NotificationPlatformMetricsPersistenceService(
+      repository,
+      new NotificationPlatformMetricsRecoveryStore(),
+    );
 
     const outcome = await service.persistNotificationPlatformMetricsAnchor({
       workspaceId: 'ws-a',
@@ -188,7 +192,6 @@ describe('W5-N16-b durable notification platform metrics — integration', () =>
     );
     expect(W5_N16_B_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N16_B_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N16-c — Notification Platform Metrics Restart Recovery Foundation',
       'W5-N16-d — Notification Platform Metrics Operational Continuity Foundation',
       'W5-N16-e — Package Close Evidence',
     ]);

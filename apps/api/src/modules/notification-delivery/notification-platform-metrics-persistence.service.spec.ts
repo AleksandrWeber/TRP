@@ -4,6 +4,7 @@ import {
   type DurableNotificationPlatformMetricsAnchor,
 } from './domain/durable-notification-platform-metrics-anchor';
 import type { NotificationPlatformMetricsAnchorRepository } from './domain/notification-platform-metrics-anchor.repository';
+import { NotificationPlatformMetricsRecoveryStore } from './domain/notification-platform-metrics-recovery-store';
 import { NotificationPlatformMetricsPersistenceService } from './notification-platform-metrics-persistence.service';
 
 const recordedAt = '2026-09-02T19:00:00.000Z';
@@ -24,13 +25,25 @@ function createRepository(): NotificationPlatformMetricsAnchorRepository & {
       async (workspaceId, metricsAnchorId) =>
         byKey.get(`${workspaceId}:${metricsAnchorId}`) ?? null,
     ),
+    listAllNotificationPlatformMetricsAnchors: vi.fn(async () =>
+      [...byKey.values()].sort((a, b) => {
+        const workspaceCompare = a.workspaceId.localeCompare(b.workspaceId);
+        if (workspaceCompare !== 0) {
+          return workspaceCompare;
+        }
+        return a.metricsAnchorId.localeCompare(b.metricsAnchorId);
+      }),
+    ),
   };
 }
 
 describe('NotificationPlatformMetricsPersistenceService — W5-N16-b storage only', () => {
   it('persistNotificationPlatformMetricsAnchor writes canonical platform metrics anchors without runtime I/O', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformMetricsPersistenceService(repository);
+    const service = new NotificationPlatformMetricsPersistenceService(
+      repository,
+      new NotificationPlatformMetricsRecoveryStore(),
+    );
     const outcome = await service.persistNotificationPlatformMetricsAnchor({
       workspaceId: 'ws-1',
       metricsAnchorId: 'metrics-1',
@@ -59,7 +72,10 @@ describe('NotificationPlatformMetricsPersistenceService — W5-N16-b storage onl
 
   it('does not persist metrics collection, exporters, dashboards, aggregation, or transport fields', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformMetricsPersistenceService(repository);
+    const service = new NotificationPlatformMetricsPersistenceService(
+      repository,
+      new NotificationPlatformMetricsRecoveryStore(),
+    );
 
     await service.persistNotificationPlatformMetricsAnchor({
       workspaceId: 'ws-1',

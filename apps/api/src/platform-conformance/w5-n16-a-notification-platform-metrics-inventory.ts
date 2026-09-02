@@ -1114,18 +1114,19 @@ export const W5_N16_A_NOTIFICATION_PLATFORM_METRICS_INVENTORY: readonly W5N16AIn
       kind: 'runtime' as const,
       owner: 'notification-delivery' as const,
       durabilityClass: 'EPHEMERAL' as const,
-      capabilityCategory: 'not-implemented' as const,
+      capabilityCategory: 'infrastructure-only' as const,
       currentStatus:
-        'Missing — no NotificationPlatformMetricsRestartRecoveryService; deferred to W5-N16-c',
+        'Implemented — NotificationPlatformMetricsRestartRecoveryService hydrates W5-N16-b anchors on module init',
       honestyRequirement:
         'Restart recovery restores canonical anchors only; operational continuity is W5-N16-d',
-      futureW5N16Responsibility: 'W5-N16-c' as const,
-      evidencePath: 'docs/project/version-3/wave-5/w5-n16-product-scope.md',
-      existsToday: false as const,
-      persistenceResponsibility: 'none-missing' as const,
-      recoveryResponsibility: 'none-missing' as const,
-      operationalContinuityResponsibility: 'none-missing' as const,
-      honestProductState: 'not-implemented' as const,
+      futureW5N16Responsibility: 'W5-N16-d' as const,
+      evidencePath:
+        'apps/api/src/modules/notification-delivery/domain/notification-platform-metrics-restart-recovery.service.ts',
+      existsToday: true as const,
+      persistenceResponsibility: 'notification-delivery' as const,
+      recoveryResponsibility: 'notification-delivery' as const,
+      operationalContinuityResponsibility: 'w5-n16-d' as const,
+      honestProductState: 'infrastructure-only' as const,
     }),
     Object.freeze({
       authorizesPlatformMetricsFunctional: false as const,

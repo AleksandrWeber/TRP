@@ -48,6 +48,15 @@ export class PrismaNotificationPlatformMetricsAnchorRepository implements Notifi
     });
     return row ? toDomain(row) : null;
   }
+
+  async listAllNotificationPlatformMetricsAnchors(): Promise<
+    readonly DurableNotificationPlatformMetricsAnchor[]
+  > {
+    const rows = await this.prisma.workspaceNotificationPlatformMetricsAnchor.findMany({
+      orderBy: [{ workspaceId: 'asc' }, { metricsAnchorId: 'asc' }],
+    });
+    return Object.freeze(rows.map((row) => toDomain(row)));
+  }
 }
 
 function toRow(

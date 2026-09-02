@@ -1998,4 +1998,23 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 **Explicit non-claim:** W5-N16-b does **not** authorize Notification Platform Metrics implemented, metrics collection implemented, exporters implemented, restart recovery implemented, Notification Platform Complete, W5-N16 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
 
-**STOP.** W5-N16-b is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N16-c without authorization.
+**STOP.** W5-N16-b is **COMPLETE** (`ef141c6`). Await Product Owner Review before Repository Synchronization. Do not open W5-N16-c without authorization.
+
+---
+
+## W5-N16-c validation (2026-09-02 — local)
+
+| Layer                     | Result   | Evidence                                                           |
+| ------------------------- | -------- | ------------------------------------------------------------------ |
+| Restart recovery hydrate  | **PASS** | `NotificationPlatformMetricsRestartRecoveryService`                |
+| Inventory synchronization | **PASS** | `missing-platform-metrics-restart-recovery` marked implemented     |
+| Architecture integrity    | **PASS** | No ownership drift; Exchange Adapter untouched                     |
+| Ownership boundaries      | **PASS** | No new persistence owner                                           |
+| Conformance tests         | **PASS** | `w5-n16-c-notification-platform-metrics-restart-recovery*.spec.ts` |
+| Slice reports             | **PASS** | w5-n16-c-* reports under wave-5                                    |
+| Regression suite          | **PASS** | lint / typecheck / test / build                                    |
+| git diff --check          | **PASS** | No whitespace errors                                               |
+
+**Explicit non-claim:** W5-N16-c does **not** authorize Notification Platform Metrics implemented, metrics collection implemented, exporters implemented, operational continuity implemented, Notification Platform Complete, W5-N16 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
+
+**STOP.** W5-N16-c is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N16-d without authorization.

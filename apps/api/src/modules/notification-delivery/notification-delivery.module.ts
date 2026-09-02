@@ -58,6 +58,8 @@ import { NotificationPlatformTelemetryPersistenceService } from './notification-
 import { NotificationPlatformMetricsPersistenceService } from './notification-platform-metrics-persistence.service';
 import { NotificationPlatformTelemetryRecoveryStore } from './domain/notification-platform-telemetry-recovery-store';
 import { NotificationPlatformTelemetryRestartRecoveryService } from './domain/notification-platform-telemetry-restart-recovery.service';
+import { NotificationPlatformMetricsRecoveryStore } from './domain/notification-platform-metrics-recovery-store';
+import { NotificationPlatformMetricsRestartRecoveryService } from './domain/notification-platform-metrics-restart-recovery.service';
 import { NotificationPlatformDeadLetterRecoveryStore } from './domain/notification-platform-dead-letter-recovery-store';
 import { NotificationPlatformDeadLetterRestartRecoveryService } from './domain/notification-platform-dead-letter-restart-recovery.service';
 import { NotificationPlatformRetryRecoveryStore } from './domain/notification-platform-retry-recovery-store';
@@ -245,6 +247,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformDeadLetterPersistenceService,
     NotificationPlatformTelemetryPersistenceService,
     NotificationPlatformMetricsPersistenceService,
+    NotificationPlatformMetricsRecoveryStore,
+    NotificationPlatformMetricsRestartRecoveryService,
     NotificationPlatformTelemetryRecoveryStore,
     NotificationPlatformTelemetryRestartRecoveryService,
     NotificationPlatformDeadLetterRecoveryStore,
@@ -319,6 +323,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformDeadLetterPersistenceService,
     NotificationPlatformTelemetryPersistenceService,
     NotificationPlatformMetricsPersistenceService,
+    NotificationPlatformMetricsRecoveryStore,
+    NotificationPlatformMetricsRestartRecoveryService,
     NotificationPlatformTelemetryRecoveryStore,
     NotificationPlatformTelemetryRestartRecoveryService,
     NotificationPlatformDeadLetterRecoveryStore,
