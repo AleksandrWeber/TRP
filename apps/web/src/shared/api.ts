@@ -1080,6 +1080,8 @@ export type OperationalContinuityReadinessView = {
   notificationPlatformDeadLetter: NotificationPlatformDeadLetterContinuityView | null;
   /** W5-N15-d — Notification Platform Telemetry operational continuity. */
   notificationPlatformTelemetry: NotificationPlatformTelemetryContinuityView | null;
+  /** W5-N16-d — Notification Platform Metrics operational continuity. */
+  notificationPlatformMetrics: NotificationPlatformMetricsContinuityView | null;
 };
 
 export type NotificationQueueContinuityView = {
@@ -1353,6 +1355,18 @@ export type NotificationPlatformDeadLetterContinuityView = {
 };
 
 export type NotificationPlatformTelemetryContinuityView = {
+  operationalState: OperationalContinuityState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+};
+
+export type NotificationPlatformMetricsContinuityView = {
   operationalState: OperationalContinuityState;
   ownerReadiness: 'ready' | 'unavailable' | 'degraded';
   recoveryTimestamp: string | null;

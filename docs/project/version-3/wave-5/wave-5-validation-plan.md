@@ -2017,4 +2017,26 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 **Explicit non-claim:** W5-N16-c does **not** authorize Notification Platform Metrics implemented, metrics collection implemented, exporters implemented, operational continuity implemented, Notification Platform Complete, W5-N16 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
 
-**STOP.** W5-N16-c is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N16-d without authorization.
+**STOP.** W5-N16-c is **COMPLETE** (`bdf2f99`). Do not open W5-N16-d without authorization.
+
+---
+
+## W5-N16-d validation (2026-09-02 — local)
+
+| Layer                     | Result   | Evidence                                                                     |
+| ------------------------- | -------- | ---------------------------------------------------------------------------- |
+| Operational continuity    | **PASS** | `buildNotificationPlatformMetricsView` derived from W5-N16-c recovery record |
+| Platform Readiness        | **PASS** | `notificationPlatformMetrics` on `PlatformOperationalProjection`             |
+| Service wiring            | **PASS** | Recovering + final bootstrap in `OperationalContinuityService`               |
+| Web projection            | **PASS** | Notification Platform Metrics section in `OperationalContinuityView.tsx`     |
+| Inventory synchronization | **PASS** | Operational continuity + unified view rows implemented                       |
+| Architecture integrity    | **PASS** | No ownership drift; Exchange Adapter untouched                               |
+| Ownership boundaries      | **PASS** | No new persistence owner                                                     |
+| Conformance tests         | **PASS** | `w5-n16-d-notification-platform-metrics-operational-continuity*.spec.ts`     |
+| Slice reports             | **PASS** | w5-n16-d-* reports under wave-5                                              |
+| Regression suite          | **PASS** | lint / typecheck / test / build                                              |
+| git diff --check          | **PASS** | No whitespace errors                                                         |
+
+**Explicit non-claim:** W5-N16-d does **not** authorize Notification Platform Metrics implemented, metrics collection implemented, exporters implemented, dashboards implemented, Notification Platform Complete, W5-N16 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
+
+**STOP.** W5-N16-d is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N16-e.

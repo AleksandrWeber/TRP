@@ -259,6 +259,16 @@ const ready: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: [],
   },
+  notificationPlatformMetrics: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:00:00.000Z',
+    recoveryDurationMs: 42,
+    restoredCount: 0,
+    canonicalAnchorCount: 0,
+    integrityVerified: true,
+    workspaceIds: [],
+  },
 };
 
 const degraded: OperationalContinuityReadinessView = {
@@ -524,6 +534,16 @@ const degraded: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: ['ws-1'],
   },
+  notificationPlatformMetrics: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:01:00.000Z',
+    recoveryDurationMs: 100,
+    restoredCount: 1,
+    canonicalAnchorCount: 1,
+    integrityVerified: true,
+    workspaceIds: ['ws-1'],
+  },
 };
 
 describe('OperationalContinuityView', () => {
@@ -761,6 +781,16 @@ describe('OperationalContinuityView', () => {
     const html = renderToStaticMarkup(<OperationalContinuityView readiness={ready} />);
     expect(html).toContain('Notification Platform Telemetry');
     expect(html).toContain('Notification Platform Telemetry operational state');
+    expect(html).toContain('Canonical anchors');
+    expect(html).not.toContain('Executing');
+    expect(html).not.toContain('Implemented');
+    expect(html).not.toContain('Cross-channel');
+  });
+
+  it('shows Notification Platform Metrics operational state within platform readiness only', () => {
+    const html = renderToStaticMarkup(<OperationalContinuityView readiness={ready} />);
+    expect(html).toContain('Notification Platform Metrics');
+    expect(html).toContain('Notification Platform Metrics operational state');
     expect(html).toContain('Canonical anchors');
     expect(html).not.toContain('Executing');
     expect(html).not.toContain('Implemented');

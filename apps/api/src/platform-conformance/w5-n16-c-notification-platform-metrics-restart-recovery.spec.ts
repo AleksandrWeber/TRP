@@ -177,13 +177,10 @@ describe('W5-N16-c notification platform metrics restart recovery — integratio
     ).toBe(false);
   });
 
-  it('technical debt delta: restart recovery resolved; no operational continuity deferred from slice c', () => {
+  it('technical debt delta: restart recovery resolved; operational continuity deferred to W5-N16-e only', () => {
     expect(W5_N16_C_TECHNICAL_DEBT_DELTA.resolved.length).toBeGreaterThan(0);
     expect(W5_N16_C_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N16_C_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N16-d — Notification Platform Metrics Operational Continuity Foundation',
-      'W5-N16-e — Package Close Evidence',
-    ]);
+    expect(W5_N16_C_TECHNICAL_DEBT_DELTA.deferred).toEqual([]);
   });
 
   it('explicit OUT covers metrics collection runtime only (not operational continuity)', () => {

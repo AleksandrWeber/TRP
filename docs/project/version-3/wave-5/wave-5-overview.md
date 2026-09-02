@@ -1466,20 +1466,19 @@ See [`w5-n15-final-integration-verification.md`](./w5-n15-final-integration-veri
 
 ---
 
-## W5-N16 status (Notification Platform Metrics — W5-N16-c COMPLETE)
+## W5-N16 status (Notification Platform Metrics — W5-N16-d COMPLETE)
 
-W5-N16 Notification Platform Metrics Foundation: Planning **APPROVED**; W5-N16-a inventory **COMPLETE** (`6454eea`); W5-N16-b durable anchors **COMPLETE** (`ef141c6`); W5-N16-c restart recovery **COMPLETE** (local). **Awaiting Product Owner Review.** **No metrics collection.** **No operational continuity.**
+W5-N16 Notification Platform Metrics Foundation: Planning **APPROVED**; W5-N16-a inventory **COMPLETE** (`6454eea`); W5-N16-b durable anchors **COMPLETE** (`ef141c6`); W5-N16-c restart recovery **COMPLETE** (`bdf2f99`); W5-N16-d operational continuity **COMPLETE** (local). **Awaiting Product Owner Review.** **No metrics collection.**
 
 ```text
-Restart recovery foundation only — not metrics collection runtime.
-Not metric exporters, dashboards, alerting, analytics, or production monitoring.
-Not operational continuity (W5-N16-d).
+Operational continuity foundation only — derived from W5-N16-c restart recovery.
+Not metric collection runtime, exporters, dashboards, alerting, analytics, or production monitoring.
 Not Notification Platform Metrics functional.
 Not W5-N16 COMPLETE.
 Customer-visible platform metrics remains unchanged until later slices + Product Owner Close.
 ```
 
-See [`w5-n16-c-implementation-report.md`](./w5-n16-c-implementation-report.md).
+See [`w5-n16-d-implementation-report.md`](./w5-n16-d-implementation-report.md).
 
 ---
 
@@ -1489,11 +1488,11 @@ See [`w5-n16-c-implementation-report.md`](./w5-n16-c-implementation-report.md).
 | -------- | ----------------------------------------------------------------- | ----------------------------------------- |
 | W5-N16-a | Notification Platform Metrics Inventory & Honest Product Baseline | **COMPLETE** (`6454eea`)                  |
 | W5-N16-b | Durable Notification Platform Metrics Foundation                  | **COMPLETE** (`ef141c6`)                  |
-| W5-N16-c | Notification Platform Metrics Restart Recovery Foundation         | **COMPLETE** (local) — Awaiting PO Review |
-| W5-N16-d | Notification Platform Metrics Operational Continuity Foundation   | Not opened                                |
+| W5-N16-c | Notification Platform Metrics Restart Recovery Foundation         | **COMPLETE** (`bdf2f99`)                  |
+| W5-N16-d | Notification Platform Metrics Operational Continuity Foundation   | **COMPLETE** (local) — Awaiting PO Review |
 | W5-N16-e | Package Close Evidence                                            | Not opened                                |
-| W5-N16   | Package                                                           | W5-N16-c **COMPLETE** (local)             |
+| W5-N16   | Package                                                           | W5-N16-d **COMPLETE** (local)             |
 
 ---
 
-**STOP.** W5-N16-c is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N16-d. Do not declare Notification Platform Metrics Foundation implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare W5-N16 COMPLETE. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N16-d is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N16-e. Do not declare Notification Platform Metrics Foundation implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare W5-N16 COMPLETE. Do not declare Wave 5 COMPLETE.
