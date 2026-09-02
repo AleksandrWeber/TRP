@@ -240,7 +240,7 @@ describe('W5-N11-e package close evidence — integration / planning', () => {
     expect(existsSync(join(WAVE5, 'wave-5-validation-plan.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'wave-5-progress.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'w5-n11-planning-approval.md'))).toBe(true);
-    expect(existsSync(join(WAVE5, 'w5-n11-final-integration-verification.md'))).toBe(false);
+    expect(existsSync(join(WAVE5, 'w5-n11-final-integration-verification.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'w5-n11-product-owner-close-record.md'))).toBe(false);
   });
 
@@ -279,21 +279,23 @@ describe('W5-N11-e package close evidence — integration / planning', () => {
     expect(view).not.toMatch(/Executing|Live Trading/i);
   });
 
-  it('status docs: W5-N11-e COMPLETE; package not CLOSED; Final Integration not performed', () => {
+  it('status docs: Final Integration Verification PASS; package not CLOSED; PO Close Record not created', () => {
     const progress = readWave5('wave-5-progress.md');
     const overview = readWave5('wave-5-overview.md');
     const close = readWave5('w5-n11-package-close-report.md');
     const summary = readWave5('w5-n11-package-summary.md');
+    const finalIntegration = readWave5('w5-n11-final-integration-verification.md');
     expect(progress).toMatch(/W5-N11-a|W5-N11-b|W5-N11-c|W5-N11-d|W5-N11-e/);
-    expect(progress).toMatch(/W5-N11-e[\s\S]*COMPLETE|Final Package Integration Verification/i);
-    expect(progress).toMatch(
-      /\| W5-N11\s+\| Package[\s\S]*COMPLETE|Final Package Integration Verification/i,
-    );
+    expect(progress).toMatch(/Final Integration Verification[\s\S]*PASS/i);
+    expect(progress).toMatch(/Awaiting Product Owner Final Close/i);
+    expect(overview).toMatch(/Final Integration Verification PASS/i);
     expect(overview).toMatch(/STOP/);
     expect(overview).toMatch(
       /Do not declare Notification Platform Worker Runtime Foundation implemented/,
     );
-    expect(overview).toMatch(/Do not perform Final Package Integration Verification/);
+    expect(finalIntegration).toMatch(/READY FOR PRODUCT OWNER FINAL CLOSE/i);
+    expect(finalIntegration).toMatch(/97%/);
+    expect(finalIntegration).not.toMatch(/Product Owner Final Close executed/i);
     expect(close).toMatch(/RECORDED|Evidence assembled/i);
     expect(summary).toMatch(/foundation scope only|not platform worker runtime execution/i);
     expect(close).not.toMatch(/CLOSED by Product Owner/);
