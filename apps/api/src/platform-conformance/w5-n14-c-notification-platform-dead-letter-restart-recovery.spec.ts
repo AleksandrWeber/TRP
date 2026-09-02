@@ -166,24 +166,18 @@ describe('W5-N14-c notification platform dead-letter restart recovery — integr
     ]);
   });
 
-  it('transition matrix: persistence + recovery; operational continuity still missing', () => {
+  it('transition matrix: persistence + recovery; package close still missing', () => {
     expect(W5_N14_C_TRANSITION_MATRIX.before).toContain('Durable persistence (W5-N14-b)');
     expect(W5_N14_C_TRANSITION_MATRIX.after).toContain('Restart recovery (W5-N14-c)');
     expect(
-      W5_N14_C_TRANSITION_MATRIX.stillMissing.some((item) =>
-        item.includes('Operational Continuity'),
-      ),
+      W5_N14_C_TRANSITION_MATRIX.stillMissing.some((item) => item.includes('Package Close')),
     ).toBe(true);
   });
 
-  it('technical debt delta: restart recovery resolved; operational continuity deferred', () => {
+  it('technical debt delta: restart recovery resolved; package close deferred', () => {
     expect(W5_N14_C_TECHNICAL_DEBT_DELTA.resolved.length).toBeGreaterThan(0);
     expect(W5_N14_C_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(
-      W5_N14_C_TECHNICAL_DEBT_DELTA.deferred.some((item) =>
-        item.toLowerCase().includes('operational continuity'),
-      ),
-    ).toBe(true);
+    expect(W5_N14_C_TECHNICAL_DEBT_DELTA.deferred).toEqual(['W5-N14-e — Package Close Evidence']);
   });
 
   it('explicit OUT covers dead-letter runtime only (not operational continuity)', () => {

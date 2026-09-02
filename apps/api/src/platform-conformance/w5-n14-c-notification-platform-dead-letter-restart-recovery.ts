@@ -74,10 +74,7 @@ export const W5_N14_C_TECHNICAL_DEBT_DELTA = Object.freeze({
     'Notification Platform Dead Letter Restart Recovery Foundation',
   ] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze([
-    'W5-N14-d — Notification Platform Dead Letter Operational Continuity Foundation',
-    'W5-N14-e — Package Close Evidence',
-  ] as const),
+  deferred: Object.freeze(['W5-N14-e — Package Close Evidence'] as const),
 } as const);
 
 export const W5_N14_C_TRANSITION_MATRIX = Object.freeze({
@@ -93,7 +90,6 @@ export const W5_N14_C_TRANSITION_MATRIX = Object.freeze({
     'Recovery deterministic, idempotent, fail-honest on corruption',
   ] as const),
   stillMissing: Object.freeze([
-    'Operational Continuity (W5-N14-d)',
     'Package Close (W5-N14-e)',
     'Dead-letter runtime, dead-letter replay, dead-letter processing, retry integration, scheduler integration, and workers integration',
   ] as const),

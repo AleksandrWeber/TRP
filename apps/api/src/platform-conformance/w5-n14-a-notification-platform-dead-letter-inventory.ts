@@ -1062,12 +1062,14 @@ export const W5_N14_A_NOTIFICATION_PLATFORM_DEAD_LETTER_INVENTORY: readonly W5N1
       kind: 'operational' as const,
       owner: 'platform-readiness' as const,
       durabilityClass: 'EPHEMERAL' as const,
-      capabilityCategory: 'not-implemented' as const,
-      currentStatus: 'Missing — buildNotificationPlatformDeadLetterView deferred to W5-N14-d',
+      capabilityCategory: 'infrastructure-only' as const,
+      currentStatus:
+        'Implemented — buildNotificationPlatformDeadLetterView derives readiness from W5-N14-c recovery record',
       honestyRequirement: 'Dead-letter continuity follows restart recovery (W5-N14-c/d)',
-      futureW5N14Responsibility: 'W5-N14-d' as const,
-      evidencePath: 'docs/project/version-3/wave-5/w5-n14-product-scope.md',
-      existsToday: false as const,
+      futureW5N14Responsibility: 'W5-N14-e' as const,
+      evidencePath:
+        'apps/api/src/modules/notification-delivery/domain/notification-platform-dead-letter-operational-continuity.ts',
+      existsToday: true as const,
       persistenceResponsibility: 'none-missing' as const,
       recoveryResponsibility: 'none-missing' as const,
       operationalContinuityResponsibility: 'platform-readiness' as const,
@@ -2495,6 +2497,7 @@ export const W5_N14_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N13 platform retry anchors, recovery, and continuity on notification-delivery owner (consumed)',
     'W5-N14-b platform dead-letter anchors on notification-delivery owner (anchor-recorded only)',
     'W5-N14-c platform dead-letter restart recovery hydrate on notification-delivery owner',
+    'W5-N14-d platform dead-letter operational continuity projection on Platform Readiness',
     'Platform Readiness notificationPlatformWorkerRuntime — W5-N11-d projection — W5-N10-d projection',
     'Platform Readiness notificationPlatformDelivery, notificationPlatformDispatch, and notificationPlatformQueue projections',
     'Per-channel, integration, delivery, dispatch, queue, and workers operational continuity projections in Platform Readiness',
@@ -2505,12 +2508,9 @@ export const W5_N14_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N01…N14-a machine inventories — foundation reference patterns',
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
-  plannedCapabilities: Object.freeze([
-    'W5-N14-d — Notification Platform Dead Letter Operational Continuity Foundation',
-  ] as const),
+  plannedCapabilities: Object.freeze(['W5-N14-e — Package Close Evidence'] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform dead-letter layer',
-    'Platform dead-letter operational continuity (W5-N14-d deferred)',
     'Cross-channel honest dead-letter rule unification',
     'Dead-letter runtime',
     'Retry execution',
@@ -2534,7 +2534,7 @@ export const W5_N14_A_HONEST_PRODUCT_BASELINE = Object.freeze({
 export const W5_N14_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Notification Platform Dead Letter Inventory Foundation'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N14-d', 'W5-N14-e'] as const),
+  deferred: Object.freeze(['W5-N14-e — Package Close Evidence'] as const),
 } as const);
 
 export function artifactIds(): readonly string[] {

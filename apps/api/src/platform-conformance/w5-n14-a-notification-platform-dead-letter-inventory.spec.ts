@@ -217,12 +217,12 @@ describe('W5-N14-a notification platform dead-letter inventory — unit', () => 
     ).toBeGreaterThanOrEqual(3);
   });
 
-  it('technical debt delta: inventory resolved; b–e deferred; nothing introduced', () => {
+  it('technical debt delta: inventory resolved; package close deferred; nothing introduced', () => {
     expect(W5_N14_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Notification Platform Dead Letter Inventory Foundation',
     );
     expect(W5_N14_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N14_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(2);
+    expect(W5_N14_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(1);
   });
 });
 

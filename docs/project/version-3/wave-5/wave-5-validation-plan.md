@@ -1517,7 +1517,25 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 **Explicit non-claim:** W5-N14-c does **not** authorize Notification Platform Dead Letter implemented, dead-letter runtime implemented, dead-letter replay implemented, operational continuity implemented, Notification Platform Complete, W5-N14 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
 
-**STOP.** W5-N14-c is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N14-d.
+**STOP.** W5-N14-c is **COMPLETE** (`c60f606`). Await Product Owner Review before Repository Synchronization. Do not open W5-N14-d.
+
+---
+
+## W5-N14-d validation (2026-09-02 — local)
+
+| Area                     | Result   | Evidence                                                                 |
+| ------------------------ | -------- | ------------------------------------------------------------------------ |
+| Domain evaluator         | **PASS** | `notification-platform-dead-letter-operational-continuity.ts`            |
+| Platform Readiness       | **PASS** | `NotificationPlatformDeadLetterContinuityView` on projection             |
+| Service wiring           | **PASS** | `buildNotificationPlatformDeadLetterView()` in recovering + final phases |
+| Web projection           | **PASS** | Notification Platform Dead Letter section in `OperationalContinuityView` |
+| Conformance registry     | **PASS** | `w5-n14-d-notification-platform-dead-letter-operational-continuity.ts`   |
+| W5-N14-c sync            | **PASS** | deferred debt / transition matrix updated                                |
+| Ownership / architecture | **PASS** | notification-delivery owner only; no new persistence owner               |
+
+**Explicit non-claim:** W5-N14-d does **not** authorize Notification Platform Dead Letter implemented, dead-letter runtime implemented, dead-letter replay implemented, dead-letter processing implemented, Notification Platform Complete, W5-N14 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
+
+**STOP.** W5-N14-d is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N14-e.
 
 ---
 

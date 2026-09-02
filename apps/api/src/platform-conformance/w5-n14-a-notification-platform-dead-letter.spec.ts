@@ -89,7 +89,7 @@ describe('W5-N14-a notification platform dead-letter conformance — unit', () =
       'Notification Platform Dead Letter Inventory Foundation',
     );
     expect(W5_N14_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N14_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(2);
+    expect(W5_N14_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(1);
   });
 
   it('diagnostics roll-up passes for slice a scope', () => {

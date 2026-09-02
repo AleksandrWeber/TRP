@@ -106,6 +106,13 @@ import {
   resetNotificationPlatformRetryContinuity,
 } from '../notification-delivery/domain/notification-platform-retry-continuity-status';
 import { buildNotificationPlatformRetryRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-retry-restart-recovery';
+import { buildNotificationPlatformDeadLetterAnchorState } from '../notification-delivery/domain/durable-notification-platform-dead-letter-anchor';
+import {
+  recordNotificationPlatformDeadLetterRecoveryStart,
+  recordNotificationPlatformDeadLetterRecoverySuccess,
+  resetNotificationPlatformDeadLetterContinuity,
+} from '../notification-delivery/domain/notification-platform-dead-letter-continuity-status';
+import { buildNotificationPlatformDeadLetterRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-dead-letter-restart-recovery';
 
 describe('OperationalContinuityService', () => {
   beforeEach(() => {
@@ -827,6 +834,50 @@ describe('OperationalContinuityService', () => {
 
     expect(projection.notificationPlatformRetry?.operationalState).toBe('Ready');
     expect(projection.notificationPlatformRetry?.canonicalAnchorCount).toBe(1);
+    expect(projection.platformState).toBe('Ready');
+  });
+
+  it('includes notification platform dead-letter continuity derived from W5-N14-c recovery record', async () => {
+    resetNotificationPlatformDeadLetterContinuity();
+    const anchor = buildNotificationPlatformDeadLetterAnchorState({
+      workspaceId: 'ws-1',
+      deadLetterAnchorId: 'dead-letter-1',
+      platformDeadLetterType: 'unified-platform-dead-letter',
+      correlationId: 'corr-1',
+      actorId: 'actor-1',
+      recordedAt: '2026-09-02T16:00:00.000Z',
+      prior: null,
+    });
+    if (!anchor.ok) throw new Error('expected anchor');
+    recordNotificationPlatformDeadLetterRecoveryStart();
+    recordNotificationPlatformDeadLetterRecoverySuccess({
+      diagnostics: buildNotificationPlatformDeadLetterRecoveryDiagnostics([anchor.anchor]),
+    });
+
+    const audit = {
+      recordOwnerState: vi.fn(async () => undefined),
+      recordRecoveryCompleted: vi.fn(async () => undefined),
+    } as unknown as OperationalContinuityAudit;
+    const service = new OperationalContinuityService(audit);
+    const projection = await service.applyBootOutcomesForTest(
+      (
+        [
+          'strategy-library',
+          'exchange-scope',
+          'knowledge-lake',
+          'market-profile',
+          'market-qualification',
+          'market-state',
+          'reporting',
+          'notification-delivery',
+          'trading-orchestrator',
+          'runtime-enforcement',
+        ] as const
+      ).map((owner) => ({ owner, outcome: 'ready' as const })),
+    );
+
+    expect(projection.notificationPlatformDeadLetter?.operationalState).toBe('Ready');
+    expect(projection.notificationPlatformDeadLetter?.canonicalAnchorCount).toBe(1);
     expect(projection.platformState).toBe('Ready');
   });
 });
