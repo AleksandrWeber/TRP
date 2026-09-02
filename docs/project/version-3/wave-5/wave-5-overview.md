@@ -1466,4 +1466,34 @@ See [`w5-n15-final-integration-verification.md`](./w5-n15-final-integration-veri
 
 ---
 
-**STOP.** W5-N15 is **CLOSED** by Product Owner. Await explicit Product Owner instruction before W5-N16 Planning Package. Do not declare Notification Platform Telemetry Foundation implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE. Do not open W5-N16 without explicit authorization.
+## W5-N16 status (Notification Platform Metrics — Planning OPEN)
+
+W5-N16 Notification Platform Metrics Foundation Planning Package is **OPEN**. Awaiting Planning Review. **No implementation.** **No slices opened.**
+
+```text
+Planning only — not metrics foundation implementation.
+Not metric collection runtime, metric exporters, dashboards, alerting, analytics, or production monitoring.
+Not platform metrics anchors (W5-N16-b).
+Not Notification Platform Metrics functional.
+Not W5-N16 COMPLETE.
+Customer-visible platform metrics remains unchanged until later slices + Product Owner Close.
+```
+
+See [`w5-n16-planning-summary.md`](./w5-n16-planning-summary.md).
+
+---
+
+## W5-N16 implementation slices (planning only — not opened)
+
+| Slice    | Name                                                              | Status        |
+| -------- | ----------------------------------------------------------------- | ------------- |
+| W5-N16-a | Notification Platform Metrics Inventory & Honest Product Baseline | Not opened    |
+| W5-N16-b | Durable Notification Platform Metrics Foundation                  | Not opened    |
+| W5-N16-c | Notification Platform Metrics Restart Recovery Foundation         | Not opened    |
+| W5-N16-d | Notification Platform Metrics Operational Continuity Foundation   | Not opened    |
+| W5-N16-e | Package Close Evidence                                            | Not opened    |
+| W5-N16   | Package                                                           | Planning OPEN |
+
+---
+
+**STOP.** W5-N16 Planning Package is **OPEN**. Await explicit Product Owner instruction before W5-N16 Planning Review. Do not declare Notification Platform Metrics Foundation implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE. Do not create W5-N16-a.
