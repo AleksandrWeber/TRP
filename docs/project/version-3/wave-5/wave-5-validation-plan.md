@@ -1815,3 +1815,23 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 ---
 
 **STOP.** W5-N06 is **CLOSED** by Product Owner. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Delivery complete. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N07 without separate Product Owner instruction.
+
+---
+
+## W5-N15-a validation (2026-09-02 — local)
+
+| Layer                   | Result   | Evidence                                                              |
+| ----------------------- | -------- | --------------------------------------------------------------------- |
+| Inventory completeness  | **PASS** | `w5-n15-a-notification-platform-telemetry-inventory.ts`               |
+| Honest Product baseline | **PASS** | `platformTelemetryAnchorsMissing: true`; no customer-visible feature  |
+| Architecture integrity  | **PASS** | No ownership drift; Exchange Adapter untouched                        |
+| Ownership boundaries    | **PASS** | No new persistence owner                                              |
+| Honesty boundaries      | **PASS** | Telemetry foundation ≠ Live Trading; dead-letter ≠ telemetry complete |
+| Conformance tests       | **PASS** | `w5-n15-a-notification-platform-telemetry*.spec.ts`                   |
+| Slice reports           | **PASS** | w5-n15-a-* reports under wave-5                                       |
+| Regression suite        | **PASS** | lint / typecheck / test / build                                       |
+| git diff --check        | **PASS** | No whitespace errors                                                  |
+
+**Explicit non-claim:** W5-N15-a does **not** authorize Notification Platform Telemetry implemented, metrics collection implemented, exporters implemented, dashboards implemented, Notification Platform Complete, W5-N15 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
+
+**STOP.** W5-N15-a is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N15-b.
