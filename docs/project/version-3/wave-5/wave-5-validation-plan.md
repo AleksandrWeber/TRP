@@ -1460,6 +1460,26 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
+## W5-N14-a validation (2026-09-02 — local)
+
+| Layer                   | Result   | Evidence                                                              |
+| ----------------------- | -------- | --------------------------------------------------------------------- |
+| Inventory completeness  | **PASS** | `w5-n14-a-notification-platform-dead-letter-inventory.ts`             |
+| Honest Product baseline | **PASS** | `platformDeadLetterAnchorsMissing: true`; no customer-visible feature |
+| Architecture integrity  | **PASS** | No ownership drift; Exchange Adapter untouched                        |
+| Ownership boundaries    | **PASS** | No new persistence owner                                              |
+| Honesty boundaries      | **PASS** | Dead-letter foundation ≠ Live Trading; retry ≠ dead-letter complete   |
+| Conformance tests       | **PASS** | `w5-n14-a-notification-platform-dead-letter*.spec.ts`                 |
+| Slice reports           | **PASS** | w5-n14-a-* reports under wave-5                                       |
+| Regression suite        | **PASS** | lint / typecheck / test / build                                       |
+| git diff --check        | **PASS** | No whitespace errors                                                  |
+
+**Explicit non-claim:** W5-N14-a does **not** authorize Notification Platform Dead Letter implemented, dead-letter runtime implemented, dead-letter replay implemented, dead-letter processing implemented, Notification Platform Complete, W5-N14 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
+
+**STOP.** W5-N14-a is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N14-b.
+
+---
+
 | W5-N08 opened | **Yes** | W5-N08 **CLOSED** by Product Owner (2026-08-29) |
 
 **Explicit non-claim:** Product Owner Close does **not** authorize Notification Platform Queue implemented, Notification Platform Complete, queue workers implemented, queue orchestration implemented, retry implemented, scheduler implemented, Production Ready, Live Notifications, W5-N08 COMPLETE, or Wave 5 COMPLETE.
