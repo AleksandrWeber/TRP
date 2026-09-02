@@ -2,7 +2,7 @@
 
 **Document:** W5-N17 Notification Platform Delivery Reliability Foundation Overview
 **Date:** 2026-09-02
-**Status:** Product-facing record. W5-N17 Planning **OPEN**. Awaiting Planning Review. Not implementation. No platform delivery reliability foundation. No delivery execution runtime. No production transport I/O. No outbound notifications.
+**Status:** Product-facing record. W5-N17 Planning **OPEN**. W5-N17-a inventory **COMPLETE** — internal inventory only. No platform delivery reliability foundation. No delivery execution runtime. No production transport I/O. No outbound notifications.
 **Product:** Wave 5 — Notification Platform · Package W5-N17 (V3-N17 · CM-27)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -46,7 +46,7 @@ W5-N01…N16 foundations are consumed — not redesigned.
 5. Configure individual channels on their existing surfaces (transport I/O remains per-channel scope).
 6. Stay inside their workspace and authorization.
 
-**Not available today** — W5-N01…N16 each closed channel-specific and platform foundations only. No cross-channel platform delivery reliability foundation layer exists. All reserved-inactive channels remain honestly reserved. No production transport I/O. No delivery execution runtime. W5-N17 Planning is **OPEN** only — no implementation in this act.
+**Not available today** — W5-N17-a established the canonical Delivery Reliability Inventory only. No cross-channel platform delivery reliability foundation layer exists. All reserved-inactive channels remain honestly reserved. No production transport I/O. No delivery execution runtime. W5-N17-b…e not opened.
 
 ---
 
@@ -60,6 +60,47 @@ W5-N01…N16 foundations are consumed — not redesigned.
 - Start Live Trading or submit live orders to capital (Wave 6 + ADR).
 - Use notifications as a trading control plane.
 - Use Anthropic / AI features from this package (Wave 7 scope).
+
+---
+
+## What Delivery Reliability means (operator language)
+
+In Version 3, **Delivery Reliability** means honest **platform delivery reliability foundation** on the existing notification system — inventory, saved reliability state, restart recovery, and health projection across all channels. It is owned by the same notification delivery system that already handles your channels.
+
+**Delivery Reliability does NOT mean** your messages were successfully delivered, accepted by the provider, received by the recipient, guaranteed end-to-end, delivered in real time, or delivered exactly once. Those require separate transport and delivery evidence — not foundation slices alone.
+
+---
+
+## Delivery Reliability DOES NOT mean (Honest Product — canonical)
+
+| Claim                         | Meaning for operators                        |
+| ----------------------------- | -------------------------------------------- |
+| Successful transport delivery | **Not claimed** from W5-N17 foundation alone |
+| Provider acceptance           | **Not claimed** from W5-N17 foundation alone |
+| Message received by recipient | **Not claimed** from W5-N17 foundation alone |
+| End-to-end delivery guarantee | **Not claimed** from W5-N17 foundation alone |
+| Real-time delivery guarantee  | **Not claimed** from W5-N17 foundation alone |
+| Exactly-once delivery         | **Not claimed** from W5-N17 foundation alone |
+
+Those remain outside this package unless a later package explicitly implements them.
+
+---
+
+## How W5-N14, W5-N15, and W5-N16 relate
+
+W5-N17 builds on three already-closed platform foundations:
+
+- **W5-N14** provides dead-letter foundation — W5-N17 uses it, does not change it.
+- **W5-N15** provides telemetry foundation — W5-N17 uses it, does not change it.
+- **W5-N16** provides metrics foundation — W5-N17 uses it, does not change it.
+
+No ownership moves between packages. Nothing from N14, N15, or N16 is redesigned.
+
+---
+
+## Governance (binding)
+
+Engineering prepares evidence only. The Product Owner alone decides when W5-N17 planning is approved and when the package is accepted at Close. Engineering must never show reliability claims to customers beyond what the evidence actually proves.
 
 ---
 
@@ -110,15 +151,16 @@ Never claim production transports operational from W5-N17 foundation alone.
 
 ## Technical debt
 
-| Item                                     | Status at planning open                              |
-| ---------------------------------------- | ---------------------------------------------------- |
-| TD-049 Telegram production Bot API       | **Deferred** — not resolved by planning open         |
-| TD-050 Reserved notification channels    | **Deferred** — not resolved by planning open         |
-| Platform delivery reliability foundation | **Deferred** to W5-N17 implementation after Approval |
-| Delivery execution runtime               | **Deferred** post-foundation                         |
-| Dead-letter processing                   | **Deferred** post-foundation                         |
-| Automatic replay                         | **Deferred** post-foundation                         |
-| Retry execution                          | **Deferred** post-foundation                         |
+| Item                                     | Status at planning open                      |
+| ---------------------------------------- | -------------------------------------------- |
+| TD-049 Telegram production Bot API       | **Deferred** — not resolved by planning open |
+| TD-050 Reserved notification channels    | **Deferred** — not resolved by planning open |
+| Platform delivery reliability foundation | **Deferred** to W5-N17-b after Approval      |
+| Delivery Reliability inventory baseline  | **Resolved** by W5-N17-a                     |
+| Delivery execution runtime               | **Deferred** post-foundation                 |
+| Dead-letter processing                   | **Deferred** post-foundation                 |
+| Automatic replay                         | **Deferred** post-foundation                 |
+| Retry execution                          | **Deferred** post-foundation                 |
 
 **Technical debt introduced by this planning open:** None.
 
@@ -142,4 +184,4 @@ Never claim production transports operational from W5-N17 foundation alone.
 
 ---
 
-**STOP.** W5-N17 Planning Package is **OPEN**. Await explicit Product Owner instruction before Planning Review. Do not create W5-N17-a. Do not begin implementation.
+**STOP.** W5-N17-a is **COMPLETE** (uncommitted). Await Product Owner Review. Do not open W5-N17-b. Do not declare Delivery Reliability implemented.

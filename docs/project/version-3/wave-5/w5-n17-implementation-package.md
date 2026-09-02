@@ -159,6 +159,43 @@ It consumes Wave 1 vault, Closed Wave 2 Connection Management, Closed Wave 3 dur
 
 ---
 
+## What Delivery Reliability means in Version 3 (binding)
+
+**Delivery Reliability** in Version 3 means only the **reliability foundation capabilities owned by the existing `notification-delivery` bounded context** — cross-channel delivery reliability inventory, durable reliability anchors, restart recovery reliability foundation, operational continuity reliability foundation, and honest platform-wide reliability rules.
+
+**Owner:** Existing **`notification-delivery`** bounded context only. No new owner. No new bounded context.
+
+**Delivery Reliability does NOT mean:** successful transport delivery, provider acceptance, message received by recipient, end-to-end delivery guarantee, real-time delivery guarantee, exactly-once delivery, delivery execution runtime, dead-letter processing, retry execution, production transport I/O, Live Notifications, or Live Trading. See [`w5-n17-product-scope.md`](./w5-n17-product-scope.md) for canonical Honest Product boundaries.
+
+---
+
+## Relationship with W5-N14 / W5-N15 / W5-N16 (binding)
+
+| Package    | Provides                                                                                                     | W5-N17                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- |
+| **W5-N14** | Dead-letter foundation: inventory, durable anchors, restart recovery, operational continuity, Close Evidence | **Consumed** — ownership retained; not redesigned |
+| **W5-N15** | Telemetry foundation: inventory, durable anchors, restart recovery, operational continuity, Close Evidence   | **Consumed** — ownership retained; not redesigned |
+| **W5-N16** | Metrics foundation: inventory, durable anchors, restart recovery, operational continuity, Close Evidence     | **Consumed** — ownership retained; not redesigned |
+| **W5-N17** | Delivery reliability foundation on N14/N15/N16 inputs                                                        | **Consumes all three** — no ownership transfer    |
+
+---
+
+## Restart continuity and durable anchors (binding)
+
+**Durable anchors**, **restart recovery**, and **operational continuity** extend the existing **`notification-delivery` owner only**. They do **not** introduce a new durability platform, runtime platform, operational platform, or persistence owner.
+
+---
+
+## Governance (binding)
+
+| Rule          | Binding                                                                                                      |
+| ------------- | ------------------------------------------------------------------------------------------------------------ |
+| Engineering   | Prepares **implementation evidence only**                                                                    |
+| Product Owner | **Only** authority that determines W5-N17 package acceptance (Planning Approval, slice authorization, Close) |
+| Prohibition   | Engineering must **never** infer customer-visible reliability claims beyond implemented evidence             |
+
+---
+
 ## Customer Problem
 
 - **Problem:** W5-N01…N16 each closed channel-specific, integration, delivery, dispatch, queue, workers, worker execution, worker runtime, scheduler, retry, dead-letter, telemetry, and metrics foundations without production transport I/O or delivery execution runtime. Platform conformance inventories record missing platform delivery reliability across N09…N16. TD-049 (Telegram production Bot API) and TD-050 (reserved notification channels) remain deferred. PC-06 routing-to-active-transport wave exit criterion is not evidenced at delivery reliability scope. CM-27 readiness for Notification Platform Delivery Reliability Foundation is **0%** per planning baseline.

@@ -104,16 +104,20 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## 5. Governance validation
 
-| Area                    | Must prove                                   |
-| ----------------------- | -------------------------------------------- |
-| Master Plan             | Unchanged by W5-N17                          |
-| Version 2               | Consumed only — no redesign                  |
-| Ownership boundaries    | Notification Platform and Delivery preserved |
-| Persistence ownership   | notification-delivery owner only             |
-| Secret Vault boundaries | Vault owns credentials                       |
-| Workspace isolation     | Unchanged                                    |
-| Planning Review         | PASS before implementation                   |
-| Planning Approval       | RECORDED before W5-N17-a                     |
+| Area                            | Must prove                                                                          |
+| ------------------------------- | ----------------------------------------------------------------------------------- |
+| Master Plan                     | Unchanged by W5-N17                                                                 |
+| Version 2                       | Consumed only — no redesign                                                         |
+| Ownership boundaries            | Notification Platform and Delivery preserved                                        |
+| Persistence ownership           | notification-delivery owner only                                                    |
+| Secret Vault boundaries         | Vault owns credentials                                                              |
+| Workspace isolation             | Unchanged                                                                           |
+| Planning Review                 | PASS before implementation                                                          |
+| Planning Approval               | RECORDED before W5-N17-a                                                            |
+| Engineering evidence only       | Engineering prepares evidence — does not self-approve or self-close                 |
+| Product Owner acceptance        | Product Owner alone determines package acceptance                                   |
+| No inferred reliability claims  | Customer-visible claims require implemented evidence only                           |
+| Delivery Reliability boundaries | Successful transport / recipient / end-to-end / exactly-once / real-time remain OUT |
 
 ---
 
@@ -191,6 +195,18 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ---
 
+## W5-N17-a slice validation (2026-09-02)
+
+| Layer                  | Result          | Evidence                                     |
+| ---------------------- | --------------- | -------------------------------------------- |
+| W5-N17-a inventory     | **PASS**        | w5-n17-a-delivery-reliability-inventory      |
+| Reliability classified | **PASS**        | FOUNDATION/DURABLE/RECOVERABLE/EPHEMERAL/OUT |
+| Ownership verified     | **PASS**        | All rows on existing owners                  |
+| Customer-visible       | **PASS**        | None — internal inventory only               |
+| W5-N17-b opened        | **Not claimed** | Slice b not opened                           |
+
+---
+
 ## Planning open validation (this act)
 
 | Layer                 | Result   | Evidence                        |
@@ -219,4 +235,4 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ---
 
-**STOP.** W5-N17 Planning Package is **OPEN**. Await explicit Product Owner instruction before Planning Review. Do not create W5-N17-a. Do not begin implementation.
+**STOP.** W5-N17-a is **COMPLETE** (uncommitted). Await Product Owner Review. Do not open W5-N17-b. Do not declare Delivery Reliability implemented.

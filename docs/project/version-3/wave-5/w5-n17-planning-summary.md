@@ -78,7 +78,16 @@ Under `docs/project/version-3/wave-5/`:
 | [`w5-n17-validation-plan.md`](./w5-n17-validation-plan.md)                                         | Validation plan                   |
 | [`notification-delivery-reliability-overview.md`](./notification-delivery-reliability-overview.md) | Operator / PO language overview   |
 | [`w5-n17-planning-summary.md`](./w5-n17-planning-summary.md)                                       | This summary                      |
+| [`w5-n17-planning-refinement-summary.md`](./w5-n17-planning-refinement-summary.md)                 | Planning refinement record        |
+| [`w5-n17-architecture-verification.md`](./w5-n17-architecture-verification.md)                     | Architecture verification         |
+| [`w5-n17-governance-verification.md`](./w5-n17-governance-verification.md)                         | Governance verification           |
 | [`wave-5-progress.md`](./wave-5-progress.md)                                                       | Wave 5 progress (updated)         |
+
+---
+
+## Planning refinement (2026-09-02)
+
+Planning refinement **COMPLETE** — clarifies Delivery Reliability definition, W5-N14/N15/N16 consumption relationship, restart continuity wording, canonical Honest Product boundaries, and governance. No functional scope changes. See [`w5-n17-planning-refinement-summary.md`](./w5-n17-planning-refinement-summary.md).
 
 ---
 
@@ -144,6 +153,15 @@ Under `docs/project/version-3/wave-5/`:
 
 9. **Does W5-N17 introduce architectural changes?**
    No.
+
+10. **What does Delivery Reliability mean in Version 3?**
+    Cross-channel delivery reliability **foundation** capabilities owned by the existing **`notification-delivery` bounded context** — inventory, durable anchors, restart recovery, operational continuity, honest rules. Not transport success, provider acceptance, recipient delivery, or delivery guarantees.
+
+11. **What does Delivery Reliability explicitly NOT mean?**
+    Successful transport delivery, provider acceptance, message received by recipient, end-to-end delivery guarantee, real-time delivery guarantee, exactly-once delivery, delivery execution runtime, Live Notifications, or Live Trading.
+
+12. **Which existing package owns Delivery Reliability?**
+    Existing **`notification-delivery`** owner only. W5-N17 extends — does not replace.
 
 ---
 

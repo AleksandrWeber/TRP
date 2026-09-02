@@ -130,6 +130,11 @@ Not Wave 3 MN-02 Observability product scope.
 | Per-channel honesty preserved | Platform layer does not override channel truth                                    |
 | N05…N16 honesty preserved     | Reliability layer does not override prior platform foundation truth               |
 | No delivery runtime claim     | Foundation ≠ execution/dead-letter/retry/monitoring                               |
+| No recipient delivery claim   | Foundation ≠ message received by recipient                                        |
+| No end-to-end guarantee claim | Foundation ≠ end-to-end delivery guarantee                                        |
+| No exactly-once claim         | Foundation ≠ exactly-once delivery                                                |
+| No real-time guarantee claim  | Foundation ≠ real-time delivery guarantee                                         |
+| No engineering self-close     | Product Owner alone determines package acceptance                                 |
 | Fail honest                   | Missing/corrupt state surfaces honestly — not fabricated                          |
 
 ---

@@ -82,6 +82,81 @@ Foundation ≠ production transport I/O.
 
 ---
 
+## What Delivery Reliability means in Version 3 (binding)
+
+In Version 3, **Delivery Reliability** means only the **reliability foundation capabilities owned by the existing `notification-delivery` bounded context**:
+
+| Capability                         | Meaning at W5-N17 scope                                                                                     |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Delivery reliability inventory     | Cross-channel enumeration of reliability foundation surfaces; SURVIVE/EPHEMERAL; honesty rules              |
+| Durable reliability anchors        | Persisted reliability foundation state on the existing `notification-delivery` owner                        |
+| Restart recovery reliability       | Hydration of reliability foundation state after normal API restart on the same owner                        |
+| Operational continuity reliability | Honest Platform Readiness projection for cross-channel reliability on existing operational continuity owner |
+| Honest reliability rules           | Consistent platform-wide reliability semantics — foundation evidence only                                   |
+
+**Owner:** Existing **`notification-delivery` bounded context** only. W5-N17 extends that owner. It does **not** create a new owner or bounded context.
+
+**Delivery Reliability is foundation-only.** It is the coherence layer that unifies dead-letter, telemetry, and metrics inputs into honest cross-channel reliability state — not delivery execution, not transport I/O, and not a trading control plane.
+
+---
+
+## What Delivery Reliability does NOT mean (binding)
+
+Delivery Reliability **does not** mean:
+
+- Successful transport delivery
+- Provider acceptance
+- Message received by recipient
+- End-to-end delivery guarantee
+- Real-time delivery guarantee
+- Exactly-once delivery
+
+Those remain **outside W5-N17** unless explicitly implemented by later packages.
+
+Delivery Reliability also **does not** mean: delivery execution runtime, dead-letter processing, automatic replay, retry execution, notification execution, scheduler execution, worker execution, production runtime, production transport I/O, metric collection runtime, Live Notifications, Live Trading, Production Ready, Notification Platform Complete, or Wave 5 COMPLETE.
+
+---
+
+## Relationship with W5-N14 / W5-N15 / W5-N16 (binding)
+
+W5-N17 **consumes** all three closed packages. **No ownership is transferred. No previous package is redesigned.**
+
+| Package    | Provides (closed — ownership retained on `notification-delivery` owner)                                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **W5-N14** | Cross-channel **dead-letter foundation**: inventory, durable dead-letter anchors, restart recovery dead-letter foundation, operational continuity dead-letter foundation, Close Evidence |
+| **W5-N15** | Cross-channel **telemetry foundation**: inventory, durable telemetry anchors, restart recovery telemetry foundation, operational continuity telemetry foundation, Close Evidence         |
+| **W5-N16** | Cross-channel **metrics foundation**: inventory, durable metric anchors, restart recovery metrics foundation, operational continuity metrics foundation, Close Evidence                  |
+
+| W5-N17 rule                          | Binding                                                                  |
+| ------------------------------------ | ------------------------------------------------------------------------ |
+| Consumes W5-N14 dead-letter          | Reads N14 foundation outputs — does not redesign or re-own N14 artifacts |
+| Consumes W5-N15 telemetry            | Reads N15 foundation outputs — does not redesign or re-own N15 artifacts |
+| Consumes W5-N16 metrics              | Reads N16 foundation outputs — does not redesign or re-own N16 artifacts |
+| Owns delivery reliability foundation | New reliability foundation layer on same `notification-delivery` owner   |
+
+---
+
+## Restart continuity and durable anchors (binding)
+
+The terms **durable anchors**, **restart recovery**, and **operational continuity** in W5-N17 planning extend the **existing `notification-delivery` owner only**:
+
+| Term                       | Binding rule                                                                                                                      |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **Durable anchors**        | Persist reliability foundation artifacts on the same `notification-delivery` persistence substrate as N01…N16                     |
+| **Restart recovery**       | Hydrate reliability foundation state after normal API restart on the same owner — no new recovery subsystem                       |
+| **Operational continuity** | Project Platform Readiness for reliability on existing operational continuity owner — `notification-delivery` substrate unchanged |
+
+These capabilities do **not** introduce:
+
+- A new durability platform
+- A new runtime platform
+- A new operational platform
+- A new persistence owner
+
+Wave 3 durability products (e.g. W3-O02 queue substrate) remain **consumed only** — not replaced or duplicated.
+
+---
+
 ## Why Notification Platform Delivery Reliability Foundation exists (business language)
 
 Wave 2 closed Connection Management and the notification catalog. Wave 3 closed the durable notification queue. W5-N01…N16 each closed per-channel and platform foundations through metrics scope. W5-N14 closed dead-letter foundation, W5-N15 closed telemetry foundation, and W5-N16 closed metrics foundation. Product Owner defers platform delivery reliability foundation to **V3-N17 · CM-27**.
@@ -227,6 +302,29 @@ After this package Closes (post-implementation), an operator can:
 
 ---
 
+## Delivery Reliability DOES NOT mean (Honest Product — canonical)
+
+This section is the **canonical Honest Product boundary** for W5-N17. Engineering and operators must treat it as binding.
+
+Delivery Reliability **DOES NOT** mean:
+
+| Claim                         | Status                                                              |
+| ----------------------------- | ------------------------------------------------------------------- |
+| Successful transport delivery | **OUT** — requires real per-channel transport I/O (TD-049 / TD-050) |
+| Provider acceptance           | **OUT** — requires provider round-trip evidence beyond foundation   |
+| Message received by recipient | **OUT** — recipient delivery is not evidenced by foundation slices  |
+| End-to-end delivery guarantee | **OUT** — no end-to-end guarantee from W5-N17 foundation alone      |
+| Real-time delivery guarantee  | **OUT** — no real-time guarantee from W5-N17 foundation alone       |
+| Exactly-once delivery         | **OUT** — no exactly-once guarantee from W5-N17 foundation alone    |
+
+Those remain outside this package unless explicitly implemented by later packages.
+
+Never show **Reliability Ready** without real delivery outcome round-trip evidence.
+
+Never infer recipient delivery, provider acceptance, or delivery guarantees from **Platform Ready** or reliability foundation anchors alone.
+
+---
+
 ## Honest Product rules (binding)
 
 | Label                 | Meaning                                                                                 |
@@ -304,6 +402,19 @@ Never claim delivery execution runtime, dead-letter processing, automatic replay
 **Technical debt introduced by this planning open:** None.
 
 **Technical debt resolved by this planning open:** Planning preparation only.
+
+---
+
+## Governance (binding)
+
+| Rule          | Binding                                                                                                                    |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Engineering   | Prepares **implementation evidence only** — inventory, anchors, recovery, continuity, Close Evidence, walkthrough          |
+| Product Owner | **Only** authority that determines W5-N17 **Planning Approval**, slice authorization, and **package Close**                |
+| Prohibition   | Engineering must **never** infer customer-visible reliability claims beyond implemented evidence                           |
+| Honesty       | If evidence is insufficient, surface honestly — do not fabricate Platform Ready, Reliability Ready, or delivery guarantees |
+
+Engineering must not self-approve planning, self-open W5-N17-a, or self-close the package.
 
 ---
 
