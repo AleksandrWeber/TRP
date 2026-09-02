@@ -92,6 +92,13 @@ import {
 } from '../notification-delivery/domain/notification-platform-worker-runtime-continuity-status';
 import { buildNotificationPlatformWorkerRuntimeAnchorState } from '../notification-delivery/domain/durable-notification-platform-worker-runtime-anchor';
 import { buildNotificationPlatformWorkerRuntimeRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-worker-runtime-restart-recovery';
+import {
+  recordNotificationPlatformSchedulerRecoveryStart,
+  recordNotificationPlatformSchedulerRecoverySuccess,
+  resetNotificationPlatformSchedulerContinuity,
+} from '../notification-delivery/domain/notification-platform-scheduler-continuity-status';
+import { buildNotificationPlatformSchedulerAnchorState } from '../notification-delivery/domain/durable-notification-platform-scheduler-anchor';
+import { buildNotificationPlatformSchedulerRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-scheduler-restart-recovery';
 
 describe('OperationalContinuityService', () => {
   beforeEach(() => {
@@ -725,6 +732,50 @@ describe('OperationalContinuityService', () => {
 
     expect(projection.notificationPlatformWorkerRuntime?.operationalState).toBe('Ready');
     expect(projection.notificationPlatformWorkerRuntime?.canonicalAnchorCount).toBe(1);
+    expect(projection.platformState).toBe('Ready');
+  });
+
+  it('includes notification platform scheduler continuity derived from W5-N12-c recovery record', async () => {
+    resetNotificationPlatformSchedulerContinuity();
+    const anchor = buildNotificationPlatformSchedulerAnchorState({
+      workspaceId: 'ws-1',
+      schedulerAnchorId: 'scheduler-1',
+      platformSchedulerType: 'unified-platform-scheduler',
+      correlationId: 'corr-1',
+      actorId: 'actor-1',
+      recordedAt: '2026-09-02T14:00:00.000Z',
+      prior: null,
+    });
+    if (!anchor.ok) throw new Error('expected anchor');
+    recordNotificationPlatformSchedulerRecoveryStart();
+    recordNotificationPlatformSchedulerRecoverySuccess({
+      diagnostics: buildNotificationPlatformSchedulerRecoveryDiagnostics([anchor.anchor]),
+    });
+
+    const audit = {
+      recordOwnerState: vi.fn(async () => undefined),
+      recordRecoveryCompleted: vi.fn(async () => undefined),
+    } as unknown as OperationalContinuityAudit;
+    const service = new OperationalContinuityService(audit);
+    const projection = await service.applyBootOutcomesForTest(
+      (
+        [
+          'strategy-library',
+          'exchange-scope',
+          'knowledge-lake',
+          'market-profile',
+          'market-qualification',
+          'market-state',
+          'reporting',
+          'notification-delivery',
+          'trading-orchestrator',
+          'runtime-enforcement',
+        ] as const
+      ).map((owner) => ({ owner, outcome: 'ready' as const })),
+    );
+
+    expect(projection.notificationPlatformScheduler?.operationalState).toBe('Ready');
+    expect(projection.notificationPlatformScheduler?.canonicalAnchorCount).toBe(1);
     expect(projection.platformState).toBe('Ready');
   });
 });

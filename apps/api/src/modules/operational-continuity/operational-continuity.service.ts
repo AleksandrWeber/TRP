@@ -56,6 +56,8 @@ import { getNotificationPlatformWorkerExecutionContinuityRecord } from '../notif
 import { buildNotificationPlatformWorkerExecutionContinuityProjection } from '../notification-delivery/domain/notification-platform-worker-execution-operational-continuity';
 import { getNotificationPlatformWorkerRuntimeContinuityRecord } from '../notification-delivery/domain/notification-platform-worker-runtime-continuity-status';
 import { buildNotificationPlatformWorkerRuntimeContinuityProjection } from '../notification-delivery/domain/notification-platform-worker-runtime-operational-continuity';
+import { getNotificationPlatformSchedulerContinuityRecord } from '../notification-delivery/domain/notification-platform-scheduler-continuity-status';
+import { buildNotificationPlatformSchedulerContinuityProjection } from '../notification-delivery/domain/notification-platform-scheduler-operational-continuity';
 import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
 import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
 import { getMonitoringHealthContinuityRecord } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
@@ -190,6 +192,11 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           continuity: null,
         },
       ),
+      notificationPlatformScheduler: buildNotificationPlatformSchedulerContinuityProjection({
+        recovering: true,
+        ownerReadiness: 'ready',
+        continuity: null,
+      }),
     });
   }
 
@@ -442,6 +449,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildNotificationPlatformSchedulerView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getNotificationPlatformSchedulerContinuityRecord();
+    return buildNotificationPlatformSchedulerContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -553,6 +572,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       notificationPlatformWorkerRuntime: this.buildNotificationPlatformWorkerRuntimeView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      notificationPlatformScheduler: this.buildNotificationPlatformSchedulerView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -857,6 +880,23 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           ? null
           : recoveryDurationMs),
     });
+    const notificationPlatformSchedulerBase = this.buildNotificationPlatformSchedulerView({
+      recovering: false,
+      ownerReadiness: 'ready',
+    });
+    const notificationPlatformScheduler = Object.freeze({
+      ...notificationPlatformSchedulerBase,
+      recoveryTimestamp:
+        notificationPlatformSchedulerBase.recoveryTimestamp ??
+        (notificationPlatformSchedulerBase.operationalState === 'Recovering'
+          ? null
+          : recoveryTimestamp),
+      recoveryDurationMs:
+        notificationPlatformSchedulerBase.recoveryDurationMs ??
+        (notificationPlatformSchedulerBase.operationalState === 'Recovering'
+          ? null
+          : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -880,6 +920,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       notificationPlatformWorkers,
       notificationPlatformWorkerExecution,
       notificationPlatformWorkerRuntime,
+      notificationPlatformScheduler,
     });
     this.finalized = true;
 

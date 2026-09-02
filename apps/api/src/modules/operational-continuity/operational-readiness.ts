@@ -260,6 +260,19 @@ export type NotificationPlatformWorkerRuntimeContinuityView = Readonly<{
   workspaceIds: readonly string[];
 }>;
 
+/** W5-N12-d — Notification Platform Scheduler continuity fields on platform readiness. */
+export type NotificationPlatformSchedulerContinuityView = Readonly<{
+  operationalState: OperationalState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+}>;
+
 /** W3-O05-d — Monitoring & Security Health continuity fields on platform readiness. */
 export type MonitoringHealthContinuityView = Readonly<{
   operationalState: OperationalState;
@@ -333,6 +346,8 @@ export type PlatformOperationalProjection = Readonly<{
   notificationPlatformWorkerExecution: NotificationPlatformWorkerExecutionContinuityView | null;
   /** W5-N11-d — Notification Platform Worker Runtime operational continuity (derived). */
   notificationPlatformWorkerRuntime: NotificationPlatformWorkerRuntimeContinuityView | null;
+  /** W5-N12-d — Notification Platform Scheduler operational continuity (derived). */
+  notificationPlatformScheduler: NotificationPlatformSchedulerContinuityView | null;
 }>;
 
 export type EvaluateOwnerReadinessInput = Readonly<{
@@ -438,6 +453,7 @@ export function buildPlatformOperationalProjection(input: {
   notificationPlatformWorkers?: NotificationPlatformWorkersContinuityView | null;
   notificationPlatformWorkerExecution?: NotificationPlatformWorkerExecutionContinuityView | null;
   notificationPlatformWorkerRuntime?: NotificationPlatformWorkerRuntimeContinuityView | null;
+  notificationPlatformScheduler?: NotificationPlatformSchedulerContinuityView | null;
 }): PlatformOperationalProjection {
   const platformState = derivePlatformOperationalState(input.owners);
   assertOperationalState(platformState);
@@ -471,6 +487,7 @@ export function buildPlatformOperationalProjection(input: {
     notificationPlatformWorkers: input.notificationPlatformWorkers ?? null,
     notificationPlatformWorkerExecution: input.notificationPlatformWorkerExecution ?? null,
     notificationPlatformWorkerRuntime: input.notificationPlatformWorkerRuntime ?? null,
+    notificationPlatformScheduler: input.notificationPlatformScheduler ?? null,
   });
 }
 

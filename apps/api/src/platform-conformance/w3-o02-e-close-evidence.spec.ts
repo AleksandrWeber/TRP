@@ -139,7 +139,9 @@ describe('W3-O02-e package close evidence', () => {
     expect(view).toMatch(/Notification queue|notificationQueue/i);
     expect(view).toContain('recoveryTimestamp');
     expect(view).toContain('recoveryDurationMs');
-    expect(view).not.toMatch(/Retry control|Replay|Queue editor|Scheduler|Incident management/i);
+    expect(view).not.toMatch(
+      /Retry control|Replay|Queue editor|Scheduler control|Scheduling engine|Incident management/i,
+    );
   });
 
   it('status docs: W3-O02 CLOSED by Product Owner; Wave 3 COMPLETE and O03 not opened', () => {

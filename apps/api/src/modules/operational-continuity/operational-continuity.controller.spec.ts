@@ -32,6 +32,7 @@ describe('OperationalContinuityController', () => {
     notificationPlatformWorkers: null,
     notificationPlatformWorkerExecution: null,
     notificationPlatformWorkerRuntime: null,
+    notificationPlatformScheduler: null,
   });
 
   let continuity: OperationalContinuityService;

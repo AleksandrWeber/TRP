@@ -1253,16 +1253,30 @@ See [`w5-n12-c-implementation-report.md`](./w5-n12-c-implementation-report.md).
 
 ---
 
+## W5-N12-d status (Notification Platform Scheduler Operational Continuity Foundation)
+
+W5-N12-d exposes Notification Platform Scheduler operational readiness on Platform Readiness, derived exclusively from W5-N12-c restart recovery state. **No scheduler runtime, scheduling engine, execution loop, retry, or dead-letter behaviour** was added.
+
+```text
+Operational continuity only — not scheduler runtime / scheduling engine / execution loop / retry / dead-letter / orchestration.
+Not Notification Platform Scheduler functional.
+Not W5-N12 COMPLETE.
+```
+
+See [`w5-n12-d-implementation-report.md`](./w5-n12-d-implementation-report.md).
+
+---
+
 ## W5-N12 implementation slices
 
 | Slice    | Name                                                                | Status                                       |
 | -------- | ------------------------------------------------------------------- | -------------------------------------------- |
 | W5-N12-a | Notification Platform Scheduler Inventory & Honest Product Baseline | **COMPLETE**                                 |
 | W5-N12-b | Durable Notification Platform Scheduler Foundation                  | **COMPLETE**                                 |
-| W5-N12-c | Notification Platform Scheduler Restart Recovery Foundation         | **COMPLETE** — Awaiting Product Owner Review |
-| W5-N12-d | Notification Platform Scheduler Operational Continuity Foundation   | **NOT AUTHORIZED**                           |
+| W5-N12-c | Notification Platform Scheduler Restart Recovery Foundation         | **COMPLETE**                                 |
+| W5-N12-d | Notification Platform Scheduler Operational Continuity Foundation   | **COMPLETE** — Awaiting Product Owner Review |
 | W5-N12-e | Package Close Evidence                                              | **NOT AUTHORIZED**                           |
 
 ---
 
-**STOP.** W5-N12-c is **COMPLETE**. Await Product Owner Review before Repository Synchronization. Do not open W5-N12-d. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution implemented. Do not declare Notification Platform Worker Runtime Foundation implemented. Do not declare Notification Platform Scheduler Foundation implemented. Do not declare Scheduler runtime implemented. Do not declare Scheduler execution implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N12-d is **COMPLETE**. Await Product Owner Review before Repository Synchronization. Do not open W5-N12-e. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution implemented. Do not declare Notification Platform Worker Runtime Foundation implemented. Do not declare Notification Platform Scheduler Foundation implemented. Do not declare Scheduler runtime implemented. Do not declare Scheduler execution implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.
