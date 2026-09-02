@@ -77,7 +77,7 @@ export const W5_N12_D_TECHNICAL_DEBT_DELTA = Object.freeze({
     'Notification Platform Scheduler Operational Continuity Foundation',
   ] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N12-e — Package Close Evidence'] as const),
+  deferred: Object.freeze([] as const),
 } as const);
 
 export const W5_N12_D_TRANSITION_MATRIX = Object.freeze({
@@ -91,7 +91,6 @@ export const W5_N12_D_TRANSITION_MATRIX = Object.freeze({
     'Recovering | Ready | Degraded | Unavailable honesty',
   ] as const),
   stillMissing: Object.freeze([
-    'Package Close (W5-N12-e)',
     'Scheduler runtime, scheduling engine, execution loop, retry, and dead-letter processing',
   ] as const),
 } as const);

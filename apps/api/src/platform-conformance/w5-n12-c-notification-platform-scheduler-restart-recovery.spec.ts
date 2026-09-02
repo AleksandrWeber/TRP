@@ -173,12 +173,10 @@ describe('W5-N12-c notification platform scheduler restart recovery — integrat
     ).toBe(true);
   });
 
-  it('technical debt delta: restart recovery resolved; package close deferred', () => {
+  it('technical debt delta: restart recovery resolved; no new debt introduced', () => {
     expect(W5_N12_C_TECHNICAL_DEBT_DELTA.resolved.length).toBeGreaterThan(0);
     expect(W5_N12_C_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(
-      W5_N12_C_TECHNICAL_DEBT_DELTA.deferred.some((item) => item.toLowerCase().includes('close')),
-    ).toBe(true);
+    expect(W5_N12_C_TECHNICAL_DEBT_DELTA.deferred).toEqual([]);
   });
 
   it('explicit OUT covers scheduler runtime only (not operational continuity)', () => {

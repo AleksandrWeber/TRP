@@ -70,7 +70,7 @@ export const W5_N12_C_EXPLICIT_OUT = Object.freeze([
 export const W5_N12_C_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Notification Platform Scheduler Restart Recovery Foundation'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N12-e — Package Close Evidence'] as const),
+  deferred: Object.freeze([] as const),
 } as const);
 
 export const W5_N12_C_TRANSITION_MATRIX = Object.freeze({

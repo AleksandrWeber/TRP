@@ -207,12 +207,10 @@ describe('W5-N12-d notification platform scheduler operational continuity — in
     expect(W5_N12_D_ARCHITECTURE_CLAIMS.newPersistenceOwner).toBe(false);
   });
 
-  it('technical debt delta: operational continuity resolved; package close deferred', () => {
+  it('technical debt delta: operational continuity resolved; no new debt introduced', () => {
     expect(W5_N12_D_TECHNICAL_DEBT_DELTA.resolved.length).toBeGreaterThan(0);
     expect(W5_N12_D_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(
-      W5_N12_D_TECHNICAL_DEBT_DELTA.deferred.some((item) => item.toLowerCase().includes('close')),
-    ).toBe(true);
+    expect(W5_N12_D_TECHNICAL_DEBT_DELTA.deferred).toEqual([]);
   });
 
   it('explicit OUT covers W5-N12-e and scheduler runtime', () => {
@@ -221,11 +219,11 @@ describe('W5-N12-d notification platform scheduler operational continuity — in
     );
   });
 
-  it('transition matrix: recovery + operational continuity; package close still missing', () => {
+  it('transition matrix: recovery + operational continuity; scheduler runtime still missing', () => {
     expect(W5_N12_D_TRANSITION_MATRIX.before).toContain('Restart recovery (W5-N12-c)');
     expect(W5_N12_D_TRANSITION_MATRIX.after).toContain('Operational continuity (W5-N12-d)');
     expect(
-      W5_N12_D_TRANSITION_MATRIX.stillMissing.some((item) => item.includes('Package Close')),
+      W5_N12_D_TRANSITION_MATRIX.stillMissing.some((item) => item.includes('Scheduler runtime')),
     ).toBe(true);
   });
 
