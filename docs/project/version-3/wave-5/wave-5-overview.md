@@ -1378,4 +1378,33 @@ See [`w5-n13-final-integration-verification.md`](./w5-n13-final-integration-veri
 
 ---
 
-**STOP.** W5-N13 is **CLOSED** by Product Owner. Awaiting W5-N14 Planning Package (not opened). Do not declare Notification Platform Retry Foundation implemented. Do not declare Retry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not declare Production Ready. Do not declare Live Notifications. Do not open W5-N14 without separate Product Owner instruction.
+## W5-N14 status (Notification Platform Dead Letter — Planning OPEN)
+
+W5-N14 Notification Platform Dead Letter Foundation Planning Package is **OPEN** (2026-09-02). Awaiting Planning Review. **No implementation.** Slices not opened.
+
+```text
+Planning only — not dead-letter runtime, not dead-letter processing, not automatic replay.
+Not retry execution, notification execution, scheduler execution, worker execution, or production runtime.
+Not production transport I/O, not outbound delivery, not Connected/Delivering labels.
+Notification Platform Dead Letter Foundation implemented — not claimed.
+Notification Platform Complete and Wave 5 COMPLETE not claimed.
+```
+
+See [`w5-n14-planning-summary.md`](./w5-n14-planning-summary.md).
+
+---
+
+## W5-N14 implementation slices (planning only — not opened)
+
+| Slice    | Name                                                                  | Status                              |
+| -------- | --------------------------------------------------------------------- | ----------------------------------- |
+| W5-N14-a | Notification Platform Dead Letter Inventory & Honest Product Baseline | **Not opened** — planning only      |
+| W5-N14-b | Durable Notification Platform Dead Letter Foundation                  | **Not opened** — planning only      |
+| W5-N14-c | Notification Platform Dead Letter Restart Recovery Foundation         | **Not opened** — planning only      |
+| W5-N14-d | Notification Platform Dead Letter Operational Continuity Foundation   | **Not opened** — planning only      |
+| W5-N14-e | Package Close Evidence                                                | **Not opened** — planning only      |
+| W5-N14   | Package                                                               | Planning **OPEN** — Awaiting Review |
+
+---
+
+**STOP.** W5-N14 Planning Package is **OPEN**. Awaiting Planning Review. Do not declare W5-N14-a opened. Do not declare Dead Letter implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE. Do not start W5-N14-a without Product Owner Planning Approval.
