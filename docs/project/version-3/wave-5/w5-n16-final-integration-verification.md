@@ -6,14 +6,14 @@
 **Nature:** Engineering verification only. **Not** implementation. **Not** Product Owner Close.  
 **Production code written:** None (this verification task)  
 **Functionality added:** None  
-**W5-N16 declared CLOSED:** No  
+**W5-N16 declared CLOSED:** Yes — Product Owner Final Close (2026-09-02)  
 **Notification Platform Metrics implemented declared:** No  
 **Notification Platform declared COMPLETE:** No  
 **Wave 5 declared COMPLETE:** No
 
 **Safety commit (pre-step):** `8d539aa` — W5-N16-e Package Close Evidence pushed to `origin/main`. Repository clean; `origin/main` up to date.
 
-**Slice commit chain on `origin/main`:** `6454eea` (a) → `ef141c6` (b) → `bdf2f99` (c) → `8f7cdda` (d) → `8d539aa` (e) → Final Integration Verification **PASS** (local) → Product Owner Final Close (pending).
+**Slice commit chain on `origin/main`:** `6454eea` (a) → `ef141c6` (b) → `bdf2f99` (c) → `8f7cdda` (d) → `8d539aa` (e) → Final Integration Verification **PASS** (`d2468ff`) → Product Owner Close (2026-09-02).
 
 ---
 
@@ -210,25 +210,25 @@ Binding findings from W5-N16-a preserved: `platformMetricsFunctionalAuthorized: 
 
 ## 9. Documentation synchronization
 
-| Document                                              | Status alignment                                        |
-| ----------------------------------------------------- | ------------------------------------------------------- |
-| `w5-n16-package-summary.md`                           | Close Evidence; awaiting PO Final Close; **not CLOSED** |
-| `w5-n16-package-close-report.md`                      | Evidence Met; PO Close Pending                          |
-| `w5-n16-operational-walkthrough.md`                   | Journey PASS; STOP without Close declaration            |
-| Implementation / review reports a–e                   | Present; consistent non-claims                          |
-| `w5-n16-planning-approval.md`                         | APPROVED; frozen planning baseline                      |
-| `w5-n16-a-notification-platform-metrics-inventory.md` | Inventory baseline aligned                              |
-| `w5-n16-final-integration-verification.md`            | This document — PASS recorded (local)                   |
-| `w5-n16-product-owner-close-record.md`                | **Not created** (deferred to PO act)                    |
-| `verifyDocumentationIntegrity()` in close evidence    | `ok: true`                                              |
+| Document                                              | Status alignment                             |
+| ----------------------------------------------------- | -------------------------------------------- |
+| `w5-n16-package-summary.md`                           | **CLOSED** by Product Owner (2026-09-02)     |
+| `w5-n16-package-close-report.md`                      | **CLOSED** by Product Owner (2026-09-02)     |
+| `w5-n16-operational-walkthrough.md`                   | Journey PASS; Product Owner Close recorded   |
+| Implementation / review reports a–e                   | Present; consistent non-claims               |
+| `w5-n16-planning-approval.md`                         | APPROVED; frozen planning baseline           |
+| `w5-n16-a-notification-platform-metrics-inventory.md` | Inventory baseline aligned                   |
+| `w5-n16-final-integration-verification.md`            | This document — PASS recorded (`d2468ff`)    |
+| `w5-n16-product-owner-close-record.md`                | **Created** — W5-N16 **CLOSED** (2026-09-02) |
+| `verifyDocumentationIntegrity()` in close evidence    | `ok: true`                                   |
 
 Wave documentation:
 
-| Document                    | Status alignment                                                                |
-| --------------------------- | ------------------------------------------------------------------------------- |
-| `wave-5-overview.md`        | a…e COMPLETE; Final Integration Verification PASS (local); **NOT CLOSED**       |
-| `wave-5-validation-plan.md` | a…e COMPLETE / PASS; Final Integration Verification recorded                    |
-| `wave-5-progress.md`        | Final Integration Verification PASS (local); Awaiting Product Owner Final Close |
+| Document                    | Status alignment                                                          |
+| --------------------------- | ------------------------------------------------------------------------- |
+| `wave-5-overview.md`        | a…e COMPLETE; Final Integration Verification PASS (`d2468ff`); **CLOSED** |
+| `wave-5-validation-plan.md` | a…e COMPLETE / PASS; Final Integration + Product Owner Close recorded     |
+| `wave-5-progress.md`        | W5-N16 **CLOSED** by Product Owner (2026-09-02)                           |
 
 **PASS**
 
@@ -295,37 +295,17 @@ Close Evidence diagnostics: `buildCloseEvidenceDiagnostics()` — implementation
 
 **Engineering readiness verdict:** **READY FOR PRODUCT OWNER FINAL CLOSE**
 
-Engineering verification does **not** declare W5-N16 CLOSED.
+Engineering verification does **not** declare Product Owner approval beyond the recorded Close act in [`w5-n16-product-owner-close-record.md`](./w5-n16-product-owner-close-record.md).
 
-Engineering does **not** declare Product Owner approval.
-
-Engineering does **not** declare Notification Platform Metrics implemented.
-
-Engineering does **not** declare Notification Platform Complete.
-
-Engineering does **not** declare Metrics collection implemented.
-
-Engineering does **not** declare Exporters implemented.
-
-Engineering does **not** declare Dashboards implemented.
-
-Engineering does **not** declare Production Ready.
-
-Engineering does **not** declare Live Notifications.
-
-Engineering does **not** declare Wave 5 COMPLETE.
-
-Engineering does **not** open W5-N17 or the next Wave package.
-
-Product Owner Close Record **not created** — deferred to Product Owner Final Close act.
+Product Owner Final Close executed. W5-N16 **CLOSED** — see [`w5-n16-product-owner-close-record.md`](./w5-n16-product-owner-close-record.md).
 
 ---
 
 **STOP.**
 
-Final Integration Verification **PASS** (local).
+Final Integration Verification **PASS** (`d2468ff`).
 
-Await Product Owner Final Close before Repository Synchronization.
+Product Owner Final Close executed. W5-N16 **CLOSED** — see [`w5-n16-product-owner-close-record.md`](./w5-n16-product-owner-close-record.md).
 
 Do **not** declare Notification Platform Metrics implemented.
 

@@ -2065,7 +2065,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N16 Final Integration Verification (2026-09-02 — local)
+## W5-N16 Final Integration Verification (2026-09-02 — `d2468ff`)
 
 | Area                     | Result   | Evidence                                                            |
 | ------------------------ | -------- | ------------------------------------------------------------------- |
@@ -2085,6 +2085,21 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 **Engineering verdict:** READY FOR PRODUCT OWNER FINAL CLOSE
 **Engineering confidence:** 97%
 
-**Explicit non-claim:** Final Integration Verification does **not** authorize W5-N16 CLOSED, Notification Platform Metrics implemented, Notification Platform Complete, Production Ready, Live Notifications, or Wave 5 COMPLETE. Product Owner Close Record **not created**. **Recorded** (local).
+**Explicit non-claim:** Final Integration Verification does **not** authorize W5-N16 CLOSED, Notification Platform Metrics implemented, Notification Platform Complete, Production Ready, Live Notifications, or Wave 5 COMPLETE. Product Owner Close Record **not created**. **Recorded** (`d2468ff`).
 
-**STOP.** W5-N16 Final Integration Verification is **PASS** (local). Await Product Owner Final Close before Repository Synchronization. Do not create Product Owner Close Record. Do not declare W5-N16 CLOSED. Do not open W5-N17.
+**STOP.** W5-N16 Final Integration Verification is **PASS** (`d2468ff`). Await Product Owner Final Close before Repository Synchronization. Do not create Product Owner Close Record. Do not declare W5-N16 CLOSED. Do not open W5-N17.
+
+---
+
+## W5-N16 Product Owner Close (2026-09-02)
+
+| Layer                      | Result   | Evidence                                                 |
+| -------------------------- | -------- | -------------------------------------------------------- |
+| Product Owner Close Record | **PASS** | `w5-n16-product-owner-close-record.md`                   |
+| Package documentation sync | **PASS** | summary / close report / walkthrough / final integration |
+| Wave documentation sync    | **PASS** | overview / validation-plan / progress                    |
+| W5-N16 officially CLOSED   | **PASS** | Product Owner decision **CLOSED**                        |
+
+**Explicit non-claim:** Product Owner Close does **not** authorize Notification Platform Metrics implemented, Notification Platform Complete, metrics collection implemented, exporters implemented, dashboards implemented, Production Ready, Live Notifications, Wave 5 COMPLETE, or W5-N17 opened.
+
+**STOP.** W5-N16 is **CLOSED** by Product Owner. Awaiting W5-N17 Planning Package. Do not open W5-N17 without separate Product Owner instruction.

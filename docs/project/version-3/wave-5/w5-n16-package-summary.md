@@ -5,14 +5,14 @@
 **Master Plan / Roadmap:** V3-N16 · CM-26  
 **Evidence slice:** W5-N16-e  
 **Date:** 2026-09-02  
-**Status:** Close Evidence **COMPLETE** (local) — **Awaiting Product Owner Review**.
+**Status:** Close Evidence **COMPLETE** · Final Integration Verification **PASS** · **CLOSED** by Product Owner (2026-09-02).
 
 ---
 
 ## Mandatory package summary answers
 
 1. **What did the customer receive?**  
-   Notification Platform Metrics foundation: inventory honesty (a), durable canonical metrics anchor persistence on notification-delivery (b), normal process restart recovery (c), derived Notification Platform Metrics operational continuity with `notificationPlatformMetrics` fields on Platform Readiness (d). Close Evidence assembled (e). Foundation scope only — not metrics collection, exporters, dashboards, or runtime aggregation.
+   Notification Platform Metrics foundation: inventory honesty (a), durable canonical metrics anchor persistence on notification-delivery (b), normal process restart recovery (c), derived Notification Platform Metrics operational continuity with `notificationPlatformMetrics` fields on Platform Readiness (d). Close Evidence assembled (e). Final Integration Verification **PASS**. Foundation scope only — not metrics collection, exporters, dashboards, or runtime aggregation.
 
 2. **What did the customer NOT receive?**  
    Metrics collection, exporters, dashboards, runtime aggregation, metrics engine, production transport I/O, runtime notification metrics processing, Notification Platform Metrics functional behaviour, Notification Platform Complete, Live Notifications, Production Ready, Wave 5 COMPLETE, or any second notification engine / persistence owner.
@@ -21,10 +21,10 @@
    Persisted Notification Platform Metrics anchors can survive normal API restart and project honest operational readiness on Platform Readiness — without fabricating metrics runtime labels or inventing a second notification subsystem.
 
 4. **What remains for later packages?**  
-   Final Package Integration Verification, Product Owner Package Close, metrics collection / exporters / dashboards / runtime aggregation outcomes, Wave 5 completion review.
+   Metrics collection / exporters / dashboards / runtime aggregation outcomes, Wave 5 completion review, W5-N17 Planning Package (requires separate Product Owner authorization).
 
 5. **Which package becomes available next?**  
-   None opened by this Close Evidence act.
+   None opened by this Close act — W5-N17 requires separate Product Owner authorization.
 
 6. **Was the Master Plan followed?**  
    **Yes.** W5-N16 / V3-N16 only; Master Plan unchanged; Wave 1–4 and closed W5-N01…N15 consumed not redesigned; Wave 5 package order preserved.
@@ -39,14 +39,14 @@
 
 ## Slice roll-up
 
-| Slice    | Outcome                                                           | Status                                    |
-| -------- | ----------------------------------------------------------------- | ----------------------------------------- |
-| W5-N16-a | Notification Platform Metrics Inventory & Honest Product Baseline | **COMPLETE** (`6454eea`)                  |
-| W5-N16-b | Durable Notification Platform Metrics Foundation                  | **COMPLETE** (`ef141c6`)                  |
-| W5-N16-c | Notification Platform Metrics Restart Recovery Foundation         | **COMPLETE** (`bdf2f99`)                  |
-| W5-N16-d | Notification Platform Metrics Operational Continuity Foundation   | **COMPLETE** (`8f7cdda`)                  |
-| W5-N16-e | Package Close Evidence                                            | **COMPLETE** (local) — Awaiting PO Review |
-| W5-N16   | Package                                                           | Close Evidence assembled — not CLOSED     |
+| Slice    | Outcome                                                           | Status                                   |
+| -------- | ----------------------------------------------------------------- | ---------------------------------------- |
+| W5-N16-a | Notification Platform Metrics Inventory & Honest Product Baseline | **COMPLETE** (`6454eea`)                 |
+| W5-N16-b | Durable Notification Platform Metrics Foundation                  | **COMPLETE** (`ef141c6`)                 |
+| W5-N16-c | Notification Platform Metrics Restart Recovery Foundation         | **COMPLETE** (`bdf2f99`)                 |
+| W5-N16-d | Notification Platform Metrics Operational Continuity Foundation   | **COMPLETE** (`8f7cdda`)                 |
+| W5-N16-e | Package Close Evidence                                            | **COMPLETE** (`8d539aa`)                 |
+| W5-N16   | Package                                                           | **CLOSED** by Product Owner (2026-09-02) |
 
 ---
 
@@ -59,4 +59,4 @@
 
 ---
 
-**STOP.** W5-N16-e is **COMPLETE** (local). Do **not** declare Notification Platform Metrics implemented, Notification Platform Complete, W5-N16 CLOSED, or Wave 5 COMPLETE. Do **not** perform Final Package Integration Verification.
+**STOP.** W5-N16 is **CLOSED** by Product Owner. Do **not** declare Notification Platform Metrics implemented, Notification Platform Complete, or Wave 5 COMPLETE. Do **not** open W5-N17 without separate Product Owner instruction.
