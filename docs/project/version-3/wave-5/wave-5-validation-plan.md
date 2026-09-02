@@ -1091,9 +1091,25 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite    | **PASS** | lint / typecheck / test / build                               |
 | git diff --check    | **PASS** | No whitespace errors                                          |
 
-**Explicit non-claim:** W5-N11-b does **not** authorize Notification Platform Worker Runtime implemented, restart recovery implemented, worker runtime execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N11 COMPLETE, or Wave 5 COMPLETE. **Recorded** (2026-09-02).
+**Explicit non-claim:** W5-N11-b does **not** authorize Notification Platform Worker Runtime implemented, restart recovery implemented, worker runtime execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N11 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`6e838ee`).
 
-**STOP.** W5-N11-b is **COMPLETE**. Do not open W5-N11-c without separate Product Owner instruction.
+---
+
+## W5-N11-c validation (2026-09-02)
+
+| Layer               | Result   | Evidence                                                            |
+| ------------------- | -------- | ------------------------------------------------------------------- |
+| Restart recovery    | **PASS** | `notification-platform-worker-runtime-restart-recovery.service.ts`  |
+| Recovery store      | **PASS** | `notification-platform-worker-runtime-recovery-store.ts`            |
+| Persistence hydrate | **PASS** | write-through + hydrated reads in persistence service               |
+| Conformance         | **PASS** | `w5-n11-c-notification-platform-worker-runtime-restart-recovery.ts` |
+| Architecture check  | **PASS** | No ownership drift; no operational continuity                       |
+| Regression suite    | **PASS** | lint / typecheck / test / build                                     |
+| git diff --check    | **PASS** | No whitespace errors                                                |
+
+**Explicit non-claim:** W5-N11-c does **not** authorize Notification Platform Worker Runtime implemented, operational continuity implemented, worker runtime execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N11 COMPLETE, or Wave 5 COMPLETE. **Recorded** (2026-09-02).
+
+**STOP.** W5-N11-c is **COMPLETE**. Do not open W5-N11-d without separate Product Owner instruction.
 
 ---
 

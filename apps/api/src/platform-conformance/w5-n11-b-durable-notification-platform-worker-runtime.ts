@@ -2,7 +2,7 @@
  * W5-N11-b — Durable Notification Platform Worker Runtime Foundation registry.
  *
  * Maps approved W5-N11-a inventory to Notification Delivery anchor storage.
- * Not restart recovery. Not operational continuity. Not platform worker runtime execution.
+ * W5-N11-c adds restart recovery hydrate and persistence write-through — not operational continuity.
  */
 
 import {

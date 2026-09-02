@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PrismaNotificationPlatformWorkerRuntimeAnchorRepository } from '../modules/notification-delivery/persistence/prisma-notification-platform-worker-runtime-anchor.repository';
 import { NotificationPlatformWorkerRuntimePersistenceService } from '../modules/notification-delivery/notification-platform-worker-runtime-persistence.service';
+import { NotificationPlatformWorkerRuntimeRecoveryStore } from '../modules/notification-delivery/notification-platform-worker-runtime-recovery-store';
 import { rowsEphemeral } from './w5-n11-a-notification-platform-worker-runtime-inventory';
 import {
   W5_N11_B_ARCHITECTURE_CLAIMS,
@@ -69,7 +70,10 @@ describe('W5-N11-b durable notification platform worker runtime — unit', () =>
   it('persistence correctness: anchor upserts workspace worker runtime row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaNotificationPlatformWorkerRuntimeAnchorRepository(prisma as never);
-    const service = new NotificationPlatformWorkerRuntimePersistenceService(repository);
+    const service = new NotificationPlatformWorkerRuntimePersistenceService(
+      repository,
+      new NotificationPlatformWorkerRuntimeRecoveryStore(),
+    );
 
     const outcome = await service.persistWorkerRuntimeAnchor({
       workspaceId: 'ws-a',

@@ -9,6 +9,7 @@ import {
   NOTIFICATION_PLATFORM_WORKER_RUNTIME_ANCHOR_REPOSITORY,
   type NotificationPlatformWorkerRuntimeAnchorRepository,
 } from './domain/notification-platform-worker-runtime-anchor.repository';
+import { NotificationPlatformWorkerRuntimeRecoveryStore } from './notification-platform-worker-runtime-recovery-store';
 
 export type PersistNotificationPlatformWorkerRuntimeAnchorCommand = Readonly<{
   workspaceId: string;
@@ -22,21 +23,26 @@ export type PersistNotificationPlatformWorkerRuntimeAnchorCommand = Readonly<{
 }>;
 
 /**
- * W5-N11-b — durable Notification Platform Worker Runtime anchor persistence on Notification Delivery owner.
- * Storage only — no worker runtime execution, scheduler, retry, dead-letter processing, orchestration,
- * recovery store, or operational continuity.
+ * W5-N11-b/c — durable Notification Platform Worker Runtime anchor persistence on Notification Delivery owner.
+ * W5-N11-c — write-through to recovery store after hydrate.
+ * Storage only — no worker runtime execution, scheduler, retry, dead-letter processing, orchestration, or operational continuity.
  */
 @Injectable()
 export class NotificationPlatformWorkerRuntimePersistenceService {
   constructor(
     @Inject(NOTIFICATION_PLATFORM_WORKER_RUNTIME_ANCHOR_REPOSITORY)
     private readonly repository: NotificationPlatformWorkerRuntimeAnchorRepository,
+    @Inject(NotificationPlatformWorkerRuntimeRecoveryStore)
+    private readonly recoveryStore: NotificationPlatformWorkerRuntimeRecoveryStore,
   ) {}
 
   async loadAnchor(
     workspaceId: string,
     workerRuntimeAnchorId: string,
   ): Promise<DurableNotificationPlatformWorkerRuntimeAnchor | null> {
+    if (this.recoveryStore.hasHydrated()) {
+      return this.recoveryStore.get(workspaceId, workerRuntimeAnchorId);
+    }
     return this.repository.loadNotificationPlatformWorkerRuntimeAnchor(
       workspaceId,
       workerRuntimeAnchorId,
@@ -52,6 +58,7 @@ export class NotificationPlatformWorkerRuntimePersistenceService {
       return outcome;
     }
     await this.repository.saveNotificationPlatformWorkerRuntimeAnchor(outcome.anchor);
+    this.recoveryStore.set(outcome.anchor);
     return outcome;
   }
 }
