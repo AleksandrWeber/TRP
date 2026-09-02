@@ -71,7 +71,7 @@ export const W5_N17_D_TECHNICAL_DEBT_DELTA = Object.freeze({
     'Notification Platform Delivery Reliability Operational Continuity Foundation',
   ] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N17-e Close'] as const),
+  deferred: Object.freeze([] as const),
 } as const);
 
 export const W5_N17_D_TRANSITION_MATRIX = Object.freeze({

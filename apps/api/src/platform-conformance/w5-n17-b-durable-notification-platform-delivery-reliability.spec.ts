@@ -193,7 +193,9 @@ describe('W5-N17-b durable notification platform delivery reliability — integr
       'Delivery Reliability Durable Foundation',
     );
     expect(W5_N17_B_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N17_B_TECHNICAL_DEBT_DELTA.deferred).toEqual(['W5-N17-e Close']);
+    expect(W5_N17_B_TECHNICAL_DEBT_DELTA.deferred).toEqual([
+      'Final Package Integration Verification',
+    ]);
   });
 
   it('explicit OUT covers delivery runtime and restart recovery only', () => {

@@ -211,7 +211,7 @@ describe('W5-N17-d notification platform delivery reliability operational contin
   it('technical debt delta: operational continuity resolved; package Close deferred to slice e', () => {
     expect(W5_N17_D_TECHNICAL_DEBT_DELTA.resolved.length).toBeGreaterThan(0);
     expect(W5_N17_D_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N17_D_TECHNICAL_DEBT_DELTA.deferred).toEqual(['W5-N17-e Close']);
+    expect(W5_N17_D_TECHNICAL_DEBT_DELTA.deferred).toEqual([]);
   });
 
   it('explicit OUT covers W5-N17-e and delivery execution runtime', () => {

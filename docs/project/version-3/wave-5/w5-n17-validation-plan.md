@@ -246,7 +246,22 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Retry execution                 | **Not claimed** | deferred post-foundation                                         |
 | Delivery execution runtime      | **Not claimed** | deferred post-foundation                                         |
 | Customer-visible                | **PASS**        | Operator Platform Readiness projection only                      |
-| W5-N17-e opened                 | **Not claimed** | Slice e not opened                                               |
+| W5-N17-e opened                 | **Not claimed** | Final Integration Verification not performed                     |
+
+---
+
+## W5-N17-e slice validation (2026-09-02)
+
+| Layer                                      | Result            | Evidence                        |
+| ------------------------------------------ | ----------------- | ------------------------------- |
+| W5-N17-e Close Evidence                    | **PASS**          | w5-n17-e-package-close-evidence |
+| Slices a–d validated                       | **PASS**          | All slice reports PASS          |
+| Operational journey verified               | **PASS**          | verifyOperationalChain          |
+| Dependency chain verified                  | **PASS**          | verifyDependencyChain           |
+| Governance / architecture / Honest Product | **PASS**          | buildCloseEvidenceDiagnostics   |
+| Final Package Integration Verification     | **Not performed** | separate act                    |
+| Product Owner Package Close                | **Pending**       | not declared from slice e       |
+| W5-N17 CLOSED                              | **Not claimed**   | awaiting PO Package Review      |
 
 ---
 
@@ -278,4 +293,4 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ---
 
-**STOP.** W5-N17-d is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N17-e. Do not declare Delivery Reliability implemented.
+**STOP.** W5-N17-e Close Evidence is **COMPLETE** (local). Await Product Owner Package Review. Do not declare W5-N17 CLOSED. Do not perform Final Package Integration Verification. Do not declare Delivery Reliability implemented.
