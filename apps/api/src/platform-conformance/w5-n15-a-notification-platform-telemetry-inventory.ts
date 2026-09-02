@@ -1069,12 +1069,12 @@ export const W5_N15_A_NOTIFICATION_PLATFORM_TELEMETRY_INVENTORY: readonly W5N15A
       durabilityClass: 'EPHEMERAL' as const,
       capabilityCategory: 'not-implemented' as const,
       currentStatus:
-        'Missing — PlatformOperationalProjection has delivery view but no notificationPlatformQueue field',
+        'Implemented — PlatformOperationalProjection exposes notificationPlatformTelemetry continuity view',
       honestyRequirement:
-        'Executing at worker execution scope requires telemetry foundation evidence',
-      futureW5N15Responsibility: 'W5-N15-d' as const,
+        'Platform Readiness projection only; not metrics collection or cross-channel Executing unification',
+      futureW5N15Responsibility: 'W5-N15-e' as const,
       evidencePath: 'apps/api/src/modules/operational-continuity/operational-readiness.ts',
-      existsToday: false as const,
+      existsToday: true as const,
       persistenceResponsibility: 'none-missing' as const,
       recoveryResponsibility: 'none-missing' as const,
       operationalContinuityResponsibility: 'w5-n15-d' as const,
@@ -1114,9 +1114,10 @@ export const W5_N15_A_NOTIFICATION_PLATFORM_TELEMETRY_INVENTORY: readonly W5N15A
       capabilityCategory: 'infrastructure-only' as const,
       currentStatus:
         'Implemented — buildNotificationPlatformTelemetryView derives readiness from W5-N15-c recovery record',
-      honestyRequirement: 'Dead-letter continuity follows restart recovery (W5-N15-c/d)',
+      honestyRequirement: 'Telemetry continuity follows restart recovery (W5-N15-c/d)',
       futureW5N15Responsibility: 'W5-N15-e' as const,
-      evidencePath: 'docs/project/version-3/wave-5/w5-n15-implementation-package.md',
+      evidencePath:
+        'apps/api/src/modules/notification-delivery/domain/notification-platform-telemetry-operational-continuity.ts',
       existsToday: true as const,
       persistenceResponsibility: 'none-missing' as const,
       recoveryResponsibility: 'none-missing' as const,
@@ -2798,7 +2799,7 @@ export const W5_N15_A_HONEST_PRODUCT_BASELINE = Object.freeze({
 export const W5_N15_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Notification Platform Telemetry Inventory Foundation'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N15-d', 'W5-N15-e'] as const),
+  deferred: Object.freeze(['W5-N15-e'] as const),
 } as const);
 
 export function artifactIds(): readonly string[] {

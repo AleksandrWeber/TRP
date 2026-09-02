@@ -170,16 +170,17 @@ describe('W5-N15-c notification platform telemetry restart recovery — integrat
     expect(
       W5_N15_C_TRANSITION_MATRIX.stillMissing.some((item) => item.includes('Package Close')),
     ).toBe(true);
+    expect(
+      W5_N15_C_TRANSITION_MATRIX.stillMissing.some((item) =>
+        item.includes('Operational Continuity'),
+      ),
+    ).toBe(false);
   });
 
-  it('technical debt delta: restart recovery resolved; operational continuity deferred', () => {
+  it('technical debt delta: restart recovery resolved; no operational continuity deferred from slice c', () => {
     expect(W5_N15_C_TECHNICAL_DEBT_DELTA.resolved.length).toBeGreaterThan(0);
     expect(W5_N15_C_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(
-      W5_N15_C_TECHNICAL_DEBT_DELTA.deferred.some((item) =>
-        item.toLowerCase().includes('operational continuity'),
-      ),
-    ).toBe(true);
+    expect(W5_N15_C_TECHNICAL_DEBT_DELTA.deferred).toEqual([]);
   });
 
   it('explicit OUT covers telemetry runtime only (not operational continuity)', () => {

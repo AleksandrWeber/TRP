@@ -89,7 +89,7 @@ describe('W5-N15-a notification platform telemetry conformance — unit', () => 
       'Notification Platform Telemetry Inventory Foundation',
     );
     expect(W5_N15_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N15_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(2);
+    expect(W5_N15_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(1);
   });
 
   it('diagnostics roll-up passes for slice a scope', () => {

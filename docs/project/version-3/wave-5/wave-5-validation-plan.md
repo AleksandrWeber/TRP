@@ -1874,4 +1874,26 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 **Explicit non-claim:** W5-N15-c does **not** authorize Notification Platform Telemetry implemented, metrics collection implemented, exporters implemented, dashboards implemented, operational continuity implemented, Notification Platform Complete, W5-N15 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
 
-**STOP.** W5-N15-c is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N15-d.
+**STOP.** W5-N15-c is **COMPLETE** (`cc4c324`). Do not open W5-N15-d without authorization.
+
+---
+
+## W5-N15-d validation (2026-09-02 — local)
+
+| Layer                     | Result   | Evidence                                                                       |
+| ------------------------- | -------- | ------------------------------------------------------------------------------ |
+| Operational continuity    | **PASS** | `buildNotificationPlatformTelemetryView` derived from W5-N15-c recovery record |
+| Platform Readiness        | **PASS** | `notificationPlatformTelemetry` on `PlatformOperationalProjection`             |
+| Service wiring            | **PASS** | Recovering + final bootstrap in `OperationalContinuityService`                 |
+| Web projection            | **PASS** | Notification Platform Telemetry section in `OperationalContinuityView.tsx`     |
+| Inventory synchronization | **PASS** | Operational continuity + unified view rows implemented                         |
+| Architecture integrity    | **PASS** | No ownership drift; Exchange Adapter untouched                                 |
+| Ownership boundaries      | **PASS** | No new persistence owner                                                       |
+| Conformance tests         | **PASS** | `w5-n15-d-notification-platform-telemetry-operational-continuity*.spec.ts`     |
+| Slice reports             | **PASS** | w5-n15-d-* reports under wave-5                                                |
+| Regression suite          | **PASS** | lint / typecheck / test / build                                                |
+| git diff --check          | **PASS** | No whitespace errors                                                           |
+
+**Explicit non-claim:** W5-N15-d does **not** authorize Notification Platform Telemetry implemented, metrics collection implemented, exporters implemented, dashboards implemented, Notification Platform Complete, W5-N15 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
+
+**STOP.** W5-N15-d is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N15-e.

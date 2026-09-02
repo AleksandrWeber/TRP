@@ -157,14 +157,14 @@ describe('W5-N15-b durable notification platform telemetry — unit', () => {
     expect(sync.noPlatformTelemetryAuthorization).toBe(true);
   });
 
-  it('transition matrix: inventory → durable persistence; restart recovery complete', () => {
+  it('transition matrix: inventory → durable persistence; operational continuity complete', () => {
     expect(W5_N15_B_TRANSITION_MATRIX.before).toContain('Inventory');
     expect(W5_N15_B_TRANSITION_MATRIX.after).toContain('Durable Persistence');
     expect(
       W5_N15_B_TRANSITION_MATRIX.stillMissing.some((item) =>
         item.includes('Operational Continuity'),
       ),
-    ).toBe(true);
+    ).toBe(false);
   });
 });
 
@@ -185,15 +185,13 @@ describe('W5-N15-b durable notification platform telemetry — integration', () 
     expect(W5_N15_B_ARCHITECTURE_CLAIMS.exchangeAdapterUntouched).toBe(true);
   });
 
-  it('technical debt delta: durable foundation resolved; operational continuity deferred', () => {
+  it('technical debt delta: durable foundation resolved; package close deferred', () => {
     expect(W5_N15_B_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Notification Platform Telemetry Durable Foundation',
     );
     expect(W5_N15_B_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(
-      W5_N15_B_TECHNICAL_DEBT_DELTA.deferred.some((item) =>
-        item.toLowerCase().includes('operational continuity'),
-      ),
+      W5_N15_B_TECHNICAL_DEBT_DELTA.deferred.some((item) => item.includes('Package Close')),
     ).toBe(true);
   });
 

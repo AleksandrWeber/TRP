@@ -70,10 +70,7 @@ export const W5_N15_C_EXPLICIT_OUT = Object.freeze([
 export const W5_N15_C_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Notification Platform Telemetry Restart Recovery Foundation'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze([
-    'W5-N15-d — Notification Platform Telemetry Operational Continuity Foundation',
-    'W5-N15-e — Package Close Evidence',
-  ] as const),
+  deferred: Object.freeze([] as const),
 } as const);
 
 export const W5_N15_C_TRANSITION_MATRIX = Object.freeze({
@@ -89,7 +86,6 @@ export const W5_N15_C_TRANSITION_MATRIX = Object.freeze({
     'Recovery deterministic, idempotent, fail-honest on corruption',
   ] as const),
   stillMissing: Object.freeze([
-    'Operational Continuity (W5-N15-d)',
     'Package Close (W5-N15-e)',
     'Metrics collection, exporters, dashboards, and runtime aggregation',
   ] as const),

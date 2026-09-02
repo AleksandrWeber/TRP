@@ -20,6 +20,7 @@
  * W5-N12-d adds Notification Platform Scheduler operational continuity (derived).
  * W5-N13-d adds Notification Platform Retry operational continuity (derived).
  * W5-N14-d adds Notification Platform Dead Letter operational continuity (derived).
+ * W5-N15-d adds Notification Platform Telemetry operational continuity (derived).
  * Recovery itself remains W3-O01-c / W3-O02-c / W3-O04-c / W3-O05-c only. No new persistence / BC / HA / monitoring evaluation.
  */
 
@@ -65,6 +66,8 @@ import { getNotificationPlatformRetryContinuityRecord } from '../notification-de
 import { buildNotificationPlatformRetryContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-operational-continuity';
 import { getNotificationPlatformDeadLetterContinuityRecord } from '../notification-delivery/domain/notification-platform-dead-letter-continuity-status';
 import { buildNotificationPlatformDeadLetterContinuityProjection } from '../notification-delivery/domain/notification-platform-dead-letter-operational-continuity';
+import { getNotificationPlatformTelemetryContinuityRecord } from '../notification-delivery/domain/notification-platform-telemetry-continuity-status';
+import { buildNotificationPlatformTelemetryContinuityProjection } from '../notification-delivery/domain/notification-platform-telemetry-operational-continuity';
 import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
 import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
 import { getMonitoringHealthContinuityRecord } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
@@ -210,6 +213,11 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         continuity: null,
       }),
       notificationPlatformDeadLetter: buildNotificationPlatformDeadLetterContinuityProjection({
+        recovering: true,
+        ownerReadiness: 'ready',
+        continuity: null,
+      }),
+      notificationPlatformTelemetry: buildNotificationPlatformTelemetryContinuityProjection({
         recovering: true,
         ownerReadiness: 'ready',
         continuity: null,
@@ -502,6 +510,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildNotificationPlatformTelemetryView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getNotificationPlatformTelemetryContinuityRecord();
+    return buildNotificationPlatformTelemetryContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -625,6 +645,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       notificationPlatformDeadLetter: this.buildNotificationPlatformDeadLetterView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      notificationPlatformTelemetry: this.buildNotificationPlatformTelemetryView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -980,6 +1004,23 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           ? null
           : recoveryDurationMs),
     });
+    const notificationPlatformTelemetryBase = this.buildNotificationPlatformTelemetryView({
+      recovering: false,
+      ownerReadiness: 'ready',
+    });
+    const notificationPlatformTelemetry = Object.freeze({
+      ...notificationPlatformTelemetryBase,
+      recoveryTimestamp:
+        notificationPlatformTelemetryBase.recoveryTimestamp ??
+        (notificationPlatformTelemetryBase.operationalState === 'Recovering'
+          ? null
+          : recoveryTimestamp),
+      recoveryDurationMs:
+        notificationPlatformTelemetryBase.recoveryDurationMs ??
+        (notificationPlatformTelemetryBase.operationalState === 'Recovering'
+          ? null
+          : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -1006,6 +1047,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       notificationPlatformScheduler,
       notificationPlatformRetry,
       notificationPlatformDeadLetter,
+      notificationPlatformTelemetry,
     });
     this.finalized = true;
 
