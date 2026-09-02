@@ -2,7 +2,7 @@
 
 **Document:** W5-N17 Notification Platform Delivery Reliability Foundation Overview
 **Date:** 2026-09-02
-**Status:** Product-facing record. W5-N17 Planning **OPEN**. W5-N17-a inventory **COMPLETE** — internal inventory only. No platform delivery reliability foundation. No delivery execution runtime. No production transport I/O. No outbound notifications.
+**Status:** Product-facing record. W5-N17 Planning **OPEN**. W5-N17-a inventory **COMPLETE**. W5-N17-b durable anchors **COMPLETE** — internal durability only. No delivery execution runtime. No restart recovery hydrate. No production transport I/O. No outbound notifications.
 **Product:** Wave 5 — Notification Platform · Package W5-N17 (V3-N17 · CM-27)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -46,7 +46,7 @@ W5-N01…N16 foundations are consumed — not redesigned.
 5. Configure individual channels on their existing surfaces (transport I/O remains per-channel scope).
 6. Stay inside their workspace and authorization.
 
-**Not available today** — W5-N17-a established the canonical Delivery Reliability Inventory only. No cross-channel platform delivery reliability foundation layer exists. All reserved-inactive channels remain honestly reserved. No production transport I/O. No delivery execution runtime. W5-N17-b…e not opened.
+**Not available today** — W5-N17-a established the canonical Delivery Reliability Inventory. W5-N17-b established durable platform reliability anchor persistence on the notification-delivery owner only. No cross-channel platform delivery reliability restart recovery hydrate. All reserved-inactive channels remain honestly reserved. No production transport I/O. No delivery execution runtime. W5-N17-c…e not opened.
 
 ---
 
@@ -151,16 +151,17 @@ Never claim production transports operational from W5-N17 foundation alone.
 
 ## Technical debt
 
-| Item                                     | Status at planning open                      |
-| ---------------------------------------- | -------------------------------------------- |
-| TD-049 Telegram production Bot API       | **Deferred** — not resolved by planning open |
-| TD-050 Reserved notification channels    | **Deferred** — not resolved by planning open |
-| Platform delivery reliability foundation | **Deferred** to W5-N17-b after Approval      |
-| Delivery Reliability inventory baseline  | **Resolved** by W5-N17-a                     |
-| Delivery execution runtime               | **Deferred** post-foundation                 |
-| Dead-letter processing                   | **Deferred** post-foundation                 |
-| Automatic replay                         | **Deferred** post-foundation                 |
-| Retry execution                          | **Deferred** post-foundation                 |
+| Item                                     | Status at planning open                                                  |
+| ---------------------------------------- | ------------------------------------------------------------------------ |
+| TD-049 Telegram production Bot API       | **Deferred** — not resolved by planning open                             |
+| TD-050 Reserved notification channels    | **Deferred** — not resolved by planning open                             |
+| Platform delivery reliability foundation | **Partial** — durable anchors only (W5-N17-b); restart recovery deferred |
+| Delivery Reliability inventory baseline  | **Resolved** by W5-N17-a                                                 |
+| Delivery Reliability durable persistence | **Resolved** by W5-N17-b                                                 |
+| Delivery execution runtime               | **Deferred** post-foundation                                             |
+| Dead-letter processing                   | **Deferred** post-foundation                                             |
+| Automatic replay                         | **Deferred** post-foundation                                             |
+| Retry execution                          | **Deferred** post-foundation                                             |
 
 **Technical debt introduced by this planning open:** None.
 
@@ -184,4 +185,4 @@ Never claim production transports operational from W5-N17 foundation alone.
 
 ---
 
-**STOP.** W5-N17-a is **COMPLETE** (uncommitted). Await Product Owner Review. Do not open W5-N17-b. Do not declare Delivery Reliability implemented.
+**STOP.** W5-N17-b is **COMPLETE** (uncommitted). Await Product Owner Review. Do not open W5-N17-c. Do not declare Delivery Reliability implemented.

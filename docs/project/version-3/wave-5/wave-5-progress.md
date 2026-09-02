@@ -81,6 +81,7 @@
 **W5-N17 overview:** [`notification-delivery-reliability-overview.md`](./notification-delivery-reliability-overview.md)
 **W5-N17-a inventory:** [`w5-n17-a-delivery-reliability-inventory.md`](./w5-n17-a-delivery-reliability-inventory.md)
 **W5-N17-a implementation report:** [`w5-n17-a-implementation-report.md`](./w5-n17-a-implementation-report.md)
+**W5-N17-b implementation report:** [`w5-n17-b-implementation-report.md`](./w5-n17-b-implementation-report.md)
 **W5-N04 Planning Review:** [`w5-n04-planning-review.md`](./w5-n04-planning-review.md)
 **W5-N04 Planning Approval:** [`w5-n04-planning-approval.md`](./w5-n04-planning-approval.md)
 **W5-N03 Planning Review:** [`w5-n03-planning-review.md`](./w5-n03-planning-review.md)
@@ -352,8 +353,8 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 
 
 | Slice    | Name                                                                           | Status                         |
 | -------- | ------------------------------------------------------------------------------ | ------------------------------ |
-| W5-N17-a | Notification Platform Delivery Reliability Inventory & Honest Product Baseline | **COMPLETE** (uncommitted)     |
-| W5-N17-b | Durable Notification Platform Delivery Reliability Foundation                  | **Not opened** — planning only |
+| W5-N17-a | Notification Platform Delivery Reliability Inventory & Honest Product Baseline | **COMPLETE** (`ac832d5`)       |
+| W5-N17-b | Durable Notification Platform Delivery Reliability Foundation                  | **COMPLETE** (uncommitted)     |
 | W5-N17-c | Notification Platform Delivery Reliability Restart Recovery Foundation         | **Not opened** — planning only |
 | W5-N17-d | Notification Platform Delivery Reliability Operational Continuity Foundation   | **Not opened** — planning only |
 | W5-N17-e | Package Close Evidence                                                         | **Not opened** — planning only |
@@ -375,9 +376,10 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 
 | **W5-N17 Architecture Verification**  | **PASS** (2026-09-02) — [`w5-n17-architecture-verification.md`](./w5-n17-architecture-verification.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **W5-N17 Governance Verification**    | **PASS** (2026-09-02) — [`w5-n17-governance-verification.md`](./w5-n17-governance-verification.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | **W5-N17 planning documents**         | [`w5-n17-planning-summary.md`](./w5-n17-planning-summary.md) and companions                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| **Implementation authorized?**        | **Yes** — W5-N17-a **COMPLETE** (uncommitted); W5-N17-b…e **not opened**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| **Implementation authorized?**        | **Yes** — W5-N17-a **COMPLETE** (`ac832d5`); W5-N17-b **COMPLETE** (uncommitted); W5-N17-c…e **not opened**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | **W5-N17-a inventory**                | [`w5-n17-a-delivery-reliability-inventory.md`](./w5-n17-a-delivery-reliability-inventory.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | **W5-N17-a implementation report**    | [`w5-n17-a-implementation-report.md`](./w5-n17-a-implementation-report.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| **W5-N17-b implementation report**    | [`w5-n17-b-implementation-report.md`](./w5-n17-b-implementation-report.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | **W5-N16 Planning Package**           | **APPROVED** (2026-09-02) — [`w5-n16-planning-summary.md`](./w5-n16-planning-summary.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | **W5-N16 Planning Review**            | **PASS** (2026-09-02) — [`w5-n16-planning-review.md`](./w5-n16-planning-review.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | **W5-N16 Planning Approval**          | **RECORDED** (2026-09-02) — [`w5-n16-planning-approval.md`](./w5-n16-planning-approval.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
@@ -878,10 +880,12 @@ W5-N17 Planning OPEN (2026-09-02)
         ↓
 W5-N17 Planning Refinement COMPLETE (2026-09-02)
         ↓
-W5-N17-a COMPLETE — Delivery Reliability Inventory Foundation (uncommitted)
+W5-N17-a COMPLETE — Delivery Reliability Inventory Foundation (`ac832d5`)
         ↓
-STOP — Await Product Owner Review for W5-N17-a
-(No W5-N17-b)
+W5-N17-b COMPLETE — Durable Delivery Reliability Foundation (uncommitted)
+        ↓
+STOP — Await Product Owner Review for W5-N17-b
+(No W5-N17-c)
 (No delivery execution runtime / dead-letter processing / retry execution)
 (No metric collection runtime / exporters / dashboards / alerting / analytics / production monitoring)
 (No production transport I/O)
@@ -889,7 +893,7 @@ STOP — Await Product Owner Review for W5-N17-a
 (No Wave 5 COMPLETE)
 (No Live Trading)
 (No Delivery Reliability implemented)
-(No W5-N17-b)
+(No W5-N17-c)
 ```
 
 ---
@@ -1097,7 +1101,8 @@ STOP — Await Product Owner Review for W5-N17-a
 | W5-N17 Planning Refinement COMPLETE         | **Recorded** (2026-09-02)  |
 | W5-N17 Architecture Verification PASS       | **Recorded** (2026-09-02)  |
 | W5-N17 Governance Verification PASS         | **Recorded** (2026-09-02)  |
-| W5-N17-a COMPLETE                           | **Recorded** (uncommitted) |
+| W5-N17-a COMPLETE                           | **Recorded** (`ac832d5`)   |
+| W5-N17-b COMPLETE                           | **Recorded** (uncommitted) |
 | Product Owner Close Record                  | **Created**                |
 | Metric collection runtime implemented       | **Not claimed**            |
 | Exporters implemented                       | **Not claimed**            |
@@ -1129,4 +1134,4 @@ STOP — Await Product Owner Review for W5-N17-a
 
 ---
 
-**STOP.** W5-N17-a is **COMPLETE** (uncommitted). Await Product Owner Review. Do not open W5-N17-b. Do not declare Delivery Reliability implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N17-b is **COMPLETE** (uncommitted). Await Product Owner Review. Do not open W5-N17-c. Do not declare Delivery Reliability implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE.

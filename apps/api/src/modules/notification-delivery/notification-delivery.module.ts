@@ -20,6 +20,7 @@ import { NOTIFICATION_PLATFORM_RETRY_ANCHOR_REPOSITORY } from './domain/notifica
 import { NOTIFICATION_PLATFORM_DEAD_LETTER_ANCHOR_REPOSITORY } from './domain/notification-platform-dead-letter-anchor.repository';
 import { NOTIFICATION_PLATFORM_TELEMETRY_ANCHOR_REPOSITORY } from './domain/notification-platform-telemetry-anchor.repository';
 import { NOTIFICATION_PLATFORM_METRICS_ANCHOR_REPOSITORY } from './domain/notification-platform-metrics-anchor.repository';
+import { NOTIFICATION_PLATFORM_RELIABILITY_ANCHOR_REPOSITORY } from './domain/notification-platform-reliability-anchor.repository';
 import { NotificationDeliveryBoundaryService } from './notification-boundary.service';
 import { NotificationDeliveryService } from './notification-delivery.service';
 import { PrismaEmailNotificationAnchorRepository } from './persistence/prisma-email-notification-anchor.repository';
@@ -37,6 +38,7 @@ import { PrismaNotificationPlatformRetryAnchorRepository } from './persistence/p
 import { PrismaNotificationPlatformDeadLetterAnchorRepository } from './persistence/prisma-notification-platform-dead-letter-anchor.repository';
 import { PrismaNotificationPlatformTelemetryAnchorRepository } from './persistence/prisma-notification-platform-telemetry-anchor.repository';
 import { PrismaNotificationPlatformMetricsAnchorRepository } from './persistence/prisma-notification-platform-metrics-anchor.repository';
+import { PrismaNotificationPlatformReliabilityAnchorRepository } from './persistence/prisma-notification-platform-reliability-anchor.repository';
 import { PrismaTelegramNotificationAnchorRepository } from './persistence/prisma-telegram-notification-anchor.repository';
 import { NOTIFICATION_SERVICE_PORT, TELEGRAM_CHANNEL_ADAPTER } from './ports/notification.port';
 import { EmailNotificationPersistenceService } from './email-notification-persistence.service';
@@ -56,10 +58,12 @@ import { NotificationPlatformRetryPersistenceService } from './notification-plat
 import { NotificationPlatformDeadLetterPersistenceService } from './notification-platform-dead-letter-persistence.service';
 import { NotificationPlatformTelemetryPersistenceService } from './notification-platform-telemetry-persistence.service';
 import { NotificationPlatformMetricsPersistenceService } from './notification-platform-metrics-persistence.service';
+import { NotificationPlatformReliabilityPersistenceService } from './notification-platform-reliability-persistence.service';
 import { NotificationPlatformTelemetryRecoveryStore } from './domain/notification-platform-telemetry-recovery-store';
 import { NotificationPlatformTelemetryRestartRecoveryService } from './domain/notification-platform-telemetry-restart-recovery.service';
 import { NotificationPlatformMetricsRecoveryStore } from './domain/notification-platform-metrics-recovery-store';
 import { NotificationPlatformMetricsRestartRecoveryService } from './domain/notification-platform-metrics-restart-recovery.service';
+import { NotificationPlatformReliabilityRecoveryStore } from './domain/notification-platform-reliability-recovery-store';
 import { NotificationPlatformDeadLetterRecoveryStore } from './domain/notification-platform-dead-letter-recovery-store';
 import { NotificationPlatformDeadLetterRestartRecoveryService } from './domain/notification-platform-dead-letter-restart-recovery.service';
 import { NotificationPlatformRetryRecoveryStore } from './domain/notification-platform-retry-recovery-store';
@@ -225,6 +229,12 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
         new PrismaNotificationPlatformMetricsAnchorRepository(prisma),
       inject: [PrismaService],
     },
+    {
+      provide: NOTIFICATION_PLATFORM_RELIABILITY_ANCHOR_REPOSITORY,
+      useFactory: (prisma: PrismaService) =>
+        new PrismaNotificationPlatformReliabilityAnchorRepository(prisma),
+      inject: [PrismaService],
+    },
     TelegramNotificationRecoveryStore,
     TelegramNotificationRestartRecoveryService,
     TelegramNotificationPersistenceService,
@@ -249,6 +259,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformMetricsPersistenceService,
     NotificationPlatformMetricsRecoveryStore,
     NotificationPlatformMetricsRestartRecoveryService,
+    NotificationPlatformReliabilityPersistenceService,
+    NotificationPlatformReliabilityRecoveryStore,
     NotificationPlatformTelemetryRecoveryStore,
     NotificationPlatformTelemetryRestartRecoveryService,
     NotificationPlatformDeadLetterRecoveryStore,
@@ -325,6 +337,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformMetricsPersistenceService,
     NotificationPlatformMetricsRecoveryStore,
     NotificationPlatformMetricsRestartRecoveryService,
+    NotificationPlatformReliabilityPersistenceService,
+    NotificationPlatformReliabilityRecoveryStore,
     NotificationPlatformTelemetryRecoveryStore,
     NotificationPlatformTelemetryRestartRecoveryService,
     NotificationPlatformDeadLetterRecoveryStore,

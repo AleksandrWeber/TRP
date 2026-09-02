@@ -203,7 +203,20 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Reliability classified | **PASS**        | FOUNDATION/DURABLE/RECOVERABLE/EPHEMERAL/OUT |
 | Ownership verified     | **PASS**        | All rows on existing owners                  |
 | Customer-visible       | **PASS**        | None — internal inventory only               |
-| W5-N17-b opened        | **Not claimed** | Slice b not opened                           |
+| W5-N17-b opened        | **Not claimed** | Slice c not opened                           |
+
+---
+
+## W5-N17-b slice validation (2026-09-02)
+
+| Layer                             | Result          | Evidence                                            |
+| --------------------------------- | --------------- | --------------------------------------------------- |
+| W5-N17-b durable anchors          | **PASS**        | workspace_notification_platform_reliability_anchors |
+| platformReliabilityAnchorsMissing | **PASS**        | false after slice b                                 |
+| Ownership verified                | **PASS**        | notification-delivery owner only                    |
+| Restart recovery                  | **Not claimed** | W5-N17-c not opened                                 |
+| Customer-visible                  | **PASS**        | None — internal durability only                     |
+| W5-N17-c opened                   | **Not claimed** | Slice c not opened                                  |
 
 ---
 
@@ -235,4 +248,4 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ---
 
-**STOP.** W5-N17-a is **COMPLETE** (uncommitted). Await Product Owner Review. Do not open W5-N17-b. Do not declare Delivery Reliability implemented.
+**STOP.** W5-N17-b is **COMPLETE** (uncommitted). Await Product Owner Review. Do not open W5-N17-c. Do not declare Delivery Reliability implemented.

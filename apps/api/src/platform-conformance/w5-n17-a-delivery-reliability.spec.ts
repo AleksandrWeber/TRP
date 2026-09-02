@@ -98,12 +98,7 @@ describe('W5-N17-a delivery reliability conformance — unit', () => {
       'Delivery Reliability inventory baseline established',
     );
     expect(W5_N17_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N17_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N17-b',
-      'W5-N17-c',
-      'W5-N17-d',
-      'W5-N17-e',
-    ]);
+    expect(W5_N17_A_TECHNICAL_DEBT_DELTA.deferred).toEqual(['W5-N17-c', 'W5-N17-d', 'W5-N17-e']);
   });
 
   it('diagnostics roll-up passes for slice a scope', () => {

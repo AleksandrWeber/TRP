@@ -145,7 +145,7 @@ describe('W5-N17-a notification platform delivery reliability inventory — unit
     expect(W5_N17_A_BINDING_FINDINGS.w5N09WorkersFoundationExists).toBe(true);
     expect(W5_N17_A_BINDING_FINDINGS.w5N11WorkerRuntimeFoundationExists).toBe(true);
     expect(W5_N17_A_BINDING_FINDINGS.unifiedPlatformReliabilityLayerMissing).toBe(true);
-    expect(W5_N17_A_BINDING_FINDINGS.platformReliabilityAnchorsMissing).toBe(true);
+    expect(W5_N17_A_BINDING_FINDINGS.platformReliabilityAnchorsMissing).toBe(false);
     expect(W5_N17_A_BINDING_FINDINGS.w5N16MetricsFoundationExists).toBe(true);
     expect(W5_N17_A_BINDING_FINDINGS.w5N15TelemetryFoundationExists).toBe(true);
     expect(W5_N17_A_BINDING_FINDINGS.w5N08QueueFoundationExists).toBe(true);
@@ -224,12 +224,7 @@ describe('W5-N17-a notification platform delivery reliability inventory — unit
       'Delivery Reliability inventory baseline established',
     );
     expect(W5_N17_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N17_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N17-b',
-      'W5-N17-c',
-      'W5-N17-d',
-      'W5-N17-e',
-    ]);
+    expect(W5_N17_A_TECHNICAL_DEBT_DELTA.deferred).toEqual(['W5-N17-c', 'W5-N17-d', 'W5-N17-e']);
   });
 });
 
