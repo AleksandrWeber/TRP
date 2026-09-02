@@ -122,17 +122,13 @@ export const W5_N17_B_EXPLICIT_OUT = Object.freeze([
 export const W5_N17_B_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Delivery Reliability Durable Foundation'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N17-d operational continuity', 'W5-N17-e Close'] as const),
+  deferred: Object.freeze(['W5-N17-e Close'] as const),
 } as const);
 
 export const W5_N17_B_TRANSITION_MATRIX = Object.freeze({
   before: 'Inventory (W5-N17-a)',
   after: 'Durable Persistence (W5-N17-b)',
-  stillMissing: Object.freeze([
-    'Restart recovery (W5-N17-c)',
-    'Operational continuity (W5-N17-d)',
-    'Package Close evidence (W5-N17-e)',
-  ] as const),
+  stillMissing: Object.freeze(['Package Close evidence (W5-N17-e)'] as const),
 } as const);
 
 export function newPersistedInventoryRows(): readonly W5N17AInventoryRow[] {

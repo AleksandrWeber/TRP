@@ -66,7 +66,7 @@ export const W5_N17_C_EXPLICIT_OUT = Object.freeze([
 export const W5_N17_C_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Delivery Reliability Restart Recovery Foundation'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N17-d operational continuity', 'W5-N17-e Close'] as const),
+  deferred: Object.freeze([] as const),
 } as const);
 
 export const W5_N17_C_TRANSITION_MATRIX = Object.freeze({
@@ -82,7 +82,6 @@ export const W5_N17_C_TRANSITION_MATRIX = Object.freeze({
     'Recovery deterministic, idempotent, fail-honest on corruption',
   ] as const),
   stillMissing: Object.freeze([
-    'Operational continuity (W5-N17-d)',
     'Package Close (W5-N17-e)',
     'Delivery execution runtime and retry execution',
   ] as const),

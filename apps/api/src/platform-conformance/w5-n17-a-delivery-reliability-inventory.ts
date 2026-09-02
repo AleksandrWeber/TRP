@@ -1257,19 +1257,19 @@ export const W5_N17_A_DELIVERY_RELIABILITY_INVENTORY: readonly W5N17AInventoryRo
       durabilityClass: 'EPHEMERAL' as const,
       capabilityCategory: 'not-implemented' as const,
       currentStatus:
-        'Missing — no notificationPlatformReliability Platform Readiness projection; deferred to W5-N17-d',
+        'Implemented — PlatformOperationalProjection exposes notificationPlatformReliability continuity view',
       honestyRequirement:
         'Platform Readiness projection only; not delivery execution or recipient delivery guarantee',
-      futureW5N17Responsibility: 'W5-N17-d' as const,
-      evidencePath: 'docs/project/version-3/wave-5/w5-n17-product-scope.md',
-      existsToday: false as const,
+      futureW5N17Responsibility: 'W5-N17-e' as const,
+      evidencePath: 'apps/api/src/modules/operational-continuity/operational-readiness.ts',
+      existsToday: true as const,
       persistenceResponsibility: 'none-missing' as const,
       recoveryResponsibility: 'none-missing' as const,
       operationalContinuityResponsibility: 'w5-n17-d' as const,
       honestProductState: 'not-implemented' as const,
       reliabilityClassification: 'EPHEMERAL' as const,
-      operationalVisibility: 'deferred — planned W5-N17-d',
-      customerVisibility: 'not customer-visible — not implemented',
+      operationalVisibility: 'operator — Platform Readiness projection',
+      customerVisibility: 'operator — Delivery Reliability readiness via Platform Readiness',
     }),
     Object.freeze({
       authorizesDeliveryReliabilityFunctional: false as const,
@@ -1305,19 +1305,21 @@ export const W5_N17_A_DELIVERY_RELIABILITY_INVENTORY: readonly W5N17AInventoryRo
       kind: 'operational' as const,
       owner: 'platform-readiness' as const,
       durabilityClass: 'EPHEMERAL' as const,
-      capabilityCategory: 'not-implemented' as const,
-      currentStatus: 'Missing — no buildNotificationPlatformReliabilityView; deferred to W5-N17-d',
+      capabilityCategory: 'infrastructure-only' as const,
+      currentStatus:
+        'Implemented — buildNotificationPlatformReliabilityView derives readiness from W5-N17-c recovery record',
       honestyRequirement: 'Reliability continuity follows restart recovery (W5-N17-c/d)',
-      futureW5N17Responsibility: 'W5-N17-d' as const,
-      evidencePath: 'docs/project/version-3/wave-5/w5-n17-product-scope.md',
-      existsToday: false as const,
+      futureW5N17Responsibility: 'W5-N17-e' as const,
+      evidencePath:
+        'apps/api/src/modules/notification-delivery/domain/notification-platform-reliability-operational-continuity.ts',
+      existsToday: true as const,
       persistenceResponsibility: 'none-missing' as const,
       recoveryResponsibility: 'none-missing' as const,
-      operationalContinuityResponsibility: 'w5-n17-d' as const,
-      honestProductState: 'not-implemented' as const,
+      operationalContinuityResponsibility: 'platform-readiness' as const,
+      honestProductState: 'infrastructure-only' as const,
       reliabilityClassification: 'EPHEMERAL' as const,
-      operationalVisibility: 'deferred — planned W5-N17-d',
-      customerVisibility: 'not customer-visible — not implemented',
+      operationalVisibility: 'operator — Platform Readiness projection',
+      customerVisibility: 'operator — Delivery Reliability readiness via Platform Readiness',
     }),
     Object.freeze({
       authorizesDeliveryReliabilityFunctional: false as const,
@@ -3256,7 +3258,7 @@ export const W5_N17_A_HONEST_PRODUCT_BASELINE = Object.freeze({
 export const W5_N17_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Delivery Reliability inventory baseline established'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N17-d', 'W5-N17-e'] as const),
+  deferred: Object.freeze(['W5-N17-e'] as const),
 } as const);
 
 export function artifactIds(): readonly string[] {

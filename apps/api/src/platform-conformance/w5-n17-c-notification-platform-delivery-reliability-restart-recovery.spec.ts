@@ -170,19 +170,16 @@ describe('W5-N17-c notification platform delivery reliability restart recovery â
       W5_N17_C_TRANSITION_MATRIX.stillMissing.some((item) =>
         item.includes('Operational continuity'),
       ),
-    ).toBe(true);
+    ).toBe(false);
     expect(
       W5_N17_C_TRANSITION_MATRIX.stillMissing.some((item) => item.includes('Package Close')),
     ).toBe(true);
   });
 
-  it('technical debt delta: restart recovery resolved; operational continuity deferred', () => {
+  it('technical debt delta: restart recovery resolved; package Close deferred to W5-N17-e only', () => {
     expect(W5_N17_C_TECHNICAL_DEBT_DELTA.resolved.length).toBeGreaterThan(0);
     expect(W5_N17_C_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N17_C_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N17-d operational continuity',
-      'W5-N17-e Close',
-    ]);
+    expect(W5_N17_C_TECHNICAL_DEBT_DELTA.deferred).toEqual([]);
   });
 
   it('explicit OUT covers delivery runtime and operational continuity', () => {

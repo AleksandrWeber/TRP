@@ -46,7 +46,7 @@ W5-N01…N16 foundations are consumed — not redesigned.
 5. Configure individual channels on their existing surfaces (transport I/O remains per-channel scope).
 6. Stay inside their workspace and authorization.
 
-**Not available today** — W5-N17-a established the canonical Delivery Reliability Inventory. W5-N17-b established durable platform reliability anchor persistence. W5-N17-c established deterministic restart recovery hydrate on the notification-delivery owner. No operational continuity projection. All reserved-inactive channels remain honestly reserved. No production transport I/O. No delivery execution runtime. W5-N17-d…e not opened.
+**Not available today** — W5-N17-a established the canonical Delivery Reliability Inventory. W5-N17-b established durable platform reliability anchor persistence. W5-N17-c established deterministic restart recovery hydrate on the notification-delivery owner. W5-N17-d established operational continuity projection on Platform Readiness. All reserved-inactive channels remain honestly reserved. No production transport I/O. No delivery execution runtime. No retry execution. W5-N17-e not opened.
 
 ---
 
@@ -186,4 +186,4 @@ Never claim production transports operational from W5-N17 foundation alone.
 
 ---
 
-**STOP.** W5-N17-c is **COMPLETE** (uncommitted). Await Product Owner Review. Do not open W5-N17-d. Do not declare Delivery Reliability implemented.
+**STOP.** W5-N17-d is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N17-e. Do not declare Delivery Reliability implemented.

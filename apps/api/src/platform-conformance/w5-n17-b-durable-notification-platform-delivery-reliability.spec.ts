@@ -158,12 +158,17 @@ describe('W5-N17-b durable notification platform delivery reliability — unit',
     expect(sync.noDeliveryReliabilityAuthorization).toBe(true);
   });
 
-  it('transition matrix: inventory → durable persistence; restart recovery still missing', () => {
+  it('transition matrix: inventory → durable persistence; package Close still missing', () => {
     expect(W5_N17_B_TRANSITION_MATRIX.before).toContain('Inventory');
     expect(W5_N17_B_TRANSITION_MATRIX.after).toContain('Durable Persistence');
     expect(
-      W5_N17_B_TRANSITION_MATRIX.stillMissing.some((item) => item.includes('Restart recovery')),
+      W5_N17_B_TRANSITION_MATRIX.stillMissing.some((item) => item.includes('Package Close')),
     ).toBe(true);
+    expect(
+      W5_N17_B_TRANSITION_MATRIX.stillMissing.some((item) =>
+        item.includes('Operational continuity'),
+      ),
+    ).toBe(false);
   });
 });
 
@@ -188,10 +193,7 @@ describe('W5-N17-b durable notification platform delivery reliability — integr
       'Delivery Reliability Durable Foundation',
     );
     expect(W5_N17_B_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N17_B_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N17-d operational continuity',
-      'W5-N17-e Close',
-    ]);
+    expect(W5_N17_B_TECHNICAL_DEBT_DELTA.deferred).toEqual(['W5-N17-e Close']);
   });
 
   it('explicit OUT covers delivery runtime and restart recovery only', () => {

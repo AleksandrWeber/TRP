@@ -231,7 +231,22 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Corrupt rows fail honest    | **PASS**        | NotificationPlatformReliabilityRestartRecoveryError   |
 | Operational continuity      | **Not claimed** | W5-N17-d not opened                                   |
 | Customer-visible            | **PASS**        | None — internal restart recovery only                 |
-| W5-N17-d opened             | **Not claimed** | Slice d not opened                                    |
+| W5-N17-d opened             | **Not claimed** | Slice e not opened                                    |
+
+---
+
+## W5-N17-d slice validation (2026-09-02)
+
+| Layer                           | Result          | Evidence                                                         |
+| ------------------------------- | --------------- | ---------------------------------------------------------------- |
+| W5-N17-d operational continuity | **PASS**        | notification-platform-reliability-operational-continuity         |
+| Platform Readiness projection   | **PASS**        | notificationPlatformReliability on PlatformOperationalProjection |
+| State derivation honest         | **PASS**        | Recovering / Ready / Degraded / Unavailable only                 |
+| Degraded never fabricates Ready | **PASS**        | integrity failure → Degraded                                     |
+| Retry execution                 | **Not claimed** | deferred post-foundation                                         |
+| Delivery execution runtime      | **Not claimed** | deferred post-foundation                                         |
+| Customer-visible                | **PASS**        | Operator Platform Readiness projection only                      |
+| W5-N17-e opened                 | **Not claimed** | Slice e not opened                                               |
 
 ---
 
@@ -263,4 +278,4 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ---
 
-**STOP.** W5-N17-c is **COMPLETE** (uncommitted). Await Product Owner Review. Do not open W5-N17-d. Do not declare Delivery Reliability implemented.
+**STOP.** W5-N17-d is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N17-e. Do not declare Delivery Reliability implemented.

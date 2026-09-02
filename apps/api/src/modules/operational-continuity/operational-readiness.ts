@@ -325,6 +325,19 @@ export type NotificationPlatformMetricsContinuityView = Readonly<{
   workspaceIds: readonly string[];
 }>;
 
+/** W5-N17-d — Notification Platform Delivery Reliability operational continuity (derived). */
+export type NotificationPlatformReliabilityContinuityView = Readonly<{
+  operationalState: OperationalState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+}>;
+
 /** W3-O05-d — Monitoring & Security Health continuity fields on platform readiness. */
 export type MonitoringHealthContinuityView = Readonly<{
   operationalState: OperationalState;
@@ -408,6 +421,8 @@ export type PlatformOperationalProjection = Readonly<{
   notificationPlatformTelemetry: NotificationPlatformTelemetryContinuityView | null;
   /** W5-N16-d — Notification Platform Metrics operational continuity (derived). */
   notificationPlatformMetrics: NotificationPlatformMetricsContinuityView | null;
+  /** W5-N17-d — Notification Platform Delivery Reliability operational continuity (derived). */
+  notificationPlatformReliability: NotificationPlatformReliabilityContinuityView | null;
 }>;
 
 export type EvaluateOwnerReadinessInput = Readonly<{
@@ -518,6 +533,7 @@ export function buildPlatformOperationalProjection(input: {
   notificationPlatformDeadLetter?: NotificationPlatformDeadLetterContinuityView | null;
   notificationPlatformTelemetry?: NotificationPlatformTelemetryContinuityView | null;
   notificationPlatformMetrics?: NotificationPlatformMetricsContinuityView | null;
+  notificationPlatformReliability?: NotificationPlatformReliabilityContinuityView | null;
 }): PlatformOperationalProjection {
   const platformState = derivePlatformOperationalState(input.owners);
   assertOperationalState(platformState);
@@ -556,6 +572,7 @@ export function buildPlatformOperationalProjection(input: {
     notificationPlatformDeadLetter: input.notificationPlatformDeadLetter ?? null,
     notificationPlatformTelemetry: input.notificationPlatformTelemetry ?? null,
     notificationPlatformMetrics: input.notificationPlatformMetrics ?? null,
+    notificationPlatformReliability: input.notificationPlatformReliability ?? null,
   });
 }
 

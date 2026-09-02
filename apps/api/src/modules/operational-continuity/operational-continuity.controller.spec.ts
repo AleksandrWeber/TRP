@@ -37,6 +37,7 @@ describe('OperationalContinuityController', () => {
     notificationPlatformDeadLetter: null,
     notificationPlatformTelemetry: null,
     notificationPlatformMetrics: null,
+    notificationPlatformReliability: null,
   });
 
   let continuity: OperationalContinuityService;
