@@ -253,31 +253,34 @@ describe('W5-N15-e package close evidence — integration / planning', () => {
     expect(existsSync(join(WAVE5, 'wave-5-validation-plan.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'wave-5-progress.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'w5-n15-planning-approval.md'))).toBe(true);
+    expect(existsSync(join(WAVE5, 'w5-n15-final-integration-verification.md'))).toBe(true);
   });
 
-  it('Final Package Integration Verification and Product Owner Close Record not created from slice e', () => {
-    expect(existsSync(join(WAVE5, 'w5-n15-final-integration-verification.md'))).toBe(false);
+  it('Product Owner Close Record not created from Final Integration Verification', () => {
     expect(existsSync(join(WAVE5, 'w5-n15-product-owner-close-record.md'))).toBe(false);
   });
 
-  it('status docs: W5-N15-e COMPLETE local; package not CLOSED; Wave 5 COMPLETE not claimed', () => {
+  it('status docs: Final Integration Verification PASS (local); package not CLOSED; Wave 5 COMPLETE not claimed', () => {
     const progress = readWave5('wave-5-progress.md');
     const overview = readWave5('wave-5-overview.md');
     const close = readWave5('w5-n15-package-close-report.md');
     const summary = readWave5('w5-n15-package-summary.md');
+    const finalIntegration = readWave5('w5-n15-final-integration-verification.md');
     expect(progress).toMatch(/W5-N15-a|W5-N15-b|W5-N15-c|W5-N15-d|W5-N15-e/);
-    expect(progress).toMatch(
-      /W5-N15-e[\s\S]*COMPLETE[\s\S]*local|COMPLETE[\s\S]*local[\s\S]*W5-N15-e/i,
-    );
-    expect(progress).toMatch(/Awaiting Product Owner Review|STOP/i);
+    expect(progress).toMatch(/Final Integration Verification[\s\S]*PASS/i);
+    expect(progress).toMatch(/Awaiting Product Owner Final Close|STOP/i);
     expect(progress).not.toMatch(/W5-N15\s+\*\*CLOSED\*\* by Product Owner/i);
-    expect(overview).toMatch(/W5-N15-e[\s\S]*COMPLETE|COMPLETE[\s\S]*W5-N15-e/i);
+    expect(overview).toMatch(/Final Integration Verification[\s\S]*PASS/i);
     expect(overview).toMatch(/STOP/);
     expect(overview).not.toMatch(/W5-N15\s+\*\*CLOSED\*\* by Product Owner/i);
     expect(close).not.toMatch(/CLOSED by Product Owner/i);
     expect(summary).not.toMatch(/\*\*CLOSED\*\* by Product Owner/i);
+    expect(finalIntegration).toMatch(/READY FOR PRODUCT OWNER FINAL CLOSE/i);
+    expect(finalIntegration).toMatch(/97%/);
+    expect(finalIntegration).not.toMatch(/Product Owner Final Close executed/i);
     expect(W5_N15_E_ARCHITECTURE_CLAIMS.packageCloseEvidenceAssembled).toBe(true);
     expect(W5_N15_E_ARCHITECTURE_CLAIMS.packageDeclaredClosed).toBe(false);
+    expect(progress).toMatch(/W5-N15-e[\s\S]*COMPLETE[\s\S]*2e4adda|COMPLETE[\s\S]*`2e4adda`/i);
   });
 
   it('documentation integrity helper verifies slice and package reports', () => {
