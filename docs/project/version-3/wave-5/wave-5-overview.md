@@ -1205,15 +1205,30 @@ See [`w5-n11-product-owner-close-record.md`](./w5-n11-product-owner-close-record
 
 ---
 
+## W5-N12 status (Notification Platform Scheduler — CLOSED)
+
+W5-N12 Notification Platform Scheduler Foundation is **CLOSED** by Product Owner (2026-09-02). Delivered: inventory (a), durable persistence (b), restart recovery (c), operational continuity (d), Close Evidence (e), Final Integration Verification **PASS** (`50146e0`).
+
+```text
+Foundation only — not scheduler runtime, scheduling engine, execution loop, retry, or dead-letter processing.
+Closed W5-N05…N11 foundations consumed; per-channel W5-N01…N04 transport stubs remain honest per inventory.
+Notification Platform Scheduler complete and Notification Platform Complete not claimed.
+Wave 5 COMPLETE not claimed.
+```
+
+See [`w5-n12-product-owner-close-record.md`](./w5-n12-product-owner-close-record.md).
+
+---
+
 ## W5-N12 Final Integration Verification status
 
-W5-N12 Final Package Integration Verification **PASS** (2026-09-02, local). All slices a–e form one internally consistent package. Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**. Engineering confidence: **97%**.
+W5-N12 Final Package Integration Verification **PASS** (2026-09-02, `50146e0`). All slices a–e form one internally consistent package. Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**. Engineering confidence: **97%**. Product Owner Final Close executed.
 
 ```text
 Slice chain 2891d79 → 2036881 → 5998e18 → 98777b6 → 233ce22 verified on origin/main.
 W5-N12-e COMPLETE (`233ce22`) — Package Close Evidence.
-Final Integration Verification PASS (local).
-Awaiting Product Owner Final Close.
+Final Integration Verification PASS (`50146e0`).
+W5-N12 CLOSED by Product Owner (2026-09-02).
 ```
 
 See [`w5-n12-final-integration-verification.md`](./w5-n12-final-integration-verification.md).
@@ -1300,15 +1315,15 @@ See [`w5-n12-e-implementation-report.md`](./w5-n12-e-implementation-report.md).
 
 ## W5-N12 implementation slices
 
-| Slice    | Name                                                                | Status                                                                       |
-| -------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| W5-N12-a | Notification Platform Scheduler Inventory & Honest Product Baseline | **COMPLETE**                                                                 |
-| W5-N12-b | Durable Notification Platform Scheduler Foundation                  | **COMPLETE**                                                                 |
-| W5-N12-c | Notification Platform Scheduler Restart Recovery Foundation         | **COMPLETE**                                                                 |
-| W5-N12-d | Notification Platform Scheduler Operational Continuity Foundation   | **COMPLETE**                                                                 |
-| W5-N12-e | Package Close Evidence                                              | **COMPLETE**                                                                 |
-| W5-N12   | Package                                                             | Final Integration Verification **PASS** — Awaiting Product Owner Final Close |
+| Slice    | Name                                                                | Status                                   |
+| -------- | ------------------------------------------------------------------- | ---------------------------------------- |
+| W5-N12-a | Notification Platform Scheduler Inventory & Honest Product Baseline | **COMPLETE**                             |
+| W5-N12-b | Durable Notification Platform Scheduler Foundation                  | **COMPLETE**                             |
+| W5-N12-c | Notification Platform Scheduler Restart Recovery Foundation         | **COMPLETE**                             |
+| W5-N12-d | Notification Platform Scheduler Operational Continuity Foundation   | **COMPLETE**                             |
+| W5-N12-e | Package Close Evidence                                              | **COMPLETE**                             |
+| W5-N12   | Package                                                             | **CLOSED** by Product Owner (2026-09-02) |
 
 ---
 
-**STOP.** W5-N12 Final Integration Verification **PASS** (local). Await Product Owner Final Close before Repository Synchronization. Do not create Product Owner Close Record. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution implemented. Do not declare Notification Platform Worker Runtime Foundation implemented. Do not declare Notification Platform Scheduler Foundation implemented. Do not declare Scheduler runtime implemented. Do not declare Scheduler execution implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N13.
+**STOP.** W5-N12 is **CLOSED** by Product Owner. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution implemented. Do not declare Notification Platform Worker Runtime Foundation implemented. Do not declare Notification Platform Scheduler Foundation implemented. Do not declare Scheduler runtime implemented. Do not declare Scheduler execution implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N13 without separate Product Owner instruction.

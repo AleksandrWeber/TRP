@@ -386,16 +386,14 @@ Engineering does **not** open W5-N13 or the next Wave package.
 
 **STOP.**
 
-Final Integration Verification **PASS** (local).
+Final Integration Verification **PASS** (`50146e0`).
 
-Await Product Owner Final Close before Repository Synchronization.
+Product Owner Final Close executed. W5-N12 **CLOSED** — see [`w5-n12-product-owner-close-record.md`](./w5-n12-product-owner-close-record.md).
 
 Do **not** declare Notification Platform Scheduler implemented.
 
 Do **not** declare Notification Platform Complete.
 
 Do **not** declare Wave 5 COMPLETE.
-
-Do **not** create Product Owner Close Record without explicit Product Owner instruction.
 
 Do **not** open W5-N13 without separate Product Owner instruction.
