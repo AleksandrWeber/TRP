@@ -122,11 +122,7 @@ export const W5_N17_B_EXPLICIT_OUT = Object.freeze([
 export const W5_N17_B_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Delivery Reliability Durable Foundation'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze([
-    'W5-N17-c restart recovery',
-    'W5-N17-d operational continuity',
-    'W5-N17-e Close',
-  ] as const),
+  deferred: Object.freeze(['W5-N17-d operational continuity', 'W5-N17-e Close'] as const),
 } as const);
 
 export const W5_N17_B_TRANSITION_MATRIX = Object.freeze({

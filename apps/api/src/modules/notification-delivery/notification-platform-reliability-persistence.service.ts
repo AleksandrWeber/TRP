@@ -23,8 +23,9 @@ export type PersistNotificationPlatformReliabilityAnchorCommand = Readonly<{
 }>;
 
 /**
- * W5-N17-b — durable Notification Platform Delivery Reliability anchor persistence on Notification Delivery owner.
- * Storage only — no delivery execution runtime, restart recovery hydrate, operational continuity,
+ * W5-N17-b/c — durable Notification Platform Delivery Reliability anchor persistence on Notification Delivery owner.
+ * W5-N17-c — write-through to recovery store after hydrate.
+ * Storage only — no delivery execution runtime, operational continuity,
  * retry execution, or transport I/O.
  */
 @Injectable()

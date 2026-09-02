@@ -189,7 +189,6 @@ describe('W5-N17-b durable notification platform delivery reliability — integr
     );
     expect(W5_N17_B_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N17_B_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N17-c restart recovery',
       'W5-N17-d operational continuity',
       'W5-N17-e Close',
     ]);

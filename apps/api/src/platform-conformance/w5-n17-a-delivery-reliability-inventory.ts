@@ -1279,21 +1279,22 @@ export const W5_N17_A_DELIVERY_RELIABILITY_INVENTORY: readonly W5N17AInventoryRo
       kind: 'runtime' as const,
       owner: 'notification-delivery' as const,
       durabilityClass: 'EPHEMERAL' as const,
-      capabilityCategory: 'not-implemented' as const,
+      capabilityCategory: 'infrastructure-only' as const,
       currentStatus:
-        'Missing — no NotificationPlatformDeliveryReliabilityRestartRecoveryService; deferred to W5-N17-c',
+        'Implemented — NotificationPlatformReliabilityRestartRecoveryService hydrates W5-N17-b anchors on module init',
       honestyRequirement:
         'Restart recovery restores canonical reliability anchors only; operational continuity is W5-N17-d',
-      futureW5N17Responsibility: 'W5-N17-c' as const,
-      evidencePath: 'docs/project/version-3/wave-5/w5-n17-product-scope.md',
-      existsToday: false as const,
-      persistenceResponsibility: 'w5-n17-b' as const,
-      recoveryResponsibility: 'w5-n17-c' as const,
-      operationalContinuityResponsibility: 'none-missing' as const,
-      honestProductState: 'not-implemented' as const,
-      reliabilityClassification: 'EPHEMERAL' as const,
-      operationalVisibility: 'deferred — planned W5-N17-c',
-      customerVisibility: 'not customer-visible — not implemented',
+      futureW5N17Responsibility: 'W5-N17-d' as const,
+      evidencePath:
+        'apps/api/src/modules/notification-delivery/domain/notification-platform-reliability-restart-recovery.service.ts',
+      existsToday: true as const,
+      persistenceResponsibility: 'notification-delivery' as const,
+      recoveryResponsibility: 'notification-delivery' as const,
+      operationalContinuityResponsibility: 'w5-n17-d' as const,
+      honestProductState: 'infrastructure-only' as const,
+      reliabilityClassification: 'RECOVERABLE' as const,
+      operationalVisibility: 'internal-only — restart recovery hydrate',
+      customerVisibility: 'not customer-visible — infrastructure only',
     }),
     Object.freeze({
       authorizesDeliveryReliabilityFunctional: false as const,
@@ -3255,7 +3256,7 @@ export const W5_N17_A_HONEST_PRODUCT_BASELINE = Object.freeze({
 export const W5_N17_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Delivery Reliability inventory baseline established'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N17-c', 'W5-N17-d', 'W5-N17-e'] as const),
+  deferred: Object.freeze(['W5-N17-d', 'W5-N17-e'] as const),
 } as const);
 
 export function artifactIds(): readonly string[] {
