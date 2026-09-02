@@ -2026,3 +2026,20 @@ model WorkspaceNotificationPlatformSchedulerAnchor {
   @@id([workspaceId, schedulerAnchorId])
   @@map("workspace_notification_platform_scheduler_anchors")
 }
+
+model WorkspaceNotificationPlatformRetryAnchor {
+  workspaceId         String   @map("workspace_id")
+  retryAnchorId       String   @map("retry_anchor_id")
+  schemaVersion       Int      @default(1) @map("schema_version")
+  platformRetryType   String   @map("platform_retry_type")
+  retryState          String   @map("retry_state")
+  channelScope        String?  @map("channel_scope")
+  integrityMetadata   String?  @map("integrity_metadata")
+  correlationId       String?  @map("correlation_id")
+  recordedAt          DateTime @map("recorded_at")
+  recordedByActorId   String?  @map("recorded_by_actor_id")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, retryAnchorId])
+  @@map("workspace_notification_platform_retry_anchors")
+}

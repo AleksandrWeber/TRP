@@ -141,7 +141,7 @@ describe('W5-N13-a notification platform retry inventory — unit', () => {
     expect(W5_N13_A_BINDING_FINDINGS.w5N09WorkersFoundationExists).toBe(true);
     expect(W5_N13_A_BINDING_FINDINGS.w5N11WorkerRuntimeFoundationExists).toBe(true);
     expect(W5_N13_A_BINDING_FINDINGS.unifiedPlatformRetryLayerMissing).toBe(true);
-    expect(W5_N13_A_BINDING_FINDINGS.platformRetryAnchorsMissing).toBe(true);
+    expect(W5_N13_A_BINDING_FINDINGS.platformRetryAnchorsMissing).toBe(false);
     expect(W5_N13_A_BINDING_FINDINGS.w5N08QueueFoundationExists).toBe(true);
     expect(W5_N13_A_BINDING_FINDINGS.w5N07DispatchFoundationExists).toBe(true);
     expect(W5_N13_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
@@ -220,7 +220,7 @@ describe('W5-N13-a notification platform retry inventory — unit', () => {
       'Notification Platform Retry Inventory Foundation',
     );
     expect(W5_N13_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N13_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(4);
+    expect(W5_N13_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(3);
   });
 });
 

@@ -1334,19 +1334,19 @@ See [`w5-n12-e-implementation-report.md`](./w5-n12-e-implementation-report.md).
 
 ---
 
-## W5-N13 status (Notification Platform Retry — W5-N13-a COMPLETE)
+## W5-N13 status (Notification Platform Retry — W5-N13-b COMPLETE)
 
-W5-N13 Notification Platform Retry Foundation — W5-N13-a **COMPLETE** (local, 2026-09-02). Awaiting Product Owner Review before Repository Synchronization. Inventory and Honest Product baseline only. No platform retry foundation. No retry engine. No retry execution. No production transport I/O. No outbound notifications.
+W5-N13 Notification Platform Retry Foundation — W5-N13-b **COMPLETE** (local, 2026-09-02). Awaiting Product Owner Review before Repository Synchronization. Durable retry anchor persistence only. No retry runtime. No retry execution. No retry scheduling. No production transport I/O. No outbound notifications.
 
 ```text
-Inventory and conformance baseline only — not retry engine, retry execution, or dead-letter processing.
+Durable persistence only — not retry engine, retry execution, retry scheduling, or dead-letter processing.
 Closed W5-N05…N12 foundations consumed; per-channel W5-N01…N04 transport stubs remain honest per inventory.
-Platform retry anchors missing (platformRetryAnchorsMissing: true) — durable retry substrate deferred to W5-N13-b.
+Platform retry anchors implemented (platformRetryAnchorsMissing: false) — anchor-recorded only; restart recovery deferred to W5-N13-c.
 Notification Platform Retry complete and Notification Platform Complete not claimed.
 Wave 5 COMPLETE not claimed.
 ```
 
-See [`w5-n13-a-notification-platform-retry-inventory.md`](./w5-n13-a-notification-platform-retry-inventory.md) and [`w5-n13-a-implementation-report.md`](./w5-n13-a-implementation-report.md).
+See [`w5-n13-b-implementation-report.md`](./w5-n13-b-implementation-report.md).
 
 ---
 
@@ -1354,13 +1354,13 @@ See [`w5-n13-a-notification-platform-retry-inventory.md`](./w5-n13-a-notificatio
 
 | Slice    | Name                                                            | Status                                                |
 | -------- | --------------------------------------------------------------- | ----------------------------------------------------- |
-| W5-N13-a | Notification Platform Retry Inventory & Honest Product Baseline | **COMPLETE** — Awaiting Product Owner Review (local)  |
-| W5-N13-b | Durable Notification Platform Retry Foundation                  | Not authorized                                        |
+| W5-N13-a | Notification Platform Retry Inventory & Honest Product Baseline | **COMPLETE** (`b8cc7d7`)                              |
+| W5-N13-b | Durable Notification Platform Retry Foundation                  | **COMPLETE** — Awaiting Product Owner Review (local)  |
 | W5-N13-c | Notification Platform Retry Restart Recovery Foundation         | Not authorized                                        |
 | W5-N13-d | Notification Platform Retry Operational Continuity Foundation   | Not authorized                                        |
 | W5-N13-e | Package Close Evidence                                          | Not authorized                                        |
-| W5-N13   | Package                                                         | W5-N13-a **COMPLETE** — Awaiting Product Owner Review |
+| W5-N13   | Package                                                         | W5-N13-b **COMPLETE** — Awaiting Product Owner Review |
 
 ---
 
-**STOP.** W5-N13-a is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N13-b. Do not declare Notification Platform Retry Foundation implemented. Do not declare Retry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not declare Production Ready. Do not declare Live Notifications.
+**STOP.** W5-N13-b is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N13-c. Do not declare Notification Platform Retry Foundation implemented. Do not declare Retry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not declare Production Ready. Do not declare Live Notifications.

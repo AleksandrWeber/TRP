@@ -89,7 +89,7 @@ describe('W5-N13-a notification platform retry conformance — unit', () => {
       'Notification Platform Retry Inventory Foundation',
     );
     expect(W5_N13_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N13_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(4);
+    expect(W5_N13_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(3);
   });
 
   it('diagnostics roll-up passes for slice a scope', () => {

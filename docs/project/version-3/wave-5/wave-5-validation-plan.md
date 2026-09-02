@@ -1335,7 +1335,26 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 **Explicit non-claim:** W5-N13-a does **not** authorize Notification Platform Retry implemented, retry runtime implemented, retry execution implemented, dead-letter processing implemented, Notification Platform Complete, W5-N13 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
 
-**STOP.** W5-N13-a is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N13-b.
+**STOP.** W5-N13-a is **COMPLETE** (`b8cc7d7`). Await Product Owner Review before Repository Synchronization. Do not open W5-N13-b.
+
+---
+
+## W5-N13-b validation (2026-09-02 — local)
+
+| Layer                     | Result   | Evidence                                                         |
+| ------------------------- | -------- | ---------------------------------------------------------------- |
+| Durable anchor model      | **PASS** | `WorkspaceNotificationPlatformRetryAnchor` + migration           |
+| Repository + service      | **PASS** | retry anchor repository + persistence service                    |
+| Inventory synchronization | **PASS** | W5-N13-a SURVIVE promotion; `platformRetryAnchorsMissing: false` |
+| Architecture integrity    | **PASS** | No ownership drift; Exchange Adapter untouched                   |
+| Ownership boundaries      | **PASS** | No new persistence owner                                         |
+| Slice reports             | **PASS** | implementation / architecture / security / product / validation  |
+| Wave documentation sync   | **PASS** | overview / validation-plan / progress                            |
+| Automated validation      | **PASS** | lint / typecheck / test / web build / git diff --check           |
+
+**Explicit non-claim:** W5-N13-b does **not** authorize Notification Platform Retry implemented, retry runtime implemented, retry execution implemented, retry restart recovery implemented, dead-letter processing implemented, Notification Platform Complete, W5-N13 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
+
+**STOP.** W5-N13-b is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N13-c.
 
 ---
 
