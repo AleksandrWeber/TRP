@@ -2799,7 +2799,7 @@ export const W5_N15_A_HONEST_PRODUCT_BASELINE = Object.freeze({
 export const W5_N15_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Notification Platform Telemetry Inventory Foundation'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N15-e'] as const),
+  deferred: Object.freeze(['Final Package Integration Verification'] as const),
 } as const);
 
 export function artifactIds(): readonly string[] {

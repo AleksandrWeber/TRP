@@ -1422,19 +1422,19 @@ See [`w5-n14-final-integration-verification.md`](./w5-n14-final-integration-veri
 
 ---
 
-## W5-N15 status (Notification Platform Telemetry — W5-N15-d COMPLETE local)
+## W5-N15 status (Notification Platform Telemetry — W5-N15-e COMPLETE local)
 
-W5-N15 Notification Platform Telemetry Foundation Planning Package is **APPROVED** (2026-09-02). W5-N15-a is **COMPLETE** (`d5d16ec`). W5-N15-b is **COMPLETE** (`5bf8b1b`). W5-N15-c is **COMPLETE** (`cc4c324`). W5-N15-d Notification Platform Telemetry Operational Continuity Foundation is **COMPLETE** (local). Awaiting Product Owner Review. No metrics collection. No exporters. No dashboards. No telemetry runtime. No production transport I/O.
+W5-N15 Notification Platform Telemetry Foundation Planning Package is **APPROVED** (2026-09-02). W5-N15-a is **COMPLETE** (`d5d16ec`). W5-N15-b is **COMPLETE** (`5bf8b1b`). W5-N15-c is **COMPLETE** (`cc4c324`). W5-N15-d is **COMPLETE** (`cd674df`). W5-N15-e Package Close Evidence is **COMPLETE** (local). Awaiting Product Owner Review. No metrics collection. No exporters. No dashboards. No telemetry runtime. No production transport I/O.
 
 ```text
-Operational continuity foundation only — not Notification Platform Telemetry Foundation implemented.
+Package Close Evidence only — not Notification Platform Telemetry Foundation implemented.
 Not metrics collection, exporters, dashboards, runtime aggregation, or telemetry engine.
-Not Notification Platform Complete. Not Wave 5 COMPLETE.
-W5-N15-e not authorized.
-Beginning commit (W5-N15-d): cc4c324dc2f10cce36eb9478e271eae7863161e0
+Not W5-N15 CLOSED. Not Wave 5 COMPLETE.
+Final Package Integration Verification not performed.
+Beginning commit (W5-N15-e): cd674df80200f043a453118726c508ba239c2114
 ```
 
-See [`w5-n15-planning-summary.md`](./w5-n15-planning-summary.md), [`w5-n15-a-notification-platform-telemetry-inventory.md`](./w5-n15-a-notification-platform-telemetry-inventory.md), [`w5-n15-b-implementation-report.md`](./w5-n15-b-implementation-report.md), [`w5-n15-c-implementation-report.md`](./w5-n15-c-implementation-report.md), and [`w5-n15-d-implementation-report.md`](./w5-n15-d-implementation-report.md).
+See [`w5-n15-planning-summary.md`](./w5-n15-planning-summary.md), [`w5-n15-package-close-report.md`](./w5-n15-package-close-report.md), [`w5-n15-package-summary.md`](./w5-n15-package-summary.md), and [`w5-n15-e-implementation-report.md`](./w5-n15-e-implementation-report.md).
 
 ---
 
@@ -1445,10 +1445,10 @@ See [`w5-n15-planning-summary.md`](./w5-n15-planning-summary.md), [`w5-n15-a-not
 | W5-N15-a | Notification Platform Telemetry Inventory & Honest Product Baseline | **COMPLETE** (`d5d16ec`)                           |
 | W5-N15-b | Durable Notification Platform Telemetry Foundation                  | **COMPLETE** (`5bf8b1b`)                           |
 | W5-N15-c | Notification Platform Telemetry Restart Recovery Foundation         | **COMPLETE** (`cc4c324`)                           |
-| W5-N15-d | Notification Platform Telemetry Operational Continuity Foundation   | **COMPLETE** (local) — Awaiting PO Review          |
-| W5-N15-e | Package Close Evidence                                              | **Not authorized**                                 |
-| W5-N15   | Package                                                             | W5-N15-d **COMPLETE** (local) — Awaiting PO Review |
+| W5-N15-d | Notification Platform Telemetry Operational Continuity Foundation   | **COMPLETE** (`cd674df`)                           |
+| W5-N15-e | Package Close Evidence                                              | **COMPLETE** (local) — Awaiting PO Review          |
+| W5-N15   | Package                                                             | W5-N15-e **COMPLETE** (local) — Awaiting PO Review |
 
 ---
 
-**STOP.** W5-N15-d is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N15-e. Do not declare Notification Platform Telemetry Foundation implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N15-e is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not perform Final Package Integration Verification. Do not create Product Owner Close Record. Do not declare Notification Platform Telemetry Foundation implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE.

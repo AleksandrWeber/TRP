@@ -121,7 +121,7 @@ export const W5_N15_B_EXPLICIT_OUT = Object.freeze([
 export const W5_N15_B_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Notification Platform Telemetry Durable Foundation'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N15-e — Package Close Evidence'] as const),
+  deferred: Object.freeze(['Final Package Integration Verification'] as const),
 } as const);
 
 export const W5_N15_B_TRANSITION_MATRIX = Object.freeze({

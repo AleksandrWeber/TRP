@@ -185,14 +185,14 @@ describe('W5-N15-b durable notification platform telemetry — integration', () 
     expect(W5_N15_B_ARCHITECTURE_CLAIMS.exchangeAdapterUntouched).toBe(true);
   });
 
-  it('technical debt delta: durable foundation resolved; package close deferred', () => {
+  it('technical debt delta: durable foundation resolved; final integration deferred', () => {
     expect(W5_N15_B_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Notification Platform Telemetry Durable Foundation',
     );
     expect(W5_N15_B_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(
-      W5_N15_B_TECHNICAL_DEBT_DELTA.deferred.some((item) => item.includes('Package Close')),
-    ).toBe(true);
+    expect(W5_N15_B_TECHNICAL_DEBT_DELTA.deferred).toEqual([
+      'Final Package Integration Verification',
+    ]);
   });
 
   it('explicit OUT covers telemetry runtime only (not operational continuity)', () => {
