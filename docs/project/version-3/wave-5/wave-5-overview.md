@@ -1378,43 +1378,48 @@ See [`w5-n13-final-integration-verification.md`](./w5-n13-final-integration-veri
 
 ---
 
-## W5-N14 status (Notification Platform Dead Letter — Final Integration Verification PASS)
+## W5-N14 status (Notification Platform Dead Letter — CLOSED)
 
-W5-N14 Final Package Integration Verification is **PASS** (2026-09-02, local). Awaiting Product Owner Final Close. **No dead-letter runtime, replay, processing, or automatic replay implementation. W5-N14 NOT CLOSED.**
+W5-N14 Notification Platform Dead Letter Foundation is **CLOSED** by Product Owner (2026-09-02). Delivered: inventory (a), durable persistence (b), restart recovery (c), operational continuity (d), Close Evidence (e), Final Integration Verification **PASS** (`d8feb52`).
+
+```text
+Foundation only — not dead-letter runtime, dead-letter replay, dead-letter processing, or automatic replay.
+Notification Platform Dead Letter Foundation implemented — not claimed. Do not declare Notification Platform Dead Letter Foundation implemented.
+Closed W5-N05…N13 foundations consumed; per-channel W5-N01…N04 transport stubs remain honest per inventory.
+Notification Platform Dead Letter complete and Notification Platform Complete not claimed.
+Wave 5 COMPLETE not claimed.
+```
+
+See [`w5-n14-product-owner-close-record.md`](./w5-n14-product-owner-close-record.md).
+
+---
 
 ## W5-N14 Final Integration Verification status
 
-Final Integration Verification PASS (local).
-
-Engineering readiness verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**.
-
-Engineering confidence: **97%**.
-
-Product Owner Close Record **not created**.
+W5-N14 Final Package Integration Verification **PASS** (2026-09-02, `d8feb52`). All slices a–e form one internally consistent package. Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**. Engineering confidence: **97%**. Product Owner Final Close executed.
 
 ```text
-Restart recovery only — not dead-letter runtime, not dead-letter processing, not automatic replay.
-Not retry integration, scheduler integration, workers integration, or production runtime.
-Not production transport I/O, not outbound delivery, not Connected/Delivering labels.
-Notification Platform Dead Letter Foundation implemented — not claimed.
-Notification Platform Complete and Wave 5 COMPLETE not claimed.
+Slice chain 34ad8de → 3fcb0fc → c60f606 → ac0f13b → 5920272 verified on origin/main.
+W5-N14-e COMPLETE (`5920272`) — Package Close Evidence.
+Final Integration Verification PASS (`d8feb52`).
+W5-N14 CLOSED by Product Owner (2026-09-02).
 ```
 
-See [`w5-n14-c-implementation-report.md`](./w5-n14-c-implementation-report.md).
+See [`w5-n14-final-integration-verification.md`](./w5-n14-final-integration-verification.md).
 
 ---
 
 ## W5-N14 implementation slices
 
-| Slice    | Name                                                                  | Status                                                                               |
-| -------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| W5-N14-a | Notification Platform Dead Letter Inventory & Honest Product Baseline | **COMPLETE** (`34ad8de`)                                                             |
-| W5-N14-b | Durable Notification Platform Dead Letter Foundation                  | **COMPLETE** (`3fcb0fc`)                                                             |
-| W5-N14-c | Notification Platform Dead Letter Restart Recovery Foundation         | **COMPLETE** (`c60f606`)                                                             |
-| W5-N14-d | Notification Platform Dead Letter Operational Continuity Foundation   | **COMPLETE** (`ac0f13b`)                                                             |
-| W5-N14-e | Package Close Evidence                                                | **COMPLETE** (`5920272`)                                                             |
-| W5-N14   | Package                                                               | Final Integration Verification **PASS** (local) — Awaiting Product Owner Final Close |
+| Slice    | Name                                                                  | Status                                   |
+| -------- | --------------------------------------------------------------------- | ---------------------------------------- |
+| W5-N14-a | Notification Platform Dead Letter Inventory & Honest Product Baseline | **COMPLETE** (`34ad8de`)                 |
+| W5-N14-b | Durable Notification Platform Dead Letter Foundation                  | **COMPLETE** (`3fcb0fc`)                 |
+| W5-N14-c | Notification Platform Dead Letter Restart Recovery Foundation         | **COMPLETE** (`c60f606`)                 |
+| W5-N14-d | Notification Platform Dead Letter Operational Continuity Foundation   | **COMPLETE** (`ac0f13b`)                 |
+| W5-N14-e | Package Close Evidence                                                | **COMPLETE** (`5920272`)                 |
+| W5-N14   | Package                                                               | **CLOSED** by Product Owner (2026-09-02) |
 
 ---
 
-**STOP.** W5-N14 Final Integration Verification is **PASS** (local). Await Product Owner Final Close before Repository Synchronization. Do not declare Dead Letter implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare W5-N14 CLOSED. Do not declare Wave 5 COMPLETE. Do not create Product Owner Close Record. Do not open W5-N15.
+**STOP.** W5-N14 is **CLOSED** by Product Owner. Do not declare Dead Letter implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE. Do not open W5-N15 without separate Product Owner instruction.

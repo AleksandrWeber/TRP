@@ -13,7 +13,7 @@
 
 **Safety commit (pre-step):** `5920272` — W5-N14-e Package Close Evidence pushed to `origin/main`. Repository clean; `origin/main` up to date.
 
-**Slice commit chain on `origin/main`:** `34ad8de` (a) → `3fcb0fc` (b) → `c60f606` (c) → `ac0f13b` (d) → `5920272` (e) → Final Integration Verification (local).
+**Slice commit chain on `origin/main`:** `34ad8de` (a) → `3fcb0fc` (b) → `c60f606` (c) → `ac0f13b` (d) → `5920272` (e) → `d8feb52` (Final Integration Verification).
 
 ---
 
@@ -390,11 +390,9 @@ Engineering does **not** open W5-N15 or the next Wave package.
 
 **STOP.**
 
-Final Integration Verification **PASS** (local).
+Final Integration Verification **PASS** (`d8feb52`).
 
-Awaiting Product Owner Final Close. W5-N14 **NOT CLOSED**.
-
-Do **not** create Product Owner Close Record.
+Product Owner Final Close executed. W5-N14 **CLOSED** — see [`w5-n14-product-owner-close-record.md`](./w5-n14-product-owner-close-record.md).
 
 Do **not** declare Notification Platform Dead Letter implemented.
 
