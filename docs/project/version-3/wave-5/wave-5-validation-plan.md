@@ -1959,4 +1959,24 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 **Explicit non-claim:** Product Owner Close does **not** authorize Notification Platform Telemetry implemented, Notification Platform Complete, metrics collection implemented, exporters implemented, dashboards implemented, Production Ready, Live Notifications, Wave 5 COMPLETE, or W5-N16 opened.
 
-**STOP.** W5-N15 is **CLOSED** by Product Owner. Await explicit Product Owner instruction before W5-N16 Planning Package.
+**STOP.** W5-N15 is **CLOSED** by Product Owner. W5-N16-a validation **PASS** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N16-b without authorization.
+
+---
+
+## W5-N16-a validation (2026-09-02 — local)
+
+| Layer                   | Result   | Evidence                                                           |
+| ----------------------- | -------- | ------------------------------------------------------------------ |
+| Inventory completeness  | **PASS** | `w5-n16-a-notification-platform-metrics-inventory.ts`              |
+| Honest Product baseline | **PASS** | `platformMetricsAnchorsMissing: true`; no customer-visible feature |
+| Architecture integrity  | **PASS** | No ownership drift; Exchange Adapter untouched                     |
+| Ownership boundaries    | **PASS** | No new persistence owner                                           |
+| Honesty boundaries      | **PASS** | Metrics foundation ≠ Live Trading; telemetry ≠ metrics complete    |
+| Conformance tests       | **PASS** | `w5-n16-a-notification-platform-metrics*.spec.ts` — 30/30          |
+| Slice reports           | **PASS** | w5-n16-a-* reports under wave-5                                    |
+| Regression suite        | **PASS** | lint / typecheck / test / build                                    |
+| git diff --check        | **PASS** | No whitespace errors                                               |
+
+**Explicit non-claim:** W5-N16-a does **not** authorize Notification Platform Metrics implemented, metrics collection implemented, exporters implemented, dashboards implemented, Notification Platform Complete, W5-N16 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
+
+**STOP.** W5-N16-a is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N16-b without authorization.

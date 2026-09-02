@@ -1466,12 +1466,12 @@ See [`w5-n15-final-integration-verification.md`](./w5-n15-final-integration-veri
 
 ---
 
-## W5-N16 status (Notification Platform Metrics — Planning OPEN)
+## W5-N16 status (Notification Platform Metrics — W5-N16-a COMPLETE)
 
-W5-N16 Notification Platform Metrics Foundation Planning Package is **OPEN**. Awaiting Planning Review. **No implementation.** **No slices opened.**
+W5-N16 Notification Platform Metrics Foundation: Planning **APPROVED**; W5-N16-a inventory **COMPLETE** (local). **Awaiting Product Owner Review.** **No metrics implementation.** **No metrics collection.** **No persistence beyond existing owners.**
 
 ```text
-Planning only — not metrics foundation implementation.
+Inventory and conformance only — not metrics foundation implementation.
 Not metric collection runtime, metric exporters, dashboards, alerting, analytics, or production monitoring.
 Not platform metrics anchors (W5-N16-b).
 Not Notification Platform Metrics functional.
@@ -1479,21 +1479,21 @@ Not W5-N16 COMPLETE.
 Customer-visible platform metrics remains unchanged until later slices + Product Owner Close.
 ```
 
-See [`w5-n16-planning-summary.md`](./w5-n16-planning-summary.md).
+See [`w5-n16-a-notification-platform-metrics-inventory.md`](./w5-n16-a-notification-platform-metrics-inventory.md).
 
 ---
 
-## W5-N16 implementation slices (planning only — not opened)
+## W5-N16 implementation slices
 
-| Slice    | Name                                                              | Status        |
-| -------- | ----------------------------------------------------------------- | ------------- |
-| W5-N16-a | Notification Platform Metrics Inventory & Honest Product Baseline | Not opened    |
-| W5-N16-b | Durable Notification Platform Metrics Foundation                  | Not opened    |
-| W5-N16-c | Notification Platform Metrics Restart Recovery Foundation         | Not opened    |
-| W5-N16-d | Notification Platform Metrics Operational Continuity Foundation   | Not opened    |
-| W5-N16-e | Package Close Evidence                                            | Not opened    |
-| W5-N16   | Package                                                           | Planning OPEN |
+| Slice    | Name                                                              | Status                                    |
+| -------- | ----------------------------------------------------------------- | ----------------------------------------- |
+| W5-N16-a | Notification Platform Metrics Inventory & Honest Product Baseline | **COMPLETE** (local) — Awaiting PO Review |
+| W5-N16-b | Durable Notification Platform Metrics Foundation                  | Not opened                                |
+| W5-N16-c | Notification Platform Metrics Restart Recovery Foundation         | Not opened                                |
+| W5-N16-d | Notification Platform Metrics Operational Continuity Foundation   | Not opened                                |
+| W5-N16-e | Package Close Evidence                                            | Not opened                                |
+| W5-N16   | Package                                                           | Planning **APPROVED** — W5-N16-a COMPLETE |
 
 ---
 
-**STOP.** W5-N16 Planning Package is **OPEN**. Await explicit Product Owner instruction before W5-N16 Planning Review. Do not declare Notification Platform Metrics Foundation implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE. Do not create W5-N16-a.
+**STOP.** W5-N16-a is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N16-b. Do not declare Notification Platform Metrics Foundation implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare W5-N16 COMPLETE. Do not declare Wave 5 COMPLETE.
