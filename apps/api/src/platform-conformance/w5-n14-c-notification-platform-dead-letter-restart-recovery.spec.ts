@@ -174,10 +174,10 @@ describe('W5-N14-c notification platform dead-letter restart recovery — integr
     ).toBe(true);
   });
 
-  it('technical debt delta: restart recovery resolved; package close deferred', () => {
+  it('technical debt delta: restart recovery resolved; no new debt deferred from slice c', () => {
     expect(W5_N14_C_TECHNICAL_DEBT_DELTA.resolved.length).toBeGreaterThan(0);
     expect(W5_N14_C_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N14_C_TECHNICAL_DEBT_DELTA.deferred).toEqual(['W5-N14-e — Package Close Evidence']);
+    expect(W5_N14_C_TECHNICAL_DEBT_DELTA.deferred).toEqual([]);
   });
 
   it('explicit OUT covers dead-letter runtime only (not operational continuity)', () => {

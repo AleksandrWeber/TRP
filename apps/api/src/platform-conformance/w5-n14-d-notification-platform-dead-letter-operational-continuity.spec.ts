@@ -207,10 +207,10 @@ describe('W5-N14-d notification platform dead-letter operational continuity — 
     expect(W5_N14_D_ARCHITECTURE_CLAIMS.newPersistenceOwner).toBe(false);
   });
 
-  it('technical debt delta: operational continuity resolved; package close deferred', () => {
+  it('technical debt delta: operational continuity resolved; no new debt deferred from slice d', () => {
     expect(W5_N14_D_TECHNICAL_DEBT_DELTA.resolved.length).toBeGreaterThan(0);
     expect(W5_N14_D_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N14_D_TECHNICAL_DEBT_DELTA.deferred).toEqual(['W5-N14-e — Package Close Evidence']);
+    expect(W5_N14_D_TECHNICAL_DEBT_DELTA.deferred).toEqual([]);
   });
 
   it('explicit OUT covers W5-N14-e and dead-letter runtime', () => {

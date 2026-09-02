@@ -84,7 +84,7 @@ describe('W5-N14-a notification platform dead-letter conformance — unit', () =
     expect(W5_N14_A_ARCHITECTURE_CLAIMS.liveTradingClaimed).toBe(false);
   });
 
-  it('technical debt delta: inventory resolved; b–e deferred', () => {
+  it('technical debt delta: inventory resolved; final integration deferred', () => {
     expect(W5_N14_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Notification Platform Dead Letter Inventory Foundation',
     );

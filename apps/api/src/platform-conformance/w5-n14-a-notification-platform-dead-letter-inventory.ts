@@ -2508,7 +2508,7 @@ export const W5_N14_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N01…N14-a machine inventories — foundation reference patterns',
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
-  plannedCapabilities: Object.freeze(['W5-N14-e — Package Close Evidence'] as const),
+  plannedCapabilities: Object.freeze(['Final Package Integration Verification'] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform dead-letter layer',
     'Cross-channel honest dead-letter rule unification',
@@ -2534,7 +2534,7 @@ export const W5_N14_A_HONEST_PRODUCT_BASELINE = Object.freeze({
 export const W5_N14_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Notification Platform Dead Letter Inventory Foundation'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N14-e — Package Close Evidence'] as const),
+  deferred: Object.freeze(['Final Package Integration Verification'] as const),
 } as const);
 
 export function artifactIds(): readonly string[] {

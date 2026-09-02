@@ -74,7 +74,7 @@ export const W5_N14_C_TECHNICAL_DEBT_DELTA = Object.freeze({
     'Notification Platform Dead Letter Restart Recovery Foundation',
   ] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N14-e — Package Close Evidence'] as const),
+  deferred: Object.freeze([] as const),
 } as const);
 
 export const W5_N14_C_TRANSITION_MATRIX = Object.freeze({
