@@ -1199,7 +1199,26 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 **Explicit non-claim:** W5-N12-a does **not** authorize Notification Platform Scheduler implemented, scheduler runtime implemented, scheduler execution implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N12 COMPLETE, or Wave 5 COMPLETE. **Recorded** (2026-09-02).
 
-**STOP.** W5-N12-a is **COMPLETE**. Await explicit Product Owner instruction before W5-N12-b. Do not open W5-N12-b.
+**STOP.** W5-N12-a is **COMPLETE**. Await explicit Product Owner instruction before W5-N12-c. Do not open W5-N12-c.
+
+---
+
+## W5-N12-b validation (2026-09-02)
+
+| Layer                     | Result   | Evidence                                                             |
+| ------------------------- | -------- | -------------------------------------------------------------------- |
+| Durable anchor model      | **PASS** | `WorkspaceNotificationPlatformSchedulerAnchor` + migration           |
+| Repository + service      | **PASS** | scheduler anchor repository + persistence service                    |
+| Inventory synchronization | **PASS** | W5-N12-a SURVIVE promotion; `platformSchedulerAnchorsMissing: false` |
+| Architecture integrity    | **PASS** | No ownership drift; Exchange Adapter untouched                       |
+| Ownership boundaries      | **PASS** | No new persistence owner                                             |
+| Slice reports             | **PASS** | implementation / architecture / security / product / validation      |
+| Wave documentation sync   | **PASS** | overview / validation-plan / progress                                |
+| Automated validation      | **PASS** | lint / typecheck / test / web build / git diff --check               |
+
+**Explicit non-claim:** W5-N12-b does **not** authorize Notification Platform Scheduler implemented, scheduler runtime implemented, scheduling engine implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N12 COMPLETE, or Wave 5 COMPLETE. **Recorded** (2026-09-02).
+
+**STOP.** W5-N12-b is **COMPLETE**. Await explicit Product Owner instruction before W5-N12-c. Do not open W5-N12-c.
 
 ---
 

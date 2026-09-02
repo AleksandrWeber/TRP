@@ -143,7 +143,7 @@ describe('W5-N12-a notification platform scheduler inventory — unit', () => {
     expect(W5_N12_A_BINDING_FINDINGS.w5N09WorkersFoundationExists).toBe(true);
     expect(W5_N12_A_BINDING_FINDINGS.w5N11WorkerRuntimeFoundationExists).toBe(true);
     expect(W5_N12_A_BINDING_FINDINGS.unifiedPlatformSchedulerLayerMissing).toBe(true);
-    expect(W5_N12_A_BINDING_FINDINGS.platformSchedulerAnchorsMissing).toBe(true);
+    expect(W5_N12_A_BINDING_FINDINGS.platformSchedulerAnchorsMissing).toBe(false);
     expect(W5_N12_A_BINDING_FINDINGS.w5N08QueueFoundationExists).toBe(true);
     expect(W5_N12_A_BINDING_FINDINGS.w5N07DispatchFoundationExists).toBe(true);
     expect(W5_N12_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);

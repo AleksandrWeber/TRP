@@ -15,6 +15,7 @@ import { NOTIFICATION_PLATFORM_QUEUE_ANCHOR_REPOSITORY } from './domain/notifica
 import { NOTIFICATION_PLATFORM_WORKERS_ANCHOR_REPOSITORY } from './domain/notification-platform-workers-anchor.repository';
 import { NOTIFICATION_PLATFORM_WORKER_EXECUTION_ANCHOR_REPOSITORY } from './domain/notification-platform-worker-execution-anchor.repository';
 import { NOTIFICATION_PLATFORM_WORKER_RUNTIME_ANCHOR_REPOSITORY } from './domain/notification-platform-worker-runtime-anchor.repository';
+import { NOTIFICATION_PLATFORM_SCHEDULER_ANCHOR_REPOSITORY } from './domain/notification-platform-scheduler-anchor.repository';
 import { NotificationDeliveryBoundaryService } from './notification-boundary.service';
 import { NotificationDeliveryService } from './notification-delivery.service';
 import { PrismaEmailNotificationAnchorRepository } from './persistence/prisma-email-notification-anchor.repository';
@@ -27,6 +28,7 @@ import { PrismaNotificationPlatformQueueAnchorRepository } from './persistence/p
 import { PrismaNotificationPlatformWorkersAnchorRepository } from './persistence/prisma-notification-platform-workers-anchor.repository';
 import { PrismaNotificationPlatformWorkerExecutionAnchorRepository } from './persistence/prisma-notification-platform-worker-execution-anchor.repository';
 import { PrismaNotificationPlatformWorkerRuntimeAnchorRepository } from './persistence/prisma-notification-platform-worker-runtime-anchor.repository';
+import { PrismaNotificationPlatformSchedulerAnchorRepository } from './persistence/prisma-notification-platform-scheduler-anchor.repository';
 import { PrismaTelegramNotificationAnchorRepository } from './persistence/prisma-telegram-notification-anchor.repository';
 import { NOTIFICATION_SERVICE_PORT, TELEGRAM_CHANNEL_ADAPTER } from './ports/notification.port';
 import { EmailNotificationPersistenceService } from './email-notification-persistence.service';
@@ -41,6 +43,7 @@ import { NotificationPlatformQueuePersistenceService } from './notification-plat
 import { NotificationPlatformWorkersPersistenceService } from './notification-platform-workers-persistence.service';
 import { NotificationPlatformWorkerExecutionPersistenceService } from './notification-platform-worker-execution-persistence.service';
 import { NotificationPlatformWorkerRuntimePersistenceService } from './notification-platform-worker-runtime-persistence.service';
+import { NotificationPlatformSchedulerPersistenceService } from './notification-platform-scheduler-persistence.service';
 import { NotificationPlatformWorkerRuntimeRecoveryStore } from './notification-platform-worker-runtime-recovery-store';
 import { NotificationPlatformWorkerRuntimeRestartRecoveryService } from './notification-platform-worker-runtime-restart-recovery.service';
 import { NotificationPlatformWorkerExecutionRecoveryStore } from './notification-platform-worker-execution-recovery-store';
@@ -170,6 +173,12 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
         new PrismaNotificationPlatformWorkerRuntimeAnchorRepository(prisma),
       inject: [PrismaService],
     },
+    {
+      provide: NOTIFICATION_PLATFORM_SCHEDULER_ANCHOR_REPOSITORY,
+      useFactory: (prisma: PrismaService) =>
+        new PrismaNotificationPlatformSchedulerAnchorRepository(prisma),
+      inject: [PrismaService],
+    },
     TelegramNotificationRecoveryStore,
     TelegramNotificationRestartRecoveryService,
     TelegramNotificationPersistenceService,
@@ -187,6 +196,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformWorkersPersistenceService,
     NotificationPlatformWorkerExecutionPersistenceService,
     NotificationPlatformWorkerRuntimePersistenceService,
+    NotificationPlatformSchedulerPersistenceService,
     NotificationPlatformWorkerRuntimeRecoveryStore,
     NotificationPlatformWorkerRuntimeRestartRecoveryService,
     NotificationPlatformWorkerExecutionRecoveryStore,
@@ -248,6 +258,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformWorkersPersistenceService,
     NotificationPlatformWorkerExecutionPersistenceService,
     NotificationPlatformWorkerRuntimePersistenceService,
+    NotificationPlatformSchedulerPersistenceService,
     NotificationPlatformWorkerRuntimeRecoveryStore,
     NotificationPlatformWorkerRuntimeRestartRecoveryService,
     NotificationPlatformWorkerExecutionRecoveryStore,

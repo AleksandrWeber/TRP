@@ -2009,3 +2009,20 @@ model WorkspaceNotificationPlatformWorkerRuntimeAnchor {
   @@id([workspaceId, workerRuntimeAnchorId])
   @@map("workspace_notification_platform_worker_runtime_anchors")
 }
+
+model WorkspaceNotificationPlatformSchedulerAnchor {
+  workspaceId           String   @map("workspace_id")
+  schedulerAnchorId     String   @map("scheduler_anchor_id")
+  schemaVersion         Int      @default(1) @map("schema_version")
+  platformSchedulerType   String   @map("platform_scheduler_type")
+  schedulerState        String   @map("scheduler_state")
+  channelScope          String?  @map("channel_scope")
+  integrityMetadata     String?  @map("integrity_metadata")
+  correlationId         String?  @map("correlation_id")
+  recordedAt            DateTime @map("recorded_at")
+  recordedByActorId     String?  @map("recorded_by_actor_id")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, schedulerAnchorId])
+  @@map("workspace_notification_platform_scheduler_anchors")
+}
