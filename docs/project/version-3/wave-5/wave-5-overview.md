@@ -1326,4 +1326,32 @@ See [`w5-n12-e-implementation-report.md`](./w5-n12-e-implementation-report.md).
 
 ---
 
-**STOP.** W5-N12 is **CLOSED** by Product Owner. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution implemented. Do not declare Notification Platform Worker Runtime Foundation implemented. Do not declare Notification Platform Scheduler Foundation implemented. Do not declare Scheduler runtime implemented. Do not declare Scheduler execution implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N13 without separate Product Owner instruction.
+## W5-N13 status (Notification Platform Retry — Planning OPEN)
+
+W5-N13 Notification Platform Retry Foundation Planning Package is **OPEN** (2026-09-02). Awaiting Planning Review. Not implementation. No platform retry foundation. No retry engine. No production transport I/O. No outbound notifications.
+
+```text
+Planning only — not retry engine, retry execution, or dead-letter processing.
+Closed W5-N05…N12 foundations consumed; per-channel W5-N01…N04 transport stubs remain honest per inventory.
+Notification Platform Retry complete and Notification Platform Complete not claimed.
+Wave 5 COMPLETE not claimed.
+```
+
+See [`w5-n13-planning-summary.md`](./w5-n13-planning-summary.md).
+
+---
+
+## W5-N13 implementation slices (planning only — not opened)
+
+| Slice    | Name                                                            | Status                              |
+| -------- | --------------------------------------------------------------- | ----------------------------------- |
+| W5-N13-a | Notification Platform Retry Inventory & Honest Product Baseline | Not opened — planning only          |
+| W5-N13-b | Durable Notification Platform Retry Foundation                  | Not opened — planning only          |
+| W5-N13-c | Notification Platform Retry Restart Recovery Foundation         | Not opened — planning only          |
+| W5-N13-d | Notification Platform Retry Operational Continuity Foundation   | Not opened — planning only          |
+| W5-N13-e | Package Close Evidence                                          | Not opened — planning only          |
+| W5-N13   | Package                                                         | Planning **OPEN** — Awaiting Review |
+
+---
+
+**STOP.** W5-N13 Planning Package is **OPEN**. Await explicit Product Owner instruction before W5-N13 Planning Review. Do not perform Planning Review. Do not perform Planning Approval. Do not create W5-N13-a. Do not begin implementation. Do not declare Notification Platform Retry Foundation implemented. Do not declare Retry implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not declare Production Ready. Do not declare Live Notifications.
