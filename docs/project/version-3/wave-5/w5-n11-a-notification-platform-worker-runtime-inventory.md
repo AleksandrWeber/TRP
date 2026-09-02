@@ -40,8 +40,8 @@ Enumerate every Notification Platform Worker Runtime artifact required to implem
 - Per-channel W5-N01…N04 foundations exist and are **CLOSED** — consumed as reference patterns only.
 - PC-06 routing and PC-07 notification product are **implemented** — they decide routes and expose per-channel settings but do not constitute unified platform worker runtime.
 - **No** unified cross-channel platform worker runtime layer, platform worker runtime restart recovery, platform worker runtime operational continuity projection, actual worker runtime execution, scheduler, retry, dead-letter processing, orchestration, telemetry, scaling, or parallel execution exists.
-- **W5-N11-b** durable platform worker runtime anchors are **not implemented** — deferred; W5-N10 worker execution anchors consumed separately.
-- `platformWorkerRuntimeAnchorsMissing`: **true** (W5-N11-b not opened).
+- **W5-N11-b** durable platform worker runtime anchors are **implemented** — `workspace_notification_platform_worker_runtime_anchors` on notification-delivery owner; restart hydrate is W5-N11-c.
+- `platformWorkerRuntimeAnchorsMissing`: **false** (W5-N11-b).
 - W3-O02 durable notification queue exists on `notification-delivery` owner — queue work survives restart; platform worker runtime orchestration is still absent.
 - TD-049 / TD-050 production transport I/O remains deferred — not claimed from this inventory.
 
@@ -61,16 +61,16 @@ Enumerate every Notification Platform Worker Runtime artifact required to implem
 
 ## Required ownership inventory (summary)
 
-| Artifact ID                                      | Owner                 | Class     | Persistence responsibility | Recovery responsibility | Operational continuity responsibility |
-| ------------------------------------------------ | --------------------- | --------- | -------------------------- | ----------------------- | ------------------------------------- |
-| `own-platform-worker-runtime-layer`              | notification-delivery | EPHEMERAL | Deferred W5-N11-b          | Deferred W5-N11-c       | Deferred W5-N11-d                     |
-| `own-platform-worker-runtime-persistence`        | notification-delivery | EPHEMERAL | Deferred W5-N11-b          | Deferred W5-N11-c       | Deferred W5-N11-d                     |
-| `consume-w5-n10-worker-execution-persistence`    | w5-n10-reference      | SURVIVE   | w5-n10-reference           | w5-n10-reference        | w5-n10-reference                      |
-| `own-w5-n10-worker-execution-foundation-consume` | w5-n10-reference      | SURVIVE   | w5-n10-reference           | w5-n10-reference        | w5-n10-reference                      |
-| `own-notification-delivery-domain`               | notification-delivery | SURVIVE   | notification-delivery      | notification-delivery   | platform-readiness                    |
-| `consume-w5-n10-worker-execution-anchor`         | w5-n10-reference      | SURVIVE   | w5-n10-reference           | w5-n10-reference        | w5-n10-reference                      |
-| `missing-platform-worker-runtime-anchors`        | notification-delivery | EPHEMERAL | Deferred W5-N11-b          | Deferred W5-N11-c       | Deferred W5-N11-d                     |
-| `own-notification-durable-queue`                 | notification-delivery | SURVIVE   | notification-delivery      | notification-delivery   | platform-readiness                    |
+| Artifact ID                                           | Owner                 | Class     | Persistence responsibility | Recovery responsibility | Operational continuity responsibility |
+| ----------------------------------------------------- | --------------------- | --------- | -------------------------- | ----------------------- | ------------------------------------- |
+| `own-platform-worker-runtime-layer`                   | notification-delivery | EPHEMERAL | Deferred W5-N11-b          | Deferred W5-N11-c       | Deferred W5-N11-d                     |
+| `own-platform-worker-runtime-persistence`             | notification-delivery | SURVIVE   | notification-delivery      | w5-n11-c                | platform-readiness                    |
+| `persist-notification-platform-worker-runtime-anchor` | notification-delivery | SURVIVE   | notification-delivery      | w5-n11-c                | platform-readiness                    |
+| `consume-w5-n10-worker-execution-persistence`         | w5-n10-reference      | SURVIVE   | w5-n10-reference           | w5-n10-reference        | w5-n10-reference                      |
+| `own-w5-n10-worker-execution-foundation-consume`      | w5-n10-reference      | SURVIVE   | w5-n10-reference           | w5-n10-reference        | w5-n10-reference                      |
+| `own-notification-delivery-domain`                    | notification-delivery | SURVIVE   | notification-delivery      | notification-delivery   | platform-readiness                    |
+| `consume-w5-n10-worker-execution-anchor`              | w5-n10-reference      | SURVIVE   | w5-n10-reference           | w5-n10-reference        | w5-n10-reference                      |
+| `own-notification-durable-queue`                      | notification-delivery | SURVIVE   | notification-delivery      | notification-delivery   | platform-readiness                    |
 
 Full row detail: `W5_N11_A_NOTIFICATION_PLATFORM_WORKER_RUNTIME_INVENTORY` and helpers `rowsSurvive()`, `rowsEphemeral()`, `rowsNotificationPlatformWorkerRuntimeSurvive()`, `rowsNotificationPlatformWorkerRuntimeEphemeral()`.
 
@@ -86,7 +86,7 @@ See `rowsNotificationPlatformWorkerRuntimeSurvive()` for the full machine-readab
 
 ## Notification Platform Worker Runtime EPHEMERAL artifacts (summary)
 
-Missing unified platform worker runtime layer, missing platform worker runtime durable anchors, missing platform worker runtime restart recovery, missing platform worker runtime operational continuity, missing actual worker runtime execution/scheduler/retry/dead-letter/orchestration/scaling/telemetry/parallel execution, missing platform worker runtime UI, missing production transport delivery, and honesty blockers.
+Missing unified platform worker runtime layer, missing platform worker runtime restart recovery, missing platform worker runtime operational continuity, missing actual worker runtime execution/scheduler/retry/dead-letter/orchestration/scaling/telemetry/parallel execution, missing platform worker runtime UI, missing production transport delivery, and honesty blockers.
 
 See `rowsNotificationPlatformWorkerRuntimeEphemeral()` for the full machine-readable list.
 

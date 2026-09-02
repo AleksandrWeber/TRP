@@ -1992,3 +1992,20 @@ model WorkspaceNotificationPlatformWorkerExecutionAnchor {
   @@id([workspaceId, workerExecutionAnchorId])
   @@map("workspace_notification_platform_worker_execution_anchors")
 }
+
+model WorkspaceNotificationPlatformWorkerRuntimeAnchor {
+  workspaceId                 String   @map("workspace_id")
+  workerRuntimeAnchorId       String   @map("worker_runtime_anchor_id")
+  schemaVersion               Int      @default(1) @map("schema_version")
+  platformWorkerRuntimeType   String   @map("platform_worker_runtime_type")
+  workerRuntimeState          String   @map("worker_runtime_state")
+  channelScope                String?  @map("channel_scope")
+  integrityMetadata           String?  @map("integrity_metadata")
+  correlationId               String?  @map("correlation_id")
+  recordedAt                  DateTime @map("recorded_at")
+  recordedByActorId           String?  @map("recorded_by_actor_id")
+  updatedAt                   DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, workerRuntimeAnchorId])
+  @@map("workspace_notification_platform_worker_runtime_anchors")
+}

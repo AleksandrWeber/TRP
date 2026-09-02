@@ -1076,7 +1076,24 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite     | **PASS** | lint / typecheck / test / build                              |
 | git diff --check     | **PASS** | No whitespace errors                                         |
 
-**Explicit non-claim:** W5-N11-a does **not** authorize Notification Platform Worker Runtime implemented, worker runtime execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N11 COMPLETE, or Wave 5 COMPLETE. **Recorded** (2026-09-02).
+**Explicit non-claim:** W5-N11-a does **not** authorize Notification Platform Worker Runtime implemented, worker runtime execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N11 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`737b26d`).
+
+---
+
+## W5-N11-b validation (2026-09-02)
+
+| Layer               | Result   | Evidence                                                      |
+| ------------------- | -------- | ------------------------------------------------------------- |
+| Durable persistence | **PASS** | `w5-n11-b-durable-notification-platform-worker-runtime.ts`    |
+| Persistence service | **PASS** | `notification-platform-worker-runtime-persistence.service.ts` |
+| Inventory sync      | **PASS** | W5-N11-a inventory promoted to SURVIVE                        |
+| Architecture check  | **PASS** | No ownership drift; no worker runtime execution               |
+| Regression suite    | **PASS** | lint / typecheck / test / build                               |
+| git diff --check    | **PASS** | No whitespace errors                                          |
+
+**Explicit non-claim:** W5-N11-b does **not** authorize Notification Platform Worker Runtime implemented, restart recovery implemented, worker runtime execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N11 COMPLETE, or Wave 5 COMPLETE. **Recorded** (2026-09-02).
+
+**STOP.** W5-N11-b is **COMPLETE**. Do not open W5-N11-c without separate Product Owner instruction.
 
 ---
 

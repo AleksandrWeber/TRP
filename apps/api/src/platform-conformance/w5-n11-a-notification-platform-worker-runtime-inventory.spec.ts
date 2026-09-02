@@ -131,7 +131,7 @@ describe('W5-N11-a notification platform worker runtime inventory — unit', () 
     expect(ids.has('consume-w5-n06-delivery-anchor')).toBe(true);
     expect(ids.has('consume-w5-n07-dispatch-anchor')).toBe(true);
     expect(ids.has('consume-w5-n10-worker-execution-anchor')).toBe(true);
-    expect(ids.has('missing-platform-worker-runtime-anchors')).toBe(true);
+    expect(ids.has('persist-notification-platform-worker-runtime-anchor')).toBe(true);
     expect(ids.has('missing-platform-worker-runtime-ui')).toBe(true);
   });
 
@@ -143,7 +143,7 @@ describe('W5-N11-a notification platform worker runtime inventory — unit', () 
     expect(W5_N11_A_BINDING_FINDINGS.w5N09WorkersFoundationExists).toBe(true);
     expect(W5_N11_A_BINDING_FINDINGS.w5N10WorkerExecutionFoundationExists).toBe(true);
     expect(W5_N11_A_BINDING_FINDINGS.unifiedPlatformWorkerRuntimeLayerMissing).toBe(true);
-    expect(W5_N11_A_BINDING_FINDINGS.platformWorkerRuntimeAnchorsMissing).toBe(true);
+    expect(W5_N11_A_BINDING_FINDINGS.platformWorkerRuntimeAnchorsMissing).toBe(false);
     expect(W5_N11_A_BINDING_FINDINGS.w5N08QueueFoundationExists).toBe(true);
     expect(W5_N11_A_BINDING_FINDINGS.w5N07DispatchFoundationExists).toBe(true);
     expect(W5_N11_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);

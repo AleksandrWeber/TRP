@@ -14,6 +14,7 @@ import { NOTIFICATION_PLATFORM_DISPATCH_ANCHOR_REPOSITORY } from './domain/notif
 import { NOTIFICATION_PLATFORM_QUEUE_ANCHOR_REPOSITORY } from './domain/notification-platform-queue-anchor.repository';
 import { NOTIFICATION_PLATFORM_WORKERS_ANCHOR_REPOSITORY } from './domain/notification-platform-workers-anchor.repository';
 import { NOTIFICATION_PLATFORM_WORKER_EXECUTION_ANCHOR_REPOSITORY } from './domain/notification-platform-worker-execution-anchor.repository';
+import { NOTIFICATION_PLATFORM_WORKER_RUNTIME_ANCHOR_REPOSITORY } from './domain/notification-platform-worker-runtime-anchor.repository';
 import { NotificationDeliveryBoundaryService } from './notification-boundary.service';
 import { NotificationDeliveryService } from './notification-delivery.service';
 import { PrismaEmailNotificationAnchorRepository } from './persistence/prisma-email-notification-anchor.repository';
@@ -25,6 +26,7 @@ import { PrismaNotificationPlatformDispatchAnchorRepository } from './persistenc
 import { PrismaNotificationPlatformQueueAnchorRepository } from './persistence/prisma-notification-platform-queue-anchor.repository';
 import { PrismaNotificationPlatformWorkersAnchorRepository } from './persistence/prisma-notification-platform-workers-anchor.repository';
 import { PrismaNotificationPlatformWorkerExecutionAnchorRepository } from './persistence/prisma-notification-platform-worker-execution-anchor.repository';
+import { PrismaNotificationPlatformWorkerRuntimeAnchorRepository } from './persistence/prisma-notification-platform-worker-runtime-anchor.repository';
 import { PrismaTelegramNotificationAnchorRepository } from './persistence/prisma-telegram-notification-anchor.repository';
 import { NOTIFICATION_SERVICE_PORT, TELEGRAM_CHANNEL_ADAPTER } from './ports/notification.port';
 import { EmailNotificationPersistenceService } from './email-notification-persistence.service';
@@ -38,6 +40,7 @@ import { NotificationPlatformDispatchPersistenceService } from './notification-p
 import { NotificationPlatformQueuePersistenceService } from './notification-platform-queue-persistence.service';
 import { NotificationPlatformWorkersPersistenceService } from './notification-platform-workers-persistence.service';
 import { NotificationPlatformWorkerExecutionPersistenceService } from './notification-platform-worker-execution-persistence.service';
+import { NotificationPlatformWorkerRuntimePersistenceService } from './notification-platform-worker-runtime-persistence.service';
 import { NotificationPlatformWorkerExecutionRecoveryStore } from './notification-platform-worker-execution-recovery-store';
 import { NotificationPlatformWorkerExecutionRestartRecoveryService } from './notification-platform-worker-execution-restart-recovery.service';
 import { NotificationPlatformWorkersRecoveryStore } from './notification-platform-workers-recovery-store';
@@ -84,6 +87,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
  * W5-N09-c: deterministic restart recovery hydrate for canonical platform workers anchors on this owner only.
  * W5-N10-b: durable Notification Platform Worker Execution anchor persistence on this owner only.
  * W5-N10-c: deterministic restart recovery hydrate for canonical platform worker execution anchors on this owner only.
+ * W5-N11-b: durable Notification Platform Worker Runtime anchor persistence on this owner only.
  * Does not import Reporting / AI Analytics / Strategy Library / Runtime /
  * Trading Session / Orders / Ledger. Does not expose REST or trading commands.
  */
@@ -157,6 +161,12 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
         new PrismaNotificationPlatformWorkerExecutionAnchorRepository(prisma),
       inject: [PrismaService],
     },
+    {
+      provide: NOTIFICATION_PLATFORM_WORKER_RUNTIME_ANCHOR_REPOSITORY,
+      useFactory: (prisma: PrismaService) =>
+        new PrismaNotificationPlatformWorkerRuntimeAnchorRepository(prisma),
+      inject: [PrismaService],
+    },
     TelegramNotificationRecoveryStore,
     TelegramNotificationRestartRecoveryService,
     TelegramNotificationPersistenceService,
@@ -173,6 +183,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformQueuePersistenceService,
     NotificationPlatformWorkersPersistenceService,
     NotificationPlatformWorkerExecutionPersistenceService,
+    NotificationPlatformWorkerRuntimePersistenceService,
     NotificationPlatformWorkerExecutionRecoveryStore,
     NotificationPlatformWorkerExecutionRestartRecoveryService,
     NotificationPlatformWorkersRecoveryStore,
@@ -214,6 +225,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NOTIFICATION_PLATFORM_QUEUE_ANCHOR_REPOSITORY,
     NOTIFICATION_PLATFORM_WORKERS_ANCHOR_REPOSITORY,
     NOTIFICATION_PLATFORM_WORKER_EXECUTION_ANCHOR_REPOSITORY,
+    NOTIFICATION_PLATFORM_WORKER_RUNTIME_ANCHOR_REPOSITORY,
     TelegramNotificationRecoveryStore,
     TelegramNotificationRestartRecoveryService,
     TelegramNotificationPersistenceService,
@@ -230,6 +242,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformQueuePersistenceService,
     NotificationPlatformWorkersPersistenceService,
     NotificationPlatformWorkerExecutionPersistenceService,
+    NotificationPlatformWorkerRuntimePersistenceService,
     NotificationPlatformWorkerExecutionRecoveryStore,
     NotificationPlatformWorkerExecutionRestartRecoveryService,
     NotificationPlatformWorkersRecoveryStore,
