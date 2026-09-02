@@ -1082,12 +1082,12 @@ See [`w5-n10-product-owner-close-record.md`](./w5-n10-product-owner-close-record
 
 ---
 
-## W5-N11 status (Notification Platform Worker Runtime — Planning OPEN)
+## W5-N11 status (Notification Platform Worker Runtime — W5-N11-a COMPLETE)
 
-W5-N11 Notification Platform Worker Runtime Foundation Planning Package is **OPEN** (2026-08-31). Awaiting Planning Review. Not approved. Not implementation.
+W5-N11 Notification Platform Worker Runtime Foundation Planning Package is **APPROVED** (2026-09-02). W5-N11-a inventory and Honest Product baseline are **COMPLETE**. Not worker runtime implementation.
 
 ```text
-Planning only — not worker runtime implementation.
+Inventory only — not worker runtime execution implementation.
 Not worker runtime execution, orchestration, retry, scheduler, or dead-letter processing.
 Not platform worker runtime anchors (W5-N11-b).
 Not Notification Platform Worker Runtime functional.
@@ -1102,19 +1102,36 @@ See [`w5-n11-planning-summary.md`](./w5-n11-planning-summary.md).
 
 ---
 
-## W5-N11 implementation slices (planning only — not opened)
+## W5-N11-a status (Notification Platform Worker Runtime inventory & honesty baseline)
 
-| Slice    | Name                                                                     | Status                                       |
-| -------- | ------------------------------------------------------------------------ | -------------------------------------------- |
-| W5-N11-a | Notification Platform Worker Runtime Inventory & Honest Product Baseline | **Not opened**                               |
-| W5-N11-b | Durable Notification Platform Worker Runtime Foundation                  | **Not opened**                               |
-| W5-N11-c | Notification Platform Worker Runtime Restart Recovery Foundation         | **Not opened**                               |
-| W5-N11-d | Notification Platform Worker Runtime Operational Continuity Foundation   | **Not opened**                               |
-| W5-N11-e | Package Close Evidence                                                   | **Not opened**                               |
-| W5-N11   | Package                                                                  | Planning **OPEN** — Awaiting Planning Review |
+W5-N11-a enumerates every Notification Platform Worker Runtime artifact across Closed W5-N05 integration foundation, Closed W5-N06 delivery foundation, Closed W5-N07 dispatch foundation, Closed W5-N08 queue foundation, Closed W5-N09 workers foundation, Closed W5-N10 worker execution foundation, per-channel W5-N01…N04 foundations, PC-06 routing, PC-07 notification product, per-channel/integration/delivery/dispatch/queue/workers/worker-execution operational continuity views, W3-O02 durable queue substrate, and missing unified platform worker runtime layer, worker runtime persistence, worker runtime recovery, worker runtime operational continuity, actual worker runtime execution, scheduler, retry, dead-letter processing, orchestration, scaling, and telemetry. **No customer-visible Notification Platform Worker Runtime behaviour** was added.
+
+```text
+Inventory only — not worker runtime execution implementation.
+Not worker runtime execution / scheduler / retry / dead-letter / orchestration / scaling / telemetry implementation.
+Not platform worker runtime anchors (W5-N11-b).
+Not Notification Platform Worker Runtime functional.
+Not W5-N11 COMPLETE.
+Customer-visible platform worker runtime remains unchanged until later slices + Product Owner Close.
+```
+
+See [`w5-n11-a-notification-platform-worker-runtime-inventory.md`](./w5-n11-a-notification-platform-worker-runtime-inventory.md).
+
+---
+
+## W5-N11 implementation slices
+
+| Slice    | Name                                                                     | Status                                        |
+| -------- | ------------------------------------------------------------------------ | --------------------------------------------- |
+| W5-N11-a | Notification Platform Worker Runtime Inventory & Honest Product Baseline | **COMPLETE** (2026-09-02)                     |
+| W5-N11-b | Durable Notification Platform Worker Runtime Foundation                  | **Not opened**                                |
+| W5-N11-c | Notification Platform Worker Runtime Restart Recovery Foundation         | **Not opened**                                |
+| W5-N11-d | Notification Platform Worker Runtime Operational Continuity Foundation   | **Not opened**                                |
+| W5-N11-e | Package Close Evidence                                                   | **Not opened**                                |
+| W5-N11   | Package                                                                  | Planning **APPROVED** — W5-N11-a **COMPLETE** |
 
 See [`w5-n11-planning-summary.md`](./w5-n11-planning-summary.md).
 
 ---
 
-**STOP.** W5-N10 is **CLOSED** by Product Owner. W5-N11 Planning Package is **OPEN** — Awaiting Planning Review. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution implemented. Do not declare Notification Platform Worker Runtime Foundation implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not perform W5-N11 Planning Review. Do not perform W5-N11 Planning Approval. Do not open W5-N11-a without separate Product Owner instruction.
+**STOP.** W5-N10 is **CLOSED** by Product Owner. W5-N11-a is **COMPLETE**. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution implemented. Do not declare Notification Platform Worker Runtime Foundation implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not authorize W5-N11-b through W5-N11-e without separate Product Owner instruction.

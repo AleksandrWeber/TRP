@@ -1061,7 +1061,22 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 **Explicit non-claim:** Product Owner Close does **not** authorize Notification Platform Worker Execution implemented, Notification Platform Complete, platform worker execution runtime, worker runtime, retry, scheduler, dead-letter processing, Production Ready, Live Notifications, W5-N10 COMPLETE, Wave 5 COMPLETE, or W5-N11 opened.
 
-**STOP.** W5-N10 is **CLOSED** by Product Owner. Do not open W5-N11 without separate Product Owner instruction.
+**STOP.** W5-N10 is **CLOSED** by Product Owner. W5-N11-a is **COMPLETE**.
+
+---
+
+## W5-N11-a validation (2026-09-02)
+
+| Layer                | Result   | Evidence                                                     |
+| -------------------- | -------- | ------------------------------------------------------------ |
+| Platform inventory   | **PASS** | `w5-n11-a-notification-platform-worker-runtime-inventory.ts` |
+| Conformance registry | **PASS** | `w5-n11-a-notification-platform-worker-runtime.ts`           |
+| Slice reports        | **PASS** | w5-n11-a-* reports under wave-5                              |
+| Architecture check   | **PASS** | No ownership drift; no worker runtime execution              |
+| Regression suite     | **PASS** | lint / typecheck / test / build                              |
+| git diff --check     | **PASS** | No whitespace errors                                         |
+
+**Explicit non-claim:** W5-N11-a does **not** authorize Notification Platform Worker Runtime implemented, worker runtime execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N11 COMPLETE, or Wave 5 COMPLETE. **Recorded** (2026-09-02).
 
 ---
 

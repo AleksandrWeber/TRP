@@ -89,19 +89,19 @@
 
 ## Wave 5 packages (Master Plan / Execution Roadmap)
 
-| Package    | Roadmap ID | Name                                              | Status                                    |
-| ---------- | ---------- | ------------------------------------------------- | ----------------------------------------- |
-| **W5-N01** | **V3-N01** | Production Telegram Bot API                       | **CLOSED** by Product Owner (2026-08-28)  |
-| **W5-N02** | **V3-N02** | Email (SMTP)                                      | **CLOSED** by Product Owner (2026-08-28)  |
-| **W5-N03** | **V3-N03** | Slack / Discord / Teams                           | **CLOSED** by Product Owner (2026-08-29)  |
-| **W5-N04** | **V3-N04** | Push                                              | **CLOSED** by Product Owner (2026-08-29)  |
-| **W5-N05** | **V3-N05** | Notification Platform Integration                 | **CLOSED** by Product Owner (2026-08-29)  |
-| **W5-N06** | **V3-N06** | Notification Platform Delivery Foundation         | **CLOSED** by Product Owner (2026-08-29)  |
-| **W5-N07** | **V3-N07** | Notification Platform Dispatch Foundation         | **CLOSED** by Product Owner (2026-08-29)  |
-| **W5-N08** | **V3-N08** | Notification Platform Queue Foundation            | **CLOSED** by Product Owner (2026-08-29)  |
-| **W5-N09** | **V3-N09** | Notification Platform Workers Foundation          | **CLOSED** by Product Owner (2026-08-29)  |
-| **W5-N10** | **V3-N10** | Notification Platform Worker Execution Foundation | **CLOSED** by Product Owner (2026-08-29)  |
-| **W5-N11** | **V3-N11** | Notification Platform Worker Runtime Foundation   | Planning **APPROVED** — Awaiting W5-N11-a |
+| Package    | Roadmap ID | Name                                              | Status                                                 |
+| ---------- | ---------- | ------------------------------------------------- | ------------------------------------------------------ |
+| **W5-N01** | **V3-N01** | Production Telegram Bot API                       | **CLOSED** by Product Owner (2026-08-28)               |
+| **W5-N02** | **V3-N02** | Email (SMTP)                                      | **CLOSED** by Product Owner (2026-08-28)               |
+| **W5-N03** | **V3-N03** | Slack / Discord / Teams                           | **CLOSED** by Product Owner (2026-08-29)               |
+| **W5-N04** | **V3-N04** | Push                                              | **CLOSED** by Product Owner (2026-08-29)               |
+| **W5-N05** | **V3-N05** | Notification Platform Integration                 | **CLOSED** by Product Owner (2026-08-29)               |
+| **W5-N06** | **V3-N06** | Notification Platform Delivery Foundation         | **CLOSED** by Product Owner (2026-08-29)               |
+| **W5-N07** | **V3-N07** | Notification Platform Dispatch Foundation         | **CLOSED** by Product Owner (2026-08-29)               |
+| **W5-N08** | **V3-N08** | Notification Platform Queue Foundation            | **CLOSED** by Product Owner (2026-08-29)               |
+| **W5-N09** | **V3-N09** | Notification Platform Workers Foundation          | **CLOSED** by Product Owner (2026-08-29)               |
+| **W5-N10** | **V3-N10** | Notification Platform Worker Execution Foundation | **CLOSED** by Product Owner (2026-08-29)               |
+| **W5-N11** | **V3-N11** | Notification Platform Worker Runtime Foundation   | W5-N11-a **COMPLETE** (2026-09-02) — Awaiting W5-N11-b |
 
 Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 → N09 → N10 → N11**.
 
@@ -216,6 +216,19 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 
 
 ---
 
+## W5-N11 slice status
+
+| Slice    | Name                                                                     | Status                                        |
+| -------- | ------------------------------------------------------------------------ | --------------------------------------------- |
+| W5-N11-a | Notification Platform Worker Runtime Inventory & Honest Product Baseline | **COMPLETE** (2026-09-02)                     |
+| W5-N11-b | Durable Notification Platform Worker Runtime Foundation                  | **Not opened**                                |
+| W5-N11-c | Notification Platform Worker Runtime Restart Recovery Foundation         | **Not opened**                                |
+| W5-N11-d | Notification Platform Worker Runtime Operational Continuity Foundation   | **Not opened**                                |
+| W5-N11-e | Package Close Evidence                                                   | **Not opened**                                |
+| W5-N11   | Package                                                                  | Planning **APPROVED** — W5-N11-a **COMPLETE** |
+
+---
+
 ## Wave status
 
 | Field                                 | Value                                                                                                                                                                                                                                                                                                                                                                                     |
@@ -224,12 +237,14 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 
 | **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 **CLOSED** by Product Owner (2026-08-29) · W5-N08 **CLOSED** by Product Owner (2026-08-29) · W5-N09 **CLOSED** by Product Owner (2026-08-29) · W5-N10 **CLOSED** by Product Owner (2026-08-29) |
 | **First package**                     | **W5-N01** Production Telegram Bot API (V3-N01 · CM-11) — **CLOSED**                                                                                                                                                                                                                                                                                                                      |
 | **Previous package**                  | **W5-N10** Notification Platform Worker Execution Foundation (V3-N10 · CM-20) — **CLOSED** by Product Owner (2026-08-29)                                                                                                                                                                                                                                                                  |
-| **Current package**                   | **W5-N11** Notification Platform Worker Runtime Foundation (V3-N11 · CM-21) — Planning **APPROVED** — Awaiting W5-N11-a                                                                                                                                                                                                                                                                   |
+| **Current package**                   | **W5-N11** Notification Platform Worker Runtime Foundation (V3-N11 · CM-21) — W5-N11-a **COMPLETE** (2026-09-02) — Awaiting W5-N11-b                                                                                                                                                                                                                                                      |
 | **W5-N11 Planning Package**           | **APPROVED** (2026-09-02) — [`w5-n11-planning-summary.md`](./w5-n11-planning-summary.md)                                                                                                                                                                                                                                                                                                  |
 | **W5-N11 Planning Review**            | **PASS** (2026-09-02) — [`w5-n11-planning-review.md`](./w5-n11-planning-review.md)                                                                                                                                                                                                                                                                                                        |
 | **W5-N11 Planning Approval**          | **RECORDED** (2026-09-02) — [`w5-n11-planning-approval.md`](./w5-n11-planning-approval.md)                                                                                                                                                                                                                                                                                                |
 | **W5-N11 planning documents**         | [`w5-n11-planning-summary.md`](./w5-n11-planning-summary.md) and companions                                                                                                                                                                                                                                                                                                               |
-| **Implementation authorized?**        | **Yes** — W5-N11-a **authorized** only; W5-N11-b…e **not authorized**; W5-N11-a **not yet opened**                                                                                                                                                                                                                                                                                        |
+| **W5-N11-a inventory**                | [`w5-n11-a-notification-platform-worker-runtime-inventory.md`](./w5-n11-a-notification-platform-worker-runtime-inventory.md)                                                                                                                                                                                                                                                              |
+| **W5-N11-a implementation report**    | [`w5-n11-a-implementation-report.md`](./w5-n11-a-implementation-report.md)                                                                                                                                                                                                                                                                                                                |
+| **Implementation authorized?**        | **Yes** — W5-N11-a **COMPLETE** (2026-09-02); W5-N11-b…e **not authorized**                                                                                                                                                                                                                                                                                                               |
 | **W5-N10 Planning Package**           | **APPROVED** (2026-08-29) — [`w5-n10-planning-summary.md`](./w5-n10-planning-summary.md)                                                                                                                                                                                                                                                                                                  |
 | **W5-N10 Planning Review**            | **PASS** (2026-08-29) — [`w5-n10-planning-review.md`](./w5-n10-planning-review.md)                                                                                                                                                                                                                                                                                                        |
 | **W5-N10 Planning Approval**          | **RECORDED** (2026-08-29) — [`w5-n10-planning-approval.md`](./w5-n10-planning-approval.md)                                                                                                                                                                                                                                                                                                |
@@ -554,13 +569,14 @@ W5-N11 Planning Review PASS (2026-09-02)
         ↓
 W5-N11 Planning APPROVED (2026-09-02)
         ↓
-STOP — Await explicit Product Owner instruction for W5-N11-a
+W5-N11-a COMPLETE (2026-09-02) — Notification Platform Worker Runtime Inventory & Honest Product Baseline
+        ↓
+STOP — Awaiting explicit Product Owner instruction for W5-N11-b
 (No worker runtime execution / orchestration / retry / scheduler / dead-letter)
 (No production transport I/O)
 (No Notification Platform Complete)
 (No Wave 5 COMPLETE)
 (No Live Trading)
-(No W5-N11-a opened)
 (No W5-N11-b / c / d / e authorized)
 ```
 
@@ -690,7 +706,8 @@ STOP — Await explicit Product Owner instruction for W5-N11-a
 | W5-N11 Planning Review PASS           | **Recorded** (2026-09-02) |
 | W5-N11 Planning APPROVED              | **Recorded** (2026-09-02) |
 | W5-N11-a authorized                   | **Recorded** (2026-09-02) |
-| W5-N11-a opened                       | **Not claimed**           |
+| W5-N11-a opened                       | **Recorded** (2026-09-02) |
+| W5-N11-a COMPLETE                     | **Recorded** (2026-09-02) |
 | Worker runtime execution implemented  | **Not claimed**           |
 | Queue execution implemented           | **Not claimed**           |
 | Dispatcher implemented                | **Not claimed**           |
@@ -713,4 +730,4 @@ STOP — Await explicit Product Owner instruction for W5-N11-a
 
 ---
 
-**STOP.** W5-N10 is **CLOSED** by Product Owner. W5-N11 Planning is **APPROVED** — Awaiting W5-N11-a. Do not declare Notification Platform Worker Runtime Foundation implemented. Do not declare Worker runtime execution implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N11-a without separate Product Owner instruction. Do not authorize W5-N11-b through W5-N11-e.
+**STOP.** W5-N10 is **CLOSED** by Product Owner. W5-N11-a is **COMPLETE**. Do not declare Notification Platform Worker Runtime Foundation implemented. Do not declare Worker runtime execution implemented. Do not declare Scheduler implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE. Do not open W5-N11-b without separate Product Owner instruction. Do not authorize W5-N11-b through W5-N11-e.
