@@ -209,6 +209,16 @@ const ready: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: [],
   },
+  notificationPlatformWorkerRuntime: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:00:00.000Z',
+    recoveryDurationMs: 42,
+    restoredCount: 0,
+    canonicalAnchorCount: 0,
+    integrityVerified: true,
+    workspaceIds: [],
+  },
 };
 
 const degraded: OperationalContinuityReadinessView = {
@@ -424,6 +434,16 @@ const degraded: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: ['ws-1'],
   },
+  notificationPlatformWorkerRuntime: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:01:00.000Z',
+    recoveryDurationMs: 100,
+    restoredCount: 1,
+    canonicalAnchorCount: 1,
+    integrityVerified: true,
+    workspaceIds: ['ws-1'],
+  },
 };
 
 describe('OperationalContinuityView', () => {
@@ -610,6 +630,16 @@ describe('OperationalContinuityView', () => {
     const html = renderToStaticMarkup(<OperationalContinuityView readiness={ready} />);
     expect(html).toContain('Notification Platform Worker Execution');
     expect(html).toContain('Notification Platform Worker Execution operational state');
+    expect(html).toContain('Canonical anchors');
+    expect(html).not.toContain('Executing');
+    expect(html).not.toContain('Implemented');
+    expect(html).not.toContain('Cross-channel');
+  });
+
+  it('shows Notification Platform Worker Runtime operational state within platform readiness only', () => {
+    const html = renderToStaticMarkup(<OperationalContinuityView readiness={ready} />);
+    expect(html).toContain('Notification Platform Worker Runtime');
+    expect(html).toContain('Notification Platform Worker Runtime operational state');
     expect(html).toContain('Canonical anchors');
     expect(html).not.toContain('Executing');
     expect(html).not.toContain('Implemented');

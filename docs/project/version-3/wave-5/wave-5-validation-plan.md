@@ -1107,9 +1107,25 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite    | **PASS** | lint / typecheck / test / build                                     |
 | git diff --check    | **PASS** | No whitespace errors                                                |
 
-**Explicit non-claim:** W5-N11-c does **not** authorize Notification Platform Worker Runtime implemented, operational continuity implemented, worker runtime execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N11 COMPLETE, or Wave 5 COMPLETE. **Recorded** (2026-09-02).
+**Explicit non-claim:** W5-N11-c does **not** authorize Notification Platform Worker Runtime implemented, operational continuity implemented, worker runtime execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N11 COMPLETE, or Wave 5 COMPLETE. **Recorded** (`a3ae017`).
 
-**STOP.** W5-N11-c is **COMPLETE**. Do not open W5-N11-d without separate Product Owner instruction.
+---
+
+## W5-N11-d validation (2026-09-02)
+
+| Layer                  | Result   | Evidence                                                                     |
+| ---------------------- | -------- | ---------------------------------------------------------------------------- |
+| Operational continuity | **PASS** | `notification-platform-worker-runtime-operational-continuity.ts`             |
+| Platform Readiness     | **PASS** | `OperationalContinuityService.buildNotificationPlatformWorkerRuntimeView()`  |
+| Web projection         | **PASS** | `OperationalContinuityView.tsx` Notification Platform Worker Runtime section |
+| Conformance            | **PASS** | `w5-n11-d-notification-platform-worker-runtime-operational-continuity.ts`    |
+| Architecture check     | **PASS** | No ownership drift; no worker runtime execution                              |
+| Regression suite       | **PASS** | lint / typecheck / test / build                                              |
+| git diff --check       | **PASS** | No whitespace errors                                                         |
+
+**Explicit non-claim:** W5-N11-d does **not** authorize Notification Platform Worker Runtime implemented, worker runtime execution implemented, scheduler implemented, retry implemented, dead-letter processing implemented, Notification Platform Complete, W5-N11 COMPLETE, or Wave 5 COMPLETE. **Recorded** (2026-09-02).
+
+**STOP.** W5-N11-d is **COMPLETE**. Do not open W5-N11-e without separate Product Owner instruction.
 
 ---
 

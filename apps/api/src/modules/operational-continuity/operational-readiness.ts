@@ -247,6 +247,19 @@ export type NotificationPlatformWorkerExecutionContinuityView = Readonly<{
   workspaceIds: readonly string[];
 }>;
 
+/** W5-N11-d — Notification Platform Worker Runtime continuity fields on platform readiness. */
+export type NotificationPlatformWorkerRuntimeContinuityView = Readonly<{
+  operationalState: OperationalState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+}>;
+
 /** W3-O05-d — Monitoring & Security Health continuity fields on platform readiness. */
 export type MonitoringHealthContinuityView = Readonly<{
   operationalState: OperationalState;
@@ -318,6 +331,8 @@ export type PlatformOperationalProjection = Readonly<{
   notificationPlatformWorkers: NotificationPlatformWorkersContinuityView | null;
   /** W5-N10-d — Notification Platform Worker Execution operational continuity (derived). */
   notificationPlatformWorkerExecution: NotificationPlatformWorkerExecutionContinuityView | null;
+  /** W5-N11-d — Notification Platform Worker Runtime operational continuity (derived). */
+  notificationPlatformWorkerRuntime: NotificationPlatformWorkerRuntimeContinuityView | null;
 }>;
 
 export type EvaluateOwnerReadinessInput = Readonly<{
@@ -422,6 +437,7 @@ export function buildPlatformOperationalProjection(input: {
   notificationPlatformQueue?: NotificationPlatformQueueContinuityView | null;
   notificationPlatformWorkers?: NotificationPlatformWorkersContinuityView | null;
   notificationPlatformWorkerExecution?: NotificationPlatformWorkerExecutionContinuityView | null;
+  notificationPlatformWorkerRuntime?: NotificationPlatformWorkerRuntimeContinuityView | null;
 }): PlatformOperationalProjection {
   const platformState = derivePlatformOperationalState(input.owners);
   assertOperationalState(platformState);
@@ -454,6 +470,7 @@ export function buildPlatformOperationalProjection(input: {
     notificationPlatformQueue: input.notificationPlatformQueue ?? null,
     notificationPlatformWorkers: input.notificationPlatformWorkers ?? null,
     notificationPlatformWorkerExecution: input.notificationPlatformWorkerExecution ?? null,
+    notificationPlatformWorkerRuntime: input.notificationPlatformWorkerRuntime ?? null,
   });
 }
 

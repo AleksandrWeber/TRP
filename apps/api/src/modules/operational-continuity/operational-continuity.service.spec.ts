@@ -85,6 +85,13 @@ import {
 } from '../notification-delivery/domain/notification-platform-worker-execution-continuity-status';
 import { buildNotificationPlatformWorkerExecutionAnchorState } from '../notification-delivery/domain/durable-notification-platform-worker-execution-anchor';
 import { buildNotificationPlatformWorkerExecutionRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-worker-execution-restart-recovery';
+import {
+  recordNotificationPlatformWorkerRuntimeRecoveryStart,
+  recordNotificationPlatformWorkerRuntimeRecoverySuccess,
+  resetNotificationPlatformWorkerRuntimeContinuity,
+} from '../notification-delivery/domain/notification-platform-worker-runtime-continuity-status';
+import { buildNotificationPlatformWorkerRuntimeAnchorState } from '../notification-delivery/domain/durable-notification-platform-worker-runtime-anchor';
+import { buildNotificationPlatformWorkerRuntimeRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-worker-runtime-restart-recovery';
 
 describe('OperationalContinuityService', () => {
   beforeEach(() => {
@@ -167,6 +174,7 @@ describe('OperationalContinuityService', () => {
     expect(projection.notificationPlatformQueue?.operationalState).toBe('Unavailable');
     expect(projection.notificationPlatformWorkers?.operationalState).toBe('Unavailable');
     expect(projection.notificationPlatformWorkerExecution?.operationalState).toBe('Unavailable');
+    expect(projection.notificationPlatformWorkerRuntime?.operationalState).toBe('Unavailable');
   });
 
   it('workspace-safe projection is read-only (no mutation API on service)', () => {
@@ -673,6 +681,50 @@ describe('OperationalContinuityService', () => {
 
     expect(projection.notificationPlatformWorkerExecution?.operationalState).toBe('Ready');
     expect(projection.notificationPlatformWorkerExecution?.canonicalAnchorCount).toBe(1);
+    expect(projection.platformState).toBe('Ready');
+  });
+
+  it('includes notification platform worker runtime continuity derived from W5-N11-c recovery record', async () => {
+    resetNotificationPlatformWorkerRuntimeContinuity();
+    const anchor = buildNotificationPlatformWorkerRuntimeAnchorState({
+      workspaceId: 'ws-1',
+      workerRuntimeAnchorId: 'worker-runtime-1',
+      platformWorkerRuntimeType: 'unified-platform-worker-runtime',
+      correlationId: 'corr-1',
+      actorId: 'actor-1',
+      recordedAt: '2026-09-02T10:00:00.000Z',
+      prior: null,
+    });
+    if (!anchor.ok) throw new Error('expected anchor');
+    recordNotificationPlatformWorkerRuntimeRecoveryStart();
+    recordNotificationPlatformWorkerRuntimeRecoverySuccess({
+      diagnostics: buildNotificationPlatformWorkerRuntimeRecoveryDiagnostics([anchor.anchor]),
+    });
+
+    const audit = {
+      recordOwnerState: vi.fn(async () => undefined),
+      recordRecoveryCompleted: vi.fn(async () => undefined),
+    } as unknown as OperationalContinuityAudit;
+    const service = new OperationalContinuityService(audit);
+    const projection = await service.applyBootOutcomesForTest(
+      (
+        [
+          'strategy-library',
+          'exchange-scope',
+          'knowledge-lake',
+          'market-profile',
+          'market-qualification',
+          'market-state',
+          'reporting',
+          'notification-delivery',
+          'trading-orchestrator',
+          'runtime-enforcement',
+        ] as const
+      ).map((owner) => ({ owner, outcome: 'ready' as const })),
+    );
+
+    expect(projection.notificationPlatformWorkerRuntime?.operationalState).toBe('Ready');
+    expect(projection.notificationPlatformWorkerRuntime?.canonicalAnchorCount).toBe(1);
     expect(projection.platformState).toBe('Ready');
   });
 });
