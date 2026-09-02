@@ -1466,9 +1466,9 @@ See [`w5-n15-final-integration-verification.md`](./w5-n15-final-integration-veri
 
 ---
 
-## W5-N16 status (Notification Platform Metrics — W5-N16-e COMPLETE)
+## W5-N16 status (Notification Platform Metrics — Final Integration Verification PASS)
 
-W5-N16 Notification Platform Metrics Foundation: Planning **APPROVED**; W5-N16-a inventory **COMPLETE** (`6454eea`); W5-N16-b durable anchors **COMPLETE** (`ef141c6`); W5-N16-c restart recovery **COMPLETE** (`bdf2f99`); W5-N16-d operational continuity **COMPLETE** (`8f7cdda`); W5-N16-e Close Evidence **COMPLETE** (local). **Awaiting Product Owner Review.** **No metrics collection.**
+W5-N16 Notification Platform Metrics Foundation: Planning **APPROVED**; W5-N16-a inventory **COMPLETE** (`6454eea`); W5-N16-b durable anchors **COMPLETE** (`ef141c6`); W5-N16-c restart recovery **COMPLETE** (`bdf2f99`); W5-N16-d operational continuity **COMPLETE** (`8f7cdda`); W5-N16-e Close Evidence **COMPLETE** (`8d539aa`); Final Integration Verification **PASS** (local). **Awaiting Product Owner Final Close.** **No metrics collection.**
 
 ```text
 Package Close Evidence assembled — not metrics collection runtime.
@@ -1478,21 +1478,31 @@ Not W5-N16 CLOSED.
 Customer-visible platform metrics remains unchanged until Product Owner Close.
 ```
 
-See [`w5-n16-e-implementation-report.md`](./w5-n16-e-implementation-report.md).
+See [`w5-n16-final-integration-verification.md`](./w5-n16-final-integration-verification.md).
+
+---
+
+## W5-N16 Final Integration Verification status
+
+Final Integration Verification **PASS** (local).
+
+Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**
+
+Engineering confidence: **97%**
 
 ---
 
 ## W5-N16 implementation slices
 
-| Slice    | Name                                                              | Status                                    |
-| -------- | ----------------------------------------------------------------- | ----------------------------------------- |
-| W5-N16-a | Notification Platform Metrics Inventory & Honest Product Baseline | **COMPLETE** (`6454eea`)                  |
-| W5-N16-b | Durable Notification Platform Metrics Foundation                  | **COMPLETE** (`ef141c6`)                  |
-| W5-N16-c | Notification Platform Metrics Restart Recovery Foundation         | **COMPLETE** (`bdf2f99`)                  |
-| W5-N16-d | Notification Platform Metrics Operational Continuity Foundation   | **COMPLETE** (`8f7cdda`)                  |
-| W5-N16-e | Package Close Evidence                                            | **COMPLETE** (local) — Awaiting PO Review |
-| W5-N16   | Package                                                           | W5-N16-e **COMPLETE** (local)             |
+| Slice    | Name                                                              | Status                                          |
+| -------- | ----------------------------------------------------------------- | ----------------------------------------------- |
+| W5-N16-a | Notification Platform Metrics Inventory & Honest Product Baseline | **COMPLETE** (`6454eea`)                        |
+| W5-N16-b | Durable Notification Platform Metrics Foundation                  | **COMPLETE** (`ef141c6`)                        |
+| W5-N16-c | Notification Platform Metrics Restart Recovery Foundation         | **COMPLETE** (`bdf2f99`)                        |
+| W5-N16-d | Notification Platform Metrics Operational Continuity Foundation   | **COMPLETE** (`8f7cdda`)                        |
+| W5-N16-e | Package Close Evidence                                            | **COMPLETE** (`8d539aa`)                        |
+| W5-N16   | Package                                                           | Final Integration Verification **PASS** (local) |
 
 ---
 
-**STOP.** W5-N16-e is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not perform Final Package Integration Verification. Do not create Product Owner Close Record. Do not declare Notification Platform Metrics Foundation implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare W5-N16 CLOSED. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N16 Final Integration Verification is **PASS** (local). Await Product Owner Final Close before Repository Synchronization. Do not create Product Owner Close Record. Do not declare Notification Platform Metrics Foundation implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare W5-N16 CLOSED. Do not declare Wave 5 COMPLETE. Do not open W5-N17.

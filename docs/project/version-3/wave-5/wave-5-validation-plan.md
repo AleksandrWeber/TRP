@@ -2043,7 +2043,7 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
-## W5-N16-e validation (2026-09-02 — local)
+## W5-N16-e validation (2026-09-02 — `8d539aa`)
 
 | Layer                     | Result   | Evidence                                             |
 | ------------------------- | -------- | ---------------------------------------------------- |
@@ -2059,6 +2059,32 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 | Regression suite          | **PASS** | lint / typecheck / test / build                      |
 | git diff --check          | **PASS** | No whitespace errors                                 |
 
-**Explicit non-claim:** W5-N16-e does **not** authorize W5-N16 CLOSED, Notification Platform Metrics implemented, Notification Platform Complete, or Wave 5 COMPLETE. **Recorded** (local).
+**Explicit non-claim:** W5-N16-e does **not** authorize W5-N16 CLOSED, Notification Platform Metrics implemented, Notification Platform Complete, or Wave 5 COMPLETE. **Recorded** (`8d539aa`).
 
-**STOP.** W5-N16-e is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not perform Final Package Integration Verification. Do not create Product Owner Close Record.
+**STOP.** W5-N16-e is **COMPLETE** (`8d539aa`). Await Product Owner Review before Repository Synchronization. Do not perform Final Package Integration Verification. Do not create Product Owner Close Record.
+
+---
+
+## W5-N16 Final Integration Verification (2026-09-02 — local)
+
+| Area                     | Result   | Evidence                                                            |
+| ------------------------ | -------- | ------------------------------------------------------------------- |
+| Scope verification       | **PASS** | Evidence-only; no implementation                                    |
+| Slice chain (a–e)        | **PASS** | All slices on `origin/main`; close evidence chains `ok: true`       |
+| Dependency chain         | **PASS** | W5-N01…N15 CLOSED consumed; `verifyDependencyChain()`               |
+| Metrics foundation chain | **PASS** | `verifyMetricsFoundationChain()` in close evidence                  |
+| Persistence verification | **PASS** | Durable metrics anchor persistence (b) integrated with recovery (c) |
+| Restart recovery         | **PASS** | Deterministic recovery store and continuity status (c)              |
+| Operational continuity   | **PASS** | Derived view from recovery (d) on Platform Readiness                |
+| Architecture / ownership | **PASS** | notification-delivery owner only; no drift                          |
+| Honest Product           | **PASS** | No metrics collection / exporters / functional claims               |
+| Documentation sync       | **PASS** | Package + wave docs aligned                                         |
+| Conformance sync         | **PASS** | a–e registries + close evidence spec                                |
+| Regression suite         | **PASS** | lint / typecheck / test / build                                     |
+
+**Engineering verdict:** READY FOR PRODUCT OWNER FINAL CLOSE
+**Engineering confidence:** 97%
+
+**Explicit non-claim:** Final Integration Verification does **not** authorize W5-N16 CLOSED, Notification Platform Metrics implemented, Notification Platform Complete, Production Ready, Live Notifications, or Wave 5 COMPLETE. Product Owner Close Record **not created**. **Recorded** (local).
+
+**STOP.** W5-N16 Final Integration Verification is **PASS** (local). Await Product Owner Final Close before Repository Synchronization. Do not create Product Owner Close Record. Do not declare W5-N16 CLOSED. Do not open W5-N17.
