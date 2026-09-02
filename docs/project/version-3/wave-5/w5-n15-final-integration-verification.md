@@ -13,7 +13,7 @@
 
 **Safety commit (pre-step):** `2e4adda` — W5-N15-e Package Close Evidence pushed to `origin/main`. Repository clean; `origin/main` up to date.
 
-**Slice commit chain on `origin/main`:** `d5d16ec` (a) → `5bf8b1b` (b) → `cc4c324` (c) → `cd674df` (d) → `2e4adda` (e) → Final Integration Verification (local).
+**Slice commit chain on `origin/main`:** `d5d16ec` (a) → `5bf8b1b` (b) → `cc4c324` (c) → `cd674df` (d) → `2e4adda` (e) → Final Integration Verification **PASS** (`25069bd`) → Product Owner Close (2026-09-02).
 
 ---
 
@@ -329,15 +329,15 @@ Engineering does **not** declare Wave 5 COMPLETE.
 
 Engineering does **not** open W5-N16 or the next Wave package.
 
-Product Owner Close Record **not created** — deferred to Product Owner act.
+Product Owner Final Close executed. W5-N15 **CLOSED** — see [`w5-n15-product-owner-close-record.md`](./w5-n15-product-owner-close-record.md).
 
 ---
 
 **STOP.**
 
-Final Integration Verification **PASS** (local).
+Final Integration Verification **PASS** (`25069bd`).
 
-Awaiting Product Owner Final Close.
+Product Owner Final Close executed. W5-N15 **CLOSED** — see [`w5-n15-product-owner-close-record.md`](./w5-n15-product-owner-close-record.md).
 
 Do **not** declare Notification Platform Telemetry implemented.
 

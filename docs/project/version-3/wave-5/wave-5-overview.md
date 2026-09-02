@@ -1422,45 +1422,48 @@ See [`w5-n14-final-integration-verification.md`](./w5-n14-final-integration-veri
 
 ---
 
-## W5-N15 status (Notification Platform Telemetry — Final Integration Verification PASS local)
+## W5-N15 status (Notification Platform Telemetry — CLOSED)
 
-W5-N15 Notification Platform Telemetry Foundation Planning Package is **APPROVED** (2026-09-02). W5-N15-a is **COMPLETE** (`d5d16ec`). W5-N15-b is **COMPLETE** (`5bf8b1b`). W5-N15-c is **COMPLETE** (`cc4c324`). W5-N15-d is **COMPLETE** (`cd674df`). W5-N15-e is **COMPLETE** (`2e4adda`). Final Integration Verification **PASS** (local). Awaiting Product Owner Final Close. No metrics collection. No exporters. No dashboards. No telemetry runtime. No production transport I/O.
+W5-N15 Notification Platform Telemetry Foundation is **CLOSED** by Product Owner (2026-09-02). Delivered: inventory (a), durable persistence (b), restart recovery (c), operational continuity (d), Close Evidence (e), Final Integration Verification **PASS** (`25069bd`).
 
 ```text
-Final Integration Verification only — not Notification Platform Telemetry Foundation implemented.
-Not metrics collection, exporters, dashboards, runtime aggregation, or telemetry engine.
-Not W5-N15 CLOSED. Not Wave 5 COMPLETE.
-Product Owner Close Record not created.
-Beginning commit (Final Integration Verification): 2e4addaddfe16c1baecf5d34e48122a5ac8d9500
+Foundation only — not metrics collection, exporters, dashboards, runtime aggregation, or telemetry engine.
+Notification Platform Telemetry Foundation implemented — not claimed. Do not declare Notification Platform Telemetry Foundation implemented.
+Closed W5-N05…N14 foundations consumed; per-channel W5-N01…N04 transport stubs remain honest per inventory.
+Notification Platform Telemetry complete and Notification Platform Complete not claimed.
+Wave 5 COMPLETE not claimed.
 ```
 
-See [`w5-n15-final-integration-verification.md`](./w5-n15-final-integration-verification.md), [`w5-n15-package-close-report.md`](./w5-n15-package-close-report.md), [`w5-n15-package-summary.md`](./w5-n15-package-summary.md), and [`w5-n15-e-implementation-report.md`](./w5-n15-e-implementation-report.md).
+See [`w5-n15-product-owner-close-record.md`](./w5-n15-product-owner-close-record.md).
 
 ---
 
 ## W5-N15 Final Integration Verification status
 
-Final Integration Verification **PASS** (local).
+W5-N15 Final Package Integration Verification **PASS** (2026-09-02, `25069bd`). All slices a–e form one internally consistent package. Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**. Engineering confidence: **97%**. Product Owner Final Close executed.
 
-Engineering readiness verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**
+```text
+Slice chain d5d16ec → 5bf8b1b → cc4c324 → cd674df → 2e4adda verified on origin/main.
+W5-N15-e COMPLETE (`2e4adda`) — Package Close Evidence.
+Final Integration Verification PASS (`25069bd`).
+W5-N15 CLOSED by Product Owner (2026-09-02).
+```
 
-Engineering confidence: **97%**
-
-W5-N15 **not CLOSED**. Product Owner Close Record **not created**.
+See [`w5-n15-final-integration-verification.md`](./w5-n15-final-integration-verification.md).
 
 ---
 
 ## W5-N15 implementation slices
 
-| Slice    | Name                                                                | Status                                                                    |
-| -------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| W5-N15-a | Notification Platform Telemetry Inventory & Honest Product Baseline | **COMPLETE** (`d5d16ec`)                                                  |
-| W5-N15-b | Durable Notification Platform Telemetry Foundation                  | **COMPLETE** (`5bf8b1b`)                                                  |
-| W5-N15-c | Notification Platform Telemetry Restart Recovery Foundation         | **COMPLETE** (`cc4c324`)                                                  |
-| W5-N15-d | Notification Platform Telemetry Operational Continuity Foundation   | **COMPLETE** (`cd674df`)                                                  |
-| W5-N15-e | Package Close Evidence                                              | **COMPLETE** (`2e4adda`)                                                  |
-| W5-N15   | Package                                                             | Final Integration Verification **PASS** (local) — Awaiting PO Final Close |
+| Slice    | Name                                                                | Status                                   |
+| -------- | ------------------------------------------------------------------- | ---------------------------------------- |
+| W5-N15-a | Notification Platform Telemetry Inventory & Honest Product Baseline | **COMPLETE** (`d5d16ec`)                 |
+| W5-N15-b | Durable Notification Platform Telemetry Foundation                  | **COMPLETE** (`5bf8b1b`)                 |
+| W5-N15-c | Notification Platform Telemetry Restart Recovery Foundation         | **COMPLETE** (`cc4c324`)                 |
+| W5-N15-d | Notification Platform Telemetry Operational Continuity Foundation   | **COMPLETE** (`cd674df`)                 |
+| W5-N15-e | Package Close Evidence                                              | **COMPLETE** (`2e4adda`)                 |
+| W5-N15   | Package                                                             | **CLOSED** by Product Owner (2026-09-02) |
 
 ---
 
-**STOP.** W5-N15 Final Integration Verification **PASS** (local). Await Product Owner Final Close before Repository Synchronization. Do not create Product Owner Close Record. Do not declare Notification Platform Telemetry Foundation implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE. Do not open W5-N16.
+**STOP.** W5-N15 is **CLOSED** by Product Owner. Await explicit Product Owner instruction before W5-N16 Planning Package. Do not declare Notification Platform Telemetry Foundation implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE. Do not open W5-N16 without explicit authorization.

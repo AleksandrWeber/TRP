@@ -5,7 +5,7 @@
 **Master Plan / Roadmap:** V3-N15 · CM-25  
 **Evidence slice:** W5-N15-e  
 **Date:** 2026-09-02  
-**Status:** Close Evidence **COMPLETE** (local) — Awaiting Product Owner Review. Final Package Integration Verification **not performed**. Product Owner Close Record **not created**.
+**Status:** Close Evidence **COMPLETE** · Final Integration Verification **PASS** · **CLOSED** by Product Owner (2026-09-02).
 
 ---
 
@@ -21,10 +21,10 @@
    Persisted Notification Platform Telemetry anchors can survive normal API restart and project honest operational readiness on Platform Readiness — without fabricating telemetry runtime labels or inventing a second notification subsystem.
 
 4. **What remains for later packages?**  
-   Metrics collection, exporters, dashboards, runtime aggregation outcomes; Final Package Integration Verification; Product Owner Package Close; Wave 5 completion review.
+   Metrics collection, exporters, dashboards, runtime aggregation outcomes; Wave 5 completion review.
 
 5. **Which package becomes available next?**  
-   None opened by this Close Evidence act — requires separate Product Owner authorization after Final Package Integration Verification and Product Owner Close.
+   None opened by this Close act — W5-N16 requires separate Product Owner authorization.
 
 6. **Was the Master Plan followed?**  
    **Yes.** W5-N15 / V3-N15 only; Master Plan unchanged; Wave 1–4 and closed W5-N01…N14 consumed not redesigned; Wave 5 package order preserved.
@@ -39,14 +39,14 @@
 
 ## Slice roll-up
 
-| Slice    | Outcome                                                             | Status                            |
-| -------- | ------------------------------------------------------------------- | --------------------------------- |
-| W5-N15-a | Notification Platform Telemetry Inventory & Honest Product Baseline | **COMPLETE** (`d5d16ec`)          |
-| W5-N15-b | Durable Notification Platform Telemetry Foundation                  | **COMPLETE** (`5bf8b1b`)          |
-| W5-N15-c | Notification Platform Telemetry Restart Recovery Foundation         | **COMPLETE** (`cc4c324`)          |
-| W5-N15-d | Notification Platform Telemetry Operational Continuity Foundation   | **COMPLETE** (`cd674df`)          |
-| W5-N15-e | Package Close Evidence                                              | **COMPLETE** (local)              |
-| W5-N15   | Package                                                             | **Awaiting Product Owner Review** |
+| Slice    | Outcome                                                             | Status                                   |
+| -------- | ------------------------------------------------------------------- | ---------------------------------------- |
+| W5-N15-a | Notification Platform Telemetry Inventory & Honest Product Baseline | **COMPLETE** (`d5d16ec`)                 |
+| W5-N15-b | Durable Notification Platform Telemetry Foundation                  | **COMPLETE** (`5bf8b1b`)                 |
+| W5-N15-c | Notification Platform Telemetry Restart Recovery Foundation         | **COMPLETE** (`cc4c324`)                 |
+| W5-N15-d | Notification Platform Telemetry Operational Continuity Foundation   | **COMPLETE** (`cd674df`)                 |
+| W5-N15-e | Package Close Evidence                                              | **COMPLETE** (`2e4adda`)                 |
+| W5-N15   | Package                                                             | **CLOSED** by Product Owner (2026-09-02) |
 
 ---
 
@@ -59,4 +59,4 @@
 
 ---
 
-**STOP.** W5-N15-e Close Evidence is **COMPLETE** (local). Do **not** declare Notification Platform Telemetry implemented, Notification Platform Complete, or Wave 5 COMPLETE until Product Owner Close after Final Package Integration Verification.
+**STOP.** W5-N15 is **CLOSED** by Product Owner. Do **not** declare Notification Platform Telemetry implemented, Notification Platform Complete, or Wave 5 COMPLETE. Do **not** open W5-N16 without separate Product Owner instruction.
