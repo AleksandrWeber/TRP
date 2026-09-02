@@ -1319,6 +1319,26 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
+## W5-N13-a validation (2026-09-02 — local)
+
+| Layer                   | Result   | Evidence                                                                    |
+| ----------------------- | -------- | --------------------------------------------------------------------------- |
+| Inventory completeness  | **PASS** | `w5-n13-a-notification-platform-retry-inventory.ts` + spec                  |
+| Conformance registry    | **PASS** | `w5-n13-a-notification-platform-retry.ts` + spec                            |
+| Honest Product baseline | **PASS** | No customer-visible retry; platform retry does not function                 |
+| Architecture integrity  | **PASS** | No ownership drift; Exchange Adapter untouched                              |
+| Ownership boundaries    | **PASS** | No new persistence owner                                                    |
+| Honesty boundaries      | **PASS** | Retry foundation ≠ Live Trading / platform ready requires evidence          |
+| Slice reports           | **PASS** | inventory / implementation / architecture / security / product / validation |
+| Wave documentation sync | **PASS** | overview / validation-plan / progress                                       |
+| Automated validation    | **PASS** | lint / typecheck / test / web build / git diff --check                      |
+
+**Explicit non-claim:** W5-N13-a does **not** authorize Notification Platform Retry implemented, retry runtime implemented, retry execution implemented, dead-letter processing implemented, Notification Platform Complete, W5-N13 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
+
+**STOP.** W5-N13-a is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N13-b.
+
+---
+
 | W5-N08 opened | **Yes** | W5-N08 **CLOSED** by Product Owner (2026-08-29) |
 
 **Explicit non-claim:** Product Owner Close does **not** authorize Notification Platform Queue implemented, Notification Platform Complete, queue workers implemented, queue orchestration implemented, retry implemented, scheduler implemented, Production Ready, Live Notifications, W5-N08 COMPLETE, or Wave 5 COMPLETE.
