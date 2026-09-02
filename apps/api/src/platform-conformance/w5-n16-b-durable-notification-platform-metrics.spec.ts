@@ -191,7 +191,9 @@ describe('W5-N16-b durable notification platform metrics — integration', () =>
       'Notification Platform Metrics Durable Foundation',
     );
     expect(W5_N16_B_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N16_B_TECHNICAL_DEBT_DELTA.deferred).toEqual(['W5-N16-e — Package Close Evidence']);
+    expect(W5_N16_B_TECHNICAL_DEBT_DELTA.deferred).toEqual([
+      'Final Package Integration Verification',
+    ]);
   });
 
   it('explicit OUT covers metrics runtime only (not operational continuity)', () => {

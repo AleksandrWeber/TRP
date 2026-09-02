@@ -222,10 +222,7 @@ describe('W5-N16-a notification platform metrics inventory — unit', () => {
     );
     expect(W5_N16_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N16_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N16-b — Durable Notification Platform Metrics Foundation',
-      'W5-N16-c — Notification Platform Metrics Restart Recovery Foundation',
-      'W5-N16-d — Notification Platform Metrics Operational Continuity Foundation',
-      'W5-N16-e — Package Close Evidence',
+      'Final Package Integration Verification',
     ]);
   });
 });
