@@ -1422,4 +1422,33 @@ See [`w5-n14-final-integration-verification.md`](./w5-n14-final-integration-veri
 
 ---
 
-**STOP.** W5-N14 is **CLOSED** by Product Owner. Do not declare Dead Letter implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE. Do not open W5-N15 without separate Product Owner instruction.
+## W5-N15 status (Notification Platform Telemetry — Planning OPEN)
+
+W5-N15 Notification Platform Telemetry Foundation Planning Package is **OPEN** (2026-09-02). Awaiting Planning Review. Not implementation. No platform telemetry foundation. No telemetry runtime. No production transport I/O.
+
+```text
+Planning only — not Notification Platform Telemetry Foundation implemented.
+Not telemetry engine, telemetry collection runtime, observability platform, or scaling signals runtime.
+Not Notification Platform Complete. Not Wave 5 COMPLETE.
+Slices W5-N15-a…e named for planning only — not opened.
+Beginning commit: dd044c8c8c3234f9e074ee87f81e4d11508b6721
+```
+
+See [`w5-n15-planning-summary.md`](./w5-n15-planning-summary.md).
+
+---
+
+## W5-N15 implementation slices (planning only — not opened)
+
+| Slice    | Name                                                                | Status                                       |
+| -------- | ------------------------------------------------------------------- | -------------------------------------------- |
+| W5-N15-a | Notification Platform Telemetry Inventory & Honest Product Baseline | **Not opened** — planning only               |
+| W5-N15-b | Durable Notification Platform Telemetry Foundation                  | **Not opened** — planning only               |
+| W5-N15-c | Notification Platform Telemetry Restart Recovery Foundation         | **Not opened** — planning only               |
+| W5-N15-d | Notification Platform Telemetry Operational Continuity Foundation   | **Not opened** — planning only               |
+| W5-N15-e | Package Close Evidence                                              | **Not opened** — planning only               |
+| W5-N15   | Package                                                             | Planning **OPEN** — Awaiting Planning Review |
+
+---
+
+**STOP.** W5-N15 Planning Package is **OPEN**. Await explicit Product Owner instruction before W5-N15 Planning Review. Do not perform Planning Review. Do not perform Planning Approval. Do not create W5-N15-a. Do not begin implementation. Do not declare Notification Platform Telemetry Foundation implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE.
