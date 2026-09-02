@@ -249,24 +249,27 @@ describe('W5-N14-e package close evidence — integration / planning', () => {
     expect(existsSync(join(WAVE5, 'wave-5-validation-plan.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'wave-5-progress.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'w5-n14-planning-approval.md'))).toBe(true);
-    expect(existsSync(join(WAVE5, 'w5-n14-final-integration-verification.md'))).toBe(false);
+    expect(existsSync(join(WAVE5, 'w5-n14-final-integration-verification.md'))).toBe(true);
     expect(existsSync(join(WAVE5, 'w5-n14-product-owner-close-record.md'))).toBe(false);
   });
 
-  it('status docs: W5-N14-e COMPLETE awaiting Product Owner Review; package not CLOSED', () => {
+  it('status docs: Final Integration Verification PASS; awaiting Product Owner Final Close; package not CLOSED', () => {
     const progress = readWave5('wave-5-progress.md');
     const overview = readWave5('wave-5-overview.md');
     const close = readWave5('w5-n14-package-close-report.md');
     const summary = readWave5('w5-n14-package-summary.md');
+    const finalIntegration = readWave5('w5-n14-final-integration-verification.md');
     expect(progress).toMatch(/W5-N14-a|W5-N14-b|W5-N14-c|W5-N14-d|W5-N14-e/);
-    expect(progress).toMatch(/W5-N14-e[\s\S]*COMPLETE[\s\S]*Awaiting Product Owner Review/i);
+    expect(progress).toMatch(/Final Integration Verification[\s\S]*PASS/i);
+    expect(progress).toMatch(/Awaiting Product Owner Final Close/i);
     expect(progress).not.toMatch(/\| W5-N14 {3}\| Package[^\n]*CLOSED by Product Owner/i);
-    expect(overview).toMatch(/W5-N14-e[\s\S]*COMPLETE/i);
+    expect(overview).toMatch(/Final Integration Verification[\s\S]*PASS/i);
     expect(overview).toMatch(/STOP/);
     expect(overview).not.toMatch(/\| W5-N14 {3}\| Package[^\n]*CLOSED by Product Owner/i);
-    expect(close).toMatch(/Awaiting Product Owner Review/i);
+    expect(finalIntegration).toMatch(/READY FOR PRODUCT OWNER FINAL CLOSE/i);
+    expect(finalIntegration).toMatch(/97%/);
+    expect(finalIntegration).not.toMatch(/Product Owner Final Close executed/i);
     expect(close).not.toMatch(/CLOSED by Product Owner/i);
-    expect(summary).toMatch(/Awaiting Product Owner Review/i);
     expect(summary).not.toMatch(/\*\*CLOSED\*\* by Product Owner/i);
     expect(W5_N14_E_ARCHITECTURE_CLAIMS.packageCloseEvidenceAssembled).toBe(true);
     expect(W5_N14_E_ARCHITECTURE_CLAIMS.packageDeclaredClosed).toBe(false);
