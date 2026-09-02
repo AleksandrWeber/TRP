@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PrismaNotificationPlatformDeadLetterAnchorRepository } from '../modules/notification-delivery/persistence/prisma-notification-platform-dead-letter-anchor.repository';
+import { NotificationPlatformDeadLetterRecoveryStore } from '../modules/notification-delivery/domain/notification-platform-dead-letter-recovery-store';
 import { NotificationPlatformDeadLetterPersistenceService } from '../modules/notification-delivery/notification-platform-dead-letter-persistence.service';
 import { rowsEphemeral } from './w5-n14-a-notification-platform-dead-letter-inventory';
 import {
@@ -69,7 +70,10 @@ describe('W5-N14-b durable notification platform dead-letter — unit', () => {
   it('persistence correctness: anchor upserts workspace dead-letter row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaNotificationPlatformDeadLetterAnchorRepository(prisma as never);
-    const service = new NotificationPlatformDeadLetterPersistenceService(repository);
+    const service = new NotificationPlatformDeadLetterPersistenceService(
+      repository,
+      new NotificationPlatformDeadLetterRecoveryStore(),
+    );
 
     const outcome = await service.persistDeadLetterAnchor({
       workspaceId: 'ws-a',
@@ -157,7 +161,9 @@ describe('W5-N14-b durable notification platform dead-letter — unit', () => {
     expect(W5_N14_B_TRANSITION_MATRIX.before).toContain('Inventory');
     expect(W5_N14_B_TRANSITION_MATRIX.after).toContain('Durable Persistence');
     expect(
-      W5_N14_B_TRANSITION_MATRIX.stillMissing.some((item) => item.includes('Restart Recovery')),
+      W5_N14_B_TRANSITION_MATRIX.stillMissing.some((item) =>
+        item.includes('Operational Continuity'),
+      ),
     ).toBe(true);
   });
 });
@@ -181,27 +187,27 @@ describe('W5-N14-b durable notification platform dead-letter — integration', (
     expect(W5_N14_B_ARCHITECTURE_CLAIMS.exchangeAdapterUntouched).toBe(true);
   });
 
-  it('technical debt delta: durable foundation resolved; restart recovery deferred', () => {
+  it('technical debt delta: durable foundation resolved; operational continuity deferred', () => {
     expect(W5_N14_B_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Notification Platform Dead Letter Durable Foundation',
     );
     expect(W5_N14_B_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(
       W5_N14_B_TECHNICAL_DEBT_DELTA.deferred.some((item) =>
-        item.toLowerCase().includes('restart recovery'),
+        item.toLowerCase().includes('operational continuity'),
       ),
     ).toBe(true);
   });
 
-  it('explicit OUT covers restart recovery (W5-N14-b scope)', () => {
+  it('explicit OUT covers dead-letter runtime only (not operational continuity)', () => {
     expect(W5_N14_B_EXPLICIT_OUT).toEqual(
       expect.arrayContaining([
-        'restart-recovery',
         'platform-dead-letter-runtime',
         'dead-letter-replay-implementation',
         'production-transport-i/o',
       ]),
     );
+    expect(W5_N14_B_EXPLICIT_OUT).not.toContain('w5-n14-d');
   });
 
   it('owner consistency: each coverage row maps to existing repository and service files', () => {

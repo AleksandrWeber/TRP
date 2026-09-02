@@ -4,6 +4,7 @@ import {
   type DurableNotificationPlatformDeadLetterAnchor,
 } from './domain/durable-notification-platform-dead-letter-anchor';
 import type { NotificationPlatformDeadLetterAnchorRepository } from './domain/notification-platform-dead-letter-anchor.repository';
+import { NotificationPlatformDeadLetterRecoveryStore } from './domain/notification-platform-dead-letter-recovery-store';
 import { NotificationPlatformDeadLetterPersistenceService } from './notification-platform-dead-letter-persistence.service';
 
 const recordedAt = '2026-09-02T17:00:00.000Z';
@@ -39,7 +40,10 @@ function createRepository(): NotificationPlatformDeadLetterAnchorRepository & {
 describe('NotificationPlatformDeadLetterPersistenceService — W5-N14-b storage only', () => {
   it('persistDeadLetterAnchor writes canonical platform dead-letter anchors without runtime I/O', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformDeadLetterPersistenceService(repository);
+    const service = new NotificationPlatformDeadLetterPersistenceService(
+      repository,
+      new NotificationPlatformDeadLetterRecoveryStore(),
+    );
     const outcome = await service.persistDeadLetterAnchor({
       workspaceId: 'ws-1',
       deadLetterAnchorId: 'dead-letter-1',
@@ -68,7 +72,10 @@ describe('NotificationPlatformDeadLetterPersistenceService — W5-N14-b storage 
 
   it('does not persist dead-letter runtime, replay, processing, retry, scheduler, workers, or transport fields', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformDeadLetterPersistenceService(repository);
+    const service = new NotificationPlatformDeadLetterPersistenceService(
+      repository,
+      new NotificationPlatformDeadLetterRecoveryStore(),
+    );
 
     await service.persistDeadLetterAnchor({
       workspaceId: 'ws-1',

@@ -285,13 +285,13 @@ export const W5_N14_A_NOTIFICATION_PLATFORM_DEAD_LETTER_INVENTORY: readonly W5N1
       currentStatus:
         'Implemented — workspace_notification_platform_dead_letter_anchors on notification-delivery owner',
       honestyRequirement:
-        'Dead-letter anchor persistence on notification-delivery owner only; hydrate is W5-N14-c',
-      futureW5N14Responsibility: 'W5-N14-c' as const,
+        'Dead-letter anchor persistence on notification-delivery owner only; operational continuity is W5-N14-d',
+      futureW5N14Responsibility: 'W5-N14-d' as const,
       evidencePath:
         'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-dead-letter-anchor.repository.ts',
       existsToday: true as const,
       persistenceResponsibility: 'notification-delivery' as const,
-      recoveryResponsibility: 'w5-n14-c' as const,
+      recoveryResponsibility: 'notification-delivery' as const,
       operationalContinuityResponsibility: 'none-missing' as const,
       honestProductState: 'infrastructure-only' as const,
     }),
@@ -1039,18 +1039,19 @@ export const W5_N14_A_NOTIFICATION_PLATFORM_DEAD_LETTER_INVENTORY: readonly W5N1
       kind: 'runtime' as const,
       owner: 'notification-delivery' as const,
       durabilityClass: 'EPHEMERAL' as const,
-      capabilityCategory: 'not-implemented' as const,
+      capabilityCategory: 'infrastructure-only' as const,
       currentStatus:
-        'Missing — NotificationPlatformDeadLetterRestartRecoveryService deferred to W5-N14-c',
+        'Implemented — NotificationPlatformDeadLetterRestartRecoveryService hydrates W5-N14-b anchors on module init',
       honestyRequirement:
         'Restart recovery restores canonical anchors only; operational continuity is W5-N14-d',
-      futureW5N14Responsibility: 'W5-N14-c' as const,
-      evidencePath: 'docs/project/version-3/wave-5/w5-n14-product-scope.md',
-      existsToday: false as const,
-      persistenceResponsibility: 'none-missing' as const,
-      recoveryResponsibility: 'w5-n14-c' as const,
-      operationalContinuityResponsibility: 'none-missing' as const,
-      honestProductState: 'not-implemented' as const,
+      futureW5N14Responsibility: 'W5-N14-d' as const,
+      evidencePath:
+        'apps/api/src/modules/notification-delivery/domain/notification-platform-dead-letter-restart-recovery.service.ts',
+      existsToday: true as const,
+      persistenceResponsibility: 'notification-delivery' as const,
+      recoveryResponsibility: 'notification-delivery' as const,
+      operationalContinuityResponsibility: 'w5-n14-d' as const,
+      honestProductState: 'infrastructure-only' as const,
     }),
     Object.freeze({
       authorizesPlatformDeadLetterFunctional: false as const,
@@ -1680,7 +1681,7 @@ export const W5_N14_A_NOTIFICATION_PLATFORM_DEAD_LETTER_INVENTORY: readonly W5N1
         'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-delivery-anchor.repository.ts',
       existsToday: true as const,
       persistenceResponsibility: 'notification-delivery' as const,
-      recoveryResponsibility: 'w5-n14-c' as const,
+      recoveryResponsibility: 'notification-delivery' as const,
       operationalContinuityResponsibility: 'platform-readiness' as const,
       honestProductState: 'infrastructure-only' as const,
     }),
@@ -1766,13 +1767,13 @@ export const W5_N14_A_NOTIFICATION_PLATFORM_DEAD_LETTER_INVENTORY: readonly W5N1
       currentStatus:
         'Implemented — workspace_notification_platform_dead_letter_anchors; anchor-recorded only; no dead-letter runtime',
       honestyRequirement:
-        'Dead-letter anchor persistence ≠ dead-letter functional; restart hydrate is W5-N14-c',
-      futureW5N14Responsibility: 'W5-N14-c' as const,
+        'Dead-letter anchor persistence ≠ dead-letter functional; operational continuity is W5-N14-d',
+      futureW5N14Responsibility: 'W5-N14-d' as const,
       evidencePath:
         'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-dead-letter-anchor.repository.ts',
       existsToday: true as const,
       persistenceResponsibility: 'notification-delivery' as const,
-      recoveryResponsibility: 'w5-n14-c' as const,
+      recoveryResponsibility: 'notification-delivery' as const,
       operationalContinuityResponsibility: 'none-missing' as const,
       honestProductState: 'infrastructure-only' as const,
     }),
@@ -2493,6 +2494,7 @@ export const W5_N14_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N12 platform scheduler anchors, recovery, and continuity on notification-delivery owner (consumed)',
     'W5-N13 platform retry anchors, recovery, and continuity on notification-delivery owner (consumed)',
     'W5-N14-b platform dead-letter anchors on notification-delivery owner (anchor-recorded only)',
+    'W5-N14-c platform dead-letter restart recovery hydrate on notification-delivery owner',
     'Platform Readiness notificationPlatformWorkerRuntime — W5-N11-d projection — W5-N10-d projection',
     'Platform Readiness notificationPlatformDelivery, notificationPlatformDispatch, and notificationPlatformQueue projections',
     'Per-channel, integration, delivery, dispatch, queue, and workers operational continuity projections in Platform Readiness',
@@ -2504,11 +2506,10 @@ export const W5_N14_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
   plannedCapabilities: Object.freeze([
-    'W5-N14-c — Notification Platform Dead Letter Restart Recovery Foundation',
+    'W5-N14-d — Notification Platform Dead Letter Operational Continuity Foundation',
   ] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform dead-letter layer',
-    'Platform dead-letter restart recovery (W5-N14-c deferred)',
     'Platform dead-letter operational continuity (W5-N14-d deferred)',
     'Cross-channel honest dead-letter rule unification',
     'Dead-letter runtime',
@@ -2533,7 +2534,7 @@ export const W5_N14_A_HONEST_PRODUCT_BASELINE = Object.freeze({
 export const W5_N14_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Notification Platform Dead Letter Inventory Foundation'] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N14-c', 'W5-N14-d', 'W5-N14-e'] as const),
+  deferred: Object.freeze(['W5-N14-d', 'W5-N14-e'] as const),
 } as const);
 
 export function artifactIds(): readonly string[] {

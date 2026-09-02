@@ -108,7 +108,6 @@ export const W5_N14_B_ARCHITECTURE_CLAIMS = Object.freeze({
 } as const);
 
 export const W5_N14_B_EXPLICIT_OUT = Object.freeze([
-  'restart-recovery',
   'operational-continuity',
   'platform-dead-letter-runtime',
   'dead-letter-runtime-implementation',
@@ -127,7 +126,6 @@ export const W5_N14_B_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Notification Platform Dead Letter Durable Foundation'] as const),
   introduced: Object.freeze([] as const),
   deferred: Object.freeze([
-    'W5-N14-c — Notification Platform Dead Letter Restart Recovery Foundation',
     'W5-N14-d — Notification Platform Dead Letter Operational Continuity Foundation',
     'W5-N14-e — Package Close Evidence',
   ] as const),
@@ -137,7 +135,6 @@ export const W5_N14_B_TRANSITION_MATRIX = Object.freeze({
   before: 'Inventory (W5-N14-a)',
   after: 'Durable Persistence (W5-N14-b)',
   stillMissing: Object.freeze([
-    'Restart Recovery (W5-N14-c)',
     'Operational Continuity (W5-N14-d)',
     'Package Close (W5-N14-e)',
   ] as const),

@@ -1495,7 +1495,29 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 **Explicit non-claim:** W5-N14-b does **not** authorize Notification Platform Dead Letter implemented, dead-letter runtime implemented, dead-letter replay implemented, restart recovery implemented, Notification Platform Complete, W5-N14 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
 
-**STOP.** W5-N14-b is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N14-c.
+**STOP.** W5-N14-b is **COMPLETE** (`3fcb0fc`). Await Product Owner Review before Repository Synchronization. Do not open W5-N14-c.
+
+---
+
+## W5-N14-c validation (2026-09-02 — local)
+
+| Layer                    | Result   | Evidence                                                               |
+| ------------------------ | -------- | ---------------------------------------------------------------------- |
+| Restart recovery hydrate | **PASS** | `NotificationPlatformDeadLetterRestartRecoveryService` on module init  |
+| Integrity verification   | **PASS** | Corrupt rows throw; missing rows → empty cache                         |
+| Deterministic ordering   | **PASS** | workspaceId then deadLetterAnchorId ascending                          |
+| Idempotent hydrate       | **PASS** | Repeated hydrate yields identical diagnostics                          |
+| Persistence integration  | **PASS** | Hydrated reads + write-through on persistence service                  |
+| Architecture integrity   | **PASS** | No ownership drift; Exchange Adapter untouched                         |
+| Ownership boundaries     | **PASS** | No new persistence owner                                               |
+| Conformance tests        | **PASS** | `w5-n14-c-notification-platform-dead-letter-restart-recovery*.spec.ts` |
+| Slice reports            | **PASS** | w5-n14-c-* reports under wave-5                                        |
+| Regression suite         | **PASS** | lint / typecheck / test / build                                        |
+| git diff --check         | **PASS** | No whitespace errors                                                   |
+
+**Explicit non-claim:** W5-N14-c does **not** authorize Notification Platform Dead Letter implemented, dead-letter runtime implemented, dead-letter replay implemented, operational continuity implemented, Notification Platform Complete, W5-N14 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
+
+**STOP.** W5-N14-c is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N14-d.
 
 ---
 

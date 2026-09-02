@@ -50,6 +50,8 @@ import { NotificationPlatformWorkerRuntimePersistenceService } from './notificat
 import { NotificationPlatformSchedulerPersistenceService } from './notification-platform-scheduler-persistence.service';
 import { NotificationPlatformRetryPersistenceService } from './notification-platform-retry-persistence.service';
 import { NotificationPlatformDeadLetterPersistenceService } from './notification-platform-dead-letter-persistence.service';
+import { NotificationPlatformDeadLetterRecoveryStore } from './domain/notification-platform-dead-letter-recovery-store';
+import { NotificationPlatformDeadLetterRestartRecoveryService } from './domain/notification-platform-dead-letter-restart-recovery.service';
 import { NotificationPlatformRetryRecoveryStore } from './domain/notification-platform-retry-recovery-store';
 import { NotificationPlatformRetryRestartRecoveryService } from './domain/notification-platform-retry-restart-recovery.service';
 import { NotificationPlatformSchedulerRecoveryStore } from './domain/notification-platform-scheduler-recovery-store';
@@ -221,6 +223,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformSchedulerPersistenceService,
     NotificationPlatformRetryPersistenceService,
     NotificationPlatformDeadLetterPersistenceService,
+    NotificationPlatformDeadLetterRecoveryStore,
+    NotificationPlatformDeadLetterRestartRecoveryService,
     NotificationPlatformRetryRecoveryStore,
     NotificationPlatformRetryRestartRecoveryService,
     NotificationPlatformSchedulerRecoveryStore,
@@ -289,6 +293,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformSchedulerPersistenceService,
     NotificationPlatformRetryPersistenceService,
     NotificationPlatformDeadLetterPersistenceService,
+    NotificationPlatformDeadLetterRecoveryStore,
+    NotificationPlatformDeadLetterRestartRecoveryService,
     NotificationPlatformRetryRecoveryStore,
     NotificationPlatformRetryRestartRecoveryService,
     NotificationPlatformSchedulerRecoveryStore,
