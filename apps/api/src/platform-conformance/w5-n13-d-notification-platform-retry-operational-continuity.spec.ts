@@ -207,12 +207,10 @@ describe('W5-N13-d notification platform retry operational continuity — integr
     expect(W5_N13_D_ARCHITECTURE_CLAIMS.newPersistenceOwner).toBe(false);
   });
 
-  it('technical debt delta: operational continuity resolved; package close deferred', () => {
+  it('technical debt delta: operational continuity resolved; no new debt deferred from slice d', () => {
     expect(W5_N13_D_TECHNICAL_DEBT_DELTA.resolved.length).toBeGreaterThan(0);
     expect(W5_N13_D_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N13_D_TECHNICAL_DEBT_DELTA.deferred.some((item) => item.includes('W5-N13-e'))).toBe(
-      true,
-    );
+    expect(W5_N13_D_TECHNICAL_DEBT_DELTA.deferred).toEqual([]);
   });
 
   it('explicit OUT covers W5-N13-e and retry runtime', () => {

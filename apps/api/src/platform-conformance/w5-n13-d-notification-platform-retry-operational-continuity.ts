@@ -77,7 +77,7 @@ export const W5_N13_D_TECHNICAL_DEBT_DELTA = Object.freeze({
     'Notification Platform Retry Operational Continuity Foundation',
   ] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N13-e — Package Close Evidence'] as const),
+  deferred: Object.freeze([] as const),
 } as const);
 
 export const W5_N13_D_TRANSITION_MATRIX = Object.freeze({

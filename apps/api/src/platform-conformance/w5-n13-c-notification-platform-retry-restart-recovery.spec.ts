@@ -168,12 +168,10 @@ describe('W5-N13-c notification platform retry restart recovery — integration'
     ).toBe(true);
   });
 
-  it('technical debt delta: restart recovery resolved; package close deferred', () => {
+  it('technical debt delta: restart recovery resolved; no new debt deferred from slice c', () => {
     expect(W5_N13_C_TECHNICAL_DEBT_DELTA.resolved.length).toBeGreaterThan(0);
     expect(W5_N13_C_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N13_C_TECHNICAL_DEBT_DELTA.deferred.some((item) => item.includes('W5-N13-e'))).toBe(
-      true,
-    );
+    expect(W5_N13_C_TECHNICAL_DEBT_DELTA.deferred).toEqual([]);
   });
 
   it('explicit OUT covers retry runtime only (not operational continuity)', () => {
