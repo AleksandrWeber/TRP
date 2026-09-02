@@ -2060,3 +2060,20 @@ model WorkspaceNotificationPlatformDeadLetterAnchor {
   @@id([workspaceId, deadLetterAnchorId])
   @@map("workspace_notification_platform_dead_letter_anchors")
 }
+
+model WorkspaceNotificationPlatformTelemetryAnchor {
+  workspaceId           String   @map("workspace_id")
+  telemetryAnchorId     String   @map("telemetry_anchor_id")
+  schemaVersion         Int      @default(1) @map("schema_version")
+  platformTelemetryType String   @map("platform_telemetry_type")
+  telemetryState        String   @map("telemetry_state")
+  channelScope          String?  @map("channel_scope")
+  integrityMetadata     String?  @map("integrity_metadata")
+  correlationId         String?  @map("correlation_id")
+  recordedAt            DateTime @map("recorded_at")
+  recordedByActorId     String?  @map("recorded_by_actor_id")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, telemetryAnchorId])
+  @@map("workspace_notification_platform_telemetry_anchors")
+}

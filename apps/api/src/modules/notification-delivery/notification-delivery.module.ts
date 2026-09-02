@@ -18,6 +18,7 @@ import { NOTIFICATION_PLATFORM_WORKER_RUNTIME_ANCHOR_REPOSITORY } from './domain
 import { NOTIFICATION_PLATFORM_SCHEDULER_ANCHOR_REPOSITORY } from './domain/notification-platform-scheduler-anchor.repository';
 import { NOTIFICATION_PLATFORM_RETRY_ANCHOR_REPOSITORY } from './domain/notification-platform-retry-anchor.repository';
 import { NOTIFICATION_PLATFORM_DEAD_LETTER_ANCHOR_REPOSITORY } from './domain/notification-platform-dead-letter-anchor.repository';
+import { NOTIFICATION_PLATFORM_TELEMETRY_ANCHOR_REPOSITORY } from './domain/notification-platform-telemetry-anchor.repository';
 import { NotificationDeliveryBoundaryService } from './notification-boundary.service';
 import { NotificationDeliveryService } from './notification-delivery.service';
 import { PrismaEmailNotificationAnchorRepository } from './persistence/prisma-email-notification-anchor.repository';
@@ -33,6 +34,7 @@ import { PrismaNotificationPlatformWorkerRuntimeAnchorRepository } from './persi
 import { PrismaNotificationPlatformSchedulerAnchorRepository } from './persistence/prisma-notification-platform-scheduler-anchor.repository';
 import { PrismaNotificationPlatformRetryAnchorRepository } from './persistence/prisma-notification-platform-retry-anchor.repository';
 import { PrismaNotificationPlatformDeadLetterAnchorRepository } from './persistence/prisma-notification-platform-dead-letter-anchor.repository';
+import { PrismaNotificationPlatformTelemetryAnchorRepository } from './persistence/prisma-notification-platform-telemetry-anchor.repository';
 import { PrismaTelegramNotificationAnchorRepository } from './persistence/prisma-telegram-notification-anchor.repository';
 import { NOTIFICATION_SERVICE_PORT, TELEGRAM_CHANNEL_ADAPTER } from './ports/notification.port';
 import { EmailNotificationPersistenceService } from './email-notification-persistence.service';
@@ -50,6 +52,7 @@ import { NotificationPlatformWorkerRuntimePersistenceService } from './notificat
 import { NotificationPlatformSchedulerPersistenceService } from './notification-platform-scheduler-persistence.service';
 import { NotificationPlatformRetryPersistenceService } from './notification-platform-retry-persistence.service';
 import { NotificationPlatformDeadLetterPersistenceService } from './notification-platform-dead-letter-persistence.service';
+import { NotificationPlatformTelemetryPersistenceService } from './notification-platform-telemetry-persistence.service';
 import { NotificationPlatformDeadLetterRecoveryStore } from './domain/notification-platform-dead-letter-recovery-store';
 import { NotificationPlatformDeadLetterRestartRecoveryService } from './domain/notification-platform-dead-letter-restart-recovery.service';
 import { NotificationPlatformRetryRecoveryStore } from './domain/notification-platform-retry-recovery-store';
@@ -203,6 +206,12 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
         new PrismaNotificationPlatformDeadLetterAnchorRepository(prisma),
       inject: [PrismaService],
     },
+    {
+      provide: NOTIFICATION_PLATFORM_TELEMETRY_ANCHOR_REPOSITORY,
+      useFactory: (prisma: PrismaService) =>
+        new PrismaNotificationPlatformTelemetryAnchorRepository(prisma),
+      inject: [PrismaService],
+    },
     TelegramNotificationRecoveryStore,
     TelegramNotificationRestartRecoveryService,
     TelegramNotificationPersistenceService,
@@ -223,6 +232,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformSchedulerPersistenceService,
     NotificationPlatformRetryPersistenceService,
     NotificationPlatformDeadLetterPersistenceService,
+    NotificationPlatformTelemetryPersistenceService,
     NotificationPlatformDeadLetterRecoveryStore,
     NotificationPlatformDeadLetterRestartRecoveryService,
     NotificationPlatformRetryRecoveryStore,
@@ -293,6 +303,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformSchedulerPersistenceService,
     NotificationPlatformRetryPersistenceService,
     NotificationPlatformDeadLetterPersistenceService,
+    NotificationPlatformTelemetryPersistenceService,
     NotificationPlatformDeadLetterRecoveryStore,
     NotificationPlatformDeadLetterRestartRecoveryService,
     NotificationPlatformRetryRecoveryStore,

@@ -1834,4 +1834,23 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 **Explicit non-claim:** W5-N15-a does **not** authorize Notification Platform Telemetry implemented, metrics collection implemented, exporters implemented, dashboards implemented, Notification Platform Complete, W5-N15 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
 
-**STOP.** W5-N15-a is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N15-b.
+**STOP.** W5-N15-a is **COMPLETE** (`d5d16ec`). Do not open W5-N15-b without authorization.
+
+---
+
+## W5-N15-b validation (2026-09-02 — local)
+
+| Layer                     | Result   | Evidence                                                             |
+| ------------------------- | -------- | -------------------------------------------------------------------- |
+| Durable anchor model      | **PASS** | `WorkspaceNotificationPlatformTelemetryAnchor` + migration           |
+| Inventory synchronization | **PASS** | W5-N15-a SURVIVE promotion; `platformTelemetryAnchorsMissing: false` |
+| Architecture integrity    | **PASS** | No ownership drift; Exchange Adapter untouched                       |
+| Ownership boundaries      | **PASS** | No new persistence owner                                             |
+| Conformance tests         | **PASS** | `w5-n15-b-durable-notification-platform-telemetry*.spec.ts`          |
+| Slice reports             | **PASS** | w5-n15-b-* reports under wave-5                                      |
+| Regression suite          | **PASS** | lint / typecheck / test / build                                      |
+| git diff --check          | **PASS** | No whitespace errors                                                 |
+
+**Explicit non-claim:** W5-N15-b does **not** authorize Notification Platform Telemetry implemented, metrics collection implemented, exporters implemented, dashboards implemented, restart recovery implemented, Notification Platform Complete, W5-N15 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
+
+**STOP.** W5-N15-b is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N15-c.

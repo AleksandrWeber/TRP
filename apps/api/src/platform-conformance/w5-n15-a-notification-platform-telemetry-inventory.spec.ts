@@ -143,7 +143,7 @@ describe('W5-N15-a notification platform telemetry inventory — unit', () => {
     expect(W5_N15_A_BINDING_FINDINGS.w5N09WorkersFoundationExists).toBe(true);
     expect(W5_N15_A_BINDING_FINDINGS.w5N11WorkerRuntimeFoundationExists).toBe(true);
     expect(W5_N15_A_BINDING_FINDINGS.unifiedPlatformTelemetryLayerMissing).toBe(true);
-    expect(W5_N15_A_BINDING_FINDINGS.platformTelemetryAnchorsMissing).toBe(true);
+    expect(W5_N15_A_BINDING_FINDINGS.platformTelemetryAnchorsMissing).toBe(false);
     expect(W5_N15_A_BINDING_FINDINGS.w5N08QueueFoundationExists).toBe(true);
     expect(W5_N15_A_BINDING_FINDINGS.w5N07DispatchFoundationExists).toBe(true);
     expect(W5_N15_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);

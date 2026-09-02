@@ -42,7 +42,7 @@ Enumerate every Notification Platform Telemetry artifact required to implement W
 - PC-06 routing and PC-07 notification product are **implemented** — they decide routes and expose per-channel settings but do not constitute unified platform telemetry.
 - **No** unified cross-channel platform telemetry layer, platform telemetry restart recovery, platform telemetry operational continuity projection, actual telemetry runtime, telemetry export, telemetry processing, exporter runtime, orchestration, telemetry, scaling, or parallel execution exists.
 - **W5-N15-b** durable platform telemetry anchors are **not implemented** — `workspace_notification_platform_dead_letter_anchors` deferred to W5-N15-b on notification-delivery owner.
-- `platformTelemetryAnchorsMissing`: **true** (W5-N15-b deferred).
+- `platformTelemetryAnchorsMissing`: **false** (W5-N15-b implemented).
 - W3-O02 durable notification queue exists on `notification-delivery` owner — queue work survives restart; platform telemetry orchestration is still absent.
 - TD-049 / TD-050 production transport I/O remains deferred — not claimed from this inventory.
 

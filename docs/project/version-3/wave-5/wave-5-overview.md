@@ -1422,33 +1422,33 @@ See [`w5-n14-final-integration-verification.md`](./w5-n14-final-integration-veri
 
 ---
 
-## W5-N15 status (Notification Platform Telemetry — W5-N15-a COMPLETE local)
+## W5-N15 status (Notification Platform Telemetry — W5-N15-b COMPLETE local)
 
-W5-N15 Notification Platform Telemetry Foundation Planning Package is **APPROVED** (2026-09-02). W5-N15-a Notification Platform Telemetry Inventory & Honest Product Baseline is **COMPLETE** (local). Awaiting Product Owner Review. No platform telemetry runtime. No metrics collection. No exporters. No dashboards. No production transport I/O.
+W5-N15 Notification Platform Telemetry Foundation Planning Package is **APPROVED** (2026-09-02). W5-N15-a is **COMPLETE** (`d5d16ec`). W5-N15-b Durable Notification Platform Telemetry Foundation is **COMPLETE** (local). Awaiting Product Owner Review. No metrics collection. No exporters. No dashboards. No restart recovery. No production transport I/O.
 
 ```text
-Inventory and Honest Product baseline only — not Notification Platform Telemetry Foundation implemented.
-Not telemetry engine, metrics collection runtime, exporters, observability dashboards, or scaling signals runtime.
+Durable anchor persistence only — not Notification Platform Telemetry Foundation implemented.
+Not metrics collection, exporters, dashboards, runtime aggregation, or restart recovery.
 Not Notification Platform Complete. Not Wave 5 COMPLETE.
-W5-N15-b…e not authorized.
-Beginning commit (W5-N15-a): 3e1ab2edcbdaa4d2cb6fea1ef48674fc5c6b254c
+W5-N15-c…e not authorized.
+Beginning commit (W5-N15-b): d5d16ec136165b03e7060d31e5225be522bbb9d4
 ```
 
-See [`w5-n15-planning-summary.md`](./w5-n15-planning-summary.md) and [`w5-n15-a-notification-platform-telemetry-inventory.md`](./w5-n15-a-notification-platform-telemetry-inventory.md).
+See [`w5-n15-planning-summary.md`](./w5-n15-planning-summary.md), [`w5-n15-a-notification-platform-telemetry-inventory.md`](./w5-n15-a-notification-platform-telemetry-inventory.md), and [`w5-n15-b-implementation-report.md`](./w5-n15-b-implementation-report.md).
 
 ---
 
 ## W5-N15 implementation slices
 
-| Slice    | Name                                                                | Status                                                |
-| -------- | ------------------------------------------------------------------- | ----------------------------------------------------- |
-| W5-N15-a | Notification Platform Telemetry Inventory & Honest Product Baseline | **COMPLETE** (local) — Awaiting PO Review             |
-| W5-N15-b | Durable Notification Platform Telemetry Foundation                  | **Not authorized**                                    |
-| W5-N15-c | Notification Platform Telemetry Restart Recovery Foundation         | **Not authorized**                                    |
-| W5-N15-d | Notification Platform Telemetry Operational Continuity Foundation   | **Not authorized**                                    |
-| W5-N15-e | Package Close Evidence                                              | **Not authorized**                                    |
-| W5-N15   | Package                                                             | Planning **APPROVED** — W5-N15-a **COMPLETE** (local) |
+| Slice    | Name                                                                | Status                                             |
+| -------- | ------------------------------------------------------------------- | -------------------------------------------------- |
+| W5-N15-a | Notification Platform Telemetry Inventory & Honest Product Baseline | **COMPLETE** (`d5d16ec`)                           |
+| W5-N15-b | Durable Notification Platform Telemetry Foundation                  | **COMPLETE** (local) — Awaiting PO Review          |
+| W5-N15-c | Notification Platform Telemetry Restart Recovery Foundation         | **Not authorized**                                 |
+| W5-N15-d | Notification Platform Telemetry Operational Continuity Foundation   | **Not authorized**                                 |
+| W5-N15-e | Package Close Evidence                                              | **Not authorized**                                 |
+| W5-N15   | Package                                                             | W5-N15-b **COMPLETE** (local) — Awaiting PO Review |
 
 ---
 
-**STOP.** W5-N15-a is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N15-b. Do not declare Notification Platform Telemetry Foundation implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N15-b is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N15-c. Do not declare Notification Platform Telemetry Foundation implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE.
