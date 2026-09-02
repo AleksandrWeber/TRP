@@ -143,7 +143,7 @@ describe('W5-N14-a notification platform dead-letter inventory — unit', () => 
     expect(W5_N14_A_BINDING_FINDINGS.w5N09WorkersFoundationExists).toBe(true);
     expect(W5_N14_A_BINDING_FINDINGS.w5N11WorkerRuntimeFoundationExists).toBe(true);
     expect(W5_N14_A_BINDING_FINDINGS.unifiedPlatformDeadLetterLayerMissing).toBe(true);
-    expect(W5_N14_A_BINDING_FINDINGS.platformDeadLetterAnchorsMissing).toBe(true);
+    expect(W5_N14_A_BINDING_FINDINGS.platformDeadLetterAnchorsMissing).toBe(false);
     expect(W5_N14_A_BINDING_FINDINGS.w5N08QueueFoundationExists).toBe(true);
     expect(W5_N14_A_BINDING_FINDINGS.w5N07DispatchFoundationExists).toBe(true);
     expect(W5_N14_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
@@ -222,7 +222,7 @@ describe('W5-N14-a notification platform dead-letter inventory — unit', () => 
       'Notification Platform Dead Letter Inventory Foundation',
     );
     expect(W5_N14_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N14_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(4);
+    expect(W5_N14_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(3);
   });
 });
 

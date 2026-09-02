@@ -4,7 +4,7 @@
 **Audience:** Product Owner
 **Date:** 2026-08-29
 **Wave:** 5 — Notification Platform
-**Status:** W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 **CLOSED** by Product Owner (2026-08-29) · W5-N08 **CLOSED** by Product Owner (2026-08-29) · W5-N09 **CLOSED** by Product Owner (2026-08-29) · W5-N10 **CLOSED** by Product Owner (2026-08-29) · W5-N11 **CLOSED** by Product Owner (2026-09-02) · W5-N12 **CLOSED** by Product Owner (2026-09-02) · W5-N13 **CLOSED** by Product Owner (2026-09-02) · W5-N14-a **COMPLETE** — Awaiting Product Owner Review
+**Status:** W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 **CLOSED** by Product Owner (2026-08-29) · W5-N08 **CLOSED** by Product Owner (2026-08-29) · W5-N09 **CLOSED** by Product Owner (2026-08-29) · W5-N10 **CLOSED** by Product Owner (2026-08-29) · W5-N11 **CLOSED** by Product Owner (2026-09-02) · W5-N12 **CLOSED** by Product Owner (2026-09-02) · W5-N13 **CLOSED** by Product Owner (2026-09-02) · W5-N14-b **COMPLETE** — Awaiting Product Owner Review
 **Nature:** Simple Product Owner status. Not an RC. Not an ADR. Not a Master Plan revision.
 
 **Overview:** [`wave-5-overview.md`](./wave-5-overview.md)
@@ -47,6 +47,7 @@
 **W5-N14 Planning Review:** [`w5-n14-planning-review.md`](./w5-n14-planning-review.md)
 **W5-N14 Planning Approval:** [`w5-n14-planning-approval.md`](./w5-n14-planning-approval.md)
 **W5-N14-a inventory:** [`w5-n14-a-notification-platform-dead-letter-inventory.md`](./w5-n14-a-notification-platform-dead-letter-inventory.md)
+**W5-N14-b implementation report:** [`w5-n14-b-implementation-report.md`](./w5-n14-b-implementation-report.md)
 **W5-N04 Planning Review:** [`w5-n04-planning-review.md`](./w5-n04-planning-review.md)
 **W5-N04 Planning Approval:** [`w5-n04-planning-approval.md`](./w5-n04-planning-approval.md)
 **W5-N03 Planning Review:** [`w5-n03-planning-review.md`](./w5-n03-planning-review.md)
@@ -118,7 +119,7 @@
 | **W5-N11** | **V3-N11** | Notification Platform Worker Runtime Foundation   | **CLOSED** by Product Owner (2026-09-02)              |
 | **W5-N12** | **V3-N12** | Notification Platform Scheduler Foundation        | **CLOSED** by Product Owner (2026-09-02)              |
 | **W5-N13** | **V3-N13** | Notification Platform Retry Foundation            | **CLOSED** by Product Owner (2026-09-02)              |
-| **W5-N14** | **V3-N14** | Notification Platform Dead Letter Foundation      | W5-N14-a **COMPLETE** — Awaiting Product Owner Review |
+| **W5-N14** | **V3-N14** | Notification Platform Dead Letter Foundation      | W5-N14-b **COMPLETE** — Awaiting Product Owner Review |
 
 Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 → N09 → N10 → N11 → N12 → N13 → N14**.
 
@@ -276,12 +277,12 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 
 
 | Slice    | Name                                                                  | Status                                                |
 | -------- | --------------------------------------------------------------------- | ----------------------------------------------------- |
-| W5-N14-a | Notification Platform Dead Letter Inventory & Honest Product Baseline | **COMPLETE** (local) — Awaiting Product Owner Review  |
-| W5-N14-b | Durable Notification Platform Dead Letter Foundation                  | **Not opened** — not authorized                       |
+| W5-N14-a | Notification Platform Dead Letter Inventory & Honest Product Baseline | **COMPLETE** (`34ad8de`)                              |
+| W5-N14-b | Durable Notification Platform Dead Letter Foundation                  | **COMPLETE** (local) — Awaiting Product Owner Review  |
 | W5-N14-c | Notification Platform Dead Letter Restart Recovery Foundation         | **Not opened** — not authorized                       |
 | W5-N14-d | Notification Platform Dead Letter Operational Continuity Foundation   | **Not opened** — not authorized                       |
 | W5-N14-e | Package Close Evidence                                                | **Not opened** — not authorized                       |
-| W5-N14   | Package                                                               | W5-N14-a **COMPLETE** — Awaiting Product Owner Review |
+| W5-N14   | Package                                                               | W5-N14-b **COMPLETE** — Awaiting Product Owner Review |
 
 ---
 
@@ -293,14 +294,15 @@ Order is binding: **N01 → N02 → N03 → N04 → N05 → N06 → N07 → N08 
 | **Status**                            | W5-N01 **CLOSED** · W5-N02 **CLOSED** · W5-N03 **CLOSED** · W5-N04 **CLOSED** · W5-N05 **CLOSED** by Product Owner (2026-08-29) · W5-N06 **CLOSED** by Product Owner (2026-08-29) · W5-N07 **CLOSED** by Product Owner (2026-08-29) · W5-N08 **CLOSED** by Product Owner (2026-08-29) · W5-N09 **CLOSED** by Product Owner (2026-08-29) · W5-N10 **CLOSED** by Product Owner (2026-08-29) · W5-N11 **CLOSED** by Product Owner (2026-09-02) · W5-N12 **CLOSED** by Product Owner (2026-09-02) · W5-N13 **CLOSED** by Product Owner (2026-09-02) |
 | **First package**                     | **W5-N01** Production Telegram Bot API (V3-N01 · CM-11) — **CLOSED**                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | **Previous package**                  | **W5-N13** Notification Platform Retry Foundation (V3-N13 · CM-23) — **CLOSED** by Product Owner (2026-09-02)                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| **Current package**                   | **W5-N14** Notification Platform Dead Letter Foundation (V3-N14 · CM-24) — W5-N14-a **COMPLETE** — Awaiting Product Owner Review                                                                                                                                                                                                                                                                                                                                                                                                                |
+| **Current package**                   | **W5-N14** Notification Platform Dead Letter Foundation (V3-N14 · CM-24) — W5-N14-b **COMPLETE** — Awaiting Product Owner Review                                                                                                                                                                                                                                                                                                                                                                                                                |
 | **W5-N14 Planning Package**           | **APPROVED** (2026-09-02) — [`w5-n14-planning-summary.md`](./w5-n14-planning-summary.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **W5-N14 Planning Review**            | **PASS** (2026-09-02) — [`w5-n14-planning-review.md`](./w5-n14-planning-review.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | **W5-N14 Planning Approval**          | **RECORDED** (2026-09-02) — [`w5-n14-planning-approval.md`](./w5-n14-planning-approval.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | **W5-N14 planning documents**         | [`w5-n14-planning-summary.md`](./w5-n14-planning-summary.md) and companions                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | **W5-N14-a inventory**                | [`w5-n14-a-notification-platform-dead-letter-inventory.md`](./w5-n14-a-notification-platform-dead-letter-inventory.md)                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | **W5-N14-a implementation report**    | [`w5-n14-a-implementation-report.md`](./w5-n14-a-implementation-report.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| **Implementation authorized?**        | **Yes** — W5-N14-a **COMPLETE** (local); W5-N14-b…e **not authorized**                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| **W5-N14-b implementation report**    | [`w5-n14-b-implementation-report.md`](./w5-n14-b-implementation-report.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| **Implementation authorized?**        | **Yes** — W5-N14-a **COMPLETE** (`34ad8de`); W5-N14-b **COMPLETE** (local); W5-N14-c…e **not authorized**                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | **W5-N13 Planning Package**           | **APPROVED** (2026-09-02) — [`w5-n13-planning-summary.md`](./w5-n13-planning-summary.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | **W5-N13 Planning Review**            | **PASS** (2026-09-02) — [`w5-n13-planning-review.md`](./w5-n13-planning-review.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | **W5-N13 Planning Approval**          | **RECORDED** (2026-09-02) — [`w5-n13-planning-approval.md`](./w5-n13-planning-approval.md)                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
@@ -718,7 +720,9 @@ W5-N13 CLOSED by Product Owner (2026-09-02)
         ↓
 W5-N14 Planning APPROVED (2026-09-02)
         ↓
-W5-N14-a COMPLETE — Notification Platform Dead Letter Inventory & Honest Product Baseline (local)
+W5-N14-a COMPLETE — Notification Platform Dead Letter Inventory & Honest Product Baseline (`34ad8de`)
+        ↓
+W5-N14-b COMPLETE — Durable Notification Platform Dead Letter Foundation (local)
         ↓
 STOP — Awaiting Product Owner Review (not committed)
 (No dead-letter runtime / dead-letter processing / automatic replay)
@@ -897,7 +901,8 @@ STOP — Awaiting Product Owner Review (not committed)
 | W5-N14 Planning Review PASS           | **Recorded** (2026-09-02) |
 | W5-N14 Planning APPROVED              | **Recorded** (2026-09-02) |
 | W5-N14-a authorized                   | **Recorded** (2026-09-02) |
-| W5-N14-a COMPLETE                     | **Recorded** (local)      |
+| W5-N14-a COMPLETE                     | **Recorded** (`34ad8de`)  |
+| W5-N14-b COMPLETE                     | **Recorded** (local)      |
 | Dead-letter runtime implemented       | **Not claimed**           |
 | Dead-letter processing implemented    | **Not claimed**           |
 | Automatic replay implemented          | **Not claimed**           |
@@ -925,4 +930,4 @@ STOP — Awaiting Product Owner Review (not committed)
 
 ---
 
-**STOP.** W5-N14-a is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N14-b through W5-N14-e. Do not declare Wave 5 COMPLETE. Do not commit or push until Product Owner Review.
+**STOP.** W5-N14-b is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N14-c through W5-N14-e. Do not declare Wave 5 COMPLETE. Do not commit or push until Product Owner Review.

@@ -2043,3 +2043,20 @@ model WorkspaceNotificationPlatformRetryAnchor {
   @@id([workspaceId, retryAnchorId])
   @@map("workspace_notification_platform_retry_anchors")
 }
+
+model WorkspaceNotificationPlatformDeadLetterAnchor {
+  workspaceId            String   @map("workspace_id")
+  deadLetterAnchorId     String   @map("dead_letter_anchor_id")
+  schemaVersion          Int      @default(1) @map("schema_version")
+  platformDeadLetterType String   @map("platform_dead_letter_type")
+  deadLetterState        String   @map("dead_letter_state")
+  channelScope           String?  @map("channel_scope")
+  integrityMetadata      String?  @map("integrity_metadata")
+  correlationId          String?  @map("correlation_id")
+  recordedAt             DateTime @map("recorded_at")
+  recordedByActorId      String?  @map("recorded_by_actor_id")
+  updatedAt              DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, deadLetterAnchorId])
+  @@map("workspace_notification_platform_dead_letter_anchors")
+}

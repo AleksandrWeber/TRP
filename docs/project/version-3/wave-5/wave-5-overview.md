@@ -1378,19 +1378,19 @@ See [`w5-n13-final-integration-verification.md`](./w5-n13-final-integration-veri
 
 ---
 
-## W5-N14 status (Notification Platform Dead Letter — W5-N14-a COMPLETE)
+## W5-N14 status (Notification Platform Dead Letter — W5-N14-b COMPLETE)
 
-W5-N14-a Notification Platform Dead Letter Inventory & Honest Product Baseline is **COMPLETE** (2026-09-02, local). Awaiting Product Owner Review. **No dead-letter runtime, replay, or processing implementation.**
+W5-N14-b Durable Notification Platform Dead Letter Foundation is **COMPLETE** (2026-09-02, local). Awaiting Product Owner Review. **No dead-letter runtime, replay, or processing implementation.**
 
 ```text
-Inventory only — not dead-letter runtime, not dead-letter processing, not automatic replay.
-Not retry execution, notification execution, scheduler execution, worker execution, or production runtime.
+Durable persistence only — not dead-letter runtime, not dead-letter processing, not automatic replay.
+Not retry integration, scheduler integration, workers integration, or production runtime.
 Not production transport I/O, not outbound delivery, not Connected/Delivering labels.
 Notification Platform Dead Letter Foundation implemented — not claimed.
 Notification Platform Complete and Wave 5 COMPLETE not claimed.
 ```
 
-See [`w5-n14-a-notification-platform-dead-letter-inventory.md`](./w5-n14-a-notification-platform-dead-letter-inventory.md).
+See [`w5-n14-b-implementation-report.md`](./w5-n14-b-implementation-report.md).
 
 ---
 
@@ -1398,13 +1398,13 @@ See [`w5-n14-a-notification-platform-dead-letter-inventory.md`](./w5-n14-a-notif
 
 | Slice    | Name                                                                  | Status                                                |
 | -------- | --------------------------------------------------------------------- | ----------------------------------------------------- |
-| W5-N14-a | Notification Platform Dead Letter Inventory & Honest Product Baseline | **COMPLETE** (local) — Awaiting Product Owner Review  |
-| W5-N14-b | Durable Notification Platform Dead Letter Foundation                  | **Not opened** — not authorized                       |
+| W5-N14-a | Notification Platform Dead Letter Inventory & Honest Product Baseline | **COMPLETE** (`34ad8de`)                              |
+| W5-N14-b | Durable Notification Platform Dead Letter Foundation                  | **COMPLETE** (local) — Awaiting Product Owner Review  |
 | W5-N14-c | Notification Platform Dead Letter Restart Recovery Foundation         | **Not opened** — not authorized                       |
 | W5-N14-d | Notification Platform Dead Letter Operational Continuity Foundation   | **Not opened** — not authorized                       |
 | W5-N14-e | Package Close Evidence                                                | **Not opened** — not authorized                       |
-| W5-N14   | Package                                                               | W5-N14-a **COMPLETE** — Awaiting Product Owner Review |
+| W5-N14   | Package                                                               | W5-N14-b **COMPLETE** — Awaiting Product Owner Review |
 
 ---
 
-**STOP.** W5-N14-a is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not declare Dead Letter implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE. Do not open W5-N14-b.
+**STOP.** W5-N14-b is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not declare Dead Letter implemented. Do not declare Notification Platform implemented. Do not declare Production Ready. Do not declare Live Notifications. Do not declare Wave 5 COMPLETE. Do not open W5-N14-c.

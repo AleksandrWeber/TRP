@@ -1480,6 +1480,25 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 ---
 
+## W5-N14-b validation (2026-09-02 — local)
+
+| Layer                     | Result   | Evidence                                                              |
+| ------------------------- | -------- | --------------------------------------------------------------------- |
+| Durable anchor model      | **PASS** | `WorkspaceNotificationPlatformDeadLetterAnchor` + migration           |
+| Inventory synchronization | **PASS** | W5-N14-a SURVIVE promotion; `platformDeadLetterAnchorsMissing: false` |
+| Architecture integrity    | **PASS** | No ownership drift; Exchange Adapter untouched                        |
+| Ownership boundaries      | **PASS** | No new persistence owner                                              |
+| Conformance tests         | **PASS** | `w5-n14-b-durable-notification-platform-dead-letter*.spec.ts`         |
+| Slice reports             | **PASS** | w5-n14-b-* reports under wave-5                                       |
+| Regression suite          | **PASS** | lint / typecheck / test / build                                       |
+| git diff --check          | **PASS** | No whitespace errors                                                  |
+
+**Explicit non-claim:** W5-N14-b does **not** authorize Notification Platform Dead Letter implemented, dead-letter runtime implemented, dead-letter replay implemented, restart recovery implemented, Notification Platform Complete, W5-N14 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
+
+**STOP.** W5-N14-b is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N14-c.
+
+---
+
 | W5-N08 opened | **Yes** | W5-N08 **CLOSED** by Product Owner (2026-08-29) |
 
 **Explicit non-claim:** Product Owner Close does **not** authorize Notification Platform Queue implemented, Notification Platform Complete, queue workers implemented, queue orchestration implemented, retry implemented, scheduler implemented, Production Ready, Live Notifications, W5-N08 COMPLETE, or Wave 5 COMPLETE.
