@@ -1205,32 +1205,33 @@ See [`w5-n11-product-owner-close-record.md`](./w5-n11-product-owner-close-record
 
 ---
 
-## W5-N12 status (Notification Platform Scheduler — Planning OPEN)
+## W5-N12-a status (Notification Platform Scheduler inventory & honesty baseline)
 
-W5-N12 Notification Platform Scheduler Foundation Planning Package is **OPEN** (2026-09-02). Awaiting Planning Review. Not implementation. No platform scheduler foundation. No scheduler runtime. No production transport I/O.
+W5-N12-a enumerates every Notification Platform Scheduler artifact across Closed W5-N05 integration foundation, Closed W5-N06 delivery foundation, Closed W5-N07 dispatch foundation, Closed W5-N08 queue foundation, Closed W5-N09 workers foundation, Closed W5-N10 worker execution foundation, Closed W5-N11 worker runtime foundation, per-channel W5-N01…N04 foundations, PC-06 routing, PC-07 notification product, per-channel/integration/delivery/dispatch/queue/workers/worker-execution/worker-runtime operational continuity views, W3-O02 durable queue substrate, and missing unified platform scheduler layer, scheduler persistence, scheduler recovery, scheduler operational continuity, actual scheduler runtime, scheduler execution, retry, dead-letter processing, orchestration, scaling, and telemetry. **No customer-visible Notification Platform Scheduler behaviour** was added.
 
 ```text
-Planning only — not scheduler runtime, not scheduler execution, not worker runtime execution.
-Not orchestration / retry / dead-letter implementation.
-Closed W5-N05…N11 foundations consumed; per-channel W5-N01…N04 transport stubs remain honest per inventory.
-Notification Platform Scheduler complete and Notification Platform Complete not claimed.
-Wave 5 COMPLETE not claimed.
+Inventory only — not scheduler runtime implementation.
+Not scheduler runtime / scheduler execution / retry / dead-letter / orchestration / scaling / telemetry implementation.
+Not platform scheduler anchors (W5-N12-b).
+Not Notification Platform Scheduler functional.
+Not W5-N12 COMPLETE.
+Customer-visible platform scheduler remains unchanged until later slices + Product Owner Close.
 ```
 
-See [`w5-n12-planning-summary.md`](./w5-n12-planning-summary.md).
+See [`w5-n12-a-notification-platform-scheduler-inventory.md`](./w5-n12-a-notification-platform-scheduler-inventory.md).
 
 ---
 
-## W5-N12 implementation slices (planning only — not opened)
+## W5-N12 implementation slices
 
-| Slice    | Name                                                                |
-| -------- | ------------------------------------------------------------------- |
-| W5-N12-a | Notification Platform Scheduler Inventory & Honest Product Baseline |
-| W5-N12-b | Durable Notification Platform Scheduler Foundation                  |
-| W5-N12-c | Notification Platform Scheduler Restart Recovery Foundation         |
-| W5-N12-d | Notification Platform Scheduler Operational Continuity Foundation   |
-| W5-N12-e | Package Close Evidence                                              |
+| Slice    | Name                                                                | Status             |
+| -------- | ------------------------------------------------------------------- | ------------------ |
+| W5-N12-a | Notification Platform Scheduler Inventory & Honest Product Baseline | **COMPLETE**       |
+| W5-N12-b | Durable Notification Platform Scheduler Foundation                  | **NOT AUTHORIZED** |
+| W5-N12-c | Notification Platform Scheduler Restart Recovery Foundation         | **NOT AUTHORIZED** |
+| W5-N12-d | Notification Platform Scheduler Operational Continuity Foundation   | **NOT AUTHORIZED** |
+| W5-N12-e | Package Close Evidence                                              | **NOT AUTHORIZED** |
 
 ---
 
-**STOP.** W5-N12 Planning Package is **OPEN**. Awaiting Planning Review. Do not perform Planning Review. Do not perform Planning Approval. Do not create W5-N12-a. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution implemented. Do not declare Notification Platform Worker Runtime Foundation implemented. Do not declare Notification Platform Scheduler Foundation implemented. Do not declare Scheduler runtime implemented. Do not declare Scheduler execution implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N12-a is **COMPLETE**. Await explicit Product Owner instruction before W5-N12-b. Do not open W5-N12-b. Do not declare Notification Platform Integration implemented. Do not declare Notification Platform Delivery implemented. Do not declare Notification Platform Dispatch implemented. Do not declare Notification Platform Queue implemented. Do not declare Notification Platform Workers implemented. Do not declare Notification Platform Worker Execution implemented. Do not declare Notification Platform Worker Runtime Foundation implemented. Do not declare Notification Platform Scheduler Foundation implemented. Do not declare Scheduler runtime implemented. Do not declare Scheduler execution implemented. Do not declare Worker runtime execution implemented. Do not declare Dispatcher implemented. Do not declare Retry implemented. Do not declare Dead-letter queue implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.
