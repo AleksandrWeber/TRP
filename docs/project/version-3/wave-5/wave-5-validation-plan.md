@@ -1354,7 +1354,26 @@ Each package Close requires: Implementation Report, Architecture Review, Securit
 
 **Explicit non-claim:** W5-N13-b does **not** authorize Notification Platform Retry implemented, retry runtime implemented, retry execution implemented, retry restart recovery implemented, dead-letter processing implemented, Notification Platform Complete, W5-N13 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
 
-**STOP.** W5-N13-b is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N13-c.
+**STOP.** W5-N13-b is **COMPLETE** (`ddb462f`). Await Product Owner Review before Repository Synchronization. Do not open W5-N13-c.
+
+---
+
+## W5-N13-c validation (2026-09-02 — local)
+
+| Layer               | Result   | Evidence                                                   |
+| ------------------- | -------- | ---------------------------------------------------------- |
+| Restart recovery    | **PASS** | `notification-platform-retry-restart-recovery.service.ts`  |
+| Recovery store      | **PASS** | `notification-platform-retry-recovery-store.ts`            |
+| Continuity status   | **PASS** | `notification-platform-retry-continuity-status.ts`         |
+| Persistence hydrate | **PASS** | write-through + hydrated reads in persistence service      |
+| Conformance         | **PASS** | `w5-n13-c-notification-platform-retry-restart-recovery.ts` |
+| Architecture check  | **PASS** | No ownership drift; no operational continuity              |
+| Regression suite    | **PASS** | lint / typecheck / test / build                            |
+| git diff --check    | **PASS** | No whitespace errors                                       |
+
+**Explicit non-claim:** W5-N13-c does **not** authorize Notification Platform Retry implemented, retry runtime implemented, retry execution implemented, retry scheduler implemented, dead-letter processing implemented, Notification Platform Complete, W5-N13 COMPLETE, or Wave 5 COMPLETE. **Recorded** (local).
+
+**STOP.** W5-N13-c is **COMPLETE** (local). Await Product Owner Review before Repository Synchronization. Do not open W5-N13-d.
 
 ---
 

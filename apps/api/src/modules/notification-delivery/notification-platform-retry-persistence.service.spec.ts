@@ -4,6 +4,7 @@ import {
   type DurableNotificationPlatformRetryAnchor,
 } from './domain/durable-notification-platform-retry-anchor';
 import type { NotificationPlatformRetryAnchorRepository } from './domain/notification-platform-retry-anchor.repository';
+import { NotificationPlatformRetryRecoveryStore } from './domain/notification-platform-retry-recovery-store';
 import { NotificationPlatformRetryPersistenceService } from './notification-platform-retry-persistence.service';
 
 const recordedAt = '2026-09-02T16:00:00.000Z';
@@ -23,13 +24,25 @@ function createRepository(): NotificationPlatformRetryAnchorRepository & {
     loadNotificationPlatformRetryAnchor: vi.fn(
       async (workspaceId, retryAnchorId) => byKey.get(`${workspaceId}:${retryAnchorId}`) ?? null,
     ),
+    listAllNotificationPlatformRetryAnchors: vi.fn(async () =>
+      [...byKey.values()].sort((a, b) => {
+        const workspaceCompare = a.workspaceId.localeCompare(b.workspaceId);
+        if (workspaceCompare !== 0) {
+          return workspaceCompare;
+        }
+        return a.retryAnchorId.localeCompare(b.retryAnchorId);
+      }),
+    ),
   };
 }
 
 describe('NotificationPlatformRetryPersistenceService — W5-N13-b storage only', () => {
   it('persistRetryAnchor writes canonical platform retry anchors without runtime I/O', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformRetryPersistenceService(repository);
+    const service = new NotificationPlatformRetryPersistenceService(
+      repository,
+      new NotificationPlatformRetryRecoveryStore(),
+    );
     const outcome = await service.persistRetryAnchor({
       workspaceId: 'ws-1',
       retryAnchorId: 'retry-1',
@@ -58,7 +71,10 @@ describe('NotificationPlatformRetryPersistenceService — W5-N13-b storage only'
 
   it('does not persist retry runtime, scheduling, execution, dead-letter, orchestration, or transport fields', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformRetryPersistenceService(repository);
+    const service = new NotificationPlatformRetryPersistenceService(
+      repository,
+      new NotificationPlatformRetryRecoveryStore(),
+    );
 
     await service.persistRetryAnchor({
       workspaceId: 'ws-1',

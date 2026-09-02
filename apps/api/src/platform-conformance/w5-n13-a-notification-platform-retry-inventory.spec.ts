@@ -220,7 +220,7 @@ describe('W5-N13-a notification platform retry inventory — unit', () => {
       'Notification Platform Retry Inventory Foundation',
     );
     expect(W5_N13_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N13_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(3);
+    expect(W5_N13_A_TECHNICAL_DEBT_DELTA.deferred.length).toBe(2);
   });
 });
 

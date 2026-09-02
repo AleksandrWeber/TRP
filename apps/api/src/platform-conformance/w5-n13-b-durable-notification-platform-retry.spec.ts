@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PrismaNotificationPlatformRetryAnchorRepository } from '../modules/notification-delivery/persistence/prisma-notification-platform-retry-anchor.repository';
+import { NotificationPlatformRetryRecoveryStore } from '../modules/notification-delivery/domain/notification-platform-retry-recovery-store';
 import { NotificationPlatformRetryPersistenceService } from '../modules/notification-delivery/notification-platform-retry-persistence.service';
 import { rowsEphemeral } from './w5-n13-a-notification-platform-retry-inventory';
 import {
@@ -69,7 +70,10 @@ describe('W5-N13-b durable notification platform retry — unit', () => {
   it('persistence correctness: anchor upserts workspace retry row', async () => {
     const prisma = createPrismaMock();
     const repository = new PrismaNotificationPlatformRetryAnchorRepository(prisma as never);
-    const service = new NotificationPlatformRetryPersistenceService(repository);
+    const service = new NotificationPlatformRetryPersistenceService(
+      repository,
+      new NotificationPlatformRetryRecoveryStore(),
+    );
 
     const outcome = await service.persistRetryAnchor({
       workspaceId: 'ws-a',
@@ -182,14 +186,14 @@ describe('W5-N13-b durable notification platform retry — integration', () => {
     expect(W5_N13_B_ARCHITECTURE_CLAIMS.exchangeAdapterUntouched).toBe(true);
   });
 
-  it('technical debt delta: durable foundation resolved; restart recovery deferred', () => {
+  it('technical debt delta: durable foundation resolved; operational continuity deferred', () => {
     expect(W5_N13_B_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Notification Platform Retry Durable Foundation',
     );
     expect(W5_N13_B_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(
       W5_N13_B_TECHNICAL_DEBT_DELTA.deferred.some((item) =>
-        item.toLowerCase().includes('restart recovery'),
+        item.toLowerCase().includes('operational continuity'),
       ),
     ).toBe(true);
   });

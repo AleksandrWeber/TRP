@@ -125,7 +125,6 @@ export const W5_N13_B_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Notification Platform Retry Durable Foundation'] as const),
   introduced: Object.freeze([] as const),
   deferred: Object.freeze([
-    'W5-N13-c — Notification Platform Retry Restart Recovery Foundation',
     'W5-N13-d — Notification Platform Retry Operational Continuity Foundation',
     'W5-N13-e — Package Close Evidence',
   ] as const),
@@ -135,7 +134,6 @@ export const W5_N13_B_TRANSITION_MATRIX = Object.freeze({
   before: 'Inventory (W5-N13-a)',
   after: 'Durable Persistence (W5-N13-b)',
   stillMissing: Object.freeze([
-    'Restart Recovery (W5-N13-c)',
     'Operational Continuity (W5-N13-d)',
     'Package Close (W5-N13-e)',
   ] as const),

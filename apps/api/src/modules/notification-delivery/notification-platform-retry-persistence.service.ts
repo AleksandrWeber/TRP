@@ -9,6 +9,7 @@ import {
   NOTIFICATION_PLATFORM_RETRY_ANCHOR_REPOSITORY,
   type NotificationPlatformRetryAnchorRepository,
 } from './domain/notification-platform-retry-anchor.repository';
+import { NotificationPlatformRetryRecoveryStore } from './domain/notification-platform-retry-recovery-store';
 
 export type PersistNotificationPlatformRetryAnchorCommand = Readonly<{
   workspaceId: string;
@@ -22,21 +23,27 @@ export type PersistNotificationPlatformRetryAnchorCommand = Readonly<{
 }>;
 
 /**
- * W5-N13-b — durable Notification Platform Retry anchor persistence on Notification Delivery owner.
+ * W5-N13-b/c — durable Notification Platform Retry anchor persistence on Notification Delivery owner.
+ * W5-N13-c — write-through to recovery store after hydrate.
  * Storage only — no retry runtime, retry execution, retry scheduling, retry queue processing,
- * restart recovery, dead-letter processing, orchestration, or operational continuity.
+ * dead-letter processing, orchestration, or operational continuity.
  */
 @Injectable()
 export class NotificationPlatformRetryPersistenceService {
   constructor(
     @Inject(NOTIFICATION_PLATFORM_RETRY_ANCHOR_REPOSITORY)
     private readonly repository: NotificationPlatformRetryAnchorRepository,
+    @Inject(NotificationPlatformRetryRecoveryStore)
+    private readonly recoveryStore: NotificationPlatformRetryRecoveryStore,
   ) {}
 
   async loadAnchor(
     workspaceId: string,
     retryAnchorId: string,
   ): Promise<DurableNotificationPlatformRetryAnchor | null> {
+    if (this.recoveryStore.hasHydrated()) {
+      return this.recoveryStore.get(workspaceId, retryAnchorId);
+    }
     return this.repository.loadNotificationPlatformRetryAnchor(workspaceId, retryAnchorId);
   }
 
@@ -49,6 +56,7 @@ export class NotificationPlatformRetryPersistenceService {
       return outcome;
     }
     await this.repository.saveNotificationPlatformRetryAnchor(outcome.anchor);
+    this.recoveryStore.set(outcome.anchor);
     return outcome;
   }
 }

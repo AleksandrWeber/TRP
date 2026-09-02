@@ -49,6 +49,15 @@ export class PrismaNotificationPlatformRetryAnchorRepository implements Notifica
     });
     return row ? toDomain(row) : null;
   }
+
+  async listAllNotificationPlatformRetryAnchors(): Promise<
+    readonly DurableNotificationPlatformRetryAnchor[]
+  > {
+    const rows = await this.prisma.workspaceNotificationPlatformRetryAnchor.findMany({
+      orderBy: [{ workspaceId: 'asc' }, { retryAnchorId: 'asc' }],
+    });
+    return Object.freeze(rows.map((row) => toDomain(row)));
+  }
 }
 
 function toRow(

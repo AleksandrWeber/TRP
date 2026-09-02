@@ -15,6 +15,11 @@ export interface NotificationPlatformRetryAnchorRepository {
     workspaceId: string,
     retryAnchorId: string,
   ): Promise<DurableNotificationPlatformRetryAnchor | null>;
+
+  /** Deterministic load for restart recovery (W5-N13-c). */
+  listAllNotificationPlatformRetryAnchors(): Promise<
+    readonly DurableNotificationPlatformRetryAnchor[]
+  >;
 }
 
 export const NOTIFICATION_PLATFORM_RETRY_ANCHOR_REPOSITORY = Symbol(
