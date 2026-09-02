@@ -3,7 +3,7 @@
 **Package:** W5-N17 Notification Platform Delivery Reliability Foundation  
 **Evidence slice:** W5-N17-e  
 **Date:** 2026-09-02  
-**Status:** Close Evidence assembled — **NOT CLOSED**.  
+**Status:** **CLOSED** by Product Owner (2026-09-02).
 **Nature:** Package operational verification walkthrough. Not delivery execution runtime. Not retry execution. Not Production Ready.
 
 ---
@@ -87,10 +87,10 @@ Read-only — no runtime controls.
 
 ### 8. Final Integration Verification
 
-Engineering verification confirms slices a–e form one coherent package. Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**. Document: `w5-n17-final-integration-verification.md` — **PASS** (local).
+Engineering verification confirms slices a–e form one coherent package. Engineering verdict: **READY FOR PRODUCT OWNER FINAL CLOSE**. Document: `w5-n17-final-integration-verification.md` — **PASS** (`6daacda`).
 
-Product Owner Final Close remains a separate act — **not performed**.
+Product Owner Final Close executed (2026-09-02). Record: `w5-n17-product-owner-close-record.md`.
 
 ---
 
-**STOP.** Final Integration Verification **PASS** (local). Do not declare W5-N17 CLOSED. Do not declare Delivery Reliability implemented. Do not declare Wave 5 COMPLETE. Await Product Owner Final Close.
+**STOP.** W5-N17 is **CLOSED** by Product Owner (2026-09-02). Do not declare Delivery Reliability implemented. Do not declare Wave 5 COMPLETE.

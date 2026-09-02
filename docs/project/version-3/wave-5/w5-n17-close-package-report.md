@@ -3,7 +3,7 @@
 **Package:** W5-N17 Notification Platform Delivery Reliability Foundation  
 **Evidence slice:** W5-N17-e  
 **Date:** 2026-09-02  
-**Decision status:** Close Evidence **assembled** — awaiting Product Owner Package Review. Final Package Integration Verification **not performed**.
+**Decision status:** **CLOSED** by Product Owner (2026-09-02). Final Package Integration Verification **PASS** (`6daacda`).
 
 ---
 
@@ -56,21 +56,21 @@ This report indexes Close Evidence assembled in W5-N17-e for Product Owner Packa
 
 ## Close checklist (evidence)
 
-| Criterion                                                            | Status            |
-| -------------------------------------------------------------------- | ----------------- |
-| Every approved slice validated (a–d PASS)                            | **Met**           |
-| Operational walkthrough completed                                    | **Met**           |
-| Inventory / Persistence / Recovery / Continuity verified             | **Met**           |
-| Platform Readiness projection verified                               | **Met**           |
-| Honest Product enforcement intact                                    | **Met**           |
-| Governance: notification-delivery sole owner; no duplicate authority | **Met**           |
-| Security Verification PASS (slices a–e evidence)                     | **Met**           |
-| Architecture Verification PASS (slices a–e evidence)                 | **Met**           |
-| Documentation consistency verified                                   | **Met**           |
-| Package Summary completed                                            | **Met**           |
-| Final Package Integration Verification                               | **Not performed** |
-| Product Owner declares CLOSED                                        | **Pending**       |
-| No new functionality in Close act                                    | **Met**           |
-| No ownership / architecture / Master Plan changes in Close act       | **Met**           |
+| Criterion                                                            | Status                  |
+| -------------------------------------------------------------------- | ----------------------- |
+| Every approved slice validated (a–d PASS)                            | **Met**                 |
+| Operational walkthrough completed                                    | **Met**                 |
+| Inventory / Persistence / Recovery / Continuity verified             | **Met**                 |
+| Platform Readiness projection verified                               | **Met**                 |
+| Honest Product enforcement intact                                    | **Met**                 |
+| Governance: notification-delivery sole owner; no duplicate authority | **Met**                 |
+| Security Verification PASS (slices a–e evidence)                     | **Met**                 |
+| Architecture Verification PASS (slices a–e evidence)                 | **Met**                 |
+| Documentation consistency verified                                   | **Met**                 |
+| Package Summary completed                                            | **Met**                 |
+| Final Package Integration Verification                               | **PASS** (`6daacda`)    |
+| Product Owner declares CLOSED                                        | **CLOSED** (2026-09-02) |
+| No new functionality in Close act                                    | **Met**                 |
+| No ownership / architecture / Master Plan changes in Close act       | **Met**                 |
 
-**STOP.** Close Evidence assembled. Await Product Owner Package Review. Do not declare W5-N17 CLOSED. Do not declare Delivery Reliability implemented. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N17 is **CLOSED** by Product Owner (2026-09-02). Do not declare Delivery Reliability implemented. Do not declare Wave 5 COMPLETE.

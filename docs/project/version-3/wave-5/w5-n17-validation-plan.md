@@ -252,16 +252,16 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## W5-N17-e slice validation (2026-09-02)
 
-| Layer                                      | Result            | Evidence                        |
-| ------------------------------------------ | ----------------- | ------------------------------- |
-| W5-N17-e Close Evidence                    | **PASS**          | w5-n17-e-package-close-evidence |
-| Slices a–d validated                       | **PASS**          | All slice reports PASS          |
-| Operational journey verified               | **PASS**          | verifyOperationalChain          |
-| Dependency chain verified                  | **PASS**          | verifyDependencyChain           |
-| Governance / architecture / Honest Product | **PASS**          | buildCloseEvidenceDiagnostics   |
-| Final Package Integration Verification     | **Not performed** | separate act                    |
-| Product Owner Package Close                | **Pending**       | not declared from slice e       |
-| W5-N17 CLOSED                              | **Not claimed**   | awaiting PO Package Review      |
+| Layer                                      | Result       | Evidence                                 |
+| ------------------------------------------ | ------------ | ---------------------------------------- |
+| W5-N17-e Close Evidence                    | **PASS**     | w5-n17-e-package-close-evidence          |
+| Slices a–d validated                       | **PASS**     | All slice reports PASS                   |
+| Operational journey verified               | **PASS**     | verifyOperationalChain                   |
+| Dependency chain verified                  | **PASS**     | verifyDependencyChain                    |
+| Governance / architecture / Honest Product | **PASS**     | buildCloseEvidenceDiagnostics            |
+| Final Package Integration Verification     | **PASS**     | w5-n17-final-integration-verification.md |
+| Product Owner Package Close                | **CLOSED**   | w5-n17-product-owner-close-record.md     |
+| W5-N17 CLOSED                              | **Recorded** | Product Owner Final Close (2026-09-02)   |
 
 ---
 
@@ -279,7 +279,7 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## Explicit non-claims
 
-- W5-N17 Closed — **not claimed**
+- W5-N17 Closed — **recorded** (2026-09-02)
 - Platform delivery reliability foundation validation PASS at Close — **not claimed**
 - Notification Platform Delivery Reliability implemented — **not claimed**
 - Delivery execution runtime implemented — **not claimed**
@@ -295,14 +295,14 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## W5-N17 Final Integration Verification (2026-09-02)
 
-| Layer                                  | Result          | Evidence                                    |
-| -------------------------------------- | --------------- | ------------------------------------------- |
-| Final Package Integration Verification | **PASS**        | w5-n17-final-integration-verification.md    |
-| Slices a–e internally consistent       | **PASS**        | buildCloseEvidenceDiagnostics()             |
-| Regression suite                       | **PASS**        | lint / typecheck / test / web build         |
-| Product Owner Final Close              | **Pending**     | not performed from engineering verification |
-| W5-N17 CLOSED                          | **Not claimed** | awaiting Product Owner Final Review         |
+| Layer                                  | Result       | Evidence                                 |
+| -------------------------------------- | ------------ | ---------------------------------------- |
+| Final Package Integration Verification | **PASS**     | w5-n17-final-integration-verification.md |
+| Slices a–e internally consistent       | **PASS**     | buildCloseEvidenceDiagnostics()          |
+| Regression suite                       | **PASS**     | lint / typecheck / test / web build      |
+| Product Owner Final Close              | **CLOSED**   | w5-n17-product-owner-close-record.md     |
+| W5-N17 CLOSED                          | **Recorded** | Product Owner Final Close (2026-09-02)   |
 
 ---
 
-**STOP.** Final Integration Verification **PASS** (local). Await Product Owner Final Review. Do not declare W5-N17 CLOSED. Do not perform Product Owner Final Close. Do not declare Delivery Reliability implemented.
+**STOP.** W5-N17 is **CLOSED** by Product Owner (2026-09-02). Do not declare Delivery Reliability implemented. Do not declare Wave 5 COMPLETE.

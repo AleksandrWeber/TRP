@@ -2,7 +2,7 @@
 
 **Document:** W5-N17 Notification Platform Delivery Reliability Foundation Overview
 **Date:** 2026-09-02
-**Status:** Product-facing record. W5-N17 Planning **OPEN**. W5-N17-a inventory **COMPLETE**. W5-N17-b durable anchors **COMPLETE**. W5-N17-c restart recovery **COMPLETE** — internal recovery only. No operational continuity. No delivery execution runtime. No production transport I/O. No outbound notifications.
+**Status:** Product-facing record. W5-N17 **CLOSED** by Product Owner (2026-09-02). W5-N17-a inventory **COMPLETE**. W5-N17-b durable anchors **COMPLETE**. W5-N17-c restart recovery **COMPLETE**. W5-N17-d operational continuity **COMPLETE**. W5-N17-e Close Evidence **COMPLETE**. Final Integration Verification **PASS** (`6daacda`). No delivery execution runtime. No production transport I/O. No outbound notifications. No retry execution.
 **Product:** Wave 5 — Notification Platform · Package W5-N17 (V3-N17 · CM-27)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -46,7 +46,7 @@ W5-N01…N16 foundations are consumed — not redesigned.
 5. Configure individual channels on their existing surfaces (transport I/O remains per-channel scope).
 6. Stay inside their workspace and authorization.
 
-**Not available today** — W5-N17-a through W5-N17-e established inventory, durable persistence, restart recovery, operational continuity projection, and Close Evidence. All reserved-inactive channels remain honestly reserved. No production transport I/O. No delivery execution runtime. No retry execution. W5-N17 is **not CLOSED** — awaiting Product Owner Package Review.
+**Delivered by W5-N17 Close** — W5-N17-a through W5-N17-e established inventory, durable persistence, restart recovery, operational continuity projection, and Close Evidence. All reserved-inactive channels remain honestly reserved. No production transport I/O. No delivery execution runtime. No retry execution. W5-N17 is **CLOSED** by Product Owner (2026-09-02).
 
 ---
 
@@ -186,4 +186,4 @@ Never claim production transports operational from W5-N17 foundation alone.
 
 ---
 
-**STOP.** Final Integration Verification **PASS** (local). Await Product Owner Final Review. Do not declare W5-N17 CLOSED. Do not perform Product Owner Final Close. Do not declare Delivery Reliability implemented.
+**STOP.** W5-N17 is **CLOSED** by Product Owner (2026-09-02). Do not declare Delivery Reliability implemented. Do not declare Notification Platform Complete. Do not declare Wave 5 COMPLETE.
