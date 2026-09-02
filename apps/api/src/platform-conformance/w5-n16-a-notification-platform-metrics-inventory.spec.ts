@@ -129,7 +129,7 @@ describe('W5-N16-a notification platform metrics inventory — unit', () => {
     expect(ids.has('consume-w5-n06-delivery-anchor')).toBe(true);
     expect(ids.has('consume-w5-n07-dispatch-anchor')).toBe(true);
     expect(ids.has('consume-w5-n11-worker-runtime-anchor')).toBe(true);
-    expect(ids.has('missing-platform-metrics-durable-anchors')).toBe(true);
+    expect(ids.has('persist-notification-platform-metrics-anchor')).toBe(true);
     expect(ids.has('missing-platform-metrics-ui')).toBe(true);
   });
 
@@ -141,7 +141,7 @@ describe('W5-N16-a notification platform metrics inventory — unit', () => {
     expect(W5_N16_A_BINDING_FINDINGS.w5N09WorkersFoundationExists).toBe(true);
     expect(W5_N16_A_BINDING_FINDINGS.w5N11WorkerRuntimeFoundationExists).toBe(true);
     expect(W5_N16_A_BINDING_FINDINGS.unifiedPlatformMetricsLayerMissing).toBe(true);
-    expect(W5_N16_A_BINDING_FINDINGS.platformMetricsAnchorsMissing).toBe(true);
+    expect(W5_N16_A_BINDING_FINDINGS.platformMetricsAnchorsMissing).toBe(false);
     expect(W5_N16_A_BINDING_FINDINGS.w5N15TelemetryFoundationExists).toBe(true);
     expect(W5_N16_A_BINDING_FINDINGS.w5N08QueueFoundationExists).toBe(true);
     expect(W5_N16_A_BINDING_FINDINGS.w5N07DispatchFoundationExists).toBe(true);
