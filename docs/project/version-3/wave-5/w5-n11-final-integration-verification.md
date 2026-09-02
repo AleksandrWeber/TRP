@@ -11,9 +11,9 @@
 **Notification Platform declared COMPLETE:** No  
 **Wave 5 declared COMPLETE:** No
 
-**Safety commit (pre-step):** `b61ddec` — W5-N11-e Package Close Evidence pushed to `origin/main`. Repository clean; `origin/main` up to date.
+**Safety commit (pre-step):** `b61ddec` — W5-N11-e Package Close Evidence pushed to `origin/main`. Final Integration Verification recorded at `a4b4f5e`.
 
-**Slice commit chain on `origin/main`:** `737b26d` (a) → `6e838ee` (b) → `a3ae017` (c) → `857ba15` (d) → `b61ddec` (e) → Final Integration Verification (local).
+**Slice commit chain on `origin/main`:** `737b26d` (a) → `6e838ee` (b) → `a3ae017` (c) → `857ba15` (d) → `b61ddec` (e) → `a4b4f5e` (Final Integration Verification).
 
 ---
 
@@ -364,7 +364,7 @@ Engineering does **not** open W5-N12 or the next Wave package.
 
 **STOP.**
 
-Final Integration Verification **PASS** (local) — Awaiting Product Owner Final Close.
+Final Integration Verification **PASS** (`a4b4f5e`).
 
 Do **not** declare Notification Platform Worker Runtime implemented.
 
@@ -372,6 +372,8 @@ Do **not** declare Notification Platform Complete.
 
 Do **not** declare Wave 5 COMPLETE.
 
-Do **not** create Product Owner Close Record from this verification alone.
-
 Do **not** open W5-N12 without separate Product Owner instruction.
+
+---
+
+**Post-Close note (2026-09-02):** Product Owner Final Close executed. W5-N11 **CLOSED** — see [`w5-n11-product-owner-close-record.md`](./w5-n11-product-owner-close-record.md).
