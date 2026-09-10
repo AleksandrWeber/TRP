@@ -3,7 +3,7 @@
 **Package:** W5-N18 Notification Platform Retry Execution Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N18 · CM-28
-**Status:** Planning **APPROVED** (2026-09-03). W5-N18-a inventory **COMPLETE**. W5-N18-b durable persistence **COMPLETE**. W5-N18-c restart recovery **COMPLETE**. W5-N18-d operational continuity **COMPLETE** (2026-09-10) — awaiting PO Review. W5-N18-e not authorized / not opened.
+**Status:** Planning **APPROVED** (2026-09-03). W5-N18-a inventory **COMPLETE**. W5-N18-b durable persistence **COMPLETE**. W5-N18-c restart recovery **COMPLETE**. W5-N18-d operational continuity **COMPLETE**. W5-N18-e Close Evidence **COMPLETE** (local, 2026-09-10) — package **NOT CLOSED** — awaiting PO Package Review. Final Package Integration Verification **not performed**.
 **Date:** 2026-09-03
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n18-product-scope.md`](./w5-n18-product-scope.md)
@@ -260,14 +260,28 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | W5-N13 `notificationPlatformRetry` untouched            | **PASS**        | field name collision guard                                 |
 | Retry Execution functional                              | **Not claimed** | No runtime                                                 |
 | Customer-visible                                        | **PASS**        | Existing Platform Readiness view only                      |
-| W5-N18-e opened                                         | **Not claimed** | Slice e not authorized                                     |
+| W5-N18-e opened                                         | **Recorded**    | Close Evidence assembled (local); FIV not performed        |
+
+---
+
+## W5-N18-e slice validation (2026-09-10)
+
+| Layer                                                     | Result            | Evidence                                                     |
+| --------------------------------------------------------- | ----------------- | ------------------------------------------------------------ |
+| W5-N18-e Close Evidence                                   | **PASS** (local)  | w5-n18-e-package-close-evidence                              |
+| Slices a–d validation / architecture / security / product | **PASS**          | Required slice reports                                       |
+| Operational chain verified                                | **PASS**          | Inventory→Persistence→Recovery→Continuity→Platform Readiness |
+| Dependency chain W5-N01…N17 consumed                      | **PASS**          | Conformance                                                  |
+| Package NOT declared CLOSED                               | **PASS**          | Close Evidence non-declaration                               |
+| Final Package Integration Verification                    | **Not performed** | Separate act                                                 |
+| Retry Execution functional                                | **Not claimed**   | Honesty intact                                               |
 
 ---
 
 ## Explicit non-claims
 
 - W5-N18 Closed — **not claimed**
-- Platform retry execution foundation validation PASS at Close — **not claimed**
+- Platform retry execution foundation validation PASS at Close — **not claimed** (Close Evidence ≠ CLOSED)
 - Notification Platform Retry Execution implemented — **not claimed**
 - Retry Execution implemented — **not claimed**
 - Successful delivery — **not claimed**
@@ -283,11 +297,11 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 - W5-N18-a COMPLETE — **recorded** (2026-09-10) — inventory only
 - W5-N18-b COMPLETE — **recorded** (2026-09-10) — durable persistence only
 - W5-N18-c COMPLETE — **recorded** (2026-09-10) — restart recovery only
-- W5-N18-d COMPLETE — **recorded** (2026-09-10) — operational continuity only; awaiting PO Review
-- W5-N18-e opened — **not claimed**
+- W5-N18-d COMPLETE — **recorded** (2026-09-10) — operational continuity only
+- W5-N18-e COMPLETE — **recorded** (local, 2026-09-10) — Close Evidence only
 - W5-N18 Planning Review completed — **recorded** (PASS)
 - W5-N18 Planning APPROVED — **recorded**
 
 ---
 
-**STOP.** W5-N18-d Operational Continuity Foundation is **COMPLETE** (implementation). Await Product Owner Review. Do not open W5-N18-e. Do not declare Retry Execution implemented. Do not declare Notification Platform COMPLETE. Do not declare Live Notifications. Do not declare Production Ready. Do not declare Wave 5 COMPLETE. Do not commit. Do not push.
+**STOP.** W5-N18-e Close Evidence is **COMPLETE** (local). Await Product Owner Package Review. Do not declare W5-N18 CLOSED. Do not perform Final Package Integration Verification. Do not declare Retry Execution implemented. Do not declare Notification Platform COMPLETE. Do not declare Live Notifications. Do not declare Production Ready. Do not declare Wave 5 COMPLETE. Do not commit. Do not push.

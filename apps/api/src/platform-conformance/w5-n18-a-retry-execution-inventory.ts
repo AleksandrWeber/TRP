@@ -1571,13 +1571,15 @@ export const W5_N18_A_RETRY_EXECUTION_INVENTORY: readonly W5N18AInventoryRow[] =
     authorizesRetryExecutionFunctional: false as const,
     authorizesW5N18Complete: false as const,
     artifactId: 'out-w5-n18-e-close-evidence',
-    artifact: 'W5-N18-e Close Evidence — deferred',
+    artifact: 'W5-N18-e Close Evidence — assembled (not authorizing Complete)',
     kind: 'explicit-out' as const,
     owner: 'wave-5-documentation' as const,
     durabilityClass: 'EPHEMERAL' as const,
     capabilityCategory: 'planned' as const,
-    currentStatus: 'Explicit OUT — must not authorize from W5-N18-a; next planned slice',
-    honestyRequirement: 'W5-N18-e Close Evidence — deferred',
+    currentStatus:
+      'Explicit OUT from slice a alone — Close Evidence assembled in W5-N18-e; does not authorize W5-N18 CLOSED',
+    honestyRequirement:
+      'W5-N18-e Close Evidence assembled; Final Package Integration Verification still deferred',
     futureW5N18Responsibility: 'W5-N18-e' as const,
     evidencePath: 'docs/project/version-3/wave-5/w5-n18-product-scope.md',
     existsToday: false as const,
@@ -2000,10 +2002,7 @@ export const W5_N18_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N01…N17-a machine inventories — foundation reference patterns',
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
-  plannedCapabilities: Object.freeze([
-    'W5-N18-e — Package Close Evidence',
-    'Final Package Integration Verification',
-  ] as const),
+  plannedCapabilities: Object.freeze(['Final Package Integration Verification'] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform retry execution layer',
     'Operator retry execution UI',
@@ -2023,11 +2022,13 @@ export const W5_N18_A_TECHNICAL_DEBT_DELTA = Object.freeze({
     'Durable Retry Execution persistence foundation',
     'W5-N18-c — Restart Recovery Foundation',
     'W5-N18-d — Operational Continuity Foundation',
+    'Notification Platform Retry Execution Package Close Evidence',
   ] as const),
   introduced: Object.freeze([] as const),
   deferred: Object.freeze([
-    'W5-N18-e — Package Validation, Operational Verification & Close Evidence',
     'Final Package Integration Verification',
+    'Product Owner Final Close',
+    'Retry execution runtime',
   ] as const),
 } as const);
 

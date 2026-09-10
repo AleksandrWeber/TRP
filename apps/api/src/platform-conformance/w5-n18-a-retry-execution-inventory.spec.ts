@@ -194,7 +194,7 @@ describe('W5-N18-a notification platform retry execution inventory — unit', ()
     ).toBeGreaterThanOrEqual(2);
   });
 
-  it('technical debt delta: inventory + durable persistence + restart recovery + operational continuity resolved; later slices deferred; nothing introduced', () => {
+  it('technical debt delta: inventory + durable persistence + restart recovery + operational continuity + Close Evidence resolved; FIV deferred; nothing introduced', () => {
     expect(W5_N18_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Retry Execution inventory baseline established',
     );
@@ -207,9 +207,16 @@ describe('W5-N18-a notification platform retry execution inventory — unit', ()
     expect(W5_N18_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'W5-N18-d — Operational Continuity Foundation',
     );
+    expect(W5_N18_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
+      'Notification Platform Retry Execution Package Close Evidence',
+    );
     expect(W5_N18_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N18_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N18-e — Package Validation, Operational Verification & Close Evidence',
+      'Final Package Integration Verification',
+      'Product Owner Final Close',
+      'Retry execution runtime',
+    ]);
+    expect(W5_N18_A_HONEST_PRODUCT_BASELINE.plannedCapabilities).toEqual([
       'Final Package Integration Verification',
     ]);
   });
