@@ -94,16 +94,18 @@ describe('W5-N18-a retry execution conformance — unit', () => {
     expect(W5_N18_A_ARCHITECTURE_CLAIMS.liveTradingClaimed).toBe(false);
   });
 
-  it('technical debt delta: inventory + durable persistence resolved; later slices deferred; nothing introduced', () => {
+  it('technical debt delta: inventory + durable persistence + restart recovery resolved; later slices deferred; nothing introduced', () => {
     expect(W5_N18_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Retry Execution inventory baseline established',
     );
     expect(W5_N18_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Durable Retry Execution persistence foundation',
     );
+    expect(W5_N18_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
+      'W5-N18-c — Restart Recovery Foundation',
+    );
     expect(W5_N18_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N18_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N18-c — Restart Recovery Foundation',
       'W5-N18-d — Operational Continuity Foundation',
       'W5-N18-e — Package Validation, Operational Verification & Close Evidence',
       'Final Package Integration Verification',

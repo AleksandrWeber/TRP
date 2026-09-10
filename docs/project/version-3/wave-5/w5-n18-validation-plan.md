@@ -3,7 +3,7 @@
 **Package:** W5-N18 Notification Platform Retry Execution Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N18 · CM-28
-**Status:** Planning **APPROVED** (2026-09-03). W5-N18-a inventory **COMPLETE** (2026-09-10). W5-N18-b durable persistence **COMPLETE** (2026-09-10) — awaiting PO Review. W5-N18-c…e not authorized / not opened.
+**Status:** Planning **APPROVED** (2026-09-03). W5-N18-a inventory **COMPLETE**. W5-N18-b durable persistence **COMPLETE**. W5-N18-c restart recovery **COMPLETE** (2026-09-10) — awaiting PO Review. W5-N18-d…e not authorized / not opened.
 **Date:** 2026-09-03
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n18-product-scope.md`](./w5-n18-product-scope.md)
@@ -227,15 +227,27 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## W5-N18-b slice validation (2026-09-10)
 
-| Layer                          | Result          | Evidence                                                    |
-| ------------------------------ | --------------- | ----------------------------------------------------------- |
-| Durable anchors persisted      | **PASS**        | workspace_notification_platform_retry_execution_anchors     |
-| Owner notification-delivery    | **PASS**        | No new persistence owner                                    |
-| Inventory SURVIVE/DURABLE sync | **PASS**        | persist + own-platform-retry-execution-persistence promoted |
-| Restart recovery claimed       | **Not claimed** | W5-N18-c                                                    |
-| Retry Execution functional     | **Not claimed** | No runtime                                                  |
-| Customer-visible               | **PASS**        | None — internal durable persistence only                    |
-| W5-N18-c opened                | **Not claimed** | Slice c not authorized                                      |
+| Layer                          | Result   | Evidence                                                    |
+| ------------------------------ | -------- | ----------------------------------------------------------- |
+| Durable anchors persisted      | **PASS** | workspace_notification_platform_retry_execution_anchors     |
+| Owner notification-delivery    | **PASS** | No new persistence owner                                    |
+| Inventory SURVIVE/DURABLE sync | **PASS** | persist + own-platform-retry-execution-persistence promoted |
+| Customer-visible               | **PASS** | None — internal durable persistence only                    |
+
+---
+
+## W5-N18-c slice validation (2026-09-10)
+
+| Layer                              | Result          | Evidence                                                 |
+| ---------------------------------- | --------------- | -------------------------------------------------------- |
+| Restart hydrate of durable anchors | **PASS**        | NotificationPlatformRetryExecutionRestartRecoveryService |
+| Deterministic / idempotent         | **PASS**        | prepare + sort + replaceAll                              |
+| Missing → empty (no fabrication)   | **PASS**        | conformance unit                                         |
+| Corrupt → fail honest              | **PASS**        | integrity gate                                           |
+| Operational continuity claimed     | **Not claimed** | W5-N18-d                                                 |
+| Retry Execution functional         | **Not claimed** | No runtime                                               |
+| Customer-visible                   | **PASS**        | None — internal restart recovery only                    |
+| W5-N18-d opened                    | **Not claimed** | Slice d not authorized                                   |
 
 ---
 
@@ -245,7 +257,7 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 - Platform retry execution foundation validation PASS at Close — **not claimed**
 - Notification Platform Retry Execution implemented — **not claimed**
 - Retry Execution implemented — **not claimed**
-- Restart recovery implemented — **not claimed**
+- Operational continuity implemented — **not claimed**
 - Successful delivery — **not claimed**
 - Provider acceptance — **not claimed**
 - Recipient receipt — **not claimed**
@@ -257,11 +269,12 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 - Production Ready — **not claimed**
 - Wave 5 COMPLETE — **not claimed**
 - W5-N18-a COMPLETE — **recorded** (2026-09-10) — inventory only
-- W5-N18-b COMPLETE — **recorded** (2026-09-10) — durable persistence only; awaiting PO Review
-- W5-N18-c opened — **not claimed**
+- W5-N18-b COMPLETE — **recorded** (2026-09-10) — durable persistence only
+- W5-N18-c COMPLETE — **recorded** (2026-09-10) — restart recovery only; awaiting PO Review
+- W5-N18-d opened — **not claimed**
 - W5-N18 Planning Review completed — **recorded** (PASS)
 - W5-N18 Planning APPROVED — **recorded**
 
 ---
 
-**STOP.** W5-N18-b Durable Retry Persistence Foundation is **COMPLETE** (implementation). Await Product Owner Review. Do not open W5-N18-c through W5-N18-e. Do not declare Retry Execution implemented. Do not declare restart recovery implemented. Do not declare Notification Platform COMPLETE. Do not declare Live Notifications. Do not declare Production Ready. Do not declare Wave 5 COMPLETE. Do not commit. Do not push.
+**STOP.** W5-N18-c Restart Recovery Foundation is **COMPLETE** (implementation). Await Product Owner Review. Do not open W5-N18-d through W5-N18-e. Do not declare Retry Execution implemented. Do not declare operational continuity implemented. Do not declare Notification Platform COMPLETE. Do not declare Live Notifications. Do not declare Production Ready. Do not declare Wave 5 COMPLETE. Do not commit. Do not push.

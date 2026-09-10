@@ -256,14 +256,12 @@ describe('W5-N18-b durable notification platform retry execution — integration
     }
   });
 
-  it('RestartRecoveryService was not added in this slice', () => {
-    expect(
-      existsSync(
-        join(
-          REPO_ROOT,
-          'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-execution-restart-recovery.service.ts',
-        ),
-      ),
-    ).toBe(false);
+  it('W5-N18-b architecture claims remain persistence-only (restart recovery is W5-N18-c)', () => {
+    expect(W5_N18_B_ARCHITECTURE_CLAIMS.restartRecoveryImplemented).toBe(false);
+    expect(W5_N18_B_ARCHITECTURE_CLAIMS.automaticRestartRecovery).toBe(false);
+    expect(W5_N18_B_ARCHITECTURE_CLAIMS.retryExecutionImplemented).toBe(false);
+    expect(W5_N18_B_EXPLICIT_OUT).toEqual(
+      expect.arrayContaining(['restart-recovery-implementation']),
+    );
   });
 });

@@ -64,8 +64,9 @@ Every row includes: unique identifier, existing owner, purpose, persistence clas
 - Per-channel W5-N01…N04 foundations exist and are **CLOSED** — consumed as reference patterns only.
 - PC-06 routing and PC-07 notification product are **implemented** — they decide routes and expose per-channel settings but do not constitute unified platform retry execution.
 - **W5-N18-b** durable retry execution eligibility/sequencing anchors **exist** on `notification-delivery` (`workspace_notification_platform_retry_execution_anchors`) — persistence only; no retry execution runtime.
-- **No** unified cross-channel platform retry execution layer, restart-safe retry planning, or retry execution operational continuity projection exists.
-- `unifiedPlatformRetryExecutionLayerMissing`: **true**; `retryExecutionEligibilityMissing`: **false**; `retryExecutionSequencingMissing`: **false**; `restartSafeRetryPlanningMissing`: **true** (W5-N18-c).
+- **W5-N18-c** restart recovery hydrate for durable retry execution anchors **exists** on `notification-delivery` — recovery only; no operational continuity product.
+- **No** unified cross-channel platform retry execution layer or retry execution operational continuity projection exists.
+- `unifiedPlatformRetryExecutionLayerMissing`: **true**; `retryExecutionEligibilityMissing`: **false**; `retryExecutionSequencingMissing`: **false**; `restartSafeRetryPlanningMissing`: **false** (W5-N18-c).
 - W3-O02 durable notification queue exists on `notification-delivery` owner — queue work survives restart; platform retry execution orchestration is still absent.
 - TD-049 / TD-050 production transport I/O remains deferred — not claimed from this inventory.
 
@@ -73,13 +74,13 @@ Every row includes: unique identifier, existing owner, purpose, persistence clas
 
 ## Honest Product baseline
 
-| Category                | Summary                                                                                                                                                                                                                                             |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Implemented today**   | None — no customer-visible Retry Execution functionality.                                                                                                                                                                                           |
-| **Infrastructure only** | Per-channel N01…N04 anchors; W5-N05…N12 foundations (consumed); W5-N13 retry (consumed); W5-N14…N16 (consumed); W5-N17 delivery reliability (consumed); W5-N18-b durable retry execution anchors; PC-06 routing; PC-07; durable queue; inventories. |
-| **Planned**             | W5-N18-c — Restart-Safe Retry Execution Planning Foundation.                                                                                                                                                                                        |
-| **Not implemented**     | Unified platform retry execution layer; restart-safe retry planning; retry execution operational continuity; operator retry execution UI; transport execution / provider runtimes; production transport I/O.                                        |
-| **Future roadmap**      | W5-N18-d…e; Wave 6 Live Trading; Wave 7 AI Gateway (out of W5-N18 scope).                                                                                                                                                                           |
+| Category                | Summary                                                                                                                                                                                                                                                                                |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Implemented today**   | None — no customer-visible Retry Execution functionality.                                                                                                                                                                                                                              |
+| **Infrastructure only** | Per-channel N01…N04 anchors; W5-N05…N12 foundations (consumed); W5-N13 retry (consumed); W5-N14…N16 (consumed); W5-N17 delivery reliability (consumed); W5-N18-b durable retry execution anchors; W5-N18-c restart recovery hydrate; PC-06 routing; PC-07; durable queue; inventories. |
+| **Planned**             | W5-N18-d — Retry Execution Operational Continuity Foundation.                                                                                                                                                                                                                          |
+| **Not implemented**     | Unified platform retry execution layer; retry execution operational continuity; operator retry execution UI; transport execution / provider runtimes; production transport I/O.                                                                                                        |
+| **Future roadmap**      | W5-N18-e; Wave 6 Live Trading; Wave 7 AI Gateway (out of W5-N18 scope).                                                                                                                                                                                                                |
 
 ---
 
@@ -101,7 +102,7 @@ Full row detail: `W5_N18_A_RETRY_EXECUTION_INVENTORY` and helpers `rowsSurvive()
 
 ## Retry Execution DURABLE/RECOVERABLE artifacts (summary)
 
-Notification Delivery ownership, PC-06 routing substrate, durable notification store, delivery queue, per-channel W5-N01…N04 anchors, W5-N05…N12 platform foundations (consumed), W5-N13 retry anchors/recovery/continuity (consumed), W5-N14…N16 foundations (consumed), W5-N17 delivery reliability anchors/recovery/continuity (consumed), W5-N18-b durable retry execution anchors (`persist-notification-platform-retry-execution-anchor`, `own-platform-retry-execution-persistence`), workspace isolation consumption, channel catalog, and verified ownership rows on existing owners.
+Notification Delivery ownership, PC-06 routing substrate, durable notification store, delivery queue, per-channel W5-N01…N04 anchors, W5-N05…N12 platform foundations (consumed), W5-N13 retry anchors/recovery/continuity (consumed), W5-N14…N16 foundations (consumed), W5-N17 delivery reliability anchors/recovery/continuity (consumed), W5-N18-b durable retry execution anchors (`persist-notification-platform-retry-execution-anchor`, `own-platform-retry-execution-persistence`), W5-N18-c restart recovery (`missing-restart-safe-retry-planning`), workspace isolation consumption, channel catalog, and verified ownership rows on existing owners.
 
 See `rowsNotificationPlatformRetryExecutionSurvive()` for the full machine-readable list.
 
@@ -109,7 +110,7 @@ See `rowsNotificationPlatformRetryExecutionSurvive()` for the full machine-reada
 
 ## Retry Execution EPHEMERAL artifacts (summary)
 
-Missing unified platform retry execution layer, missing restart-safe retry planning (planned W5-N18-c), missing retry execution operational continuity, missing operator retry execution UI, missing transport execution, and honesty blockers.
+Missing unified platform retry execution layer, missing retry execution operational continuity (planned W5-N18-d), missing operator retry execution UI, missing transport execution, and honesty blockers.
 
 See `rowsNotificationPlatformRetryExecutionEphemeral()` for the full machine-readable list.
 

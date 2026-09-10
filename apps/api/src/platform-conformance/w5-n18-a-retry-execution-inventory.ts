@@ -308,7 +308,7 @@ export const W5_N18_A_RETRY_EXECUTION_INVENTORY: readonly W5N18AInventoryRow[] =
       'Implemented — workspace_notification_platform_retry_execution_anchors on notification-delivery owner',
     honestyRequirement:
       'Retry execution persistence on notification-delivery owner only; not a new persistence owner',
-    futureW5N18Responsibility: 'W5-N18-c' as const,
+    futureW5N18Responsibility: 'W5-N18-d' as const,
     evidencePath:
       'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-retry-execution-anchor.repository.ts',
     existsToday: true as const,
@@ -1009,7 +1009,7 @@ export const W5_N18_A_RETRY_EXECUTION_INVENTORY: readonly W5N18AInventoryRow[] =
     currentStatus:
       'Resolved as durable anchor persistence (W5-N18-b); eligibility evaluation not executed',
     honestyRequirement: 'Does not authorize retry execution functional from slice a',
-    futureW5N18Responsibility: 'W5-N18-c' as const,
+    futureW5N18Responsibility: 'W5-N18-d' as const,
     evidencePath:
       'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-retry-execution-anchor.repository.ts',
     existsToday: true as const,
@@ -1033,7 +1033,7 @@ export const W5_N18_A_RETRY_EXECUTION_INVENTORY: readonly W5N18AInventoryRow[] =
     currentStatus:
       'Resolved as durable anchor persistence (W5-N18-b); sequencing evaluation not executed',
     honestyRequirement: 'Does not authorize retry execution functional from slice a',
-    futureW5N18Responsibility: 'W5-N18-c' as const,
+    futureW5N18Responsibility: 'W5-N18-d' as const,
     evidencePath:
       'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-retry-execution-anchor.repository.ts',
     existsToday: true as const,
@@ -1050,22 +1050,25 @@ export const W5_N18_A_RETRY_EXECUTION_INVENTORY: readonly W5N18AInventoryRow[] =
     authorizesW5N18Complete: false as const,
     artifactId: 'missing-restart-safe-retry-planning',
     artifact: 'Missing restart-safe retry execution planning',
-    kind: 'ephemeral-artifact' as const,
+    kind: 'runtime' as const,
     owner: 'notification-delivery' as const,
-    durabilityClass: 'EPHEMERAL' as const,
-    capabilityCategory: 'planned' as const,
-    currentStatus: 'Not implemented — inventory only; deferred to later W5-N18 slices',
-    honestyRequirement: 'Does not authorize retry execution functional from slice a',
-    futureW5N18Responsibility: 'W5-N18-c' as const,
-    evidencePath: 'docs/project/version-3/wave-5/w5-n18-implementation-package.md',
-    existsToday: false as const,
-    persistenceResponsibility: 'none-missing' as const,
-    recoveryResponsibility: 'w5-n18-c' as const,
+    durabilityClass: 'SURVIVE' as const,
+    capabilityCategory: 'infrastructure-only' as const,
+    currentStatus:
+      'Implemented — NotificationPlatformRetryExecutionRestartRecoveryService hydrates W5-N18-b anchors on module init',
+    honestyRequirement:
+      'Restart recovery restores canonical retry execution anchors only; operational continuity is W5-N18-d',
+    futureW5N18Responsibility: 'W5-N18-d' as const,
+    evidencePath:
+      'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-execution-restart-recovery.service.ts',
+    existsToday: true as const,
+    persistenceResponsibility: 'notification-delivery' as const,
+    recoveryResponsibility: 'notification-delivery' as const,
     operationalContinuityResponsibility: 'none-missing' as const,
-    honestProductState: 'planned' as const,
-    retryClassification: 'EPHEMERAL' as const,
-    operationalVisibility: 'internal-only',
-    customerVisibility: 'not customer-visible — planned',
+    honestProductState: 'infrastructure-only' as const,
+    retryClassification: 'RECOVERABLE' as const,
+    operationalVisibility: 'internal-only — restart recovery hydrate',
+    customerVisibility: 'not customer-visible — infrastructure only',
   }),
   Object.freeze({
     authorizesRetryExecutionFunctional: false as const,
@@ -1075,7 +1078,7 @@ export const W5_N18_A_RETRY_EXECUTION_INVENTORY: readonly W5N18AInventoryRow[] =
     kind: 'ephemeral-artifact' as const,
     owner: 'notification-delivery' as const,
     durabilityClass: 'EPHEMERAL' as const,
-    capabilityCategory: 'not-implemented' as const,
+    capabilityCategory: 'planned' as const,
     currentStatus: 'Not implemented — inventory only; deferred to later W5-N18 slices',
     honestyRequirement: 'Does not authorize retry execution functional from slice a',
     futureW5N18Responsibility: 'W5-N18-d' as const,
@@ -1084,10 +1087,10 @@ export const W5_N18_A_RETRY_EXECUTION_INVENTORY: readonly W5N18AInventoryRow[] =
     persistenceResponsibility: 'none-missing' as const,
     recoveryResponsibility: 'none-missing' as const,
     operationalContinuityResponsibility: 'w5-n18-d' as const,
-    honestProductState: 'not-implemented' as const,
+    honestProductState: 'planned' as const,
     retryClassification: 'EPHEMERAL' as const,
     operationalVisibility: 'internal-only',
-    customerVisibility: 'not customer-visible — not implemented',
+    customerVisibility: 'not customer-visible — planned',
   }),
   Object.freeze({
     authorizesRetryExecutionFunctional: false as const,
@@ -1124,7 +1127,7 @@ export const W5_N18_A_RETRY_EXECUTION_INVENTORY: readonly W5N18AInventoryRow[] =
     currentStatus:
       'Implemented — workspace_notification_platform_retry_execution_anchors; anchor-recorded only; no retry execution runtime',
     honestyRequirement: 'Does not authorize retry execution functional from slice a',
-    futureW5N18Responsibility: 'W5-N18-c' as const,
+    futureW5N18Responsibility: 'W5-N18-d' as const,
     evidencePath:
       'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-retry-execution-anchor.repository.ts',
     existsToday: true as const,
@@ -1902,7 +1905,7 @@ export const W5_N18_A_BINDING_FINDINGS = Object.freeze({
   unifiedPlatformRetryExecutionLayerMissing: true,
   retryExecutionEligibilityMissing: false,
   retryExecutionSequencingMissing: false,
-  restartSafeRetryPlanningMissing: true,
+  restartSafeRetryPlanningMissing: false,
   retryExecutionOperationalContinuityMissing: true,
   productionTransportsDeferred: true,
   ownershipBoundariesVerified: true,
@@ -1983,6 +1986,7 @@ export const W5_N18_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N14 dead-letter / W5-N15 telemetry / W5-N16 metrics foundations (consumed)',
     'W5-N17 delivery reliability anchors, recovery, and continuity (consumed)',
     'W5-N18-b durable retry execution anchors on notification-delivery owner',
+    'W5-N18-c restart recovery hydrate for retry execution anchors on notification-delivery owner',
     'PC-06 resolve-delivery-routing — routing SoT consumed unchanged',
     'PC-07 notification-product — per-channel settings and history',
     'Notification Durable Queue — W3-O02 on notification-delivery owner (consumed)',
@@ -1990,11 +1994,10 @@ export const W5_N18_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
   plannedCapabilities: Object.freeze([
-    'W5-N18-c — Restart-Safe Retry Execution Planning Foundation',
+    'W5-N18-d — Retry Execution Operational Continuity Foundation',
   ] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform retry execution layer',
-    'Restart-safe retry execution planning',
     'Retry execution operational continuity projection',
     'Operator retry execution UI',
     'Transport execution / provider runtimes',
@@ -2002,7 +2005,6 @@ export const W5_N18_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Notification Platform Complete',
   ] as const),
   futureRoadmapCapabilities: Object.freeze([
-    'W5-N18-d — Retry Execution Operational Continuity Foundation',
     'W5-N18-e — Package Close Evidence',
     'Wave 6 — Live Trading (LT-02)',
     'Wave 7 — Anthropic / AI Gateway (out of W5-N18 scope)',
@@ -2013,10 +2015,10 @@ export const W5_N18_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze([
     'Retry Execution inventory baseline established',
     'Durable Retry Execution persistence foundation',
+    'W5-N18-c — Restart Recovery Foundation',
   ] as const),
   introduced: Object.freeze([] as const),
   deferred: Object.freeze([
-    'W5-N18-c — Restart Recovery Foundation',
     'W5-N18-d — Operational Continuity Foundation',
     'W5-N18-e — Package Validation, Operational Verification & Close Evidence',
     'Final Package Integration Verification',
