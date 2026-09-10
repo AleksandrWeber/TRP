@@ -3,7 +3,7 @@
 **Package:** W5-N19 Notification Retry Scheduling Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N19 · CM-29
-**Status:** Planning **APPROVED** (2026-09-10). W5-N19-a inventory **COMPLETE** (local). W5-N19-b durable persistence **COMPLETE** (local). W5-N19-c…e not authorized. Not runtime implementation.
+**Status:** Planning **APPROVED** (2026-09-10). W5-N19-a inventory **COMPLETE** (local). W5-N19-b durable persistence **COMPLETE** (local). W5-N19-c restart recovery **COMPLETE** (local). W5-N19-d…e not authorized. Not runtime implementation.
 **Date:** 2026-09-10
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n19-product-scope.md`](./w5-n19-product-scope.md)
@@ -237,6 +237,17 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Customer-visible         | **PASS** | None — internal durable persistence only                 |
 | Restart recovery claimed | **PASS** | Not claimed — W5-N19-c                                   |
 
+## W5-N19-c slice validation (2026-09-10)
+
+| Layer                      | Result   | Evidence                                                  |
+| -------------------------- | -------- | --------------------------------------------------------- |
+| W5-N19-c restart hydrate   | **PASS** | NotificationPlatformRetrySchedulingRestartRecoveryService |
+| Deterministic / idempotent | **PASS** | ordered hydrate; repeated hydrate equal                   |
+| Integrity gate             | **PASS** | corrupt → fail honest; missing → empty                    |
+| Ownership verified         | **PASS** | notification-delivery only; no second recovery engine     |
+| Customer-visible           | **PASS** | None — internal restart recovery only                     |
+| Operational continuity     | **PASS** | Not claimed — W5-N19-d                                    |
+
 ## Explicit non-claims
 
 - W5-N19 Closed — **not claimed**
@@ -256,9 +267,10 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 - Wave 5 COMPLETE — **not claimed**
 - W5-N19-a COMPLETE — **recorded** (local, 2026-09-10) — inventory only
 - W5-N19-b COMPLETE — **recorded** (local, 2026-09-10) — durable persistence only
+- W5-N19-c COMPLETE — **recorded** (local, 2026-09-10) — restart recovery only
 - W5-N19 Planning Review completed — **recorded** (PASS)
 - W5-N19 Planning APPROVED — **recorded**
 
 ---
 
-**STOP.** W5-N19-b durable retry scheduling persistence foundation is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N19-c. Do NOT declare Retry Scheduling implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE.
+**STOP.** W5-N19-c restart recovery foundation is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N19-d. Do NOT declare Retry Scheduling implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE.

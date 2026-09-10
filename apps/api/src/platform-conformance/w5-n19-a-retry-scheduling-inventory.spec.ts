@@ -123,7 +123,7 @@ describe('W5-N19-a notification retry scheduling inventory — unit', () => {
     expect(W5_N19_A_BINDING_FINDINGS.w5N12SchedulerFoundationExists).toBe(true);
     expect(W5_N19_A_BINDING_FINDINGS.unifiedPlatformRetrySchedulingLayerMissing).toBe(true);
     expect(W5_N19_A_BINDING_FINDINGS.retrySchedulingPersistenceMissing).toBe(false);
-    expect(W5_N19_A_BINDING_FINDINGS.retrySchedulingRecoveryMissing).toBe(true);
+    expect(W5_N19_A_BINDING_FINDINGS.retrySchedulingRecoveryMissing).toBe(false);
     expect(W5_N19_A_BINDING_FINDINGS.retrySchedulingOperationalContinuityMissing).toBe(true);
     expect(W5_N19_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
   });
@@ -184,15 +184,18 @@ describe('W5-N19-a notification retry scheduling inventory — unit', () => {
     ).toBeGreaterThanOrEqual(2);
   });
 
-  it('technical debt delta: inventory and durable persistence resolved; c–e deferred; nothing introduced', () => {
+  it('technical debt delta: inventory, durable persistence, and restart recovery resolved; d–e deferred; nothing introduced', () => {
     expect(W5_N19_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Retry Scheduling inventory baseline established',
     );
     expect(W5_N19_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Durable Retry Scheduling persistence foundation',
     );
+    expect(W5_N19_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
+      'Retry Scheduling restart recovery foundation',
+    );
     expect(W5_N19_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N19_A_TECHNICAL_DEBT_DELTA.deferred).toEqual(['W5-N19-c', 'W5-N19-d', 'W5-N19-e']);
+    expect(W5_N19_A_TECHNICAL_DEBT_DELTA.deferred).toEqual(['W5-N19-d', 'W5-N19-e']);
   });
 });
 

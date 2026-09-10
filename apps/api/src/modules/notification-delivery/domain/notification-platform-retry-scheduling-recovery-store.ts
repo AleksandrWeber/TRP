@@ -1,28 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import type { DurableNotificationPlatformRetrySchedulingAnchor } from './durable-notification-platform-retry-scheduling-anchor';
+import { sortNotificationPlatformRetrySchedulingAnchorsDeterministically } from './notification-platform-retry-scheduling-restart-recovery';
 
 function compositeKey(workspaceId: string, retrySchedulingAnchorId: string): string {
   return `${workspaceId}:${retrySchedulingAnchorId}`;
 }
 
-function sortNotificationPlatformRetrySchedulingAnchorsDeterministically(
-  anchors: readonly DurableNotificationPlatformRetrySchedulingAnchor[],
-): readonly DurableNotificationPlatformRetrySchedulingAnchor[] {
-  return Object.freeze(
-    [...anchors].sort((a, b) => {
-      const workspaceCompare = a.workspaceId.localeCompare(b.workspaceId);
-      if (workspaceCompare !== 0) {
-        return workspaceCompare;
-      }
-      return a.retrySchedulingAnchorId.localeCompare(b.retrySchedulingAnchorId);
-    }),
-  );
-}
-
 /**
- * In-memory runtime cache for recovered Notification Platform Retry Scheduling anchors.
- * Write-through prep in W5-N19-b. Hydrate/replaceAll on restart is W5-N19-c.
- * Not a second Source of Truth — durable SoT remains Prisma persistence.
+ * In-memory runtime cache for recovered Notification Platform Retry Scheduling anchors (W5-N19-c).
+ * Not a second Source of Truth — hydrated from W5-N19-b persistence on restart.
  */
 @Injectable()
 export class NotificationPlatformRetrySchedulingRecoveryStore {
