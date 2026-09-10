@@ -175,7 +175,7 @@ describe('W5-N19-a notification retry scheduling inventory — unit', () => {
     expect(
       W5_N19_A_HONEST_PRODUCT_BASELINE.infrastructureCapabilities.length,
     ).toBeGreaterThanOrEqual(8);
-    expect(W5_N19_A_HONEST_PRODUCT_BASELINE.plannedCapabilities.length).toBeGreaterThanOrEqual(3);
+    expect(W5_N19_A_HONEST_PRODUCT_BASELINE.plannedCapabilities.length).toBeGreaterThanOrEqual(1);
     expect(
       W5_N19_A_HONEST_PRODUCT_BASELINE.notYetImplementedCapabilities.length,
     ).toBeGreaterThanOrEqual(5);
@@ -184,7 +184,7 @@ describe('W5-N19-a notification retry scheduling inventory — unit', () => {
     ).toBeGreaterThanOrEqual(2);
   });
 
-  it('technical debt delta: inventory, durable persistence, restart recovery, and operational continuity resolved; e deferred; nothing introduced', () => {
+  it('technical debt delta: inventory through close evidence resolved; FIV/PO Close/runtime deferred; nothing introduced', () => {
     expect(W5_N19_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Retry Scheduling inventory baseline established',
     );
@@ -197,8 +197,15 @@ describe('W5-N19-a notification retry scheduling inventory — unit', () => {
     expect(W5_N19_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Retry Scheduling Operational Continuity Foundation',
     );
+    expect(W5_N19_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
+      'Notification Retry Scheduling Package Close Evidence',
+    );
     expect(W5_N19_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N19_A_TECHNICAL_DEBT_DELTA.deferred).toEqual(['W5-N19-e']);
+    expect(W5_N19_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
+      'Final Package Integration Verification',
+      'Product Owner Final Close',
+      'Retry scheduling runtime',
+    ]);
   });
 });
 

@@ -1346,15 +1346,17 @@ export const W5_N19_A_RETRY_SCHEDULING_INVENTORY: readonly W5N19AInventoryRow[] 
     authorizesRetrySchedulingFunctional: false as const,
     authorizesW5N19Complete: false as const,
     artifactId: 'out-w5-n19-e-close-evidence',
-    artifact: 'W5-N19-e Close Evidence — deferred',
+    artifact: 'W5-N19-e Close Evidence — assembled (not authorizing Complete)',
     kind: 'explicit-out' as const,
     owner: 'wave-5-documentation' as const,
     durabilityClass: 'EPHEMERAL' as const,
     capabilityCategory: 'planned' as const,
-    currentStatus: 'Explicit OUT — must not authorize from W5-N19-a',
-    honestyRequirement: 'W5-N19-e Close Evidence — deferred',
+    currentStatus:
+      'Explicit OUT from slice a alone — Close Evidence assembled in W5-N19-e; does not authorize W5-N19 CLOSED',
+    honestyRequirement:
+      'W5-N19-e Close Evidence assembled; Final Package Integration Verification still deferred',
     futureW5N19Responsibility: 'W5-N19-e' as const,
-    evidencePath: 'docs/project/version-3/wave-5/w5-n19-product-scope.md',
+    evidencePath: 'docs/project/version-3/wave-5/w5-n19-e-implementation-report.md',
     existsToday: false as const,
     persistenceResponsibility: 'not-applicable' as const,
     recoveryResponsibility: 'not-applicable' as const,
@@ -1797,11 +1799,7 @@ export const W5_N19_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N01…N18-a machine inventories — foundation reference patterns',
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
-  plannedCapabilities: Object.freeze([
-    'W5-N19-e — Package Close Evidence',
-    'Operator retry scheduling honesty surfaces (when authorized)',
-    'Unified cross-channel retry scheduling honesty projection (when authorized)',
-  ] as const),
+  plannedCapabilities: Object.freeze(['Final Package Integration Verification'] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform retry scheduling layer',
     'Operator retry scheduling UI',
@@ -1822,9 +1820,14 @@ export const W5_N19_A_TECHNICAL_DEBT_DELTA = Object.freeze({
     'Durable Retry Scheduling persistence foundation',
     'Retry Scheduling restart recovery foundation',
     'Retry Scheduling Operational Continuity Foundation',
+    'Notification Retry Scheduling Package Close Evidence',
   ] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['W5-N19-e'] as const),
+  deferred: Object.freeze([
+    'Final Package Integration Verification',
+    'Product Owner Final Close',
+    'Retry scheduling runtime',
+  ] as const),
 } as const);
 
 export function artifactIds(): readonly string[] {

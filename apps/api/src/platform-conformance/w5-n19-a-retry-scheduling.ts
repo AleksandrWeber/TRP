@@ -84,7 +84,7 @@ export function verifyHonestProductBaseline(): Readonly<{
     implemented.length === 1 && implemented[0]?.includes('None') === true;
   const infrastructureDocumented =
     W5_N19_A_HONEST_PRODUCT_BASELINE.infrastructureCapabilities.length >= 8;
-  const plannedExplicit = W5_N19_A_HONEST_PRODUCT_BASELINE.plannedCapabilities.length >= 3;
+  const plannedExplicit = W5_N19_A_HONEST_PRODUCT_BASELINE.plannedCapabilities.length >= 1;
   const notImplementedExplicit =
     W5_N19_A_HONEST_PRODUCT_BASELINE.notYetImplementedCapabilities.length >= 5;
   const retrySchedulingNotAuthorized =
