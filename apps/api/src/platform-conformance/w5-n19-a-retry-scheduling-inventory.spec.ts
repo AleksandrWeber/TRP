@@ -184,7 +184,7 @@ describe('W5-N19-a notification retry scheduling inventory — unit', () => {
     ).toBeGreaterThanOrEqual(2);
   });
 
-  it('technical debt delta: inventory through close evidence resolved; FIV/PO Close/runtime deferred; nothing introduced', () => {
+  it('technical debt delta: inventory through official close resolved; runtime/remaining Wave 5 deferred; nothing introduced', () => {
     expect(W5_N19_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Retry Scheduling inventory baseline established',
     );
@@ -200,11 +200,14 @@ describe('W5-N19-a notification retry scheduling inventory — unit', () => {
     expect(W5_N19_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Notification Retry Scheduling Package Close Evidence',
     );
+    expect(W5_N19_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
+      'Final Package Integration Verification',
+    );
+    expect(W5_N19_A_TECHNICAL_DEBT_DELTA.resolved).toContain('W5-N19 officially closed');
     expect(W5_N19_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N19_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'Final Package Integration Verification',
-      'Product Owner Final Close',
       'Retry scheduling runtime',
+      'Remaining Wave 5 packages',
     ]);
   });
 });
