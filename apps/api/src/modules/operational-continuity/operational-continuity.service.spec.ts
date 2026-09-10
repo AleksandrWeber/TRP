@@ -141,6 +141,13 @@ import {
   resetNotificationPlatformRetryExecutionContinuity,
 } from '../notification-delivery/domain/notification-platform-retry-execution-continuity-status';
 import { buildNotificationPlatformRetryExecutionRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-retry-execution-restart-recovery';
+import { buildNotificationPlatformRetrySchedulingAnchorState } from '../notification-delivery/domain/durable-notification-platform-retry-scheduling-anchor';
+import {
+  recordNotificationPlatformRetrySchedulingRecoveryStart,
+  recordNotificationPlatformRetrySchedulingRecoverySuccess,
+  resetNotificationPlatformRetrySchedulingContinuity,
+} from '../notification-delivery/domain/notification-platform-retry-scheduling-continuity-status';
+import { buildNotificationPlatformRetrySchedulingRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-retry-scheduling-restart-recovery';
 
 describe('OperationalContinuityService', () => {
   beforeEach(() => {
@@ -1082,6 +1089,50 @@ describe('OperationalContinuityService', () => {
 
     expect(projection.notificationPlatformRetryExecution?.operationalState).toBe('Ready');
     expect(projection.notificationPlatformRetryExecution?.canonicalAnchorCount).toBe(1);
+    expect(projection.platformState).toBe('Ready');
+  });
+
+  it('includes notification platform retry scheduling continuity derived from W5-N19-c recovery record', async () => {
+    resetNotificationPlatformRetrySchedulingContinuity();
+    const anchor = buildNotificationPlatformRetrySchedulingAnchorState({
+      workspaceId: 'ws-1',
+      retrySchedulingAnchorId: 'retry-scheduling-1',
+      platformRetrySchedulingType: 'eligibility-timing-foundation',
+      correlationId: 'corr-1',
+      actorId: 'actor-1',
+      recordedAt: '2026-09-10T21:30:00.000Z',
+      prior: null,
+    });
+    if (!anchor.ok) throw new Error('expected anchor');
+    recordNotificationPlatformRetrySchedulingRecoveryStart();
+    recordNotificationPlatformRetrySchedulingRecoverySuccess({
+      diagnostics: buildNotificationPlatformRetrySchedulingRecoveryDiagnostics([anchor.anchor]),
+    });
+
+    const audit = {
+      recordOwnerState: vi.fn(async () => undefined),
+      recordRecoveryCompleted: vi.fn(async () => undefined),
+    } as unknown as OperationalContinuityAudit;
+    const service = new OperationalContinuityService(audit);
+    const projection = await service.applyBootOutcomesForTest(
+      (
+        [
+          'strategy-library',
+          'exchange-scope',
+          'knowledge-lake',
+          'market-profile',
+          'market-qualification',
+          'market-state',
+          'reporting',
+          'notification-delivery',
+          'trading-orchestrator',
+          'runtime-enforcement',
+        ] as const
+      ).map((owner) => ({ owner, outcome: 'ready' as const })),
+    );
+
+    expect(projection.notificationPlatformRetryScheduling?.operationalState).toBe('Ready');
+    expect(projection.notificationPlatformRetryScheduling?.canonicalAnchorCount).toBe(1);
     expect(projection.platformState).toBe('Ready');
   });
 });

@@ -76,6 +76,8 @@ import { getNotificationPlatformReliabilityContinuityRecord } from '../notificat
 import { buildNotificationPlatformReliabilityContinuityProjection } from '../notification-delivery/domain/notification-platform-reliability-operational-continuity';
 import { getNotificationPlatformRetryExecutionContinuityRecord } from '../notification-delivery/domain/notification-platform-retry-execution-continuity-status';
 import { buildNotificationPlatformRetryExecutionContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-execution-operational-continuity';
+import { getNotificationPlatformRetrySchedulingContinuityRecord } from '../notification-delivery/domain/notification-platform-retry-scheduling-continuity-status';
+import { buildNotificationPlatformRetrySchedulingContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-scheduling-operational-continuity';
 import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
 import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
 import { getMonitoringHealthContinuityRecord } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
@@ -242,6 +244,12 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       }),
       notificationPlatformRetryExecution:
         buildNotificationPlatformRetryExecutionContinuityProjection({
+          recovering: true,
+          ownerReadiness: 'ready',
+          continuity: null,
+        }),
+      notificationPlatformRetryScheduling:
+        buildNotificationPlatformRetrySchedulingContinuityProjection({
           recovering: true,
           ownerReadiness: 'ready',
           continuity: null,
@@ -582,6 +590,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildNotificationPlatformRetrySchedulingView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getNotificationPlatformRetrySchedulingContinuityRecord();
+    return buildNotificationPlatformRetrySchedulingContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -721,6 +741,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       notificationPlatformRetryExecution: this.buildNotificationPlatformRetryExecutionView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      notificationPlatformRetryScheduling: this.buildNotificationPlatformRetrySchedulingView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -1146,6 +1170,24 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           ? null
           : recoveryDurationMs),
     });
+    const notificationPlatformRetrySchedulingBase =
+      this.buildNotificationPlatformRetrySchedulingView({
+        recovering: false,
+        ownerReadiness: 'ready',
+      });
+    const notificationPlatformRetryScheduling = Object.freeze({
+      ...notificationPlatformRetrySchedulingBase,
+      recoveryTimestamp:
+        notificationPlatformRetrySchedulingBase.recoveryTimestamp ??
+        (notificationPlatformRetrySchedulingBase.operationalState === 'Recovering'
+          ? null
+          : recoveryTimestamp),
+      recoveryDurationMs:
+        notificationPlatformRetrySchedulingBase.recoveryDurationMs ??
+        (notificationPlatformRetrySchedulingBase.operationalState === 'Recovering'
+          ? null
+          : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -1176,6 +1218,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       notificationPlatformMetrics,
       notificationPlatformReliability,
       notificationPlatformRetryExecution,
+      notificationPlatformRetryScheduling,
     });
     this.finalized = true;
 

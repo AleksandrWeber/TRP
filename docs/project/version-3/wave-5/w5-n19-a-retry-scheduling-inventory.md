@@ -4,7 +4,7 @@
 **Package:** W5-N19 Notification Retry Scheduling Foundation (V3-N19 · CM-29)  
 **Wave:** 5 — Notification Platform  
 **Date:** 2026-09-10  
-**Nature:** Discovery and classification inventory. Synced by W5-N19-b for durable persistence promotion. Not Retry Scheduling runtime. Not retry execution. Not scheduler execution.
+**Nature:** Discovery and classification inventory. Synced by W5-N19-b for durable persistence promotion; W5-N19-c for restart recovery; W5-N19-d for operational continuity. Not Retry Scheduling runtime. Not retry execution. Not scheduler execution.
 **Machine inventory:** `apps/api/src/platform-conformance/w5-n19-a-retry-scheduling-inventory.ts`  
 **Conformance:** `apps/api/src/platform-conformance/w5-n19-a-retry-scheduling.ts`
 
@@ -21,7 +21,7 @@ Customer-visible functionality from this slice: None.
 
 ## Purpose
 
-Enumerate every Notification Retry Scheduling artifact on the existing `notification-delivery` owner: Closed W5-N01…N18 foundations (including W5-N12 scheduler foundation and W5-N18 retry execution consumption), PC-06 routing, PC-07 catalog, W3-O02 durable queue substrate, missing unified platform retry scheduling runtime layer, durable scheduling persistence (W5-N19-b — resolved), restart-safe scheduling recovery (W5-N19-c — resolved), missing scheduling operational continuity (W5-N19-d), deferred runtime / transport / policies, ownership, persistence/recovery/continuity responsibility, operational visibility, customer visibility, and Honest Product boundaries.
+Enumerate every Notification Retry Scheduling artifact on the existing `notification-delivery` owner: Closed W5-N01…N18 foundations (including W5-N12 scheduler foundation and W5-N18 retry execution consumption), PC-06 routing, PC-07 catalog, W3-O02 durable queue substrate, missing unified platform retry scheduling runtime layer, durable scheduling persistence (W5-N19-b — resolved), restart-safe scheduling recovery (W5-N19-c — resolved), scheduling operational continuity (W5-N19-d — resolved), deferred runtime / transport / policies, ownership, persistence/recovery/continuity responsibility, operational visibility, customer visibility, and Honest Product boundaries.
 
 Classify each artifact as exactly one of:
 
@@ -54,20 +54,20 @@ Every row includes: unique identifier, existing owner, purpose, persistence clas
 
 - Closed W5-N01…N18 foundations exist — consumed as reference patterns only. W5-N12 scheduler foundation and W5-N18 retry execution are consumed — not redesigned.
 - **No** unified cross-channel platform retry scheduling runtime layer exists (`unifiedPlatformRetrySchedulingLayerMissing`: **true**).
-- `retrySchedulingPersistenceMissing`: **false** (resolved by W5-N19-b); `retrySchedulingRecoveryMissing`: **false** (resolved by W5-N19-c); `retrySchedulingOperationalContinuityMissing`: **true**.
+- `retrySchedulingPersistenceMissing`: **false** (resolved by W5-N19-b); `retrySchedulingRecoveryMissing`: **false** (resolved by W5-N19-c); `retrySchedulingOperationalContinuityMissing`: **false** (resolved by W5-N19-d).
 - TD-049 / TD-050 production transport I/O remains deferred — not claimed from this inventory.
 
 ---
 
 ## Honest Product baseline
 
-| Category                | Summary                                                                                                                                                                                                                     |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Implemented today**   | None — no customer-visible Retry Scheduling functionality.                                                                                                                                                                  |
-| **Infrastructure only** | Per-channel N01…N04 anchors; W5-N05…N17 foundations (consumed); W5-N12 scheduler (consumed); W5-N18 retry execution (consumed); W5-N19-b durable scheduling anchors; W5-N19-c restart hydrate; PC-06; PC-07; durable queue. |
-| **Planned**             | W5-N19-d continuity; W5-N19-e Close Evidence; operator honesty surfaces (when authorized).                                                                                                                                  |
-| **Not implemented**     | Unified retry scheduling runtime layer; continuity; operator UI; scheduling runtime; transport I/O.                                                                                                                         |
-| **Future roadmap**      | Wave 6 Live Trading; Wave 7 AI Gateway (out of W5-N19 scope).                                                                                                                                                               |
+| Category                | Summary                                                                                                                                                                                                                                                                |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Implemented today**   | None — no customer-visible Retry Scheduling functionality from inventory alone. Operator readiness via Platform Readiness is W5-N19-d (continuity only).                                                                                                               |
+| **Infrastructure only** | Per-channel N01…N04 anchors; W5-N05…N17 foundations (consumed); W5-N12 scheduler (consumed); W5-N18 retry execution (consumed); W5-N19-b durable scheduling anchors; W5-N19-c restart hydrate; W5-N19-d continuity on Platform Readiness; PC-06; PC-07; durable queue. |
+| **Planned**             | W5-N19-e Close Evidence; operator honesty surfaces (when authorized).                                                                                                                                                                                                  |
+| **Not implemented**     | Unified retry scheduling runtime layer; operator UI; scheduling runtime; transport I/O.                                                                                                                                                                                |
+| **Future roadmap**      | Wave 6 Live Trading; Wave 7 AI Gateway (out of W5-N19 scope).                                                                                                                                                                                                          |
 
 ---
 
@@ -96,4 +96,4 @@ Full row detail: `W5_N19_A_RETRY_SCHEDULING_INVENTORY`.
 
 ---
 
-**STOP.** Inventory remains the W5-N19-a classification baseline; W5-N19-b synchronized durable persistence; W5-N19-c synchronized restart recovery. Await Product Owner Review before W5-N19-d. Do not declare Retry Scheduling implemented.
+**STOP.** Inventory remains the W5-N19-a classification baseline; W5-N19-b synchronized durable persistence; W5-N19-c synchronized restart recovery; W5-N19-d synchronized operational continuity. Await Product Owner Review before W5-N19-e. Do not declare Retry Scheduling implemented.

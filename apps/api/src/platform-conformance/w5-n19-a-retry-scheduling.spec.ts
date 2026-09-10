@@ -94,7 +94,7 @@ describe('W5-N19-a retry scheduling conformance — unit', () => {
     expect(W5_N19_A_ARCHITECTURE_CLAIMS.liveTradingClaimed).toBe(false);
   });
 
-  it('technical debt delta: inventory, durable persistence, and restart recovery resolved; d–e deferred; nothing introduced', () => {
+  it('technical debt delta: inventory, durable persistence, restart recovery, and operational continuity resolved; e deferred; nothing introduced', () => {
     expect(W5_N19_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Retry Scheduling inventory baseline established',
     );
@@ -104,8 +104,11 @@ describe('W5-N19-a retry scheduling conformance — unit', () => {
     expect(W5_N19_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Retry Scheduling restart recovery foundation',
     );
+    expect(W5_N19_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
+      'Retry Scheduling Operational Continuity Foundation',
+    );
     expect(W5_N19_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N19_A_TECHNICAL_DEBT_DELTA.deferred).toEqual(['W5-N19-d', 'W5-N19-e']);
+    expect(W5_N19_A_TECHNICAL_DEBT_DELTA.deferred).toEqual(['W5-N19-e']);
   });
 
   it('diagnostics roll-up passes for slice a scope', () => {
