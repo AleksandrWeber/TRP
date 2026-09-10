@@ -2111,3 +2111,20 @@ model WorkspaceNotificationPlatformReliabilityAnchor {
   @@id([workspaceId, reliabilityAnchorId])
   @@map("workspace_notification_platform_reliability_anchors")
 }
+
+model WorkspaceNotificationPlatformRetryExecutionAnchor {
+  workspaceId                String   @map("workspace_id")
+  retryExecutionAnchorId     String   @map("retry_execution_anchor_id")
+  schemaVersion              Int      @default(1) @map("schema_version")
+  platformRetryExecutionType String   @map("platform_retry_execution_type")
+  retryExecutionState        String   @map("retry_execution_state")
+  channelScope               String?  @map("channel_scope")
+  integrityMetadata          String?  @map("integrity_metadata")
+  correlationId              String?  @map("correlation_id")
+  recordedAt                 DateTime @map("recorded_at")
+  recordedByActorId          String?  @map("recorded_by_actor_id")
+  updatedAt                  DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, retryExecutionAnchorId])
+  @@map("workspace_notification_platform_retry_execution_anchors")
+}
