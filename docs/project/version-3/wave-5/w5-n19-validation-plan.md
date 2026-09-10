@@ -3,7 +3,7 @@
 **Package:** W5-N19 Notification Retry Scheduling Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N19 · CM-29
-**Status:** Planning **APPROVED** (2026-09-10). W5-N19-a inventory **COMPLETE** (local). W5-N19-b…e not authorized. Not runtime implementation.
+**Status:** Planning **APPROVED** (2026-09-10). W5-N19-a inventory **COMPLETE** (local). W5-N19-b durable persistence **COMPLETE** (local). W5-N19-c…e not authorized. Not runtime implementation.
 **Date:** 2026-09-10
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n19-product-scope.md`](./w5-n19-product-scope.md)
@@ -227,6 +227,16 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Ownership verified    | **PASS** | All rows on existing owners                  |
 | Customer-visible      | **PASS** | None — internal inventory only               |
 
+## W5-N19-b slice validation (2026-09-10)
+
+| Layer                    | Result   | Evidence                                                 |
+| ------------------------ | -------- | -------------------------------------------------------- |
+| W5-N19-b durable anchors | **PASS** | workspace_notification_platform_retry_scheduling_anchors |
+| Inventory sync           | **PASS** | persist + ownership rows SURVIVE/DURABLE                 |
+| Ownership verified       | **PASS** | notification-delivery only; no new persistence owner     |
+| Customer-visible         | **PASS** | None — internal durable persistence only                 |
+| Restart recovery claimed | **PASS** | Not claimed — W5-N19-c                                   |
+
 ## Explicit non-claims
 
 - W5-N19 Closed — **not claimed**
@@ -245,9 +255,10 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 - Production Ready — **not claimed**
 - Wave 5 COMPLETE — **not claimed**
 - W5-N19-a COMPLETE — **recorded** (local, 2026-09-10) — inventory only
+- W5-N19-b COMPLETE — **recorded** (local, 2026-09-10) — durable persistence only
 - W5-N19 Planning Review completed — **recorded** (PASS)
 - W5-N19 Planning APPROVED — **recorded**
 
 ---
 
-**STOP.** W5-N19-a inventory foundation is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N19-b. Do NOT declare Retry Scheduling implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE.
+**STOP.** W5-N19-b durable retry scheduling persistence foundation is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N19-c. Do NOT declare Retry Scheduling implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE.

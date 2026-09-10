@@ -122,7 +122,7 @@ describe('W5-N19-a notification retry scheduling inventory — unit', () => {
     expect(W5_N19_A_BINDING_FINDINGS.w5N18RetryExecutionExists).toBe(true);
     expect(W5_N19_A_BINDING_FINDINGS.w5N12SchedulerFoundationExists).toBe(true);
     expect(W5_N19_A_BINDING_FINDINGS.unifiedPlatformRetrySchedulingLayerMissing).toBe(true);
-    expect(W5_N19_A_BINDING_FINDINGS.retrySchedulingPersistenceMissing).toBe(true);
+    expect(W5_N19_A_BINDING_FINDINGS.retrySchedulingPersistenceMissing).toBe(false);
     expect(W5_N19_A_BINDING_FINDINGS.retrySchedulingRecoveryMissing).toBe(true);
     expect(W5_N19_A_BINDING_FINDINGS.retrySchedulingOperationalContinuityMissing).toBe(true);
     expect(W5_N19_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
@@ -175,7 +175,7 @@ describe('W5-N19-a notification retry scheduling inventory — unit', () => {
     expect(
       W5_N19_A_HONEST_PRODUCT_BASELINE.infrastructureCapabilities.length,
     ).toBeGreaterThanOrEqual(8);
-    expect(W5_N19_A_HONEST_PRODUCT_BASELINE.plannedCapabilities.length).toBeGreaterThanOrEqual(4);
+    expect(W5_N19_A_HONEST_PRODUCT_BASELINE.plannedCapabilities.length).toBeGreaterThanOrEqual(3);
     expect(
       W5_N19_A_HONEST_PRODUCT_BASELINE.notYetImplementedCapabilities.length,
     ).toBeGreaterThanOrEqual(5);
@@ -184,17 +184,15 @@ describe('W5-N19-a notification retry scheduling inventory — unit', () => {
     ).toBeGreaterThanOrEqual(2);
   });
 
-  it('technical debt delta: inventory resolved; b–e deferred; nothing introduced', () => {
+  it('technical debt delta: inventory and durable persistence resolved; c–e deferred; nothing introduced', () => {
     expect(W5_N19_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Retry Scheduling inventory baseline established',
     );
+    expect(W5_N19_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
+      'Durable Retry Scheduling persistence foundation',
+    );
     expect(W5_N19_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
-    expect(W5_N19_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N19-b',
-      'W5-N19-c',
-      'W5-N19-d',
-      'W5-N19-e',
-    ]);
+    expect(W5_N19_A_TECHNICAL_DEBT_DELTA.deferred).toEqual(['W5-N19-c', 'W5-N19-d', 'W5-N19-e']);
   });
 });
 

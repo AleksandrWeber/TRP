@@ -4,7 +4,7 @@
 **Package:** W5-N19 Notification Retry Scheduling Foundation (V3-N19 · CM-29)  
 **Wave:** 5 — Notification Platform  
 **Date:** 2026-09-10  
-**Nature:** Discovery and classification inventory only. Not Retry Scheduling runtime. Not retry execution. Not scheduler execution.
+**Nature:** Discovery and classification inventory. Synced by W5-N19-b for durable persistence promotion. Not Retry Scheduling runtime. Not retry execution. Not scheduler execution.
 **Machine inventory:** `apps/api/src/platform-conformance/w5-n19-a-retry-scheduling-inventory.ts`  
 **Conformance:** `apps/api/src/platform-conformance/w5-n19-a-retry-scheduling.ts`
 
@@ -21,7 +21,7 @@ Customer-visible functionality from this slice: None.
 
 ## Purpose
 
-Enumerate every Notification Retry Scheduling artifact on the existing `notification-delivery` owner: Closed W5-N01…N18 foundations (including W5-N12 scheduler foundation and W5-N18 retry execution consumption), PC-06 routing, PC-07 catalog, W3-O02 durable queue substrate, missing unified platform retry scheduling layer, missing scheduling persistence (W5-N19-b), missing scheduling recovery (W5-N19-c), missing scheduling operational continuity (W5-N19-d), deferred runtime / transport / policies, ownership, persistence/recovery/continuity responsibility, operational visibility, customer visibility, and Honest Product boundaries.
+Enumerate every Notification Retry Scheduling artifact on the existing `notification-delivery` owner: Closed W5-N01…N18 foundations (including W5-N12 scheduler foundation and W5-N18 retry execution consumption), PC-06 routing, PC-07 catalog, W3-O02 durable queue substrate, missing unified platform retry scheduling runtime layer, durable scheduling persistence (W5-N19-b — resolved), missing scheduling recovery (W5-N19-c), missing scheduling operational continuity (W5-N19-d), deferred runtime / transport / policies, ownership, persistence/recovery/continuity responsibility, operational visibility, customer visibility, and Honest Product boundaries.
 
 Classify each artifact as exactly one of:
 
@@ -50,36 +50,37 @@ Every row includes: unique identifier, existing owner, purpose, persistence clas
 
 ## Binding finding
 
-**Retry Scheduling is NOT implemented. Platform retry scheduling does NOT function after this slice.**
+**Retry Scheduling is NOT implemented. Platform retry scheduling does NOT function after inventory alone.**
 
 - Closed W5-N01…N18 foundations exist — consumed as reference patterns only. W5-N12 scheduler foundation and W5-N18 retry execution are consumed — not redesigned.
-- **No** unified cross-channel platform retry scheduling layer exists (`unifiedPlatformRetrySchedulingLayerMissing`: **true**).
-- `retrySchedulingPersistenceMissing`: **true**; `retrySchedulingRecoveryMissing`: **true**; `retrySchedulingOperationalContinuityMissing`: **true**.
+- **No** unified cross-channel platform retry scheduling runtime layer exists (`unifiedPlatformRetrySchedulingLayerMissing`: **true**).
+- `retrySchedulingPersistenceMissing`: **false** (resolved by W5-N19-b); `retrySchedulingRecoveryMissing`: **true**; `retrySchedulingOperationalContinuityMissing`: **true**.
 - TD-049 / TD-050 production transport I/O remains deferred — not claimed from this inventory.
 
 ---
 
 ## Honest Product baseline
 
-| Category                | Summary                                                                                                                                                                   |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Implemented today**   | None — no customer-visible Retry Scheduling functionality.                                                                                                                |
-| **Infrastructure only** | Per-channel N01…N04 anchors; W5-N05…N17 foundations (consumed); W5-N12 scheduler (consumed); W5-N18 retry execution (consumed); PC-06; PC-07; durable queue; inventories. |
-| **Planned**             | W5-N19-b persistence; W5-N19-c recovery; W5-N19-d continuity; W5-N19-e Close Evidence.                                                                                    |
-| **Not implemented**     | Unified retry scheduling layer; durable scheduling anchors; recovery; continuity; operator UI; scheduling runtime; transport I/O.                                         |
-| **Future roadmap**      | Wave 6 Live Trading; Wave 7 AI Gateway (out of W5-N19 scope).                                                                                                             |
+| Category                | Summary                                                                                                                                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Implemented today**   | None — no customer-visible Retry Scheduling functionality.                                                                                                                                        |
+| **Infrastructure only** | Per-channel N01…N04 anchors; W5-N05…N17 foundations (consumed); W5-N12 scheduler (consumed); W5-N18 retry execution (consumed); W5-N19-b durable scheduling anchors; PC-06; PC-07; durable queue. |
+| **Planned**             | W5-N19-c recovery; W5-N19-d continuity; W5-N19-e Close Evidence; operator honesty surfaces (when authorized).                                                                                     |
+| **Not implemented**     | Unified retry scheduling runtime layer; recovery; continuity; operator UI; scheduling runtime; transport I/O.                                                                                     |
+| **Future roadmap**      | Wave 6 Live Trading; Wave 7 AI Gateway (out of W5-N19 scope).                                                                                                                                     |
 
 ---
 
 ## Required ownership inventory (summary)
 
-| Artifact ID                               | Owner                 | Class       |
-| ----------------------------------------- | --------------------- | ----------- |
-| `own-platform-retry-scheduling-layer`     | notification-delivery | FOUNDATION  |
-| `own-notification-delivery-domain`        | notification-delivery | DURABLE     |
-| `own-w5-n18-retry-execution-consume`      | notification-delivery | RECOVERABLE |
-| `own-w5-n12-scheduler-foundation-consume` | notification-delivery | RECOVERABLE |
-| `own-pc06-routing-delivery`               | notification-product  | RECOVERABLE |
+| Artifact ID                                             | Owner                 | Class       |
+| ------------------------------------------------------- | --------------------- | ----------- |
+| `own-platform-retry-scheduling-layer`                   | notification-delivery | DURABLE     |
+| `own-notification-delivery-domain`                      | notification-delivery | DURABLE     |
+| `own-w5-n18-retry-execution-consume`                    | notification-delivery | RECOVERABLE |
+| `own-w5-n12-scheduler-foundation-consume`               | notification-delivery | RECOVERABLE |
+| `own-pc06-routing-delivery`                             | notification-product  | RECOVERABLE |
+| `persist-notification-platform-retry-scheduling-anchor` | notification-delivery | DURABLE     |
 
 Full row detail: `W5_N19_A_RETRY_SCHEDULING_INVENTORY`.
 
@@ -95,4 +96,4 @@ Full row detail: `W5_N19_A_RETRY_SCHEDULING_INVENTORY`.
 
 ---
 
-**STOP.** Await Product Owner Review. Do not open W5-N19-b. Do not declare Retry Scheduling implemented.
+**STOP.** Inventory remains the W5-N19-a classification baseline; W5-N19-b synchronized durable persistence. Await Product Owner Review before W5-N19-c. Do not declare Retry Scheduling implemented.
