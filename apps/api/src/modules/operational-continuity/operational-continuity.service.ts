@@ -74,6 +74,8 @@ import { getNotificationPlatformMetricsContinuityRecord } from '../notification-
 import { buildNotificationPlatformMetricsContinuityProjection } from '../notification-delivery/domain/notification-platform-metrics-operational-continuity';
 import { getNotificationPlatformReliabilityContinuityRecord } from '../notification-delivery/domain/notification-platform-reliability-continuity-status';
 import { buildNotificationPlatformReliabilityContinuityProjection } from '../notification-delivery/domain/notification-platform-reliability-operational-continuity';
+import { getNotificationPlatformRetryExecutionContinuityRecord } from '../notification-delivery/domain/notification-platform-retry-execution-continuity-status';
+import { buildNotificationPlatformRetryExecutionContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-execution-operational-continuity';
 import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
 import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
 import { getMonitoringHealthContinuityRecord } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
@@ -238,6 +240,12 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
         continuity: null,
       }),
+      notificationPlatformRetryExecution:
+        buildNotificationPlatformRetryExecutionContinuityProjection({
+          recovering: true,
+          ownerReadiness: 'ready',
+          continuity: null,
+        }),
     });
   }
 
@@ -562,6 +570,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildNotificationPlatformRetryExecutionView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getNotificationPlatformRetryExecutionContinuityRecord();
+    return buildNotificationPlatformRetryExecutionContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -697,6 +717,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       notificationPlatformReliability: this.buildNotificationPlatformReliabilityView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      notificationPlatformRetryExecution: this.buildNotificationPlatformRetryExecutionView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -1103,6 +1127,25 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           ? null
           : recoveryDurationMs),
     });
+    const notificationPlatformRetryExecutionBase = this.buildNotificationPlatformRetryExecutionView(
+      {
+        recovering: false,
+        ownerReadiness: 'ready',
+      },
+    );
+    const notificationPlatformRetryExecution = Object.freeze({
+      ...notificationPlatformRetryExecutionBase,
+      recoveryTimestamp:
+        notificationPlatformRetryExecutionBase.recoveryTimestamp ??
+        (notificationPlatformRetryExecutionBase.operationalState === 'Recovering'
+          ? null
+          : recoveryTimestamp),
+      recoveryDurationMs:
+        notificationPlatformRetryExecutionBase.recoveryDurationMs ??
+        (notificationPlatformRetryExecutionBase.operationalState === 'Recovering'
+          ? null
+          : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -1132,6 +1175,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       notificationPlatformTelemetry,
       notificationPlatformMetrics,
       notificationPlatformReliability,
+      notificationPlatformRetryExecution,
     });
     this.finalized = true;
 

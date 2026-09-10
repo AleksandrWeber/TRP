@@ -134,6 +134,13 @@ import {
   resetNotificationPlatformReliabilityContinuity,
 } from '../notification-delivery/domain/notification-platform-reliability-continuity-status';
 import { buildNotificationPlatformReliabilityRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-reliability-restart-recovery';
+import { buildNotificationPlatformRetryExecutionAnchorState } from '../notification-delivery/domain/durable-notification-platform-retry-execution-anchor';
+import {
+  recordNotificationPlatformRetryExecutionRecoveryStart,
+  recordNotificationPlatformRetryExecutionRecoverySuccess,
+  resetNotificationPlatformRetryExecutionContinuity,
+} from '../notification-delivery/domain/notification-platform-retry-execution-continuity-status';
+import { buildNotificationPlatformRetryExecutionRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-retry-execution-restart-recovery';
 
 describe('OperationalContinuityService', () => {
   beforeEach(() => {
@@ -1031,6 +1038,50 @@ describe('OperationalContinuityService', () => {
 
     expect(projection.notificationPlatformReliability?.operationalState).toBe('Ready');
     expect(projection.notificationPlatformReliability?.canonicalAnchorCount).toBe(1);
+    expect(projection.platformState).toBe('Ready');
+  });
+
+  it('includes notification platform retry execution continuity derived from W5-N18-c recovery record', async () => {
+    resetNotificationPlatformRetryExecutionContinuity();
+    const anchor = buildNotificationPlatformRetryExecutionAnchorState({
+      workspaceId: 'ws-1',
+      retryExecutionAnchorId: 'retry-execution-1',
+      platformRetryExecutionType: 'cross-channel-foundation',
+      correlationId: 'corr-1',
+      actorId: 'actor-1',
+      recordedAt: '2026-09-02T16:00:00.000Z',
+      prior: null,
+    });
+    if (!anchor.ok) throw new Error('expected anchor');
+    recordNotificationPlatformRetryExecutionRecoveryStart();
+    recordNotificationPlatformRetryExecutionRecoverySuccess({
+      diagnostics: buildNotificationPlatformRetryExecutionRecoveryDiagnostics([anchor.anchor]),
+    });
+
+    const audit = {
+      recordOwnerState: vi.fn(async () => undefined),
+      recordRecoveryCompleted: vi.fn(async () => undefined),
+    } as unknown as OperationalContinuityAudit;
+    const service = new OperationalContinuityService(audit);
+    const projection = await service.applyBootOutcomesForTest(
+      (
+        [
+          'strategy-library',
+          'exchange-scope',
+          'knowledge-lake',
+          'market-profile',
+          'market-qualification',
+          'market-state',
+          'reporting',
+          'notification-delivery',
+          'trading-orchestrator',
+          'runtime-enforcement',
+        ] as const
+      ).map((owner) => ({ owner, outcome: 'ready' as const })),
+    );
+
+    expect(projection.notificationPlatformRetryExecution?.operationalState).toBe('Ready');
+    expect(projection.notificationPlatformRetryExecution?.canonicalAnchorCount).toBe(1);
     expect(projection.platformState).toBe('Ready');
   });
 });

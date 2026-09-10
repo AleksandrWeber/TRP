@@ -2,7 +2,7 @@
 
 **Document:** W5-N18 Notification Platform Retry Execution Foundation Overview
 **Date:** 2026-09-10
-**Status:** Product-facing record. W5-N18 Planning **APPROVED** (2026-09-03). W5-N18-a inventory **COMPLETE**. W5-N18-b durable persistence **COMPLETE**. W5-N18-c restart recovery **COMPLETE** (2026-09-10) — awaiting Product Owner Review. No retry execution runtime. No operational continuity (W5-N18-d). No transport execution. No successful delivery. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. W5-N18 Planning **APPROVED** (2026-09-03). W5-N18-a inventory **COMPLETE**. W5-N18-b durable persistence **COMPLETE**. W5-N18-c restart recovery **COMPLETE**. W5-N18-d operational continuity **COMPLETE** (2026-09-10) — awaiting Product Owner Review. No retry execution runtime. No transport execution. No successful delivery. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N18 (V3-N18 · CM-28)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -160,22 +160,22 @@ Never claim production transports operational from W5-N18 foundation alone.
 
 ## Technical debt
 
-| Item                                  | Status                                                            |
-| ------------------------------------- | ----------------------------------------------------------------- |
-| TD-049 Telegram production Bot API    | **Deferred**                                                      |
-| TD-050 Reserved notification channels | **Deferred**                                                      |
-| Retry Execution inventory baseline    | **Resolved** by W5-N18-a                                          |
-| Durable Retry Execution persistence   | **Resolved** by W5-N18-b                                          |
-| Restart-safe retry planning           | **Resolved** by W5-N18-c                                          |
-| Platform retry execution foundation   | **Partial** — inventory + durable + recovery; continuity deferred |
-| Operational continuity                | **Deferred** to W5-N18-d                                          |
-| Transport execution                   | **Deferred**                                                      |
-| Dead-letter processing                | **Deferred**                                                      |
-| Implementation slices W5-N18-d…e      | **Deferred**                                                      |
+| Item                                  | Status                                                                    |
+| ------------------------------------- | ------------------------------------------------------------------------- |
+| TD-049 Telegram production Bot API    | **Deferred**                                                              |
+| TD-050 Reserved notification channels | **Deferred**                                                              |
+| Retry Execution inventory baseline    | **Resolved** by W5-N18-a                                                  |
+| Durable Retry Execution persistence   | **Resolved** by W5-N18-b                                                  |
+| Restart-safe retry planning           | **Resolved** by W5-N18-c                                                  |
+| Operational continuity                | **Resolved** by W5-N18-d                                                  |
+| Platform retry execution foundation   | **Partial** — inventory + durable + recovery + continuity; Close deferred |
+| Transport execution                   | **Deferred**                                                              |
+| Dead-letter processing                | **Deferred**                                                              |
+| Implementation slice W5-N18-e         | **Deferred**                                                              |
 
-**Technical debt introduced by W5-N18-c:** None.
+**Technical debt introduced by W5-N18-d:** None.
 
-**Technical debt resolved by W5-N18-c:** Retry Execution restart recovery foundation.
+**Technical debt resolved by W5-N18-d:** Retry Execution operational continuity foundation.
 
 ---
 
@@ -184,9 +184,9 @@ Never claim production transports operational from W5-N18 foundation alone.
 - W5-N18 Planning APPROVED — **recorded** (2026-09-03)
 - W5-N18-a inventory COMPLETE — **recorded** (2026-09-10)
 - W5-N18-b durable persistence COMPLETE — **recorded** (2026-09-10)
-- W5-N18-c restart recovery COMPLETE — **recorded** (2026-09-10) — awaiting PO Review
-- Operational continuity implemented — **not claimed** (W5-N18-d)
-- Notification Platform Retry Execution Foundation implemented — **not claimed**
+- W5-N18-c restart recovery COMPLETE — **recorded** (2026-09-10)
+- W5-N18-d operational continuity COMPLETE — **recorded** (2026-09-10) — awaiting PO Review
+- Notification Platform Retry Execution Foundation implemented — **not claimed** (package Close is e)
 - Retry Execution implemented — **not claimed**
 - Successful delivery — **not claimed**
 - Provider acceptance — **not claimed**
@@ -201,4 +201,4 @@ Never claim production transports operational from W5-N18 foundation alone.
 
 ---
 
-**STOP.** W5-N18-c Restart Recovery Foundation is **COMPLETE** (implementation). Await Product Owner Review. Do not open W5-N18-d. Do not declare Retry Execution implemented. Do not declare operational continuity implemented. Do not declare Notification Platform COMPLETE. Do not declare Live Notifications. Do not declare Production Ready. Do not declare Wave 5 COMPLETE. Do not commit. Do not push.
+**STOP.** W5-N18-d Operational Continuity Foundation is **COMPLETE** (implementation). Await Product Owner Review. Do not open W5-N18-e. Do not declare Retry Execution implemented. Do not declare Notification Platform COMPLETE. Do not declare Live Notifications. Do not declare Production Ready. Do not declare Wave 5 COMPLETE. Do not commit. Do not push.

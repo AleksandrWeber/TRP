@@ -134,6 +134,7 @@ describe('W5-N18-a notification platform retry execution inventory — unit', ()
     expect(W5_N18_A_BINDING_FINDINGS.retryExecutionEligibilityMissing).toBe(false);
     expect(W5_N18_A_BINDING_FINDINGS.retryExecutionSequencingMissing).toBe(false);
     expect(W5_N18_A_BINDING_FINDINGS.restartSafeRetryPlanningMissing).toBe(false);
+    expect(W5_N18_A_BINDING_FINDINGS.retryExecutionOperationalContinuityMissing).toBe(false);
     expect(W5_N18_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
   });
 
@@ -190,10 +191,10 @@ describe('W5-N18-a notification platform retry execution inventory — unit', ()
     ).toBeGreaterThanOrEqual(5);
     expect(
       W5_N18_A_HONEST_PRODUCT_BASELINE.futureRoadmapCapabilities.length,
-    ).toBeGreaterThanOrEqual(3);
+    ).toBeGreaterThanOrEqual(2);
   });
 
-  it('technical debt delta: inventory + durable persistence + restart recovery resolved; later slices deferred; nothing introduced', () => {
+  it('technical debt delta: inventory + durable persistence + restart recovery + operational continuity resolved; later slices deferred; nothing introduced', () => {
     expect(W5_N18_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Retry Execution inventory baseline established',
     );
@@ -203,9 +204,11 @@ describe('W5-N18-a notification platform retry execution inventory — unit', ()
     expect(W5_N18_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'W5-N18-c — Restart Recovery Foundation',
     );
+    expect(W5_N18_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
+      'W5-N18-d — Operational Continuity Foundation',
+    );
     expect(W5_N18_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N18_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N18-d — Operational Continuity Foundation',
       'W5-N18-e — Package Validation, Operational Verification & Close Evidence',
       'Final Package Integration Verification',
     ]);

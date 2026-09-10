@@ -338,6 +338,19 @@ export type NotificationPlatformReliabilityContinuityView = Readonly<{
   workspaceIds: readonly string[];
 }>;
 
+/** W5-N18-d — Notification Platform Retry Execution operational continuity (derived). */
+export type NotificationPlatformRetryExecutionContinuityView = Readonly<{
+  operationalState: OperationalState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+}>;
+
 /** W3-O05-d — Monitoring & Security Health continuity fields on platform readiness. */
 export type MonitoringHealthContinuityView = Readonly<{
   operationalState: OperationalState;
@@ -423,6 +436,8 @@ export type PlatformOperationalProjection = Readonly<{
   notificationPlatformMetrics: NotificationPlatformMetricsContinuityView | null;
   /** W5-N17-d — Notification Platform Delivery Reliability operational continuity (derived). */
   notificationPlatformReliability: NotificationPlatformReliabilityContinuityView | null;
+  /** W5-N18-d — Notification Platform Retry Execution operational continuity (derived). */
+  notificationPlatformRetryExecution: NotificationPlatformRetryExecutionContinuityView | null;
 }>;
 
 export type EvaluateOwnerReadinessInput = Readonly<{
@@ -534,6 +549,7 @@ export function buildPlatformOperationalProjection(input: {
   notificationPlatformTelemetry?: NotificationPlatformTelemetryContinuityView | null;
   notificationPlatformMetrics?: NotificationPlatformMetricsContinuityView | null;
   notificationPlatformReliability?: NotificationPlatformReliabilityContinuityView | null;
+  notificationPlatformRetryExecution?: NotificationPlatformRetryExecutionContinuityView | null;
 }): PlatformOperationalProjection {
   const platformState = derivePlatformOperationalState(input.owners);
   assertOperationalState(platformState);
@@ -573,6 +589,7 @@ export function buildPlatformOperationalProjection(input: {
     notificationPlatformTelemetry: input.notificationPlatformTelemetry ?? null,
     notificationPlatformMetrics: input.notificationPlatformMetrics ?? null,
     notificationPlatformReliability: input.notificationPlatformReliability ?? null,
+    notificationPlatformRetryExecution: input.notificationPlatformRetryExecution ?? null,
   });
 }
 
