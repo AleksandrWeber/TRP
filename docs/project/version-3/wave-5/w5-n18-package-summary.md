@@ -5,7 +5,7 @@
 **Master Plan / Roadmap:** V3-N18 · CM-28  
 **Evidence slice:** W5-N18-e  
 **Date:** 2026-09-10  
-**Status:** Close Evidence **COMPLETE** (local) · Final Integration Verification **not performed** · **NOT CLOSED** — awaiting Product Owner Package Review.
+**Status:** Close Evidence **COMPLETE** (`e8859a7`) · Final Integration Verification **PASS** (local) · **CLOSED** by Product Owner (2026-09-10).
 
 ---
 
@@ -21,7 +21,7 @@
    Persisted Notification Platform Retry Execution anchors can survive normal API restart and project honest operational readiness on Platform Readiness — without fabricating retry execution runtime labels or inventing a second notification subsystem.
 
 4. **What remains for later packages?**  
-   Retry execution runtime outcomes, Final Package Integration Verification, Product Owner Final Close, remaining Wave 5 packages.
+   Retry execution runtime outcomes, remaining Wave 5 packages.
 
 5. **Which package becomes available next?**  
    None opened by this Close Evidence act — next package requires separate Product Owner authorization.
@@ -53,14 +53,14 @@
 
 ## Slice roll-up
 
-| Slice    | Outcome                                                                   | Status                                      |
-| -------- | ------------------------------------------------------------------------- | ------------------------------------------- |
-| W5-N18-a | Notification Platform Retry Execution Inventory & Honest Product Baseline | **COMPLETE** (2026-09-10)                   |
-| W5-N18-b | Durable Retry Eligibility & Execution Sequencing Foundation               | **COMPLETE** (2026-09-10)                   |
-| W5-N18-c | Restart-Safe Retry Execution Planning Foundation                          | **COMPLETE** (2026-09-10)                   |
-| W5-N18-d | Retry Execution Operational Continuity Foundation                         | **COMPLETE** (2026-09-10)                   |
-| W5-N18-e | Package Close Evidence                                                    | **COMPLETE** (local)                        |
-| W5-N18   | Package                                                                   | **NOT CLOSED** — awaiting PO Package Review |
+| Slice    | Outcome                                                                   | Status                                   |
+| -------- | ------------------------------------------------------------------------- | ---------------------------------------- |
+| W5-N18-a | Notification Platform Retry Execution Inventory & Honest Product Baseline | **COMPLETE** (`6fb08f5`)                 |
+| W5-N18-b | Durable Retry Eligibility & Execution Sequencing Foundation               | **COMPLETE** (`899969e`)                 |
+| W5-N18-c | Restart-Safe Retry Execution Planning Foundation                          | **COMPLETE** (`d4ea59b`)                 |
+| W5-N18-d | Retry Execution Operational Continuity Foundation                         | **COMPLETE** (`2a68522`)                 |
+| W5-N18-e | Package Close Evidence                                                    | **COMPLETE** (`e8859a7`)                 |
+| W5-N18   | Package                                                                   | **CLOSED** by Product Owner (2026-09-10) |
 
 ---
 
@@ -73,4 +73,4 @@
 
 ---
 
-**STOP.** Close Evidence assembled. Do **not** declare W5-N18 CLOSED, Retry Execution implemented, Notification Platform Complete, or Wave 5 COMPLETE. Await Product Owner Package Review.
+**STOP.** W5-N18 is **CLOSED** by Product Owner (2026-09-10). Do **not** declare Retry Execution implemented, Notification Platform Complete, or Wave 5 COMPLETE.
