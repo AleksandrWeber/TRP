@@ -1497,10 +1497,7 @@ export const W5_N24_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
   plannedCapabilities: Object.freeze([
-    'W5-N24-b Durable Scheduling Persistence Foundation',
-    'W5-N24-c Restart-Safe Scheduling Recovery Foundation',
-    'W5-N24-d Scheduling Operational Continuity Foundation',
-    'W5-N24-e Package Close Evidence',
+    'Repository Synchronization after Product Owner Final Close',
   ] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform scheduling layer after calc+eligibility',
@@ -1524,10 +1521,8 @@ export const W5_N24_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   ] as const),
   introduced: Object.freeze([] as const),
   deferred: Object.freeze([
-    'Persistence Foundation (W5-N24-b)',
-    'Restart Recovery Foundation (W5-N24-c)',
-    'Operational Continuity Foundation (W5-N24-d)',
-    'Package Validation & Close Evidence (W5-N24-e)',
+    'Repository Synchronization after Product Owner Final Close',
+    'Runtime scheduling',
   ] as const),
 } as const);
 

@@ -245,16 +245,14 @@ describe('W5-N24-a notification retry scheduling inventory — unit', () => {
     ).toBeGreaterThanOrEqual(2);
   });
 
-  it('technical debt delta: inventory baseline resolved; FIV / PO Close / evaluation runtime deferred; nothing introduced', () => {
+  it('technical debt delta: inventory baseline resolved; Repo Sync after Close / runtime scheduling deferred; nothing introduced', () => {
     expect(W5_N24_A_TECHNICAL_DEBT_DELTA.resolved).toEqual([
       'Notification Retry Scheduling inventory baseline established',
     ]);
     expect(W5_N24_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N24_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'Persistence Foundation (W5-N24-b)',
-      'Restart Recovery Foundation (W5-N24-c)',
-      'Operational Continuity Foundation (W5-N24-d)',
-      'Package Validation & Close Evidence (W5-N24-e)',
+      'Repository Synchronization after Product Owner Final Close',
+      'Runtime scheduling',
     ]);
   });
 
