@@ -125,7 +125,7 @@ describe('W5-N20-a notification retry policy inventory — unit', () => {
     expect(W5_N20_A_BINDING_FINDINGS.w5N19RetrySchedulingExists).toBe(true);
     expect(W5_N20_A_BINDING_FINDINGS.unifiedPlatformRetryPolicyLayerMissing).toBe(true);
     expect(W5_N20_A_BINDING_FINDINGS.retryPolicyPersistenceMissing).toBe(false);
-    expect(W5_N20_A_BINDING_FINDINGS.retryPolicyRecoveryMissing).toBe(true);
+    expect(W5_N20_A_BINDING_FINDINGS.retryPolicyRecoveryMissing).toBe(false);
     expect(W5_N20_A_BINDING_FINDINGS.retryPolicyOperationalContinuityMissing).toBe(true);
     expect(W5_N20_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
   });
@@ -188,25 +188,26 @@ describe('W5-N20-a notification retry policy inventory — unit', () => {
     ).toBeGreaterThanOrEqual(2);
   });
 
-  it('technical debt delta: inventory and durable persistence resolved; W5-N20-c…e deferred; nothing introduced', () => {
+  it('technical debt delta: inventory, durable persistence, and restart recovery resolved; W5-N20-d…e deferred; nothing introduced', () => {
     expect(W5_N20_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Retry Policy inventory baseline established',
     );
     expect(W5_N20_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Durable Retry Policy persistence foundation',
     );
+    expect(W5_N20_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
+      'Retry Policy restart recovery foundation',
+    );
     expect(W5_N20_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N20_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N20-c — Restart Recovery Foundation',
       'W5-N20-d — Operational Continuity Foundation',
       'W5-N20-e — Package Validation, Operational Verification & Close Evidence',
     ]);
   });
 
-  it('missing gaps remain EPHEMERAL; persistence gap resolved by W5-N20-b', () => {
+  it('missing gaps remain EPHEMERAL; persistence and recovery gaps resolved by W5-N20-b/c', () => {
     const stillMissingIds = [
       'missing-unified-platform-retry-policy-view',
-      'missing-retry-policy-recovery',
       'missing-retry-policy-operational-continuity',
       'missing-retry-policy-ui',
       'projection-platform-readiness-retry-policy-missing',
@@ -221,6 +222,11 @@ describe('W5-N20-a notification retry policy inventory — unit', () => {
       (entry) => entry.artifactId === 'missing-retry-policy-persistence',
     );
     expect(resolvedPersistence?.existsToday).toBe(true);
+    expect(
+      W5_N20_A_RETRY_POLICY_INVENTORY.find(
+        (entry) => entry.artifactId === 'missing-retry-policy-recovery',
+      )?.existsToday,
+    ).toBe(true);
     expect(
       W5_N20_A_RETRY_POLICY_INVENTORY.find(
         (entry) => entry.artifactId === 'persist-notification-platform-retry-policy-anchor',

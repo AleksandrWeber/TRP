@@ -1,19 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import type { DurableNotificationPlatformRetryPolicyAnchor } from './durable-notification-platform-retry-policy-anchor';
+import { sortNotificationPlatformRetryPolicyAnchorsDeterministically } from './notification-platform-retry-policy-restart-recovery';
 
 function compositeKey(workspaceId: string, retryPolicyAnchorId: string): string {
   return `${workspaceId}:${retryPolicyAnchorId}`;
-}
-
-function sortAnchorsDeterministically(
-  anchors: readonly DurableNotificationPlatformRetryPolicyAnchor[],
-) {
-  return Object.freeze(
-    [...anchors].sort((a, b) => {
-      const w = a.workspaceId.localeCompare(b.workspaceId);
-      return w !== 0 ? w : a.retryPolicyAnchorId.localeCompare(b.retryPolicyAnchorId);
-    }),
-  );
 }
 
 /**
@@ -50,6 +40,8 @@ export class NotificationPlatformRetryPolicyRecoveryStore {
   }
 
   snapshot(): readonly DurableNotificationPlatformRetryPolicyAnchor[] {
-    return sortAnchorsDeterministically([...this.byCompositeKey.values()]);
+    return sortNotificationPlatformRetryPolicyAnchorsDeterministically([
+      ...this.byCompositeKey.values(),
+    ]);
   }
 }

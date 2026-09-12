@@ -78,6 +78,7 @@ import { NotificationPlatformRetryExecutionRecoveryStore } from './domain/notifi
 import { NotificationPlatformRetryExecutionRestartRecoveryService } from './domain/notification-platform-retry-execution-restart-recovery.service';
 import { NotificationPlatformRetrySchedulingRecoveryStore } from './domain/notification-platform-retry-scheduling-recovery-store';
 import { NotificationPlatformRetryPolicyRecoveryStore } from './domain/notification-platform-retry-policy-recovery-store';
+import { NotificationPlatformRetryPolicyRestartRecoveryService } from './domain/notification-platform-retry-policy-restart-recovery.service';
 import { NotificationPlatformRetrySchedulingRestartRecoveryService } from './domain/notification-platform-retry-scheduling-restart-recovery.service';
 import { NotificationPlatformDeadLetterRecoveryStore } from './domain/notification-platform-dead-letter-recovery-store';
 import { NotificationPlatformDeadLetterRestartRecoveryService } from './domain/notification-platform-dead-letter-restart-recovery.service';
@@ -304,6 +305,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetrySchedulingRestartRecoveryService,
     NotificationPlatformRetryPolicyPersistenceService,
     NotificationPlatformRetryPolicyRecoveryStore,
+    NotificationPlatformRetryPolicyRestartRecoveryService,
     NotificationPlatformTelemetryRecoveryStore,
     NotificationPlatformTelemetryRestartRecoveryService,
     NotificationPlatformDeadLetterRecoveryStore,
@@ -391,6 +393,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetrySchedulingRestartRecoveryService,
     NotificationPlatformRetryPolicyPersistenceService,
     NotificationPlatformRetryPolicyRecoveryStore,
+    NotificationPlatformRetryPolicyRestartRecoveryService,
     NotificationPlatformTelemetryRecoveryStore,
     NotificationPlatformTelemetryRestartRecoveryService,
     NotificationPlatformDeadLetterRecoveryStore,
