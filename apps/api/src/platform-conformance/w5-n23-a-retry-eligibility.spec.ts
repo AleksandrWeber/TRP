@@ -119,16 +119,15 @@ describe('W5-N23-a retry eligibility conformance — unit', () => {
     expect(W5_N23_A_ARCHITECTURE_CLAIMS.liveTradingClaimed).toBe(false);
   });
 
-  it('technical debt delta: inventory baseline resolved; b–e deferred; nothing introduced', () => {
+  it('technical debt delta: inventory baseline resolved; FIV / PO Close / evaluation runtime deferred; nothing introduced', () => {
     expect(W5_N23_A_TECHNICAL_DEBT_DELTA.resolved).toEqual([
       'Notification Retry Eligibility inventory baseline established',
     ]);
     expect(W5_N23_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N23_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'Persistence Foundation (W5-N23-b)',
-      'Restart Recovery Foundation (W5-N23-c)',
-      'Operational Continuity Foundation (W5-N23-d)',
-      'Package Validation & Close Evidence (W5-N23-e)',
+      'Final Package Integration Verification',
+      'Product Owner Final Close',
+      'Eligibility evaluation runtime',
     ]);
   });
 

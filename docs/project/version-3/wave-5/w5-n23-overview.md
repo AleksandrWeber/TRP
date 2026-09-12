@@ -2,7 +2,7 @@
 
 **Document:** W5-N23 Notification Retry Eligibility Foundation Overview
 **Date:** 2026-09-12
-**Status:** Product-facing planning record. Planning Package **APPROVED**. W5-N23-a Inventory **COMPLETE** (local). W5-N23-b Persistence **COMPLETE** (local). W5-N23-c Restart Recovery **COMPLETE** (local). W5-N23-d Operational Continuity **COMPLETE** (local). No eligibility evaluation runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. W5-N23 **CLOSED** by Product Owner (2026-09-12). W5-N23-a…e **COMPLETE** (local). Final Integration Verification **PASS** (local). No eligibility evaluation runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N23 (V3-N23 · CM-33)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -124,6 +124,41 @@ Ready is never hardcoded.
 Degraded / Unavailable never fabricate readiness.
 ```
 
+### W5-N23-e status (Close Evidence)
+
+W5-N23-e assembles package Close Evidence for Product Owner Package Review. Customer-visible functionality: **None**.
+
+```text
+Close Evidence ≠ Package CLOSED.
+Close Evidence ≠ Final Package Integration Verification.
+Close Evidence ≠ Notification Retry Eligibility implemented.
+Close Evidence ≠ eligibility evaluation / backoff calculation / scheduling / execution.
+```
+
+### Final Package Integration Verification
+
+Final Package Integration Verification **PASS** (local). Engineering readiness was **READY FOR PRODUCT OWNER FINAL CLOSE**.
+
+```text
+FIV ≠ Package CLOSED.
+FIV ≠ Notification Retry Eligibility implemented.
+FIV ≠ eligibility evaluation / backoff calculation / scheduling / execution.
+```
+
+Evidence: [`w5-n23-final-integration-verification.md`](./w5-n23-final-integration-verification.md).
+
+### Product Owner Final Close
+
+W5-N23 is **CLOSED** by Product Owner (2026-09-12).
+
+```text
+CLOSED ≠ Eligibility implemented.
+CLOSED ≠ eligibility evaluation runtime.
+CLOSED ≠ Wave 5 COMPLETE / Notification Platform COMPLETE.
+```
+
+Evidence: [`w5-n23-product-owner-close-record.md`](./w5-n23-product-owner-close-record.md).
+
 ---
 
 ## What the operator cannot do (still)
@@ -191,14 +226,14 @@ W5-N17–N22 established reliability-through-calculation foundation evidence. Th
 
 ## Current status
 
-| Item                          | Status                                                                           |
-| ----------------------------- | -------------------------------------------------------------------------------- |
-| W5-N23 Planning Package       | **APPROVED**                                                                     |
-| Product Owner Planning Review | **PASS**                                                                         |
-| Planning Approval             | **RECORDED**                                                                     |
-| Implementation                | **W5-N23-a…d COMPLETE** (local); e deferred                                      |
-| Implementation slices         | **a–d** — inventory + persistence + recovery + continuity; no evaluation runtime |
-| Wave 5 COMPLETE               | **Not claimed**                                                                  |
+| Item                          | Status                                                                                              |
+| ----------------------------- | --------------------------------------------------------------------------------------------------- |
+| W5-N23 Planning Package       | **APPROVED**                                                                                        |
+| Product Owner Planning Review | **PASS**                                                                                            |
+| Planning Approval             | **RECORDED**                                                                                        |
+| Implementation                | **W5-N23-a…e COMPLETE** (local); FIV **PASS** (local); **CLOSED** by Product Owner (2026-09-12)     |
+| Implementation slices         | **a–e** — Close Evidence assembled; FIV PASS; package CLOSED; eligibility evaluation runtime absent |
+| Wave 5 COMPLETE               | **Not claimed**                                                                                     |
 
 ---
 
@@ -217,4 +252,4 @@ W5-N17–N22 established reliability-through-calculation foundation evidence. Th
 
 ---
 
-**STOP.** W5-N23-d Operational Continuity is **COMPLETE** (local). Await Product Owner Review. Do NOT open W5-N23-e. Do NOT commit. Do NOT push. Do NOT declare Notification Retry Eligibility implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N23 is **CLOSED** by Product Owner (2026-09-12). Do NOT declare Notification Retry Eligibility implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan. Do NOT open W5-N24. Await Repository Synchronization.

@@ -1406,7 +1406,10 @@ export const W5_N23_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N01…N22 machine inventories — foundation reference patterns',
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
-  plannedCapabilities: Object.freeze(['Package Validation & Close Evidence (W5-N23-e)'] as const),
+  plannedCapabilities: Object.freeze([
+    'Final Package Integration Verification',
+    'Product Owner Final Close',
+  ] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform eligibility layer',
     'Operator eligibility UI',
@@ -1429,10 +1432,9 @@ export const W5_N23_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   ] as const),
   introduced: Object.freeze([] as const),
   deferred: Object.freeze([
-    'Persistence Foundation (W5-N23-b)',
-    'Restart Recovery Foundation (W5-N23-c)',
-    'Operational Continuity Foundation (W5-N23-d)',
-    'Package Validation & Close Evidence (W5-N23-e)',
+    'Final Package Integration Verification',
+    'Product Owner Final Close',
+    'Eligibility evaluation runtime',
   ] as const),
 } as const);
 
