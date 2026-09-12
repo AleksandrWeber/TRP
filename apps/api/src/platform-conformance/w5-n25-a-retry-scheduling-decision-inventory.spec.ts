@@ -177,7 +177,7 @@ describe('W5-N25-a notification retry scheduling decision inventory — unit', (
     expect(W5_N25_A_BINDING_FINDINGS.w5N24RetrySchedulingExists).toBe(true);
     expect(W5_N25_A_BINDING_FINDINGS.unifiedPlatformDecisionLayerMissing).toBe(true);
     expect(W5_N25_A_BINDING_FINDINGS.decisionPersistenceMissing).toBe(false);
-    expect(W5_N25_A_BINDING_FINDINGS.decisionRecoveryMissing).toBe(true);
+    expect(W5_N25_A_BINDING_FINDINGS.decisionRecoveryMissing).toBe(false);
     expect(W5_N25_A_BINDING_FINDINGS.decisionOperationalContinuityMissing).toBe(true);
     expect(W5_N25_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
     expect(W5_N25_A_BINDING_FINDINGS.inventoryDoesNotDetermineEligibility).toBe(true);
@@ -271,7 +271,7 @@ describe('W5-N25-a notification retry scheduling decision inventory — unit', (
     ]);
   });
 
-  it('persistence gap resolved by W5-N25-b; recovery/continuity remain absent (deferred to c/d)', () => {
+  it('persistence and recovery gaps resolved by W5-N25-b/c; continuity remains absent (deferred to d)', () => {
     expect(
       W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY.find(
         (entry) => entry.artifactId === 'missing-decision-persistence',
@@ -282,9 +282,18 @@ describe('W5-N25-a notification retry scheduling decision inventory — unit', (
         (entry) => entry.artifactId === 'persist-candidate-decision-anchor',
       )?.existsToday,
     ).toBe(true);
+    expect(
+      W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY.find(
+        (entry) => entry.artifactId === 'missing-decision-recovery',
+      )?.existsToday,
+    ).toBe(true);
+    expect(
+      W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY.find(
+        (entry) => entry.artifactId === 'missing-decision-recovery',
+      )?.classification,
+    ).toBe('EPHEMERAL');
     for (const id of [
       'missing-unified-platform-decision-view',
-      'missing-decision-recovery',
       'missing-decision-operational-continuity',
       'projection-platform-readiness-decision-missing',
     ]) {

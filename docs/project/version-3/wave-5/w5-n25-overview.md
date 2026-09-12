@@ -2,7 +2,7 @@
 
 **Document:** W5-N25 Notification Retry Scheduling Decision Foundation Overview
 **Date:** 2026-09-12
-**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N25-a Inventory **COMPLETE**. W5-N25-b Persistence **COMPLETE** (local). No scheduling decision runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N25-a Inventory **COMPLETE**. W5-N25-b Persistence **COMPLETE**. W5-N25-c Restart Recovery **COMPLETE** (local). No scheduling decision runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N25 (V3-N25 · CM-35)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -102,6 +102,20 @@ Durable persistence ≠ retry execution.
 Persisted Decision artifacts remain informational only.
 ```
 
+### W5-N25-c status (restart recovery)
+
+W5-N25-c delivers **deterministic, idempotent restart recovery** for Decision description anchors on `notification-delivery`. Customer-visible functionality: **None**.
+
+```text
+Restart recovery ≠ operational continuity.
+Restart recovery ≠ runtime decision logic.
+Restart recovery ≠ runtime scheduling.
+Restart recovery ≠ Retry Eligibility.
+Restart recovery ≠ Retry Backoff Calculation.
+Restart recovery ≠ retry execution.
+Recovered Decision artifacts remain informational only.
+```
+
 ---
 
 ## What the operator cannot do (still)
@@ -176,12 +190,13 @@ The platform can calculate backoff, determine eligibility, and maintain scheduli
 | Planning Approval             | **RECORDED**         |
 | Repository Synchronization    | **COMPLETE**         |
 | W5-N25-a Inventory            | **COMPLETE**         |
-| W5-N25-b Persistence          | **COMPLETE** (local) |
-| Implementation slices c–e     | **Not opened**       |
+| W5-N25-b Persistence          | **COMPLETE**         |
+| W5-N25-c Restart Recovery     | **COMPLETE** (local) |
+| Implementation slices d–e     | **Not opened**       |
 | Scheduling decision runtime   | **Not implemented**  |
 | Wave 5 COMPLETE               | **Not claimed**      |
 
-**Slice reports:** [`w5-n25-a-inventory.md`](./w5-n25-a-inventory.md) · [`w5-n25-b-implementation-report.md`](./w5-n25-b-implementation-report.md) · companions under `w5-n25-a-*` / `w5-n25-b-*`
+**Slice reports:** [`w5-n25-a-inventory.md`](./w5-n25-a-inventory.md) · [`w5-n25-b-implementation-report.md`](./w5-n25-b-implementation-report.md) · [`w5-n25-c-implementation-report.md`](./w5-n25-c-implementation-report.md) · companions under `w5-n25-a-*` / `w5-n25-b-*` / `w5-n25-c-*`
 
 ---
 
@@ -201,4 +216,4 @@ The platform can calculate backoff, determine eligibility, and maintain scheduli
 
 ---
 
-**STOP.** W5-N25-b Persistence is **COMPLETE** (local). Await Product Owner Review. Do NOT open W5-N25-c. Do NOT begin restart recovery. Do NOT declare scheduling decision runtime. Do NOT declare Runtime Decision Engine. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan. Do not commit. Do not push.
+**STOP.** W5-N25-c Restart Recovery is **COMPLETE** (local). Await Product Owner Review. Do NOT open W5-N25-d. Do NOT begin operational continuity. Do NOT declare scheduling decision runtime. Do NOT declare Runtime Decision Engine. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan. Do not commit. Do not push.

@@ -3,7 +3,7 @@
 **Package:** W5-N25 Notification Retry Scheduling Decision Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N25 · CM-35
-**Status:** Planning Package **APPROVED** (2026-09-12). Repository Synchronization (Planning) **COMPLETE**. W5-N25-a Inventory **COMPLETE**. W5-N25-b Persistence **COMPLETE** (local). No runtime scheduling. No scheduling decision runtime.
+**Status:** Planning Package **APPROVED** (2026-09-12). Repository Synchronization (Planning) **COMPLETE**. W5-N25-a Inventory **COMPLETE**. W5-N25-b Persistence **COMPLETE**. W5-N25-c Restart Recovery **COMPLETE** (local). No runtime scheduling. No scheduling decision runtime.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n25-product-scope.md`](./w5-n25-product-scope.md)
@@ -120,15 +120,15 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## 5. Governance validation
 
-| Area                           | Must prove                                                                                              |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| Ownership unchanged            | No ownership movement                                                                                   |
-| Previous packages unmodified   | Consume only                                                                                            |
-| No hidden future functionality | Persistence does not smuggle later package scope                                                        |
-| Implementation authorization   | Planning APPROVED; Repo Sync COMPLETE; W5-N25-a COMPLETE; W5-N25-b COMPLETE (local); c–e not authorized |
-| Close Evidence assembled       | Deferred until authorized Close Evidence slice                                                          |
-| Planning Approval              | **RECORDED**                                                                                            |
-| Repository Synchronization     | **COMPLETE**                                                                                            |
+| Area                           | Must prove                                                                                   |
+| ------------------------------ | -------------------------------------------------------------------------------------------- |
+| Ownership unchanged            | No ownership movement                                                                        |
+| Previous packages unmodified   | Consume only                                                                                 |
+| No hidden future functionality | Persistence does not smuggle later package scope                                             |
+| Implementation authorization   | Planning APPROVED; Repo Sync COMPLETE; W5-N25-a…c COMPLETE (local for c); d–e not authorized |
+| Close Evidence assembled       | Deferred until authorized Close Evidence slice                                               |
+| Planning Approval              | **RECORDED**                                                                                 |
+| Repository Synchronization     | **COMPLETE**                                                                                 |
 
 ---
 
@@ -157,45 +157,71 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## 7. W5-N25-b validation (durable persistence)
 
-| Check                                          | Expected / Status |
-| ---------------------------------------------- | ----------------- |
-| Recoverable Decision artifacts persisted       | **PASS**          |
-| Survive process termination                    | **Yes**           |
-| Automatic restart recovery                     | **No**            |
-| Persistence on notification-delivery owner     | **PASS**          |
-| No new persistence owner / Source of Truth     | **PASS**          |
-| Persistence performs runtime decision logic    | **No**            |
-| Persistence performs runtime scheduling        | **No**            |
-| Persistence performs Retry Backoff Calculation | **No**            |
-| Persistence determines Retry Eligibility       | **No**            |
-| Persistence executes retries                   | **No**            |
-| Ownership / architecture changed               | **No** / **No**   |
-| Customer-visible feature                       | **None**          |
-| W5-N25-c opened                                | **No**            |
+| Check                                          | Expected / Status          |
+| ---------------------------------------------- | -------------------------- |
+| Recoverable Decision artifacts persisted       | **PASS**                   |
+| Survive process termination                    | **Yes**                    |
+| Automatic restart recovery                     | **No**                     |
+| Persistence on notification-delivery owner     | **PASS**                   |
+| No new persistence owner / Source of Truth     | **PASS**                   |
+| Persistence performs runtime decision logic    | **No**                     |
+| Persistence performs runtime scheduling        | **No**                     |
+| Persistence performs Retry Backoff Calculation | **No**                     |
+| Persistence determines Retry Eligibility       | **No**                     |
+| Persistence executes retries                   | **No**                     |
+| Ownership / architecture changed               | **No** / **No**            |
+| Customer-visible feature                       | **None**                   |
+| W5-N25-c opened                                | **Yes** — COMPLETE (local) |
 
 **Evidence:** [`w5-n25-b-implementation-report.md`](./w5-n25-b-implementation-report.md) · [`w5-n25-b-validation-report.md`](./w5-n25-b-validation-report.md) · `apps/api/src/platform-conformance/w5-n25-b-durable-notification-platform-retry-scheduling-decision*.ts`
 
 ---
 
-## 8. Implementation slices c–e (deferred)
+## 8. W5-N25-c validation (restart recovery)
+
+| Check                                            | Expected / Status |
+| ------------------------------------------------ | ----------------- |
+| Decision artifacts restored after normal restart | **PASS**          |
+| Recovery deterministic                           | **Yes**           |
+| Recovery idempotent                              | **Yes**           |
+| Fabricate missing artifacts                      | **No**            |
+| Restore corrupted artifacts                      | **No**            |
+| Existing Restart Recovery framework reused       | **PASS**          |
+| No duplicate recovery subsystem                  | **PASS**          |
+| Recovery performs runtime decision logic         | **No**            |
+| Recovery performs runtime scheduling             | **No**            |
+| Recovery performs Retry Backoff Calculation      | **No**            |
+| Recovery determines Retry Eligibility            | **No**            |
+| Recovery executes retries                        | **No**            |
+| Ownership / architecture changed                 | **No** / **No**   |
+| Customer-visible feature                         | **None**          |
+| W5-N25-d opened                                  | **No**            |
+
+**Evidence:** [`w5-n25-c-implementation-report.md`](./w5-n25-c-implementation-report.md) · [`w5-n25-c-validation-report.md`](./w5-n25-c-validation-report.md) · `apps/api/src/platform-conformance/w5-n25-c-notification-platform-retry-scheduling-decision-restart-recovery*.ts`
+
+---
+
+## 9. Implementation slices d–e (deferred)
 
 **Not opened. Not authorized.**
 
 ---
 
-## Mandatory Questions (slice b)
+## Mandatory Questions (slice c)
 
 1. **What customer-visible functionality was delivered?** None.
-2. **Were recoverable Decision artifacts persisted?** Yes.
-3. **Can persisted artifacts survive process termination?** Yes.
-4. **Can persisted artifacts automatically recover after restart?** No.
-5. **Does persistence perform runtime decision logic?** No.
-6. **Does persistence perform runtime scheduling?** No.
-7. **Does persistence perform Retry Backoff Calculation?** No.
-8. **Does persistence determine Retry Eligibility?** No.
-9. **Does persistence execute retries?** No.
-10. **Were any ownership boundaries changed?** No.
-11. **Were any architectural deviations introduced?** No.
+2. **Were Decision artifacts restored after a normal restart?** Yes.
+3. **Is recovery deterministic?** Yes.
+4. **Is recovery idempotent?** Yes.
+5. **Can recovery fabricate missing artifacts?** No.
+6. **Can recovery restore corrupted artifacts?** No.
+7. **Does recovery perform runtime decision logic?** No.
+8. **Does recovery perform runtime scheduling?** No.
+9. **Does recovery perform Retry Backoff Calculation?** No.
+10. **Does recovery determine Retry Eligibility?** No.
+11. **Does recovery execute retries?** No.
+12. **Were any ownership boundaries changed?** No.
+13. **Were any architectural deviations introduced?** No.
 
 ---
 
@@ -205,11 +231,11 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | ---------- | ------------------------------------------------------------------------ |
 | Resolved   | Notification Retry Scheduling Decision inventory baseline established    |
 |            | Notification Retry Scheduling Decision Persistence Foundation            |
+|            | Notification Retry Scheduling Decision Restart Recovery Foundation       |
 | Introduced | None                                                                     |
-| Deferred   | Restart Recovery Foundation (W5-N25-c)                                   |
-|            | Operational Continuity Foundation (W5-N25-d)                             |
+| Deferred   | Operational Continuity Foundation (W5-N25-d)                             |
 |            | Package Validation, Operational Verification & Close Evidence (W5-N25-e) |
 
 ---
 
-**STOP.** W5-N25-b Persistence is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N25-c. Do not commit. Do not push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N25-c Restart Recovery is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N25-d. Do not commit. Do not push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.

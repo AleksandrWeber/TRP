@@ -241,6 +241,8 @@ const N25B =
   'apps/api/src/modules/notification-delivery/notification-platform-retry-scheduling-decision-persistence.service.ts';
 const N25B_PRISMA =
   'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-retry-scheduling-decision-anchor.repository.ts';
+const N25C =
+  'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-restart-recovery.service.ts';
 
 type RowInput = {
   artifactId: string;
@@ -890,7 +892,7 @@ export const W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY: readonly W5N25AInvent
         'Resolved by W5-N25-b — persistence only; not runtime decision logic; not scheduling/eligibility/backoff/execution',
       futureW5N25Responsibility: 'honesty-baseline',
       persistenceRequirement: 'notification-delivery',
-      recoveryRequirement: 'planned W5-N25-c',
+      recoveryRequirement: 'notification-delivery',
       capabilityCategory: 'infrastructure-only',
       honestProductState: 'infrastructure-only',
       currentStatus:
@@ -901,19 +903,20 @@ export const W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY: readonly W5N25AInvent
     }),
     row({
       artifactId: 'missing-decision-recovery',
-      artifact: 'Decision restart recovery — missing (future W5-N25-c)',
+      artifact:
+        'Decision restart recovery — resolved by W5-N25-c (gap row retained for inventory honesty)',
       kind: 'ephemeral-artifact',
       owner: 'notification-delivery',
-      purpose: 'Record restart-safe decision recovery gap for W5-N25-c',
-      decisionRole: 'missing-gap',
+      purpose: 'Record resolved restart-safe decision recovery gap after W5-N25-c',
+      decisionRole: 'missing-gap-resolved',
       classification: 'EPHEMERAL',
       honestyRequirement:
-        'Planned for W5-N25-c — recovery only; not runtime decision logic; not scheduling/eligibility/backoff/execution',
-      futureW5N25Responsibility: 'W5-N25-c',
-      recoveryRequirement: 'planned W5-N25-c',
-      evidencePath: PKG,
-      existsToday: false,
-      customerVisibility: 'not customer-visible — absent',
+        'Resolved by W5-N25-c — recovery only; not runtime decision logic; not scheduling/eligibility/backoff/execution; not operational continuity',
+      futureW5N25Responsibility: 'honesty-baseline',
+      recoveryRequirement: 'notification-delivery',
+      evidencePath: N25C,
+      existsToday: true,
+      customerVisibility: 'not customer-visible — gap resolved by W5-N25-c',
     }),
     row({
       artifactId: 'missing-decision-operational-continuity',
@@ -1149,12 +1152,12 @@ export const W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY: readonly W5N25AInvent
         'Persistence only; not runtime decision logic; not scheduling/eligibility/backoff/execution',
       futureW5N25Responsibility: 'honesty-baseline',
       persistenceRequirement: 'notification-delivery',
-      recoveryRequirement: 'planned W5-N25-c',
+      recoveryRequirement: 'notification-delivery',
       operationalRequirement: 'planned W5-N25-d',
       capabilityCategory: 'infrastructure-only',
       honestProductState: 'infrastructure-only',
       currentStatus:
-        'Implemented — durable decision description anchors; restart recovery deferred to W5-N25-c',
+        'Implemented — durable decision description anchors; restart recovery via W5-N25-c; operational continuity deferred to W5-N25-d',
       evidencePath: N25B_PRISMA,
       existsToday: true,
       customerVisibility: 'not customer-visible — infrastructure only',
@@ -1584,7 +1587,7 @@ export const W5_N25_A_BINDING_FINDINGS = Object.freeze({
   w5N24RetrySchedulingExists: true,
   unifiedPlatformDecisionLayerMissing: true,
   decisionPersistenceMissing: false,
-  decisionRecoveryMissing: true,
+  decisionRecoveryMissing: false,
   decisionOperationalContinuityMissing: true,
   productionTransportsDeferred: true,
   inventoryDoesNotMakeSchedulingDecisions: true,
