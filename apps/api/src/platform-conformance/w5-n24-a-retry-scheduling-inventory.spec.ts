@@ -167,7 +167,7 @@ describe('W5-N24-a notification retry scheduling inventory — unit', () => {
     expect(W5_N24_A_BINDING_FINDINGS.w5N22RetryBackoffCalculationExists).toBe(true);
     expect(W5_N24_A_BINDING_FINDINGS.w5N23RetryEligibilityExists).toBe(true);
     expect(W5_N24_A_BINDING_FINDINGS.unifiedPlatformSchedulingLayerMissing).toBe(true);
-    expect(W5_N24_A_BINDING_FINDINGS.schedulingPersistenceMissing).toBe(true);
+    expect(W5_N24_A_BINDING_FINDINGS.schedulingPersistenceMissing).toBe(false);
     expect(W5_N24_A_BINDING_FINDINGS.schedulingRecoveryMissing).toBe(true);
     expect(W5_N24_A_BINDING_FINDINGS.schedulingOperationalContinuityMissing).toBe(true);
     expect(W5_N24_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
@@ -258,10 +258,9 @@ describe('W5-N24-a notification retry scheduling inventory — unit', () => {
     ]);
   });
 
-  it('missing gaps remain absent today for W5-N24-a (persistence, recovery, continuity deferred to b–d)', () => {
+  it('missing gaps remain absent today except persistence resolved by W5-N24-b', () => {
     for (const id of [
       'missing-unified-platform-scheduling-view',
-      'missing-scheduling-persistence',
       'missing-scheduling-recovery',
       'missing-scheduling-operational-continuity',
     ]) {
@@ -272,7 +271,13 @@ describe('W5-N24-a notification retry scheduling inventory — unit', () => {
     const persistenceGap = W5_N24_A_RETRY_SCHEDULING_INVENTORY.find(
       (entry) => entry.artifactId === 'missing-scheduling-persistence',
     );
+    expect(persistenceGap?.existsToday).toBe(true);
     expect(persistenceGap?.classification).toBe('RECOVERABLE');
+    const persistCandidate = W5_N24_A_RETRY_SCHEDULING_INVENTORY.find(
+      (entry) => entry.artifactId === 'persist-candidate-scheduling-anchor',
+    );
+    expect(persistCandidate?.existsToday).toBe(true);
+    expect(persistCandidate?.classification).toBe('RECOVERABLE');
     const recoveryGap = W5_N24_A_RETRY_SCHEDULING_INVENTORY.find(
       (entry) => entry.artifactId === 'missing-scheduling-recovery',
     );

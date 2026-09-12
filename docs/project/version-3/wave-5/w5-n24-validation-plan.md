@@ -3,7 +3,7 @@
 **Package:** W5-N24 Notification Retry Scheduling Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N24 · CM-34
-**Status:** Planning Package **APPROVED** (2026-09-12). Planning Review **PASS**. Repository Synchronization (Planning) **COMPLETE**. W5-N24-a **COMPLETE** (local) — awaiting Product Owner Review. Slices b–e **not opened**. No runtime scheduling.
+**Status:** Planning Package **APPROVED** (2026-09-12). Repository Synchronization (Planning) **COMPLETE**. W5-N24-a **COMPLETE**. W5-N24-b **COMPLETE** (local) — awaiting Product Owner Review. Slices c–e **not opened**. No runtime scheduling.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n24-product-scope.md`](./w5-n24-product-scope.md)
@@ -86,7 +86,8 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | ------------------------- | ---------------------------------------------------------------- |
 | Planning package complete | All W5-N24 planning documents present and internally consistent  |
 | Slice a reports           | Inventory + six review docs present for W5-N24-a                 |
-| Slice b–e reports         | Only after authorized slices (not opened)                        |
+| Slice b reports           | Implementation + four review docs present for W5-N24-b           |
+| Slice c–e reports         | Only after authorized slices (not opened)                        |
 | Operational walkthrough   | Platform Scheduling Foundation Walkthrough at Close              |
 | Close Evidence            | Package summary, close report, integration verification at Close |
 | Wave documentation sync   | wave-5-overview.md and wave-5-progress.md synchronized           |
@@ -115,44 +116,62 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## 5. Governance validation
 
-| Area                           | Must prove                                            |
-| ------------------------------ | ----------------------------------------------------- |
-| Ownership unchanged            | No ownership movement                                 |
-| Previous packages unmodified   | Consume only                                          |
-| No hidden future functionality | Inventory does not smuggle later package scope        |
-| Implementation authorization   | Planning APPROVED; W5-N24-a inventory only authorized |
-| No slices b–e opened           | W5-N24-b…e not created                                |
-| Planning Approval              | **RECORDED**                                          |
-| Repository Synchronization     | **COMPLETE**                                          |
+| Area                           | Must prove                                               |
+| ------------------------------ | -------------------------------------------------------- |
+| Ownership unchanged            | No ownership movement                                    |
+| Previous packages unmodified   | Consume only                                             |
+| No hidden future functionality | Persistence does not smuggle later package scope         |
+| Implementation authorization   | Planning APPROVED; W5-N24-a…b authorized; c–e not opened |
+| No slices c–e opened           | W5-N24-c…e not created                                   |
+| Planning Approval              | **RECORDED**                                             |
+| Repository Synchronization     | **COMPLETE**                                             |
 
 ---
 
 ## 6. W5-N24-a validation (inventory)
 
-| Check                                        | Expected / Status  |
-| -------------------------------------------- | ------------------ |
-| Machine inventory rows ≥ 50                  | **PASS** (83)      |
-| Classifications cover all five               | **PASS**           |
-| RECOVERABLE and EPHEMERAL non-empty          | **PASS** (28 / 12) |
-| SCHEDULING / CONFIGURATION present           | **PASS** (3 / 3)   |
-| No scheduling functional authorization       | **PASS**           |
-| Inventory-only honesty boundaries            | **PASS**           |
-| Inventory determines eligibility             | **No**             |
-| Inventory performs Retry Backoff Calculation | **No**             |
-| Inventory schedules / executes retries       | **No** / **No**    |
-| Ownership / architecture changed             | **No** / **No**    |
-| Customer-visible feature                     | **None**           |
-| W5-N24-b opened                              | **No**             |
+| Check                                        | Expected / Status     |
+| -------------------------------------------- | --------------------- |
+| Machine inventory rows ≥ 50                  | **PASS** (83)         |
+| Classifications cover all five               | **PASS**              |
+| RECOVERABLE and EPHEMERAL non-empty          | **PASS** (28 / 12)    |
+| SCHEDULING / CONFIGURATION present           | **PASS** (3 / 3)      |
+| No scheduling functional authorization       | **PASS**              |
+| Inventory-only honesty boundaries            | **PASS**              |
+| Inventory determines eligibility             | **No**                |
+| Inventory performs Retry Backoff Calculation | **No**                |
+| Inventory schedules / executes retries       | **No** / **No**       |
+| Ownership / architecture changed             | **No** / **No**       |
+| Customer-visible feature                     | **None**              |
+| W5-N24-b opened                              | **Yes** (persistence) |
 
 **Evidence:** [`w5-n24-a-inventory.md`](./w5-n24-a-inventory.md) · [`w5-n24-a-validation-report.md`](./w5-n24-a-validation-report.md) · `apps/api/src/platform-conformance/w5-n24-a-retry-scheduling*.ts`
 
 ---
 
-## 7. Future slice validation (deferred — not opened)
+## 7. W5-N24-b validation (durable persistence)
+
+| Check                                             | Expected / Status |
+| ------------------------------------------------- | ----------------- |
+| Durable scheduling anchors persist/load           | **PASS**          |
+| Survive process termination (durable rows)        | **PASS**          |
+| Automatic restart recovery                        | **No** (slice b)  |
+| Inventory sync (persist-candidate RECOVERABLE)    | **PASS**          |
+| Consumes W5-N19-b stack (no duplicate storage)    | **PASS**          |
+| Ownership on notification-delivery only           | **PASS**          |
+| Runtime scheduling / calc / eligibility / execute | **No**            |
+| Ownership / architecture changed                  | **No** / **No**   |
+| Customer-visible feature                          | **None**          |
+| W5-N24-c opened                                   | **No**            |
+
+**Evidence:** [`w5-n24-b-implementation-report.md`](./w5-n24-b-implementation-report.md) · [`w5-n24-b-validation-report.md`](./w5-n24-b-validation-report.md) · `apps/api/src/platform-conformance/w5-n24-b-durable-notification-platform-retry-scheduling*.ts`
+
+---
+
+## 8. Future slice validation (deferred — not opened)
 
 | Slice    | Focus                       | Status         |
 | -------- | --------------------------- | -------------- |
-| W5-N24-b | Persistence Foundation      | **Not opened** |
 | W5-N24-c | Restart Recovery Foundation | **Not opened** |
 | W5-N24-d | Operational Continuity      | **Not opened** |
 | W5-N24-e | Package Validation & Close  | **Not opened** |
@@ -163,8 +182,8 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 1. **Business problem?** Plan Notification Retry Scheduling after Backoff Calculation and Retry Eligibility are available.
 2. **Why after W5-N23?** Scheduling depends on completed Backoff Calculation and Eligibility foundations.
-3. **Consumes?** Closed W5-N01…W5-N23 and existing notification-delivery capabilities.
-4. **Owns?** Scheduling inventory (slice a); package still owns Scheduling Foundation only.
+3. **Consumes?** Closed W5-N01…W5-N23 and existing notification-delivery capabilities (incl. W5-N19-b).
+4. **Owns?** Scheduling inventory (a) and durable persistence sync (b).
 5. **OUT?** Runtime scheduling, retry execution, workers, timers implementation, transports, Monitoring, BC, HA, DR.
 6. **Performs Retry Backoff Calculation?** No.
 7. **Determines Retry Eligibility?** No.
@@ -177,15 +196,14 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## Technical debt delta
 
-| Category   | Item                                                         |
-| ---------- | ------------------------------------------------------------ |
-| Resolved   | Notification Retry Scheduling inventory baseline established |
-| Introduced | None                                                         |
-| Deferred   | Persistence Foundation (W5-N24-b)                            |
-|            | Restart Recovery Foundation (W5-N24-c)                       |
-|            | Operational Continuity Foundation (W5-N24-d)                 |
-|            | Package Validation & Close Evidence (W5-N24-e)               |
+| Category   | Item                                                                       |
+| ---------- | -------------------------------------------------------------------------- |
+| Resolved   | Durable persistence foundation for Notification Retry Scheduling artifacts |
+| Introduced | None                                                                       |
+| Deferred   | Restart Recovery Foundation (W5-N24-c)                                     |
+|            | Operational Continuity Foundation (W5-N24-d)                               |
+|            | Package Validation & Close Evidence (W5-N24-e)                             |
 
 ---
 
-**STOP.** W5-N24-a is **COMPLETE** (local). Await Product Owner Review. Do not commit. Do not push. Do not open W5-N24-b. Do NOT declare W5-N24 COMPLETE. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N24-b is **COMPLETE** (local). Await Product Owner Review. Do not commit. Do not push. Do not open W5-N24-c. Do NOT declare W5-N24 COMPLETE. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.

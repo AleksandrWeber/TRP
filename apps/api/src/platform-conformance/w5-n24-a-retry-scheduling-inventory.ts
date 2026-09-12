@@ -226,6 +226,10 @@ const N23C =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-eligibility-restart-recovery.service.ts';
 const N23D =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-eligibility-operational-continuity.ts';
+const N19PERS =
+  'apps/api/src/modules/notification-delivery/notification-platform-retry-scheduling-persistence.service.ts';
+const N24B =
+  'apps/api/src/platform-conformance/w5-n24-b-durable-notification-platform-retry-scheduling.ts';
 const OR = 'apps/api/src/modules/operational-continuity/operational-readiness.ts';
 
 type RowInput = {
@@ -799,23 +803,25 @@ export const W5_N24_A_RETRY_SCHEDULING_INVENTORY: readonly W5N24AInventoryRow[] 
   }),
   row({
     artifactId: 'missing-scheduling-persistence',
-    artifact: 'Scheduling durable persistence — missing (planned W5-N24-b)',
+    artifact:
+      'Scheduling durable persistence — resolved by W5-N24-b (gap row retained for inventory honesty)',
     kind: 'persistence-candidate',
     owner: 'notification-delivery',
-    purpose: 'Record absence of durable when-to-schedule persistence on notification-delivery',
-    schedulingRole: 'missing-gap',
+    purpose: 'Record resolved durable when-to-schedule persistence gap after W5-N24-b',
+    schedulingRole: 'missing-gap-resolved',
     classification: 'RECOVERABLE',
-    honestyRequirement: 'Missing — deferred to W5-N24-b; not runtime scheduling',
-    futureW5N24Responsibility: 'W5-N24-b',
-    persistenceRequirement: 'planned W5-N24-b',
+    honestyRequirement:
+      'Resolved by W5-N24-b — persistence only (consumes W5-N19-b); not runtime scheduling; not eligibility/backoff/execution',
+    futureW5N24Responsibility: 'honesty-baseline',
+    persistenceRequirement: 'notification-delivery',
     recoveryRequirement: 'planned W5-N24-c',
-    capabilityCategory: 'planned',
-    honestProductState: 'planned',
+    capabilityCategory: 'infrastructure-only',
+    honestProductState: 'infrastructure-only',
     currentStatus:
-      'Missing — no durable scheduling anchors for post-calc+eligibility scheduling yet',
-    evidencePath: PKG,
-    existsToday: false,
-    customerVisibility: 'not customer-visible — absent',
+      'Resolved by W5-N24-b — see persist-candidate-scheduling-anchor; gap row retained for inventory honesty',
+    evidencePath: N24B,
+    existsToday: true,
+    customerVisibility: 'not customer-visible — gap resolved by W5-N24-b',
   }),
   row({
     artifactId: 'missing-scheduling-recovery',
@@ -1030,24 +1036,25 @@ export const W5_N24_A_RETRY_SCHEDULING_INVENTORY: readonly W5N24AInventoryRow[] 
   row({
     artifactId: 'persist-candidate-scheduling-anchor',
     artifact:
-      'WorkspaceNotificationPlatformRetrySchedulingAnchor — planned durable scheduling anchors (W5-N24-b)',
+      'WorkspaceNotificationPlatformRetrySchedulingAnchor — durable scheduling anchors (W5-N24-b; consumes W5-N19-b)',
     kind: 'persistence-candidate',
     owner: 'notification-delivery',
-    purpose: 'Plan durable when-to-schedule anchor on notification-delivery owner',
-    schedulingRole: 'durable-anchor-planned',
+    purpose: 'Durable when-to-schedule anchor on notification-delivery owner',
+    schedulingRole: 'durable-anchor',
     classification: 'RECOVERABLE',
     honestyRequirement:
-      'Planned persistence only; not runtime scheduling; not eligibility/backoff/execution',
-    futureW5N24Responsibility: 'W5-N24-b',
-    persistenceRequirement: 'planned W5-N24-b',
+      'Persistence only; not runtime scheduling; not eligibility/backoff/execution; not restart recovery',
+    futureW5N24Responsibility: 'honesty-baseline',
+    persistenceRequirement: 'notification-delivery',
     recoveryRequirement: 'planned W5-N24-c',
     operationalRequirement: 'planned W5-N24-d',
-    capabilityCategory: 'planned',
-    honestProductState: 'planned',
-    currentStatus: 'Planned — not implemented in W5-N24-a',
-    evidencePath: PKG,
-    existsToday: false,
-    customerVisibility: 'not customer-visible — planned',
+    capabilityCategory: 'infrastructure-only',
+    honestProductState: 'infrastructure-only',
+    currentStatus:
+      'Implemented — durable scheduling description anchors via consumed W5-N19-b stack; restart recovery deferred to W5-N24-c',
+    evidencePath: N19PERS,
+    existsToday: true,
+    customerVisibility: 'not customer-visible — infrastructure only',
   }),
   row({
     artifactId: 'state-n22-backoff-calculation-anchor-reference',
@@ -1356,7 +1363,7 @@ export const W5_N24_A_BINDING_FINDINGS = Object.freeze({
   w5N22RetryBackoffCalculationExists: true,
   w5N23RetryEligibilityExists: true,
   unifiedPlatformSchedulingLayerMissing: true,
-  schedulingPersistenceMissing: true,
+  schedulingPersistenceMissing: false,
   schedulingRecoveryMissing: true,
   schedulingOperationalContinuityMissing: true,
   productionTransportsDeferred: true,
