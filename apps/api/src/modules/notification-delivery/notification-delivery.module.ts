@@ -74,6 +74,8 @@ import { NotificationPlatformRetrySchedulingPersistenceService } from './notific
 import { NotificationPlatformRetryPolicyPersistenceService } from './notification-platform-retry-policy-persistence.service';
 import { NotificationPlatformRetryBackoffPersistenceService } from './notification-platform-retry-backoff-persistence.service';
 import { NotificationPlatformRetryBackoffCalculationPersistenceService } from './notification-platform-retry-backoff-calculation-persistence.service';
+import { NotificationPlatformRetryBackoffCalculationRecoveryStore } from './domain/notification-platform-retry-backoff-calculation-recovery-store';
+import { NotificationPlatformRetryBackoffCalculationRestartRecoveryService } from './domain/notification-platform-retry-backoff-calculation-restart-recovery.service';
 import { NotificationPlatformTelemetryRecoveryStore } from './domain/notification-platform-telemetry-recovery-store';
 import { NotificationPlatformTelemetryRestartRecoveryService } from './domain/notification-platform-telemetry-restart-recovery.service';
 import { NotificationPlatformMetricsRecoveryStore } from './domain/notification-platform-metrics-recovery-store';
@@ -330,6 +332,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetryPolicyRestartRecoveryService,
     NotificationPlatformRetryBackoffPersistenceService,
     NotificationPlatformRetryBackoffCalculationPersistenceService,
+    NotificationPlatformRetryBackoffCalculationRecoveryStore,
+    NotificationPlatformRetryBackoffCalculationRestartRecoveryService,
     NotificationPlatformRetryBackoffRecoveryStore,
     NotificationPlatformRetryBackoffRestartRecoveryService,
     NotificationPlatformTelemetryRecoveryStore,
@@ -422,6 +426,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetryPolicyRestartRecoveryService,
     NotificationPlatformRetryBackoffPersistenceService,
     NotificationPlatformRetryBackoffCalculationPersistenceService,
+    NotificationPlatformRetryBackoffCalculationRecoveryStore,
+    NotificationPlatformRetryBackoffCalculationRestartRecoveryService,
     NotificationPlatformRetryBackoffRecoveryStore,
     NotificationPlatformRetryBackoffRestartRecoveryService,
     NotificationPlatformTelemetryRecoveryStore,

@@ -206,6 +206,8 @@ const N21C =
 const N21I = 'apps/api/src/platform-conformance/w5-n21-a-retry-backoff-inventory.ts';
 const N22B =
   'apps/api/src/modules/notification-delivery/notification-platform-retry-backoff-calculation-persistence.service.ts';
+const N22C =
+  'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-backoff-calculation-restart-recovery.service.ts';
 
 type RowInput = {
   artifactId: string;
@@ -405,11 +407,12 @@ export const W5_N22_A_RETRY_BACKOFF_CALCULATION_INVENTORY: readonly W5N22AInvent
       'W5-N22-d',
       'Backoff calculation extends notification-delivery only; no Calculation Engine or Backoff Engine',
       {
-        persistenceRequirement: 'notification-delivery — planned W5-N22-b',
-        recoveryRequirement: 'notification-delivery — planned W5-N22-c',
+        persistenceRequirement: 'notification-delivery',
+        recoveryRequirement: 'notification-delivery',
         operationalRequirement: 'none-missing until W5-N22-d',
-        currentStatus: 'Owner path exists; unified backoff calculation layer still absent',
-        evidencePath: ND,
+        currentStatus:
+          'Owner path exists; durable calculation anchors + restart recovery present; unified calculation runtime still absent',
+        evidencePath: N22C,
         existsToday: true,
       },
     ),
@@ -705,7 +708,7 @@ export const W5_N22_A_RETRY_BACKOFF_CALCULATION_INVENTORY: readonly W5N22AInvent
         'Resolved by W5-N22-b — persistence only; not calculation runtime; not scheduling/execution',
       futureW5N22Responsibility: 'honesty-baseline',
       persistenceRequirement: 'notification-delivery',
-      recoveryRequirement: 'none-missing until W5-N22-c',
+      recoveryRequirement: 'notification-delivery',
       capabilityCategory: 'infrastructure-only',
       honestProductState: 'infrastructure-only',
       currentStatus:
@@ -716,17 +719,20 @@ export const W5_N22_A_RETRY_BACKOFF_CALCULATION_INVENTORY: readonly W5N22AInvent
     }),
     row({
       artifactId: 'missing-backoff-calculation-recovery',
-      artifact: 'Backoff calculation restart recovery — missing (planned W5-N22-c)',
+      artifact:
+        'Backoff calculation restart recovery — resolved by W5-N22-c (gap row retained for inventory honesty)',
       kind: 'ephemeral-artifact',
       owner: 'notification-delivery',
-      purpose: 'Record planned calculation recovery gap',
-      calculationRole: 'missing-gap',
+      purpose: 'Record resolved calculation recovery gap after W5-N22-c',
+      calculationRole: 'missing-gap-resolved',
       classification: 'EPHEMERAL',
-      honestyRequirement: 'Inventory does not create calculation recovery',
-      futureW5N22Responsibility: 'W5-N22-c',
-      recoveryRequirement: 'W5-N22-c',
-      evidencePath: PKG,
-      customerVisibility: 'not customer-visible — absent',
+      honestyRequirement:
+        'Resolved by W5-N22-c — recovery only; not calculation runtime; not scheduling/execution; not operational continuity',
+      futureW5N22Responsibility: 'honesty-baseline',
+      recoveryRequirement: 'notification-delivery',
+      evidencePath: N22C,
+      existsToday: true,
+      customerVisibility: 'not customer-visible — gap resolved by W5-N22-c',
     }),
     row({
       artifactId: 'missing-backoff-calculation-operational-continuity',
@@ -927,15 +933,15 @@ export const W5_N22_A_RETRY_BACKOFF_CALCULATION_INVENTORY: readonly W5N22AInvent
       calculationRole: 'durable-anchor',
       classification: 'RECOVERABLE',
       honestyRequirement: 'Persistence only; not calculation runtime; not scheduling/execution',
-      futureW5N22Responsibility: 'W5-N22-c',
+      futureW5N22Responsibility: 'W5-N22-d',
       persistenceRequirement: 'notification-delivery',
-      recoveryRequirement: 'W5-N22-c',
+      recoveryRequirement: 'notification-delivery',
       operationalRequirement: 'W5-N22-d',
       capabilityCategory: 'infrastructure-only',
       honestProductState: 'infrastructure-only',
       currentStatus:
-        'Implemented — durable calculation description anchors on notification-delivery; restart recovery still absent',
-      evidencePath: N22B,
+        'Implemented — durable calculation description anchors on notification-delivery; restart recovery via W5-N22-c',
+      evidencePath: N22C,
       existsToday: true,
       customerVisibility: 'not customer-visible — infrastructure only',
     }),
@@ -1219,7 +1225,7 @@ export const W5_N22_A_BINDING_FINDINGS = Object.freeze({
   w5N21RetryBackoffExists: true,
   unifiedPlatformBackoffCalculationLayerMissing: true,
   backoffCalculationPersistenceMissing: false,
-  backoffCalculationRecoveryMissing: true,
+  backoffCalculationRecoveryMissing: false,
   backoffCalculationOperationalContinuityMissing: true,
   productionTransportsDeferred: true,
   calculationDoesNotScheduleRetries: true,
@@ -1326,6 +1332,7 @@ export const W5_N22_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N20 retry policy inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N21 retry backoff inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N22-b durable backoff calculation anchors on notification-delivery (persistence only)',
+    'W5-N22-c restart recovery of calculation anchors on notification-delivery (recovery only)',
     'PC-06 resolve-delivery-routing — routing SoT consumed unchanged',
     'PC-07 notification-product — per-channel settings and history',
     'Notification Durable Queue — W3-O02 on notification-delivery owner (consumed)',
@@ -1333,14 +1340,11 @@ export const W5_N22_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
   plannedCapabilities: Object.freeze([
-    'W5-N22-b — Durable Persistence Foundation',
-    'W5-N22-c — Restart Recovery Foundation',
     'W5-N22-d — Operational Continuity Foundation',
     'W5-N22-e — Package Validation, Operational Verification & Close Evidence',
   ] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform backoff calculation layer',
-    'Backoff calculation recovery',
     'Backoff calculation operational continuity',
     'Operator backoff calculation UI',
     'Backoff calculation runtime',

@@ -9,6 +9,7 @@ import {
   NOTIFICATION_PLATFORM_RETRY_BACKOFF_CALCULATION_ANCHOR_REPOSITORY,
   type NotificationPlatformRetryBackoffCalculationAnchorRepository,
 } from './domain/notification-platform-retry-backoff-calculation-anchor.repository';
+import { NotificationPlatformRetryBackoffCalculationRecoveryStore } from './domain/notification-platform-retry-backoff-calculation-recovery-store';
 
 export type PersistNotificationPlatformRetryBackoffCalculationAnchorCommand = Readonly<{
   workspaceId: string;
@@ -24,21 +25,26 @@ export type PersistNotificationPlatformRetryBackoffCalculationAnchorCommand = Re
 /**
  * W5-N22-b storage only — durable Notification Platform Retry Backoff Calculation anchor
  * persistence on Notification Delivery owner.
- * Storage only — not calculation runtime, not scheduling, not execution, not restart recovery,
+ * W5-N22-c — write-through to recovery store after hydrate.
+ * Storage only — not calculation runtime, not scheduling, not execution,
  * not operational continuity. Persisted data is informational only.
- * No recovery store (that is W5-N22-c).
  */
 @Injectable()
 export class NotificationPlatformRetryBackoffCalculationPersistenceService {
   constructor(
     @Inject(NOTIFICATION_PLATFORM_RETRY_BACKOFF_CALCULATION_ANCHOR_REPOSITORY)
     private readonly repository: NotificationPlatformRetryBackoffCalculationAnchorRepository,
+    @Inject(NotificationPlatformRetryBackoffCalculationRecoveryStore)
+    private readonly recoveryStore: NotificationPlatformRetryBackoffCalculationRecoveryStore,
   ) {}
 
   async loadNotificationPlatformRetryBackoffCalculationAnchor(
     workspaceId: string,
     calculationAnchorId: string,
   ): Promise<DurableNotificationPlatformRetryBackoffCalculationAnchor | null> {
+    if (this.recoveryStore.hasHydrated()) {
+      return this.recoveryStore.get(workspaceId, calculationAnchorId);
+    }
     return this.repository.loadNotificationPlatformRetryBackoffCalculationAnchor(
       workspaceId,
       calculationAnchorId,
@@ -66,6 +72,7 @@ export class NotificationPlatformRetryBackoffCalculationPersistenceService {
       return outcome;
     }
     await this.repository.saveNotificationPlatformRetryBackoffCalculationAnchor(outcome.anchor);
+    this.recoveryStore.set(outcome.anchor);
     return outcome;
   }
 }

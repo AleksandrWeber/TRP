@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PrismaNotificationPlatformRetryBackoffCalculationAnchorRepository } from '../modules/notification-delivery/persistence/prisma-notification-platform-retry-backoff-calculation-anchor.repository';
 import { NotificationPlatformRetryBackoffCalculationPersistenceService } from '../modules/notification-delivery/notification-platform-retry-backoff-calculation-persistence.service';
+import { NotificationPlatformRetryBackoffCalculationRecoveryStore } from '../modules/notification-delivery/domain/notification-platform-retry-backoff-calculation-recovery-store';
 import { rowsEphemeral } from './w5-n22-a-retry-backoff-calculation-inventory';
 import {
   W5_N22_B_ARCHITECTURE_CLAIMS,
@@ -71,7 +72,10 @@ describe('W5-N22-b durable notification platform retry backoff calculation — u
     const repository = new PrismaNotificationPlatformRetryBackoffCalculationAnchorRepository(
       prisma as never,
     );
-    const service = new NotificationPlatformRetryBackoffCalculationPersistenceService(repository);
+    const service = new NotificationPlatformRetryBackoffCalculationPersistenceService(
+      repository,
+      new NotificationPlatformRetryBackoffCalculationRecoveryStore(),
+    );
 
     const outcome = await service.persistNotificationPlatformRetryBackoffCalculationAnchor({
       workspaceId: 'ws-a',

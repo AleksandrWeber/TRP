@@ -4,6 +4,7 @@ import {
   type DurableNotificationPlatformRetryBackoffCalculationAnchor,
 } from './domain/durable-notification-platform-retry-backoff-calculation-anchor';
 import type { NotificationPlatformRetryBackoffCalculationAnchorRepository } from './domain/notification-platform-retry-backoff-calculation-anchor.repository';
+import { NotificationPlatformRetryBackoffCalculationRecoveryStore } from './domain/notification-platform-retry-backoff-calculation-recovery-store';
 import { NotificationPlatformRetryBackoffCalculationPersistenceService } from './notification-platform-retry-backoff-calculation-persistence.service';
 
 const recordedAt = '2026-09-12T21:00:00.000Z';
@@ -39,7 +40,10 @@ function createRepository(): NotificationPlatformRetryBackoffCalculationAnchorRe
 describe('NotificationPlatformRetryBackoffCalculationPersistenceService — W5-N22-b storage only', () => {
   it('persistNotificationPlatformRetryBackoffCalculationAnchor writes canonical calculation anchors without runtime I/O', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformRetryBackoffCalculationPersistenceService(repository);
+    const service = new NotificationPlatformRetryBackoffCalculationPersistenceService(
+      repository,
+      new NotificationPlatformRetryBackoffCalculationRecoveryStore(),
+    );
     const outcome = await service.persistNotificationPlatformRetryBackoffCalculationAnchor({
       workspaceId: 'ws-1',
       calculationAnchorId: 'calc-anchor-1',
@@ -70,7 +74,10 @@ describe('NotificationPlatformRetryBackoffCalculationPersistenceService — W5-N
 
   it('does not persist calculation runtime, schedule, execution, or recovery fields', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformRetryBackoffCalculationPersistenceService(repository);
+    const service = new NotificationPlatformRetryBackoffCalculationPersistenceService(
+      repository,
+      new NotificationPlatformRetryBackoffCalculationRecoveryStore(),
+    );
 
     await service.persistNotificationPlatformRetryBackoffCalculationAnchor({
       workspaceId: 'ws-1',

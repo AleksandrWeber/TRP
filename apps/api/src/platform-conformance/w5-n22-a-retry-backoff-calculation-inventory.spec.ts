@@ -155,7 +155,7 @@ describe('W5-N22-a notification retry backoff calculation inventory — unit', (
     expect(W5_N22_A_BINDING_FINDINGS.w5N21RetryBackoffExists).toBe(true);
     expect(W5_N22_A_BINDING_FINDINGS.unifiedPlatformBackoffCalculationLayerMissing).toBe(true);
     expect(W5_N22_A_BINDING_FINDINGS.backoffCalculationPersistenceMissing).toBe(false);
-    expect(W5_N22_A_BINDING_FINDINGS.backoffCalculationRecoveryMissing).toBe(true);
+    expect(W5_N22_A_BINDING_FINDINGS.backoffCalculationRecoveryMissing).toBe(false);
     expect(W5_N22_A_BINDING_FINDINGS.backoffCalculationOperationalContinuityMissing).toBe(true);
     expect(W5_N22_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
     expect(W5_N22_A_BINDING_FINDINGS.calculationDoesNotScheduleRetries).toBe(true);
@@ -237,10 +237,9 @@ describe('W5-N22-a notification retry backoff calculation inventory — unit', (
     ]);
   });
 
-  it('missing gaps remain absent today except persistence resolved by W5-N22-b', () => {
+  it('missing gaps remain absent today except persistence/recovery resolved by W5-N22-b/c', () => {
     for (const id of [
       'missing-unified-platform-backoff-calculation-view',
-      'missing-backoff-calculation-recovery',
       'missing-backoff-calculation-operational-continuity',
     ]) {
       const row = W5_N22_A_RETRY_BACKOFF_CALCULATION_INVENTORY.find(
@@ -254,6 +253,11 @@ describe('W5-N22-a notification retry backoff calculation inventory — unit', (
     );
     expect(persistenceGap?.existsToday).toBe(true);
     expect(persistenceGap?.classification).toBe('RECOVERABLE');
+    const recoveryGap = W5_N22_A_RETRY_BACKOFF_CALCULATION_INVENTORY.find(
+      (entry) => entry.artifactId === 'missing-backoff-calculation-recovery',
+    );
+    expect(recoveryGap?.existsToday).toBe(true);
+    expect(recoveryGap?.classification).toBe('EPHEMERAL');
   });
 });
 
