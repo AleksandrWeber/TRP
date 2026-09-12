@@ -2145,3 +2145,20 @@ model WorkspaceNotificationPlatformRetrySchedulingAnchor {
   @@id([workspaceId, retrySchedulingAnchorId])
   @@map("workspace_notification_platform_retry_scheduling_anchors")
 }
+
+model WorkspaceNotificationPlatformRetryPolicyAnchor {
+  workspaceId             String   @map("workspace_id")
+  retryPolicyAnchorId     String   @map("retry_policy_anchor_id")
+  schemaVersion           Int      @default(1) @map("schema_version")
+  platformRetryPolicyType String   @map("platform_retry_policy_type")
+  retryPolicyState        String   @map("retry_policy_state")
+  channelScope            String?  @map("channel_scope")
+  integrityMetadata       String?  @map("integrity_metadata")
+  correlationId           String?  @map("correlation_id")
+  recordedAt              DateTime @map("recorded_at")
+  recordedByActorId       String?  @map("recorded_by_actor_id")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, retryPolicyAnchorId])
+  @@map("workspace_notification_platform_retry_policy_anchors")
+}

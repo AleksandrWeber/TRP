@@ -2,7 +2,7 @@
 
 **Document:** W5-N20 Notification Retry Policy Foundation Overview
 **Date:** 2026-09-12
-**Status:** Product-facing record. W5-N20 Planning **APPROVED** (2026-09-12). W5-N20-a inventory **COMPLETE** (local). No retry policy runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. W5-N20 Planning **APPROVED** (2026-09-12). W5-N20-a inventory **COMPLETE**. W5-N20-b durable persistence **COMPLETE** (local). No retry policy runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N20 (V3-N20 · CM-30)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -196,8 +196,8 @@ Never claim production transports operational from W5-N20 foundation alone.
 - W5-N20 Planning Package OPEN — **recorded** (2026-09-12)
 - W5-N20 Planning APPROVED — **recorded** (2026-09-12)
 - W5-N20-a inventory COMPLETE — **recorded** (local, 2026-09-12)
-- W5-N20-a opened — **recorded** (inventory only)
-- W5-N20-b opened — **not claimed**
+- W5-N20-b durable persistence COMPLETE — **recorded** (local, 2026-09-12)
+- W5-N20-c opened — **not claimed**
 - Notification Retry Policy Foundation implemented — **not claimed**
 - Retry Policy implemented — **not claimed**
 - Retry policy evaluation runtime — **not claimed**
@@ -217,4 +217,4 @@ Never claim production transports operational from W5-N20 foundation alone.
 
 ---
 
-**STOP.** W5-N20-a inventory foundation is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N20-b. Do not declare Retry Policy implemented. Do not declare Retry Scheduling implemented. Do not declare Retry Execution implemented. Do not declare Notification Platform COMPLETE. Do not declare Live Notifications. Do not declare Production Ready. Do not declare Wave 5 COMPLETE. Do not commit. Do not push.
+**STOP.** W5-N20-b durable persistence foundation is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N20-c. Do not declare Retry Policy implemented. Do not declare Retry Scheduling implemented. Do not declare Retry Execution implemented. Do not declare Notification Platform COMPLETE. Do not declare Live Notifications. Do not declare Production Ready. Do not declare Wave 5 COMPLETE. Do not commit. Do not push.

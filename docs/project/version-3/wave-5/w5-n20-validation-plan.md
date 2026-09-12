@@ -3,7 +3,7 @@
 **Package:** W5-N20 Notification Retry Policy Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N20 · CM-30
-**Status:** Planning **APPROVED** (2026-09-12). W5-N20-a inventory **COMPLETE** (local). W5-N20-b…e not authorized. Not runtime implementation.
+**Status:** Planning **APPROVED** (2026-09-12). W5-N20-a inventory **COMPLETE**. W5-N20-b durable persistence **COMPLETE** (local). W5-N20-c…e not authorized. Not runtime implementation.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n20-product-scope.md`](./w5-n20-product-scope.md)
@@ -223,6 +223,16 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Ownership verified | **PASS** | All rows on existing owners                  |
 | Customer-visible   | **PASS** | None — internal inventory only               |
 
+## W5-N20-b slice validation (2026-09-12)
+
+| Layer                    | Result   | Evidence                                             |
+| ------------------------ | -------- | ---------------------------------------------------- |
+| W5-N20-b durable anchors | **PASS** | workspace_notification_platform_retry_policy_anchors |
+| Inventory sync           | **PASS** | persist + ownership rows SURVIVE/DURABLE             |
+| Ownership verified       | **PASS** | notification-delivery only; no new persistence owner |
+| Customer-visible         | **PASS** | None — internal durable persistence only             |
+| Restart recovery claimed | **PASS** | Not claimed — W5-N20-c                               |
+
 ## Explicit non-claims
 
 - W5-N20 Closed — **not claimed**
@@ -244,9 +254,10 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 - Production Ready — **not claimed**
 - Wave 5 COMPLETE — **not claimed**
 - W5-N20-a COMPLETE — **recorded** (local, 2026-09-12) — inventory only
+- W5-N20-b COMPLETE — **recorded** (local, 2026-09-12) — durable persistence only
 - W5-N20 Planning Review completed — **recorded** (PASS)
 - W5-N20 Planning APPROVED — **recorded** (2026-09-12)
 
 ---
 
-**STOP.** W5-N20-a inventory foundation is **COMPLETE** (local). Await Product Owner Review. Do NOT open W5-N20-b. Do NOT declare Retry Policy implemented. Do NOT declare Retry Scheduling implemented. Do NOT declare Retry Execution implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE. Do not commit. Do not push.
+**STOP.** W5-N20-b durable persistence foundation is **COMPLETE** (local). Await Product Owner Review. Do NOT open W5-N20-c. Do NOT declare Retry Policy implemented. Do NOT declare Retry Scheduling implemented. Do NOT declare Retry Execution implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE. Do not commit. Do not push.
