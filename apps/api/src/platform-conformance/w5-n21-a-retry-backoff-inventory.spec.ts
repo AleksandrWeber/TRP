@@ -139,7 +139,7 @@ describe('W5-N21-a notification retry backoff inventory — unit', () => {
     expect(W5_N21_A_BINDING_FINDINGS.unifiedPlatformRetryBackoffLayerMissing).toBe(true);
     expect(W5_N21_A_BINDING_FINDINGS.retryBackoffPersistenceMissing).toBe(false);
     expect(W5_N21_A_BINDING_FINDINGS.retryBackoffRecoveryMissing).toBe(false);
-    expect(W5_N21_A_BINDING_FINDINGS.retryBackoffOperationalContinuityMissing).toBe(true);
+    expect(W5_N21_A_BINDING_FINDINGS.retryBackoffOperationalContinuityMissing).toBe(false);
     expect(W5_N21_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
   });
 
@@ -207,27 +207,21 @@ describe('W5-N21-a notification retry backoff inventory — unit', () => {
     ).toBeGreaterThanOrEqual(2);
   });
 
-  it('technical debt delta: inventory, durable persistence, and restart recovery resolved; d–e deferred; nothing introduced', () => {
+  it('technical debt delta: inventory through operational continuity resolved; e deferred; nothing introduced', () => {
     expect(W5_N21_A_TECHNICAL_DEBT_DELTA.resolved).toEqual([
       'Retry Backoff inventory baseline established',
       'Durable Retry Backoff persistence foundation',
       'Retry Backoff restart recovery foundation',
+      'Retry Backoff operational continuity foundation',
     ]);
     expect(W5_N21_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N21_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N21-d — Operational Continuity Foundation',
       'W5-N21-e — Package Validation, Operational Verification & Close Evidence',
     ]);
   });
 
-  it('missing gaps remain EPHEMERAL; persistence and recovery gaps resolved by W5-N21-b/c', () => {
-    const stillMissingIds = [
-      'missing-unified-platform-retry-backoff-view',
-      'missing-retry-backoff-operational-continuity',
-      'missing-retry-backoff-ui',
-      'projection-platform-readiness-retry-backoff-missing',
-      'operator-visible-retry-backoff-none',
-    ];
+  it('missing gaps remain EPHEMERAL; persistence, recovery, and continuity gaps resolved by W5-N21-b/c/d', () => {
+    const stillMissingIds = ['missing-retry-backoff-ui', 'operator-visible-retry-backoff-none'];
     for (const id of stillMissingIds) {
       const row = W5_N21_A_RETRY_BACKOFF_INVENTORY.find((entry) => entry.artifactId === id);
       expect(row).toBeDefined();
@@ -241,6 +235,16 @@ describe('W5-N21-a notification retry backoff inventory — unit', () => {
     expect(
       W5_N21_A_RETRY_BACKOFF_INVENTORY.find(
         (entry) => entry.artifactId === 'missing-retry-backoff-recovery',
+      )?.existsToday,
+    ).toBe(true);
+    expect(
+      W5_N21_A_RETRY_BACKOFF_INVENTORY.find(
+        (entry) => entry.artifactId === 'missing-retry-backoff-operational-continuity',
+      )?.existsToday,
+    ).toBe(true);
+    expect(
+      W5_N21_A_RETRY_BACKOFF_INVENTORY.find(
+        (entry) => entry.artifactId === 'projection-platform-readiness-retry-backoff-missing',
       )?.existsToday,
     ).toBe(true);
     expect(

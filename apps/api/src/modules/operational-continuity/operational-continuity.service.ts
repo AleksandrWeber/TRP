@@ -80,6 +80,8 @@ import { getNotificationPlatformRetrySchedulingContinuityRecord } from '../notif
 import { buildNotificationPlatformRetrySchedulingContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-scheduling-operational-continuity';
 import { getNotificationPlatformRetryPolicyContinuityRecord } from '../notification-delivery/domain/notification-platform-retry-policy-continuity-status';
 import { buildNotificationPlatformRetryPolicyContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-policy-operational-continuity';
+import { getNotificationPlatformRetryBackoffContinuityRecord } from '../notification-delivery/domain/notification-platform-retry-backoff-continuity-status';
+import { buildNotificationPlatformRetryBackoffContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-backoff-operational-continuity';
 import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
 import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
 import { getMonitoringHealthContinuityRecord } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
@@ -257,6 +259,11 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           continuity: null,
         }),
       notificationPlatformRetryPolicy: buildNotificationPlatformRetryPolicyContinuityProjection({
+        recovering: true,
+        ownerReadiness: 'ready',
+        continuity: null,
+      }),
+      notificationPlatformRetryBackoff: buildNotificationPlatformRetryBackoffContinuityProjection({
         recovering: true,
         ownerReadiness: 'ready',
         continuity: null,
@@ -621,6 +628,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildNotificationPlatformRetryBackoffView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getNotificationPlatformRetryBackoffContinuityRecord();
+    return buildNotificationPlatformRetryBackoffContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -768,6 +787,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       notificationPlatformRetryPolicy: this.buildNotificationPlatformRetryPolicyView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      notificationPlatformRetryBackoff: this.buildNotificationPlatformRetryBackoffView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -1228,6 +1251,23 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           ? null
           : recoveryDurationMs),
     });
+    const notificationPlatformRetryBackoffBase = this.buildNotificationPlatformRetryBackoffView({
+      recovering: false,
+      ownerReadiness: 'ready',
+    });
+    const notificationPlatformRetryBackoff = Object.freeze({
+      ...notificationPlatformRetryBackoffBase,
+      recoveryTimestamp:
+        notificationPlatformRetryBackoffBase.recoveryTimestamp ??
+        (notificationPlatformRetryBackoffBase.operationalState === 'Recovering'
+          ? null
+          : recoveryTimestamp),
+      recoveryDurationMs:
+        notificationPlatformRetryBackoffBase.recoveryDurationMs ??
+        (notificationPlatformRetryBackoffBase.operationalState === 'Recovering'
+          ? null
+          : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -1260,6 +1300,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       notificationPlatformRetryExecution,
       notificationPlatformRetryScheduling,
       notificationPlatformRetryPolicy,
+      notificationPlatformRetryBackoff,
     });
     this.finalized = true;
 

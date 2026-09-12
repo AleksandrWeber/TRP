@@ -155,6 +155,13 @@ import {
   resetNotificationPlatformRetryPolicyContinuity,
 } from '../notification-delivery/domain/notification-platform-retry-policy-continuity-status';
 import { buildNotificationPlatformRetryPolicyRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-retry-policy-restart-recovery';
+import { buildNotificationPlatformRetryBackoffAnchorState } from '../notification-delivery/domain/durable-notification-platform-retry-backoff-anchor';
+import {
+  recordNotificationPlatformRetryBackoffRecoveryStart,
+  recordNotificationPlatformRetryBackoffRecoverySuccess,
+  resetNotificationPlatformRetryBackoffContinuity,
+} from '../notification-delivery/domain/notification-platform-retry-backoff-continuity-status';
+import { buildNotificationPlatformRetryBackoffRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-retry-backoff-restart-recovery';
 
 describe('OperationalContinuityService', () => {
   beforeEach(() => {
@@ -1184,6 +1191,50 @@ describe('OperationalContinuityService', () => {
 
     expect(projection.notificationPlatformRetryPolicy?.operationalState).toBe('Ready');
     expect(projection.notificationPlatformRetryPolicy?.canonicalAnchorCount).toBe(1);
+    expect(projection.platformState).toBe('Ready');
+  });
+
+  it('includes notification platform retry backoff continuity derived from W5-N21-c recovery record', async () => {
+    resetNotificationPlatformRetryBackoffContinuity();
+    const anchor = buildNotificationPlatformRetryBackoffAnchorState({
+      workspaceId: 'ws-1',
+      retryBackoffAnchorId: 'retry-backoff-1',
+      platformRetryBackoffType: 'backoff-description-foundation',
+      correlationId: 'corr-1',
+      actorId: 'actor-1',
+      recordedAt: '2026-09-12T21:30:00.000Z',
+      prior: null,
+    });
+    if (!anchor.ok) throw new Error('expected anchor');
+    recordNotificationPlatformRetryBackoffRecoveryStart();
+    recordNotificationPlatformRetryBackoffRecoverySuccess({
+      diagnostics: buildNotificationPlatformRetryBackoffRecoveryDiagnostics([anchor.anchor]),
+    });
+
+    const audit = {
+      recordOwnerState: vi.fn(async () => undefined),
+      recordRecoveryCompleted: vi.fn(async () => undefined),
+    } as unknown as OperationalContinuityAudit;
+    const service = new OperationalContinuityService(audit);
+    const projection = await service.applyBootOutcomesForTest(
+      (
+        [
+          'strategy-library',
+          'exchange-scope',
+          'knowledge-lake',
+          'market-profile',
+          'market-qualification',
+          'market-state',
+          'reporting',
+          'notification-delivery',
+          'trading-orchestrator',
+          'runtime-enforcement',
+        ] as const
+      ).map((owner) => ({ owner, outcome: 'ready' as const })),
+    );
+
+    expect(projection.notificationPlatformRetryBackoff?.operationalState).toBe('Ready');
+    expect(projection.notificationPlatformRetryBackoff?.canonicalAnchorCount).toBe(1);
     expect(projection.platformState).toBe('Ready');
   });
 });

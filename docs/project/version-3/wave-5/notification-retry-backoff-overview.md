@@ -2,7 +2,7 @@
 
 **Document:** W5-N21 Notification Retry Backoff Foundation Overview
 **Date:** 2026-09-12
-**Status:** Product-facing record. W5-N21 Planning **APPROVED** (2026-09-12). W5-N21-a inventory **COMPLETE** (local). W5-N21-b durable persistence **COMPLETE** (local). W5-N21-c restart recovery **COMPLETE** (local). No retry backoff runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. W5-N21 Planning **APPROVED** (2026-09-12). W5-N21-a inventory **COMPLETE** (local). W5-N21-b durable persistence **COMPLETE** (local). W5-N21-c restart recovery **COMPLETE** (local). W5-N21-d operational continuity **COMPLETE** (local). No retry backoff runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N21 (V3-N21 · CM-31)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -185,6 +185,7 @@ Never claim production transports operational from W5-N21 foundation alone.
 | Platform retry backoff foundation     | **Deferred** to remaining slices after Approval |
 | Durable retry backoff persistence     | **Resolved** by W5-N21-b                        |
 | Restart-safe retry backoff recovery   | **Resolved** by W5-N21-c                        |
+| Retry backoff operational continuity  | **Resolved** by W5-N21-d                        |
 | Retry backoff runtime                 | **Deferred**                                    |
 | Backoff calculation                   | **Deferred**                                    |
 | Exponential backoff                   | **Deferred**                                    |
@@ -194,7 +195,7 @@ Never claim production transports operational from W5-N21 foundation alone.
 | Retry execution runtime               | **Deferred**                                    |
 | Transport execution                   | **Deferred**                                    |
 | Dead-letter processing                | **Deferred**                                    |
-| Implementation slices (d–e)           | **Deferred** — not authorized                   |
+| Implementation slices (e)             | **Deferred** — not authorized                   |
 | Planning Review                       | **Complete**                                    |
 | Planning Approval                     | **Complete**                                    |
 
@@ -211,7 +212,8 @@ Never claim production transports operational from W5-N21 foundation alone.
 - W5-N21-a inventory COMPLETE — **recorded** (local, 2026-09-12)
 - W5-N21-b durable persistence COMPLETE — **recorded** (local, 2026-09-12)
 - W5-N21-c restart recovery COMPLETE — **recorded** (local, 2026-09-12)
-- W5-N21-d…e COMPLETE — **not claimed**
+- W5-N21-d operational continuity COMPLETE — **recorded** (local, 2026-09-12)
+- W5-N21-e COMPLETE — **not claimed**
 - Final Package Integration Verification — **not claimed**
 - W5-N21 CLOSED — **not claimed**
 - Notification Retry Backoff Foundation implemented — **not claimed**
@@ -236,4 +238,4 @@ Never claim production transports operational from W5-N21 foundation alone.
 
 ---
 
-**STOP.** W5-N21-c is **COMPLETE** (local). Await Product Owner Review. Do not commit. Do not push. Do not open W5-N21-d. Do not declare Retry Backoff implemented. Do not declare Retry Policy implemented. Do not declare Retry Scheduling implemented. Do not declare Retry Execution implemented. Do not declare Notification Platform COMPLETE. Do not declare Live Notifications. Do not declare Production Ready. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N21-d is **COMPLETE** (local). Await Product Owner Review. Do not commit. Do not push. Do not open W5-N21-e. Do not declare Retry Backoff implemented. Do not declare Retry Policy implemented. Do not declare Retry Scheduling implemented. Do not declare Retry Execution implemented. Do not declare Notification Platform COMPLETE. Do not declare Live Notifications. Do not declare Production Ready. Do not declare Wave 5 COMPLETE.
