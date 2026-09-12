@@ -44,6 +44,7 @@ describe('OperationalContinuityController', () => {
     notificationPlatformRetryBackoff: null,
     notificationPlatformRetryBackoffCalculation: null,
     notificationPlatformRetryEligibility: null,
+    notificationPlatformRetrySchedulingDecision: null,
   });
 
   let continuity: OperationalContinuityService;

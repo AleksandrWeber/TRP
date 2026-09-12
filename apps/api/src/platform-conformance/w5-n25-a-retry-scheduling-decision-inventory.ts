@@ -243,6 +243,9 @@ const N25B_PRISMA =
   'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-retry-scheduling-decision-anchor.repository.ts';
 const N25C =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-restart-recovery.service.ts';
+const N25D =
+  'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-operational-continuity.ts';
+const OR = 'apps/api/src/modules/operational-continuity/operational-readiness.ts';
 
 type RowInput = {
   artifactId: string;
@@ -920,19 +923,20 @@ export const W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY: readonly W5N25AInvent
     }),
     row({
       artifactId: 'missing-decision-operational-continuity',
-      artifact: 'Decision operational continuity — missing (future W5-N25-d)',
+      artifact:
+        'Decision operational continuity — resolved by W5-N25-d (gap row retained for inventory honesty)',
       kind: 'operational',
       owner: 'platform-readiness',
-      purpose: 'Record decision operational continuity gap for W5-N25-d',
-      decisionRole: 'missing-gap',
+      purpose: 'Record resolved decision operational continuity gap after W5-N25-d',
+      decisionRole: 'missing-gap-resolved',
       classification: 'EPHEMERAL',
       honestyRequirement:
-        'Planned for W5-N25-d — derived readiness only; not runtime decision logic; not scheduling/eligibility/backoff/execution',
-      futureW5N25Responsibility: 'W5-N25-d',
-      operationalRequirement: 'planned W5-N25-d',
-      evidencePath: PKG,
-      existsToday: false,
-      customerVisibility: 'not customer-visible — absent',
+        'Resolved by W5-N25-d — derived readiness only; not runtime decision logic; not scheduling/eligibility/backoff/execution',
+      futureW5N25Responsibility: 'honesty-baseline',
+      operationalRequirement: 'platform-readiness',
+      evidencePath: N25D,
+      existsToday: true,
+      customerVisibility: 'not customer-visible — gap resolved by W5-N25-d',
     }),
 
     // CONFIGURATION
@@ -1123,21 +1127,21 @@ export const W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY: readonly W5N25AInvent
     }),
     row({
       artifactId: 'projection-platform-readiness-decision-missing',
-      artifact: 'Platform Readiness notificationPlatformRetrySchedulingDecision — missing',
+      artifact:
+        'Platform Readiness notificationPlatformRetrySchedulingDecision — projected (W5-N25-d)',
       kind: 'projection',
       owner: 'platform-readiness',
-      purpose: 'Record that decision readiness projection is absent on Platform Readiness',
-      decisionRole: 'readiness-projection-gap',
+      purpose: 'Record that decision readiness projection is present on Platform Readiness',
+      decisionRole: 'readiness-projection',
       classification: 'EPHEMERAL',
-      honestyRequirement:
-        'Derived readiness only when present; does not authorize runtime decision logic',
-      futureW5N25Responsibility: 'W5-N25-d',
-      operationalRequirement: 'planned W5-N25-d',
-      capabilityCategory: 'not-implemented',
-      honestProductState: 'not-implemented',
-      evidencePath: PKG,
-      existsToday: false,
-      customerVisibility: 'operator Platform Readiness only — decision field absent',
+      honestyRequirement: 'Derived readiness only; does not authorize runtime decision logic',
+      futureW5N25Responsibility: 'honesty-baseline',
+      operationalRequirement: 'platform-readiness',
+      capabilityCategory: 'infrastructure-only',
+      honestProductState: 'infrastructure-only',
+      evidencePath: OR,
+      existsToday: true,
+      customerVisibility: 'operator Platform Readiness only — not runtime decision logic',
     }),
     row({
       artifactId: 'persist-candidate-decision-anchor',
@@ -1153,11 +1157,11 @@ export const W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY: readonly W5N25AInvent
       futureW5N25Responsibility: 'honesty-baseline',
       persistenceRequirement: 'notification-delivery',
       recoveryRequirement: 'notification-delivery',
-      operationalRequirement: 'planned W5-N25-d',
+      operationalRequirement: 'platform-readiness',
       capabilityCategory: 'infrastructure-only',
       honestProductState: 'infrastructure-only',
       currentStatus:
-        'Implemented — durable decision description anchors; restart recovery via W5-N25-c; operational continuity deferred to W5-N25-d',
+        'Implemented — durable decision description anchors; restart recovery via W5-N25-c; operational continuity via W5-N25-d',
       evidencePath: N25B_PRISMA,
       existsToday: true,
       customerVisibility: 'not customer-visible — infrastructure only',
@@ -1588,7 +1592,7 @@ export const W5_N25_A_BINDING_FINDINGS = Object.freeze({
   unifiedPlatformDecisionLayerMissing: true,
   decisionPersistenceMissing: false,
   decisionRecoveryMissing: false,
-  decisionOperationalContinuityMissing: true,
+  decisionOperationalContinuityMissing: false,
   productionTransportsDeferred: true,
   inventoryDoesNotMakeSchedulingDecisions: true,
   inventoryDoesNotPerformRuntimeDecisionLogic: true,
@@ -1716,7 +1720,9 @@ export const W5_N25_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N22 retry backoff calculation inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N23 retry eligibility inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N24 retry scheduling inventory, durable anchors, recovery, and continuity (consumed)',
-    'W5-N24 retry scheduling inventory, durable anchors, recovery, and continuity (consumed)',
+    'W5-N25-b durable decision anchors on notification-delivery (persistence only)',
+    'W5-N25-c restart recovery of decision anchors on notification-delivery (recovery only)',
+    'W5-N25-d operational continuity for decision readiness on Platform Readiness (derived)',
     'PC-06 resolve-delivery-routing — routing SoT consumed unchanged',
     'PC-07 notification-product — per-channel settings and history',
     'Notification Durable Queue — W3-O02 on notification-delivery owner (consumed)',

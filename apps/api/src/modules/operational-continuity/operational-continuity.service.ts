@@ -86,6 +86,8 @@ import { getNotificationPlatformRetryBackoffCalculationContinuityRecord } from '
 import { buildNotificationPlatformRetryBackoffCalculationContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-backoff-calculation-operational-continuity';
 import { getNotificationPlatformRetryEligibilityContinuityRecord } from '../notification-delivery/domain/notification-platform-retry-eligibility-continuity-status';
 import { buildNotificationPlatformRetryEligibilityContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-eligibility-operational-continuity';
+import { getNotificationPlatformRetrySchedulingDecisionContinuityRecord } from '../notification-delivery/domain/notification-platform-retry-scheduling-decision-continuity-status';
+import { buildNotificationPlatformRetrySchedulingDecisionContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-scheduling-decision-operational-continuity';
 import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
 import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
 import { getMonitoringHealthContinuityRecord } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
@@ -280,6 +282,12 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         }),
       notificationPlatformRetryEligibility:
         buildNotificationPlatformRetryEligibilityContinuityProjection({
+          recovering: true,
+          ownerReadiness: 'ready',
+          continuity: null,
+        }),
+      notificationPlatformRetrySchedulingDecision:
+        buildNotificationPlatformRetrySchedulingDecisionContinuityProjection({
           recovering: true,
           ownerReadiness: 'ready',
           continuity: null,
@@ -674,6 +682,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
   }) {
     const continuity = getNotificationPlatformRetryEligibilityContinuityRecord();
     return buildNotificationPlatformRetryEligibilityContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
+  private buildNotificationPlatformRetrySchedulingDecisionView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getNotificationPlatformRetrySchedulingDecisionContinuityRecord();
+    return buildNotificationPlatformRetrySchedulingDecisionContinuityProjection({
       recovering: input.recovering,
       ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
       continuity,
@@ -1353,6 +1373,24 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           ? null
           : recoveryDurationMs),
     });
+    const notificationPlatformRetrySchedulingDecisionBase =
+      this.buildNotificationPlatformRetrySchedulingDecisionView({
+        recovering: false,
+        ownerReadiness: 'ready',
+      });
+    const notificationPlatformRetrySchedulingDecision = Object.freeze({
+      ...notificationPlatformRetrySchedulingDecisionBase,
+      recoveryTimestamp:
+        notificationPlatformRetrySchedulingDecisionBase.recoveryTimestamp ??
+        (notificationPlatformRetrySchedulingDecisionBase.operationalState === 'Recovering'
+          ? null
+          : recoveryTimestamp),
+      recoveryDurationMs:
+        notificationPlatformRetrySchedulingDecisionBase.recoveryDurationMs ??
+        (notificationPlatformRetrySchedulingDecisionBase.operationalState === 'Recovering'
+          ? null
+          : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -1388,6 +1426,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       notificationPlatformRetryBackoff,
       notificationPlatformRetryBackoffCalculation,
       notificationPlatformRetryEligibility,
+      notificationPlatformRetrySchedulingDecision,
     });
     this.finalized = true;
 

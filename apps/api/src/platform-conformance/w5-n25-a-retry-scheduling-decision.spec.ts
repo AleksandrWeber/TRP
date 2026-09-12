@@ -117,7 +117,7 @@ describe('W5-N25-a retry scheduling decision conformance — unit', () => {
     expect(W5_N25_A_BINDING_FINDINGS.unifiedPlatformDecisionLayerMissing).toBe(true);
     expect(W5_N25_A_BINDING_FINDINGS.decisionPersistenceMissing).toBe(false);
     expect(W5_N25_A_BINDING_FINDINGS.decisionRecoveryMissing).toBe(false);
-    expect(W5_N25_A_BINDING_FINDINGS.decisionOperationalContinuityMissing).toBe(true);
+    expect(W5_N25_A_BINDING_FINDINGS.decisionOperationalContinuityMissing).toBe(false);
     expect(W5_N25_A_ARCHITECTURE_CLAIMS.decisionFunctionalClaimed).toBe(false);
     expect(W5_N25_A_ARCHITECTURE_CLAIMS.w5N25CompleteClaimed).toBe(false);
     expect(W5_N25_A_ARCHITECTURE_CLAIMS.notificationPlatformCompleteClaimed).toBe(false);

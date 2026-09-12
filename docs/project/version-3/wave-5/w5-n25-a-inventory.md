@@ -64,7 +64,7 @@ Every row includes: unique identifier, existing owner, purpose, decision role, p
 
 - Closed W5-N01…N24 foundations exist — consumed as reference patterns only. W5-N22 Backoff Calculation, W5-N23 Eligibility, and W5-N24 Scheduling Foundation are consumed — not redesigned.
 - **No** unified cross-channel platform decision runtime layer exists after calc+eligibility+scheduling (`unifiedPlatformDecisionLayerMissing`: **true**).
-- `decisionPersistenceMissing`: **false** (resolved by W5-N25-b); `decisionRecoveryMissing`: **false** (resolved by W5-N25-c); `decisionOperationalContinuityMissing`: **true**.
+- `decisionPersistenceMissing`: **false** (resolved by W5-N25-b); `decisionRecoveryMissing`: **false** (resolved by W5-N25-c); `decisionOperationalContinuityMissing`: **false** (resolved by W5-N25-d).
 - Inventory does **not** perform runtime decision logic, make scheduling decisions, perform runtime scheduling, determine eligibility, perform Retry Backoff Calculation, execute retries, or own retry lifecycle, timers, workers, or orchestration.
 - Inventory output is **informational** until consumed by future approved slices.
 - TD-049 / TD-050 production transport I/O remains deferred — not claimed from this inventory.
@@ -89,11 +89,8 @@ Runtime decision logic; scheduling decisions; runtime scheduling; Retry Eligibil
 | ---------- | --------------------------------------------------------------------- |
 | Resolved   | Notification Retry Scheduling Decision inventory baseline established |
 | Introduced | None                                                                  |
-| Deferred   | Persistence Foundation (W5-N25-b)                                     |
-|            | Restart Recovery Foundation (W5-N25-c)                                |
-|            | Operational Continuity Foundation (W5-N25-d)                          |
-|            | Package Validation & Operational Verification (W5-N25-e)              |
+| Deferred   | Package Validation & Operational Verification (W5-N25-e)              |
 
 ---
 
-**STOP.** Await Product Owner Review. Do not commit. Do not push. Do not open W5-N25-b.
+**Note:** Inventory baseline established in W5-N25-a. Persistence (b), recovery (c), and operational continuity (d) subsequently resolved their respective inventory gaps. Package Close remains deferred to W5-N25-e.

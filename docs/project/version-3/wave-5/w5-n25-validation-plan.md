@@ -3,7 +3,7 @@
 **Package:** W5-N25 Notification Retry Scheduling Decision Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N25 · CM-35
-**Status:** Planning Package **APPROVED** (2026-09-12). Repository Synchronization (Planning) **COMPLETE**. W5-N25-a Inventory **COMPLETE**. W5-N25-b Persistence **COMPLETE**. W5-N25-c Restart Recovery **COMPLETE** (local). No runtime scheduling. No scheduling decision runtime.
+**Status:** Planning Package **APPROVED** (2026-09-12). Repository Synchronization (Planning) **COMPLETE**. W5-N25-a Inventory **COMPLETE**. W5-N25-b Persistence **COMPLETE**. W5-N25-c Restart Recovery **COMPLETE**. W5-N25-d Operational Continuity **COMPLETE** (local). No runtime scheduling. No scheduling decision runtime.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n25-product-scope.md`](./w5-n25-product-scope.md)
@@ -179,49 +179,65 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## 8. W5-N25-c validation (restart recovery)
 
-| Check                                            | Expected / Status |
-| ------------------------------------------------ | ----------------- |
-| Decision artifacts restored after normal restart | **PASS**          |
-| Recovery deterministic                           | **Yes**           |
-| Recovery idempotent                              | **Yes**           |
-| Fabricate missing artifacts                      | **No**            |
-| Restore corrupted artifacts                      | **No**            |
-| Existing Restart Recovery framework reused       | **PASS**          |
-| No duplicate recovery subsystem                  | **PASS**          |
-| Recovery performs runtime decision logic         | **No**            |
-| Recovery performs runtime scheduling             | **No**            |
-| Recovery performs Retry Backoff Calculation      | **No**            |
-| Recovery determines Retry Eligibility            | **No**            |
-| Recovery executes retries                        | **No**            |
-| Ownership / architecture changed                 | **No** / **No**   |
-| Customer-visible feature                         | **None**          |
-| W5-N25-d opened                                  | **No**            |
+| Check                                            | Expected / Status          |
+| ------------------------------------------------ | -------------------------- |
+| Decision artifacts restored after normal restart | **PASS**                   |
+| Recovery deterministic                           | **Yes**                    |
+| Recovery idempotent                              | **Yes**                    |
+| Fabricate missing artifacts                      | **No**                     |
+| Restore corrupted artifacts                      | **No**                     |
+| Existing Restart Recovery framework reused       | **PASS**                   |
+| No duplicate recovery subsystem                  | **PASS**                   |
+| Recovery performs runtime decision logic         | **No**                     |
+| Recovery performs runtime scheduling             | **No**                     |
+| Recovery performs Retry Backoff Calculation      | **No**                     |
+| Recovery determines Retry Eligibility            | **No**                     |
+| Recovery executes retries                        | **No**                     |
+| Ownership / architecture changed                 | **No** / **No**            |
+| Customer-visible feature                         | **None**                   |
+| W5-N25-d opened                                  | **Yes** — COMPLETE (local) |
 
 **Evidence:** [`w5-n25-c-implementation-report.md`](./w5-n25-c-implementation-report.md) · [`w5-n25-c-validation-report.md`](./w5-n25-c-validation-report.md) · `apps/api/src/platform-conformance/w5-n25-c-notification-platform-retry-scheduling-decision-restart-recovery*.ts`
 
 ---
 
-## 9. Implementation slices d–e (deferred)
+## 9. W5-N25-d validation (operational continuity)
+
+| Check                                                        | Expected / Status                |
+| ------------------------------------------------------------ | -------------------------------- |
+| Readiness derived from recovered state + integrity           | **PASS**                         |
+| States: Recovering / Ready / Degraded / Unavailable          | **PASS**                         |
+| Degraded fabricates Ready                                    | **No**                           |
+| Healthy owners continue when rules allow                     | **Yes**                          |
+| Runtime decision / scheduling / calc / eligibility / execute | **No**                           |
+| Ownership / architecture changed                             | **No** / **No**                  |
+| Customer-visible feature                                     | Operator Platform Readiness only |
+| W5-N25-e opened                                              | **No**                           |
+
+**Evidence:** [`w5-n25-d-implementation-report.md`](./w5-n25-d-implementation-report.md) · [`w5-n25-d-validation-report.md`](./w5-n25-d-validation-report.md) · `apps/api/src/platform-conformance/w5-n25-d-notification-platform-retry-scheduling-decision-operational-continuity*.ts`
+
+---
+
+## 10. Implementation slice e (deferred)
 
 **Not opened. Not authorized.**
 
 ---
 
-## Mandatory Questions (slice c)
+## Mandatory Questions (slice d)
 
-1. **What customer-visible functionality was delivered?** None.
-2. **Were Decision artifacts restored after a normal restart?** Yes.
-3. **Is recovery deterministic?** Yes.
-4. **Is recovery idempotent?** Yes.
-5. **Can recovery fabricate missing artifacts?** No.
-6. **Can recovery restore corrupted artifacts?** No.
-7. **Does recovery perform runtime decision logic?** No.
-8. **Does recovery perform runtime scheduling?** No.
-9. **Does recovery perform Retry Backoff Calculation?** No.
-10. **Does recovery determine Retry Eligibility?** No.
-11. **Does recovery execute retries?** No.
-12. **Were any ownership boundaries changed?** No.
-13. **Were any architectural deviations introduced?** No.
+1. **What customer-visible functionality was delivered?** Operator Platform Readiness only.
+2. **How is readiness determined?** Derived from recovered Decision state, owner readiness, and persistence integrity.
+3. **Which operational states are supported?** Recovering, Ready, Degraded, Unavailable.
+4. **Can readiness be fabricated?** No.
+5. **Can healthy owners continue operating?** Yes.
+6. **Does this perform runtime decision logic?** No.
+7. **Does this perform runtime scheduling?** No.
+8. **Does this perform Retry Backoff Calculation?** No.
+9. **Does this determine Retry Eligibility?** No.
+10. **Does this execute retries?** No.
+11. **Were any ownership boundaries changed?** No.
+12. **Were any architectural deviations introduced?** No.
 
 ---
 
@@ -232,10 +248,10 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Resolved   | Notification Retry Scheduling Decision inventory baseline established    |
 |            | Notification Retry Scheduling Decision Persistence Foundation            |
 |            | Notification Retry Scheduling Decision Restart Recovery Foundation       |
+|            | Notification Retry Scheduling Decision Operational Continuity Foundation |
 | Introduced | None                                                                     |
-| Deferred   | Operational Continuity Foundation (W5-N25-d)                             |
-|            | Package Validation, Operational Verification & Close Evidence (W5-N25-e) |
+| Deferred   | Package Validation, Operational Verification & Close Evidence (W5-N25-e) |
 
 ---
 
-**STOP.** W5-N25-c Restart Recovery is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N25-d. Do not commit. Do not push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N25-d Operational Continuity is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N25-e. Do not commit. Do not push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.

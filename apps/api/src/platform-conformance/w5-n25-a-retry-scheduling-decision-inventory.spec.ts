@@ -178,7 +178,7 @@ describe('W5-N25-a notification retry scheduling decision inventory — unit', (
     expect(W5_N25_A_BINDING_FINDINGS.unifiedPlatformDecisionLayerMissing).toBe(true);
     expect(W5_N25_A_BINDING_FINDINGS.decisionPersistenceMissing).toBe(false);
     expect(W5_N25_A_BINDING_FINDINGS.decisionRecoveryMissing).toBe(false);
-    expect(W5_N25_A_BINDING_FINDINGS.decisionOperationalContinuityMissing).toBe(true);
+    expect(W5_N25_A_BINDING_FINDINGS.decisionOperationalContinuityMissing).toBe(false);
     expect(W5_N25_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
     expect(W5_N25_A_BINDING_FINDINGS.inventoryDoesNotDetermineEligibility).toBe(true);
     expect(W5_N25_A_BINDING_FINDINGS.inventoryDoesNotPerformBackoffCalculation).toBe(true);
@@ -292,11 +292,17 @@ describe('W5-N25-a notification retry scheduling decision inventory — unit', (
         (entry) => entry.artifactId === 'missing-decision-recovery',
       )?.classification,
     ).toBe('EPHEMERAL');
-    for (const id of [
-      'missing-unified-platform-decision-view',
-      'missing-decision-operational-continuity',
-      'projection-platform-readiness-decision-missing',
-    ]) {
+    expect(
+      W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY.find(
+        (entry) => entry.artifactId === 'missing-decision-operational-continuity',
+      )?.existsToday,
+    ).toBe(true);
+    expect(
+      W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY.find(
+        (entry) => entry.artifactId === 'projection-platform-readiness-decision-missing',
+      )?.existsToday,
+    ).toBe(true);
+    for (const id of ['missing-unified-platform-decision-view']) {
       const row = W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY.find(
         (entry) => entry.artifactId === id,
       );

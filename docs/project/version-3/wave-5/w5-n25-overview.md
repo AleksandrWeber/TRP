@@ -116,6 +116,20 @@ Restart recovery ≠ retry execution.
 Recovered Decision artifacts remain informational only.
 ```
 
+### W5-N25-d status (operational continuity)
+
+W5-N25-d derives Notification Retry Scheduling Decision operational readiness from recovered state, owner readiness, and integrity, and projects it onto existing Platform Readiness. Supported states: Recovering | Ready | Degraded | Unavailable. Customer-visible functionality: **Operator Platform Readiness only**.
+
+```text
+Operational continuity ≠ runtime decision logic.
+Operational continuity ≠ runtime scheduling.
+Operational continuity ≠ Retry Eligibility.
+Operational continuity ≠ Retry Backoff Calculation.
+Operational continuity ≠ retry execution.
+Ready is never hardcoded.
+Degraded / Unavailable never fabricate readiness.
+```
+
 ---
 
 ## What the operator cannot do (still)
@@ -183,20 +197,21 @@ The platform can calculate backoff, determine eligibility, and maintain scheduli
 
 ## Current status
 
-| Item                          | Status               |
-| ----------------------------- | -------------------- |
-| W5-N25 Planning Package       | **APPROVED**         |
-| Product Owner Planning Review | **PASS**             |
-| Planning Approval             | **RECORDED**         |
-| Repository Synchronization    | **COMPLETE**         |
-| W5-N25-a Inventory            | **COMPLETE**         |
-| W5-N25-b Persistence          | **COMPLETE**         |
-| W5-N25-c Restart Recovery     | **COMPLETE** (local) |
-| Implementation slices d–e     | **Not opened**       |
-| Scheduling decision runtime   | **Not implemented**  |
-| Wave 5 COMPLETE               | **Not claimed**      |
+| Item                            | Status               |
+| ------------------------------- | -------------------- |
+| W5-N25 Planning Package         | **APPROVED**         |
+| Product Owner Planning Review   | **PASS**             |
+| Planning Approval               | **RECORDED**         |
+| Repository Synchronization      | **COMPLETE**         |
+| W5-N25-a Inventory              | **COMPLETE**         |
+| W5-N25-b Persistence            | **COMPLETE**         |
+| W5-N25-c Restart Recovery       | **COMPLETE**         |
+| W5-N25-d Operational Continuity | **COMPLETE** (local) |
+| Implementation slice e          | **Not opened**       |
+| Scheduling decision runtime     | **Not implemented**  |
+| Wave 5 COMPLETE                 | **Not claimed**      |
 
-**Slice reports:** [`w5-n25-a-inventory.md`](./w5-n25-a-inventory.md) · [`w5-n25-b-implementation-report.md`](./w5-n25-b-implementation-report.md) · [`w5-n25-c-implementation-report.md`](./w5-n25-c-implementation-report.md) · companions under `w5-n25-a-*` / `w5-n25-b-*` / `w5-n25-c-*`
+**Slice reports:** [`w5-n25-a-inventory.md`](./w5-n25-a-inventory.md) · [`w5-n25-b-implementation-report.md`](./w5-n25-b-implementation-report.md) · [`w5-n25-c-implementation-report.md`](./w5-n25-c-implementation-report.md) · [`w5-n25-d-implementation-report.md`](./w5-n25-d-implementation-report.md) · companions under `w5-n25-a-*` / `w5-n25-b-*` / `w5-n25-c-*` / `w5-n25-d-*`
 
 ---
 
@@ -216,4 +231,4 @@ The platform can calculate backoff, determine eligibility, and maintain scheduli
 
 ---
 
-**STOP.** W5-N25-c Restart Recovery is **COMPLETE** (local). Await Product Owner Review. Do NOT open W5-N25-d. Do NOT begin operational continuity. Do NOT declare scheduling decision runtime. Do NOT declare Runtime Decision Engine. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan. Do not commit. Do not push.
+**STOP.** W5-N25-d Operational Continuity is **COMPLETE** (local). Await Product Owner Review. Do NOT open W5-N25-e. Do NOT declare scheduling decision runtime. Do NOT declare Runtime Decision Engine. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan. Do not commit. Do not push.
