@@ -9,6 +9,7 @@ import {
   NOTIFICATION_PLATFORM_RETRY_ELIGIBILITY_ANCHOR_REPOSITORY,
   type NotificationPlatformRetryEligibilityAnchorRepository,
 } from './domain/notification-platform-retry-eligibility-anchor.repository';
+import { NotificationPlatformRetryEligibilityRecoveryStore } from './domain/notification-platform-retry-eligibility-recovery-store';
 
 export type PersistNotificationPlatformRetryEligibilityAnchorCommand = Readonly<{
   workspaceId: string;
@@ -24,21 +25,26 @@ export type PersistNotificationPlatformRetryEligibilityAnchorCommand = Readonly<
 /**
  * W5-N23-b storage only — durable Notification Platform Retry Eligibility anchor
  * persistence on Notification Delivery owner.
+ * W5-N23-c — write-through to recovery store after hydrate.
  * Storage only — informational; not eligibility evaluation, not calculation, not scheduling,
- * not execution, not restart recovery. Persisted data is informational only.
- * No recovery store (that is W5-N23-c).
+ * not execution, not operational continuity. Persisted data is informational only.
  */
 @Injectable()
 export class NotificationPlatformRetryEligibilityPersistenceService {
   constructor(
     @Inject(NOTIFICATION_PLATFORM_RETRY_ELIGIBILITY_ANCHOR_REPOSITORY)
     private readonly repository: NotificationPlatformRetryEligibilityAnchorRepository,
+    @Inject(NotificationPlatformRetryEligibilityRecoveryStore)
+    private readonly recoveryStore: NotificationPlatformRetryEligibilityRecoveryStore,
   ) {}
 
   async loadNotificationPlatformRetryEligibilityAnchor(
     workspaceId: string,
     eligibilityAnchorId: string,
   ): Promise<DurableNotificationPlatformRetryEligibilityAnchor | null> {
+    if (this.recoveryStore.hasHydrated()) {
+      return this.recoveryStore.get(workspaceId, eligibilityAnchorId);
+    }
     return this.repository.loadNotificationPlatformRetryEligibilityAnchor(
       workspaceId,
       eligibilityAnchorId,
@@ -66,6 +72,7 @@ export class NotificationPlatformRetryEligibilityPersistenceService {
       return outcome;
     }
     await this.repository.saveNotificationPlatformRetryEligibilityAnchor(outcome.anchor);
+    this.recoveryStore.set(outcome.anchor);
     return outcome;
   }
 }

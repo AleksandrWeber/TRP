@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PrismaNotificationPlatformRetryEligibilityAnchorRepository } from '../modules/notification-delivery/persistence/prisma-notification-platform-retry-eligibility-anchor.repository';
+import { NotificationPlatformRetryEligibilityRecoveryStore } from '../modules/notification-delivery/domain/notification-platform-retry-eligibility-recovery-store';
 import { NotificationPlatformRetryEligibilityPersistenceService } from '../modules/notification-delivery/notification-platform-retry-eligibility-persistence.service';
 import { rowsEphemeral } from './w5-n23-a-retry-eligibility-inventory';
 import {
@@ -71,7 +72,10 @@ describe('W5-N23-b durable notification platform retry eligibility — unit', ()
     const repository = new PrismaNotificationPlatformRetryEligibilityAnchorRepository(
       prisma as never,
     );
-    const service = new NotificationPlatformRetryEligibilityPersistenceService(repository);
+    const service = new NotificationPlatformRetryEligibilityPersistenceService(
+      repository,
+      new NotificationPlatformRetryEligibilityRecoveryStore(),
+    );
 
     const outcome = await service.persistNotificationPlatformRetryEligibilityAnchor({
       workspaceId: 'ws-a',

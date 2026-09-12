@@ -4,6 +4,7 @@ import {
   type DurableNotificationPlatformRetryEligibilityAnchor,
 } from './domain/durable-notification-platform-retry-eligibility-anchor';
 import type { NotificationPlatformRetryEligibilityAnchorRepository } from './domain/notification-platform-retry-eligibility-anchor.repository';
+import { NotificationPlatformRetryEligibilityRecoveryStore } from './domain/notification-platform-retry-eligibility-recovery-store';
 import { NotificationPlatformRetryEligibilityPersistenceService } from './notification-platform-retry-eligibility-persistence.service';
 
 const recordedAt = '2026-09-12T21:00:00.000Z';
@@ -39,7 +40,10 @@ function createRepository(): NotificationPlatformRetryEligibilityAnchorRepositor
 describe('NotificationPlatformRetryEligibilityPersistenceService — W5-N23-b storage only', () => {
   it('persistNotificationPlatformRetryEligibilityAnchor writes canonical eligibility anchors without runtime I/O', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformRetryEligibilityPersistenceService(repository);
+    const service = new NotificationPlatformRetryEligibilityPersistenceService(
+      repository,
+      new NotificationPlatformRetryEligibilityRecoveryStore(),
+    );
     const outcome = await service.persistNotificationPlatformRetryEligibilityAnchor({
       workspaceId: 'ws-1',
       eligibilityAnchorId: 'eligibility-anchor-1',
@@ -70,7 +74,10 @@ describe('NotificationPlatformRetryEligibilityPersistenceService — W5-N23-b st
 
   it('does not persist eligibility evaluation, schedule, execution, or recovery fields', async () => {
     const repository = createRepository();
-    const service = new NotificationPlatformRetryEligibilityPersistenceService(repository);
+    const service = new NotificationPlatformRetryEligibilityPersistenceService(
+      repository,
+      new NotificationPlatformRetryEligibilityRecoveryStore(),
+    );
 
     await service.persistNotificationPlatformRetryEligibilityAnchor({
       workspaceId: 'ws-1',

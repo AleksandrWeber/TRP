@@ -149,17 +149,34 @@ Implementation-phase commands (deferred until Planning Approval and authorized s
 
 ## 7. W5-N23-b validation (durable persistence)
 
-| Check                                              | Expected / Status |
-| -------------------------------------------------- | ----------------- |
-| Durable eligibility anchors persist/load           | **PASS**          |
-| Survive process termination (durable rows)         | **PASS**          |
-| Automatic restart recovery                         | **No** (slice b)  |
-| Inventory sync (persist-candidate RECOVERABLE)     | **PASS**          |
-| Ownership on notification-delivery only            | **PASS**          |
-| Determines eligibility / calc / schedule / execute | **No**            |
-| Ownership / architecture changed                   | **No** / **No**   |
-| Customer-visible feature                           | **None**          |
-| W5-N23-c opened                                    | **No**            |
+| Check                                              | Expected / Status          |
+| -------------------------------------------------- | -------------------------- |
+| Durable eligibility anchors persist/load           | **PASS**                   |
+| Survive process termination (durable rows)         | **PASS**                   |
+| Automatic restart recovery                         | **No** (slice b)           |
+| Inventory sync (persist-candidate RECOVERABLE)     | **PASS**                   |
+| Ownership on notification-delivery only            | **PASS**                   |
+| Determines eligibility / calc / schedule / execute | **No**                     |
+| Ownership / architecture changed                   | **No** / **No**            |
+| Customer-visible feature                           | **None**                   |
+| W5-N23-c opened                                    | **Yes** (restart recovery) |
+
+---
+
+## 8. W5-N23-c validation (restart recovery)
+
+| Check                                                | Expected / Status    |
+| ---------------------------------------------------- | -------------------- |
+| Persisted eligibility anchors restored after restart | **PASS**             |
+| Recovery deterministic                               | **PASS**             |
+| Recovery idempotent                                  | **PASS**             |
+| Missing artifacts fabricated                         | **No**               |
+| Corrupted artifacts restored                         | **No** (fail honest) |
+| Determines eligibility / calc / schedule / execute   | **No**               |
+| Ownership / architecture changed                     | **No** / **No**      |
+| Customer-visible feature                             | **None**             |
+| Operational continuity                               | **No** (slice d)     |
+| W5-N23-d opened                                      | **No**               |
 
 ---
 
@@ -170,8 +187,9 @@ Implementation-phase commands (deferred until Planning Approval and authorized s
 - Planning APPROVED — **recorded**
 - W5-N23-a Inventory COMPLETE — **recorded** (local)
 - W5-N23-b Persistence COMPLETE — **recorded** (local)
+- W5-N23-c Restart Recovery COMPLETE — **recorded** (local)
 - Implementation of eligibility runtime — **not claimed**
-- Automatic restart recovery — **not claimed**
+- Operational continuity — **not claimed**
 - Notification Retry Eligibility implemented — **not claimed**
 - Retry Backoff Calculation performed by eligibility — **not claimed**
 - Notification Platform Complete — **not claimed**
@@ -179,4 +197,4 @@ Implementation-phase commands (deferred until Planning Approval and authorized s
 
 ---
 
-**STOP.** W5-N23-b Persistence is **COMPLETE** (local). Await Product Owner Review. Do **not** open W5-N23-c. Do **not** commit. Do **not** push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N23-c Restart Recovery is **COMPLETE** (local). Await Product Owner Review. Do **not** open W5-N23-d. Do **not** commit. Do **not** push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.

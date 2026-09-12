@@ -77,6 +77,8 @@ import { NotificationPlatformRetryPolicyPersistenceService } from './notificatio
 import { NotificationPlatformRetryBackoffPersistenceService } from './notification-platform-retry-backoff-persistence.service';
 import { NotificationPlatformRetryBackoffCalculationPersistenceService } from './notification-platform-retry-backoff-calculation-persistence.service';
 import { NotificationPlatformRetryEligibilityPersistenceService } from './notification-platform-retry-eligibility-persistence.service';
+import { NotificationPlatformRetryEligibilityRecoveryStore } from './domain/notification-platform-retry-eligibility-recovery-store';
+import { NotificationPlatformRetryEligibilityRestartRecoveryService } from './domain/notification-platform-retry-eligibility-restart-recovery.service';
 import { NotificationPlatformRetryBackoffCalculationRecoveryStore } from './domain/notification-platform-retry-backoff-calculation-recovery-store';
 import { NotificationPlatformRetryBackoffCalculationRestartRecoveryService } from './domain/notification-platform-retry-backoff-calculation-restart-recovery.service';
 import { NotificationPlatformTelemetryRecoveryStore } from './domain/notification-platform-telemetry-recovery-store';
@@ -342,6 +344,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetryBackoffPersistenceService,
     NotificationPlatformRetryBackoffCalculationPersistenceService,
     NotificationPlatformRetryEligibilityPersistenceService,
+    NotificationPlatformRetryEligibilityRecoveryStore,
+    NotificationPlatformRetryEligibilityRestartRecoveryService,
     NotificationPlatformRetryBackoffCalculationRecoveryStore,
     NotificationPlatformRetryBackoffCalculationRestartRecoveryService,
     NotificationPlatformRetryBackoffRecoveryStore,
@@ -437,6 +441,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetryBackoffPersistenceService,
     NotificationPlatformRetryBackoffCalculationPersistenceService,
     NotificationPlatformRetryEligibilityPersistenceService,
+    NotificationPlatformRetryEligibilityRecoveryStore,
+    NotificationPlatformRetryEligibilityRestartRecoveryService,
     NotificationPlatformRetryBackoffCalculationRecoveryStore,
     NotificationPlatformRetryBackoffCalculationRestartRecoveryService,
     NotificationPlatformRetryBackoffRecoveryStore,
