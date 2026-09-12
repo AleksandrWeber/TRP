@@ -113,7 +113,7 @@ describe('W5-N24-a retry scheduling conformance — unit', () => {
     expect(W5_N24_A_BINDING_FINDINGS.unifiedPlatformSchedulingLayerMissing).toBe(true);
     expect(W5_N24_A_BINDING_FINDINGS.schedulingPersistenceMissing).toBe(false);
     expect(W5_N24_A_BINDING_FINDINGS.schedulingRecoveryMissing).toBe(false);
-    expect(W5_N24_A_BINDING_FINDINGS.schedulingOperationalContinuityMissing).toBe(true);
+    expect(W5_N24_A_BINDING_FINDINGS.schedulingOperationalContinuityMissing).toBe(false);
     expect(W5_N24_A_ARCHITECTURE_CLAIMS.schedulingFunctionalClaimed).toBe(false);
     expect(W5_N24_A_ARCHITECTURE_CLAIMS.w5N24CompleteClaimed).toBe(false);
     expect(W5_N24_A_ARCHITECTURE_CLAIMS.notificationPlatformCompleteClaimed).toBe(false);

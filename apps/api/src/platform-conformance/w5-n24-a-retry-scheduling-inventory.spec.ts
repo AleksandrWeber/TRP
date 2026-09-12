@@ -169,7 +169,7 @@ describe('W5-N24-a notification retry scheduling inventory — unit', () => {
     expect(W5_N24_A_BINDING_FINDINGS.unifiedPlatformSchedulingLayerMissing).toBe(true);
     expect(W5_N24_A_BINDING_FINDINGS.schedulingPersistenceMissing).toBe(false);
     expect(W5_N24_A_BINDING_FINDINGS.schedulingRecoveryMissing).toBe(false);
-    expect(W5_N24_A_BINDING_FINDINGS.schedulingOperationalContinuityMissing).toBe(true);
+    expect(W5_N24_A_BINDING_FINDINGS.schedulingOperationalContinuityMissing).toBe(false);
     expect(W5_N24_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
     expect(W5_N24_A_BINDING_FINDINGS.inventoryDoesNotDetermineEligibility).toBe(true);
     expect(W5_N24_A_BINDING_FINDINGS.inventoryDoesNotPerformBackoffCalculation).toBe(true);
@@ -258,11 +258,8 @@ describe('W5-N24-a notification retry scheduling inventory — unit', () => {
     ]);
   });
 
-  it('missing gaps remain absent today except persistence and recovery resolved by W5-N24-b/c', () => {
-    for (const id of [
-      'missing-unified-platform-scheduling-view',
-      'missing-scheduling-operational-continuity',
-    ]) {
+  it('missing gaps remain absent today except persistence, recovery, and continuity resolved by W5-N24-b/c/d', () => {
+    for (const id of ['missing-unified-platform-scheduling-view']) {
       const row = W5_N24_A_RETRY_SCHEDULING_INVENTORY.find((entry) => entry.artifactId === id);
       expect(row).toBeDefined();
       expect(row?.existsToday).toBe(false);
@@ -285,7 +282,12 @@ describe('W5-N24-a notification retry scheduling inventory — unit', () => {
     const continuityGap = W5_N24_A_RETRY_SCHEDULING_INVENTORY.find(
       (entry) => entry.artifactId === 'missing-scheduling-operational-continuity',
     );
+    expect(continuityGap?.existsToday).toBe(true);
     expect(continuityGap?.classification).toBe('EPHEMERAL');
+    const projection = W5_N24_A_RETRY_SCHEDULING_INVENTORY.find(
+      (entry) => entry.artifactId === 'projection-platform-readiness-scheduling-missing',
+    );
+    expect(projection?.existsToday).toBe(true);
     const viewGap = W5_N24_A_RETRY_SCHEDULING_INVENTORY.find(
       (entry) => entry.artifactId === 'missing-unified-platform-scheduling-view',
     );

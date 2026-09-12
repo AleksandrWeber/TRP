@@ -228,10 +228,12 @@ const N23D =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-eligibility-operational-continuity.ts';
 const N24B =
   'apps/api/src/platform-conformance/w5-n24-b-durable-notification-platform-retry-scheduling.ts';
-const N19REC =
-  'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-restart-recovery.service.ts';
 const N24C =
   'apps/api/src/platform-conformance/w5-n24-c-notification-platform-retry-scheduling-restart-recovery.ts';
+const N19CONT =
+  'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-operational-continuity.ts';
+const N24D =
+  'apps/api/src/platform-conformance/w5-n24-d-notification-platform-retry-scheduling-operational-continuity.ts';
 const OR = 'apps/api/src/modules/operational-continuity/operational-readiness.ts';
 
 type RowInput = {
@@ -844,18 +846,20 @@ export const W5_N24_A_RETRY_SCHEDULING_INVENTORY: readonly W5N24AInventoryRow[] 
   }),
   row({
     artifactId: 'missing-scheduling-operational-continuity',
-    artifact: 'Scheduling operational continuity — missing (planned W5-N24-d)',
+    artifact:
+      'Scheduling operational continuity — resolved by W5-N24-d (gap row retained for inventory honesty)',
     kind: 'operational',
     owner: 'platform-readiness',
-    purpose: 'Record absence of scheduling operational continuity projection',
-    schedulingRole: 'missing-gap',
+    purpose: 'Record resolved scheduling operational continuity gap after W5-N24-d',
+    schedulingRole: 'missing-gap-resolved',
     classification: 'EPHEMERAL',
-    honestyRequirement: 'Missing — deferred to W5-N24-d; not runtime scheduling',
-    futureW5N24Responsibility: 'W5-N24-d',
-    operationalRequirement: 'planned W5-N24-d',
-    evidencePath: PKG,
-    existsToday: false,
-    customerVisibility: 'not customer-visible — absent',
+    honestyRequirement:
+      'Resolved by W5-N24-d — derived readiness only (consumes W5-N19-d); not runtime scheduling; not eligibility/backoff/execution',
+    futureW5N24Responsibility: 'honesty-baseline',
+    operationalRequirement: 'platform-readiness',
+    evidencePath: N24D,
+    existsToday: true,
+    customerVisibility: 'not customer-visible — gap resolved by W5-N24-d',
   }),
 
   // CONFIGURATION
@@ -1022,20 +1026,20 @@ export const W5_N24_A_RETRY_SCHEDULING_INVENTORY: readonly W5N24AInventoryRow[] 
   }),
   row({
     artifactId: 'projection-platform-readiness-scheduling-missing',
-    artifact: 'Platform Readiness notificationPlatformRetryScheduling — missing',
+    artifact: 'Platform Readiness notificationPlatformRetryScheduling — projected (W5-N24-d)',
     kind: 'projection',
     owner: 'platform-readiness',
-    purpose: 'Record that scheduling readiness projection is not yet on Platform Readiness',
-    schedulingRole: 'readiness-projection-gap',
+    purpose: 'Record that scheduling readiness projection is present on Platform Readiness',
+    schedulingRole: 'readiness-projection',
     classification: 'EPHEMERAL',
-    honestyRequirement: 'Missing — deferred to W5-N24-d; does not authorize runtime scheduling',
-    futureW5N24Responsibility: 'W5-N24-d',
-    operationalRequirement: 'planned W5-N24-d',
-    capabilityCategory: 'not-implemented',
-    honestProductState: 'not-implemented',
+    honestyRequirement: 'Derived readiness only; does not authorize runtime scheduling',
+    futureW5N24Responsibility: 'honesty-baseline',
+    operationalRequirement: 'platform-readiness',
+    capabilityCategory: 'infrastructure-only',
+    honestProductState: 'infrastructure-only',
     evidencePath: OR,
-    existsToday: false,
-    customerVisibility: 'not customer-visible — absent',
+    existsToday: true,
+    customerVisibility: 'operator Platform Readiness only — not runtime scheduling',
   }),
   row({
     artifactId: 'persist-candidate-scheduling-anchor',
@@ -1051,12 +1055,12 @@ export const W5_N24_A_RETRY_SCHEDULING_INVENTORY: readonly W5N24AInventoryRow[] 
     futureW5N24Responsibility: 'honesty-baseline',
     persistenceRequirement: 'notification-delivery',
     recoveryRequirement: 'notification-delivery',
-    operationalRequirement: 'planned W5-N24-d',
+    operationalRequirement: 'platform-readiness',
     capabilityCategory: 'infrastructure-only',
     honestProductState: 'infrastructure-only',
     currentStatus:
-      'Implemented — durable scheduling description anchors via consumed W5-N19-b stack; restart recovery via consumed W5-N19-c / W5-N24-c; operational continuity deferred to W5-N24-d',
-    evidencePath: N19REC,
+      'Implemented — durable scheduling description anchors via consumed W5-N19-b stack; restart recovery via consumed W5-N19-c / W5-N24-c; operational continuity via consumed W5-N19-d / W5-N24-d',
+    evidencePath: N19CONT,
     existsToday: true,
     customerVisibility: 'not customer-visible — infrastructure only',
   }),
@@ -1369,7 +1373,7 @@ export const W5_N24_A_BINDING_FINDINGS = Object.freeze({
   unifiedPlatformSchedulingLayerMissing: true,
   schedulingPersistenceMissing: false,
   schedulingRecoveryMissing: false,
-  schedulingOperationalContinuityMissing: true,
+  schedulingOperationalContinuityMissing: false,
   productionTransportsDeferred: true,
   inventoryDoesNotDetermineEligibility: true,
   inventoryDoesNotPerformBackoffCalculation: true,

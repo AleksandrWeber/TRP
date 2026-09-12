@@ -3,7 +3,7 @@
 **Package:** W5-N24 Notification Retry Scheduling Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N24 · CM-34
-**Status:** Planning Package **APPROVED** (2026-09-12). Repository Synchronization (Planning) **COMPLETE**. W5-N24-a **COMPLETE**. W5-N24-b **COMPLETE**. W5-N24-c **COMPLETE** (local) — awaiting Product Owner Review. Slices d–e **not opened**. No runtime scheduling.
+**Status:** Planning Package **APPROVED** (2026-09-12). Repository Synchronization (Planning) **COMPLETE**. W5-N24-a…c **COMPLETE**. W5-N24-d **COMPLETE** (local) — awaiting Product Owner Review. Slice e **not opened**. No runtime scheduling.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n24-product-scope.md`](./w5-n24-product-scope.md)
@@ -116,15 +116,15 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## 5. Governance validation
 
-| Area                           | Must prove                                               |
-| ------------------------------ | -------------------------------------------------------- |
-| Ownership unchanged            | No ownership movement                                    |
-| Previous packages unmodified   | Consume only                                             |
-| No hidden future functionality | Persistence does not smuggle later package scope         |
-| Implementation authorization   | Planning APPROVED; W5-N24-a…c authorized; d–e not opened |
-| No slices d–e opened           | W5-N24-d…e not created                                   |
-| Planning Approval              | **RECORDED**                                             |
-| Repository Synchronization     | **COMPLETE**                                             |
+| Area                           | Must prove                                             |
+| ------------------------------ | ------------------------------------------------------ |
+| Ownership unchanged            | No ownership movement                                  |
+| Previous packages unmodified   | Consume only                                           |
+| No hidden future functionality | Persistence does not smuggle later package scope       |
+| Implementation authorization   | Planning APPROVED; W5-N24-a…d authorized; e not opened |
+| No slice e opened              | W5-N24-e not created                                   |
+| Planning Approval              | **RECORDED**                                           |
+| Repository Synchronization     | **COMPLETE**                                           |
 
 ---
 
@@ -181,18 +181,35 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Runtime scheduling / calc / eligibility / execute   | **No**               |
 | Ownership / architecture changed                    | **No** / **No**      |
 | Customer-visible feature                            | **None**             |
-| Operational continuity                              | **No** (slice d)     |
-| W5-N24-d opened                                     | **No**               |
+| Operational continuity                              | **Yes** (slice d)    |
+| W5-N24-d opened                                     | **Yes** (continuity) |
 
 **Evidence:** [`w5-n24-c-implementation-report.md`](./w5-n24-c-implementation-report.md) · [`w5-n24-c-validation-report.md`](./w5-n24-c-validation-report.md) · `apps/api/src/platform-conformance/w5-n24-c-notification-platform-retry-scheduling-restart-recovery*.ts`
 
 ---
 
-## 9. Future slice validation (deferred — not opened)
+## 9. W5-N24-d validation (operational continuity)
+
+| Check                                               | Expected / Status                |
+| --------------------------------------------------- | -------------------------------- |
+| Readiness derived from recovered state + integrity  | **PASS**                         |
+| States: Recovering / Ready / Degraded / Unavailable | **PASS**                         |
+| Degraded fabricates Ready                           | **No**                           |
+| Healthy owners continue when rules allow            | **Yes**                          |
+| Consumes W5-N19-d stack (no duplicate continuity)   | **PASS**                         |
+| Runtime scheduling / calc / eligibility / execute   | **No**                           |
+| Ownership / architecture changed                    | **No** / **No**                  |
+| Customer-visible feature                            | Operator Platform Readiness only |
+| W5-N24-e opened                                     | **No**                           |
+
+**Evidence:** [`w5-n24-d-implementation-report.md`](./w5-n24-d-implementation-report.md) · [`w5-n24-d-validation-report.md`](./w5-n24-d-validation-report.md) · `apps/api/src/platform-conformance/w5-n24-d-notification-platform-retry-scheduling-operational-continuity*.ts`
+
+---
+
+## 10. Future slice validation (deferred — not opened)
 
 | Slice    | Focus                      | Status         |
 | -------- | -------------------------- | -------------- |
-| W5-N24-d | Operational Continuity     | **Not opened** |
 | W5-N24-e | Package Validation & Close | **Not opened** |
 
 ---
@@ -201,8 +218,8 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 1. **Business problem?** Plan Notification Retry Scheduling after Backoff Calculation and Retry Eligibility are available.
 2. **Why after W5-N23?** Scheduling depends on completed Backoff Calculation and Eligibility foundations.
-3. **Consumes?** Closed W5-N01…W5-N23 and existing notification-delivery capabilities (incl. W5-N19-b/c).
-4. **Owns?** Scheduling inventory (a), durable persistence sync (b), and restart recovery sync (c).
+3. **Consumes?** Closed W5-N01…W5-N23 and existing notification-delivery capabilities (incl. W5-N19-b/c/d).
+4. **Owns?** Scheduling inventory (a), durable persistence sync (b), restart recovery sync (c), and operational continuity (d).
 5. **OUT?** Runtime scheduling, retry execution, workers, timers implementation, transports, Monitoring, BC, HA, DR.
 6. **Performs Retry Backoff Calculation?** No.
 7. **Determines Retry Eligibility?** No.
