@@ -2,7 +2,7 @@
 
 **Document:** W5-N24 Notification Retry Scheduling Foundation Overview
 **Date:** 2026-09-12
-**Status:** Product-facing record. Planning Package **APPROVED**. Repository Synchronization (Planning) **COMPLETE**. W5-N24-a **COMPLETE**. W5-N24-b **COMPLETE** (local) — awaiting Product Owner Review. Slices c–e **not opened**. No runtime scheduling. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. Planning Package **APPROVED**. Repository Synchronization (Planning) **COMPLETE**. W5-N24-a **COMPLETE**. W5-N24-b **COMPLETE**. W5-N24-c **COMPLETE** (local) — awaiting Product Owner Review. Slices d–e **not opened**. No runtime scheduling. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N24 (V3-N24 · CM-34)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -99,6 +99,20 @@ Durable persistence ≠ scheduling or executing retries.
 Persisted scheduling data is informational only.
 ```
 
+### W5-N24-c status (restart recovery)
+
+W5-N24-c restores persisted Notification Retry Scheduling description anchors after a normal process restart on the existing notification-delivery owner (consuming Closed W5-N19-c). Recovery is deterministic, idempotent, and fail-honest. Customer-visible functionality: **None**.
+
+```text
+Restart recovery ≠ operational continuity.
+Restart recovery ≠ runtime scheduling.
+Restart recovery ≠ Retry Backoff Calculation.
+Restart recovery ≠ Retry Eligibility determination.
+Restart recovery ≠ scheduling or executing retries.
+Missing artifacts are not fabricated.
+Corrupted artifacts are not restored.
+```
+
 ---
 
 ## What the operator cannot do (still)
@@ -172,13 +186,15 @@ The platform can calculate backoff and determine eligibility, but still cannot d
 | Planning Approval             | **RECORDED**                                         |
 | Repository Synchronization    | **COMPLETE**                                         |
 | W5-N24-a Inventory            | **COMPLETE**                                         |
-| W5-N24-b Persistence          | **COMPLETE** (local) — awaiting Product Owner Review |
-| Implementation slices c–e     | **Not opened. Not authorized.**                      |
+| W5-N24-b Persistence          | **COMPLETE**                                         |
+| W5-N24-c Restart Recovery     | **COMPLETE** (local) — awaiting Product Owner Review |
+| Implementation slices d–e     | **Not opened. Not authorized.**                      |
 | Runtime scheduling            | **Not implemented**                                  |
 | Wave 5 COMPLETE               | **Not claimed**                                      |
 
 **Slice a reports:** [`w5-n24-a-inventory.md`](./w5-n24-a-inventory.md) · companions
-**Slice b reports:** [`w5-n24-b-implementation-report.md`](./w5-n24-b-implementation-report.md) · [`w5-n24-b-architecture-review.md`](./w5-n24-b-architecture-review.md) · [`w5-n24-b-security-review.md`](./w5-n24-b-security-review.md) · [`w5-n24-b-product-review.md`](./w5-n24-b-product-review.md) · [`w5-n24-b-validation-report.md`](./w5-n24-b-validation-report.md)
+**Slice b reports:** [`w5-n24-b-implementation-report.md`](./w5-n24-b-implementation-report.md) · companions
+**Slice c reports:** [`w5-n24-c-implementation-report.md`](./w5-n24-c-implementation-report.md) · [`w5-n24-c-architecture-review.md`](./w5-n24-c-architecture-review.md) · [`w5-n24-c-security-review.md`](./w5-n24-c-security-review.md) · [`w5-n24-c-product-review.md`](./w5-n24-c-product-review.md) · [`w5-n24-c-validation-report.md`](./w5-n24-c-validation-report.md)
 
 ---
 
@@ -186,8 +202,8 @@ The platform can calculate backoff and determine eligibility, but still cannot d
 
 1. **Business problem:** Plan Notification Retry Scheduling after Backoff Calculation and Retry Eligibility are available.
 2. **Why after W5-N23:** Scheduling depends on completed Backoff Calculation and Eligibility foundations.
-3. **Consumes:** Closed W5-N01…N23 and existing notification-delivery capabilities (incl. W5-N19-b scheduling persistence).
-4. **Owns:** Scheduling inventory (a) and durable persistence sync (b); package still owns Scheduling Foundation only.
+3. **Consumes:** Closed W5-N01…N23 and existing notification-delivery capabilities (incl. W5-N19-b/c scheduling persistence/recovery).
+4. **Owns:** Scheduling inventory (a), durable persistence sync (b), and restart recovery sync (c); package still owns Scheduling Foundation only.
 5. **OUT:** Runtime scheduling, retry execution, workers, timers implementation, transports, Monitoring, BC, HA, DR.
 6. **Performs Retry Backoff Calculation?** No.
 7. **Determines Retry Eligibility?** No.
@@ -198,4 +214,4 @@ The platform can calculate backoff and determine eligibility, but still cannot d
 
 ---
 
-**STOP.** W5-N24-b is **COMPLETE** (local). Await Product Owner Review. Do NOT commit. Do NOT push. Do NOT open W5-N24-c. Do NOT implement runtime scheduling. Do NOT implement Retry Engine. Do NOT implement Retry Execution. Do NOT declare W5-N24 COMPLETE. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
+**STOP.** W5-N24-c is **COMPLETE** (local). Await Product Owner Review. Do NOT commit. Do NOT push. Do NOT open W5-N24-d. Do NOT implement runtime scheduling. Do NOT implement Retry Engine. Do NOT implement Retry Execution. Do NOT declare W5-N24 COMPLETE. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.

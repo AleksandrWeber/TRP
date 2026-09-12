@@ -168,7 +168,7 @@ describe('W5-N24-a notification retry scheduling inventory — unit', () => {
     expect(W5_N24_A_BINDING_FINDINGS.w5N23RetryEligibilityExists).toBe(true);
     expect(W5_N24_A_BINDING_FINDINGS.unifiedPlatformSchedulingLayerMissing).toBe(true);
     expect(W5_N24_A_BINDING_FINDINGS.schedulingPersistenceMissing).toBe(false);
-    expect(W5_N24_A_BINDING_FINDINGS.schedulingRecoveryMissing).toBe(true);
+    expect(W5_N24_A_BINDING_FINDINGS.schedulingRecoveryMissing).toBe(false);
     expect(W5_N24_A_BINDING_FINDINGS.schedulingOperationalContinuityMissing).toBe(true);
     expect(W5_N24_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
     expect(W5_N24_A_BINDING_FINDINGS.inventoryDoesNotDetermineEligibility).toBe(true);
@@ -258,10 +258,9 @@ describe('W5-N24-a notification retry scheduling inventory — unit', () => {
     ]);
   });
 
-  it('missing gaps remain absent today except persistence resolved by W5-N24-b', () => {
+  it('missing gaps remain absent today except persistence and recovery resolved by W5-N24-b/c', () => {
     for (const id of [
       'missing-unified-platform-scheduling-view',
-      'missing-scheduling-recovery',
       'missing-scheduling-operational-continuity',
     ]) {
       const row = W5_N24_A_RETRY_SCHEDULING_INVENTORY.find((entry) => entry.artifactId === id);
@@ -281,6 +280,7 @@ describe('W5-N24-a notification retry scheduling inventory — unit', () => {
     const recoveryGap = W5_N24_A_RETRY_SCHEDULING_INVENTORY.find(
       (entry) => entry.artifactId === 'missing-scheduling-recovery',
     );
+    expect(recoveryGap?.existsToday).toBe(true);
     expect(recoveryGap?.classification).toBe('EPHEMERAL');
     const continuityGap = W5_N24_A_RETRY_SCHEDULING_INVENTORY.find(
       (entry) => entry.artifactId === 'missing-scheduling-operational-continuity',

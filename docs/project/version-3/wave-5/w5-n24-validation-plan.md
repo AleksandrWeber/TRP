@@ -3,7 +3,7 @@
 **Package:** W5-N24 Notification Retry Scheduling Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N24 · CM-34
-**Status:** Planning Package **APPROVED** (2026-09-12). Repository Synchronization (Planning) **COMPLETE**. W5-N24-a **COMPLETE**. W5-N24-b **COMPLETE** (local) — awaiting Product Owner Review. Slices c–e **not opened**. No runtime scheduling.
+**Status:** Planning Package **APPROVED** (2026-09-12). Repository Synchronization (Planning) **COMPLETE**. W5-N24-a **COMPLETE**. W5-N24-b **COMPLETE**. W5-N24-c **COMPLETE** (local) — awaiting Product Owner Review. Slices d–e **not opened**. No runtime scheduling.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n24-product-scope.md`](./w5-n24-product-scope.md)
@@ -121,8 +121,8 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Ownership unchanged            | No ownership movement                                    |
 | Previous packages unmodified   | Consume only                                             |
 | No hidden future functionality | Persistence does not smuggle later package scope         |
-| Implementation authorization   | Planning APPROVED; W5-N24-a…b authorized; c–e not opened |
-| No slices c–e opened           | W5-N24-c…e not created                                   |
+| Implementation authorization   | Planning APPROVED; W5-N24-a…c authorized; d–e not opened |
+| No slices d–e opened           | W5-N24-d…e not created                                   |
 | Planning Approval              | **RECORDED**                                             |
 | Repository Synchronization     | **COMPLETE**                                             |
 
@@ -151,30 +151,49 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## 7. W5-N24-b validation (durable persistence)
 
-| Check                                             | Expected / Status |
-| ------------------------------------------------- | ----------------- |
-| Durable scheduling anchors persist/load           | **PASS**          |
-| Survive process termination (durable rows)        | **PASS**          |
-| Automatic restart recovery                        | **No** (slice b)  |
-| Inventory sync (persist-candidate RECOVERABLE)    | **PASS**          |
-| Consumes W5-N19-b stack (no duplicate storage)    | **PASS**          |
-| Ownership on notification-delivery only           | **PASS**          |
-| Runtime scheduling / calc / eligibility / execute | **No**            |
-| Ownership / architecture changed                  | **No** / **No**   |
-| Customer-visible feature                          | **None**          |
-| W5-N24-c opened                                   | **No**            |
+| Check                                             | Expected / Status          |
+| ------------------------------------------------- | -------------------------- |
+| Durable scheduling anchors persist/load           | **PASS**                   |
+| Survive process termination (durable rows)        | **PASS**                   |
+| Automatic restart recovery                        | **No** (slice b)           |
+| Inventory sync (persist-candidate RECOVERABLE)    | **PASS**                   |
+| Consumes W5-N19-b stack (no duplicate storage)    | **PASS**                   |
+| Ownership on notification-delivery only           | **PASS**                   |
+| Runtime scheduling / calc / eligibility / execute | **No**                     |
+| Ownership / architecture changed                  | **No** / **No**            |
+| Customer-visible feature                          | **None**                   |
+| W5-N24-c opened                                   | **Yes** (restart recovery) |
 
 **Evidence:** [`w5-n24-b-implementation-report.md`](./w5-n24-b-implementation-report.md) · [`w5-n24-b-validation-report.md`](./w5-n24-b-validation-report.md) · `apps/api/src/platform-conformance/w5-n24-b-durable-notification-platform-retry-scheduling*.ts`
 
 ---
 
-## 8. Future slice validation (deferred — not opened)
+## 8. W5-N24-c validation (restart recovery)
 
-| Slice    | Focus                       | Status         |
-| -------- | --------------------------- | -------------- |
-| W5-N24-c | Restart Recovery Foundation | **Not opened** |
-| W5-N24-d | Operational Continuity      | **Not opened** |
-| W5-N24-e | Package Validation & Close  | **Not opened** |
+| Check                                               | Expected / Status    |
+| --------------------------------------------------- | -------------------- |
+| Persisted scheduling anchors restored after restart | **PASS**             |
+| Recovery deterministic                              | **PASS**             |
+| Recovery idempotent                                 | **PASS**             |
+| Missing artifacts fabricated                        | **No**               |
+| Corrupted artifacts restored                        | **No** (fail honest) |
+| Consumes W5-N19-c stack (no duplicate recovery)     | **PASS**             |
+| Runtime scheduling / calc / eligibility / execute   | **No**               |
+| Ownership / architecture changed                    | **No** / **No**      |
+| Customer-visible feature                            | **None**             |
+| Operational continuity                              | **No** (slice d)     |
+| W5-N24-d opened                                     | **No**               |
+
+**Evidence:** [`w5-n24-c-implementation-report.md`](./w5-n24-c-implementation-report.md) · [`w5-n24-c-validation-report.md`](./w5-n24-c-validation-report.md) · `apps/api/src/platform-conformance/w5-n24-c-notification-platform-retry-scheduling-restart-recovery*.ts`
+
+---
+
+## 9. Future slice validation (deferred — not opened)
+
+| Slice    | Focus                      | Status         |
+| -------- | -------------------------- | -------------- |
+| W5-N24-d | Operational Continuity     | **Not opened** |
+| W5-N24-e | Package Validation & Close | **Not opened** |
 
 ---
 
@@ -182,8 +201,8 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 1. **Business problem?** Plan Notification Retry Scheduling after Backoff Calculation and Retry Eligibility are available.
 2. **Why after W5-N23?** Scheduling depends on completed Backoff Calculation and Eligibility foundations.
-3. **Consumes?** Closed W5-N01…W5-N23 and existing notification-delivery capabilities (incl. W5-N19-b).
-4. **Owns?** Scheduling inventory (a) and durable persistence sync (b).
+3. **Consumes?** Closed W5-N01…W5-N23 and existing notification-delivery capabilities (incl. W5-N19-b/c).
+4. **Owns?** Scheduling inventory (a), durable persistence sync (b), and restart recovery sync (c).
 5. **OUT?** Runtime scheduling, retry execution, workers, timers implementation, transports, Monitoring, BC, HA, DR.
 6. **Performs Retry Backoff Calculation?** No.
 7. **Determines Retry Eligibility?** No.

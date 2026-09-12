@@ -226,10 +226,12 @@ const N23C =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-eligibility-restart-recovery.service.ts';
 const N23D =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-eligibility-operational-continuity.ts';
-const N19PERS =
-  'apps/api/src/modules/notification-delivery/notification-platform-retry-scheduling-persistence.service.ts';
 const N24B =
   'apps/api/src/platform-conformance/w5-n24-b-durable-notification-platform-retry-scheduling.ts';
+const N19REC =
+  'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-restart-recovery.service.ts';
+const N24C =
+  'apps/api/src/platform-conformance/w5-n24-c-notification-platform-retry-scheduling-restart-recovery.ts';
 const OR = 'apps/api/src/modules/operational-continuity/operational-readiness.ts';
 
 type RowInput = {
@@ -825,18 +827,20 @@ export const W5_N24_A_RETRY_SCHEDULING_INVENTORY: readonly W5N24AInventoryRow[] 
   }),
   row({
     artifactId: 'missing-scheduling-recovery',
-    artifact: 'Scheduling restart recovery — missing (planned W5-N24-c)',
+    artifact:
+      'Scheduling restart recovery — resolved by W5-N24-c (gap row retained for inventory honesty)',
     kind: 'ephemeral-artifact',
     owner: 'notification-delivery',
-    purpose: 'Record absence of restart-safe scheduling recovery',
-    schedulingRole: 'missing-gap',
+    purpose: 'Record resolved restart-safe scheduling recovery gap after W5-N24-c',
+    schedulingRole: 'missing-gap-resolved',
     classification: 'EPHEMERAL',
-    honestyRequirement: 'Missing — deferred to W5-N24-c; not runtime scheduling',
-    futureW5N24Responsibility: 'W5-N24-c',
-    recoveryRequirement: 'planned W5-N24-c',
-    evidencePath: PKG,
-    existsToday: false,
-    customerVisibility: 'not customer-visible — absent',
+    honestyRequirement:
+      'Resolved by W5-N24-c — recovery only (consumes W5-N19-c); not runtime scheduling; not eligibility/backoff/execution; not operational continuity',
+    futureW5N24Responsibility: 'honesty-baseline',
+    recoveryRequirement: 'notification-delivery',
+    evidencePath: N24C,
+    existsToday: true,
+    customerVisibility: 'not customer-visible — gap resolved by W5-N24-c',
   }),
   row({
     artifactId: 'missing-scheduling-operational-continuity',
@@ -1046,13 +1050,13 @@ export const W5_N24_A_RETRY_SCHEDULING_INVENTORY: readonly W5N24AInventoryRow[] 
       'Persistence only; not runtime scheduling; not eligibility/backoff/execution; not restart recovery',
     futureW5N24Responsibility: 'honesty-baseline',
     persistenceRequirement: 'notification-delivery',
-    recoveryRequirement: 'planned W5-N24-c',
+    recoveryRequirement: 'notification-delivery',
     operationalRequirement: 'planned W5-N24-d',
     capabilityCategory: 'infrastructure-only',
     honestProductState: 'infrastructure-only',
     currentStatus:
-      'Implemented — durable scheduling description anchors via consumed W5-N19-b stack; restart recovery deferred to W5-N24-c',
-    evidencePath: N19PERS,
+      'Implemented — durable scheduling description anchors via consumed W5-N19-b stack; restart recovery via consumed W5-N19-c / W5-N24-c; operational continuity deferred to W5-N24-d',
+    evidencePath: N19REC,
     existsToday: true,
     customerVisibility: 'not customer-visible — infrastructure only',
   }),
@@ -1364,7 +1368,7 @@ export const W5_N24_A_BINDING_FINDINGS = Object.freeze({
   w5N23RetryEligibilityExists: true,
   unifiedPlatformSchedulingLayerMissing: true,
   schedulingPersistenceMissing: false,
-  schedulingRecoveryMissing: true,
+  schedulingRecoveryMissing: false,
   schedulingOperationalContinuityMissing: true,
   productionTransportsDeferred: true,
   inventoryDoesNotDetermineEligibility: true,
