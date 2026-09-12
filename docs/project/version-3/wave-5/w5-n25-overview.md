@@ -2,7 +2,7 @@
 
 **Document:** W5-N25 Notification Retry Scheduling Decision Foundation Overview
 **Date:** 2026-09-12
-**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N25-a Inventory **COMPLETE**. W5-N25-b Persistence **COMPLETE**. W5-N25-c Restart Recovery **COMPLETE** (local). No scheduling decision runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. Planning Package **APPROVED**. Repository Synchronization (Planning) **COMPLETE**. W5-N25-a…e **COMPLETE**. Final Package Integration Verification **PASS** (local). Package **CLOSED** by Product Owner (2026-09-12). No scheduling decision runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N25 (V3-N25 · CM-35)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -130,6 +130,19 @@ Ready is never hardcoded.
 Degraded / Unavailable never fabricate readiness.
 ```
 
+### W5-N25-e status (Close Evidence)
+
+W5-N25-e assembles package Close Evidence only. Customer-visible functionality: **None**.
+
+```text
+Close Evidence ≠ package CLOSED.
+Close Evidence ≠ Final Package Integration Verification.
+Close Evidence ≠ runtime decision logic.
+Close Evidence ≠ Runtime Decision Engine.
+Close Evidence ≠ Runtime Scheduler.
+Close Evidence ≠ Retry Execution.
+```
+
 ---
 
 ## What the operator cannot do (still)
@@ -197,21 +210,29 @@ The platform can calculate backoff, determine eligibility, and maintain scheduli
 
 ## Current status
 
-| Item                            | Status               |
-| ------------------------------- | -------------------- |
-| W5-N25 Planning Package         | **APPROVED**         |
-| Product Owner Planning Review   | **PASS**             |
-| Planning Approval               | **RECORDED**         |
-| Repository Synchronization      | **COMPLETE**         |
-| W5-N25-a Inventory              | **COMPLETE**         |
-| W5-N25-b Persistence            | **COMPLETE**         |
-| W5-N25-c Restart Recovery       | **COMPLETE**         |
-| W5-N25-d Operational Continuity | **COMPLETE** (local) |
-| Implementation slice e          | **Not opened**       |
-| Scheduling decision runtime     | **Not implemented**  |
-| Wave 5 COMPLETE                 | **Not claimed**      |
+| Item                                   | Status                                   |
+| -------------------------------------- | ---------------------------------------- |
+| W5-N25 Planning Package                | **APPROVED**                             |
+| Product Owner Planning Review          | **PASS**                                 |
+| Planning Approval                      | **RECORDED**                             |
+| Repository Synchronization             | **COMPLETE**                             |
+| W5-N25-a Inventory                     | **COMPLETE**                             |
+| W5-N25-b Persistence                   | **COMPLETE**                             |
+| W5-N25-c Restart Recovery              | **COMPLETE**                             |
+| W5-N25-d Operational Continuity        | **COMPLETE**                             |
+| W5-N25-e Close Evidence                | **COMPLETE** (local)                     |
+| Final Package Integration Verification | **PASS** (local)                         |
+| Package CLOSED                         | **CLOSED** by Product Owner (2026-09-12) |
+| Scheduling decision runtime            | **Not implemented**                      |
+| Wave 5 COMPLETE                        | **Not claimed**                          |
 
-**Slice reports:** [`w5-n25-a-inventory.md`](./w5-n25-a-inventory.md) · [`w5-n25-b-implementation-report.md`](./w5-n25-b-implementation-report.md) · [`w5-n25-c-implementation-report.md`](./w5-n25-c-implementation-report.md) · [`w5-n25-d-implementation-report.md`](./w5-n25-d-implementation-report.md) · companions under `w5-n25-a-*` / `w5-n25-b-*` / `w5-n25-c-*` / `w5-n25-d-*`
+**Slice reports:** [`w5-n25-a-inventory.md`](./w5-n25-a-inventory.md) · [`w5-n25-b-implementation-report.md`](./w5-n25-b-implementation-report.md) · [`w5-n25-c-implementation-report.md`](./w5-n25-c-implementation-report.md) · [`w5-n25-d-implementation-report.md`](./w5-n25-d-implementation-report.md) · [`w5-n25-e-implementation-report.md`](./w5-n25-e-implementation-report.md) · companions under `w5-n25-a-*` … `w5-n25-e-*`
+
+**Package Close Evidence:** [`w5-n25-close-package-report.md`](./w5-n25-close-package-report.md) · [`w5-n25-package-summary.md`](./w5-n25-package-summary.md) · [`w5-n25-operational-walkthrough.md`](./w5-n25-operational-walkthrough.md)
+
+**Final Integration Verification:** [`w5-n25-final-integration-verification.md`](./w5-n25-final-integration-verification.md) — **PASS** (local)
+
+**Product Owner Close Record:** [`w5-n25-product-owner-close-record.md`](./w5-n25-product-owner-close-record.md) — **CLOSED** (2026-09-12)
 
 ---
 
@@ -231,4 +252,4 @@ The platform can calculate backoff, determine eligibility, and maintain scheduli
 
 ---
 
-**STOP.** W5-N25-d Operational Continuity is **COMPLETE** (local). Await Product Owner Review. Do NOT open W5-N25-e. Do NOT declare scheduling decision runtime. Do NOT declare Runtime Decision Engine. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan. Do not commit. Do not push.
+**STOP.** W5-N25 is **CLOSED** by Product Owner (2026-09-12). Do NOT declare scheduling decision runtime. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT open W5-N26. Do NOT modify the Master Plan. Await Repository Synchronization. Do not commit. Do not push.

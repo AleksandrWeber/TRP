@@ -3,7 +3,7 @@
 **Package:** W5-N25 Notification Retry Scheduling Decision Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N25 · CM-35
-**Status:** Planning Package **APPROVED** (2026-09-12). Repository Synchronization (Planning) **COMPLETE**. W5-N25-a Inventory **COMPLETE**. W5-N25-b Persistence **COMPLETE**. W5-N25-c Restart Recovery **COMPLETE**. W5-N25-d Operational Continuity **COMPLETE** (local). No runtime scheduling. No scheduling decision runtime.
+**Status:** Planning Package **APPROVED** (2026-09-12). Repository Synchronization (Planning) **COMPLETE**. W5-N25-a…e **COMPLETE** (local e). Final Package Integration Verification **PASS** (local). Package **CLOSED** by Product Owner (2026-09-12). No runtime scheduling. No scheduling decision runtime.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n25-product-scope.md`](./w5-n25-product-scope.md)
@@ -212,32 +212,68 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Runtime decision / scheduling / calc / eligibility / execute | **No**                           |
 | Ownership / architecture changed                             | **No** / **No**                  |
 | Customer-visible feature                                     | Operator Platform Readiness only |
-| W5-N25-e opened                                              | **No**                           |
+| W5-N25-e opened                                              | **Yes** — COMPLETE (local)       |
 
 **Evidence:** [`w5-n25-d-implementation-report.md`](./w5-n25-d-implementation-report.md) · [`w5-n25-d-validation-report.md`](./w5-n25-d-validation-report.md) · `apps/api/src/platform-conformance/w5-n25-d-notification-platform-retry-scheduling-decision-operational-continuity*.ts`
 
 ---
 
-## 10. Implementation slice e (deferred)
+## 10. W5-N25-e validation (Close Evidence)
 
-**Not opened. Not authorized.**
+| Check                                            | Expected / Status                             |
+| ------------------------------------------------ | --------------------------------------------- |
+| Complete operational journey works               | **PASS**                                      |
+| Approved slices a–d validated                    | **PASS**                                      |
+| Decision Foundation only preserved               | **Yes**                                       |
+| Operational Readiness derived only               | **Yes**                                       |
+| Runtime decision / Scheduler / execute claimed   | **No**                                        |
+| Ownership / architecture changed                 | **No** / **No**                               |
+| Customer-visible feature                         | **None**                                      |
+| Package declared CLOSED                          | **No** (e-slice) / **CLOSED** by PO after FIV |
+| Final Package Integration Verification performed | **Yes** — PASS (local)                        |
+
+**Evidence:** [`w5-n25-e-implementation-report.md`](./w5-n25-e-implementation-report.md) · [`w5-n25-e-validation-report.md`](./w5-n25-e-validation-report.md) · [`w5-n25-close-package-report.md`](./w5-n25-close-package-report.md) · `apps/api/src/platform-conformance/w5-n25-e-package-close-evidence*.ts`
 
 ---
 
-## Mandatory Questions (slice d)
+## 11. Final Package Integration Verification
 
-1. **What customer-visible functionality was delivered?** Operator Platform Readiness only.
-2. **How is readiness determined?** Derived from recovered Decision state, owner readiness, and persistence integrity.
-3. **Which operational states are supported?** Recovering, Ready, Degraded, Unavailable.
-4. **Can readiness be fabricated?** No.
-5. **Can healthy owners continue operating?** Yes.
-6. **Does this perform runtime decision logic?** No.
-7. **Does this perform runtime scheduling?** No.
-8. **Does this perform Retry Backoff Calculation?** No.
-9. **Does this determine Retry Eligibility?** No.
-10. **Does this execute retries?** No.
-11. **Were any ownership boundaries changed?** No.
-12. **Were any architectural deviations introduced?** No.
+| Check                               | Expected / Status                 |
+| ----------------------------------- | --------------------------------- |
+| Internally consistent               | **Yes**                           |
+| Fully integrated                    | **Yes**                           |
+| Regression-safe                     | **Yes**                           |
+| Documentation synchronized          | **Yes**                           |
+| Decision Foundation only preserved  | **Yes**                           |
+| Ready for Product Owner Final Close | **Yes** — **CLOSED** (2026-09-12) |
+| Package declared CLOSED             | **CLOSED** by Product Owner       |
+
+**Evidence:** [`w5-n25-final-integration-verification.md`](./w5-n25-final-integration-verification.md) — **PASS** (local) · [`w5-n25-product-owner-close-record.md`](./w5-n25-product-owner-close-record.md) — **CLOSED** (2026-09-12)
+
+---
+
+## 12. Product Owner Final Close
+
+| Check                                           | Expected / Status                              |
+| ----------------------------------------------- | ---------------------------------------------- |
+| W5-N25 officially CLOSED                        | **Yes** — CLOSED by Product Owner (2026-09-12) |
+| All implementation slices accepted              | **Yes**                                        |
+| Final Package Integration Verification accepted | **Yes**                                        |
+| Decision Foundation only preserved              | **Yes**                                        |
+| Ownership / architecture changed                | **No** / **No**                                |
+
+**Evidence:** [`w5-n25-product-owner-close-record.md`](./w5-n25-product-owner-close-record.md)
+
+---
+
+## Mandatory Questions (Product Owner Final Close)
+
+1. **Is W5-N25 officially CLOSED?** Yes.
+2. **Were all implementation slices accepted?** Yes.
+3. **Was Final Package Integration Verification accepted?** Yes.
+4. **Does Notification Retry Scheduling Decision remain Decision Foundation only?** Yes.
+5. **Were any ownership boundaries changed?** No.
+6. **Were any architectural deviations introduced?** No.
 
 ---
 
@@ -249,9 +285,12 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 |            | Notification Retry Scheduling Decision Persistence Foundation            |
 |            | Notification Retry Scheduling Decision Restart Recovery Foundation       |
 |            | Notification Retry Scheduling Decision Operational Continuity Foundation |
+|            | Package validation and Close Evidence assembled                          |
+|            | Final Package Integration Verification completed                         |
+|            | W5-N25 governance lifecycle completed                                    |
 | Introduced | None                                                                     |
-| Deferred   | Package Validation, Operational Verification & Close Evidence (W5-N25-e) |
+| Deferred   | Repository Synchronization after Product Owner Final Close               |
 
 ---
 
-**STOP.** W5-N25-d Operational Continuity is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N25-e. Do not commit. Do not push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N25 is **CLOSED** by Product Owner (2026-09-12). Await Repository Synchronization. Do not open W5-N26. Do not commit. Do not push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
