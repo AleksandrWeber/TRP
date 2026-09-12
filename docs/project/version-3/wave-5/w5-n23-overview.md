@@ -2,7 +2,7 @@
 
 **Document:** W5-N23 Notification Retry Eligibility Foundation Overview
 **Date:** 2026-09-12
-**Status:** Product-facing planning record. Planning Package **APPROVED**. No implementation. No eligibility runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing planning record. Planning Package **APPROVED**. W5-N23-a Inventory **COMPLETE** (local). No eligibility evaluation runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N23 (V3-N23 · CM-33)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -74,6 +74,19 @@ Eligibility output is informational until consumed by future approved packages.
 
 **Not available from this planning open alone** — no eligibility runtime, no Retry Backoff Calculation by this package, no scheduling, no execution, no transport execution, no successful delivery, no Live Notifications, no Production Ready, no Wave 5 COMPLETE.
 
+### W5-N23-a status (inventory)
+
+W5-N23-a delivers the Notification Retry Eligibility **inventory and classification baseline** only (76 machine-readable rows). Customer-visible functionality: **None**.
+
+```text
+Eligibility inventory ≠ eligibility evaluation.
+Inventory does NOT determine eligibility.
+Inventory does NOT perform Retry Backoff Calculation.
+Inventory does NOT schedule or execute retries.
+Inventory does NOT own retry lifecycle, timers, workers, or orchestration.
+Inventory output is informational only until consumed by future approved slices.
+```
+
 ---
 
 ## What the operator cannot do (still)
@@ -141,14 +154,14 @@ W5-N17–N22 established reliability-through-calculation foundation evidence. Th
 
 ## Current status
 
-| Item                          | Status                     |
-| ----------------------------- | -------------------------- |
-| W5-N23 Planning Package       | **APPROVED**               |
-| Product Owner Planning Review | **PASS**                   |
-| Planning Approval             | **RECORDED**               |
-| Implementation                | **NOT AUTHORIZED**         |
-| Implementation slices         | **Not opened. Not named.** |
-| Wave 5 COMPLETE               | **Not claimed**            |
+| Item                          | Status                                      |
+| ----------------------------- | ------------------------------------------- |
+| W5-N23 Planning Package       | **APPROVED**                                |
+| Product Owner Planning Review | **PASS**                                    |
+| Planning Approval             | **RECORDED**                                |
+| Implementation                | **W5-N23-a COMPLETE** (local); b–e deferred |
+| Implementation slices         | **a** inventory only — b–e not opened       |
+| Wave 5 COMPLETE               | **Not claimed**                             |
 
 ---
 
@@ -167,4 +180,4 @@ W5-N17–N22 established reliability-through-calculation foundation evidence. Th
 
 ---
 
-**STOP.** W5-N23 Planning is **APPROVED**. Await Repository Synchronization review. Do NOT open W5-N23-a until after Repository Synchronization is approved. Do NOT begin implementation. Do NOT declare Notification Retry Eligibility implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N23-a Inventory is **COMPLETE** (local). Await Product Owner Review. Do NOT open W5-N23-b. Do NOT commit. Do NOT push. Do NOT declare Notification Retry Eligibility implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.

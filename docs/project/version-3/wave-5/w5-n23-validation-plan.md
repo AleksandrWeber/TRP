@@ -3,7 +3,7 @@
 **Package:** W5-N23 Notification Retry Eligibility Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N23 · CM-33
-**Status:** Planning Package **APPROVED** (2026-09-12). Planning Review **PASS**. No implementation. No slices opened. No eligibility runtime.
+**Status:** Planning Package **APPROVED** (2026-09-12). Planning Review **PASS**. W5-N23-a Inventory **COMPLETE** (local). No eligibility evaluation runtime. No slices b–e opened.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n23-product-scope.md`](./w5-n23-product-scope.md)
@@ -118,29 +118,32 @@ Implementation-phase commands (deferred until Planning Approval and authorized s
 
 ## 5. Governance validation
 
-| Area                            | Must prove                                       |
-| ------------------------------- | ------------------------------------------------ |
-| Ownership unchanged             | No ownership movement                            |
-| Previous packages unmodified    | Consume only                                     |
-| No hidden future functionality  | Planning does not smuggle later package scope    |
-| No implementation authorization | Planning APPROVED; implementation not authorized |
-| No slices opened                | W5-N23-a… not created                            |
-| Planning Approval               | **RECORDED** — implementation still deferred     |
+| Area                            | Must prove                                            |
+| ------------------------------- | ----------------------------------------------------- |
+| Ownership unchanged             | No ownership movement                                 |
+| Previous packages unmodified    | Consume only                                          |
+| No hidden future functionality  | Planning does not smuggle later package scope         |
+| No implementation authorization | Planning APPROVED; W5-N23-a inventory only authorized |
+| No slices b–e opened            | W5-N23-b…e not created                                |
+| Planning Approval               | **RECORDED**                                          |
 
 ---
 
-## 6. Planning-phase validation (this open)
+## 6. W5-N23-a validation (inventory)
 
-| Check                                                      | Expected           |
-| ---------------------------------------------------------- | ------------------ |
-| Planning documents created                                 | **PASS**           |
-| `git diff --check` clean on planning docs                  | Required           |
-| Implementation slices opened                               | **No**             |
-| W5-N23-a created                                           | **No**             |
-| Planning APPROVED claimed                                  | **Yes** (recorded) |
-| Eligibility / calculation / schedule / execute implemented | **No**             |
-| Ownership / architecture changed                           | **No** / **No**    |
-| Wave 5 COMPLETE claimed                                    | **No**             |
+| Check                                        | Expected / Status  |
+| -------------------------------------------- | ------------------ |
+| Machine inventory rows ≥ 50                  | **PASS** (76)      |
+| Classifications cover all five               | **PASS**           |
+| RECOVERABLE and EPHEMERAL non-empty          | **PASS** (23 / 12) |
+| No eligibility functional authorization      | **PASS**           |
+| Inventory-only honesty boundaries            | **PASS**           |
+| Inventory determines eligibility             | **No**             |
+| Inventory performs Retry Backoff Calculation | **No**             |
+| Inventory schedules / executes retries       | **No** / **No**    |
+| Ownership / architecture changed             | **No** / **No**    |
+| Customer-visible feature                     | **None**           |
+| W5-N23-b opened                              | **No**             |
 
 ---
 
@@ -149,7 +152,8 @@ Implementation-phase commands (deferred until Planning Approval and authorized s
 - W5-N23 Planning Package OPEN — **recorded**
 - Planning Review — **PASS**
 - Planning APPROVED — **recorded**
-- Implementation authorized — **not claimed**
+- W5-N23-a Inventory COMPLETE — **recorded** (local)
+- Implementation of eligibility runtime — **not claimed**
 - Notification Retry Eligibility implemented — **not claimed**
 - Retry Backoff Calculation performed by eligibility — **not claimed**
 - Notification Platform Complete — **not claimed**
@@ -157,4 +161,4 @@ Implementation-phase commands (deferred until Planning Approval and authorized s
 
 ---
 
-**STOP.** W5-N23 Planning is **APPROVED**. Await Repository Synchronization review. Do **not** open W5-N23-a until Product Owner authorizes the slice after Repository Synchronization is approved. Do **not** begin implementation. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N23-a Inventory is **COMPLETE** (local). Await Product Owner Review. Do **not** open W5-N23-b. Do **not** commit. Do **not** push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
