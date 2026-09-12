@@ -3,7 +3,7 @@
 **Package:** W5-N22 Notification Retry Backoff Calculation Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N22 · CM-32
-**Status:** Planning **APPROVED** (2026-09-12). Planning Clarification **COMPLETE**. W5-N22-a inventory **COMPLETE**. W5-N22-b durable persistence **COMPLETE**. W5-N22-c restart recovery **COMPLETE** (local; awaiting Product Owner Review). W5-N22-d…e **not opened**. No calculation runtime. No operational continuity.
+**Status:** Planning **APPROVED** (2026-09-12). Planning Clarification **COMPLETE**. W5-N22-a…c **COMPLETE**. W5-N22-d operational continuity **COMPLETE** (local; awaiting Product Owner Review). W5-N22-e **not opened**. No calculation runtime.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n22-product-scope.md`](./w5-n22-product-scope.md)
@@ -142,20 +142,27 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Ownership on notification-delivery only    | **PASS**         |
 | Customer-visible feature                   | **None**         |
 
-## 8. W5-N22-c validation (this slice)
+## 8. W5-N22-c validation
 
-| Check                                   | Expected             |
-| --------------------------------------- | -------------------- |
-| Persisted calculation anchors restored  | **PASS**             |
-| Recovery deterministic                  | **PASS**             |
-| Recovery idempotent                     | **PASS**             |
-| Missing artifacts fabricated            | **No**               |
-| Corrupted artifacts restored            | **No** (fail honest) |
-| Performs Retry Backoff calculation      | **No**               |
-| Schedules / executes retries            | **No** / **No**      |
-| Ownership on notification-delivery only | **PASS**             |
-| Customer-visible feature                | **None**             |
-| W5-N22-d…e opened                       | **No**               |
+| Check                                  | Expected |
+| -------------------------------------- | -------- |
+| Persisted calculation anchors restored | **PASS** |
+| Recovery deterministic                 | **PASS** |
+| Recovery idempotent                    | **PASS** |
+| Customer-visible feature               | **None** |
+
+## 9. W5-N22-d validation (this slice)
+
+| Check                                                     | Expected                 |
+| --------------------------------------------------------- | ------------------------ |
+| Readiness derived from recovered state + integrity        | **PASS**                 |
+| States Recovering / Ready / Degraded / Unavailable        | **PASS**                 |
+| Degraded fabricates Ready                                 | **No**                   |
+| Healthy owners continue when dependency rules allow       | **Yes**                  |
+| Performs calculation / schedules / executes               | **No** / **No** / **No** |
+| Operator Platform Readiness for Retry Backoff Calculation | **PASS**                 |
+| Ownership / architecture changed                          | **No** / **No**          |
+| W5-N22-e opened                                           | **No**                   |
 
 ---
 
@@ -163,10 +170,9 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 - W5-N22 Planning APPROVED — **recorded**
 - Planning Clarification COMPLETE — **recorded**
-- W5-N22-a inventory COMPLETE — **recorded**
-- W5-N22-b durable persistence COMPLETE — **recorded**
-- W5-N22-c restart recovery COMPLETE — **recorded** (local; awaiting PO Review)
-- Operational continuity (d) — **not claimed**
+- W5-N22-a…c COMPLETE — **recorded**
+- W5-N22-d operational continuity COMPLETE — **recorded** (local; awaiting PO Review)
+- Package Close (e) — **not claimed**
 - Backoff Calculation implemented — **not claimed**
 - Retry Backoff implemented — **not claimed**
 - Notification Platform Complete — **not claimed**
@@ -174,4 +180,4 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ---
 
-**STOP.** W5-N22-c validation **PASS** (engineering). Await Product Owner Review. Do not begin W5-N22-d. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N22-d validation **PASS** (engineering). Await Product Owner Review. Do not begin W5-N22-e. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.

@@ -1091,6 +1091,8 @@ export type OperationalContinuityReadinessView = {
   notificationPlatformRetryPolicy: NotificationPlatformRetryPolicyContinuityView | null;
   /** W5-N21-d — Notification Platform Retry Backoff operational continuity. */
   notificationPlatformRetryBackoff: NotificationPlatformRetryBackoffContinuityView | null;
+  /** W5-N22-d — Notification Platform Retry Backoff Calculation operational continuity. */
+  notificationPlatformRetryBackoffCalculation: NotificationPlatformRetryBackoffCalculationContinuityView | null;
 };
 
 export type NotificationQueueContinuityView = {
@@ -1436,6 +1438,18 @@ export type NotificationPlatformRetryPolicyContinuityView = {
 };
 
 export type NotificationPlatformRetryBackoffContinuityView = {
+  operationalState: OperationalContinuityState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+};
+
+export type NotificationPlatformRetryBackoffCalculationContinuityView = {
   operationalState: OperationalContinuityState;
   ownerReadiness: 'ready' | 'unavailable' | 'degraded';
   recoveryTimestamp: string | null;

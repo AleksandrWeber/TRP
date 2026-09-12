@@ -208,6 +208,8 @@ const N22B =
   'apps/api/src/modules/notification-delivery/notification-platform-retry-backoff-calculation-persistence.service.ts';
 const N22C =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-backoff-calculation-restart-recovery.service.ts';
+const N22D =
+  'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-backoff-calculation-operational-continuity.ts';
 
 type RowInput = {
   artifactId: string;
@@ -736,17 +738,22 @@ export const W5_N22_A_RETRY_BACKOFF_CALCULATION_INVENTORY: readonly W5N22AInvent
     }),
     row({
       artifactId: 'missing-backoff-calculation-operational-continuity',
-      artifact: 'Backoff calculation operational continuity — missing (planned W5-N22-d)',
+      artifact:
+        'Backoff calculation operational continuity — resolved by W5-N22-d (gap row retained for inventory honesty)',
       kind: 'operational',
       owner: 'platform-readiness',
-      purpose: 'Record planned calculation operational continuity gap',
-      calculationRole: 'missing-gap',
+      purpose: 'Record resolved calculation operational continuity gap after W5-N22-d',
+      calculationRole: 'missing-gap-resolved',
       classification: 'EPHEMERAL',
-      honestyRequirement: 'Inventory does not create calculation continuity',
-      futureW5N22Responsibility: 'W5-N22-d',
-      operationalRequirement: 'W5-N22-d',
-      evidencePath: PKG,
-      customerVisibility: 'not customer-visible — absent',
+      honestyRequirement:
+        'Resolved by W5-N22-d — derived readiness only; not calculation runtime; not scheduling/execution',
+      futureW5N22Responsibility: 'honesty-baseline',
+      operationalRequirement: 'platform-readiness',
+      evidencePath: N22D,
+      existsToday: true,
+      capabilityCategory: 'infrastructure-only',
+      honestProductState: 'infrastructure-only',
+      customerVisibility: 'operator — Retry Backoff Calculation readiness via Platform Readiness',
     }),
 
     // CONFIGURATION
@@ -909,19 +916,22 @@ export const W5_N22_A_RETRY_BACKOFF_CALCULATION_INVENTORY: readonly W5N22AInvent
     }),
     row({
       artifactId: 'projection-platform-readiness-backoff-calculation-missing',
-      artifact: 'Platform readiness projection — backoff calculation missing',
+      artifact:
+        'Platform Readiness notificationPlatformRetryBackoffCalculation — projected (W5-N22-d)',
       kind: 'projection',
       owner: 'platform-readiness',
-      purpose: 'Project honest missing calculation continuity into readiness language',
+      purpose: 'Project derived calculation continuity into Platform Readiness language',
       calculationRole: 'readiness-projection',
       classification: 'EPHEMERAL',
-      honestyRequirement: 'Readiness must not claim calculation functional',
-      futureW5N22Responsibility: 'W5-N22-d',
-      operationalRequirement: 'W5-N22-d',
+      honestyRequirement:
+        'Readiness must not claim calculation functional; derived from W5-N22-c recovery only',
+      futureW5N22Responsibility: 'honesty-baseline',
+      operationalRequirement: 'platform-readiness',
       capabilityCategory: 'infrastructure-only',
       honestProductState: 'infrastructure-only',
-      evidencePath: PKG,
-      customerVisibility: 'not customer-visible',
+      evidencePath: 'apps/api/src/modules/operational-continuity/operational-readiness.ts',
+      existsToday: true,
+      customerVisibility: 'operator — Retry Backoff Calculation readiness via Platform Readiness',
     }),
     row({
       artifactId: 'persist-candidate-backoff-calculation-anchor',
@@ -933,15 +943,15 @@ export const W5_N22_A_RETRY_BACKOFF_CALCULATION_INVENTORY: readonly W5N22AInvent
       calculationRole: 'durable-anchor',
       classification: 'RECOVERABLE',
       honestyRequirement: 'Persistence only; not calculation runtime; not scheduling/execution',
-      futureW5N22Responsibility: 'W5-N22-d',
+      futureW5N22Responsibility: 'honesty-baseline',
       persistenceRequirement: 'notification-delivery',
       recoveryRequirement: 'notification-delivery',
-      operationalRequirement: 'W5-N22-d',
+      operationalRequirement: 'platform-readiness',
       capabilityCategory: 'infrastructure-only',
       honestProductState: 'infrastructure-only',
       currentStatus:
-        'Implemented — durable calculation description anchors on notification-delivery; restart recovery via W5-N22-c',
-      evidencePath: N22C,
+        'Implemented — durable calculation description anchors; restart recovery via W5-N22-c; operational continuity via W5-N22-d',
+      evidencePath: N22D,
       existsToday: true,
       customerVisibility: 'not customer-visible — infrastructure only',
     }),
@@ -1226,7 +1236,7 @@ export const W5_N22_A_BINDING_FINDINGS = Object.freeze({
   unifiedPlatformBackoffCalculationLayerMissing: true,
   backoffCalculationPersistenceMissing: false,
   backoffCalculationRecoveryMissing: false,
-  backoffCalculationOperationalContinuityMissing: true,
+  backoffCalculationOperationalContinuityMissing: false,
   productionTransportsDeferred: true,
   calculationDoesNotScheduleRetries: true,
   calculationDoesNotExecuteRetries: true,
@@ -1333,6 +1343,7 @@ export const W5_N22_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N21 retry backoff inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N22-b durable backoff calculation anchors on notification-delivery (persistence only)',
     'W5-N22-c restart recovery of calculation anchors on notification-delivery (recovery only)',
+    'W5-N22-d operational continuity for calculation readiness on Platform Readiness (derived)',
     'PC-06 resolve-delivery-routing — routing SoT consumed unchanged',
     'PC-07 notification-product — per-channel settings and history',
     'Notification Durable Queue — W3-O02 on notification-delivery owner (consumed)',
@@ -1340,12 +1351,10 @@ export const W5_N22_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
   plannedCapabilities: Object.freeze([
-    'W5-N22-d — Operational Continuity Foundation',
     'W5-N22-e — Package Validation, Operational Verification & Close Evidence',
   ] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform backoff calculation layer',
-    'Backoff calculation operational continuity',
     'Operator backoff calculation UI',
     'Backoff calculation runtime',
     'Calculation Engine',
