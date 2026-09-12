@@ -2,7 +2,7 @@
 
 **Document:** W5-N25 Notification Retry Scheduling Decision Foundation Overview
 **Date:** 2026-09-12
-**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. No implementation. No slices opened. No scheduling decision runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N25-a Inventory **COMPLETE** (local). No scheduling decision runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N25 (V3-N25 · CM-35)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -74,6 +74,20 @@ Decision output is informational only until consumed by future approved packages
 
 **Not available from this planning open alone** — no decision runtime, no Retry Backoff Calculation by this package, no Eligibility determination by this package, no runtime scheduling, no scheduling execution, no execution, no transport execution, no successful delivery, no Live Notifications, no Production Ready, no Wave 5 COMPLETE.
 
+### W5-N25-a status (inventory)
+
+W5-N25-a delivers the Notification Retry Scheduling Decision **inventory and classification baseline** only (102 machine-readable rows). Customer-visible functionality: **None**.
+
+```text
+Decision inventory ≠ runtime decision logic.
+Inventory does NOT make scheduling decisions.
+Inventory does NOT determine retry eligibility.
+Inventory does NOT perform Retry Backoff Calculation.
+Inventory does NOT schedule or execute retries.
+Inventory does NOT own retry lifecycle, timers, workers, or orchestration.
+Inventory output is informational only until consumed by future approved slices.
+```
+
 ---
 
 ## What the operator cannot do (still)
@@ -141,15 +155,18 @@ The platform can calculate backoff, determine eligibility, and maintain scheduli
 
 ## Current status
 
-| Item                          | Status              |
-| ----------------------------- | ------------------- |
-| W5-N25 Planning Package       | **APPROVED**        |
-| Product Owner Planning Review | **PASS**            |
-| Planning Approval             | **RECORDED**        |
-| Repository Synchronization    | **COMPLETE**        |
-| Implementation slices         | **Not opened**      |
-| Scheduling decision runtime   | **Not implemented** |
-| Wave 5 COMPLETE               | **Not claimed**     |
+| Item                          | Status               |
+| ----------------------------- | -------------------- |
+| W5-N25 Planning Package       | **APPROVED**         |
+| Product Owner Planning Review | **PASS**             |
+| Planning Approval             | **RECORDED**         |
+| Repository Synchronization    | **COMPLETE**         |
+| W5-N25-a Inventory            | **COMPLETE** (local) |
+| Implementation slices b–e     | **Not opened**       |
+| Scheduling decision runtime   | **Not implemented**  |
+| Wave 5 COMPLETE               | **Not claimed**      |
+
+**Slice a reports:** [`w5-n25-a-inventory.md`](./w5-n25-a-inventory.md) · companions under `w5-n25-a-*`
 
 ---
 
@@ -169,4 +186,4 @@ The platform can calculate backoff, determine eligibility, and maintain scheduli
 
 ---
 
-**STOP.** W5-N25 Planning Package Repository Synchronization is **COMPLETE**. Await Product Owner Repository Review. Do NOT open W5-N25-a until Repository Synchronization has been approved. Do NOT begin implementation. Do NOT declare scheduling decision runtime. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
+**STOP.** W5-N25-a Inventory is **COMPLETE** (local). Await Product Owner Review. Do NOT open W5-N25-b. Do NOT begin persistence. Do NOT declare scheduling decision runtime. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan. Do not commit. Do not push.
