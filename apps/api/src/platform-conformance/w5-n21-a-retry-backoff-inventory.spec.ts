@@ -207,16 +207,20 @@ describe('W5-N21-a notification retry backoff inventory — unit', () => {
     ).toBeGreaterThanOrEqual(2);
   });
 
-  it('technical debt delta: inventory through operational continuity resolved; e deferred; nothing introduced', () => {
+  it('technical debt delta: inventory through close + FIV + official close resolved; remaining Wave 5 deferred; nothing introduced', () => {
     expect(W5_N21_A_TECHNICAL_DEBT_DELTA.resolved).toEqual([
       'Retry Backoff inventory baseline established',
       'Durable Retry Backoff persistence foundation',
       'Retry Backoff restart recovery foundation',
       'Retry Backoff operational continuity foundation',
+      'Notification Retry Backoff Package Close Evidence',
+      'Final Package Integration Verification',
+      'W5-N21 officially closed',
     ]);
     expect(W5_N21_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N21_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N21-e — Package Validation, Operational Verification & Close Evidence',
+      'Backoff calculation runtime',
+      'Remaining Wave 5 packages',
     ]);
   });
 

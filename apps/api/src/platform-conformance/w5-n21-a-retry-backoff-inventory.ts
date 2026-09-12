@@ -1676,16 +1676,18 @@ export const W5_N21_A_RETRY_BACKOFF_INVENTORY: readonly W5N21AInventoryRow[] = O
     authorizesRetryBackoffFunctional: false,
     authorizesW5N21Complete: false,
     artifactId: 'out-w5-n21-e-close-evidence',
-    artifact: 'W5-N21-e Close Evidence — deferred',
+    artifact: 'W5-N21-e Close Evidence — assembled (not authorizing Complete)',
     kind: 'explicit-out',
     owner: 'wave-5-documentation',
     durabilityClass: 'EPHEMERAL',
     capabilityCategory: 'planned',
-    currentStatus: 'Explicit OUT — must not authorize from W5-N21-a',
-    honestyRequirement: 'W5-N21-e Close Evidence — deferred',
+    currentStatus:
+      'Explicit OUT from slice a alone — Close Evidence assembled in W5-N21-e; package CLOSED by Product Owner',
+    honestyRequirement:
+      'W5-N21-e Close Evidence assembled; Final Package Integration Verification PASS; package CLOSED by Product Owner',
     futureW5N21Responsibility: 'W5-N21-e',
-    evidencePath: 'docs/project/version-3/wave-5/w5-n21-product-scope.md',
-    existsToday: false,
+    evidencePath: 'docs/project/version-3/wave-5/w5-n21-e-implementation-report.md',
+    existsToday: true,
     persistenceResponsibility: 'not-applicable',
     recoveryResponsibility: 'not-applicable',
     operationalContinuityResponsibility: 'not-applicable',
@@ -2266,7 +2268,7 @@ export const W5_N21_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
   plannedCapabilities: Object.freeze([
-    'W5-N21-e — Package Validation, Operational Verification & Close Evidence',
+    'Remaining Wave 5 packages (separate authorization)',
   ] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform retry backoff layer',
@@ -2294,11 +2296,12 @@ export const W5_N21_A_TECHNICAL_DEBT_DELTA = Object.freeze({
     'Durable Retry Backoff persistence foundation',
     'Retry Backoff restart recovery foundation',
     'Retry Backoff operational continuity foundation',
+    'Notification Retry Backoff Package Close Evidence',
+    'Final Package Integration Verification',
+    'W5-N21 officially closed',
   ] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze([
-    'W5-N21-e — Package Validation, Operational Verification & Close Evidence',
-  ] as const),
+  deferred: Object.freeze(['Backoff calculation runtime', 'Remaining Wave 5 packages'] as const),
 } as const);
 
 export function artifactIds(): readonly string[] {
