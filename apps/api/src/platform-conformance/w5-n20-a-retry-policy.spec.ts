@@ -91,14 +91,14 @@ describe('W5-N20-a retry policy conformance — unit', () => {
     expect(W5_N20_A_BINDING_FINDINGS.unifiedPlatformRetryPolicyLayerMissing).toBe(true);
     expect(W5_N20_A_BINDING_FINDINGS.retryPolicyPersistenceMissing).toBe(false);
     expect(W5_N20_A_BINDING_FINDINGS.retryPolicyRecoveryMissing).toBe(false);
-    expect(W5_N20_A_BINDING_FINDINGS.retryPolicyOperationalContinuityMissing).toBe(true);
+    expect(W5_N20_A_BINDING_FINDINGS.retryPolicyOperationalContinuityMissing).toBe(false);
     expect(W5_N20_A_ARCHITECTURE_CLAIMS.retryPolicyFunctionalClaimed).toBe(false);
     expect(W5_N20_A_ARCHITECTURE_CLAIMS.w5N20CompleteClaimed).toBe(false);
     expect(W5_N20_A_ARCHITECTURE_CLAIMS.notificationPlatformCompleteClaimed).toBe(false);
     expect(W5_N20_A_ARCHITECTURE_CLAIMS.liveTradingClaimed).toBe(false);
   });
 
-  it('technical debt delta: inventory + durable persistence + restart recovery resolved; W5-N20-d…e deferred; nothing introduced', () => {
+  it('technical debt delta: inventory through operational continuity resolved; W5-N20-e deferred; nothing introduced', () => {
     expect(W5_N20_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Retry Policy inventory baseline established',
     );
@@ -108,9 +108,11 @@ describe('W5-N20-a retry policy conformance — unit', () => {
     expect(W5_N20_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Retry Policy restart recovery foundation',
     );
+    expect(W5_N20_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
+      'Retry Policy operational continuity foundation',
+    );
     expect(W5_N20_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N20_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N20-d — Operational Continuity Foundation',
       'W5-N20-e — Package Validation, Operational Verification & Close Evidence',
     ]);
   });

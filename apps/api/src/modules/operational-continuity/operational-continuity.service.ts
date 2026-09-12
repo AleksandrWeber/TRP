@@ -78,6 +78,8 @@ import { getNotificationPlatformRetryExecutionContinuityRecord } from '../notifi
 import { buildNotificationPlatformRetryExecutionContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-execution-operational-continuity';
 import { getNotificationPlatformRetrySchedulingContinuityRecord } from '../notification-delivery/domain/notification-platform-retry-scheduling-continuity-status';
 import { buildNotificationPlatformRetrySchedulingContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-scheduling-operational-continuity';
+import { getNotificationPlatformRetryPolicyContinuityRecord } from '../notification-delivery/domain/notification-platform-retry-policy-continuity-status';
+import { buildNotificationPlatformRetryPolicyContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-policy-operational-continuity';
 import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
 import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
 import { getMonitoringHealthContinuityRecord } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
@@ -254,6 +256,11 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           ownerReadiness: 'ready',
           continuity: null,
         }),
+      notificationPlatformRetryPolicy: buildNotificationPlatformRetryPolicyContinuityProjection({
+        recovering: true,
+        ownerReadiness: 'ready',
+        continuity: null,
+      }),
     });
   }
 
@@ -602,6 +609,18 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
     });
   }
 
+  private buildNotificationPlatformRetryPolicyView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity = getNotificationPlatformRetryPolicyContinuityRecord();
+    return buildNotificationPlatformRetryPolicyContinuityProjection({
+      recovering: input.recovering,
+      ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+      continuity,
+    });
+  }
+
   private buildNotificationQueueView(input: {
     recovering: boolean;
     ownerBoot: AnalyticalOwnerBootOutcome;
@@ -745,6 +764,10 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         ownerReadiness: 'ready',
       }),
       notificationPlatformRetryScheduling: this.buildNotificationPlatformRetrySchedulingView({
+        recovering: true,
+        ownerReadiness: 'ready',
+      }),
+      notificationPlatformRetryPolicy: this.buildNotificationPlatformRetryPolicyView({
         recovering: true,
         ownerReadiness: 'ready',
       }),
@@ -1188,6 +1211,23 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           ? null
           : recoveryDurationMs),
     });
+    const notificationPlatformRetryPolicyBase = this.buildNotificationPlatformRetryPolicyView({
+      recovering: false,
+      ownerReadiness: 'ready',
+    });
+    const notificationPlatformRetryPolicy = Object.freeze({
+      ...notificationPlatformRetryPolicyBase,
+      recoveryTimestamp:
+        notificationPlatformRetryPolicyBase.recoveryTimestamp ??
+        (notificationPlatformRetryPolicyBase.operationalState === 'Recovering'
+          ? null
+          : recoveryTimestamp),
+      recoveryDurationMs:
+        notificationPlatformRetryPolicyBase.recoveryDurationMs ??
+        (notificationPlatformRetryPolicyBase.operationalState === 'Recovering'
+          ? null
+          : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -1219,6 +1259,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       notificationPlatformReliability,
       notificationPlatformRetryExecution,
       notificationPlatformRetryScheduling,
+      notificationPlatformRetryPolicy,
     });
     this.finalized = true;
 

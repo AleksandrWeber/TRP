@@ -364,6 +364,19 @@ export type NotificationPlatformRetrySchedulingContinuityView = Readonly<{
   workspaceIds: readonly string[];
 }>;
 
+/** W5-N20-d — Notification Platform Retry Policy operational continuity (derived). */
+export type NotificationPlatformRetryPolicyContinuityView = Readonly<{
+  operationalState: OperationalState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+}>;
+
 /** W3-O05-d — Monitoring & Security Health continuity fields on platform readiness. */
 export type MonitoringHealthContinuityView = Readonly<{
   operationalState: OperationalState;
@@ -453,6 +466,8 @@ export type PlatformOperationalProjection = Readonly<{
   notificationPlatformRetryExecution: NotificationPlatformRetryExecutionContinuityView | null;
   /** W5-N19-d — Notification Platform Retry Scheduling operational continuity (derived). */
   notificationPlatformRetryScheduling: NotificationPlatformRetrySchedulingContinuityView | null;
+  /** W5-N20-d — Notification Platform Retry Policy operational continuity (derived). */
+  notificationPlatformRetryPolicy: NotificationPlatformRetryPolicyContinuityView | null;
 }>;
 
 export type EvaluateOwnerReadinessInput = Readonly<{
@@ -566,6 +581,7 @@ export function buildPlatformOperationalProjection(input: {
   notificationPlatformReliability?: NotificationPlatformReliabilityContinuityView | null;
   notificationPlatformRetryExecution?: NotificationPlatformRetryExecutionContinuityView | null;
   notificationPlatformRetryScheduling?: NotificationPlatformRetrySchedulingContinuityView | null;
+  notificationPlatformRetryPolicy?: NotificationPlatformRetryPolicyContinuityView | null;
 }): PlatformOperationalProjection {
   const platformState = derivePlatformOperationalState(input.owners);
   assertOperationalState(platformState);
@@ -607,6 +623,7 @@ export function buildPlatformOperationalProjection(input: {
     notificationPlatformReliability: input.notificationPlatformReliability ?? null,
     notificationPlatformRetryExecution: input.notificationPlatformRetryExecution ?? null,
     notificationPlatformRetryScheduling: input.notificationPlatformRetryScheduling ?? null,
+    notificationPlatformRetryPolicy: input.notificationPlatformRetryPolicy ?? null,
   });
 }
 
