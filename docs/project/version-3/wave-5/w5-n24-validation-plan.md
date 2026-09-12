@@ -3,7 +3,7 @@
 **Package:** W5-N24 Notification Retry Scheduling Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N24 · CM-34
-**Status:** Planning Package **APPROVED** (2026-09-12). Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **AUTHORIZED**. No implementation. No slices opened. No runtime scheduling.
+**Status:** Planning Package **APPROVED** (2026-09-12). Planning Review **PASS**. Repository Synchronization (Planning) **COMPLETE**. W5-N24-a **COMPLETE** (local) — awaiting Product Owner Review. Slices b–e **not opened**. No runtime scheduling.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n24-product-scope.md`](./w5-n24-product-scope.md)
@@ -17,7 +17,7 @@ Validation runs after implementation and the implementation report.
 
 Tests that mock platform scheduling foundation without proving cross-channel foundation coherence do **not** count as Close evidence.
 
-Do not validate per-channel production transport I/O (N01…N04 transport scope), Retry Backoff Calculation, Retry Eligibility determination, runtime scheduling, retry execution, transport execution success, provider acceptance, recipient receipt, exactly-once delivery, delivery guarantees, dead-letter processing, Live Notifications, Production Ready, Wave 5 COMPLETE, or Notification Platform Complete from N24 alone. Validate **Notification Retry Scheduling Foundation** planning / future foundation outcomes only (when implementation is later authorized).
+Do not validate per-channel production transport I/O (N01…N04 transport scope), Retry Backoff Calculation, Retry Eligibility determination, runtime scheduling, retry execution, transport execution success, provider acceptance, recipient receipt, exactly-once delivery, delivery guarantees, dead-letter processing, Live Notifications, Production Ready, Wave 5 COMPLETE, or Notification Platform Complete from N24 alone. Validate **Notification Retry Scheduling Foundation** outcomes only for authorized slices.
 
 ---
 
@@ -39,29 +39,24 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## 1. Validation strategy overview
 
-| Layer                    | Purpose                                                                       |
-| ------------------------ | ----------------------------------------------------------------------------- |
-| Conformance validation   | Platform conformance registry; inventory completeness; honesty rules          |
-| Documentation validation | Planning package integrity; future slice reports; walkthrough; Close Evidence |
-| Architecture validation  | No Retry Engine; scheduling extension only; PC-06 preserved                   |
-| Governance validation    | Master Plan unchanged; ownership preserved; no duplicate subsystem            |
-| Regression validation    | Wave 1–4, W5-N01…N23 boundaries                                               |
-| Package close validation | Final Integration Verification; Product Owner Close Record                    |
+| Layer                    | Purpose                                                                |
+| ------------------------ | ---------------------------------------------------------------------- |
+| Conformance validation   | Platform conformance registry; inventory completeness; honesty rules   |
+| Documentation validation | Planning package integrity; slice reports; walkthrough; Close Evidence |
+| Architecture validation  | No Retry Engine; scheduling extension only; PC-06 preserved            |
+| Governance validation    | Master Plan unchanged; ownership preserved; no duplicate subsystem     |
+| Regression validation    | Wave 1–4, W5-N01…N23 boundaries                                        |
+| Package close validation | Final Integration Verification; Product Owner Close Record             |
 
-### Planning-phase commands
+### Commands (authorized slices)
 
-| Command            | Purpose              |
-| ------------------ | -------------------- |
-| `git diff --check` | Whitespace integrity |
-
-Implementation-phase commands (deferred until Planning Approval and authorized slices):
-
-| Command                        | Purpose       |
-| ------------------------------ | ------------- |
-| `pnpm lint`                    | Monorepo lint |
-| `pnpm typecheck`               | Type safety   |
-| `pnpm test`                    | Regression    |
-| `pnpm --filter @trp/web build` | Web build     |
+| Command                        | Purpose              |
+| ------------------------------ | -------------------- |
+| `pnpm lint`                    | Monorepo lint        |
+| `pnpm typecheck`               | Type safety          |
+| `pnpm test`                    | Regression           |
+| `pnpm --filter @trp/web build` | Web build            |
+| `git diff --check`             | Whitespace integrity |
 
 ---
 
@@ -87,13 +82,14 @@ Implementation-phase commands (deferred until Planning Approval and authorized s
 
 ## 3. Documentation validation
 
-| Area                      | Must prove                                                            |
-| ------------------------- | --------------------------------------------------------------------- |
-| Planning package complete | All W5-N24 planning documents present and internally consistent       |
-| Slice reports             | Implementation reports only after authorized slices (none opened now) |
-| Operational walkthrough   | Platform Scheduling Foundation Walkthrough at Close                   |
-| Close Evidence            | Package summary, close report, integration verification at Close      |
-| Wave documentation sync   | wave-5-overview.md and wave-5-progress.md synchronized                |
+| Area                      | Must prove                                                       |
+| ------------------------- | ---------------------------------------------------------------- |
+| Planning package complete | All W5-N24 planning documents present and internally consistent  |
+| Slice a reports           | Inventory + six review docs present for W5-N24-a                 |
+| Slice b–e reports         | Only after authorized slices (not opened)                        |
+| Operational walkthrough   | Platform Scheduling Foundation Walkthrough at Close              |
+| Close Evidence            | Package summary, close report, integration verification at Close |
+| Wave documentation sync   | wave-5-overview.md and wave-5-progress.md synchronized           |
 
 ---
 
@@ -119,42 +115,47 @@ Implementation-phase commands (deferred until Planning Approval and authorized s
 
 ## 5. Governance validation
 
-| Area                            | Must prove                                    |
-| ------------------------------- | --------------------------------------------- |
-| Ownership unchanged             | No ownership movement                         |
-| Previous packages unmodified    | Consume only                                  |
-| No hidden future functionality  | Planning does not smuggle later package scope |
-| No implementation authorization | Planning OPEN only; W5-N24-a not authorized   |
-| No slices opened                | W5-N24-a…e not created                        |
-| Planning Approval               | **RECORDED**                                  |
-| Repository Synchronization      | **AUTHORIZED** — not yet completed            |
+| Area                           | Must prove                                            |
+| ------------------------------ | ----------------------------------------------------- |
+| Ownership unchanged            | No ownership movement                                 |
+| Previous packages unmodified   | Consume only                                          |
+| No hidden future functionality | Inventory does not smuggle later package scope        |
+| Implementation authorization   | Planning APPROVED; W5-N24-a inventory only authorized |
+| No slices b–e opened           | W5-N24-b…e not created                                |
+| Planning Approval              | **RECORDED**                                          |
+| Repository Synchronization     | **COMPLETE**                                          |
 
 ---
 
-## 6. Planning-phase validation (this approval)
+## 6. W5-N24-a validation (inventory)
 
-| Check                                 | Expected / Status |
-| ------------------------------------- | ----------------- |
-| Planning documents created            | **PASS**          |
-| Architecture Planning Review          | **PASS**          |
-| Security Planning Review              | **PASS**          |
-| Planning Review                       | **PASS**          |
-| Planning Approval                     | **RECORDED**      |
-| Repository Synchronization authorized | **Yes**           |
-| Repository Synchronization completed  | **No**            |
-| W5-N24-a opened                       | **No**            |
-| Runtime scheduling introduced         | **No**            |
-| Retry Backoff Calculation performed   | **No**            |
-| Retry Eligibility determined          | **No**            |
-| Retries executed                      | **No**            |
-| Ownership / architecture changed      | **No** / **No**   |
-| Customer-visible feature              | **None**          |
+| Check                                        | Expected / Status  |
+| -------------------------------------------- | ------------------ |
+| Machine inventory rows ≥ 50                  | **PASS** (83)      |
+| Classifications cover all five               | **PASS**           |
+| RECOVERABLE and EPHEMERAL non-empty          | **PASS** (28 / 12) |
+| SCHEDULING / CONFIGURATION present           | **PASS** (3 / 3)   |
+| No scheduling functional authorization       | **PASS**           |
+| Inventory-only honesty boundaries            | **PASS**           |
+| Inventory determines eligibility             | **No**             |
+| Inventory performs Retry Backoff Calculation | **No**             |
+| Inventory schedules / executes retries       | **No** / **No**    |
+| Ownership / architecture changed             | **No** / **No**    |
+| Customer-visible feature                     | **None**           |
+| W5-N24-b opened                              | **No**             |
+
+**Evidence:** [`w5-n24-a-inventory.md`](./w5-n24-a-inventory.md) · [`w5-n24-a-validation-report.md`](./w5-n24-a-validation-report.md) · `apps/api/src/platform-conformance/w5-n24-a-retry-scheduling*.ts`
 
 ---
 
 ## 7. Future slice validation (deferred — not opened)
 
-Future authorized slices (if any) will validate inventory, persistence, recovery, operational continuity, and Close Evidence using the same honesty boundaries as prior Wave 5 foundation packages. This Planning Package does **not** name, sequence, or authorize those slices.
+| Slice    | Focus                       | Status         |
+| -------- | --------------------------- | -------------- |
+| W5-N24-b | Persistence Foundation      | **Not opened** |
+| W5-N24-c | Restart Recovery Foundation | **Not opened** |
+| W5-N24-d | Operational Continuity      | **Not opened** |
+| W5-N24-e | Package Validation & Close  | **Not opened** |
 
 ---
 
@@ -163,7 +164,7 @@ Future authorized slices (if any) will validate inventory, persistence, recovery
 1. **Business problem?** Plan Notification Retry Scheduling after Backoff Calculation and Retry Eligibility are available.
 2. **Why after W5-N23?** Scheduling depends on completed Backoff Calculation and Eligibility foundations.
 3. **Consumes?** Closed W5-N01…W5-N23 and existing notification-delivery capabilities.
-4. **Owns?** Planning for Notification Retry Scheduling only.
+4. **Owns?** Scheduling inventory (slice a); package still owns Scheduling Foundation only.
 5. **OUT?** Runtime scheduling, retry execution, workers, timers implementation, transports, Monitoring, BC, HA, DR.
 6. **Performs Retry Backoff Calculation?** No.
 7. **Determines Retry Eligibility?** No.
@@ -176,12 +177,15 @@ Future authorized slices (if any) will validate inventory, persistence, recovery
 
 ## Technical debt delta
 
-| Category   | Item                                                                                     |
-| ---------- | ---------------------------------------------------------------------------------------- |
-| Resolved   | Planning Approval completed                                                              |
-| Introduced | None                                                                                     |
-| Deferred   | Repository Synchronization (Planning); Implementation until after Repo Sync + slice auth |
+| Category   | Item                                                         |
+| ---------- | ------------------------------------------------------------ |
+| Resolved   | Notification Retry Scheduling inventory baseline established |
+| Introduced | None                                                         |
+| Deferred   | Persistence Foundation (W5-N24-b)                            |
+|            | Restart Recovery Foundation (W5-N24-c)                       |
+|            | Operational Continuity Foundation (W5-N24-d)                 |
+|            | Package Validation & Close Evidence (W5-N24-e)               |
 
 ---
 
-**STOP.** W5-N24 Planning is **APPROVED**. Repository Synchronization (Planning) is **AUTHORIZED**. Do not open W5-N24-a until after Repository Synchronization is completed and approved. Do not begin implementation. Do not commit. Do not push from this Approval act. Do NOT declare W5-N24 COMPLETE. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N24-a is **COMPLETE** (local). Await Product Owner Review. Do not commit. Do not push. Do not open W5-N24-b. Do NOT declare W5-N24 COMPLETE. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.

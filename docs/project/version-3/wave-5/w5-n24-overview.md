@@ -2,7 +2,7 @@
 
 **Document:** W5-N24 Notification Retry Scheduling Foundation Overview
 **Date:** 2026-09-12
-**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **AUTHORIZED**. No implementation. No slices opened. No runtime scheduling. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N24-a **COMPLETE** (local) — awaiting Product Owner Review. Slices b–e **not opened**. No runtime scheduling. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N24 (V3-N24 · CM-34)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -73,6 +73,19 @@ Scheduling remains planning-only until future approved implementation slices.
 
 **Not available from this planning open alone** — no scheduling runtime, no Retry Backoff Calculation by this package, no Eligibility determination by this package, no execution, no transport execution, no successful delivery, no Live Notifications, no Production Ready, no Wave 5 COMPLETE.
 
+### W5-N24-a status (inventory)
+
+W5-N24-a delivers the Notification Retry Scheduling **inventory and classification baseline** only (83 machine-readable rows). Customer-visible functionality: **None**.
+
+```text
+Scheduling inventory ≠ runtime scheduling.
+Inventory does NOT determine retry eligibility.
+Inventory does NOT perform Retry Backoff Calculation.
+Inventory does NOT schedule or execute retries.
+Inventory does NOT own retry lifecycle, timers, workers, or orchestration.
+Inventory output is informational only until consumed by future approved slices.
+```
+
 ---
 
 ## What the operator cannot do (still)
@@ -139,15 +152,18 @@ The platform can calculate backoff and determine eligibility, but still cannot d
 
 ## Current status
 
-| Item                          | Status                                     |
-| ----------------------------- | ------------------------------------------ |
-| W5-N24 Planning Package       | **APPROVED**                               |
-| Product Owner Planning Review | **PASS**                                   |
-| Planning Approval             | **RECORDED**                               |
-| Repository Synchronization    | **AUTHORIZED** — not yet completed         |
-| Implementation                | **NOT AUTHORIZED**                         |
-| Implementation slices         | **Not opened. Not named. Not authorized.** |
-| Wave 5 COMPLETE               | **Not claimed**                            |
+| Item                          | Status                                               |
+| ----------------------------- | ---------------------------------------------------- |
+| W5-N24 Planning Package       | **APPROVED**                                         |
+| Product Owner Planning Review | **PASS**                                             |
+| Planning Approval             | **RECORDED**                                         |
+| Repository Synchronization    | **COMPLETE**                                         |
+| W5-N24-a Inventory            | **COMPLETE** (local) — awaiting Product Owner Review |
+| Implementation slices b–e     | **Not opened. Not authorized.**                      |
+| Runtime scheduling            | **Not implemented**                                  |
+| Wave 5 COMPLETE               | **Not claimed**                                      |
+
+**Slice reports:** [`w5-n24-a-inventory.md`](./w5-n24-a-inventory.md) · [`w5-n24-a-implementation-report.md`](./w5-n24-a-implementation-report.md) · [`w5-n24-a-architecture-review.md`](./w5-n24-a-architecture-review.md) · [`w5-n24-a-security-review.md`](./w5-n24-a-security-review.md) · [`w5-n24-a-product-review.md`](./w5-n24-a-product-review.md) · [`w5-n24-a-validation-report.md`](./w5-n24-a-validation-report.md)
 
 ---
 
@@ -156,7 +172,7 @@ The platform can calculate backoff and determine eligibility, but still cannot d
 1. **Business problem:** Plan Notification Retry Scheduling after Backoff Calculation and Retry Eligibility are available.
 2. **Why after W5-N23:** Scheduling depends on completed Backoff Calculation and Eligibility foundations.
 3. **Consumes:** Closed W5-N01…N23 and existing notification-delivery capabilities.
-4. **Owns:** Planning for Notification Retry Scheduling only.
+4. **Owns:** Scheduling inventory (slice a); package still owns Scheduling Foundation only.
 5. **OUT:** Runtime scheduling, retry execution, workers, timers implementation, transports, Monitoring, BC, HA, DR.
 6. **Performs Retry Backoff Calculation?** No.
 7. **Determines Retry Eligibility?** No.
@@ -167,4 +183,4 @@ The platform can calculate backoff and determine eligibility, but still cannot d
 
 ---
 
-**STOP.** W5-N24 Planning is **APPROVED**. Repository Synchronization (Planning) is **AUTHORIZED**. Do NOT open W5-N24-a until Repository Synchronization has been completed and approved. Do NOT begin implementation. Do NOT commit. Do NOT push from this Approval act. Do NOT implement Notification Retry Scheduling. Do NOT implement Retry Engine. Do NOT implement Retry Execution. Do NOT declare W5-N24 COMPLETE. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
+**STOP.** W5-N24-a is **COMPLETE** (local). Await Product Owner Review. Do NOT commit. Do NOT push. Do NOT open W5-N24-b. Do NOT implement runtime scheduling. Do NOT implement Retry Engine. Do NOT implement Retry Execution. Do NOT declare W5-N24 COMPLETE. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
