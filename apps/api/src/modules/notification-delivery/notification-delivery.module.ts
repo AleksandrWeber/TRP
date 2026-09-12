@@ -26,6 +26,7 @@ import { NOTIFICATION_PLATFORM_RETRY_SCHEDULING_ANCHOR_REPOSITORY } from './doma
 import { NOTIFICATION_PLATFORM_RETRY_POLICY_ANCHOR_REPOSITORY } from './domain/notification-platform-retry-policy-anchor.repository';
 import { NOTIFICATION_PLATFORM_RETRY_BACKOFF_ANCHOR_REPOSITORY } from './domain/notification-platform-retry-backoff-anchor.repository';
 import { NOTIFICATION_PLATFORM_RETRY_BACKOFF_CALCULATION_ANCHOR_REPOSITORY } from './domain/notification-platform-retry-backoff-calculation-anchor.repository';
+import { NOTIFICATION_PLATFORM_RETRY_ELIGIBILITY_ANCHOR_REPOSITORY } from './domain/notification-platform-retry-eligibility-anchor.repository';
 import { NotificationDeliveryBoundaryService } from './notification-boundary.service';
 import { NotificationDeliveryService } from './notification-delivery.service';
 import { PrismaEmailNotificationAnchorRepository } from './persistence/prisma-email-notification-anchor.repository';
@@ -49,6 +50,7 @@ import { PrismaNotificationPlatformRetrySchedulingAnchorRepository } from './per
 import { PrismaNotificationPlatformRetryPolicyAnchorRepository } from './persistence/prisma-notification-platform-retry-policy-anchor.repository';
 import { PrismaNotificationPlatformRetryBackoffAnchorRepository } from './persistence/prisma-notification-platform-retry-backoff-anchor.repository';
 import { PrismaNotificationPlatformRetryBackoffCalculationAnchorRepository } from './persistence/prisma-notification-platform-retry-backoff-calculation-anchor.repository';
+import { PrismaNotificationPlatformRetryEligibilityAnchorRepository } from './persistence/prisma-notification-platform-retry-eligibility-anchor.repository';
 import { PrismaTelegramNotificationAnchorRepository } from './persistence/prisma-telegram-notification-anchor.repository';
 import { NOTIFICATION_SERVICE_PORT, TELEGRAM_CHANNEL_ADAPTER } from './ports/notification.port';
 import { EmailNotificationPersistenceService } from './email-notification-persistence.service';
@@ -74,6 +76,7 @@ import { NotificationPlatformRetrySchedulingPersistenceService } from './notific
 import { NotificationPlatformRetryPolicyPersistenceService } from './notification-platform-retry-policy-persistence.service';
 import { NotificationPlatformRetryBackoffPersistenceService } from './notification-platform-retry-backoff-persistence.service';
 import { NotificationPlatformRetryBackoffCalculationPersistenceService } from './notification-platform-retry-backoff-calculation-persistence.service';
+import { NotificationPlatformRetryEligibilityPersistenceService } from './notification-platform-retry-eligibility-persistence.service';
 import { NotificationPlatformRetryBackoffCalculationRecoveryStore } from './domain/notification-platform-retry-backoff-calculation-recovery-store';
 import { NotificationPlatformRetryBackoffCalculationRestartRecoveryService } from './domain/notification-platform-retry-backoff-calculation-restart-recovery.service';
 import { NotificationPlatformTelemetryRecoveryStore } from './domain/notification-platform-telemetry-recovery-store';
@@ -294,6 +297,12 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
         new PrismaNotificationPlatformRetryBackoffCalculationAnchorRepository(prisma),
       inject: [PrismaService],
     },
+    {
+      provide: NOTIFICATION_PLATFORM_RETRY_ELIGIBILITY_ANCHOR_REPOSITORY,
+      useFactory: (prisma: PrismaService) =>
+        new PrismaNotificationPlatformRetryEligibilityAnchorRepository(prisma),
+      inject: [PrismaService],
+    },
     TelegramNotificationRecoveryStore,
     TelegramNotificationRestartRecoveryService,
     TelegramNotificationPersistenceService,
@@ -332,6 +341,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetryPolicyRestartRecoveryService,
     NotificationPlatformRetryBackoffPersistenceService,
     NotificationPlatformRetryBackoffCalculationPersistenceService,
+    NotificationPlatformRetryEligibilityPersistenceService,
     NotificationPlatformRetryBackoffCalculationRecoveryStore,
     NotificationPlatformRetryBackoffCalculationRestartRecoveryService,
     NotificationPlatformRetryBackoffRecoveryStore,
@@ -426,6 +436,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetryPolicyRestartRecoveryService,
     NotificationPlatformRetryBackoffPersistenceService,
     NotificationPlatformRetryBackoffCalculationPersistenceService,
+    NotificationPlatformRetryEligibilityPersistenceService,
     NotificationPlatformRetryBackoffCalculationRecoveryStore,
     NotificationPlatformRetryBackoffCalculationRestartRecoveryService,
     NotificationPlatformRetryBackoffRecoveryStore,

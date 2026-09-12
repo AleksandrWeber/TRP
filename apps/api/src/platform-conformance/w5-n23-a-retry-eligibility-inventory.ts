@@ -212,6 +212,8 @@ const N22R =
 const N22C =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-backoff-calculation-operational-continuity.ts';
 const N22I = 'apps/api/src/platform-conformance/w5-n22-a-retry-backoff-calculation-inventory.ts';
+const N23B =
+  'apps/api/src/modules/notification-delivery/notification-platform-retry-eligibility-persistence.service.ts';
 
 type RowInput = {
   artifactId: string;
@@ -727,23 +729,25 @@ export const W5_N23_A_RETRY_ELIGIBILITY_INVENTORY: readonly W5N23AInventoryRow[]
   }),
   row({
     artifactId: 'missing-eligibility-persistence',
-    artifact: 'Eligibility durable persistence — planned gap (W5-N23-b)',
+    artifact:
+      'Eligibility durable persistence — resolved by W5-N23-b (gap row retained for inventory honesty)',
     kind: 'persistence-candidate',
     owner: 'notification-delivery',
-    purpose: 'Record planned durable eligibility persistence gap for W5-N23-b',
-    eligibilityRole: 'missing-gap',
+    purpose: 'Record resolved durable eligibility persistence gap after W5-N23-b',
+    eligibilityRole: 'missing-gap-resolved',
     classification: 'RECOVERABLE',
     honestyRequirement:
-      'Planned W5-N23-b — persistence only; not eligibility evaluation runtime; not scheduling/execution',
-    futureW5N23Responsibility: 'W5-N23-b',
-    persistenceRequirement: 'planned W5-N23-b',
-    recoveryRequirement: 'planned W5-N23-c',
-    capabilityCategory: 'planned',
-    honestProductState: 'planned',
-    currentStatus: 'Missing — no eligibility durable persistence today',
-    evidencePath: PKG,
-    existsToday: false,
-    customerVisibility: 'not customer-visible — planned gap',
+      'Resolved by W5-N23-b — persistence only; not eligibility evaluation runtime; not scheduling/execution',
+    futureW5N23Responsibility: 'honesty-baseline',
+    persistenceRequirement: 'notification-delivery',
+    recoveryRequirement: 'none-missing until W5-N23-c',
+    capabilityCategory: 'infrastructure-only',
+    honestProductState: 'infrastructure-only',
+    currentStatus:
+      'Resolved by W5-N23-b — see persist-candidate-eligibility-anchor; gap row retained for inventory honesty',
+    evidencePath: N23B,
+    existsToday: true,
+    customerVisibility: 'not customer-visible — gap resolved by W5-N23-b',
   }),
   row({
     artifactId: 'missing-eligibility-recovery',
@@ -956,23 +960,26 @@ export const W5_N23_A_RETRY_ELIGIBILITY_INVENTORY: readonly W5N23AInventoryRow[]
   }),
   row({
     artifactId: 'persist-candidate-eligibility-anchor',
-    artifact: 'WorkspaceNotificationPlatformRetryEligibilityAnchor — planned durable anchors',
+    artifact:
+      'WorkspaceNotificationPlatformRetryEligibilityAnchor — durable eligibility anchors (W5-N23-b)',
     kind: 'persistence-candidate',
     owner: 'notification-delivery',
-    purpose: 'Inventory planned durable eligibility anchor on notification-delivery owner',
-    eligibilityRole: 'durable-anchor-candidate',
+    purpose: 'Durable eligibility anchor on notification-delivery owner',
+    eligibilityRole: 'durable-anchor',
     classification: 'RECOVERABLE',
-    honestyRequirement: 'Persistence candidate only; not eligibility evaluation runtime',
-    futureW5N23Responsibility: 'W5-N23-b',
-    persistenceRequirement: 'planned W5-N23-b',
-    recoveryRequirement: 'planned W5-N23-c',
-    operationalRequirement: 'planned W5-N23-d',
-    capabilityCategory: 'planned',
-    honestProductState: 'planned',
-    currentStatus: 'Planned — no durable eligibility anchors today',
-    evidencePath: PKG,
-    existsToday: false,
-    customerVisibility: 'not customer-visible — planned',
+    honestyRequirement:
+      'Persistence only; not eligibility evaluation runtime; not scheduling/execution',
+    futureW5N23Responsibility: 'honesty-baseline',
+    persistenceRequirement: 'notification-delivery',
+    recoveryRequirement: 'notification-delivery',
+    operationalRequirement: 'platform-readiness',
+    capabilityCategory: 'infrastructure-only',
+    honestProductState: 'infrastructure-only',
+    currentStatus:
+      'Implemented — durable eligibility description anchors; restart recovery deferred to W5-N23-c',
+    evidencePath: N23B,
+    existsToday: true,
+    customerVisibility: 'not customer-visible — infrastructure only',
   }),
   row({
     artifactId: 'state-n22-backoff-calculation-anchor-reference',
@@ -1268,7 +1275,7 @@ export const W5_N23_A_BINDING_FINDINGS = Object.freeze({
   w5N21RetryBackoffExists: true,
   w5N22RetryBackoffCalculationExists: true,
   unifiedPlatformEligibilityLayerMissing: true,
-  eligibilityPersistenceMissing: true,
+  eligibilityPersistenceMissing: false,
   eligibilityRecoveryMissing: true,
   eligibilityOperationalContinuityMissing: true,
   productionTransportsDeferred: true,
@@ -1383,6 +1390,7 @@ export const W5_N23_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N20 retry policy inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N21 retry backoff inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N22 retry backoff calculation inventory, durable anchors, recovery, and continuity (consumed)',
+    'W5-N23-b durable eligibility anchors on notification-delivery (persistence only)',
     'PC-06 resolve-delivery-routing — routing SoT consumed unchanged',
     'PC-07 notification-product — per-channel settings and history',
     'Notification Durable Queue — W3-O02 on notification-delivery owner (consumed)',
@@ -1401,7 +1409,6 @@ export const W5_N23_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Eligibility evaluation runtime',
     'Eligibility Engine',
     'Retry Engine',
-    'Eligibility persistence',
     'Eligibility restart recovery',
     'Eligibility operational continuity',
     'Transport execution / provider runtimes',

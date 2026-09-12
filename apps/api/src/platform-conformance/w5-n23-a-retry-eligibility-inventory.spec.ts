@@ -160,7 +160,7 @@ describe('W5-N23-a notification retry eligibility inventory — unit', () => {
     expect(W5_N23_A_BINDING_FINDINGS.w5N21RetryBackoffExists).toBe(true);
     expect(W5_N23_A_BINDING_FINDINGS.w5N22RetryBackoffCalculationExists).toBe(true);
     expect(W5_N23_A_BINDING_FINDINGS.unifiedPlatformEligibilityLayerMissing).toBe(true);
-    expect(W5_N23_A_BINDING_FINDINGS.eligibilityPersistenceMissing).toBe(true);
+    expect(W5_N23_A_BINDING_FINDINGS.eligibilityPersistenceMissing).toBe(false);
     expect(W5_N23_A_BINDING_FINDINGS.eligibilityRecoveryMissing).toBe(true);
     expect(W5_N23_A_BINDING_FINDINGS.eligibilityOperationalContinuityMissing).toBe(true);
     expect(W5_N23_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
@@ -249,10 +249,9 @@ describe('W5-N23-a notification retry eligibility inventory — unit', () => {
     ]);
   });
 
-  it('missing gaps remain absent today for eligibility persistence/recovery/continuity/view', () => {
+  it('missing gaps remain absent today except persistence resolved by W5-N23-b', () => {
     for (const id of [
       'missing-unified-platform-eligibility-view',
-      'missing-eligibility-persistence',
       'missing-eligibility-recovery',
       'missing-eligibility-operational-continuity',
     ]) {
@@ -263,6 +262,7 @@ describe('W5-N23-a notification retry eligibility inventory — unit', () => {
     const persistenceGap = W5_N23_A_RETRY_ELIGIBILITY_INVENTORY.find(
       (entry) => entry.artifactId === 'missing-eligibility-persistence',
     );
+    expect(persistenceGap?.existsToday).toBe(true);
     expect(persistenceGap?.classification).toBe('RECOVERABLE');
     const recoveryGap = W5_N23_A_RETRY_ELIGIBILITY_INVENTORY.find(
       (entry) => entry.artifactId === 'missing-eligibility-recovery',

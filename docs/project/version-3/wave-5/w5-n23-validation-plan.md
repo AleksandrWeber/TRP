@@ -3,7 +3,7 @@
 **Package:** W5-N23 Notification Retry Eligibility Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N23 · CM-33
-**Status:** Planning Package **APPROVED** (2026-09-12). Planning Review **PASS**. W5-N23-a Inventory **COMPLETE** (local). No eligibility evaluation runtime. No slices b–e opened.
+**Status:** Planning Package **APPROVED** (2026-09-12). Planning Review **PASS**. W5-N23-a Inventory **COMPLETE** (local). W5-N23-b Persistence **COMPLETE** (local). No eligibility evaluation runtime. No slices c–e opened.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n23-product-scope.md`](./w5-n23-product-scope.md)
@@ -131,19 +131,35 @@ Implementation-phase commands (deferred until Planning Approval and authorized s
 
 ## 6. W5-N23-a validation (inventory)
 
-| Check                                        | Expected / Status  |
-| -------------------------------------------- | ------------------ |
-| Machine inventory rows ≥ 50                  | **PASS** (76)      |
-| Classifications cover all five               | **PASS**           |
-| RECOVERABLE and EPHEMERAL non-empty          | **PASS** (23 / 12) |
-| No eligibility functional authorization      | **PASS**           |
-| Inventory-only honesty boundaries            | **PASS**           |
-| Inventory determines eligibility             | **No**             |
-| Inventory performs Retry Backoff Calculation | **No**             |
-| Inventory schedules / executes retries       | **No** / **No**    |
-| Ownership / architecture changed             | **No** / **No**    |
-| Customer-visible feature                     | **None**           |
-| W5-N23-b opened                              | **No**             |
+| Check                                        | Expected / Status     |
+| -------------------------------------------- | --------------------- |
+| Machine inventory rows ≥ 50                  | **PASS** (76)         |
+| Classifications cover all five               | **PASS**              |
+| RECOVERABLE and EPHEMERAL non-empty          | **PASS** (23 / 12)    |
+| No eligibility functional authorization      | **PASS**              |
+| Inventory-only honesty boundaries            | **PASS**              |
+| Inventory determines eligibility             | **No**                |
+| Inventory performs Retry Backoff Calculation | **No**                |
+| Inventory schedules / executes retries       | **No** / **No**       |
+| Ownership / architecture changed             | **No** / **No**       |
+| Customer-visible feature                     | **None**              |
+| W5-N23-b opened                              | **Yes** (persistence) |
+
+---
+
+## 7. W5-N23-b validation (durable persistence)
+
+| Check                                              | Expected / Status |
+| -------------------------------------------------- | ----------------- |
+| Durable eligibility anchors persist/load           | **PASS**          |
+| Survive process termination (durable rows)         | **PASS**          |
+| Automatic restart recovery                         | **No** (slice b)  |
+| Inventory sync (persist-candidate RECOVERABLE)     | **PASS**          |
+| Ownership on notification-delivery only            | **PASS**          |
+| Determines eligibility / calc / schedule / execute | **No**            |
+| Ownership / architecture changed                   | **No** / **No**   |
+| Customer-visible feature                           | **None**          |
+| W5-N23-c opened                                    | **No**            |
 
 ---
 
@@ -153,7 +169,9 @@ Implementation-phase commands (deferred until Planning Approval and authorized s
 - Planning Review — **PASS**
 - Planning APPROVED — **recorded**
 - W5-N23-a Inventory COMPLETE — **recorded** (local)
+- W5-N23-b Persistence COMPLETE — **recorded** (local)
 - Implementation of eligibility runtime — **not claimed**
+- Automatic restart recovery — **not claimed**
 - Notification Retry Eligibility implemented — **not claimed**
 - Retry Backoff Calculation performed by eligibility — **not claimed**
 - Notification Platform Complete — **not claimed**
@@ -161,4 +179,4 @@ Implementation-phase commands (deferred until Planning Approval and authorized s
 
 ---
 
-**STOP.** W5-N23-a Inventory is **COMPLETE** (local). Await Product Owner Review. Do **not** open W5-N23-b. Do **not** commit. Do **not** push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N23-b Persistence is **COMPLETE** (local). Await Product Owner Review. Do **not** open W5-N23-c. Do **not** commit. Do **not** push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
