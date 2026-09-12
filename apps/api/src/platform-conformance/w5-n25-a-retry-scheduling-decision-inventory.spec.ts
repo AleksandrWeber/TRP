@@ -176,7 +176,7 @@ describe('W5-N25-a notification retry scheduling decision inventory — unit', (
     expect(W5_N25_A_BINDING_FINDINGS.w5N23RetryEligibilityExists).toBe(true);
     expect(W5_N25_A_BINDING_FINDINGS.w5N24RetrySchedulingExists).toBe(true);
     expect(W5_N25_A_BINDING_FINDINGS.unifiedPlatformDecisionLayerMissing).toBe(true);
-    expect(W5_N25_A_BINDING_FINDINGS.decisionPersistenceMissing).toBe(true);
+    expect(W5_N25_A_BINDING_FINDINGS.decisionPersistenceMissing).toBe(false);
     expect(W5_N25_A_BINDING_FINDINGS.decisionRecoveryMissing).toBe(true);
     expect(W5_N25_A_BINDING_FINDINGS.decisionOperationalContinuityMissing).toBe(true);
     expect(W5_N25_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
@@ -271,13 +271,21 @@ describe('W5-N25-a notification retry scheduling decision inventory — unit', (
     ]);
   });
 
-  it('missing gaps remain absent today (persistence/recovery/continuity deferred to W5-N25-b/c/d)', () => {
+  it('persistence gap resolved by W5-N25-b; recovery/continuity remain absent (deferred to c/d)', () => {
+    expect(
+      W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY.find(
+        (entry) => entry.artifactId === 'missing-decision-persistence',
+      )?.existsToday,
+    ).toBe(true);
+    expect(
+      W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY.find(
+        (entry) => entry.artifactId === 'persist-candidate-decision-anchor',
+      )?.existsToday,
+    ).toBe(true);
     for (const id of [
       'missing-unified-platform-decision-view',
-      'missing-decision-persistence',
       'missing-decision-recovery',
       'missing-decision-operational-continuity',
-      'persist-candidate-decision-anchor',
       'projection-platform-readiness-decision-missing',
     ]) {
       const row = W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY.find(

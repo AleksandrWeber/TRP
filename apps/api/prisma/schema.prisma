@@ -2220,3 +2220,23 @@ model WorkspaceNotificationPlatformRetryEligibilityAnchor {
   @@id([workspaceId, eligibilityAnchorId])
   @@map("workspace_notification_platform_retry_eligibility_anchors")
 }
+
+/// W5-N25-b — Durable Notification Platform Retry Scheduling Decision anchors.
+/// Persistence only — restart recovery and operational continuity are later slices.
+/// Persisted decision data is informational until consumed by future approved packages.
+model WorkspaceNotificationPlatformRetrySchedulingDecisionAnchor {
+  workspaceId                           String   @map("workspace_id")
+  decisionAnchorId                      String   @map("decision_anchor_id")
+  schemaVersion                         Int      @default(1) @map("schema_version")
+  platformRetrySchedulingDecisionType   String   @map("platform_retry_scheduling_decision_type")
+  decisionAnchorState                   String   @map("decision_anchor_state")
+  channelScope                          String?  @map("channel_scope")
+  integrityMetadata                     String?  @map("integrity_metadata")
+  correlationId                         String?  @map("correlation_id")
+  recordedAt                            DateTime @map("recorded_at")
+  recordedByActorId                     String?  @map("recorded_by_actor_id")
+  updatedAt                             DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, decisionAnchorId])
+  @@map("workspace_notification_platform_retry_decision_anchors")
+}

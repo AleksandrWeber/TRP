@@ -3,7 +3,7 @@
 **Package:** W5-N25 Notification Retry Scheduling Decision Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N25 · CM-35
-**Status:** Planning Package **APPROVED** (2026-09-12). Repository Synchronization (Planning) **COMPLETE**. W5-N25-a Inventory **COMPLETE** (local). No runtime scheduling. No scheduling decision runtime.
+**Status:** Planning Package **APPROVED** (2026-09-12). Repository Synchronization (Planning) **COMPLETE**. W5-N25-a Inventory **COMPLETE**. W5-N25-b Persistence **COMPLETE** (local). No runtime scheduling. No scheduling decision runtime.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n25-product-scope.md`](./w5-n25-product-scope.md)
@@ -120,58 +120,80 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## 5. Governance validation
 
-| Area                           | Must prove                                                                           |
-| ------------------------------ | ------------------------------------------------------------------------------------ |
-| Ownership unchanged            | No ownership movement                                                                |
-| Previous packages unmodified   | Consume only                                                                         |
-| No hidden future functionality | Persistence does not smuggle later package scope                                     |
-| Implementation authorization   | Planning APPROVED; Repo Sync COMPLETE; W5-N25-a COMPLETE (local); b–e not authorized |
-| Close Evidence assembled       | Deferred until authorized Close Evidence slice                                       |
-| Planning Approval              | **RECORDED**                                                                         |
-| Repository Synchronization     | **COMPLETE**                                                                         |
+| Area                           | Must prove                                                                                              |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| Ownership unchanged            | No ownership movement                                                                                   |
+| Previous packages unmodified   | Consume only                                                                                            |
+| No hidden future functionality | Persistence does not smuggle later package scope                                                        |
+| Implementation authorization   | Planning APPROVED; Repo Sync COMPLETE; W5-N25-a COMPLETE; W5-N25-b COMPLETE (local); c–e not authorized |
+| Close Evidence assembled       | Deferred until authorized Close Evidence slice                                                          |
+| Planning Approval              | **RECORDED**                                                                                            |
+| Repository Synchronization     | **COMPLETE**                                                                                            |
 
 ---
 
 ## 6. W5-N25-a validation (inventory)
 
-| Check                                        | Expected / Status  |
-| -------------------------------------------- | ------------------ |
-| Machine inventory rows ≥ 50                  | **PASS** (102)     |
-| Classifications cover all five               | **PASS**           |
-| RECOVERABLE and EPHEMERAL non-empty          | **PASS** (38 / 12) |
-| DECISION / CONFIGURATION present             | **PASS** (3 / 3)   |
-| No decision functional authorization         | **PASS**           |
-| Inventory-only honesty boundaries            | **PASS**           |
-| Inventory performs runtime decision logic    | **No**             |
-| Inventory makes scheduling decisions         | **No**             |
-| Inventory determines eligibility             | **No**             |
-| Inventory performs Retry Backoff Calculation | **No**             |
-| Inventory schedules / executes retries       | **No** / **No**    |
-| Ownership / architecture changed             | **No** / **No**    |
-| Customer-visible feature                     | **None**           |
-| W5-N25-b opened                              | **No**             |
+| Check                                        | Expected / Status          |
+| -------------------------------------------- | -------------------------- |
+| Machine inventory rows ≥ 50                  | **PASS** (102)             |
+| Classifications cover all five               | **PASS**                   |
+| RECOVERABLE and EPHEMERAL non-empty          | **PASS** (38 / 12)         |
+| DECISION / CONFIGURATION present             | **PASS** (3 / 3)           |
+| No decision functional authorization         | **PASS**                   |
+| Inventory-only honesty boundaries            | **PASS**                   |
+| Inventory performs runtime decision logic    | **No**                     |
+| Inventory makes scheduling decisions         | **No**                     |
+| Inventory determines eligibility             | **No**                     |
+| Inventory performs Retry Backoff Calculation | **No**                     |
+| Inventory schedules / executes retries       | **No** / **No**            |
+| Ownership / architecture changed             | **No** / **No**            |
+| Customer-visible feature                     | **None**                   |
+| W5-N25-b opened                              | **Yes** — COMPLETE (local) |
 
 **Evidence:** [`w5-n25-a-inventory.md`](./w5-n25-a-inventory.md) · [`w5-n25-a-validation-report.md`](./w5-n25-a-validation-report.md) · `apps/api/src/platform-conformance/w5-n25-a-retry-scheduling-decision*.ts`
 
 ---
 
-## 7. Implementation slices b–e (deferred)
+## 7. W5-N25-b validation (durable persistence)
+
+| Check                                          | Expected / Status |
+| ---------------------------------------------- | ----------------- |
+| Recoverable Decision artifacts persisted       | **PASS**          |
+| Survive process termination                    | **Yes**           |
+| Automatic restart recovery                     | **No**            |
+| Persistence on notification-delivery owner     | **PASS**          |
+| No new persistence owner / Source of Truth     | **PASS**          |
+| Persistence performs runtime decision logic    | **No**            |
+| Persistence performs runtime scheduling        | **No**            |
+| Persistence performs Retry Backoff Calculation | **No**            |
+| Persistence determines Retry Eligibility       | **No**            |
+| Persistence executes retries                   | **No**            |
+| Ownership / architecture changed               | **No** / **No**   |
+| Customer-visible feature                       | **None**          |
+| W5-N25-c opened                                | **No**            |
+
+**Evidence:** [`w5-n25-b-implementation-report.md`](./w5-n25-b-implementation-report.md) · [`w5-n25-b-validation-report.md`](./w5-n25-b-validation-report.md) · `apps/api/src/platform-conformance/w5-n25-b-durable-notification-platform-retry-scheduling-decision*.ts`
+
+---
+
+## 8. Implementation slices c–e (deferred)
 
 **Not opened. Not authorized.**
 
 ---
 
-## Mandatory Questions (slice a)
+## Mandatory Questions (slice b)
 
 1. **What customer-visible functionality was delivered?** None.
-2. **Was the Notification Retry Scheduling Decision inventory completed?** Yes.
-3. **Were all recoverable artifacts identified?** Yes.
-4. **Were all ephemeral artifacts identified?** Yes.
-5. **Does the inventory perform runtime decision logic?** No.
-6. **Does the inventory perform runtime scheduling?** No.
-7. **Does the inventory perform Retry Backoff Calculation?** No.
-8. **Does the inventory determine Retry Eligibility?** No.
-9. **Does the inventory execute retries?** No.
+2. **Were recoverable Decision artifacts persisted?** Yes.
+3. **Can persisted artifacts survive process termination?** Yes.
+4. **Can persisted artifacts automatically recover after restart?** No.
+5. **Does persistence perform runtime decision logic?** No.
+6. **Does persistence perform runtime scheduling?** No.
+7. **Does persistence perform Retry Backoff Calculation?** No.
+8. **Does persistence determine Retry Eligibility?** No.
+9. **Does persistence execute retries?** No.
 10. **Were any ownership boundaries changed?** No.
 11. **Were any architectural deviations introduced?** No.
 
@@ -179,15 +201,15 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## Technical debt delta
 
-| Category   | Item                                                                  |
-| ---------- | --------------------------------------------------------------------- |
-| Resolved   | Notification Retry Scheduling Decision inventory baseline established |
-| Introduced | None                                                                  |
-| Deferred   | Persistence Foundation (W5-N25-b)                                     |
-|            | Restart Recovery Foundation (W5-N25-c)                                |
-|            | Operational Continuity Foundation (W5-N25-d)                          |
-|            | Package Validation & Operational Verification (W5-N25-e)              |
+| Category   | Item                                                                     |
+| ---------- | ------------------------------------------------------------------------ |
+| Resolved   | Notification Retry Scheduling Decision inventory baseline established    |
+|            | Notification Retry Scheduling Decision Persistence Foundation            |
+| Introduced | None                                                                     |
+| Deferred   | Restart Recovery Foundation (W5-N25-c)                                   |
+|            | Operational Continuity Foundation (W5-N25-d)                             |
+|            | Package Validation, Operational Verification & Close Evidence (W5-N25-e) |
 
 ---
 
-**STOP.** W5-N25-a Inventory is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N25-b. Do not commit. Do not push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N25-b Persistence is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N25-c. Do not commit. Do not push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.

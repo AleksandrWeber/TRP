@@ -64,7 +64,7 @@ Every row includes: unique identifier, existing owner, purpose, decision role, p
 
 - Closed W5-N01…N24 foundations exist — consumed as reference patterns only. W5-N22 Backoff Calculation, W5-N23 Eligibility, and W5-N24 Scheduling Foundation are consumed — not redesigned.
 - **No** unified cross-channel platform decision runtime layer exists after calc+eligibility+scheduling (`unifiedPlatformDecisionLayerMissing`: **true**).
-- `decisionPersistenceMissing`: **true**; `decisionRecoveryMissing`: **true**; `decisionOperationalContinuityMissing`: **true**.
+- `decisionPersistenceMissing`: **false** (resolved by W5-N25-b); `decisionRecoveryMissing`: **true**; `decisionOperationalContinuityMissing`: **true**.
 - Inventory does **not** perform runtime decision logic, make scheduling decisions, perform runtime scheduling, determine eligibility, perform Retry Backoff Calculation, execute retries, or own retry lifecycle, timers, workers, or orchestration.
 - Inventory output is **informational** until consumed by future approved slices.
 - TD-049 / TD-050 production transport I/O remains deferred — not claimed from this inventory.

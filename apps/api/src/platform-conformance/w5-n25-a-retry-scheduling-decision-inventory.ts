@@ -237,6 +237,10 @@ const N24C =
   'apps/api/src/platform-conformance/w5-n24-c-notification-platform-retry-scheduling-restart-recovery.ts';
 const N24D =
   'apps/api/src/platform-conformance/w5-n24-d-notification-platform-retry-scheduling-operational-continuity.ts';
+const N25B =
+  'apps/api/src/modules/notification-delivery/notification-platform-retry-scheduling-decision-persistence.service.ts';
+const N25B_PRISMA =
+  'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-retry-scheduling-decision-anchor.repository.ts';
 
 type RowInput = {
   artifactId: string;
@@ -874,23 +878,26 @@ export const W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY: readonly W5N25AInvent
     }),
     row({
       artifactId: 'missing-decision-persistence',
-      artifact: 'Decision durable persistence — missing (future W5-N25-b)',
+      artifact:
+        'Decision durable persistence — resolved by W5-N25-b (gap row retained for inventory honesty)',
       kind: 'persistence-candidate',
       owner: 'notification-delivery',
-      purpose: 'Record durable whether-to-schedule decision persistence gap for W5-N25-b',
-      decisionRole: 'missing-gap',
+      purpose:
+        'Record resolved durable whether-to-schedule decision persistence gap after W5-N25-b',
+      decisionRole: 'missing-gap-resolved',
       classification: 'RECOVERABLE',
       honestyRequirement:
-        'Planned for W5-N25-b — persistence only; not runtime decision logic; not scheduling/eligibility/backoff/execution',
-      futureW5N25Responsibility: 'W5-N25-b',
-      persistenceRequirement: 'planned W5-N25-b',
+        'Resolved by W5-N25-b — persistence only; not runtime decision logic; not scheduling/eligibility/backoff/execution',
+      futureW5N25Responsibility: 'honesty-baseline',
+      persistenceRequirement: 'notification-delivery',
       recoveryRequirement: 'planned W5-N25-c',
-      capabilityCategory: 'planned',
-      honestProductState: 'planned',
-      currentStatus: 'Missing — decision persistence not built in slice a',
-      evidencePath: PKG,
-      existsToday: false,
-      customerVisibility: 'not customer-visible — absent',
+      capabilityCategory: 'infrastructure-only',
+      honestProductState: 'infrastructure-only',
+      currentStatus:
+        'Resolved by W5-N25-b — see persist-candidate-decision-anchor; gap row retained for inventory honesty',
+      evidencePath: N25B,
+      existsToday: true,
+      customerVisibility: 'not customer-visible — gap resolved by W5-N25-b',
     }),
     row({
       artifactId: 'missing-decision-recovery',
@@ -1131,24 +1138,26 @@ export const W5_N25_A_RETRY_SCHEDULING_DECISION_INVENTORY: readonly W5N25AInvent
     }),
     row({
       artifactId: 'persist-candidate-decision-anchor',
-      artifact: 'WorkspaceNotificationPlatformRetrySchedulingDecisionAnchor — planned',
+      artifact:
+        'WorkspaceNotificationPlatformRetrySchedulingDecisionAnchor — durable decision anchors (W5-N25-b)',
       kind: 'persistence-candidate',
       owner: 'notification-delivery',
-      purpose: 'Planned durable whether-to-schedule decision anchor on notification-delivery owner',
-      decisionRole: 'durable-anchor-candidate',
+      purpose: 'Durable whether-to-schedule decision anchor on notification-delivery owner',
+      decisionRole: 'durable-anchor',
       classification: 'RECOVERABLE',
       honestyRequirement:
-        'Persistence candidate only; not runtime decision logic; not scheduling/eligibility/backoff/execution',
-      futureW5N25Responsibility: 'W5-N25-b',
-      persistenceRequirement: 'planned W5-N25-b',
+        'Persistence only; not runtime decision logic; not scheduling/eligibility/backoff/execution',
+      futureW5N25Responsibility: 'honesty-baseline',
+      persistenceRequirement: 'notification-delivery',
       recoveryRequirement: 'planned W5-N25-c',
       operationalRequirement: 'planned W5-N25-d',
-      capabilityCategory: 'planned',
-      honestProductState: 'planned',
-      currentStatus: 'Planned — existsToday false; no decision persistence in slice a',
-      evidencePath: PKG,
-      existsToday: false,
-      customerVisibility: 'not customer-visible — planned',
+      capabilityCategory: 'infrastructure-only',
+      honestProductState: 'infrastructure-only',
+      currentStatus:
+        'Implemented — durable decision description anchors; restart recovery deferred to W5-N25-c',
+      evidencePath: N25B_PRISMA,
+      existsToday: true,
+      customerVisibility: 'not customer-visible — infrastructure only',
     }),
     row({
       artifactId: 'state-n24-scheduling-anchor-reference',
@@ -1574,7 +1583,7 @@ export const W5_N25_A_BINDING_FINDINGS = Object.freeze({
   w5N23RetryEligibilityExists: true,
   w5N24RetrySchedulingExists: true,
   unifiedPlatformDecisionLayerMissing: true,
-  decisionPersistenceMissing: true,
+  decisionPersistenceMissing: false,
   decisionRecoveryMissing: true,
   decisionOperationalContinuityMissing: true,
   productionTransportsDeferred: true,
