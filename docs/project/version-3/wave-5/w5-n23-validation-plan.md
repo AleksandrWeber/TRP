@@ -165,18 +165,33 @@ Implementation-phase commands (deferred until Planning Approval and authorized s
 
 ## 8. W5-N23-c validation (restart recovery)
 
-| Check                                                | Expected / Status    |
-| ---------------------------------------------------- | -------------------- |
-| Persisted eligibility anchors restored after restart | **PASS**             |
-| Recovery deterministic                               | **PASS**             |
-| Recovery idempotent                                  | **PASS**             |
-| Missing artifacts fabricated                         | **No**               |
-| Corrupted artifacts restored                         | **No** (fail honest) |
-| Determines eligibility / calc / schedule / execute   | **No**               |
-| Ownership / architecture changed                     | **No** / **No**      |
-| Customer-visible feature                             | **None**             |
-| Operational continuity                               | **No** (slice d)     |
-| W5-N23-d opened                                      | **No**               |
+| Check                                                | Expected / Status                |
+| ---------------------------------------------------- | -------------------------------- |
+| Persisted eligibility anchors restored after restart | **PASS**                         |
+| Recovery deterministic                               | **PASS**                         |
+| Recovery idempotent                                  | **PASS**                         |
+| Missing artifacts fabricated                         | **No**                           |
+| Corrupted artifacts restored                         | **No** (fail honest)             |
+| Determines eligibility / calc / schedule / execute   | **No**                           |
+| Ownership / architecture changed                     | **No** / **No**                  |
+| Customer-visible feature                             | **None**                         |
+| Operational continuity                               | **No** (slice d)                 |
+| W5-N23-d opened                                      | **Yes** (operational continuity) |
+
+---
+
+## 9. W5-N23-d validation (operational continuity)
+
+| Check                                               | Expected / Status                |
+| --------------------------------------------------- | -------------------------------- |
+| Readiness derived from recovered state + integrity  | **PASS**                         |
+| States: Recovering / Ready / Degraded / Unavailable | **PASS**                         |
+| Degraded fabricates Ready                           | **No**                           |
+| Healthy owners continue when rules allow            | **Yes**                          |
+| Determines eligibility / calc / schedule / execute  | **No**                           |
+| Ownership / architecture changed                    | **No** / **No**                  |
+| Customer-visible feature                            | Operator Platform Readiness only |
+| W5-N23-e opened                                     | **No**                           |
 
 ---
 
@@ -188,8 +203,8 @@ Implementation-phase commands (deferred until Planning Approval and authorized s
 - W5-N23-a Inventory COMPLETE — **recorded** (local)
 - W5-N23-b Persistence COMPLETE — **recorded** (local)
 - W5-N23-c Restart Recovery COMPLETE — **recorded** (local)
+- W5-N23-d Operational Continuity COMPLETE — **recorded** (local)
 - Implementation of eligibility runtime — **not claimed**
-- Operational continuity — **not claimed**
 - Notification Retry Eligibility implemented — **not claimed**
 - Retry Backoff Calculation performed by eligibility — **not claimed**
 - Notification Platform Complete — **not claimed**
@@ -197,4 +212,4 @@ Implementation-phase commands (deferred until Planning Approval and authorized s
 
 ---
 
-**STOP.** W5-N23-c Restart Recovery is **COMPLETE** (local). Await Product Owner Review. Do **not** open W5-N23-d. Do **not** commit. Do **not** push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N23-d Operational Continuity is **COMPLETE** (local). Await Product Owner Review. Do **not** open W5-N23-e. Do **not** commit. Do **not** push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.

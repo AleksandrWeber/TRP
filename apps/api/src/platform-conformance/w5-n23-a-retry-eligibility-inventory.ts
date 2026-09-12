@@ -216,6 +216,9 @@ const N23B =
   'apps/api/src/modules/notification-delivery/notification-platform-retry-eligibility-persistence.service.ts';
 const N23C =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-eligibility-restart-recovery.service.ts';
+const N23D =
+  'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-eligibility-operational-continuity.ts';
+const OR = 'apps/api/src/modules/operational-continuity/operational-readiness.ts';
 
 type RowInput = {
   artifactId: string;
@@ -416,10 +419,10 @@ export const W5_N23_A_RETRY_ELIGIBILITY_INVENTORY: readonly W5N23AInventoryRow[]
     {
       persistenceRequirement: 'notification-delivery',
       recoveryRequirement: 'notification-delivery',
-      operationalRequirement: 'none-missing until W5-N23-d',
+      operationalRequirement: 'platform-readiness',
       currentStatus:
-        'Owner path exists; durable eligibility anchors + restart recovery present; unified eligibility runtime still absent',
-      evidencePath: N23C,
+        'Owner path exists; durable eligibility anchors + restart recovery + operational continuity present; unified eligibility runtime still absent',
+      evidencePath: N23D,
       existsToday: true,
     },
   ),
@@ -770,19 +773,20 @@ export const W5_N23_A_RETRY_ELIGIBILITY_INVENTORY: readonly W5N23AInventoryRow[]
   }),
   row({
     artifactId: 'missing-eligibility-operational-continuity',
-    artifact: 'Eligibility operational continuity — planned gap (W5-N23-d)',
+    artifact:
+      'Eligibility operational continuity — resolved by W5-N23-d (gap row retained for inventory honesty)',
     kind: 'operational',
     owner: 'platform-readiness',
-    purpose: 'Record planned eligibility operational continuity gap for W5-N23-d',
-    eligibilityRole: 'missing-gap',
+    purpose: 'Record resolved eligibility operational continuity gap after W5-N23-d',
+    eligibilityRole: 'missing-gap-resolved',
     classification: 'EPHEMERAL',
     honestyRequirement:
-      'Planned W5-N23-d — derived readiness only; not eligibility evaluation runtime',
-    futureW5N23Responsibility: 'W5-N23-d',
-    operationalRequirement: 'planned W5-N23-d',
-    evidencePath: PKG,
-    existsToday: false,
-    customerVisibility: 'not customer-visible — planned gap',
+      'Resolved by W5-N23-d — derived readiness only; not eligibility evaluation runtime; not scheduling/execution',
+    futureW5N23Responsibility: 'honesty-baseline',
+    operationalRequirement: 'platform-readiness',
+    evidencePath: N23D,
+    existsToday: true,
+    customerVisibility: 'not customer-visible — gap resolved by W5-N23-d',
   }),
 
   // CONFIGURATION
@@ -946,20 +950,20 @@ export const W5_N23_A_RETRY_ELIGIBILITY_INVENTORY: readonly W5N23AInventoryRow[]
   }),
   row({
     artifactId: 'projection-platform-readiness-eligibility-missing',
-    artifact: 'Platform Readiness notificationPlatformRetryEligibility — missing',
+    artifact: 'Platform Readiness notificationPlatformRetryEligibility — projected (W5-N23-d)',
     kind: 'projection',
     owner: 'platform-readiness',
-    purpose: 'Record that eligibility readiness projection is not yet present',
-    eligibilityRole: 'readiness-projection-gap',
+    purpose: 'Record that eligibility readiness projection is present on Platform Readiness',
+    eligibilityRole: 'readiness-projection',
     classification: 'EPHEMERAL',
-    honestyRequirement: 'Readiness must not claim eligibility functional from inventory alone',
-    futureW5N23Responsibility: 'W5-N23-d',
-    operationalRequirement: 'planned W5-N23-d',
-    capabilityCategory: 'not-implemented',
-    honestProductState: 'not-implemented',
-    evidencePath: PKG,
-    existsToday: false,
-    customerVisibility: 'not customer-visible — absent',
+    honestyRequirement: 'Derived readiness only; does not authorize eligibility evaluation runtime',
+    futureW5N23Responsibility: 'honesty-baseline',
+    operationalRequirement: 'platform-readiness',
+    capabilityCategory: 'infrastructure-only',
+    honestProductState: 'infrastructure-only',
+    evidencePath: OR,
+    existsToday: true,
+    customerVisibility: 'operator Platform Readiness only — not eligibility evaluation',
   }),
   row({
     artifactId: 'persist-candidate-eligibility-anchor',
@@ -979,8 +983,8 @@ export const W5_N23_A_RETRY_ELIGIBILITY_INVENTORY: readonly W5N23AInventoryRow[]
     capabilityCategory: 'infrastructure-only',
     honestProductState: 'infrastructure-only',
     currentStatus:
-      'Implemented — durable eligibility description anchors; restart recovery via W5-N23-c; operational continuity deferred to W5-N23-d',
-    evidencePath: N23C,
+      'Implemented — durable eligibility description anchors; restart recovery via W5-N23-c; operational continuity via W5-N23-d',
+    evidencePath: N23D,
     existsToday: true,
     customerVisibility: 'not customer-visible — infrastructure only',
   }),
@@ -1280,7 +1284,7 @@ export const W5_N23_A_BINDING_FINDINGS = Object.freeze({
   unifiedPlatformEligibilityLayerMissing: true,
   eligibilityPersistenceMissing: false,
   eligibilityRecoveryMissing: false,
-  eligibilityOperationalContinuityMissing: true,
+  eligibilityOperationalContinuityMissing: false,
   productionTransportsDeferred: true,
   inventoryDoesNotDetermineEligibility: true,
   inventoryDoesNotPerformBackoffCalculation: true,
@@ -1395,23 +1399,20 @@ export const W5_N23_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N22 retry backoff calculation inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N23-b durable eligibility anchors on notification-delivery (persistence only)',
     'W5-N23-c restart recovery of eligibility anchors on notification-delivery (recovery only)',
+    'W5-N23-d operational continuity for eligibility readiness on Platform Readiness (derived)',
     'PC-06 resolve-delivery-routing — routing SoT consumed unchanged',
     'PC-07 notification-product — per-channel settings and history',
     'Notification Durable Queue — W3-O02 on notification-delivery owner (consumed)',
     'W5-N01…N22 machine inventories — foundation reference patterns',
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
-  plannedCapabilities: Object.freeze([
-    'Operational Continuity Foundation (W5-N23-d)',
-    'Package Validation & Close Evidence (W5-N23-e)',
-  ] as const),
+  plannedCapabilities: Object.freeze(['Package Validation & Close Evidence (W5-N23-e)'] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform eligibility layer',
     'Operator eligibility UI',
     'Eligibility evaluation runtime',
     'Eligibility Engine',
     'Retry Engine',
-    'Eligibility operational continuity',
     'Transport execution / provider runtimes',
     'Production transport I/O (TD-049 / TD-050)',
     'Notification Platform Complete',

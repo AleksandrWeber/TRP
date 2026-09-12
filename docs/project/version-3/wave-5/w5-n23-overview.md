@@ -2,7 +2,7 @@
 
 **Document:** W5-N23 Notification Retry Eligibility Foundation Overview
 **Date:** 2026-09-12
-**Status:** Product-facing planning record. Planning Package **APPROVED**. W5-N23-a Inventory **COMPLETE** (local). W5-N23-b Persistence **COMPLETE** (local). W5-N23-c Restart Recovery **COMPLETE** (local). No eligibility evaluation runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing planning record. Planning Package **APPROVED**. W5-N23-a Inventory **COMPLETE** (local). W5-N23-b Persistence **COMPLETE** (local). W5-N23-c Restart Recovery **COMPLETE** (local). W5-N23-d Operational Continuity **COMPLETE** (local). No eligibility evaluation runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N23 (V3-N23 · CM-33)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -112,6 +112,18 @@ Missing artifacts are not fabricated.
 Corrupted artifacts are not restored.
 ```
 
+### W5-N23-d status (operational continuity)
+
+W5-N23-d derives Notification Retry Eligibility operational readiness from recovered state, owner readiness, and integrity, and projects it onto existing Platform Readiness. Supported states: Recovering | Ready | Degraded | Unavailable. Customer-visible functionality: **Operator Platform Readiness only**.
+
+```text
+Operational continuity ≠ eligibility evaluation.
+Operational continuity ≠ Retry Backoff Calculation.
+Operational continuity ≠ scheduling or executing retries.
+Ready is never hardcoded.
+Degraded / Unavailable never fabricate readiness.
+```
+
 ---
 
 ## What the operator cannot do (still)
@@ -179,14 +191,14 @@ W5-N17–N22 established reliability-through-calculation foundation evidence. Th
 
 ## Current status
 
-| Item                          | Status                                                              |
-| ----------------------------- | ------------------------------------------------------------------- |
-| W5-N23 Planning Package       | **APPROVED**                                                        |
-| Product Owner Planning Review | **PASS**                                                            |
-| Planning Approval             | **RECORDED**                                                        |
-| Implementation                | **W5-N23-a…c COMPLETE** (local); d–e deferred                       |
-| Implementation slices         | **a–c** — inventory + persistence + recovery; no continuity/runtime |
-| Wave 5 COMPLETE               | **Not claimed**                                                     |
+| Item                          | Status                                                                           |
+| ----------------------------- | -------------------------------------------------------------------------------- |
+| W5-N23 Planning Package       | **APPROVED**                                                                     |
+| Product Owner Planning Review | **PASS**                                                                         |
+| Planning Approval             | **RECORDED**                                                                     |
+| Implementation                | **W5-N23-a…d COMPLETE** (local); e deferred                                      |
+| Implementation slices         | **a–d** — inventory + persistence + recovery + continuity; no evaluation runtime |
+| Wave 5 COMPLETE               | **Not claimed**                                                                  |
 
 ---
 
@@ -205,4 +217,4 @@ W5-N17–N22 established reliability-through-calculation foundation evidence. Th
 
 ---
 
-**STOP.** W5-N23-c Restart Recovery is **COMPLETE** (local). Await Product Owner Review. Do NOT open W5-N23-d. Do NOT commit. Do NOT push. Do NOT declare Notification Retry Eligibility implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N23-d Operational Continuity is **COMPLETE** (local). Await Product Owner Review. Do NOT open W5-N23-e. Do NOT commit. Do NOT push. Do NOT declare Notification Retry Eligibility implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.

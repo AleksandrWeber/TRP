@@ -112,7 +112,7 @@ describe('W5-N23-a retry eligibility conformance — unit', () => {
     expect(W5_N23_A_BINDING_FINDINGS.unifiedPlatformEligibilityLayerMissing).toBe(true);
     expect(W5_N23_A_BINDING_FINDINGS.eligibilityPersistenceMissing).toBe(false);
     expect(W5_N23_A_BINDING_FINDINGS.eligibilityRecoveryMissing).toBe(false);
-    expect(W5_N23_A_BINDING_FINDINGS.eligibilityOperationalContinuityMissing).toBe(true);
+    expect(W5_N23_A_BINDING_FINDINGS.eligibilityOperationalContinuityMissing).toBe(false);
     expect(W5_N23_A_ARCHITECTURE_CLAIMS.eligibilityFunctionalClaimed).toBe(false);
     expect(W5_N23_A_ARCHITECTURE_CLAIMS.w5N23CompleteClaimed).toBe(false);
     expect(W5_N23_A_ARCHITECTURE_CLAIMS.notificationPlatformCompleteClaimed).toBe(false);
