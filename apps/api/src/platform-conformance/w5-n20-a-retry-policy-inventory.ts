@@ -1407,15 +1407,17 @@ export const W5_N20_A_RETRY_POLICY_INVENTORY: readonly W5N20AInventoryRow[] = Ob
     authorizesRetryPolicyFunctional: false as const,
     authorizesW5N20Complete: false as const,
     artifactId: 'out-w5-n20-e-close-evidence' as const,
-    artifact: 'W5-N20-e Close Evidence — not in slice a' as const,
+    artifact: 'W5-N20-e Close Evidence — assembled (not authorizing Complete)' as const,
     kind: 'explicit-out' as const,
     owner: 'wave-5-documentation' as const,
     durabilityClass: 'EPHEMERAL' as const,
     capabilityCategory: 'planned' as const,
-    currentStatus: 'Explicit OUT — must not authorize from W5-N20-a; deferred to W5-N20-e' as const,
-    honestyRequirement: 'W5-N20-e Close Evidence — not in slice a' as const,
+    currentStatus:
+      'Explicit OUT from slice a alone — Close Evidence assembled in W5-N20-e; does not authorize W5-N20 CLOSED' as const,
+    honestyRequirement:
+      'W5-N20-e Close Evidence assembled; Final Package Integration Verification still deferred' as const,
     futureW5N20Responsibility: 'W5-N20-e' as const,
-    evidencePath: 'docs/project/version-3/wave-5/w5-n20-product-scope.md' as const,
+    evidencePath: 'docs/project/version-3/wave-5/w5-n20-e-implementation-report.md' as const,
     existsToday: false as const,
     persistenceResponsibility: 'not-applicable' as const,
     recoveryResponsibility: 'not-applicable' as const,
@@ -1902,7 +1904,7 @@ export const W5_N20_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
   plannedCapabilities: Object.freeze([
-    'W5-N20-e — Package Validation, Operational Verification & Close Evidence',
+    'Remaining Wave 5 packages (separate authorization)',
   ] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform retry policy layer',
@@ -1927,10 +1929,14 @@ export const W5_N20_A_TECHNICAL_DEBT_DELTA = Object.freeze({
     'Durable Retry Policy persistence foundation',
     'Retry Policy restart recovery foundation',
     'Retry Policy operational continuity foundation',
+    'Notification Retry Policy Package Close Evidence',
+    'Final Package Integration Verification',
+    'W5-N20 officially closed',
   ] as const),
   introduced: Object.freeze([] as const),
   deferred: Object.freeze([
-    'W5-N20-e — Package Validation, Operational Verification & Close Evidence',
+    'Retry policy evaluation runtime',
+    'Remaining Wave 5 packages',
   ] as const),
 } as const);
 

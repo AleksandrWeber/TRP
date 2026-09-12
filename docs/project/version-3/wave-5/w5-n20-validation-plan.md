@@ -3,7 +3,7 @@
 **Package:** W5-N20 Notification Retry Policy Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N20 · CM-30
-**Status:** Planning **APPROVED** (2026-09-12). W5-N20-a inventory **COMPLETE**. W5-N20-b durable persistence **COMPLETE** (local). W5-N20-c restart recovery **COMPLETE** (local). W5-N20-d operational continuity **COMPLETE** (local). W5-N20-e not authorized. Not runtime implementation.
+**Status:** Planning **APPROVED** (2026-09-12). W5-N20-a inventory **COMPLETE**. W5-N20-b durable persistence **COMPLETE** (local). W5-N20-c restart recovery **COMPLETE** (local). W5-N20-d operational continuity **COMPLETE** (local). W5-N20-e Close Evidence **COMPLETE** (local). Final Integration Verification **PASS** (local). Package **CLOSED** by Product Owner (2026-09-12). Not runtime implementation.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n20-product-scope.md`](./w5-n20-product-scope.md)
@@ -255,10 +255,21 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Ownership verified              | **PASS** | notification-delivery capability; Platform Readiness extended only |
 | Customer-visible                | **PASS** | Operator readiness via existing Platform Readiness view only       |
 
+## W5-N20-e slice validation (2026-09-12)
+
+| Layer                   | Result   | Evidence                                             |
+| ----------------------- | -------- | ---------------------------------------------------- |
+| W5-N20-e Close Evidence | **PASS** | w5-n20-e-package-close-evidence.ts                   |
+| Operational chain       | **PASS** | inventory → persistence → recovery → continuity → PR |
+| Approved slices a–d     | **PASS** | All PASS                                             |
+| Package CLOSED          | **PASS** | Not claimed                                          |
+| FIV performed           | **PASS** | See Final Integration Verification section below     |
+| Customer-visible        | **PASS** | None — package validation only                       |
+
 ## Explicit non-claims
 
-- W5-N20 Closed — **not claimed**
-- Platform retry policy foundation validation PASS at Close — **not claimed**
+- W5-N20 Closed — **recorded** (2026-09-12)
+- Platform retry policy foundation validation PASS at Close — **not claimed** (Close ≠ Retry Policy implemented)
 - Notification Retry Policy implemented — **not claimed**
 - Retry Policy implemented — **not claimed**
 - Retry policy evaluation runtime — **not claimed**
@@ -279,9 +290,24 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 - W5-N20-b COMPLETE — **recorded** (local, 2026-09-12) — durable persistence only
 - W5-N20-c COMPLETE — **recorded** (local, 2026-09-12) — restart recovery only
 - W5-N20-d COMPLETE — **recorded** (local, 2026-09-12) — operational continuity only
+- W5-N20-e COMPLETE — **recorded** (local, 2026-09-12) — Close Evidence only
+- Final Package Integration Verification — **PASS** (local, 2026-09-12)
+- Product Owner Final Close — **recorded** (2026-09-12)
 - W5-N20 Planning Review completed — **recorded** (PASS)
 - W5-N20 Planning APPROVED — **recorded** (2026-09-12)
 
 ---
 
-**STOP.** W5-N20-d operational continuity foundation is **COMPLETE** (local). Await Product Owner Review. Do NOT open W5-N20-e. Do NOT declare Retry Policy implemented. Do NOT declare Retry Scheduling implemented. Do NOT declare Retry Execution implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE. Do not commit. Do not push.
+## W5-N20 Final Integration Verification (2026-09-12)
+
+| Layer                                  | Result     | Evidence                                          |
+| -------------------------------------- | ---------- | ------------------------------------------------- |
+| Final Package Integration Verification | **PASS**   | w5-n20-final-integration-verification.md          |
+| Slices a–e internally consistent       | **PASS**   | buildCloseEvidenceDiagnostics()                   |
+| Regression suite                       | **PASS**   | lint / typecheck / test / web build               |
+| Product Owner Final Close              | **CLOSED** | w5-n20-product-owner-close-record.md (2026-09-12) |
+| W5-N20 CLOSED                          | **CLOSED** | by Product Owner (2026-09-12)                     |
+
+---
+
+**STOP.** W5-N20 is **CLOSED** by Product Owner (2026-09-12). Do NOT declare Retry Policy implemented. Do NOT declare Retry Scheduling implemented. Do NOT declare Retry Execution implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE. Do not open W5-N21. Await Repository Synchronization.

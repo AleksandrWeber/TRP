@@ -98,7 +98,7 @@ describe('W5-N20-a retry policy conformance — unit', () => {
     expect(W5_N20_A_ARCHITECTURE_CLAIMS.liveTradingClaimed).toBe(false);
   });
 
-  it('technical debt delta: inventory through operational continuity resolved; W5-N20-e deferred; nothing introduced', () => {
+  it('technical debt delta: inventory through official close resolved; evaluation runtime/remaining Wave 5 deferred; nothing introduced', () => {
     expect(W5_N20_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Retry Policy inventory baseline established',
     );
@@ -111,9 +111,17 @@ describe('W5-N20-a retry policy conformance — unit', () => {
     expect(W5_N20_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
       'Retry Policy operational continuity foundation',
     );
+    expect(W5_N20_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
+      'Notification Retry Policy Package Close Evidence',
+    );
+    expect(W5_N20_A_TECHNICAL_DEBT_DELTA.resolved).toContain(
+      'Final Package Integration Verification',
+    );
+    expect(W5_N20_A_TECHNICAL_DEBT_DELTA.resolved).toContain('W5-N20 officially closed');
     expect(W5_N20_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N20_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N20-e — Package Validation, Operational Verification & Close Evidence',
+      'Retry policy evaluation runtime',
+      'Remaining Wave 5 packages',
     ]);
   });
 
