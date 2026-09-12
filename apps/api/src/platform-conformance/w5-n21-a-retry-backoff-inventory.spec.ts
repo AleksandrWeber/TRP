@@ -137,7 +137,7 @@ describe('W5-N21-a notification retry backoff inventory — unit', () => {
     expect(W5_N21_A_BINDING_FINDINGS.w5N19RetrySchedulingExists).toBe(true);
     expect(W5_N21_A_BINDING_FINDINGS.w5N20RetryPolicyExists).toBe(true);
     expect(W5_N21_A_BINDING_FINDINGS.unifiedPlatformRetryBackoffLayerMissing).toBe(true);
-    expect(W5_N21_A_BINDING_FINDINGS.retryBackoffPersistenceMissing).toBe(true);
+    expect(W5_N21_A_BINDING_FINDINGS.retryBackoffPersistenceMissing).toBe(false);
     expect(W5_N21_A_BINDING_FINDINGS.retryBackoffRecoveryMissing).toBe(true);
     expect(W5_N21_A_BINDING_FINDINGS.retryBackoffOperationalContinuityMissing).toBe(true);
     expect(W5_N21_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
@@ -207,36 +207,48 @@ describe('W5-N21-a notification retry backoff inventory — unit', () => {
     ).toBeGreaterThanOrEqual(2);
   });
 
-  it('technical debt delta: only inventory baseline resolved; b–e deferred; nothing introduced', () => {
+  it('technical debt delta: inventory and durable persistence resolved; c–e deferred; nothing introduced', () => {
     expect(W5_N21_A_TECHNICAL_DEBT_DELTA.resolved).toEqual([
       'Retry Backoff inventory baseline established',
+      'Durable Retry Backoff persistence foundation',
     ]);
     expect(W5_N21_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N21_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N21-b — Durable Persistence Foundation',
       'W5-N21-c — Restart Recovery Foundation',
       'W5-N21-d — Operational Continuity Foundation',
       'W5-N21-e — Package Validation, Operational Verification & Close Evidence',
     ]);
   });
 
-  it('missing gaps remain EPHEMERAL with existsToday false at slice-a open', () => {
-    const missingIds = [
+  it('missing gaps remain EPHEMERAL; persistence gap resolved by W5-N21-b', () => {
+    const stillMissingIds = [
       'missing-unified-platform-retry-backoff-view',
-      'missing-retry-backoff-persistence',
       'missing-retry-backoff-recovery',
       'missing-retry-backoff-operational-continuity',
       'missing-retry-backoff-ui',
       'projection-platform-readiness-retry-backoff-missing',
-      'persist-notification-platform-retry-backoff-anchor',
       'operator-visible-retry-backoff-none',
     ];
-    for (const id of missingIds) {
+    for (const id of stillMissingIds) {
       const row = W5_N21_A_RETRY_BACKOFF_INVENTORY.find((entry) => entry.artifactId === id);
       expect(row).toBeDefined();
       expect(row?.existsToday).toBe(false);
-      expect(row?.retryBackoffClassification).toBe('EPHEMERAL');
     }
+    expect(
+      W5_N21_A_RETRY_BACKOFF_INVENTORY.find(
+        (entry) => entry.artifactId === 'missing-retry-backoff-persistence',
+      )?.existsToday,
+    ).toBe(true);
+    expect(
+      W5_N21_A_RETRY_BACKOFF_INVENTORY.find(
+        (entry) => entry.artifactId === 'persist-notification-platform-retry-backoff-anchor',
+      )?.existsToday,
+    ).toBe(true);
+    expect(
+      W5_N21_A_RETRY_BACKOFF_INVENTORY.find(
+        (entry) => entry.artifactId === 'own-platform-retry-backoff-layer',
+      )?.existsToday,
+    ).toBe(true);
   });
 });
 

@@ -24,6 +24,7 @@ import { NOTIFICATION_PLATFORM_RELIABILITY_ANCHOR_REPOSITORY } from './domain/no
 import { NOTIFICATION_PLATFORM_RETRY_EXECUTION_ANCHOR_REPOSITORY } from './domain/notification-platform-retry-execution-anchor.repository';
 import { NOTIFICATION_PLATFORM_RETRY_SCHEDULING_ANCHOR_REPOSITORY } from './domain/notification-platform-retry-scheduling-anchor.repository';
 import { NOTIFICATION_PLATFORM_RETRY_POLICY_ANCHOR_REPOSITORY } from './domain/notification-platform-retry-policy-anchor.repository';
+import { NOTIFICATION_PLATFORM_RETRY_BACKOFF_ANCHOR_REPOSITORY } from './domain/notification-platform-retry-backoff-anchor.repository';
 import { NotificationDeliveryBoundaryService } from './notification-boundary.service';
 import { NotificationDeliveryService } from './notification-delivery.service';
 import { PrismaEmailNotificationAnchorRepository } from './persistence/prisma-email-notification-anchor.repository';
@@ -45,6 +46,7 @@ import { PrismaNotificationPlatformReliabilityAnchorRepository } from './persist
 import { PrismaNotificationPlatformRetryExecutionAnchorRepository } from './persistence/prisma-notification-platform-retry-execution-anchor.repository';
 import { PrismaNotificationPlatformRetrySchedulingAnchorRepository } from './persistence/prisma-notification-platform-retry-scheduling-anchor.repository';
 import { PrismaNotificationPlatformRetryPolicyAnchorRepository } from './persistence/prisma-notification-platform-retry-policy-anchor.repository';
+import { PrismaNotificationPlatformRetryBackoffAnchorRepository } from './persistence/prisma-notification-platform-retry-backoff-anchor.repository';
 import { PrismaTelegramNotificationAnchorRepository } from './persistence/prisma-telegram-notification-anchor.repository';
 import { NOTIFICATION_SERVICE_PORT, TELEGRAM_CHANNEL_ADAPTER } from './ports/notification.port';
 import { EmailNotificationPersistenceService } from './email-notification-persistence.service';
@@ -68,6 +70,7 @@ import { NotificationPlatformReliabilityPersistenceService } from './notificatio
 import { NotificationPlatformRetryExecutionPersistenceService } from './notification-platform-retry-execution-persistence.service';
 import { NotificationPlatformRetrySchedulingPersistenceService } from './notification-platform-retry-scheduling-persistence.service';
 import { NotificationPlatformRetryPolicyPersistenceService } from './notification-platform-retry-policy-persistence.service';
+import { NotificationPlatformRetryBackoffPersistenceService } from './notification-platform-retry-backoff-persistence.service';
 import { NotificationPlatformTelemetryRecoveryStore } from './domain/notification-platform-telemetry-recovery-store';
 import { NotificationPlatformTelemetryRestartRecoveryService } from './domain/notification-platform-telemetry-restart-recovery.service';
 import { NotificationPlatformMetricsRecoveryStore } from './domain/notification-platform-metrics-recovery-store';
@@ -78,6 +81,7 @@ import { NotificationPlatformRetryExecutionRecoveryStore } from './domain/notifi
 import { NotificationPlatformRetryExecutionRestartRecoveryService } from './domain/notification-platform-retry-execution-restart-recovery.service';
 import { NotificationPlatformRetrySchedulingRecoveryStore } from './domain/notification-platform-retry-scheduling-recovery-store';
 import { NotificationPlatformRetryPolicyRecoveryStore } from './domain/notification-platform-retry-policy-recovery-store';
+import { NotificationPlatformRetryBackoffRecoveryStore } from './domain/notification-platform-retry-backoff-recovery-store';
 import { NotificationPlatformRetryPolicyRestartRecoveryService } from './domain/notification-platform-retry-policy-restart-recovery.service';
 import { NotificationPlatformRetrySchedulingRestartRecoveryService } from './domain/notification-platform-retry-scheduling-restart-recovery.service';
 import { NotificationPlatformDeadLetterRecoveryStore } from './domain/notification-platform-dead-letter-recovery-store';
@@ -137,6 +141,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
  * W5-N11-b: durable Notification Platform Worker Runtime anchor persistence on this owner only.
  * W5-N11-c: deterministic restart recovery hydrate for canonical platform worker runtime anchors on this owner only.
  * W5-N20-b: durable Notification Platform Retry Policy anchor persistence on this owner only.
+ * W5-N21-b: durable Notification Platform Retry Backoff anchor persistence on this owner only.
  * Does not import Reporting / AI Analytics / Strategy Library / Runtime /
  * Trading Session / Orders / Ledger. Does not expose REST or trading commands.
  */
@@ -270,6 +275,12 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
         new PrismaNotificationPlatformRetryPolicyAnchorRepository(prisma),
       inject: [PrismaService],
     },
+    {
+      provide: NOTIFICATION_PLATFORM_RETRY_BACKOFF_ANCHOR_REPOSITORY,
+      useFactory: (prisma: PrismaService) =>
+        new PrismaNotificationPlatformRetryBackoffAnchorRepository(prisma),
+      inject: [PrismaService],
+    },
     TelegramNotificationRecoveryStore,
     TelegramNotificationRestartRecoveryService,
     TelegramNotificationPersistenceService,
@@ -306,6 +317,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetryPolicyPersistenceService,
     NotificationPlatformRetryPolicyRecoveryStore,
     NotificationPlatformRetryPolicyRestartRecoveryService,
+    NotificationPlatformRetryBackoffPersistenceService,
+    NotificationPlatformRetryBackoffRecoveryStore,
     NotificationPlatformTelemetryRecoveryStore,
     NotificationPlatformTelemetryRestartRecoveryService,
     NotificationPlatformDeadLetterRecoveryStore,
@@ -394,6 +407,8 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetryPolicyPersistenceService,
     NotificationPlatformRetryPolicyRecoveryStore,
     NotificationPlatformRetryPolicyRestartRecoveryService,
+    NotificationPlatformRetryBackoffPersistenceService,
+    NotificationPlatformRetryBackoffRecoveryStore,
     NotificationPlatformTelemetryRecoveryStore,
     NotificationPlatformTelemetryRestartRecoveryService,
     NotificationPlatformDeadLetterRecoveryStore,

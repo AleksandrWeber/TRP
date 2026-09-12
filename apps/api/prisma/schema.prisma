@@ -2162,3 +2162,23 @@ model WorkspaceNotificationPlatformRetryPolicyAnchor {
   @@id([workspaceId, retryPolicyAnchorId])
   @@map("workspace_notification_platform_retry_policy_anchors")
 }
+
+/// Canonical platform retry backoff anchor state only. No backoff calculation.
+/// No exponential/linear algorithms. No policy evaluation. No scheduler/execution/transport.
+/// Persistence only — restart recovery and operational continuity are later slices.
+model WorkspaceNotificationPlatformRetryBackoffAnchor {
+  workspaceId              String   @map("workspace_id")
+  retryBackoffAnchorId     String   @map("retry_backoff_anchor_id")
+  schemaVersion            Int      @default(1) @map("schema_version")
+  platformRetryBackoffType String   @map("platform_retry_backoff_type")
+  retryBackoffState        String   @map("retry_backoff_state")
+  channelScope             String?  @map("channel_scope")
+  integrityMetadata        String?  @map("integrity_metadata")
+  correlationId            String?  @map("correlation_id")
+  recordedAt               DateTime @map("recorded_at")
+  recordedByActorId        String?  @map("recorded_by_actor_id")
+  updatedAt                DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, retryBackoffAnchorId])
+  @@map("workspace_notification_platform_retry_backoff_anchors")
+}

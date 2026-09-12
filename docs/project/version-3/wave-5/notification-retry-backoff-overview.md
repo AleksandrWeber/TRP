@@ -2,7 +2,7 @@
 
 **Document:** W5-N21 Notification Retry Backoff Foundation Overview
 **Date:** 2026-09-12
-**Status:** Product-facing record. W5-N21 Planning **APPROVED** (2026-09-12). W5-N21-a inventory **COMPLETE** (local). No retry backoff runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. W5-N21 Planning **APPROVED** (2026-09-12). W5-N21-a inventory **COMPLETE** (local). W5-N21-b durable persistence **COMPLETE** (local). No retry backoff runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N21 (V3-N21 · CM-31)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -178,23 +178,25 @@ Never claim production transports operational from W5-N21 foundation alone.
 
 ## Technical debt
 
-| Item                                  | Status                                        |
-| ------------------------------------- | --------------------------------------------- |
-| TD-049 Telegram production Bot API    | **Deferred**                                  |
-| TD-050 Reserved notification channels | **Deferred**                                  |
-| Platform retry backoff foundation     | **Deferred** to implementation after Approval |
-| Retry backoff runtime                 | **Deferred**                                  |
-| Backoff calculation                   | **Deferred**                                  |
-| Exponential backoff                   | **Deferred**                                  |
-| Linear backoff                        | **Deferred**                                  |
-| Retry policy evaluation               | **Deferred**                                  |
-| Retry scheduler runtime               | **Deferred**                                  |
-| Retry execution runtime               | **Deferred**                                  |
-| Transport execution                   | **Deferred**                                  |
-| Dead-letter processing                | **Deferred**                                  |
-| Implementation slices (a–e)           | **Deferred** — not authorized                 |
-| Planning Review                       | **Deferred** — awaiting Product Owner         |
-| Planning Approval                     | **Deferred** — awaiting Product Owner         |
+| Item                                  | Status                                          |
+| ------------------------------------- | ----------------------------------------------- |
+| TD-049 Telegram production Bot API    | **Deferred**                                    |
+| TD-050 Reserved notification channels | **Deferred**                                    |
+| Platform retry backoff foundation     | **Deferred** to remaining slices after Approval |
+| Durable retry backoff persistence     | **Resolved** by W5-N21-b                        |
+| Restart-safe retry backoff recovery   | **Deferred** — W5-N21-c                         |
+| Retry backoff runtime                 | **Deferred**                                    |
+| Backoff calculation                   | **Deferred**                                    |
+| Exponential backoff                   | **Deferred**                                    |
+| Linear backoff                        | **Deferred**                                    |
+| Retry policy evaluation               | **Deferred**                                    |
+| Retry scheduler runtime               | **Deferred**                                    |
+| Retry execution runtime               | **Deferred**                                    |
+| Transport execution                   | **Deferred**                                    |
+| Dead-letter processing                | **Deferred**                                    |
+| Implementation slices (c–e)           | **Deferred** — not authorized                   |
+| Planning Review                       | **Complete**                                    |
+| Planning Approval                     | **Complete**                                    |
 
 **Technical debt introduced by this planning open:** None.
 
@@ -207,7 +209,8 @@ Never claim production transports operational from W5-N21 foundation alone.
 - W5-N21 Planning Package OPEN — **recorded** (2026-09-12)
 - W5-N21 Planning APPROVED — **recorded** (2026-09-12)
 - W5-N21-a inventory COMPLETE — **recorded** (local, 2026-09-12)
-- W5-N21-b…e COMPLETE — **not claimed**
+- W5-N21-b durable persistence COMPLETE — **recorded** (local, 2026-09-12)
+- W5-N21-c…e COMPLETE — **not claimed**
 - Final Package Integration Verification — **not claimed**
 - W5-N21 CLOSED — **not claimed**
 - Notification Retry Backoff Foundation implemented — **not claimed**
@@ -232,4 +235,4 @@ Never claim production transports operational from W5-N21 foundation alone.
 
 ---
 
-**STOP.** W5-N21 Planning is **APPROVED**. Implementation is **AUTHORIZED** for **W5-N21-a only**. Await explicit Product Owner instruction before opening W5-N21-a. Do not open W5-N21-b through W5-N21-e. Do not declare Retry Backoff implemented. Do not declare Retry Policy implemented. Do not declare Retry Scheduling implemented. Do not declare Retry Execution implemented. Do not declare Notification Platform COMPLETE. Do not declare Live Notifications. Do not declare Production Ready. Do not declare Wave 5 COMPLETE.
+**STOP.** W5-N21-b is **COMPLETE** (local). Await Product Owner Review. Do not commit. Do not push. Do not open W5-N21-c. Do not declare Retry Backoff implemented. Do not declare Retry Policy implemented. Do not declare Retry Scheduling implemented. Do not declare Retry Execution implemented. Do not declare Notification Platform COMPLETE. Do not declare Live Notifications. Do not declare Production Ready. Do not declare Wave 5 COMPLETE.

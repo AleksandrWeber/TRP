@@ -91,7 +91,7 @@ describe('W5-N21-a retry backoff conformance — unit', () => {
     expect(W5_N21_A_BINDING_FINDINGS.w5N19RetrySchedulingExists).toBe(true);
     expect(W5_N21_A_BINDING_FINDINGS.w5N20RetryPolicyExists).toBe(true);
     expect(W5_N21_A_BINDING_FINDINGS.unifiedPlatformRetryBackoffLayerMissing).toBe(true);
-    expect(W5_N21_A_BINDING_FINDINGS.retryBackoffPersistenceMissing).toBe(true);
+    expect(W5_N21_A_BINDING_FINDINGS.retryBackoffPersistenceMissing).toBe(false);
     expect(W5_N21_A_BINDING_FINDINGS.retryBackoffRecoveryMissing).toBe(true);
     expect(W5_N21_A_BINDING_FINDINGS.retryBackoffOperationalContinuityMissing).toBe(true);
     expect(W5_N21_A_ARCHITECTURE_CLAIMS.retryBackoffFunctionalClaimed).toBe(false);
@@ -100,13 +100,13 @@ describe('W5-N21-a retry backoff conformance — unit', () => {
     expect(W5_N21_A_ARCHITECTURE_CLAIMS.liveTradingClaimed).toBe(false);
   });
 
-  it('technical debt delta: only inventory baseline resolved; b–e deferred; nothing introduced', () => {
+  it('technical debt delta: inventory and durable persistence resolved; c–e deferred; nothing introduced', () => {
     expect(W5_N21_A_TECHNICAL_DEBT_DELTA.resolved).toEqual([
       'Retry Backoff inventory baseline established',
+      'Durable Retry Backoff persistence foundation',
     ]);
     expect(W5_N21_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N21_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N21-b — Durable Persistence Foundation',
       'W5-N21-c — Restart Recovery Foundation',
       'W5-N21-d — Operational Continuity Foundation',
       'W5-N21-e — Package Validation, Operational Verification & Close Evidence',
