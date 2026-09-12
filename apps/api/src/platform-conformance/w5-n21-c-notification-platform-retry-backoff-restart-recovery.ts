@@ -1,0 +1,103 @@
+/**
+ * W5-N21-c — Notification Platform Retry Backoff Restart Recovery Foundation registry.
+ *
+ * Normal process restart recovery for W5-N21-b durable anchors on notification-delivery owner.
+ * Reuses existing persistence hydrate — not a second recovery engine.
+ * Not operational continuity, retry backoff runtime, or customer-visible functionality.
+ */
+
+export const W5_N21_C_SLICE_ID = 'W5-N21-c' as const;
+
+export const W5_N21_C_NOTIFICATION_OWNER = 'notification-delivery' as const;
+
+export const W5_N21_C_RECOVERED_ARTIFACT_IDS = Object.freeze([
+  'persist-notification-platform-retry-backoff-anchor',
+] as const);
+
+export const W5_N21_C_ARCHITECTURE_CLAIMS = Object.freeze({
+  newPersistenceOwner: false,
+  newBoundedContext: false,
+  newSourceOfTruth: false,
+  duplicateNotificationSubsystem: false,
+  duplicateBackoffSubsystem: false,
+  duplicateRoutingEngine: false,
+  secondRecoveryEngine: false,
+  backoffEngineIntroduced: false,
+  retryPlatformIntroduced: false,
+  workflowEngineIntroduced: false,
+  eventBusProductIntroduced: false,
+  ownershipBoundariesChanged: false,
+  masterPlanModified: false,
+  version2Redesigned: false,
+  wave1Modified: false,
+  wave2Modified: false,
+  wave3Modified: false,
+  wave4Modified: false,
+  exchangeAdapterUntouched: true,
+  connectionManagementUntouched: true,
+  secretVaultUntouched: true,
+  workspaceOwnershipUntouched: true,
+  normalProcessRestartRecovery: true,
+  notificationPlatformRetryBackoffAnchorStateRestoredAfterRestart: true,
+  recoveryDeterministic: true,
+  recoveryIdempotent: true,
+  recoveryCanFabricateMissingState: false,
+  recoveryCanRecoverCorruptedState: false,
+  operationalContinuity: false,
+  backoffCalculationImplemented: false,
+  exponentialBackoffImplemented: false,
+  linearBackoffImplemented: false,
+  policyEvaluationRuntime: false,
+  retryBackoffImplemented: false,
+  restartRecoveryImplemented: true,
+  outboundNotificationDelivery: false,
+  runtimeNotifications: false,
+  customerVisibleFeature: false,
+  retryBackoffFunctionalClaimed: false,
+  w5N21CompleteClaimed: false,
+  notificationPlatformCompleteClaimed: false,
+  wave5CompleteClaimed: false,
+} as const);
+
+export const W5_N21_C_EXPLICIT_OUT = Object.freeze([
+  'backoff-calculation',
+  'exponential-backoff',
+  'linear-backoff',
+  'policy-evaluation-runtime',
+  'operational-continuity',
+  'production-transport-i/o',
+  'runtime-notifications',
+  'second-recovery-engine',
+  'backoff-engine',
+  'retry-platform',
+  'workflow-engine',
+  'event-bus-product',
+] as const);
+
+export const W5_N21_C_TECHNICAL_DEBT_DELTA = Object.freeze({
+  resolved: Object.freeze(['Retry Backoff Restart Recovery Foundation'] as const),
+  introduced: Object.freeze([] as const),
+  deferred: Object.freeze([
+    'W5-N21-d — Operational Continuity Foundation',
+    'W5-N21-e — Package Validation, Operational Verification & Close Evidence',
+  ] as const),
+} as const);
+
+export const W5_N21_C_TRANSITION_MATRIX = Object.freeze({
+  before: Object.freeze([
+    'Inventory (W5-N21-a)',
+    'Durable persistence (W5-N21-b)',
+    'Restart recovery not implemented',
+  ] as const),
+  after: Object.freeze([
+    'Inventory (W5-N21-a)',
+    'Durable persistence (W5-N21-b)',
+    'Restart recovery (W5-N21-c)',
+    'Recovery deterministic, idempotent, fail-honest on corruption',
+  ] as const),
+  stillMissing: Object.freeze([
+    'Operational continuity (W5-N21-d)',
+    'Package Close (W5-N21-e)',
+    'Backoff calculation runtime',
+  ] as const),
+} as const);

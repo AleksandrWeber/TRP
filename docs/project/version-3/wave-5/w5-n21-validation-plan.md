@@ -3,7 +3,7 @@
 **Package:** W5-N21 Notification Retry Backoff Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N21 · CM-31
-**Status:** Planning **APPROVED** (2026-09-12). W5-N21-a inventory **COMPLETE**. W5-N21-b durable persistence **COMPLETE** (local). W5-N21-c…e not authorized. Not runtime implementation.
+**Status:** Planning **APPROVED** (2026-09-12). W5-N21-a inventory **COMPLETE**. W5-N21-b durable persistence **COMPLETE** (local). W5-N21-c restart recovery **COMPLETE** (local). W5-N21-d…e not authorized. Not runtime implementation.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n21-product-scope.md`](./w5-n21-product-scope.md)
@@ -238,6 +238,17 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Customer-visible         | **PASS** | None — internal durable persistence only              |
 | Restart recovery claimed | **PASS** | Not claimed — W5-N21-c                                |
 
+## W5-N21-c slice validation (2026-09-12)
+
+| Layer                      | Result   | Evidence                                               |
+| -------------------------- | -------- | ------------------------------------------------------ |
+| W5-N21-c restart hydrate   | **PASS** | NotificationPlatformRetryBackoffRestartRecoveryService |
+| Deterministic / idempotent | **PASS** | ordered hydrate; repeated hydrate equal                |
+| Integrity gate             | **PASS** | corrupt → fail honest; missing → empty                 |
+| Ownership verified         | **PASS** | notification-delivery only; no second recovery engine  |
+| Customer-visible           | **PASS** | None — internal restart recovery only                  |
+| Operational continuity     | **PASS** | Not claimed — W5-N21-d                                 |
+
 ## Explicit non-claims
 
 - W5-N21 Planning Package OPEN — **recorded** (2026-09-12)
@@ -266,10 +277,11 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 - Wave 5 COMPLETE — **not claimed**
 - W5-N21-a COMPLETE — **recorded** (local, 2026-09-12) — inventory only
 - W5-N21-b COMPLETE — **recorded** (local, 2026-09-12) — durable persistence only
-- W5-N21-c…e COMPLETE — **not claimed**
+- W5-N21-c COMPLETE — **recorded** (local, 2026-09-12) — restart recovery only
+- W5-N21-d…e COMPLETE — **not claimed**
 - Final Package Integration Verification — **not claimed**
 - Product Owner Final Close — **not claimed**
 
 ---
 
-**STOP.** W5-N21-b is **COMPLETE** (local). Await Product Owner Review. Do not commit. Do not push. Do not open W5-N21-c. Do NOT declare Retry Backoff implemented. Do NOT declare Retry Policy implemented. Do NOT declare Retry Scheduling implemented. Do NOT declare Retry Execution implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE.
+**STOP.** W5-N21-c is **COMPLETE** (local). Await Product Owner Review. Do not commit. Do not push. Do not open W5-N21-d. Do NOT declare Retry Backoff implemented. Do NOT declare Retry Policy implemented. Do NOT declare Retry Scheduling implemented. Do NOT declare Retry Execution implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE.

@@ -82,6 +82,7 @@ import { NotificationPlatformRetryExecutionRestartRecoveryService } from './doma
 import { NotificationPlatformRetrySchedulingRecoveryStore } from './domain/notification-platform-retry-scheduling-recovery-store';
 import { NotificationPlatformRetryPolicyRecoveryStore } from './domain/notification-platform-retry-policy-recovery-store';
 import { NotificationPlatformRetryBackoffRecoveryStore } from './domain/notification-platform-retry-backoff-recovery-store';
+import { NotificationPlatformRetryBackoffRestartRecoveryService } from './domain/notification-platform-retry-backoff-restart-recovery.service';
 import { NotificationPlatformRetryPolicyRestartRecoveryService } from './domain/notification-platform-retry-policy-restart-recovery.service';
 import { NotificationPlatformRetrySchedulingRestartRecoveryService } from './domain/notification-platform-retry-scheduling-restart-recovery.service';
 import { NotificationPlatformDeadLetterRecoveryStore } from './domain/notification-platform-dead-letter-recovery-store';
@@ -142,6 +143,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
  * W5-N11-c: deterministic restart recovery hydrate for canonical platform worker runtime anchors on this owner only.
  * W5-N20-b: durable Notification Platform Retry Policy anchor persistence on this owner only.
  * W5-N21-b: durable Notification Platform Retry Backoff anchor persistence on this owner only.
+ * W5-N21-c: deterministic restart recovery hydrate for canonical platform retry backoff anchors on this owner only.
  * Does not import Reporting / AI Analytics / Strategy Library / Runtime /
  * Trading Session / Orders / Ledger. Does not expose REST or trading commands.
  */
@@ -319,6 +321,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetryPolicyRestartRecoveryService,
     NotificationPlatformRetryBackoffPersistenceService,
     NotificationPlatformRetryBackoffRecoveryStore,
+    NotificationPlatformRetryBackoffRestartRecoveryService,
     NotificationPlatformTelemetryRecoveryStore,
     NotificationPlatformTelemetryRestartRecoveryService,
     NotificationPlatformDeadLetterRecoveryStore,
@@ -409,6 +412,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetryPolicyRestartRecoveryService,
     NotificationPlatformRetryBackoffPersistenceService,
     NotificationPlatformRetryBackoffRecoveryStore,
+    NotificationPlatformRetryBackoffRestartRecoveryService,
     NotificationPlatformTelemetryRecoveryStore,
     NotificationPlatformTelemetryRestartRecoveryService,
     NotificationPlatformDeadLetterRecoveryStore,
