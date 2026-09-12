@@ -8,7 +8,7 @@
 ## Delivered
 
 - Durable Notification Platform Retry Backoff Calculation anchors on existing `notification-delivery` owner.
-- Prisma model `WorkspaceNotificationPlatformRetryBackoffCalculationAnchor` → table `workspace_notification_platform_retry_backoff_calculation_anchors`.
+- Prisma model `WorkspaceNotificationPlatformRetryBackoffCalculationAnchor` → table `workspace_notification_platform_retry_backoff_calc_anchors` (shortened for PostgreSQL 63-char identifier limit).
 - Repository port + Prisma adapter + persistence service (repository only — no recovery store).
 - Inventory synchronization: `persist-candidate-backoff-calculation-anchor` promoted to **RECOVERABLE** / existsToday; `backoffCalculationPersistenceMissing` = **false**.
 - Conformance registry: `w5-n22-b-durable-notification-platform-retry-backoff-calculation.ts`.

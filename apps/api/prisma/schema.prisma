@@ -2201,5 +2201,5 @@ model WorkspaceNotificationPlatformRetryBackoffCalculationAnchor {
   updatedAt                       DateTime @updatedAt @map("updated_at")
 
   @@id([workspaceId, calculationAnchorId])
-  @@map("workspace_notification_platform_retry_backoff_calculation_anchors")
+  @@map("workspace_notification_platform_retry_backoff_calc_anchors")
 }
