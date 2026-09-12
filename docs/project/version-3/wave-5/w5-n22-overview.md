@@ -2,7 +2,7 @@
 
 **Document:** W5-N22 Notification Retry Backoff Calculation Foundation Overview
 **Date:** 2026-09-12
-**Status:** Product-facing record. W5-N22 Planning Package **APPROVED**. Planning Clarification **COMPLETE**. No implementation. No slices opened. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. W5-N22 Planning Package **APPROVED**. Planning Clarification **COMPLETE**. W5-N22-a inventory **COMPLETE** (local; awaiting Product Owner Review). No calculation runtime. No slices b–e. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N22 (V3-N22 · CM-32)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -55,7 +55,18 @@ W5-N01…N21 foundations are consumed — not redesigned.
 5. Configure individual channels on their existing surfaces (transport I/O remains per-channel scope).
 6. Stay inside their workspace and authorization.
 
-**Not available from planning open alone** — no calculation implementation, no calculation runtime, no exponential/linear algorithm execution, no retry policy evaluation, no retry scheduler runtime, no retry execution runtime, no transport execution, no successful delivery, no Live Notifications, no Production Ready, no Wave 5 COMPLETE.
+**Not available from W5-N22-a alone** — inventory only; no calculation runtime, no exponential/linear algorithm execution, no retry policy evaluation, no retry scheduler runtime, no retry execution runtime, no transport execution, no successful delivery, no Live Notifications, no Production Ready, no Wave 5 COMPLETE.
+
+### W5-N22-a status (inventory)
+
+W5-N22-a delivers the Retry Backoff Calculation **inventory and classification baseline** only (70 machine-readable rows). Customer-visible functionality: **None**.
+
+```text
+Calculation inventory ≠ calculation runtime.
+Calculation does NOT schedule or execute retries.
+Calculation does NOT own retry lifecycle, timers, workers, or orchestration.
+Calculation output is informational until consumed by future approved packages.
+```
 
 ---
 
@@ -141,15 +152,15 @@ W5-N17–N21 established reliability-through-backoff foundation evidence. The pl
 
 ## Current status
 
-| Item                          | Status             |
-| ----------------------------- | ------------------ |
-| W5-N22 Planning Package       | **APPROVED**       |
-| Product Owner Planning Review | **PASS**           |
-| Planning Clarification        | **COMPLETE**       |
-| Planning Approval             | **RECORDED**       |
-| Implementation                | **Not authorized** |
-| Implementation slices         | **Not opened**     |
-| Wave 5 COMPLETE               | **Not claimed**    |
+| Item                          | Status                                                          |
+| ----------------------------- | --------------------------------------------------------------- |
+| W5-N22 Planning Package       | **APPROVED**                                                    |
+| Product Owner Planning Review | **PASS**                                                        |
+| Planning Clarification        | **COMPLETE**                                                    |
+| Planning Approval             | **RECORDED**                                                    |
+| Implementation                | **W5-N22-a COMPLETE** (local; awaiting PO Review); b–e not open |
+| Implementation slices         | **a only** — inventory; no runtime                              |
+| Wave 5 COMPLETE               | **Not claimed**                                                 |
 
 ---
 
@@ -166,4 +177,4 @@ W5-N17–N21 established reliability-through-backoff foundation evidence. The pl
 
 ---
 
-**STOP.** W5-N22 Planning is **APPROVED**. Planning Clarification is **COMPLETE**. Do not open W5-N22-a until Product Owner authorizes the slice. Do not begin implementation. Do NOT declare Backoff Calculation implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE.
+**STOP.** W5-N22-a inventory is **COMPLETE** (local). Await Product Owner Review. Do not commit. Do not push. Do not open W5-N22-b. Do NOT declare Backoff Calculation implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE.

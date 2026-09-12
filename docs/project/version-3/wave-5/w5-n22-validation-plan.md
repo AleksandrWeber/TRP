@@ -3,7 +3,7 @@
 **Package:** W5-N22 Notification Retry Backoff Calculation Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N22 · CM-32
-**Status:** Planning **APPROVED** (2026-09-12). Planning Clarification **COMPLETE**. No implementation. No slices opened.
+**Status:** Planning **APPROVED** (2026-09-12). Planning Clarification **COMPLETE**. W5-N22-a inventory **COMPLETE** (local; awaiting Product Owner Review). W5-N22-b…e **not opened**. No calculation runtime.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n22-product-scope.md`](./w5-n22-product-scope.md)
@@ -48,13 +48,15 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Regression validation    | Wave 1–4, W5-N01…N21 boundaries                                               |
 | Package close validation | Final Integration Verification; Product Owner Close Record                    |
 
-### Planning-phase commands (docs-only gate)
+### Planning-phase / slice-a commands
 
-| Command            | Purpose              |
-| ------------------ | -------------------- |
-| `git diff --check` | Whitespace integrity |
-
-Additional monorepo gates (`pnpm lint`, `pnpm typecheck`, `pnpm test`, format check) apply when implementation is later authorized — **not** claimed as required for this planning-open act beyond documentation integrity.
+| Command                        | Purpose              |
+| ------------------------------ | -------------------- |
+| `pnpm lint`                    | Monorepo lint        |
+| `pnpm typecheck`               | Type safety          |
+| `pnpm test`                    | Regression suite     |
+| `pnpm --filter @trp/web build` | Web build            |
+| `git diff --check`             | Whitespace integrity |
 
 ---
 
@@ -117,17 +119,18 @@ Additional monorepo gates (`pnpm lint`, `pnpm typecheck`, `pnpm test`, format ch
 
 ---
 
-## 6. Planning-open validation (this act)
+## 6. W5-N22-a validation (this slice)
 
-| Check                            | Expected                                |
-| -------------------------------- | --------------------------------------- |
-| Planning documents created       | Six companions + wave-5-progress update |
-| `git diff --check`               | PASS                                    |
-| Production code changed          | **None**                                |
-| Implementation slices opened     | **None**                                |
-| Planning Approval recorded       | **No**                                  |
-| Master Plan / Version 2 modified | **No**                                  |
-| Ownership / architecture changed | **No**                                  |
+| Check                                   | Expected      |
+| --------------------------------------- | ------------- |
+| Machine inventory rows ≥ 50             | **PASS** (70) |
+| Classifications cover all five          | **PASS**      |
+| RECOVERABLE and EPHEMERAL non-empty     | **PASS**      |
+| No calculation functional authorization | **PASS**      |
+| Calculation-only honesty boundaries     | **PASS**      |
+| Customer-visible feature                | **None**      |
+| W5-N22-b…e opened                       | **No**        |
+| Production code runtime calculation     | **None**      |
 
 ---
 
@@ -135,7 +138,8 @@ Additional monorepo gates (`pnpm lint`, `pnpm typecheck`, `pnpm test`, format ch
 
 - W5-N22 Planning APPROVED — **recorded**
 - Planning Clarification COMPLETE — **recorded**
-- Implementation authorized — **not claimed**
+- W5-N22-a inventory COMPLETE — **recorded** (local; awaiting PO Review)
+- Implementation of b–e authorized — **not claimed**
 - Backoff Calculation implemented — **not claimed**
 - Retry Backoff implemented — **not claimed**
 - Notification Platform Complete — **not claimed**
@@ -143,4 +147,4 @@ Additional monorepo gates (`pnpm lint`, `pnpm typecheck`, `pnpm test`, format ch
 
 ---
 
-**STOP.** W5-N22 Validation Plan stands with Planning **APPROVED**. Do not begin implementation. Do not open W5-N22-a until Product Owner authorizes the slice. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N22-a validation **PASS** (engineering). Await Product Owner Review. Do not begin W5-N22-b. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
