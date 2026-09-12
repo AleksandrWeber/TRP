@@ -107,7 +107,7 @@ describe('W5-N22-a retry backoff calculation conformance — unit', () => {
     expect(W5_N22_A_BINDING_FINDINGS.w5N20RetryPolicyExists).toBe(true);
     expect(W5_N22_A_BINDING_FINDINGS.w5N21RetryBackoffExists).toBe(true);
     expect(W5_N22_A_BINDING_FINDINGS.unifiedPlatformBackoffCalculationLayerMissing).toBe(true);
-    expect(W5_N22_A_BINDING_FINDINGS.backoffCalculationPersistenceMissing).toBe(true);
+    expect(W5_N22_A_BINDING_FINDINGS.backoffCalculationPersistenceMissing).toBe(false);
     expect(W5_N22_A_BINDING_FINDINGS.backoffCalculationRecoveryMissing).toBe(true);
     expect(W5_N22_A_BINDING_FINDINGS.backoffCalculationOperationalContinuityMissing).toBe(true);
     expect(W5_N22_A_ARCHITECTURE_CLAIMS.backoffCalculationFunctionalClaimed).toBe(false);

@@ -204,6 +204,8 @@ const N21R =
 const N21C =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-backoff-operational-continuity.ts';
 const N21I = 'apps/api/src/platform-conformance/w5-n21-a-retry-backoff-inventory.ts';
+const N22B =
+  'apps/api/src/modules/notification-delivery/notification-platform-retry-backoff-calculation-persistence.service.ts';
 
 type RowInput = {
   artifactId: string;
@@ -692,17 +694,25 @@ export const W5_N22_A_RETRY_BACKOFF_CALCULATION_INVENTORY: readonly W5N22AInvent
     }),
     row({
       artifactId: 'missing-backoff-calculation-persistence',
-      artifact: 'Backoff calculation durable persistence — missing (planned W5-N22-b)',
+      artifact:
+        'Backoff calculation durable persistence — resolved by W5-N22-b (gap row retained for inventory honesty)',
       kind: 'persistence-candidate',
       owner: 'notification-delivery',
-      purpose: 'Record planned durable calculation persistence gap',
-      calculationRole: 'missing-gap',
-      classification: 'EPHEMERAL',
-      honestyRequirement: 'Inventory does not create calculation persistence',
-      futureW5N22Responsibility: 'W5-N22-b',
-      persistenceRequirement: 'W5-N22-b',
-      evidencePath: PKG,
-      customerVisibility: 'not customer-visible — absent',
+      purpose: 'Record resolved durable calculation persistence gap after W5-N22-b',
+      calculationRole: 'missing-gap-resolved',
+      classification: 'RECOVERABLE',
+      honestyRequirement:
+        'Resolved by W5-N22-b — persistence only; not calculation runtime; not scheduling/execution',
+      futureW5N22Responsibility: 'honesty-baseline',
+      persistenceRequirement: 'notification-delivery',
+      recoveryRequirement: 'none-missing until W5-N22-c',
+      capabilityCategory: 'infrastructure-only',
+      honestProductState: 'infrastructure-only',
+      currentStatus:
+        'Resolved by W5-N22-b — see persist-candidate-backoff-calculation-anchor; gap row retained for inventory honesty',
+      evidencePath: N22B,
+      existsToday: true,
+      customerVisibility: 'not customer-visible — gap resolved by W5-N22-b',
     }),
     row({
       artifactId: 'missing-backoff-calculation-recovery',
@@ -909,19 +919,25 @@ export const W5_N22_A_RETRY_BACKOFF_CALCULATION_INVENTORY: readonly W5N22AInvent
     }),
     row({
       artifactId: 'persist-candidate-backoff-calculation-anchor',
-      artifact: 'Persistence candidate — backoff calculation anchor (planned)',
+      artifact:
+        'WorkspaceNotificationPlatformRetryBackoffCalculationAnchor — durable calculation anchors (W5-N22-b)',
       kind: 'persistence-candidate',
       owner: 'notification-delivery',
-      purpose: 'Name planned durable calculation anchor without implementing it',
-      calculationRole: 'persistence-candidate',
-      classification: 'EPHEMERAL',
-      honestyRequirement: 'No schema / persistence owner change in W5-N22-a',
-      futureW5N22Responsibility: 'W5-N22-b',
-      persistenceRequirement: 'W5-N22-b',
+      purpose: 'Durable calculation anchor on notification-delivery owner',
+      calculationRole: 'durable-anchor',
+      classification: 'RECOVERABLE',
+      honestyRequirement: 'Persistence only; not calculation runtime; not scheduling/execution',
+      futureW5N22Responsibility: 'W5-N22-c',
+      persistenceRequirement: 'notification-delivery',
       recoveryRequirement: 'W5-N22-c',
       operationalRequirement: 'W5-N22-d',
-      evidencePath: PKG,
-      customerVisibility: 'not customer-visible — planned',
+      capabilityCategory: 'infrastructure-only',
+      honestProductState: 'infrastructure-only',
+      currentStatus:
+        'Implemented — durable calculation description anchors on notification-delivery; restart recovery still absent',
+      evidencePath: N22B,
+      existsToday: true,
+      customerVisibility: 'not customer-visible — infrastructure only',
     }),
     row({
       artifactId: 'state-n21-backoff-anchor-reference',
@@ -1202,7 +1218,7 @@ export const W5_N22_A_BINDING_FINDINGS = Object.freeze({
   w5N20RetryPolicyExists: true,
   w5N21RetryBackoffExists: true,
   unifiedPlatformBackoffCalculationLayerMissing: true,
-  backoffCalculationPersistenceMissing: true,
+  backoffCalculationPersistenceMissing: false,
   backoffCalculationRecoveryMissing: true,
   backoffCalculationOperationalContinuityMissing: true,
   productionTransportsDeferred: true,
@@ -1309,6 +1325,7 @@ export const W5_N22_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N19 retry scheduling inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N20 retry policy inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N21 retry backoff inventory, durable anchors, recovery, and continuity (consumed)',
+    'W5-N22-b durable backoff calculation anchors on notification-delivery (persistence only)',
     'PC-06 resolve-delivery-routing — routing SoT consumed unchanged',
     'PC-07 notification-product — per-channel settings and history',
     'Notification Durable Queue — W3-O02 on notification-delivery owner (consumed)',
@@ -1323,7 +1340,6 @@ export const W5_N22_A_HONEST_PRODUCT_BASELINE = Object.freeze({
   ] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform backoff calculation layer',
-    'Backoff calculation persistence',
     'Backoff calculation recovery',
     'Backoff calculation operational continuity',
     'Operator backoff calculation UI',

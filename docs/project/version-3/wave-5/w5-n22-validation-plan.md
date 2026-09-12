@@ -3,7 +3,7 @@
 **Package:** W5-N22 Notification Retry Backoff Calculation Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N22 · CM-32
-**Status:** Planning **APPROVED** (2026-09-12). Planning Clarification **COMPLETE**. W5-N22-a inventory **COMPLETE** (local; awaiting Product Owner Review). W5-N22-b…e **not opened**. No calculation runtime.
+**Status:** Planning **APPROVED** (2026-09-12). Planning Clarification **COMPLETE**. W5-N22-a inventory **COMPLETE**. W5-N22-b durable persistence **COMPLETE** (local; awaiting Product Owner Review). W5-N22-c…e **not opened**. No calculation runtime. No restart recovery.
 **Date:** 2026-09-12
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n22-product-scope.md`](./w5-n22-product-scope.md)
@@ -119,7 +119,7 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ---
 
-## 6. W5-N22-a validation (this slice)
+## 6. W5-N22-a validation
 
 | Check                                   | Expected      |
 | --------------------------------------- | ------------- |
@@ -129,8 +129,19 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | No calculation functional authorization | **PASS**      |
 | Calculation-only honesty boundaries     | **PASS**      |
 | Customer-visible feature                | **None**      |
-| W5-N22-b…e opened                       | **No**        |
-| Production code runtime calculation     | **None**      |
+
+## 7. W5-N22-b validation (this slice)
+
+| Check                                      | Expected |
+| ------------------------------------------ | -------- |
+| Durable calculation anchors persist/load   | **PASS** |
+| Survive process termination (durable rows) | **PASS** |
+| Automatic restart recovery                 | **No**   |
+| Retry scheduling introduced                | **No**   |
+| Retry execution introduced                 | **No**   |
+| Ownership on notification-delivery only    | **PASS** |
+| Customer-visible feature                   | **None** |
+| W5-N22-c…e opened                          | **No**   |
 
 ---
 
@@ -138,8 +149,9 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 - W5-N22 Planning APPROVED — **recorded**
 - Planning Clarification COMPLETE — **recorded**
-- W5-N22-a inventory COMPLETE — **recorded** (local; awaiting PO Review)
-- Implementation of b–e authorized — **not claimed**
+- W5-N22-a inventory COMPLETE — **recorded**
+- W5-N22-b durable persistence COMPLETE — **recorded** (local; awaiting PO Review)
+- Restart recovery (c) — **not claimed**
 - Backoff Calculation implemented — **not claimed**
 - Retry Backoff implemented — **not claimed**
 - Notification Platform Complete — **not claimed**
@@ -147,4 +159,4 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ---
 
-**STOP.** W5-N22-a validation **PASS** (engineering). Await Product Owner Review. Do not begin W5-N22-b. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N22-b validation **PASS** (engineering). Await Product Owner Review. Do not begin W5-N22-c. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
