@@ -116,16 +116,15 @@ describe('W5-N22-a retry backoff calculation conformance — unit', () => {
     expect(W5_N22_A_ARCHITECTURE_CLAIMS.liveTradingClaimed).toBe(false);
   });
 
-  it('technical debt delta: inventory baseline resolved; b–e deferred; nothing introduced', () => {
+  it('technical debt delta: inventory baseline resolved; FIV / PO Close / runtime deferred; nothing introduced', () => {
     expect(W5_N22_A_TECHNICAL_DEBT_DELTA.resolved).toEqual([
       'Retry Backoff Calculation inventory baseline established',
     ]);
     expect(W5_N22_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N22_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N22-b — Durable Persistence Foundation',
-      'W5-N22-c — Restart Recovery Foundation',
-      'W5-N22-d — Operational Continuity Foundation',
-      'W5-N22-e — Package Validation, Operational Verification & Close Evidence',
+      'Final Package Integration Verification',
+      'Product Owner Final Close',
+      'Backoff calculation runtime',
     ]);
   });
 

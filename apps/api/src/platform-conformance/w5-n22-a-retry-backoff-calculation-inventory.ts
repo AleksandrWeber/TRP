@@ -1351,7 +1351,8 @@ export const W5_N22_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
   plannedCapabilities: Object.freeze([
-    'W5-N22-e — Package Validation, Operational Verification & Close Evidence',
+    'Final Package Integration Verification',
+    'Product Owner Final Close',
   ] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform backoff calculation layer',
@@ -1375,10 +1376,9 @@ export const W5_N22_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze(['Retry Backoff Calculation inventory baseline established'] as const),
   introduced: Object.freeze([] as const),
   deferred: Object.freeze([
-    'W5-N22-b — Durable Persistence Foundation',
-    'W5-N22-c — Restart Recovery Foundation',
-    'W5-N22-d — Operational Continuity Foundation',
-    'W5-N22-e — Package Validation, Operational Verification & Close Evidence',
+    'Final Package Integration Verification',
+    'Product Owner Final Close',
+    'Backoff calculation runtime',
   ] as const),
 } as const);
 

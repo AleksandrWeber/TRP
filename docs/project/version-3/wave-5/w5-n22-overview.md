@@ -2,7 +2,7 @@
 
 **Document:** W5-N22 Notification Retry Backoff Calculation Foundation Overview
 **Date:** 2026-09-12
-**Status:** Product-facing record. W5-N22 Planning Package **APPROVED**. Planning Clarification **COMPLETE**. W5-N22-a inventory **COMPLETE**. W5-N22-b durable persistence **COMPLETE**. W5-N22-c restart recovery **COMPLETE**. W5-N22-d operational continuity **COMPLETE** (local; awaiting Product Owner Review). No calculation runtime. No slice e. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. W5-N22 **CLOSED** by Product Owner (2026-09-12). W5-N22-a…e **COMPLETE** (local). Final Integration Verification **PASS** (local). No calculation runtime. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N22 (V3-N22 · CM-32)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -16,7 +16,7 @@ This is what an ordinary operator should understand. It is not an internal desig
 
 ## Purpose
 
-Wave 5 makes notification delivery **real**. W5-N22 is the twenty-second Wave 5 package. It will deliver **cross-channel Notification Retry Backoff Calculation Foundation** on the existing catalog and routing product — so operators experience a deterministic, governed foundation for describing how backoff delay derivation rules are represented, persisted, recovered, and operationally validated, building on Closed W5-N21 Retry Backoff Foundation and Closed W5-N17…N20 reliability-through-policy foundations.
+Wave 5 makes notification delivery **real**. W5-N22 is the twenty-second Wave 5 package. It delivers **cross-channel Notification Retry Backoff Calculation Foundation** on the existing catalog and routing product — so operators experience a deterministic, governed foundation for describing how backoff delay derivation rules are represented, persisted, recovered, and operationally validated, building on Closed W5-N21 Retry Backoff Foundation and Closed W5-N17…N20 reliability-through-policy foundations.
 
 ```text
 Backoff Calculation Foundation means governed calculation inventory, persistence,
@@ -100,6 +100,38 @@ Operational continuity ≠ calculation runtime.
 Operational continuity ≠ scheduling or executing retries.
 Readiness is derived — never hardcoded Ready.
 Degraded never fabricates Ready.
+```
+
+### W5-N22-e status (Close Evidence)
+
+W5-N22-e assembles Package Close Evidence for Product Owner Package Review. No new customer functionality.
+
+```text
+Close Evidence ≠ Package CLOSED.
+Close Evidence ≠ Final Package Integration Verification.
+Close Evidence ≠ Backoff Calculation implemented.
+Close Evidence ≠ calculation runtime / scheduling / execution.
+```
+
+### Final Package Integration Verification
+
+Final Package Integration Verification **PASS** (local). Engineering readiness was **READY FOR PRODUCT OWNER FINAL CLOSE**.
+
+```text
+FIV ≠ Package CLOSED.
+FIV ≠ Backoff Calculation implemented.
+FIV ≠ calculation runtime / scheduling / execution.
+```
+
+### Product Owner Final Close
+
+W5-N22 is **CLOSED** by Product Owner (2026-09-12). Future packages may **consume** W5-N22. This Close does **not** open W5-N23.
+
+```text
+Package CLOSED ≠ Backoff Calculation implemented.
+Package CLOSED ≠ calculation runtime / scheduling / execution.
+Package CLOSED ≠ Notification Platform Complete.
+Package CLOSED ≠ Wave 5 COMPLETE.
 ```
 
 ---
@@ -186,15 +218,17 @@ W5-N17–N21 established reliability-through-backoff foundation evidence. The pl
 
 ## Current status
 
-| Item                          | Status                                                                                 |
-| ----------------------------- | -------------------------------------------------------------------------------------- |
-| W5-N22 Planning Package       | **APPROVED**                                                                           |
-| Product Owner Planning Review | **PASS**                                                                               |
-| Planning Clarification        | **COMPLETE**                                                                           |
-| Planning Approval             | **RECORDED**                                                                           |
-| Implementation                | **W5-N22-a…c COMPLETE**; **W5-N22-d COMPLETE** (local; awaiting PO Review); e not open |
-| Implementation slices         | **a–d** — inventory + persistence + recovery + continuity; no runtime / package Close  |
-| Wave 5 COMPLETE               | **Not claimed**                                                                        |
+| Item                           | Status                                                                                          |
+| ------------------------------ | ----------------------------------------------------------------------------------------------- |
+| W5-N22 Planning Package        | **APPROVED**                                                                                    |
+| Product Owner Planning Review  | **PASS**                                                                                        |
+| Planning Clarification         | **COMPLETE**                                                                                    |
+| Planning Approval              | **RECORDED**                                                                                    |
+| Implementation                 | **W5-N22-a…e COMPLETE** (local); FIV **PASS** (local); **CLOSED** by Product Owner (2026-09-12) |
+| Implementation slices          | **a–e** — inventory + persistence + recovery + continuity + Close Evidence; no runtime          |
+| Final Integration Verification | **PASS** (local)                                                                                |
+| Package                        | **CLOSED** by Product Owner (2026-09-12)                                                        |
+| Wave 5 COMPLETE                | **Not claimed**                                                                                 |
 
 ---
 
@@ -211,4 +245,4 @@ W5-N17–N21 established reliability-through-backoff foundation evidence. The pl
 
 ---
 
-**STOP.** W5-N22-d operational continuity is **COMPLETE** (local). Await Product Owner Review. Do not commit. Do not push. Do not open W5-N22-e. Do NOT declare Backoff Calculation implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE.
+**STOP.** W5-N22 is **CLOSED** by Product Owner (2026-09-12). Do NOT declare Backoff Calculation implemented. Do NOT declare Notification Platform COMPLETE. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT declare Wave 5 COMPLETE. Do not open W5-N23. Await Repository Synchronization.
