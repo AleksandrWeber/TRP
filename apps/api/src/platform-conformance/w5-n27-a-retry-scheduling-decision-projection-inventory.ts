@@ -265,6 +265,8 @@ const N27B =
   'apps/api/src/modules/notification-delivery/notification-platform-retry-scheduling-decision-projection-persistence.service.ts';
 const N27B_PRISMA =
   'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-retry-scheduling-decision-projection-anchor.repository.ts';
+const N27C =
+  'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-projection-restart-recovery.service.ts';
 const OR = 'apps/api/src/modules/operational-continuity/operational-readiness.ts';
 
 type RowInput = {
@@ -1054,24 +1056,26 @@ export const W5_N27_A_RETRY_SCHEDULING_DECISION_PROJECTION_INVENTORY: readonly W
     }),
     row({
       artifactId: 'missing-projection-recovery',
-      artifact: 'Decision Projection restart recovery — missing',
+      artifact:
+        'Decision Projection restart recovery — resolved by W5-N27-c (gap row retained for inventory honesty)',
       kind: 'ephemeral-artifact',
       owner: 'notification-delivery',
-      purpose: 'Record absence of restart-safe decision projection recovery',
-      projectionRole: 'missing-gap',
+      purpose: 'Record resolved restart-safe decision projection recovery gap after W5-N27-c',
+      projectionRole: 'missing-gap-resolved',
       classification: 'EPHEMERAL',
       honestyRequirement:
-        'Must not claim projection recovery from inventory alone; deferred to W5-N27-c',
-      futureW5N27Responsibility: 'W5-N27-c',
+        'Resolved by W5-N27-c — recovery only; not runtime decision projection; not scheduling/eligibility/backoff/execution; not operational continuity',
+      futureW5N27Responsibility: 'honesty-baseline',
       persistenceRequirement: 'none-missing',
-      recoveryRequirement: 'none-missing',
+      recoveryRequirement: 'notification-delivery',
       operationalRequirement: 'none-missing',
-      capabilityCategory: 'planned',
-      honestProductState: 'planned',
-      currentStatus: 'Missing — deferred to W5-N27-c Restart Recovery Foundation',
-      evidencePath: DOC,
-      existsToday: false,
-      customerVisibility: 'not customer-visible — absent',
+      capabilityCategory: 'infrastructure-only',
+      honestProductState: 'infrastructure-only',
+      currentStatus:
+        'Resolved by W5-N27-c — see persist-candidate-projection-anchor hydrate; gap row retained for inventory honesty',
+      evidencePath: N27C,
+      existsToday: true,
+      customerVisibility: 'not customer-visible — gap resolved by W5-N27-c',
     }),
     row({
       artifactId: 'missing-projection-operational-continuity',
@@ -1771,7 +1775,7 @@ export const W5_N27_A_BINDING_FINDINGS = Object.freeze({
   w5N26RetrySchedulingDecisionEvaluationExists: true,
   unifiedPlatformDecisionProjectionLayerMissing: true,
   projectionPersistenceMissing: false,
-  projectionRecoveryMissing: true,
+  projectionRecoveryMissing: false,
   projectionOperationalContinuityMissing: true,
   productionTransportsDeferred: true,
   inventoryDoesNotMakeSchedulingDecisions: true,
@@ -1912,6 +1916,7 @@ export const W5_N27_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N25 retry scheduling decision inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N26 retry scheduling decision evaluation inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N27-b decision projection durable anchors on notification-delivery owner',
+    'W5-N27-c decision projection restart recovery hydrate on notification-delivery owner',
     'PC-06 resolve-delivery-routing — routing SoT consumed unchanged',
     'PC-07 notification-product — per-channel settings and history',
     'Notification Durable Queue — W3-O02 on notification-delivery owner (consumed)',
@@ -1919,7 +1924,7 @@ export const W5_N27_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
   plannedCapabilities: Object.freeze([
-    'W5-N27-c…e Decision Projection restart recovery, continuity, and Close Evidence',
+    'W5-N27-d…e Decision Projection operational continuity and Close Evidence',
   ] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform decision projection layer after calc+eligibility+scheduling',
@@ -1943,10 +1948,10 @@ export const W5_N27_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze([
     'Notification Retry Scheduling Decision Projection inventory baseline established',
     'Notification Retry Scheduling Decision Projection Persistence Foundation',
+    'Notification Retry Scheduling Decision Projection Restart Recovery Foundation',
   ] as const),
   introduced: Object.freeze([] as const),
   deferred: Object.freeze([
-    'Restart Recovery Foundation (W5-N27-c)',
     'Operational Continuity Foundation (W5-N27-d)',
     'Package Validation & Operational Verification (W5-N27-e)',
   ] as const),

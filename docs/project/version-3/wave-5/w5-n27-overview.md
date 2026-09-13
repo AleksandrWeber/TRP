@@ -2,7 +2,7 @@
 
 **Document:** W5-N27 Notification Retry Scheduling Decision Projection Foundation Overview
 **Date:** 2026-09-13
-**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N27-a Inventory **COMPLETE**. W5-N27-b Persistence **COMPLETE** (local). No runtime decision projection. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N27-a Inventory **COMPLETE**. W5-N27-b Persistence **COMPLETE**. W5-N27-c Restart Recovery **COMPLETE** (local). No runtime decision projection. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N27 (V3-N27 · CM-35)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -99,7 +99,7 @@ Inventory output is informational only until consumed by future approved slices.
 
 ### W5-N27-b status (persistence)
 
-W5-N27-b delivers **durable persistence** for Decision Projection anchors on `notification-delivery`. Customer-visible functionality: **None**. Survives process termination: **Yes**. Automatic restart recovery: **No** (W5-N27-c).
+W5-N27-b delivers **durable persistence** for Decision Projection anchors on `notification-delivery`. Customer-visible functionality: **None**. Survives process termination: **Yes**. Automatic restart recovery: **Yes** (via W5-N27-c).
 
 ```text
 Persisted Decision Projection artifacts remain informational only.
@@ -107,6 +107,18 @@ Persistence does NOT perform runtime decision projection.
 Persistence does NOT perform runtime decision evaluation.
 Persistence does NOT schedule or execute retries.
 Persistence does NOT calculate backoff or determine eligibility.
+```
+
+### W5-N27-c status (restart recovery)
+
+W5-N27-c delivers **deterministic restart recovery** for persisted Decision Projection anchors on `notification-delivery`. Customer-visible functionality: **None**. Restored after normal restart: **Yes**. Operational continuity: **No** (W5-N27-d).
+
+```text
+Recovered Decision Projection artifacts remain informational only.
+Restart Recovery does NOT perform runtime decision projection.
+Restart Recovery does NOT perform runtime decision evaluation.
+Restart Recovery does NOT schedule or execute retries.
+Restart Recovery does NOT calculate backoff or determine eligibility.
 ```
 
 ## What the operator cannot do (still)
@@ -187,8 +199,9 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 | Planning Approval             | **RECORDED**         |
 | Repository Synchronization    | **COMPLETE**         |
 | W5-N27-a Inventory            | **COMPLETE**         |
-| W5-N27-b Persistence          | **COMPLETE** (local) |
-| W5-N27-c…e                    | **Not opened**       |
+| W5-N27-b Persistence          | **COMPLETE**         |
+| W5-N27-c Restart Recovery     | **COMPLETE** (local) |
+| W5-N27-d…e                    | **Not opened**       |
 | Runtime decision projection   | **Not implemented**  |
 | Wave 5 COMPLETE               | **Not claimed**      |
 
@@ -212,4 +225,4 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 
 ---
 
-**STOP.** W5-N27-b Persistence is **COMPLETE** (local). Await Product Owner Review. Do NOT commit. Do NOT push. Do NOT open W5-N27-c. Do NOT declare runtime decision projection. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
+**STOP.** W5-N27-c Restart Recovery is **COMPLETE** (local). Await Product Owner Review. Do NOT commit. Do NOT push. Do NOT open W5-N27-d. Do NOT declare runtime decision projection. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.

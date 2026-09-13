@@ -1,28 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import type { DurableNotificationPlatformRetrySchedulingDecisionProjectionAnchor } from './durable-notification-platform-retry-scheduling-decision-projection-anchor';
+import { sortNotificationPlatformRetrySchedulingDecisionProjectionAnchorsDeterministically } from './notification-platform-retry-scheduling-decision-projection-restart-recovery';
 
 function compositeKey(workspaceId: string, projectionAnchorId: string): string {
   return `${workspaceId}:${projectionAnchorId}`;
 }
 
-export function sortNotificationPlatformRetrySchedulingDecisionProjectionAnchorsDeterministically(
-  anchors: readonly DurableNotificationPlatformRetrySchedulingDecisionProjectionAnchor[],
-): readonly DurableNotificationPlatformRetrySchedulingDecisionProjectionAnchor[] {
-  return Object.freeze(
-    [...anchors].sort((a, b) => {
-      const workspaceCompare = a.workspaceId.localeCompare(b.workspaceId);
-      if (workspaceCompare !== 0) {
-        return workspaceCompare;
-      }
-      return a.projectionAnchorId.localeCompare(b.projectionAnchorId);
-    }),
-  );
-}
-
 /**
- * In-memory write-through cache for Notification Platform Retry Scheduling Decision Projection
- * anchors (W5-N27-b). Not a second Source of Truth — hydrated from persistence on write-through.
- * Full restart hydrate is W5-N27-c.
+ * In-memory runtime cache for recovered Notification Platform Retry Scheduling Decision Projection
+ * anchors (W5-N27-c). Not a second Source of Truth — hydrated from W5-N27-b persistence on restart.
  */
 @Injectable()
 export class NotificationPlatformRetrySchedulingDecisionProjectionRecoveryStore {
