@@ -1812,6 +1812,7 @@ export const W5_N26_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N26-b decision evaluation durable anchors on notification-delivery owner',
     'W5-N26-c decision evaluation restart recovery hydrate on notification-delivery owner',
     'W5-N26-d operational continuity for decision evaluation readiness on Platform Readiness (derived)',
+    'W5-N26-e package Close Evidence assembled (Product Owner Final Close recorded)',
     'PC-06 resolve-delivery-routing — routing SoT consumed unchanged',
     'PC-07 notification-product — per-channel settings and history',
     'Notification Durable Queue — W3-O02 on notification-delivery owner (consumed)',
@@ -1819,7 +1820,7 @@ export const W5_N26_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
   plannedCapabilities: Object.freeze([
-    'W5-N26-e Package Validation, Operational Verification & Close Evidence',
+    'Repository Synchronization after Product Owner Final Close',
   ] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform decision evaluation layer after calc+eligibility+scheduling',

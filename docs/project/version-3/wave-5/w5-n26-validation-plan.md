@@ -207,51 +207,69 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Ownership / architecture changed                                        | **No** / **No**                  |
 | Customer-visible feature                                                | Operator Platform Readiness only |
 | `evaluationOperationalContinuityMissing`                                | **false**                        |
-| W5-N26-e opened                                                         | **No**                           |
+| W5-N26-e opened                                                         | **Yes** — COMPLETE (local)       |
 
 **Evidence:** [`w5-n26-d-implementation-report.md`](./w5-n26-d-implementation-report.md) · [`w5-n26-d-validation-report.md`](./w5-n26-d-validation-report.md) · `apps/api/src/platform-conformance/w5-n26-d-notification-platform-retry-scheduling-decision-evaluation-operational-continuity.ts`
 
 ---
 
-## 10. Implementation slice e validation (deferred)
+## 10. W5-N26-e validation (Close Evidence)
 
-Implementation slice W5-N26-e is **not opened and not authorized**.
+| Check                                                             | Expected / Status        |
+| ----------------------------------------------------------------- | ------------------------ |
+| Complete operational journey works                                | **PASS**                 |
+| Approved slices a–d validated                                     | **PASS**                 |
+| Decision Evaluation Foundation only preserved                     | **Yes**                  |
+| Operational Readiness derived only                                | **Yes**                  |
+| Runtime decision evaluation / Runtime Scheduler / execute claimed | **No** / **No** / **No** |
+| Ownership / architecture changed                                  | **No** / **No**          |
+| Customer-visible feature                                          | **None**                 |
+| Package declared CLOSED                                           | **No**                   |
+| Final Package Integration Verification performed                  | **Yes** — PASS (local)   |
+| W5-N27 opened                                                     | **No**                   |
 
-| Check                                 | Expected / Status |
-| ------------------------------------- | ----------------- |
-| W5-N26-e opened                       | **No**            |
-| Runtime decision evaluation validated | **N/A** — OUT     |
-| Runtime scheduling validated          | **N/A** — OUT     |
-| Retry execution validated             | **N/A** — OUT     |
-
----
-
-## 11. Final Package Integration Verification (deferred)
-
-Final Package Integration Verification is deferred until authorized Close Evidence and Product Owner Final Close.
-
----
-
-## 12. Product Owner Final Close (deferred)
-
-Product Owner Final Close is deferred until authorized implementation and FIV.
+**Evidence:** [`w5-n26-e-implementation-report.md`](./w5-n26-e-implementation-report.md) · [`w5-n26-e-validation-report.md`](./w5-n26-e-validation-report.md) · [`w5-n26-close-package-report.md`](./w5-n26-close-package-report.md) · `apps/api/src/platform-conformance/w5-n26-e-package-close-evidence.ts`
 
 ---
 
-## Mandatory Questions (Planning / Slice a / Slice b / Slice c / Slice d)
+## 11. Final Package Integration Verification
 
-1. **What business problem does W5-N26 solve?** Plan Notification Retry Scheduling Decision Evaluation after the Scheduling Decision Foundation is complete.
-2. **Why does it follow W5-N25?** Decision Evaluation depends on the completed Scheduling Decision Foundation and all preceding retry foundations.
-3. **What does it consume?** Closed W5-N01…W5-N25 and existing notification-delivery capabilities.
-4. **What does it own?** Planning for Notification Retry Scheduling Decision Evaluation; W5-N26-a inventory; W5-N26-b persistence; W5-N26-c restart recovery; W5-N26-d operational continuity (derived readiness).
-5. **What is explicitly OUT of scope?** Runtime decision evaluation, runtime scheduling, retry execution, Retry Engine, workers, timers, transports, monitoring, BC, HA, DR.
-6. **Does it perform Retry Backoff Calculation?** No.
-7. **Does it determine Retry Eligibility?** No.
-8. **Does it perform Scheduling Decision runtime evaluation?** No.
-9. **Does it perform Runtime Scheduling?** No.
-10. **Does it execute retries?** No.
-11. **Were any ownership boundaries changed?** No.
-12. **Were any architectural deviations introduced?** No.
+| Check                               | Expected / Status                        |
+| ----------------------------------- | ---------------------------------------- |
+| Internally consistent               | **Yes**                                  |
+| Fully integrated                    | **Yes**                                  |
+| Regression-safe                     | **Yes**                                  |
+| Documentation synchronized          | **Yes**                                  |
+| Decision Evaluation Foundation only | **Yes**                                  |
+| Ready for Product Owner Final Close | **Yes** — **CLOSED** (2026-09-13)        |
+| Package declared CLOSED             | **CLOSED** by Product Owner (2026-09-13) |
+
+**Evidence:** [`w5-n26-final-integration-verification.md`](./w5-n26-final-integration-verification.md) — **PASS** (local) · [`w5-n26-product-owner-close-record.md`](./w5-n26-product-owner-close-record.md) — **CLOSED** (2026-09-13)
+
+---
+
+## 12. Product Owner Final Close
+
+| Check                                           | Expected / Status                              |
+| ----------------------------------------------- | ---------------------------------------------- |
+| W5-N26 officially CLOSED                        | **Yes** — CLOSED by Product Owner (2026-09-13) |
+| All implementation slices accepted              | **Yes**                                        |
+| Final Package Integration Verification accepted | **Yes**                                        |
+| Decision Evaluation Foundation only preserved   | **Yes**                                        |
+| Ownership / architecture changed                | **No** / **No**                                |
+
+**Evidence:** [`w5-n26-product-owner-close-record.md`](./w5-n26-product-owner-close-record.md)
+
+---
+
+## Mandatory Questions (Product Owner Final Close)
+
+1. **Is W5-N26 officially CLOSED?** Yes.
+2. **Were all implementation slices accepted?** Yes.
+3. **Was Final Package Integration Verification accepted?** Yes.
+4. **Does Notification Retry Scheduling Decision Evaluation remain Decision Evaluation Foundation only?** Yes.
+5. **Were any ownership boundaries changed?** No.
+6. **Were any architectural deviations introduced?** No.
 
 ---
 
@@ -265,9 +283,12 @@ Product Owner Final Close is deferred until authorized implementation and FIV.
 |            | Notification Retry Scheduling Decision Evaluation Persistence Foundation            |
 |            | Notification Retry Scheduling Decision Evaluation Restart Recovery Foundation       |
 |            | Notification Retry Scheduling Decision Evaluation Operational Continuity Foundation |
+|            | Package validation and Close Evidence assembled                                     |
+|            | Final Package Integration Verification completed                                    |
+|            | W5-N26 governance lifecycle completed                                               |
 | Introduced | None                                                                                |
-| Deferred   | Package Validation & Operational Verification (W5-N26-e)                            |
+| Deferred   | Repository Synchronization after Product Owner Final Close                          |
 
 ---
 
-**STOP.** W5-N26-d Operational Continuity is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N26-e. Do not commit. Do not push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N26 is **CLOSED** by Product Owner (2026-09-13). Do not open W5-N27. Do not commit. Do not push. Await Repository Synchronization. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
