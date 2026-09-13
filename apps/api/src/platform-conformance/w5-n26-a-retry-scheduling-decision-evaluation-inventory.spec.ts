@@ -186,7 +186,7 @@ describe('W5-N26-a notification retry scheduling decision evaluation inventory â
     expect(W5_N26_A_BINDING_FINDINGS.w5N23RetryEligibilityExists).toBe(true);
     expect(W5_N26_A_BINDING_FINDINGS.w5N24RetrySchedulingExists).toBe(true);
     expect(W5_N26_A_BINDING_FINDINGS.unifiedPlatformDecisionEvaluationLayerMissing).toBe(true);
-    expect(W5_N26_A_BINDING_FINDINGS.evaluationPersistenceMissing).toBe(true);
+    expect(W5_N26_A_BINDING_FINDINGS.evaluationPersistenceMissing).toBe(false);
     expect(W5_N26_A_BINDING_FINDINGS.evaluationRecoveryMissing).toBe(true);
     expect(W5_N26_A_BINDING_FINDINGS.evaluationOperationalContinuityMissing).toBe(true);
     expect(W5_N26_A_BINDING_FINDINGS.w5N25RetrySchedulingDecisionExists).toBe(true);
@@ -284,13 +284,31 @@ describe('W5-N26-a notification retry scheduling decision evaluation inventory â
     ]);
   });
 
-  it('persistence, recovery, and continuity gaps remain open after inventory slice a', () => {
+  it('persistence gap resolved by W5-N26-b; recovery and continuity remain open', () => {
+    expect(
+      W5_N26_A_RETRY_SCHEDULING_DECISION_EVALUATION_INVENTORY.find(
+        (entry) => entry.artifactId === 'missing-evaluation-persistence',
+      )?.existsToday,
+    ).toBe(true);
+    expect(
+      W5_N26_A_RETRY_SCHEDULING_DECISION_EVALUATION_INVENTORY.find(
+        (entry) => entry.artifactId === 'persist-candidate-evaluation-anchor',
+      )?.existsToday,
+    ).toBe(true);
+    expect(
+      W5_N26_A_RETRY_SCHEDULING_DECISION_EVALUATION_INVENTORY.find(
+        (entry) => entry.artifactId === 'missing-evaluation-persistence',
+      )?.classification,
+    ).toBe('RECOVERABLE');
+    expect(
+      W5_N26_A_RETRY_SCHEDULING_DECISION_EVALUATION_INVENTORY.find(
+        (entry) => entry.artifactId === 'persist-candidate-evaluation-anchor',
+      )?.classification,
+    ).toBe('RECOVERABLE');
     for (const id of [
-      'missing-evaluation-persistence',
       'missing-evaluation-recovery',
       'missing-evaluation-operational-continuity',
       'missing-unified-platform-decision-evaluation-view',
-      'persist-candidate-evaluation-anchor',
       'projection-platform-readiness-evaluation-missing',
     ]) {
       const row = W5_N26_A_RETRY_SCHEDULING_DECISION_EVALUATION_INVENTORY.find(
@@ -299,16 +317,6 @@ describe('W5-N26-a notification retry scheduling decision evaluation inventory â
       expect(row).toBeDefined();
       expect(row?.existsToday).toBe(false);
     }
-    expect(
-      W5_N26_A_RETRY_SCHEDULING_DECISION_EVALUATION_INVENTORY.find(
-        (entry) => entry.artifactId === 'missing-evaluation-persistence',
-      )?.classification,
-    ).toBe('EPHEMERAL');
-    expect(
-      W5_N26_A_RETRY_SCHEDULING_DECISION_EVALUATION_INVENTORY.find(
-        (entry) => entry.artifactId === 'persist-candidate-evaluation-anchor',
-      )?.classification,
-    ).toBe('RECOVERABLE');
     expect(
       W5_N26_A_RETRY_SCHEDULING_DECISION_EVALUATION_INVENTORY.find(
         (entry) => entry.artifactId === 'missing-unified-platform-decision-evaluation-view',

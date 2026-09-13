@@ -122,72 +122,90 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## 5. Governance validation
 
-| Area                           | Must prove                                                                           |
-| ------------------------------ | ------------------------------------------------------------------------------------ |
-| Ownership unchanged            | No ownership movement                                                                |
-| Previous packages unmodified   | Consume only                                                                         |
-| No hidden future functionality | Persistence does not smuggle later package scope                                     |
-| Implementation authorization   | Planning APPROVED; Repo Sync COMPLETE; W5-N26-a COMPLETE (local); b–e not authorized |
-| Close Evidence assembled       | Deferred until authorized Close Evidence slice                                       |
-| Planning Approval              | **RECORDED**                                                                         |
-| Repository Synchronization     | **COMPLETE**                                                                         |
+| Area                           | Must prove                                                                                              |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| Ownership unchanged            | No ownership movement                                                                                   |
+| Previous packages unmodified   | Consume only                                                                                            |
+| No hidden future functionality | Persistence does not smuggle later package scope                                                        |
+| Implementation authorization   | Planning APPROVED; Repo Sync COMPLETE; W5-N26-a COMPLETE; W5-N26-b COMPLETE (local); c–e not authorized |
+| Close Evidence assembled       | Deferred until authorized Close Evidence slice                                                          |
+| Planning Approval              | **RECORDED**                                                                                            |
+| Repository Synchronization     | **COMPLETE**                                                                                            |
 
 ---
 
 ## 6. W5-N26-a validation (inventory)
 
-| Check                                          | Expected / Status  |
-| ---------------------------------------------- | ------------------ |
-| Machine inventory rows ≥ 50                    | **PASS** (107)     |
-| Classifications cover all five                 | **PASS**           |
-| RECOVERABLE and EPHEMERAL non-empty            | **PASS** (43 / 13) |
-| DECISION / CONFIGURATION present               | **PASS** (3 / 3)   |
-| No evaluation functional authorization         | **PASS**           |
-| Inventory-only honesty boundaries              | **PASS**           |
-| Inventory performs runtime decision evaluation | **No**             |
-| Inventory performs runtime scheduling          | **No**             |
-| Inventory determines eligibility               | **No**             |
-| Inventory performs Retry Backoff Calculation   | **No**             |
-| Inventory schedules / executes retries         | **No** / **No**    |
-| Ownership / architecture changed               | **No** / **No**    |
-| Customer-visible feature                       | **None**           |
-| W5-N26-b opened                                | **No**             |
+| Check                                          | Expected / Status    |
+| ---------------------------------------------- | -------------------- |
+| Machine inventory rows ≥ 50                    | **PASS** (107)       |
+| Classifications cover all five                 | **PASS**             |
+| RECOVERABLE and EPHEMERAL non-empty            | **PASS** (44 / 12)   |
+| DECISION / CONFIGURATION present               | **PASS** (3 / 3)     |
+| No evaluation functional authorization         | **PASS**             |
+| Inventory-only honesty boundaries              | **PASS**             |
+| Inventory performs runtime decision evaluation | **No**               |
+| Inventory performs runtime scheduling          | **No**               |
+| Inventory determines eligibility               | **No**               |
+| Inventory performs Retry Backoff Calculation   | **No**               |
+| Inventory schedules / executes retries         | **No** / **No**      |
+| Ownership / architecture changed               | **No** / **No**      |
+| Customer-visible feature                       | **None**             |
+| W5-N26-b Persistence                           | **COMPLETE** (local) |
 
 **Evidence:** [`w5-n26-a-inventory.md`](./w5-n26-a-inventory.md) · [`w5-n26-a-validation-report.md`](./w5-n26-a-validation-report.md) · `apps/api/src/platform-conformance/w5-n26-a-retry-scheduling-decision-evaluation*.ts`
 
 ---
 
-## 7. Implementation slices b–e validation (deferred)
+## 7. W5-N26-b validation (persistence)
 
-Implementation slices W5-N26-b…e are **not opened and not authorized**.
+| Check                                               | Expected / Status |
+| --------------------------------------------------- | ----------------- |
+| Recoverable Decision Evaluation artifacts persisted | **PASS**          |
+| Survive process termination                         | **Yes**           |
+| Automatic restart recovery                          | **No** (W5-N26-c) |
+| `evaluationPersistenceMissing`                      | **false**         |
+| Runtime decision evaluation                         | **No**            |
+| Runtime scheduling / execution                      | **No** / **No**   |
+| Ownership / architecture changed                    | **No** / **No**   |
+| Customer-visible feature                            | **None**          |
+| W5-N26-c opened                                     | **No**            |
+
+**Evidence:** [`w5-n26-b-implementation-report.md`](./w5-n26-b-implementation-report.md) · [`w5-n26-b-validation-report.md`](./w5-n26-b-validation-report.md) · `apps/api/src/platform-conformance/w5-n26-b-durable-notification-platform-retry-scheduling-decision-evaluation.ts`
+
+---
+
+## 8. Implementation slices c–e validation (deferred)
+
+Implementation slices W5-N26-c…e are **not opened and not authorized**.
 
 | Check                                 | Expected / Status |
 | ------------------------------------- | ----------------- |
-| W5-N26-b…e opened                     | **No**            |
+| W5-N26-c…e opened                     | **No**            |
 | Runtime decision evaluation validated | **N/A** — OUT     |
 | Runtime scheduling validated          | **N/A** — OUT     |
 | Retry execution validated             | **N/A** — OUT     |
 
 ---
 
-## 8. Final Package Integration Verification (deferred)
+## 9. Final Package Integration Verification (deferred)
 
 Final Package Integration Verification is deferred until authorized Close Evidence and Product Owner Final Close.
 
 ---
 
-## 9. Product Owner Final Close (deferred)
+## 10. Product Owner Final Close (deferred)
 
 Product Owner Final Close is deferred until authorized implementation and FIV.
 
 ---
 
-## Mandatory Questions (Planning / Slice a)
+## Mandatory Questions (Planning / Slice a / Slice b)
 
 1. **What business problem does W5-N26 solve?** Plan Notification Retry Scheduling Decision Evaluation after the Scheduling Decision Foundation is complete.
 2. **Why does it follow W5-N25?** Decision Evaluation depends on the completed Scheduling Decision Foundation and all preceding retry foundations.
 3. **What does it consume?** Closed W5-N01…W5-N25 and existing notification-delivery capabilities.
-4. **What does it own?** Planning for Notification Retry Scheduling Decision Evaluation only; W5-N26-a owns inventory only.
+4. **What does it own?** Planning for Notification Retry Scheduling Decision Evaluation; W5-N26-a owns inventory; W5-N26-b owns persistence only.
 5. **What is explicitly OUT of scope?** Runtime decision evaluation, runtime scheduling, retry execution, Retry Engine, workers, timers, transports, monitoring, BC, HA, DR.
 6. **Does it perform Retry Backoff Calculation?** No.
 7. **Does it determine Retry Eligibility?** No.
@@ -206,12 +224,12 @@ Product Owner Final Close is deferred until authorized implementation and FIV.
 | Resolved   | Planning Approval completed                                                      |
 |            | Repository Synchronization (Planning)                                            |
 |            | Notification Retry Scheduling Decision Evaluation inventory baseline established |
+|            | Notification Retry Scheduling Decision Evaluation Persistence Foundation         |
 | Introduced | None                                                                             |
-| Deferred   | Persistence Foundation (W5-N26-b)                                                |
-|            | Restart Recovery Foundation (W5-N26-c)                                           |
+| Deferred   | Restart Recovery Foundation (W5-N26-c)                                           |
 |            | Operational Continuity Foundation (W5-N26-d)                                     |
 |            | Package Validation & Operational Verification (W5-N26-e)                         |
 
 ---
 
-**STOP.** W5-N26-a Inventory is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N26-b. Do not commit. Do not push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N26-b Persistence is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N26-c. Do not commit. Do not push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.

@@ -116,7 +116,7 @@ describe('W5-N26-a retry scheduling decision evaluation conformance — unit', (
     expect(W5_N26_A_BINDING_FINDINGS.w5N24RetrySchedulingExists).toBe(true);
     expect(W5_N26_A_BINDING_FINDINGS.w5N25RetrySchedulingDecisionExists).toBe(true);
     expect(W5_N26_A_BINDING_FINDINGS.unifiedPlatformDecisionEvaluationLayerMissing).toBe(true);
-    expect(W5_N26_A_BINDING_FINDINGS.evaluationPersistenceMissing).toBe(true);
+    expect(W5_N26_A_BINDING_FINDINGS.evaluationPersistenceMissing).toBe(false);
     expect(W5_N26_A_BINDING_FINDINGS.evaluationRecoveryMissing).toBe(true);
     expect(W5_N26_A_BINDING_FINDINGS.evaluationOperationalContinuityMissing).toBe(true);
     expect(W5_N26_A_BINDING_FINDINGS.w5N25RetrySchedulingDecisionExists).toBe(true);

@@ -249,6 +249,10 @@ const N25C =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-restart-recovery.service.ts';
 const N25D =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-operational-continuity.ts';
+const N26B =
+  'apps/api/src/modules/notification-delivery/notification-platform-retry-scheduling-decision-evaluation-persistence.service.ts';
+const N26B_PRISMA =
+  'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-retry-scheduling-decision-evaluation-anchor.repository.ts';
 
 type RowInput = {
   artifactId: string;
@@ -950,23 +954,25 @@ export const W5_N26_A_RETRY_SCHEDULING_DECISION_EVALUATION_INVENTORY: readonly W
     }),
     row({
       artifactId: 'missing-evaluation-persistence',
-      artifact: 'Decision Evaluation durable persistence — missing',
+      artifact:
+        'Decision Evaluation durable persistence — resolved by W5-N26-b (gap row retained for inventory honesty)',
       kind: 'persistence-candidate',
       owner: 'notification-delivery',
-      purpose: 'Record absence of durable evaluation persistence on notification-delivery',
-      evaluationRole: 'missing-gap',
-      classification: 'EPHEMERAL',
-      honestyRequirement: 'Must not claim evaluation persistence from inventory alone',
-      futureW5N26Responsibility: 'W5-N26-b',
-      persistenceRequirement: 'planned W5-N26-b',
-      recoveryRequirement: 'none-missing',
-      operationalRequirement: 'none-missing',
-      capabilityCategory: 'planned',
-      honestProductState: 'planned',
-      currentStatus: 'Missing — deferred to W5-N26-b',
-      evidencePath: PKG,
-      existsToday: false,
-      customerVisibility: 'not customer-visible — absent',
+      purpose: 'Record resolved durable decision evaluation persistence gap after W5-N26-b',
+      evaluationRole: 'missing-gap-resolved',
+      classification: 'RECOVERABLE',
+      honestyRequirement:
+        'Resolved by W5-N26-b — persistence only; not runtime decision evaluation; not scheduling/eligibility/backoff/execution',
+      futureW5N26Responsibility: 'honesty-baseline',
+      persistenceRequirement: 'notification-delivery',
+      recoveryRequirement: 'notification-delivery',
+      capabilityCategory: 'infrastructure-only',
+      honestProductState: 'infrastructure-only',
+      currentStatus:
+        'Resolved by W5-N26-b — see persist-candidate-evaluation-anchor; gap row retained for inventory honesty',
+      evidencePath: N26B,
+      existsToday: true,
+      customerVisibility: 'not customer-visible — gap resolved by W5-N26-b',
     }),
     row({
       artifactId: 'missing-evaluation-recovery',
@@ -1211,24 +1217,26 @@ export const W5_N26_A_RETRY_SCHEDULING_DECISION_EVALUATION_INVENTORY: readonly W
     }),
     row({
       artifactId: 'persist-candidate-evaluation-anchor',
-      artifact: 'Decision Evaluation durable anchor — planned persistence candidate',
+      artifact:
+        'WorkspaceNotificationPlatformRetrySchedulingDecisionEvaluationAnchor — durable evaluation anchors (W5-N26-b)',
       kind: 'persistence-candidate',
       owner: 'notification-delivery',
-      purpose: 'Inventory planned durable evaluation anchor on notification-delivery owner',
-      evaluationRole: 'persistence-candidate',
+      purpose: 'Durable decision evaluation anchor on notification-delivery owner',
+      evaluationRole: 'durable-anchor',
       classification: 'RECOVERABLE',
       honestyRequirement:
-        'Candidate only; not persisted by slice a; not runtime decision evaluation',
-      futureW5N26Responsibility: 'W5-N26-b',
-      persistenceRequirement: 'planned W5-N26-b',
-      recoveryRequirement: 'planned W5-N26-c',
-      operationalRequirement: 'planned W5-N26-d',
-      capabilityCategory: 'planned',
-      honestProductState: 'planned',
-      currentStatus: 'Planned — deferred to W5-N26-b',
-      evidencePath: PKG,
-      existsToday: false,
-      customerVisibility: 'not customer-visible — planned',
+        'Persistence only; not runtime decision evaluation; not scheduling/eligibility/backoff/execution',
+      futureW5N26Responsibility: 'honesty-baseline',
+      persistenceRequirement: 'notification-delivery',
+      recoveryRequirement: 'notification-delivery',
+      operationalRequirement: 'platform-readiness',
+      capabilityCategory: 'infrastructure-only',
+      honestProductState: 'infrastructure-only',
+      currentStatus:
+        'Implemented — durable decision evaluation anchors; restart recovery via W5-N26-c; operational continuity via W5-N26-d',
+      evidencePath: N26B_PRISMA,
+      existsToday: true,
+      customerVisibility: 'not customer-visible — infrastructure only',
     }),
     row({
       artifactId: 'state-n24-scheduling-anchor-reference',
@@ -1661,7 +1669,7 @@ export const W5_N26_A_BINDING_FINDINGS = Object.freeze({
   w5N24RetrySchedulingExists: true,
   w5N25RetrySchedulingDecisionExists: true,
   unifiedPlatformDecisionEvaluationLayerMissing: true,
-  evaluationPersistenceMissing: true,
+  evaluationPersistenceMissing: false,
   evaluationRecoveryMissing: true,
   evaluationOperationalContinuityMissing: true,
   productionTransportsDeferred: true,
@@ -1794,6 +1802,7 @@ export const W5_N26_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N23 retry eligibility inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N24 retry scheduling inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N25 retry scheduling decision inventory, durable anchors, recovery, and continuity (consumed)',
+    'W5-N26-b decision evaluation durable anchors on notification-delivery owner',
     'PC-06 resolve-delivery-routing — routing SoT consumed unchanged',
     'PC-07 notification-product — per-channel settings and history',
     'Notification Durable Queue — W3-O02 on notification-delivery owner (consumed)',
@@ -1801,10 +1810,10 @@ export const W5_N26_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
   plannedCapabilities: Object.freeze([
-    'W5-N26-b…e Decision Evaluation persistence, recovery, continuity, and Close Evidence',
+    'W5-N26-c…e Decision Evaluation restart recovery, continuity, and Close Evidence',
   ] as const),
   notYetImplementedCapabilities: Object.freeze([
-    'Unified cross-channel platform decision evaluation evaluation layer after calc+eligibility+scheduling',
+    'Unified cross-channel platform decision evaluation layer after calc+eligibility+scheduling',
     'Operator decision evaluation UI',
     'Runtime decision evaluation',
     'Scheduling Decision runtime evaluation',
