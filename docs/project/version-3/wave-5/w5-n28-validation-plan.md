@@ -3,7 +3,7 @@
 **Package:** W5-N28 Notification Retry Scheduling Decision Projection Publication Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N28 · CM-35
-**Status:** Planning Package **APPROVED** (2026-09-13). Repository Synchronization (Planning) **COMPLETE**. No implementation. No slices opened. No runtime Decision Projection Publication. No runtime Decision Projection. No runtime scheduling.
+**Status:** Planning Package **APPROVED** (2026-09-13). Repository Synchronization (Planning) **COMPLETE**. W5-N28-a Inventory **COMPLETE** (local). No runtime Decision Projection Publication. No runtime Decision Projection. No runtime scheduling.
 **Date:** 2026-09-13
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n28-product-scope.md`](./w5-n28-product-scope.md)
@@ -137,12 +137,38 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ---
 
+## 6. W5-N28-a validation (inventory)
+
+| Check                                                      | Expected / Status  |
+| ---------------------------------------------------------- | ------------------ |
+| Machine inventory rows ≥ 50                                | **PASS** (120)     |
+| Classifications cover all five                             | **PASS**           |
+| RECOVERABLE and EPHEMERAL non-empty                        | **PASS** (51 / 12) |
+| DECISION / CONFIGURATION present                           | **PASS** (3 / 3)   |
+| `projectionPublicationInventoryMissing`                    | **false**          |
+| No publication functional authorization                    | **PASS**           |
+| Inventory-only honesty boundaries                          | **PASS**           |
+| Inventory performs Runtime Decision Projection Publication | **No**             |
+| Inventory performs Runtime Decision Projection             | **No**             |
+| Inventory performs Runtime Decision Evaluation             | **No**             |
+| Inventory performs runtime scheduling                      | **No**             |
+| Inventory determines eligibility                           | **No**             |
+| Inventory performs Retry Backoff Calculation               | **No**             |
+| Inventory schedules / executes retries                     | **No** / **No**    |
+| Ownership / architecture changed                           | **No** / **No**    |
+| Customer-visible feature                                   | **None**           |
+| W5-N28-b Persistence                                       | **Not opened**     |
+
+**Evidence:** [`w5-n28-a-inventory.md`](./w5-n28-a-inventory.md) · [`w5-n28-a-validation-report.md`](./w5-n28-a-validation-report.md) · `apps/api/src/platform-conformance/w5-n28-a-retry-scheduling-decision-projection-publication*.ts`
+
+---
+
 ## Mandatory Questions
 
 1. **What business problem does W5-N28 solve?** Plan Notification Retry Scheduling Decision Projection Publication after the Decision Projection Foundation is complete.
 2. **Why does it follow W5-N27?** Decision Projection Publication depends on the completed Decision Projection Foundation and all preceding retry foundations.
 3. **What does it consume?** Closed W5-N01…W5-N27 and existing notification-delivery capabilities.
-4. **What does it own?** Planning for Notification Retry Scheduling Decision Projection Publication only.
+4. **What does it own?** Planning for Notification Retry Scheduling Decision Projection Publication; W5-N28-a owns inventory only.
 5. **What is explicitly out of scope?** Runtime publication, runtime Decision Projection, runtime Decision Evaluation, runtime scheduling, retry execution, Retry Engine, workers, timers, transports, monitoring, BC, HA, DR.
 6. **Does it perform Decision Projection Publication?** No.
 7. **Does it perform Runtime Decision Projection?** No.
@@ -156,14 +182,18 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## Technical debt delta
 
-| Category   | Item                                    |
-| ---------- | --------------------------------------- |
-| Resolved   | Planning Approval completed             |
-|            | W5-N28 Planning Package synchronized    |
-| Introduced | None                                    |
-| Deferred   | Implementation slices W5-N28-a…e        |
-|            | Runtime Decision Projection Publication |
+| Category   | Item                                                                                         |
+| ---------- | -------------------------------------------------------------------------------------------- |
+| Resolved   | Planning Approval completed                                                                  |
+|            | W5-N28 Planning Package synchronized                                                         |
+|            | Notification Retry Scheduling Decision Projection Publication inventory baseline established |
+| Introduced | None                                                                                         |
+| Deferred   | W5-N28-b — Persistence Foundation                                                            |
+|            | W5-N28-c — Restart Recovery Foundation                                                       |
+|            | W5-N28-d — Operational Continuity Foundation                                                 |
+|            | W5-N28-e — Package Validation, Operational Verification & Close Evidence                     |
+|            | Runtime Decision Projection Publication                                                      |
 
 ---
 
-**STOP.** W5-N28 Planning Package is **APPROVED**. Repository Synchronization (Planning) is **COMPLETE**. Await Product Owner Repository Review. Do **not** open W5-N28-a until Repository Synchronization has been approved. Do **not** begin implementation. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N28-a Inventory is **COMPLETE** (local). Await Product Owner Review. Do **not** commit. Do **not** push. Do **not** open W5-N28-b. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.

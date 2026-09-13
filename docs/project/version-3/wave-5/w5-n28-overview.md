@@ -2,7 +2,7 @@
 
 **Document:** W5-N28 Notification Retry Scheduling Decision Projection Publication Foundation Overview
 **Date:** 2026-09-13
-**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. No implementation. No slices opened. No runtime Decision Projection Publication. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N28-a Inventory **COMPLETE** (local). No runtime Decision Projection Publication. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N28 (V3-N28 · CM-35)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -82,6 +82,23 @@ Publication output is informational only until consumed by future approved packa
 
 ---
 
+### W5-N28-a status (inventory)
+
+W5-N28-a delivers the Notification Retry Scheduling Decision Projection Publication **inventory and classification baseline** only (120 machine-readable rows). Customer-visible functionality: **None**.
+
+```text
+Decision Projection Publication inventory ≠ runtime Decision Projection Publication.
+Inventory does NOT publish Decision Projection.
+Inventory does NOT perform Runtime Decision Projection.
+Inventory does NOT perform Runtime Decision Evaluation.
+Inventory does NOT determine retry eligibility.
+Inventory does NOT perform Retry Backoff Calculation.
+Inventory does NOT schedule or execute retries.
+Inventory does NOT own retry lifecycle, timers, workers, or orchestration.
+Inventory output is informational only until consumed by future approved slices.
+projectionPublicationInventoryMissing = false.
+```
+
 ## What the operator cannot do (still)
 
 - Assume retries were successfully delivered to recipients.
@@ -151,16 +168,16 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 
 ## Current status
 
-| Item                                    | Status              |
-| --------------------------------------- | ------------------- |
-| W5-N28 Planning Package                 | **APPROVED**        |
-| Product Owner Planning Review           | **PASS**            |
-| Planning Approval                       | **RECORDED**        |
-| Repository Synchronization              | **COMPLETE**        |
-| Implementation authorized               | **No**              |
-| Implementation slices                   | **Not opened**      |
-| Runtime Decision Projection Publication | **Not implemented** |
-| Wave 5 COMPLETE                         | **Not claimed**     |
+| Item                                    | Status               |
+| --------------------------------------- | -------------------- |
+| W5-N28 Planning Package                 | **APPROVED**         |
+| Product Owner Planning Review           | **PASS**             |
+| Planning Approval                       | **RECORDED**         |
+| Repository Synchronization              | **COMPLETE**         |
+| W5-N28-a Inventory                      | **COMPLETE** (local) |
+| W5-N28-b…e                              | **Not opened**       |
+| Runtime Decision Projection Publication | **Not implemented**  |
+| Wave 5 COMPLETE                         | **Not claimed**      |
 
 ---
 
@@ -181,4 +198,4 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 
 ---
 
-**STOP.** W5-N28 Planning Package is **APPROVED**. Repository Synchronization (Planning) is **COMPLETE**. Await Product Owner Repository Review. Do **NOT** open W5-N28-a until Repository Synchronization has been approved. Do **NOT** begin implementation. Do NOT declare runtime Decision Projection Publication. Do NOT declare Runtime Publication Engine. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
+**STOP.** W5-N28-a Inventory is **COMPLETE** (local). Await Product Owner Review. Do **NOT** commit. Do **NOT** push. Do **NOT** open W5-N28-b. Do NOT declare runtime Decision Projection Publication. Do NOT declare Runtime Publication Engine. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
