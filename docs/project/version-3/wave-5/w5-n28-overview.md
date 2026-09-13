@@ -2,7 +2,7 @@
 
 **Document:** W5-N28 Notification Retry Scheduling Decision Projection Publication Foundation Overview
 **Date:** 2026-09-13
-**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N28-a Inventory **COMPLETE**. W5-N28-b Persistence **COMPLETE** (local). No runtime Decision Projection Publication. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N28-a Inventory **COMPLETE**. W5-N28-b Persistence **COMPLETE**. W5-N28-c Restart Recovery **COMPLETE** (local). No runtime Decision Projection Publication. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N28 (V3-N28 · CM-35)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -114,6 +114,21 @@ Persistence does NOT calculate backoff or determine eligibility.
 publicationPersistenceMissing = false.
 ```
 
+### W5-N28-c status (restart recovery)
+
+W5-N28-c delivers **deterministic restart recovery** for persisted Decision Projection Publication anchors on `notification-delivery`. Customer-visible functionality: **None**. Restored after normal restart: **Yes**. Operational continuity: **No** (W5-N28-d).
+
+```text
+Recovered Decision Projection Publication artifacts remain informational only.
+Restart Recovery does NOT publish Decision Projection.
+Restart Recovery does NOT perform runtime publication.
+Restart Recovery does NOT perform runtime Decision Projection.
+Restart Recovery does NOT perform runtime Decision Evaluation.
+Restart Recovery does NOT schedule or execute retries.
+Restart Recovery does NOT calculate backoff or determine eligibility.
+publicationRecoveryMissing = false.
+```
+
 ## What the operator cannot do (still)
 
 - Assume retries were successfully delivered to recipients.
@@ -190,8 +205,9 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 | Planning Approval                       | **RECORDED**         |
 | Repository Synchronization              | **COMPLETE**         |
 | W5-N28-a Inventory                      | **COMPLETE**         |
-| W5-N28-b Persistence                    | **COMPLETE** (local) |
-| W5-N28-c…e                              | **Not opened**       |
+| W5-N28-b Persistence                    | **COMPLETE**         |
+| W5-N28-c Restart Recovery               | **COMPLETE** (local) |
+| W5-N28-d…e                              | **Not opened**       |
 | Runtime Decision Projection Publication | **Not implemented**  |
 | Wave 5 COMPLETE                         | **Not claimed**      |
 
@@ -214,4 +230,4 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 
 ---
 
-**STOP.** W5-N28-b Persistence is **COMPLETE** (local). Await Product Owner Review. Do **NOT** commit. Do **NOT** push. Do **NOT** open W5-N28-c. Do NOT declare runtime Decision Projection Publication. Do NOT declare Runtime Publication Engine. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
+**STOP.** W5-N28-c Restart Recovery is **COMPLETE** (local). Await Product Owner Review. Do **NOT** commit. Do **NOT** push. Do **NOT** open W5-N28-d. Do NOT declare runtime Decision Projection Publication. Do NOT declare Runtime Publication Engine. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.

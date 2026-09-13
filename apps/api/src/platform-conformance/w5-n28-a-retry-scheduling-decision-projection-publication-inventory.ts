@@ -268,14 +268,14 @@ const N26_EVAL_D =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-evaluation-operational-continuity.ts';
 const N27B =
   'apps/api/src/modules/notification-delivery/notification-platform-retry-scheduling-decision-projection-persistence.service.ts';
-const N27C =
-  'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-projection-restart-recovery.service.ts';
 const N27D =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-projection-operational-continuity.ts';
 const N28B =
   'apps/api/src/modules/notification-delivery/notification-platform-retry-scheduling-decision-projection-publication-persistence.service.ts';
 const N28B_PRISMA =
   'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-retry-scheduling-decision-projection-publication-anchor.repository.ts';
+const N28C =
+  'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-projection-publication-restart-recovery.service.ts';
 
 type RowInput = {
   artifactId: string;
@@ -1090,14 +1090,15 @@ export const W5_N28_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_INVENTORY
     row({
       artifactId: 'missing-publication-recovery',
       artifact:
-        'Decision Projection restart recovery — resolved by W5-N28-c (gap row retained for inventory honesty)',
+        'Decision Projection Publication restart recovery — resolved by W5-N28-c (gap row retained for inventory honesty)',
       kind: 'ephemeral-artifact',
       owner: 'notification-delivery',
-      purpose: 'Record resolved restart-safe decision projection recovery gap after W5-N28-c',
+      purpose:
+        'Record resolved restart-safe decision projection publication recovery gap after W5-N28-c',
       publicationRole: 'missing-gap-resolved',
       classification: 'EPHEMERAL',
       honestyRequirement:
-        'Resolved by W5-N28-c — recovery only; not runtime decision projection; not scheduling/eligibility/backoff/execution; not operational continuity',
+        'Resolved by W5-N28-c — recovery only; not runtime publication; not runtime decision projection; not scheduling/eligibility/backoff/execution; not operational continuity',
       futureW5N28Responsibility: 'honesty-baseline',
       persistenceRequirement: 'none-missing',
       recoveryRequirement: 'notification-delivery',
@@ -1106,8 +1107,8 @@ export const W5_N28_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_INVENTORY
       honestProductState: 'infrastructure-only',
       currentStatus:
         'Resolved by W5-N28-c — see persist-candidate-publication-anchor hydrate; gap row retained for inventory honesty',
-      evidencePath: N27C,
-      existsToday: false,
+      evidencePath: N28C,
+      existsToday: true,
       customerVisibility: 'not customer-visible — gap resolved by W5-N28-c',
     }),
     row({
@@ -1828,7 +1829,7 @@ export const W5_N28_A_BINDING_FINDINGS = Object.freeze({
   projectionPublicationInventoryMissing: false,
   unifiedPlatformDecisionProjectionPublicationLayerMissing: true,
   publicationPersistenceMissing: false,
-  publicationRecoveryMissing: true,
+  publicationRecoveryMissing: false,
   publicationOperationalContinuityMissing: true,
   productionTransportsDeferred: true,
   inventoryDoesNotMakeSchedulingDecisions: true,

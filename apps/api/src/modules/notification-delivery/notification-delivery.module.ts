@@ -97,6 +97,7 @@ import { NotificationPlatformRetrySchedulingDecisionProjectionRecoveryStore } fr
 import { NotificationPlatformRetrySchedulingDecisionProjectionRestartRecoveryService } from './domain/notification-platform-retry-scheduling-decision-projection-restart-recovery.service';
 import { NotificationPlatformRetrySchedulingDecisionProjectionPublicationPersistenceService } from './notification-platform-retry-scheduling-decision-projection-publication-persistence.service';
 import { NotificationPlatformRetrySchedulingDecisionProjectionPublicationRecoveryStore } from './domain/notification-platform-retry-scheduling-decision-projection-publication-recovery-store';
+import { NotificationPlatformRetrySchedulingDecisionProjectionPublicationRestartRecoveryService } from './domain/notification-platform-retry-scheduling-decision-projection-publication-restart-recovery.service';
 import { NotificationPlatformRetryEligibilityRestartRecoveryService } from './domain/notification-platform-retry-eligibility-restart-recovery.service';
 import { NotificationPlatformRetryBackoffCalculationRecoveryStore } from './domain/notification-platform-retry-backoff-calculation-recovery-store';
 import { NotificationPlatformRetryBackoffCalculationRestartRecoveryService } from './domain/notification-platform-retry-backoff-calculation-restart-recovery.service';
@@ -403,6 +404,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetrySchedulingDecisionProjectionRestartRecoveryService,
     NotificationPlatformRetrySchedulingDecisionProjectionPublicationPersistenceService,
     NotificationPlatformRetrySchedulingDecisionProjectionPublicationRecoveryStore,
+    NotificationPlatformRetrySchedulingDecisionProjectionPublicationRestartRecoveryService,
     NotificationPlatformRetryBackoffCalculationRecoveryStore,
     NotificationPlatformRetryBackoffCalculationRestartRecoveryService,
     NotificationPlatformRetryBackoffRecoveryStore,
@@ -511,6 +513,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetrySchedulingDecisionProjectionRestartRecoveryService,
     NotificationPlatformRetrySchedulingDecisionProjectionPublicationPersistenceService,
     NotificationPlatformRetrySchedulingDecisionProjectionPublicationRecoveryStore,
+    NotificationPlatformRetrySchedulingDecisionProjectionPublicationRestartRecoveryService,
     NotificationPlatformRetryBackoffCalculationRecoveryStore,
     NotificationPlatformRetryBackoffCalculationRestartRecoveryService,
     NotificationPlatformRetryBackoffRecoveryStore,

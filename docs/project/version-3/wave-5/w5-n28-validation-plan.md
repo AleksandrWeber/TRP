@@ -3,7 +3,7 @@
 **Package:** W5-N28 Notification Retry Scheduling Decision Projection Publication Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N28 · CM-35
-**Status:** Planning Package **APPROVED** (2026-09-13). Repository Synchronization (Planning) **COMPLETE**. W5-N28-a Inventory **COMPLETE**. W5-N28-b Persistence **COMPLETE** (local). No runtime Decision Projection Publication. No runtime Decision Projection. No runtime scheduling.
+**Status:** Planning Package **APPROVED** (2026-09-13). Repository Synchronization (Planning) **COMPLETE**. W5-N28-a Inventory **COMPLETE**. W5-N28-b Persistence **COMPLETE**. W5-N28-c Restart Recovery **COMPLETE** (local). No runtime Decision Projection Publication. No runtime Decision Projection. No runtime scheduling.
 **Date:** 2026-09-13
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n28-product-scope.md`](./w5-n28-product-scope.md)
@@ -185,6 +185,28 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 **Evidence:** [`w5-n28-b-implementation-report.md`](./w5-n28-b-implementation-report.md) · [`w5-n28-b-validation-report.md`](./w5-n28-b-validation-report.md) · `apps/api/src/platform-conformance/w5-n28-b-durable-notification-platform-retry-scheduling-decision-projection-publication*.ts`
 
+## 8. W5-N28-c validation (restart recovery)
+
+| Check                                                                   | Expected / Status |
+| ----------------------------------------------------------------------- | ----------------- |
+| Decision Projection Publication artifacts restored after normal restart | **PASS**          |
+| Recovery deterministic / idempotent                                     | **Yes** / **Yes** |
+| Fabricate missing / restore corrupted                                   | **No** / **No**   |
+| `publicationRecoveryMissing`                                            | **false**         |
+| Recovery performs Runtime Decision Projection Publication               | **No**            |
+| Recovery performs runtime publication                                   | **No**            |
+| Recovery performs Runtime Decision Projection                           | **No**            |
+| Recovery performs Runtime Decision Evaluation                           | **No**            |
+| Recovery performs runtime scheduling                                    | **No**            |
+| Recovery performs Retry Backoff Calculation                             | **No**            |
+| Recovery determines Retry Eligibility                                   | **No**            |
+| Recovery executes retries                                               | **No**            |
+| Ownership / architecture changed                                        | **No** / **No**   |
+| Customer-visible feature                                                | **None**          |
+| W5-N28-d Operational Continuity                                         | **Not opened**    |
+
+**Evidence:** [`w5-n28-c-implementation-report.md`](./w5-n28-c-implementation-report.md) · [`w5-n28-c-validation-report.md`](./w5-n28-c-validation-report.md) · `apps/api/src/platform-conformance/w5-n28-c-notification-platform-retry-scheduling-decision-projection-publication-restart-recovery*.ts`
+
 ## Mandatory Questions
 
 1. **What business problem does W5-N28 solve?** Plan Notification Retry Scheduling Decision Projection Publication after the Decision Projection Foundation is complete.
@@ -210,12 +232,12 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 |            | W5-N28 Planning Package synchronized                                                         |
 |            | Notification Retry Scheduling Decision Projection Publication inventory baseline established |
 |            | Notification Retry Scheduling Decision Projection Publication Persistence Foundation         |
+|            | Notification Retry Scheduling Decision Projection Publication Restart Recovery Foundation    |
 | Introduced | None                                                                                         |
-| Deferred   | W5-N28-c — Restart Recovery Foundation                                                       |
-|            | W5-N28-d — Operational Continuity Foundation                                                 |
+| Deferred   | W5-N28-d — Operational Continuity Foundation                                                 |
 |            | W5-N28-e — Package Validation, Operational Verification & Close Evidence                     |
 |            | Runtime Decision Projection Publication                                                      |
 
 ---
 
-**STOP.** W5-N28-b Persistence is **COMPLETE** (local). Await Product Owner Review. Do **not** commit. Do **not** push. Do **not** open W5-N28-c. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N28-c Restart Recovery is **COMPLETE** (local). Await Product Owner Review. Do **not** commit. Do **not** push. Do **not** open W5-N28-d. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
