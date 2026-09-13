@@ -87,6 +87,7 @@ import { NotificationPlatformRetrySchedulingDecisionRecoveryStore } from './doma
 import { NotificationPlatformRetrySchedulingDecisionRestartRecoveryService } from './domain/notification-platform-retry-scheduling-decision-restart-recovery.service';
 import { NotificationPlatformRetrySchedulingDecisionEvaluationPersistenceService } from './notification-platform-retry-scheduling-decision-evaluation-persistence.service';
 import { NotificationPlatformRetrySchedulingDecisionEvaluationRecoveryStore } from './domain/notification-platform-retry-scheduling-decision-evaluation-recovery-store';
+import { NotificationPlatformRetrySchedulingDecisionEvaluationRestartRecoveryService } from './domain/notification-platform-retry-scheduling-decision-evaluation-restart-recovery.service';
 import { NotificationPlatformRetryEligibilityRestartRecoveryService } from './domain/notification-platform-retry-eligibility-restart-recovery.service';
 import { NotificationPlatformRetryBackoffCalculationRecoveryStore } from './domain/notification-platform-retry-backoff-calculation-recovery-store';
 import { NotificationPlatformRetryBackoffCalculationRestartRecoveryService } from './domain/notification-platform-retry-backoff-calculation-restart-recovery.service';
@@ -372,6 +373,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetrySchedulingDecisionRestartRecoveryService,
     NotificationPlatformRetrySchedulingDecisionEvaluationPersistenceService,
     NotificationPlatformRetrySchedulingDecisionEvaluationRecoveryStore,
+    NotificationPlatformRetrySchedulingDecisionEvaluationRestartRecoveryService,
     NotificationPlatformRetryBackoffCalculationRecoveryStore,
     NotificationPlatformRetryBackoffCalculationRestartRecoveryService,
     NotificationPlatformRetryBackoffRecoveryStore,
@@ -474,6 +476,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetrySchedulingDecisionRestartRecoveryService,
     NotificationPlatformRetrySchedulingDecisionEvaluationPersistenceService,
     NotificationPlatformRetrySchedulingDecisionEvaluationRecoveryStore,
+    NotificationPlatformRetrySchedulingDecisionEvaluationRestartRecoveryService,
     NotificationPlatformRetryBackoffCalculationRecoveryStore,
     NotificationPlatformRetryBackoffCalculationRestartRecoveryService,
     NotificationPlatformRetryBackoffRecoveryStore,

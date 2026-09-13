@@ -187,7 +187,7 @@ describe('W5-N26-a notification retry scheduling decision evaluation inventory â
     expect(W5_N26_A_BINDING_FINDINGS.w5N24RetrySchedulingExists).toBe(true);
     expect(W5_N26_A_BINDING_FINDINGS.unifiedPlatformDecisionEvaluationLayerMissing).toBe(true);
     expect(W5_N26_A_BINDING_FINDINGS.evaluationPersistenceMissing).toBe(false);
-    expect(W5_N26_A_BINDING_FINDINGS.evaluationRecoveryMissing).toBe(true);
+    expect(W5_N26_A_BINDING_FINDINGS.evaluationRecoveryMissing).toBe(false);
     expect(W5_N26_A_BINDING_FINDINGS.evaluationOperationalContinuityMissing).toBe(true);
     expect(W5_N26_A_BINDING_FINDINGS.w5N25RetrySchedulingDecisionExists).toBe(true);
     expect(W5_N26_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
@@ -284,7 +284,7 @@ describe('W5-N26-a notification retry scheduling decision evaluation inventory â
     ]);
   });
 
-  it('persistence gap resolved by W5-N26-b; recovery and continuity remain open', () => {
+  it('persistence and recovery gaps resolved by W5-N26-b/c; continuity remains open', () => {
     expect(
       W5_N26_A_RETRY_SCHEDULING_DECISION_EVALUATION_INVENTORY.find(
         (entry) => entry.artifactId === 'missing-evaluation-persistence',
@@ -305,8 +305,17 @@ describe('W5-N26-a notification retry scheduling decision evaluation inventory â
         (entry) => entry.artifactId === 'persist-candidate-evaluation-anchor',
       )?.classification,
     ).toBe('RECOVERABLE');
+    expect(
+      W5_N26_A_RETRY_SCHEDULING_DECISION_EVALUATION_INVENTORY.find(
+        (entry) => entry.artifactId === 'missing-evaluation-recovery',
+      )?.existsToday,
+    ).toBe(true);
+    expect(
+      W5_N26_A_RETRY_SCHEDULING_DECISION_EVALUATION_INVENTORY.find(
+        (entry) => entry.artifactId === 'missing-evaluation-recovery',
+      )?.classification,
+    ).toBe('EPHEMERAL');
     for (const id of [
-      'missing-evaluation-recovery',
       'missing-evaluation-operational-continuity',
       'missing-unified-platform-decision-evaluation-view',
       'projection-platform-readiness-evaluation-missing',

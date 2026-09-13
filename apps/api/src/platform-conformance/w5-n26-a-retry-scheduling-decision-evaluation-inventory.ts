@@ -253,6 +253,8 @@ const N26B =
   'apps/api/src/modules/notification-delivery/notification-platform-retry-scheduling-decision-evaluation-persistence.service.ts';
 const N26B_PRISMA =
   'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-retry-scheduling-decision-evaluation-anchor.repository.ts';
+const N26C =
+  'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-evaluation-restart-recovery.service.ts';
 
 type RowInput = {
   artifactId: string;
@@ -976,21 +978,24 @@ export const W5_N26_A_RETRY_SCHEDULING_DECISION_EVALUATION_INVENTORY: readonly W
     }),
     row({
       artifactId: 'missing-evaluation-recovery',
-      artifact: 'Decision Evaluation restart recovery — missing',
+      artifact:
+        'Decision Evaluation restart recovery — resolved by W5-N26-c (gap row retained for inventory honesty)',
       kind: 'ephemeral-artifact',
       owner: 'notification-delivery',
-      purpose: 'Record absence of restart-safe evaluation recovery',
-      evaluationRole: 'missing-gap',
+      purpose: 'Record resolved restart-safe evaluation recovery gap after W5-N26-c',
+      evaluationRole: 'missing-gap-resolved',
       classification: 'EPHEMERAL',
-      honestyRequirement: 'Must not claim evaluation recovery from inventory alone',
-      futureW5N26Responsibility: 'W5-N26-c',
-      recoveryRequirement: 'planned W5-N26-c',
-      capabilityCategory: 'planned',
-      honestProductState: 'planned',
-      currentStatus: 'Missing — deferred to W5-N26-c',
-      evidencePath: PKG,
-      existsToday: false,
-      customerVisibility: 'not customer-visible — absent',
+      honestyRequirement:
+        'Resolved by W5-N26-c — recovery only; not runtime decision evaluation; not scheduling/eligibility/backoff/execution; not operational continuity',
+      futureW5N26Responsibility: 'honesty-baseline',
+      recoveryRequirement: 'notification-delivery',
+      capabilityCategory: 'infrastructure-only',
+      honestProductState: 'infrastructure-only',
+      currentStatus:
+        'Resolved by W5-N26-c — see persist-candidate-evaluation-anchor hydrate; gap row retained for inventory honesty',
+      evidencePath: N26C,
+      existsToday: true,
+      customerVisibility: 'not customer-visible — gap resolved by W5-N26-c',
     }),
     row({
       artifactId: 'missing-evaluation-operational-continuity',
@@ -1670,7 +1675,7 @@ export const W5_N26_A_BINDING_FINDINGS = Object.freeze({
   w5N25RetrySchedulingDecisionExists: true,
   unifiedPlatformDecisionEvaluationLayerMissing: true,
   evaluationPersistenceMissing: false,
-  evaluationRecoveryMissing: true,
+  evaluationRecoveryMissing: false,
   evaluationOperationalContinuityMissing: true,
   productionTransportsDeferred: true,
   inventoryDoesNotMakeSchedulingDecisions: true,
@@ -1803,6 +1808,7 @@ export const W5_N26_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N24 retry scheduling inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N25 retry scheduling decision inventory, durable anchors, recovery, and continuity (consumed)',
     'W5-N26-b decision evaluation durable anchors on notification-delivery owner',
+    'W5-N26-c decision evaluation restart recovery hydrate on notification-delivery owner',
     'PC-06 resolve-delivery-routing — routing SoT consumed unchanged',
     'PC-07 notification-product — per-channel settings and history',
     'Notification Durable Queue — W3-O02 on notification-delivery owner (consumed)',
@@ -1810,7 +1816,7 @@ export const W5_N26_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
   plannedCapabilities: Object.freeze([
-    'W5-N26-c…e Decision Evaluation restart recovery, continuity, and Close Evidence',
+    'W5-N26-d…e Decision Evaluation operational continuity and Close Evidence',
   ] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform decision evaluation layer after calc+eligibility+scheduling',

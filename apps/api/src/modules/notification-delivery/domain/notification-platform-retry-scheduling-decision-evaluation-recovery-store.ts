@@ -1,28 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import type { DurableNotificationPlatformRetrySchedulingDecisionEvaluationAnchor } from './durable-notification-platform-retry-scheduling-decision-evaluation-anchor';
+import { sortNotificationPlatformRetrySchedulingDecisionEvaluationAnchorsDeterministically } from './notification-platform-retry-scheduling-decision-evaluation-restart-recovery';
 
 function compositeKey(workspaceId: string, evaluationAnchorId: string): string {
   return `${workspaceId}:${evaluationAnchorId}`;
 }
 
-function sortEvaluationAnchorsDeterministically(
-  anchors: readonly DurableNotificationPlatformRetrySchedulingDecisionEvaluationAnchor[],
-): readonly DurableNotificationPlatformRetrySchedulingDecisionEvaluationAnchor[] {
-  return Object.freeze(
-    [...anchors].sort((a, b) => {
-      const workspaceCompare = a.workspaceId.localeCompare(b.workspaceId);
-      if (workspaceCompare !== 0) {
-        return workspaceCompare;
-      }
-      return a.evaluationAnchorId.localeCompare(b.evaluationAnchorId);
-    }),
-  );
-}
-
 /**
- * In-memory runtime cache for Notification Platform Retry Scheduling Decision Evaluation anchors
- * (write-through from W5-N26-b). Full restart hydrate is W5-N26-c.
- * Not a second Source of Truth.
+ * In-memory runtime cache for recovered Notification Platform Retry Scheduling Decision Evaluation
+ * anchors (W5-N26-c). Not a second Source of Truth — hydrated from W5-N26-b persistence on restart.
  */
 @Injectable()
 export class NotificationPlatformRetrySchedulingDecisionEvaluationRecoveryStore {
@@ -59,6 +45,8 @@ export class NotificationPlatformRetrySchedulingDecisionEvaluationRecoveryStore 
   }
 
   snapshot(): readonly DurableNotificationPlatformRetrySchedulingDecisionEvaluationAnchor[] {
-    return sortEvaluationAnchorsDeterministically([...this.byCompositeKey.values()]);
+    return sortNotificationPlatformRetrySchedulingDecisionEvaluationAnchorsDeterministically([
+      ...this.byCompositeKey.values(),
+    ]);
   }
 }
