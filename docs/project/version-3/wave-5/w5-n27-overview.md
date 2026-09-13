@@ -2,7 +2,7 @@
 
 **Document:** W5-N27 Notification Retry Scheduling Decision Projection Foundation Overview
 **Date:** 2026-09-13
-**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. No implementation. No slices opened. No runtime decision projection. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N27-a Inventory **COMPLETE** (local). No runtime decision projection. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N27 (V3-N27 · CM-35)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -81,6 +81,21 @@ Projection output is informational only until consumed by future approved packag
 **Not available from this planning open alone** — no projection runtime, no Retry Backoff Calculation by this package, no Eligibility determination by this package, no Scheduling Decision Evaluation by this package, no Runtime Decision Projection, no runtime scheduling, no scheduling execution, no execution, no transport execution, no successful delivery, no Live Notifications, no Production Ready, no Wave 5 COMPLETE.
 
 ---
+
+### W5-N27-a status (inventory)
+
+W5-N27-a delivers the Notification Retry Scheduling Decision Projection **inventory and classification baseline** only (117 machine-readable rows). Customer-visible functionality: **None**.
+
+```text
+Decision Projection inventory ≠ runtime decision projection.
+Inventory does NOT perform runtime decision projection.
+Inventory does NOT perform runtime decision evaluation.
+Inventory does NOT determine retry eligibility.
+Inventory does NOT perform Retry Backoff Calculation.
+Inventory does NOT schedule or execute retries.
+Inventory does NOT own retry lifecycle, timers, workers, or orchestration.
+Inventory output is informational only until consumed by future approved slices.
+```
 
 ## What the operator cannot do (still)
 
@@ -183,4 +198,4 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 
 ---
 
-**STOP.** W5-N27 Planning Package is **APPROVED**. Repository Synchronization (Planning) is **COMPLETE**. Await Product Owner Repository Review. Do NOT open W5-N27-a until Repository Synchronization has been approved. Do NOT begin implementation. Do NOT declare runtime decision projection. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
+**STOP.** W5-N27-a Inventory is **COMPLETE** (local). Await Product Owner Review. Do NOT commit. Do NOT push. Do NOT open W5-N27-b. Do NOT begin further implementation. Do NOT declare runtime decision projection. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.

@@ -3,7 +3,7 @@
 **Package:** W5-N27 Notification Retry Scheduling Decision Projection Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N27 · CM-35
-**Status:** Planning Package **APPROVED** (2026-09-13). Repository Synchronization (Planning) **COMPLETE**. No implementation. No slices opened. No runtime decision projection. No runtime scheduling.
+**Status:** Planning Package **APPROVED** (2026-09-13). Repository Synchronization (Planning) **COMPLETE**. W5-N27-a Inventory **COMPLETE** (local). No runtime decision projection. No runtime scheduling.
 **Date:** 2026-09-13
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n27-product-scope.md`](./w5-n27-product-scope.md)
@@ -124,29 +124,39 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## 5. Governance validation
 
-| Area                           | Must prove                                                   |
-| ------------------------------ | ------------------------------------------------------------ |
-| Ownership unchanged            | No ownership movement                                        |
-| Previous packages unmodified   | Consume only                                                 |
-| No hidden future functionality | Persistence does not smuggle later package scope             |
-| Implementation authorization   | Planning APPROVED; Repo Sync COMPLETE; slices not authorized |
-| Close Evidence assembled       | Deferred until authorized Close Evidence slice               |
-| Planning Approval              | **RECORDED**                                                 |
-| Repository Synchronization     | **COMPLETE**                                                 |
+| Area                           | Must prove                                                                           |
+| ------------------------------ | ------------------------------------------------------------------------------------ |
+| Ownership unchanged            | No ownership movement                                                                |
+| Previous packages unmodified   | Consume only                                                                         |
+| No hidden future functionality | Persistence does not smuggle later package scope                                     |
+| Implementation authorization   | Planning APPROVED; Repo Sync COMPLETE; W5-N27-a COMPLETE (local); b–e not authorized |
+| Close Evidence assembled       | Deferred until authorized Close Evidence slice                                       |
+| Planning Approval              | **RECORDED**                                                                         |
+| Repository Synchronization     | **COMPLETE**                                                                         |
 
 ---
 
-## 6. Implementation slice validation (deferred)
+## 6. W5-N27-a validation (inventory)
 
-Implementation slices W5-N27-a…e are **not opened**, **not named**, and **not authorized**. Slice-specific validation tables will be added only after Product Owner Planning Approval and separate slice authorization.
+| Check                                          | Expected / Status  |
+| ---------------------------------------------- | ------------------ |
+| Machine inventory rows ≥ 50                    | **PASS** (117)     |
+| Classifications cover all five                 | **PASS**           |
+| RECOVERABLE and EPHEMERAL non-empty            | **PASS** (48 / 14) |
+| DECISION / CONFIGURATION present               | **PASS** (3 / 3)   |
+| No projection functional authorization         | **PASS**           |
+| Inventory-only honesty boundaries              | **PASS**           |
+| Inventory performs runtime decision projection | **No**             |
+| Inventory performs runtime decision evaluation | **No**             |
+| Inventory performs runtime scheduling          | **No**             |
+| Inventory determines eligibility               | **No**             |
+| Inventory performs Retry Backoff Calculation   | **No**             |
+| Inventory schedules / executes retries         | **No** / **No**    |
+| Ownership / architecture changed               | **No** / **No**    |
+| Customer-visible feature                       | **None**           |
+| W5-N27-b Persistence                           | **Not opened**     |
 
-| Check                                  | Expected / Status |
-| -------------------------------------- | ----------------- |
-| W5-N27-a…e opened                      | **No**            |
-| Runtime decision projection            | **No**            |
-| Runtime scheduling / execution         | **No** / **No**   |
-| Ownership / architecture changed       | **No** / **No**   |
-| Customer-visible feature from planning | **None**          |
+**Evidence:** [`w5-n27-a-inventory.md`](./w5-n27-a-inventory.md) · [`w5-n27-a-validation-report.md`](./w5-n27-a-validation-report.md) · `apps/api/src/platform-conformance/w5-n27-a-retry-scheduling-decision-projection*.ts`
 
 ---
 
@@ -170,14 +180,17 @@ Implementation slices W5-N27-a…e are **not opened**, **not named**, and **not 
 
 ## Technical debt delta
 
-| Category   | Item                                                                              |
-| ---------- | --------------------------------------------------------------------------------- |
-| Resolved   | Planning Approval completed                                                       |
-|            | W5-N27 Planning Package synchronized                                              |
-| Introduced | None                                                                              |
-| Deferred   | Implementation slices W5-N27-a…e                                                  |
-|            | W5-N27-a — Notification Retry Scheduling Decision Projection Inventory Foundation |
+| Category   | Item                                                                             |
+| ---------- | -------------------------------------------------------------------------------- |
+| Resolved   | Planning Approval completed                                                      |
+|            | W5-N27 Planning Package synchronized                                             |
+|            | Notification Retry Scheduling Decision Projection inventory baseline established |
+| Introduced | None                                                                             |
+| Deferred   | W5-N27-b Persistence Foundation                                                  |
+|            | W5-N27-c Restart Recovery Foundation                                             |
+|            | W5-N27-d Operational Continuity Foundation                                       |
+|            | W5-N27-e Package Validation, Operational Verification & Close Evidence           |
 
 ---
 
-**STOP.** W5-N27 Planning Package is **APPROVED**. Repository Synchronization (Planning) is **COMPLETE**. Await Product Owner Repository Review. Do not open W5-N27-a until Repository Synchronization has been approved. Do not begin implementation. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N27-a Inventory is **COMPLETE** (local). Await Product Owner Review. Do not commit. Do not push. Do not open W5-N27-b. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
