@@ -2260,3 +2260,20 @@ model WorkspaceNotificationPlatformRetrySchedulingDecisionEvaluationAnchor {
   @@id([workspaceId, evaluationAnchorId])
   @@map("workspace_notification_platform_retry_decision_eval_anchors")
 }
+
+model WorkspaceNotificationPlatformRetrySchedulingDecisionProjectionAnchor {
+  workspaceId                                    String   @map("workspace_id")
+  projectionAnchorId                             String   @map("projection_anchor_id")
+  schemaVersion                                  Int      @default(1) @map("schema_version")
+  platformRetrySchedulingDecisionProjectionType  String   @map("platform_retry_scheduling_decision_projection_type")
+  projectionAnchorState                          String   @map("projection_anchor_state")
+  channelScope                                   String?  @map("channel_scope")
+  integrityMetadata                              String?  @map("integrity_metadata")
+  correlationId                                  String?  @map("correlation_id")
+  recordedAt                                     DateTime @map("recorded_at")
+  recordedByActorId                              String?  @map("recorded_by_actor_id")
+  updatedAt                                      DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, projectionAnchorId])
+  @@map("workspace_notification_platform_retry_decision_proj_anchors")
+}

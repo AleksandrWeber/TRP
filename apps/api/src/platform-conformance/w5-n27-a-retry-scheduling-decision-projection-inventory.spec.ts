@@ -187,7 +187,7 @@ describe('W5-N27-a notification retry scheduling decision projection inventory â
     expect(W5_N27_A_BINDING_FINDINGS.w5N23RetryEligibilityExists).toBe(true);
     expect(W5_N27_A_BINDING_FINDINGS.w5N24RetrySchedulingExists).toBe(true);
     expect(W5_N27_A_BINDING_FINDINGS.unifiedPlatformDecisionProjectionLayerMissing).toBe(true);
-    expect(W5_N27_A_BINDING_FINDINGS.projectionPersistenceMissing).toBe(true);
+    expect(W5_N27_A_BINDING_FINDINGS.projectionPersistenceMissing).toBe(false);
     expect(W5_N27_A_BINDING_FINDINGS.projectionRecoveryMissing).toBe(true);
     expect(W5_N27_A_BINDING_FINDINGS.projectionOperationalContinuityMissing).toBe(true);
     expect(W5_N27_A_BINDING_FINDINGS.w5N25RetrySchedulingDecisionExists).toBe(true);
@@ -274,40 +274,40 @@ describe('W5-N27-a notification retry scheduling decision projection inventory â
     ).toBeGreaterThanOrEqual(2);
   });
 
-  it('technical debt delta: inventory baseline resolved; Repo Sync after Close / runtime scheduling deferred; nothing introduced', () => {
+  it('technical debt delta: inventory and persistence baselines resolved; recovery / continuity / Close deferred; nothing introduced', () => {
     expect(W5_N27_A_TECHNICAL_DEBT_DELTA.resolved).toEqual([
       'Notification Retry Scheduling Decision Projection inventory baseline established',
+      'Notification Retry Scheduling Decision Projection Persistence Foundation',
     ]);
     expect(W5_N27_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N27_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'Persistence Foundation (W5-N27-b)',
       'Restart Recovery Foundation (W5-N27-c)',
       'Operational Continuity Foundation (W5-N27-d)',
       'Package Validation & Operational Verification (W5-N27-e)',
     ]);
   });
 
-  it('persistence, recovery, and continuity gaps remain open after inventory; unified view remains open', () => {
+  it('persistence gap resolved by W5-N27-b; recovery and continuity remain open; unified view remains open', () => {
     expect(
       W5_N27_A_RETRY_SCHEDULING_DECISION_PROJECTION_INVENTORY.find(
         (entry) => entry.artifactId === 'missing-projection-persistence',
       )?.existsToday,
-    ).toBe(false);
+    ).toBe(true);
     expect(
       W5_N27_A_RETRY_SCHEDULING_DECISION_PROJECTION_INVENTORY.find(
         (entry) => entry.artifactId === 'persist-candidate-projection-anchor',
       )?.existsToday,
-    ).toBe(false);
+    ).toBe(true);
     expect(
       W5_N27_A_RETRY_SCHEDULING_DECISION_PROJECTION_INVENTORY.find(
         (entry) => entry.artifactId === 'missing-projection-persistence',
       )?.classification,
-    ).toBe('EPHEMERAL');
+    ).toBe('RECOVERABLE');
     expect(
       W5_N27_A_RETRY_SCHEDULING_DECISION_PROJECTION_INVENTORY.find(
         (entry) => entry.artifactId === 'persist-candidate-projection-anchor',
       )?.classification,
-    ).toBe('EPHEMERAL');
+    ).toBe('RECOVERABLE');
     expect(
       W5_N27_A_RETRY_SCHEDULING_DECISION_PROJECTION_INVENTORY.find(
         (entry) => entry.artifactId === 'missing-projection-recovery',
@@ -340,7 +340,7 @@ describe('W5-N27-a notification retry scheduling decision projection inventory â
         (entry) => entry.artifactId === 'missing-unified-platform-decision-projection-view',
       )?.classification,
     ).toBe('EPHEMERAL');
-    expect(W5_N27_A_BINDING_FINDINGS.projectionPersistenceMissing).toBe(true);
+    expect(W5_N27_A_BINDING_FINDINGS.projectionPersistenceMissing).toBe(false);
     expect(W5_N27_A_BINDING_FINDINGS.projectionRecoveryMissing).toBe(true);
     expect(W5_N27_A_BINDING_FINDINGS.projectionOperationalContinuityMissing).toBe(true);
   });
