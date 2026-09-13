@@ -1913,6 +1913,7 @@ export const W5_N27_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N27-b decision projection durable anchors on notification-delivery owner',
     'W5-N27-c decision projection restart recovery hydrate on notification-delivery owner',
     'W5-N27-d operational continuity for decision projection readiness on Platform Readiness (derived)',
+    'W5-N27-e package Close Evidence assembled (Product Owner Final Close recorded)',
     'PC-06 resolve-delivery-routing — routing SoT consumed unchanged',
     'PC-07 notification-product — per-channel settings and history',
     'Notification Durable Queue — W3-O02 on notification-delivery owner (consumed)',
@@ -1920,7 +1921,7 @@ export const W5_N27_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
   plannedCapabilities: Object.freeze([
-    'W5-N27-e Package Validation, Operational Verification & Close Evidence',
+    'Repository Synchronization after Product Owner Final Close',
   ] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform decision projection layer after calc+eligibility+scheduling',
@@ -1946,9 +1947,12 @@ export const W5_N27_A_TECHNICAL_DEBT_DELTA = Object.freeze({
     'Notification Retry Scheduling Decision Projection Persistence Foundation',
     'Notification Retry Scheduling Decision Projection Restart Recovery Foundation',
     'Notification Retry Scheduling Decision Projection Operational Continuity Foundation',
+    'Notification Retry Scheduling Decision Projection Package Close Evidence',
+    'Final Package Integration Verification completed',
+    'W5-N27 governance lifecycle completed',
   ] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze(['Package Validation & Operational Verification (W5-N27-e)'] as const),
+  deferred: Object.freeze(['Repository Synchronization after Product Owner Final Close'] as const),
 } as const);
 
 export function artifactIds(): readonly string[] {

@@ -214,43 +214,74 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Runtime scheduling / execution                      | **No** / **No**                  |
 | Ownership / architecture changed                    | **No** / **No**                  |
 | Customer-visible feature                            | Operator Platform Readiness only |
-| W5-N27-e opened                                     | **No**                           |
+| W5-N27-e opened                                     | **Yes** — COMPLETE (local)       |
 
 **Evidence:** [`w5-n27-d-implementation-report.md`](./w5-n27-d-implementation-report.md) · [`w5-n27-d-validation-report.md`](./w5-n27-d-validation-report.md) · `apps/api/src/platform-conformance/w5-n27-d-notification-platform-retry-scheduling-decision-projection-operational-continuity.ts`
 
 ---
 
-## 10. Implementation slice e validation (deferred)
+## 10. W5-N27-e validation (Close Evidence)
 
-Implementation slice W5-N27-e is **not opened and not authorized**.
+| Check                                            | Expected / Status      |
+| ------------------------------------------------ | ---------------------- |
+| Package Close Evidence assembled                 | **PASS**               |
+| Approved slices a–d validated                    | **PASS**               |
+| Operational journey verified                     | **PASS**               |
+| Decision Projection Foundation only preserved    | **Yes**                |
+| Operational Readiness derived only               | **Yes**                |
+| Runtime Decision Projection / Evaluation claimed | **No** / **No**        |
+| Runtime Scheduler / Retry Execution claimed      | **No** / **No**        |
+| Ownership / architecture changed                 | **No** / **No**        |
+| Package declared CLOSED                          | **No**                 |
+| Final Package Integration Verification performed | **Yes** — PASS (local) |
+| W5-N28 opened                                    | **No**                 |
+| Customer-visible feature                         | **None**               |
 
-| Check                                 | Expected / Status |
-| ------------------------------------- | ----------------- |
-| W5-N27-e opened                       | **No**            |
-| Runtime decision projection validated | **N/A** — OUT     |
-| Runtime scheduling validated          | **N/A** — OUT     |
-| Retry execution validated             | **N/A** — OUT     |
-
----
-
-## 11. Final Package Integration Verification (deferred)
-
-Final Package Integration Verification is deferred until authorized Close Evidence and Product Owner Final Close.
-
----
-
-## 12. Product Owner Final Close (deferred)
-
-Product Owner Final Close is deferred until authorized implementation and FIV.
+**Evidence:** [`w5-n27-e-implementation-report.md`](./w5-n27-e-implementation-report.md) · [`w5-n27-e-validation-report.md`](./w5-n27-e-validation-report.md) · [`w5-n27-close-package-report.md`](./w5-n27-close-package-report.md) · `apps/api/src/platform-conformance/w5-n27-e-package-close-evidence.ts`
 
 ---
 
-## Mandatory Questions (Planning / Slice a / Slice b / Slice c / Slice d)
+## 11. Final Package Integration Verification
+
+| Check                                         | Expected / Status             |
+| --------------------------------------------- | ----------------------------- |
+| Internally consistent                         | **Yes**                       |
+| Fully integrated                              | **Yes**                       |
+| Regression-safe                               | **Yes**                       |
+| Documentation synchronized                    | **Yes**                       |
+| Decision Projection Foundation only preserved | **Yes**                       |
+| Ready for Product Owner Final Close           | **Yes**                       |
+| Package declared CLOSED                       | **Yes** — CLOSED (2026-09-13) |
+| Product Owner Close Record created            | **Yes**                       |
+| W5-N28 opened                                 | **No**                        |
+
+**Evidence:** [`w5-n27-final-integration-verification.md`](./w5-n27-final-integration-verification.md) — **PASS** (local)
+
+---
+
+## 12. Product Owner Final Close
+
+| Check                                           | Expected / Status |
+| ----------------------------------------------- | ----------------- |
+| W5-N27 officially CLOSED                        | **Yes**           |
+| All implementation slices accepted              | **Yes**           |
+| Final Package Integration Verification accepted | **Yes**           |
+| Decision Projection Foundation only preserved   | **Yes**           |
+| Ownership changed                               | **No**            |
+| Architectural deviations                        | **No**            |
+| W5-N28 opened                                   | **No**            |
+| Repository Synchronization performed            | **No** — pending  |
+
+**Evidence:** [`w5-n27-product-owner-close-record.md`](./w5-n27-product-owner-close-record.md) — **CLOSED** (2026-09-13)
+
+---
+
+## Mandatory Questions (Planning / Slice a / Slice b / Slice c / Slice d / Slice e)
 
 1. **What business problem does W5-N27 solve?** Plan Notification Retry Scheduling Decision Projection after the Decision Evaluation Foundation is complete.
 2. **Why does it follow W5-N26?** Decision Projection depends on the completed Decision Evaluation Foundation and all preceding retry foundations.
 3. **What does it consume?** Closed W5-N01…W5-N26 and existing notification-delivery capabilities.
-4. **What does it own?** Planning for Notification Retry Scheduling Decision Projection; W5-N27-a owns inventory; W5-N27-b owns persistence; W5-N27-c owns restart recovery; W5-N27-d owns derived operational readiness only.
+4. **What does it own?** Planning for Notification Retry Scheduling Decision Projection; W5-N27-a owns inventory; W5-N27-b owns persistence; W5-N27-c owns restart recovery; W5-N27-d owns derived operational readiness; W5-N27-e owns package validation and Close Evidence only.
 5. **What is explicitly out of scope?** Runtime decision projection, runtime decision evaluation, runtime scheduling, retry execution, Retry Engine, workers, timers, transports, monitoring, BC, HA, DR.
 6. **Does it perform Retry Backoff Calculation?** No.
 7. **Does it determine Retry Eligibility?** No.
@@ -273,9 +304,13 @@ Product Owner Final Close is deferred until authorized implementation and FIV.
 |            | Notification Retry Scheduling Decision Projection Persistence Foundation            |
 |            | Notification Retry Scheduling Decision Projection Restart Recovery Foundation       |
 |            | Notification Retry Scheduling Decision Projection Operational Continuity Foundation |
+|            | Package validation and Close Evidence assembled                                     |
+|            | Final Package Integration Verification completed                                    |
+|            | W5-N27 governance lifecycle completed                                               |
 | Introduced | None                                                                                |
-| Deferred   | Package Validation & Operational Verification (W5-N27-e)                            |
+| Deferred   | Repository Synchronization after Product Owner Final Close                          |
+|            | Runtime decision projection                                                         |
 
 ---
 
-**STOP.** W5-N27-d Operational Continuity is **COMPLETE** (local). Await Product Owner Review. Do not open W5-N27-e. Do not commit. Do not push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N27 is **CLOSED** by Product Owner (2026-09-13). Await Repository Synchronization. Do not open W5-N28. Do not commit. Do not push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.

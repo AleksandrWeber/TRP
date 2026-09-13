@@ -2,7 +2,7 @@
 
 **Document:** W5-N27 Notification Retry Scheduling Decision Projection Foundation Overview
 **Date:** 2026-09-13
-**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N27-a Inventory **COMPLETE**. W5-N27-b Persistence **COMPLETE**. W5-N27-c Restart Recovery **COMPLETE**. W5-N27-d Operational Continuity **COMPLETE** (local). No runtime decision projection. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N27-a Inventory **COMPLETE**. W5-N27-b Persistence **COMPLETE**. W5-N27-c Restart Recovery **COMPLETE**. W5-N27-d Operational Continuity **COMPLETE**. W5-N27-e Close Evidence **COMPLETE**. Final Integration Verification **PASS** (local). Package **CLOSED** by Product Owner (2026-09-13). No runtime decision projection. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N27 (V3-N27 · CM-35)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -135,6 +135,30 @@ Readiness is never fabricated.
 Healthy owners continue when dependency rules allow.
 ```
 
+### W5-N27-e status (Close Evidence)
+
+W5-N27-e assembles **package Close Evidence** for Product Owner Package Review. Customer-visible functionality: **None**. Package CLOSED: **Yes** (2026-09-13). Final Integration Verification: **PASS** (local).
+
+```text
+Close Evidence validates completed work only.
+It does NOT perform runtime decision projection.
+It does NOT perform runtime decision evaluation.
+It does NOT schedule or execute retries.
+It does NOT declare W5-N27 CLOSED.
+It does NOT perform Final Package Integration Verification.
+```
+
+### Final Integration Verification status
+
+Final Package Integration Verification **PASS** (local). Package **CLOSED** by Product Owner (2026-09-13). Product Owner Close Record: [`w5-n27-product-owner-close-record.md`](./w5-n27-product-owner-close-record.md).
+
+```text
+FIV verified package integration only.
+Product Owner Final Close recorded W5-N27 CLOSED.
+FIV does NOT perform runtime decision projection.
+Close does NOT open W5-N28.
+```
+
 ## What the operator cannot do (still)
 
 - Assume retries were successfully delivered to recipients.
@@ -206,19 +230,22 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 
 ## Current status
 
-| Item                            | Status               |
-| ------------------------------- | -------------------- |
-| W5-N27 Planning Package         | **APPROVED**         |
-| Product Owner Planning Review   | **PASS**             |
-| Planning Approval               | **RECORDED**         |
-| Repository Synchronization      | **COMPLETE**         |
-| W5-N27-a Inventory              | **COMPLETE**         |
-| W5-N27-b Persistence            | **COMPLETE**         |
-| W5-N27-c Restart Recovery       | **COMPLETE**         |
-| W5-N27-d Operational Continuity | **COMPLETE** (local) |
-| W5-N27-e                        | **Not opened**       |
-| Runtime decision projection     | **Not implemented**  |
-| Wave 5 COMPLETE                 | **Not claimed**      |
+| Item                            | Status                  |
+| ------------------------------- | ----------------------- |
+| W5-N27 Planning Package         | **APPROVED**            |
+| Product Owner Planning Review   | **PASS**                |
+| Planning Approval               | **RECORDED**            |
+| Repository Synchronization      | **COMPLETE**            |
+| W5-N27-a Inventory              | **COMPLETE**            |
+| W5-N27-b Persistence            | **COMPLETE**            |
+| W5-N27-c Restart Recovery       | **COMPLETE**            |
+| W5-N27-d Operational Continuity | **COMPLETE**            |
+| W5-N27-e Close Evidence         | **COMPLETE** (local)    |
+| Package CLOSED                  | **CLOSED** (2026-09-13) |
+| Product Owner Close Record      | **RECORDED**            |
+| Final Integration Verification  | **PASS** (local)        |
+| Runtime decision projection     | **Not implemented**     |
+| Wave 5 COMPLETE                 | **Not claimed**         |
 
 ---
 
@@ -240,4 +267,4 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 
 ---
 
-**STOP.** W5-N27-d Operational Continuity is **COMPLETE** (local). Await Product Owner Review. Do NOT commit. Do NOT push. Do NOT open W5-N27-e. Do NOT declare runtime decision projection. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
+**STOP.** W5-N27 is **CLOSED** by Product Owner (2026-09-13). Do NOT declare runtime decision projection. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT open W5-N28. Await Repository Synchronization. Do NOT commit. Do NOT push. Do NOT modify the Master Plan.

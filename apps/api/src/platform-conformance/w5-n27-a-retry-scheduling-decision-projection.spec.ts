@@ -126,16 +126,19 @@ describe('W5-N27-a retry scheduling decision projection conformance — unit', (
     expect(W5_N27_A_ARCHITECTURE_CLAIMS.liveTradingClaimed).toBe(false);
   });
 
-  it('technical debt delta: inventory, persistence, restart recovery, and operational continuity baselines resolved; Close deferred; nothing introduced', () => {
+  it('technical debt delta: inventory through Close Evidence, FIV, and governance Close resolved; Repo Sync deferred; nothing introduced', () => {
     expect(W5_N27_A_TECHNICAL_DEBT_DELTA.resolved).toEqual([
       'Notification Retry Scheduling Decision Projection inventory baseline established',
       'Notification Retry Scheduling Decision Projection Persistence Foundation',
       'Notification Retry Scheduling Decision Projection Restart Recovery Foundation',
       'Notification Retry Scheduling Decision Projection Operational Continuity Foundation',
+      'Notification Retry Scheduling Decision Projection Package Close Evidence',
+      'Final Package Integration Verification completed',
+      'W5-N27 governance lifecycle completed',
     ]);
     expect(W5_N27_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N27_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'Package Validation & Operational Verification (W5-N27-e)',
+      'Repository Synchronization after Product Owner Final Close',
     ]);
   });
 
