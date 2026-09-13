@@ -2,7 +2,7 @@
 
 **Document:** W5-N26 Notification Retry Scheduling Decision Evaluation Foundation Overview
 **Date:** 2026-09-13
-**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. No implementation. No slices opened. No runtime decision evaluation. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N26-a Inventory **COMPLETE** (local). No runtime decision evaluation. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N26 (V3-N26 · CM-35)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -77,6 +77,20 @@ Evaluation output is informational only until consumed by future approved packag
 
 **Not available from this planning open alone** — no evaluation runtime, no Retry Backoff Calculation by this package, no Eligibility determination by this package, no Scheduling Decision runtime evaluation, no runtime scheduling, no scheduling execution, no execution, no transport execution, no successful delivery, no Live Notifications, no Production Ready, no Wave 5 COMPLETE.
 
+### W5-N26-a status (inventory)
+
+W5-N26-a delivers the Notification Retry Scheduling Decision Evaluation **inventory and classification baseline** only (107 machine-readable rows). Customer-visible functionality: **None**.
+
+```text
+Decision Evaluation inventory ≠ runtime decision evaluation.
+Inventory does NOT perform runtime decision evaluation.
+Inventory does NOT determine retry eligibility.
+Inventory does NOT perform Retry Backoff Calculation.
+Inventory does NOT schedule or execute retries.
+Inventory does NOT own retry lifecycle, timers, workers, or orchestration.
+Inventory output is informational only until consumed by future approved slices.
+```
+
 ---
 
 ## What the operator cannot do (still)
@@ -147,15 +161,16 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 
 ## Current status
 
-| Item                          | Status              |
-| ----------------------------- | ------------------- |
-| W5-N26 Planning Package       | **APPROVED**        |
-| Product Owner Planning Review | **PASS**            |
-| Planning Approval             | **RECORDED**        |
-| Repository Synchronization    | **COMPLETE**        |
-| W5-N26-a…e                    | **Not opened**      |
-| Runtime decision evaluation   | **Not implemented** |
-| Wave 5 COMPLETE               | **Not claimed**     |
+| Item                          | Status               |
+| ----------------------------- | -------------------- |
+| W5-N26 Planning Package       | **APPROVED**         |
+| Product Owner Planning Review | **PASS**             |
+| Planning Approval             | **RECORDED**         |
+| Repository Synchronization    | **COMPLETE**         |
+| W5-N26-a Inventory            | **COMPLETE** (local) |
+| W5-N26-b…e                    | **Not opened**       |
+| Runtime decision evaluation   | **Not implemented**  |
+| Wave 5 COMPLETE               | **Not claimed**      |
 
 ---
 
@@ -176,4 +191,4 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 
 ---
 
-**STOP.** W5-N26 Planning Package Repository Synchronization is **COMPLETE**. Await Product Owner Repository Review. Do NOT open W5-N26-a until Repository Synchronization has been approved. Do NOT begin implementation. Do NOT declare runtime decision evaluation. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
+**STOP.** W5-N26-a Inventory is **COMPLETE** (local). Await Product Owner Review. Do NOT commit. Do NOT push. Do NOT open W5-N26-b. Do NOT declare runtime decision evaluation. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
