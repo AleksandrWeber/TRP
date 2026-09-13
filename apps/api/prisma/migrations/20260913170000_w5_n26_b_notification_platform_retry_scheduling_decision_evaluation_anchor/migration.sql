@@ -5,8 +5,12 @@
 -- No runtime scheduling. No execution. No timers/workers/orchestration.
 -- Persistence only; restart recovery and operational continuity are later slices.
 -- Persisted evaluation data is informational until consumed by future approved packages.
+--
+-- Table map shortened to stay within PostgreSQL's 63-char identifier limit.
+-- The longer name `…_decision_evaluation_anchors` truncated to the same identifier
+-- as its `_pkey` constraint, causing 42P07 "relation already exists".
 
-CREATE TABLE "workspace_notification_platform_retry_decision_evaluation_anchors" (
+CREATE TABLE "workspace_notification_platform_retry_decision_eval_anchors" (
     "workspace_id" TEXT NOT NULL,
     "evaluation_anchor_id" TEXT NOT NULL,
     "schema_version" INTEGER NOT NULL DEFAULT 1,
@@ -19,5 +23,5 @@ CREATE TABLE "workspace_notification_platform_retry_decision_evaluation_anchors"
     "recorded_by_actor_id" TEXT,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "workspace_notification_platform_retry_decision_evaluation_anchors_pkey" PRIMARY KEY ("workspace_id", "evaluation_anchor_id")
+    CONSTRAINT "ws_np_retry_decision_eval_anchors_pkey" PRIMARY KEY ("workspace_id", "evaluation_anchor_id")
 );

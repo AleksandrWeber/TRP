@@ -2258,5 +2258,5 @@ model WorkspaceNotificationPlatformRetrySchedulingDecisionEvaluationAnchor {
   updatedAt                                       DateTime @updatedAt @map("updated_at")
 
   @@id([workspaceId, evaluationAnchorId])
-  @@map("workspace_notification_platform_retry_decision_evaluation_anchors")
+  @@map("workspace_notification_platform_retry_decision_eval_anchors")
 }
