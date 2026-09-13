@@ -268,12 +268,14 @@ const N26_EVAL_D =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-evaluation-operational-continuity.ts';
 const N27B =
   'apps/api/src/modules/notification-delivery/notification-platform-retry-scheduling-decision-projection-persistence.service.ts';
-const N27B_PRISMA =
-  'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-retry-scheduling-decision-projection-anchor.repository.ts';
 const N27C =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-projection-restart-recovery.service.ts';
 const N27D =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-projection-operational-continuity.ts';
+const N28B =
+  'apps/api/src/modules/notification-delivery/notification-platform-retry-scheduling-decision-projection-publication-persistence.service.ts';
+const N28B_PRISMA =
+  'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-retry-scheduling-decision-projection-publication-anchor.repository.ts';
 
 type RowInput = {
   artifactId: string;
@@ -1064,14 +1066,15 @@ export const W5_N28_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_INVENTORY
     row({
       artifactId: 'missing-publication-persistence',
       artifact:
-        'Decision Projection durable persistence — resolved by W5-N28-b (gap row retained for inventory honesty)',
+        'Decision Projection Publication durable persistence — resolved by W5-N28-b (gap row retained for inventory honesty)',
       kind: 'persistence-candidate',
       owner: 'notification-delivery',
-      purpose: 'Record resolved durable decision projection persistence gap after W5-N28-b',
+      purpose:
+        'Record resolved durable decision projection publication persistence gap after W5-N28-b',
       publicationRole: 'missing-gap-resolved',
       classification: 'RECOVERABLE',
       honestyRequirement:
-        'Resolved by W5-N28-b — persistence only; not runtime decision projection; not scheduling/eligibility/backoff/execution',
+        'Resolved by W5-N28-b — persistence only; not runtime publication; not runtime decision projection; not scheduling/eligibility/backoff/execution',
       futureW5N28Responsibility: 'honesty-baseline',
       persistenceRequirement: 'notification-delivery',
       recoveryRequirement: 'notification-delivery',
@@ -1080,8 +1083,8 @@ export const W5_N28_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_INVENTORY
       honestProductState: 'infrastructure-only',
       currentStatus:
         'Resolved by W5-N28-b — see persist-candidate-publication-anchor; gap row retained for inventory honesty',
-      evidencePath: N27B,
-      existsToday: false,
+      evidencePath: N28B,
+      existsToday: true,
       customerVisibility: 'not customer-visible — gap resolved by W5-N28-b',
     }),
     row({
@@ -1333,15 +1336,14 @@ export const W5_N28_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_INVENTORY
     row({
       artifactId: 'persist-candidate-publication-anchor',
       artifact:
-        'WorkspaceNotificationPlatformRetrySchedulingDecisionProjectionPublicationAnchor — planned (W5-N28-b)',
+        'WorkspaceNotificationPlatformRetrySchedulingDecisionProjectionPublicationAnchor — durable publication anchors (W5-N28-b)',
       kind: 'persistence-candidate',
       owner: 'notification-delivery',
-      purpose:
-        'Planned durable Decision Projection Publication anchor on notification-delivery owner',
+      purpose: 'Durable Decision Projection Publication anchor on notification-delivery owner',
       publicationRole: 'durable-anchor',
       classification: 'RECOVERABLE',
       honestyRequirement:
-        'Persistence only; not runtime decision projection; not scheduling/eligibility/backoff/execution',
+        'Persistence only; not runtime publication; not runtime decision projection; not scheduling/eligibility/backoff/execution',
       futureW5N28Responsibility: 'honesty-baseline',
       persistenceRequirement: 'notification-delivery',
       recoveryRequirement: 'notification-delivery',
@@ -1349,9 +1351,9 @@ export const W5_N28_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_INVENTORY
       capabilityCategory: 'infrastructure-only',
       honestProductState: 'infrastructure-only',
       currentStatus:
-        'Missing — planned W5-N28-b persistence; W5-N28-c recovery; W5-N28-d continuity',
-      evidencePath: N27B_PRISMA,
-      existsToday: false,
+        'Implemented — durable decision projection publication anchors; restart recovery via W5-N28-c; operational continuity via W5-N28-d',
+      evidencePath: N28B_PRISMA,
+      existsToday: true,
       customerVisibility: 'not customer-visible — infrastructure only',
     }),
     row({
@@ -1825,7 +1827,7 @@ export const W5_N28_A_BINDING_FINDINGS = Object.freeze({
   w5N27RetrySchedulingDecisionProjectionExists: true,
   projectionPublicationInventoryMissing: false,
   unifiedPlatformDecisionProjectionPublicationLayerMissing: true,
-  publicationPersistenceMissing: true,
+  publicationPersistenceMissing: false,
   publicationRecoveryMissing: true,
   publicationOperationalContinuityMissing: true,
   productionTransportsDeferred: true,

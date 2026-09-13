@@ -3,7 +3,7 @@
 **Package:** W5-N28 Notification Retry Scheduling Decision Projection Publication Foundation
 **Wave:** 5 — Notification Platform
 **Master Plan / Roadmap:** V3-N28 · CM-35
-**Status:** Planning Package **APPROVED** (2026-09-13). Repository Synchronization (Planning) **COMPLETE**. W5-N28-a Inventory **COMPLETE** (local). No runtime Decision Projection Publication. No runtime Decision Projection. No runtime scheduling.
+**Status:** Planning Package **APPROVED** (2026-09-13). Repository Synchronization (Planning) **COMPLETE**. W5-N28-a Inventory **COMPLETE**. W5-N28-b Persistence **COMPLETE** (local). No runtime Decision Projection Publication. No runtime Decision Projection. No runtime scheduling.
 **Date:** 2026-09-13
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
 **Scope:** [`w5-n28-product-scope.md`](./w5-n28-product-scope.md)
@@ -139,29 +139,51 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 
 ## 6. W5-N28-a validation (inventory)
 
-| Check                                                      | Expected / Status  |
-| ---------------------------------------------------------- | ------------------ |
-| Machine inventory rows ≥ 50                                | **PASS** (120)     |
-| Classifications cover all five                             | **PASS**           |
-| RECOVERABLE and EPHEMERAL non-empty                        | **PASS** (51 / 12) |
-| DECISION / CONFIGURATION present                           | **PASS** (3 / 3)   |
-| `projectionPublicationInventoryMissing`                    | **false**          |
-| No publication functional authorization                    | **PASS**           |
-| Inventory-only honesty boundaries                          | **PASS**           |
-| Inventory performs Runtime Decision Projection Publication | **No**             |
-| Inventory performs Runtime Decision Projection             | **No**             |
-| Inventory performs Runtime Decision Evaluation             | **No**             |
-| Inventory performs runtime scheduling                      | **No**             |
-| Inventory determines eligibility                           | **No**             |
-| Inventory performs Retry Backoff Calculation               | **No**             |
-| Inventory schedules / executes retries                     | **No** / **No**    |
-| Ownership / architecture changed                           | **No** / **No**    |
-| Customer-visible feature                                   | **None**           |
-| W5-N28-b Persistence                                       | **Not opened**     |
+| Check                                                      | Expected / Status    |
+| ---------------------------------------------------------- | -------------------- |
+| Machine inventory rows ≥ 50                                | **PASS** (120)       |
+| Classifications cover all five                             | **PASS**             |
+| RECOVERABLE and EPHEMERAL non-empty                        | **PASS** (51 / 12)   |
+| DECISION / CONFIGURATION present                           | **PASS** (3 / 3)     |
+| `projectionPublicationInventoryMissing`                    | **false**            |
+| No publication functional authorization                    | **PASS**             |
+| Inventory-only honesty boundaries                          | **PASS**             |
+| Inventory performs Runtime Decision Projection Publication | **No**               |
+| Inventory performs Runtime Decision Projection             | **No**               |
+| Inventory performs Runtime Decision Evaluation             | **No**               |
+| Inventory performs runtime scheduling                      | **No**               |
+| Inventory determines eligibility                           | **No**               |
+| Inventory performs Retry Backoff Calculation               | **No**               |
+| Inventory schedules / executes retries                     | **No** / **No**      |
+| Ownership / architecture changed                           | **No** / **No**      |
+| Customer-visible feature                                   | **None**             |
+| W5-N28-b Persistence                                       | **COMPLETE** (local) |
 
 **Evidence:** [`w5-n28-a-inventory.md`](./w5-n28-a-inventory.md) · [`w5-n28-a-validation-report.md`](./w5-n28-a-validation-report.md) · `apps/api/src/platform-conformance/w5-n28-a-retry-scheduling-decision-projection-publication*.ts`
 
 ---
+
+## 7. W5-N28-b validation (persistence)
+
+| Check                                                           | Expected / Status |
+| --------------------------------------------------------------- | ----------------- |
+| Recoverable Decision Projection Publication artifacts persisted | **PASS**          |
+| Survive process termination                                     | **Yes**           |
+| Automatic restart recovery                                      | **No** (W5-N28-c) |
+| `publicationPersistenceMissing`                                 | **false**         |
+| Persistence performs Runtime Decision Projection Publication    | **No**            |
+| Persistence performs runtime publication                        | **No**            |
+| Persistence performs Runtime Decision Projection                | **No**            |
+| Persistence performs Runtime Decision Evaluation                | **No**            |
+| Persistence performs runtime scheduling                         | **No**            |
+| Persistence performs Retry Backoff Calculation                  | **No**            |
+| Persistence determines Retry Eligibility                        | **No**            |
+| Persistence executes retries                                    | **No**            |
+| Ownership / architecture changed                                | **No** / **No**   |
+| Customer-visible feature                                        | **None**          |
+| W5-N28-c Restart Recovery                                       | **Not opened**    |
+
+**Evidence:** [`w5-n28-b-implementation-report.md`](./w5-n28-b-implementation-report.md) · [`w5-n28-b-validation-report.md`](./w5-n28-b-validation-report.md) · `apps/api/src/platform-conformance/w5-n28-b-durable-notification-platform-retry-scheduling-decision-projection-publication*.ts`
 
 ## Mandatory Questions
 
@@ -187,13 +209,13 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Resolved   | Planning Approval completed                                                                  |
 |            | W5-N28 Planning Package synchronized                                                         |
 |            | Notification Retry Scheduling Decision Projection Publication inventory baseline established |
+|            | Notification Retry Scheduling Decision Projection Publication Persistence Foundation         |
 | Introduced | None                                                                                         |
-| Deferred   | W5-N28-b — Persistence Foundation                                                            |
-|            | W5-N28-c — Restart Recovery Foundation                                                       |
+| Deferred   | W5-N28-c — Restart Recovery Foundation                                                       |
 |            | W5-N28-d — Operational Continuity Foundation                                                 |
 |            | W5-N28-e — Package Validation, Operational Verification & Close Evidence                     |
 |            | Runtime Decision Projection Publication                                                      |
 
 ---
 
-**STOP.** W5-N28-a Inventory is **COMPLETE** (local). Await Product Owner Review. Do **not** commit. Do **not** push. Do **not** open W5-N28-b. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N28-b Persistence is **COMPLETE** (local). Await Product Owner Review. Do **not** commit. Do **not** push. Do **not** open W5-N28-c. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.

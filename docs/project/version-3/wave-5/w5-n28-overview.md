@@ -2,7 +2,7 @@
 
 **Document:** W5-N28 Notification Retry Scheduling Decision Projection Publication Foundation Overview
 **Date:** 2026-09-13
-**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N28-a Inventory **COMPLETE** (local). No runtime Decision Projection Publication. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. W5-N28-a Inventory **COMPLETE**. W5-N28-b Persistence **COMPLETE** (local). No runtime Decision Projection Publication. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N28 (V3-N28 · CM-35)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -99,6 +99,21 @@ Inventory output is informational only until consumed by future approved slices.
 projectionPublicationInventoryMissing = false.
 ```
 
+### W5-N28-b status (persistence)
+
+W5-N28-b delivers **durable persistence** for Decision Projection Publication anchors on `notification-delivery`. Customer-visible functionality: **None**. Survives process termination: **Yes**. Automatic restart recovery: **No** (W5-N28-c).
+
+```text
+Persisted Decision Projection Publication artifacts remain informational only.
+Persistence does NOT publish Decision Projection.
+Persistence does NOT perform runtime publication.
+Persistence does NOT perform runtime Decision Projection.
+Persistence does NOT perform runtime Decision Evaluation.
+Persistence does NOT schedule or execute retries.
+Persistence does NOT calculate backoff or determine eligibility.
+publicationPersistenceMissing = false.
+```
+
 ## What the operator cannot do (still)
 
 - Assume retries were successfully delivered to recipients.
@@ -174,8 +189,9 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 | Product Owner Planning Review           | **PASS**             |
 | Planning Approval                       | **RECORDED**         |
 | Repository Synchronization              | **COMPLETE**         |
-| W5-N28-a Inventory                      | **COMPLETE** (local) |
-| W5-N28-b…e                              | **Not opened**       |
+| W5-N28-a Inventory                      | **COMPLETE**         |
+| W5-N28-b Persistence                    | **COMPLETE** (local) |
+| W5-N28-c…e                              | **Not opened**       |
 | Runtime Decision Projection Publication | **Not implemented**  |
 | Wave 5 COMPLETE                         | **Not claimed**      |
 
@@ -198,4 +214,4 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 
 ---
 
-**STOP.** W5-N28-a Inventory is **COMPLETE** (local). Await Product Owner Review. Do **NOT** commit. Do **NOT** push. Do **NOT** open W5-N28-b. Do NOT declare runtime Decision Projection Publication. Do NOT declare Runtime Publication Engine. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
+**STOP.** W5-N28-b Persistence is **COMPLETE** (local). Await Product Owner Review. Do **NOT** commit. Do **NOT** push. Do **NOT** open W5-N28-c. Do NOT declare runtime Decision Projection Publication. Do NOT declare Runtime Publication Engine. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.

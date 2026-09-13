@@ -118,7 +118,7 @@ describe('W5-N28-a retry scheduling decision projection publication conformance 
     expect(W5_N28_A_BINDING_FINDINGS.unifiedPlatformDecisionProjectionPublicationLayerMissing).toBe(
       true,
     );
-    expect(W5_N28_A_BINDING_FINDINGS.publicationPersistenceMissing).toBe(true);
+    expect(W5_N28_A_BINDING_FINDINGS.publicationPersistenceMissing).toBe(false);
     expect(W5_N28_A_BINDING_FINDINGS.projectionPublicationInventoryMissing).toBe(false);
     expect(W5_N28_A_BINDING_FINDINGS.publicationRecoveryMissing).toBe(true);
     expect(W5_N28_A_BINDING_FINDINGS.publicationOperationalContinuityMissing).toBe(true);

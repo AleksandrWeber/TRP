@@ -194,7 +194,7 @@ describe('W5-N28-a notification retry scheduling decision projection publication
     expect(W5_N28_A_BINDING_FINDINGS.unifiedPlatformDecisionProjectionPublicationLayerMissing).toBe(
       true,
     );
-    expect(W5_N28_A_BINDING_FINDINGS.publicationPersistenceMissing).toBe(true);
+    expect(W5_N28_A_BINDING_FINDINGS.publicationPersistenceMissing).toBe(false);
     expect(W5_N28_A_BINDING_FINDINGS.projectionPublicationInventoryMissing).toBe(false);
     expect(W5_N28_A_BINDING_FINDINGS.publicationRecoveryMissing).toBe(true);
     expect(W5_N28_A_BINDING_FINDINGS.publicationOperationalContinuityMissing).toBe(true);
@@ -297,17 +297,17 @@ describe('W5-N28-a notification retry scheduling decision projection publication
     ]);
   });
 
-  it('persistence, recovery, and continuity gaps remain open for W5-N28-b/c/d; unified publication view remains open', () => {
+  it('persistence gap resolved by W5-N28-b; recovery and continuity gaps remain open for W5-N28-c/d; unified publication view remains open', () => {
     expect(
       W5_N28_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_INVENTORY.find(
         (entry) => entry.artifactId === 'missing-publication-persistence',
       )?.existsToday,
-    ).toBe(false);
+    ).toBe(true);
     expect(
       W5_N28_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_INVENTORY.find(
         (entry) => entry.artifactId === 'persist-candidate-publication-anchor',
       )?.existsToday,
-    ).toBe(false);
+    ).toBe(true);
     expect(
       W5_N28_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_INVENTORY.find(
         (entry) => entry.artifactId === 'missing-publication-persistence',
@@ -351,7 +351,7 @@ describe('W5-N28-a notification retry scheduling decision projection publication
           entry.artifactId === 'missing-unified-platform-decision-projection-publication-view',
       )?.classification,
     ).toBe('EPHEMERAL');
-    expect(W5_N28_A_BINDING_FINDINGS.publicationPersistenceMissing).toBe(true);
+    expect(W5_N28_A_BINDING_FINDINGS.publicationPersistenceMissing).toBe(false);
     expect(W5_N28_A_BINDING_FINDINGS.projectionPublicationInventoryMissing).toBe(false);
     expect(W5_N28_A_BINDING_FINDINGS.publicationRecoveryMissing).toBe(true);
     expect(W5_N28_A_BINDING_FINDINGS.publicationOperationalContinuityMissing).toBe(true);
