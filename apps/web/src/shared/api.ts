@@ -1100,6 +1100,8 @@ export type OperationalContinuityReadinessView = {
   notificationPlatformRetrySchedulingDecisionEvaluation: NotificationPlatformRetrySchedulingDecisionEvaluationContinuityView | null;
   /** W5-N27-d — Notification Platform Retry Scheduling Decision Projection operational continuity. */
   notificationPlatformRetrySchedulingDecisionProjection: NotificationPlatformRetrySchedulingDecisionProjectionContinuityView | null;
+  /** W5-N28-d — Notification Platform Retry Scheduling Decision Projection Publication operational continuity. */
+  notificationPlatformRetrySchedulingDecisionProjectionPublication: NotificationPlatformRetrySchedulingDecisionProjectionPublicationContinuityView | null;
 };
 
 export type NotificationQueueContinuityView = {
@@ -1505,6 +1507,18 @@ export type NotificationPlatformRetrySchedulingDecisionEvaluationContinuityView 
 };
 
 export type NotificationPlatformRetrySchedulingDecisionProjectionContinuityView = {
+  operationalState: OperationalContinuityState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+};
+
+export type NotificationPlatformRetrySchedulingDecisionProjectionPublicationContinuityView = {
   operationalState: OperationalContinuityState;
   ownerReadiness: 'ready' | 'unavailable' | 'degraded';
   recoveryTimestamp: string | null;

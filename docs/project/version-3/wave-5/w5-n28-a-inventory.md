@@ -67,7 +67,7 @@ Every row includes: unique identifier, existing owner, purpose, publication role
 - Closed W5-N01…N27 foundations exist — consumed as reference patterns only. W5-N22…W5-N27 are consumed — not redesigned.
 - `projectionPublicationInventoryMissing`: **false** (this slice).
 - **No** unified cross-channel platform Decision Projection Publication runtime layer exists after projection (`unifiedPlatformDecisionProjectionPublicationLayerMissing`: **true**).
-- `publicationPersistenceMissing`: **true**; `publicationRecoveryMissing`: **true**; `publicationOperationalContinuityMissing`: **true**.
+- `publicationPersistenceMissing`: **false**; `publicationRecoveryMissing`: **false**; `publicationOperationalContinuityMissing`: **false**.
 - Inventory does **not** publish Decision Projection, perform Runtime Decision Projection, perform Runtime Decision Evaluation, perform runtime scheduling, determine eligibility, perform Retry Backoff Calculation, execute retries, or own retry lifecycle, timers, workers, or orchestration.
 - Inventory output is **informational** until consumed by future approved slices.
 - TD-049 / TD-050 production transport I/O remains deferred — not claimed from this inventory.

@@ -268,14 +268,15 @@ const N26_EVAL_D =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-evaluation-operational-continuity.ts';
 const N27B =
   'apps/api/src/modules/notification-delivery/notification-platform-retry-scheduling-decision-projection-persistence.service.ts';
-const N27D =
-  'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-projection-operational-continuity.ts';
 const N28B =
   'apps/api/src/modules/notification-delivery/notification-platform-retry-scheduling-decision-projection-publication-persistence.service.ts';
 const N28B_PRISMA =
   'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-retry-scheduling-decision-projection-publication-anchor.repository.ts';
 const N28C =
   'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-projection-publication-restart-recovery.service.ts';
+const N28D =
+  'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-projection-publication-operational-continuity.ts';
+const OR = 'apps/api/src/modules/operational-continuity/operational-readiness.ts';
 
 type RowInput = {
   artifactId: string;
@@ -1114,18 +1115,19 @@ export const W5_N28_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_INVENTORY
     row({
       artifactId: 'missing-publication-operational-continuity',
       artifact:
-        'Decision Projection operational continuity — resolved by W5-N28-d (gap row retained for inventory honesty)',
+        'Decision Projection Publication operational continuity — resolved by W5-N28-d (gap row retained for inventory honesty)',
       kind: 'operational',
       owner: 'platform-readiness',
-      purpose: 'Record resolved decision projection operational continuity gap after W5-N28-d',
+      purpose:
+        'Record resolved Decision Projection Publication operational continuity gap after W5-N28-d',
       publicationRole: 'missing-gap-resolved',
       classification: 'EPHEMERAL',
       honestyRequirement:
-        'Resolved by W5-N28-d — derived readiness only; not runtime decision projection; not scheduling/eligibility/backoff/execution',
+        'Resolved by W5-N28-d — derived readiness only; not runtime publication; not runtime decision projection; not scheduling/eligibility/backoff/execution',
       futureW5N28Responsibility: 'honesty-baseline',
       operationalRequirement: 'platform-readiness',
-      evidencePath: N27D,
-      existsToday: false,
+      evidencePath: N28D,
+      existsToday: true,
       customerVisibility: 'not customer-visible — gap resolved by W5-N28-d',
     }),
 
@@ -1319,20 +1321,22 @@ export const W5_N28_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_INVENTORY
     row({
       artifactId: 'publication-platform-readiness-projection-missing',
       artifact:
-        'Platform Readiness notificationPlatformRetrySchedulingDecisionProjectionPublication — missing (planned W5-N28-d)',
+        'Platform Readiness notificationPlatformRetrySchedulingDecisionProjectionPublication — projected (W5-N28-d)',
       kind: 'projection',
       owner: 'platform-readiness',
-      purpose: 'Record that publication readiness projection is missing until W5-N28-d',
+      purpose: 'Record that publication readiness projection is present on Platform Readiness',
       publicationRole: 'readiness-projection',
       classification: 'EPHEMERAL',
-      honestyRequirement: 'Derived readiness only; does not authorize runtime decision projection',
+      honestyRequirement:
+        'Derived readiness only; does not authorize runtime publication or runtime decision projection',
       futureW5N28Responsibility: 'honesty-baseline',
       operationalRequirement: 'platform-readiness',
       capabilityCategory: 'infrastructure-only',
       honestProductState: 'infrastructure-only',
-      evidencePath: PKG,
-      existsToday: false,
-      customerVisibility: 'operator Platform Readiness only — not runtime decision projection',
+      evidencePath: OR,
+      existsToday: true,
+      customerVisibility:
+        'operator Platform Readiness only — not runtime publication or decision projection',
     }),
     row({
       artifactId: 'persist-candidate-publication-anchor',
@@ -1830,7 +1834,7 @@ export const W5_N28_A_BINDING_FINDINGS = Object.freeze({
   unifiedPlatformDecisionProjectionPublicationLayerMissing: true,
   publicationPersistenceMissing: false,
   publicationRecoveryMissing: false,
-  publicationOperationalContinuityMissing: true,
+  publicationOperationalContinuityMissing: false,
   productionTransportsDeferred: true,
   inventoryDoesNotMakeSchedulingDecisions: true,
   inventoryDoesNotPerformRuntimeDecisionProjectionPublication: true,

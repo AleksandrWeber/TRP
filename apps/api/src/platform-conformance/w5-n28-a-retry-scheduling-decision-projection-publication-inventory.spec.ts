@@ -197,7 +197,7 @@ describe('W5-N28-a notification retry scheduling decision projection publication
     expect(W5_N28_A_BINDING_FINDINGS.publicationPersistenceMissing).toBe(false);
     expect(W5_N28_A_BINDING_FINDINGS.projectionPublicationInventoryMissing).toBe(false);
     expect(W5_N28_A_BINDING_FINDINGS.publicationRecoveryMissing).toBe(false);
-    expect(W5_N28_A_BINDING_FINDINGS.publicationOperationalContinuityMissing).toBe(true);
+    expect(W5_N28_A_BINDING_FINDINGS.publicationOperationalContinuityMissing).toBe(false);
     expect(W5_N28_A_BINDING_FINDINGS.w5N25RetrySchedulingDecisionExists).toBe(true);
     expect(W5_N28_A_BINDING_FINDINGS.productionTransportsDeferred).toBe(true);
     expect(W5_N28_A_BINDING_FINDINGS.inventoryDoesNotDetermineEligibility).toBe(true);
@@ -297,7 +297,7 @@ describe('W5-N28-a notification retry scheduling decision projection publication
     ]);
   });
 
-  it('persistence and recovery gaps resolved by W5-N28-b/c; continuity gap remains open for W5-N28-d; unified publication view remains open', () => {
+  it('persistence, recovery, and continuity gaps resolved by W5-N28-b/c/d; unified publication view remains open', () => {
     expect(
       W5_N28_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_INVENTORY.find(
         (entry) => entry.artifactId === 'missing-publication-persistence',
@@ -332,12 +332,12 @@ describe('W5-N28-a notification retry scheduling decision projection publication
       W5_N28_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_INVENTORY.find(
         (entry) => entry.artifactId === 'missing-publication-operational-continuity',
       )?.existsToday,
-    ).toBe(false);
+    ).toBe(true);
     expect(
       W5_N28_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_INVENTORY.find(
         (entry) => entry.artifactId === 'publication-platform-readiness-projection-missing',
       )?.existsToday,
-    ).toBe(false);
+    ).toBe(true);
     for (const id of ['missing-unified-platform-decision-projection-publication-view']) {
       const row = W5_N28_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_INVENTORY.find(
         (entry) => entry.artifactId === id,
@@ -354,7 +354,7 @@ describe('W5-N28-a notification retry scheduling decision projection publication
     expect(W5_N28_A_BINDING_FINDINGS.publicationPersistenceMissing).toBe(false);
     expect(W5_N28_A_BINDING_FINDINGS.projectionPublicationInventoryMissing).toBe(false);
     expect(W5_N28_A_BINDING_FINDINGS.publicationRecoveryMissing).toBe(false);
-    expect(W5_N28_A_BINDING_FINDINGS.publicationOperationalContinuityMissing).toBe(true);
+    expect(W5_N28_A_BINDING_FINDINGS.publicationOperationalContinuityMissing).toBe(false);
   });
 });
 

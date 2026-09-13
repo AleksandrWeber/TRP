@@ -116,7 +116,7 @@ publicationPersistenceMissing = false.
 
 ### W5-N28-c status (restart recovery)
 
-W5-N28-c delivers **deterministic restart recovery** for persisted Decision Projection Publication anchors on `notification-delivery`. Customer-visible functionality: **None**. Restored after normal restart: **Yes**. Operational continuity: **No** (W5-N28-d).
+W5-N28-c delivers **deterministic restart recovery** for persisted Decision Projection Publication anchors on `notification-delivery`. Customer-visible functionality: **None**. Restored after normal restart: **Yes**. Operational continuity: **Yes** (W5-N28-d).
 
 ```text
 Recovered Decision Projection Publication artifacts remain informational only.
@@ -127,6 +127,21 @@ Restart Recovery does NOT perform runtime Decision Evaluation.
 Restart Recovery does NOT schedule or execute retries.
 Restart Recovery does NOT calculate backoff or determine eligibility.
 publicationRecoveryMissing = false.
+```
+
+### W5-N28-d status (operational continuity)
+
+W5-N28-d delivers **derived operational readiness** for recovered Decision Projection Publication anchors on existing Platform Readiness. Customer-visible functionality: **Operator Platform Readiness only**. Supported states: Recovering | Ready | Degraded | Unavailable. Runtime publication: **No**.
+
+```text
+Operational Continuity derives readiness only.
+It does NOT publish Decision Projection.
+It does NOT perform runtime publication.
+It does NOT perform runtime Decision Projection.
+It does NOT perform runtime Decision Evaluation.
+It does NOT schedule or execute retries.
+It does NOT calculate backoff or determine eligibility.
+publicationOperationalContinuityMissing = false.
 ```
 
 ## What the operator cannot do (still)
@@ -207,7 +222,8 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 | W5-N28-a Inventory                      | **COMPLETE**         |
 | W5-N28-b Persistence                    | **COMPLETE**         |
 | W5-N28-c Restart Recovery               | **COMPLETE** (local) |
-| W5-N28-d…e                              | **Not opened**       |
+| W5-N28-d Operational Continuity         | **COMPLETE** (local) |
+| W5-N28-e                                | **Not opened**       |
 | Runtime Decision Projection Publication | **Not implemented**  |
 | Wave 5 COMPLETE                         | **Not claimed**      |
 
@@ -230,4 +246,4 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 
 ---
 
-**STOP.** W5-N28-c Restart Recovery is **COMPLETE** (local). Await Product Owner Review. Do **NOT** commit. Do **NOT** push. Do **NOT** open W5-N28-d. Do NOT declare runtime Decision Projection Publication. Do NOT declare Runtime Publication Engine. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
+**STOP.** W5-N28-d Operational Continuity is **COMPLETE** (local). Await Product Owner Review. Do **NOT** commit. Do **NOT** push. Do **NOT** open W5-N28-e. Do NOT declare runtime Decision Projection Publication. Do NOT declare Runtime Publication Engine. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.

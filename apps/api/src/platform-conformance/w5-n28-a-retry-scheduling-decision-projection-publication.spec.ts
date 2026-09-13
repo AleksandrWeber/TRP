@@ -121,7 +121,7 @@ describe('W5-N28-a retry scheduling decision projection publication conformance 
     expect(W5_N28_A_BINDING_FINDINGS.publicationPersistenceMissing).toBe(false);
     expect(W5_N28_A_BINDING_FINDINGS.projectionPublicationInventoryMissing).toBe(false);
     expect(W5_N28_A_BINDING_FINDINGS.publicationRecoveryMissing).toBe(false);
-    expect(W5_N28_A_BINDING_FINDINGS.publicationOperationalContinuityMissing).toBe(true);
+    expect(W5_N28_A_BINDING_FINDINGS.publicationOperationalContinuityMissing).toBe(false);
     expect(W5_N28_A_BINDING_FINDINGS.w5N25RetrySchedulingDecisionExists).toBe(true);
     expect(W5_N28_A_ARCHITECTURE_CLAIMS.publicationFunctionalClaimed).toBe(false);
     expect(W5_N28_A_ARCHITECTURE_CLAIMS.w5N28CompleteClaimed).toBe(false);

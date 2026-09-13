@@ -1,0 +1,22 @@
+# W5-N28-d Architecture Review
+
+**Verdict:** PASS — operational continuity only; no architectural deviation.  
+**Date:** 2026-09-13
+
+W5-N28-d derives Notification Retry Scheduling Decision Projection Publication operational readiness from W5-N28-c recovery records and projects it onto existing Platform Readiness. No new bounded context, Source of Truth, persistence owner, Runtime Publication Engine, Runtime Projection Engine, Runtime Decision Engine, Runtime Scheduler, Worker, Retry Engine, or duplicate readiness engine was introduced.
+
+| Check                                                                                                             | Result   |
+| ----------------------------------------------------------------------------------------------------------------- | -------- |
+| No new bounded context                                                                                            | **PASS** |
+| No ownership movement                                                                                             | **PASS** |
+| No persistence redesign / new persistence owner                                                                   | **PASS** |
+| No new Source of Truth                                                                                            | **PASS** |
+| Existing Operational Continuity / Platform Readiness reused                                                       | **PASS** |
+| Existing notification-delivery owner reused                                                                       | **PASS** |
+| Readiness derived (never hardcoded Ready)                                                                         | **PASS** |
+| No Runtime Publication / Runtime Decision Projection / Runtime Decision Engine / Runtime Scheduler / Retry Engine | **PASS** |
+| No architectural drift                                                                                            | **PASS** |
+| Notification Retry Scheduling Decision Projection Publication functional after slice d                            | **No**   |
+
+**Architectural deviations:** None.  
+**Master Plan / Version 2:** Unchanged.

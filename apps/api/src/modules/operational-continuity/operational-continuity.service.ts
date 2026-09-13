@@ -92,6 +92,8 @@ import { getNotificationPlatformRetrySchedulingDecisionEvaluationContinuityRecor
 import { buildNotificationPlatformRetrySchedulingDecisionEvaluationContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-scheduling-decision-evaluation-operational-continuity';
 import { getNotificationPlatformRetrySchedulingDecisionProjectionContinuityRecord } from '../notification-delivery/domain/notification-platform-retry-scheduling-decision-projection-continuity-status';
 import { buildNotificationPlatformRetrySchedulingDecisionProjectionContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-scheduling-decision-projection-operational-continuity';
+import { getNotificationPlatformRetrySchedulingDecisionProjectionPublicationContinuityRecord } from '../notification-delivery/domain/notification-platform-retry-scheduling-decision-projection-publication-continuity-status';
+import { buildNotificationPlatformRetrySchedulingDecisionProjectionPublicationContinuityProjection } from '../notification-delivery/domain/notification-platform-retry-scheduling-decision-projection-publication-operational-continuity';
 import { getKillSwitchContinuityRecord } from '../trading-session/domain/kill-switch-continuity-status';
 import { buildKillSwitchContinuityProjection } from '../trading-session/domain/kill-switch-operational-continuity';
 import { getMonitoringHealthContinuityRecord } from '../../security-platform/monitoring-health/domain/monitoring-health-continuity-status';
@@ -304,6 +306,12 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
         }),
       notificationPlatformRetrySchedulingDecisionProjection:
         buildNotificationPlatformRetrySchedulingDecisionProjectionContinuityProjection({
+          recovering: true,
+          ownerReadiness: 'ready',
+          continuity: null,
+        }),
+      notificationPlatformRetrySchedulingDecisionProjectionPublication:
+        buildNotificationPlatformRetrySchedulingDecisionProjectionPublicationContinuityProjection({
           recovering: true,
           ownerReadiness: 'ready',
           continuity: null,
@@ -738,6 +746,21 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
       continuity,
     });
+  }
+
+  private buildNotificationPlatformRetrySchedulingDecisionProjectionPublicationView(input: {
+    recovering: boolean;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  }) {
+    const continuity =
+      getNotificationPlatformRetrySchedulingDecisionProjectionPublicationContinuityRecord();
+    return buildNotificationPlatformRetrySchedulingDecisionProjectionPublicationContinuityProjection(
+      {
+        recovering: input.recovering,
+        ownerReadiness: continuity?.ownerReadiness ?? input.ownerReadiness,
+        continuity,
+      },
+    );
   }
 
   private buildNotificationQueueView(input: {
@@ -1467,6 +1490,26 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
           ? null
           : recoveryDurationMs),
     });
+    const notificationPlatformRetrySchedulingDecisionProjectionPublicationBase =
+      this.buildNotificationPlatformRetrySchedulingDecisionProjectionPublicationView({
+        recovering: false,
+        ownerReadiness: 'ready',
+      });
+    const notificationPlatformRetrySchedulingDecisionProjectionPublication = Object.freeze({
+      ...notificationPlatformRetrySchedulingDecisionProjectionPublicationBase,
+      recoveryTimestamp:
+        notificationPlatformRetrySchedulingDecisionProjectionPublicationBase.recoveryTimestamp ??
+        (notificationPlatformRetrySchedulingDecisionProjectionPublicationBase.operationalState ===
+        'Recovering'
+          ? null
+          : recoveryTimestamp),
+      recoveryDurationMs:
+        notificationPlatformRetrySchedulingDecisionProjectionPublicationBase.recoveryDurationMs ??
+        (notificationPlatformRetrySchedulingDecisionProjectionPublicationBase.operationalState ===
+        'Recovering'
+          ? null
+          : recoveryDurationMs),
+    });
     this.projection = buildPlatformOperationalProjection({
       owners,
       recoveryTimestamp,
@@ -1505,6 +1548,7 @@ export class OperationalContinuityService implements OnApplicationBootstrap {
       notificationPlatformRetrySchedulingDecision,
       notificationPlatformRetrySchedulingDecisionEvaluation,
       notificationPlatformRetrySchedulingDecisionProjection,
+      notificationPlatformRetrySchedulingDecisionProjectionPublication,
     });
     this.finalized = true;
 
