@@ -93,7 +93,7 @@ export function recordNotificationPlatformRetrySchedulingDecisionEvaluationRecov
 }
 
 /** Integrity failure honesty — Degraded, never fabricates Ready. */
-export function recordNotificationPlatformRetrySchedulingDecisionIntegrityFailure(
+export function recordNotificationPlatformRetrySchedulingDecisionEvaluationIntegrityFailure(
   reason: string,
 ): void {
   if (!record) {
@@ -112,7 +112,7 @@ export function getNotificationPlatformRetrySchedulingDecisionEvaluationContinui
   return record;
 }
 
-export function isNotificationPlatformRetrySchedulingDecisionRecovering(): boolean {
+export function isNotificationPlatformRetrySchedulingDecisionEvaluationRecovering(): boolean {
   return record !== null && record.recoveryCompletedAt === null;
 }
 

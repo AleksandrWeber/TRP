@@ -429,6 +429,19 @@ export type NotificationPlatformRetrySchedulingDecisionContinuityView = Readonly
   workspaceIds: readonly string[];
 }>;
 
+/** W5-N26-d — Notification Platform Retry Scheduling Decision Evaluation operational continuity (derived). */
+export type NotificationPlatformRetrySchedulingDecisionEvaluationContinuityView = Readonly<{
+  operationalState: OperationalState;
+  ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+  recoveryTimestamp: string | null;
+  recoveryDurationMs: number | null;
+  reason?: string;
+  restoredCount: number;
+  canonicalAnchorCount: number;
+  integrityVerified: boolean;
+  workspaceIds: readonly string[];
+}>;
+
 /** W3-O05-d — Monitoring & Security Health continuity fields on platform readiness. */
 export type MonitoringHealthContinuityView = Readonly<{
   operationalState: OperationalState;
@@ -528,6 +541,8 @@ export type PlatformOperationalProjection = Readonly<{
   notificationPlatformRetryEligibility: NotificationPlatformRetryEligibilityContinuityView | null;
   /** W5-N25-d — Notification Platform Retry Scheduling Decision operational continuity (derived). */
   notificationPlatformRetrySchedulingDecision: NotificationPlatformRetrySchedulingDecisionContinuityView | null;
+  /** W5-N26-d — Notification Platform Retry Scheduling Decision Evaluation operational continuity (derived). */
+  notificationPlatformRetrySchedulingDecisionEvaluation: NotificationPlatformRetrySchedulingDecisionEvaluationContinuityView | null;
 }>;
 
 export type EvaluateOwnerReadinessInput = Readonly<{
@@ -646,6 +661,7 @@ export function buildPlatformOperationalProjection(input: {
   notificationPlatformRetryBackoffCalculation?: NotificationPlatformRetryBackoffCalculationContinuityView | null;
   notificationPlatformRetryEligibility?: NotificationPlatformRetryEligibilityContinuityView | null;
   notificationPlatformRetrySchedulingDecision?: NotificationPlatformRetrySchedulingDecisionContinuityView | null;
+  notificationPlatformRetrySchedulingDecisionEvaluation?: NotificationPlatformRetrySchedulingDecisionEvaluationContinuityView | null;
 }): PlatformOperationalProjection {
   const platformState = derivePlatformOperationalState(input.owners);
   assertOperationalState(platformState);
@@ -694,6 +710,8 @@ export function buildPlatformOperationalProjection(input: {
     notificationPlatformRetryEligibility: input.notificationPlatformRetryEligibility ?? null,
     notificationPlatformRetrySchedulingDecision:
       input.notificationPlatformRetrySchedulingDecision ?? null,
+    notificationPlatformRetrySchedulingDecisionEvaluation:
+      input.notificationPlatformRetrySchedulingDecisionEvaluation ?? null,
   });
 }
 

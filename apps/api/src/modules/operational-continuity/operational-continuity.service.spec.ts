@@ -183,6 +183,13 @@ import {
   resetNotificationPlatformRetrySchedulingDecisionContinuity,
 } from '../notification-delivery/domain/notification-platform-retry-scheduling-decision-continuity-status';
 import { buildNotificationPlatformRetrySchedulingDecisionRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-retry-scheduling-decision-restart-recovery';
+import { buildNotificationPlatformRetrySchedulingDecisionEvaluationAnchorState } from '../notification-delivery/domain/durable-notification-platform-retry-scheduling-decision-evaluation-anchor';
+import {
+  recordNotificationPlatformRetrySchedulingDecisionEvaluationRecoveryStart,
+  recordNotificationPlatformRetrySchedulingDecisionEvaluationRecoverySuccess,
+  resetNotificationPlatformRetrySchedulingDecisionEvaluationContinuity,
+} from '../notification-delivery/domain/notification-platform-retry-scheduling-decision-evaluation-continuity-status';
+import { buildNotificationPlatformRetrySchedulingDecisionEvaluationRecoveryDiagnostics } from '../notification-delivery/domain/notification-platform-retry-scheduling-decision-evaluation-restart-recovery';
 
 describe('OperationalContinuityService', () => {
   beforeEach(() => {
@@ -1392,6 +1399,56 @@ describe('OperationalContinuityService', () => {
 
     expect(projection.notificationPlatformRetrySchedulingDecision?.operationalState).toBe('Ready');
     expect(projection.notificationPlatformRetrySchedulingDecision?.canonicalAnchorCount).toBe(1);
+    expect(projection.platformState).toBe('Ready');
+  });
+
+  it('includes notification platform retry scheduling decision evaluation continuity derived from W5-N26-c recovery record', async () => {
+    resetNotificationPlatformRetrySchedulingDecisionEvaluationContinuity();
+    const anchor = buildNotificationPlatformRetrySchedulingDecisionEvaluationAnchorState({
+      workspaceId: 'ws-1',
+      evaluationAnchorId: 'evaluation-anchor-1',
+      platformRetrySchedulingDecisionEvaluationType: 'decision-evaluation-description-foundation',
+      correlationId: 'corr-1',
+      actorId: 'actor-1',
+      recordedAt: '2026-09-13T22:40:00.000Z',
+      prior: null,
+    });
+    if (!anchor.ok) throw new Error('expected evaluation anchor');
+    recordNotificationPlatformRetrySchedulingDecisionEvaluationRecoveryStart();
+    recordNotificationPlatformRetrySchedulingDecisionEvaluationRecoverySuccess({
+      diagnostics: buildNotificationPlatformRetrySchedulingDecisionEvaluationRecoveryDiagnostics([
+        anchor.anchor,
+      ]),
+    });
+
+    const audit = {
+      recordOwnerState: vi.fn(async () => undefined),
+      recordRecoveryCompleted: vi.fn(async () => undefined),
+    } as unknown as OperationalContinuityAudit;
+    const service = new OperationalContinuityService(audit);
+    const projection = await service.applyBootOutcomesForTest(
+      (
+        [
+          'strategy-library',
+          'exchange-scope',
+          'knowledge-lake',
+          'market-profile',
+          'market-qualification',
+          'market-state',
+          'reporting',
+          'notification-delivery',
+          'trading-orchestrator',
+          'runtime-enforcement',
+        ] as const
+      ).map((owner) => ({ owner, outcome: 'ready' as const })),
+    );
+
+    expect(projection.notificationPlatformRetrySchedulingDecisionEvaluation?.operationalState).toBe(
+      'Ready',
+    );
+    expect(
+      projection.notificationPlatformRetrySchedulingDecisionEvaluation?.canonicalAnchorCount,
+    ).toBe(1);
     expect(projection.platformState).toBe('Ready');
   });
 });
