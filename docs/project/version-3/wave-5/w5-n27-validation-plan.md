@@ -1,0 +1,183 @@
+# W5-N27 Validation Plan
+
+**Package:** W5-N27 Notification Retry Scheduling Decision Projection Foundation
+**Wave:** 5 — Notification Platform
+**Master Plan / Roadmap:** V3-N27 · CM-35
+**Status:** Planning Package **APPROVED** (2026-09-13). Repository Synchronization (Planning) **COMPLETE**. No implementation. No slices opened. No runtime decision projection. No runtime scheduling.
+**Date:** 2026-09-13
+**Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md)
+**Scope:** [`w5-n27-product-scope.md`](./w5-n27-product-scope.md)
+**Security:** [`w5-n27-security-review.md`](./w5-n27-security-review.md)
+**Umbrella:** [`w5-n27-implementation-package.md`](./w5-n27-implementation-package.md)
+**Overview:** [`w5-n27-overview.md`](./w5-n27-overview.md)
+**Checklists:** [`../version-3-product-checklist.md`](../version-3-product-checklist.md) · [`../version-3-architecture-checklist.md`](../version-3-architecture-checklist.md) · [`../version-3-security-checklist.md`](../version-3-security-checklist.md)
+**Verification Standard:** [`../version-3-security-verification-standard.md`](../version-3-security-verification-standard.md)
+
+Validation runs after implementation and the implementation report.
+
+Tests that mock platform decision projection foundation without proving cross-channel foundation coherence do **not** count as Close evidence.
+
+Do not validate per-channel production transport I/O (N01…N04 transport scope), Retry Backoff Calculation, Retry Eligibility determination, Scheduling Decision Evaluation, Runtime Decision Projection, runtime scheduling, scheduling execution, retry execution, transport execution success, provider acceptance, recipient receipt, exactly-once delivery, delivery guarantees, dead-letter processing, Live Notifications, Production Ready, Wave 5 COMPLETE, or Notification Platform Complete from N27 alone. Validate **Notification Retry Scheduling Decision Projection Foundation** outcomes only for authorized slices.
+
+---
+
+## 0. What Close means for W5-N27
+
+| Gate                | Meaning                                                                                                                                                                                                                                      | Unlocks                           |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| **W5-N27 Closed**   | Platform decision projection foundation evidenced; walkthrough PASS (post-implementation)                                                                                                                                                    | V3-N27 advanced for package scope |
+| **Wave 5 COMPLETE** | Not claimed from N27 alone                                                                                                                                                                                                                   | Requires separate PO act          |
+| **Not claimed**     | Live Trading / live orders                                                                                                                                                                                                                   | Wave 6 + ADR                      |
+| **Not claimed**     | Notification Platform Complete                                                                                                                                                                                                               | Separate PO act                   |
+| **Not claimed**     | Live Notifications / Production Ready                                                                                                                                                                                                        | Separate PO acts                  |
+| **Not claimed**     | Successful delivery / provider acceptance / recipient receipt                                                                                                                                                                                | Transport evidence required       |
+| **Not claimed**     | Exactly-once delivery / delivery guarantee                                                                                                                                                                                                   | Outside foundation                |
+| **Not claimed**     | Retry Backoff Calculation / Eligibility determination / Scheduling Decision Evaluation / Runtime Decision Projection / runtime scheduling / scheduling execution / executing retries / workers / timers implementation / queues / transports | Deferred product scope            |
+| **Not claimed**     | Retry Engine / Runtime Decision Engine / Runtime Projection Engine / Runtime Scheduler / Worker / Timer / Scheduler Platform / Workflow Engine / Event Bus / orchestration platform                                                          | Forbidden                         |
+
+---
+
+## 1. Validation strategy overview
+
+| Layer                    | Purpose                                                                |
+| ------------------------ | ---------------------------------------------------------------------- |
+| Conformance validation   | Platform conformance registry; inventory completeness; honesty rules   |
+| Documentation validation | Planning package integrity; slice reports; walkthrough; Close Evidence |
+| Architecture validation  | No Retry Engine; projection extension only; PC-06 preserved            |
+| Governance validation    | Master Plan unchanged; ownership preserved; no duplicate subsystem     |
+| Regression validation    | Wave 1–4, W5-N01…N26 boundaries                                        |
+| Package close validation | Final Integration Verification; Product Owner Close Record             |
+
+### Commands (authorized slices)
+
+| Command                        | Purpose              |
+| ------------------------------ | -------------------- |
+| `pnpm lint`                    | Monorepo lint        |
+| `pnpm typecheck`               | Type safety          |
+| `pnpm test`                    | Regression           |
+| `pnpm --filter @trp/web build` | Web build            |
+| `git diff --check`             | Whitespace integrity |
+
+### Planning-phase gate (this open)
+
+| Command            | Purpose                                     |
+| ------------------ | ------------------------------------------- |
+| `git diff --check` | Planning documentation whitespace integrity |
+
+---
+
+## 2. Conformance validation (post-implementation intent)
+
+| Area                                 | Must prove                                                         |
+| ------------------------------------ | ------------------------------------------------------------------ |
+| Projection foundation integrity      | Platform Ready requires projection foundation evidence             |
+| Per-channel honesty                  | Reserved-inactive not presented as Connected                       |
+| N05…N26 platform honesty             | Prior platform truth not overridden by projection layer            |
+| Secret non-echo                      | Responses, logs, errors never include secrets                      |
+| Workspace binding                    | Missing/wrong workspace fails closed                               |
+| Cross-channel isolation              | Channel A state cannot leak to channel B                           |
+| No capital side effect               | Projection foundation never places live orders                     |
+| No delivery success claim            | Foundation ≠ successful delivery / acceptance / receipt            |
+| No fake Projection Ready             | Label requires real foundation outcome evidence                    |
+| Fail honest                          | Missing/corrupt state surfaces honestly                            |
+| No backoff calculation claim         | Projection ≠ Retry Backoff Calculation                             |
+| No eligibility claim                 | Projection ≠ Retry Eligibility determination                       |
+| No Scheduling Decision Evaluation    | Projection ≠ Scheduling Decision Evaluation                        |
+| No Runtime Decision Projection claim | Projection planning ≠ Runtime Decision Projection                  |
+| No runtime schedule / execute        | Projection ≠ runtime scheduling / scheduling execution / execution |
+
+---
+
+## 3. Documentation validation
+
+| Area                      | Must prove                                                       |
+| ------------------------- | ---------------------------------------------------------------- |
+| Planning package complete | All W5-N27 planning documents present and internally consistent  |
+| Slice a–e reports         | Only after authorized slices (not opened)                        |
+| Operational walkthrough   | Platform Decision Projection Foundation Walkthrough at Close     |
+| Close Evidence            | Package summary, close report, integration verification at Close |
+| Wave documentation sync   | wave-5-overview.md and wave-5-progress.md synchronized           |
+
+---
+
+## 4. Architecture validation
+
+| Area                                  | Must prove                                                          |
+| ------------------------------------- | ------------------------------------------------------------------- |
+| No second engine                      | Notification Delivery decision projection foundation extension only |
+| No Retry Engine product               | Capability of notification-delivery only                            |
+| No Runtime Decision Engine product    | Forbidden                                                           |
+| No Runtime Projection Engine product  | Forbidden                                                           |
+| No Runtime Scheduler product          | Forbidden                                                           |
+| No Worker product                     | Forbidden                                                           |
+| No Timer implementation               | Forbidden                                                           |
+| No Scheduler Platform                 | Forbidden                                                           |
+| No Workflow Engine                    | Projection on existing owner only                                   |
+| No Event Bus / orchestration platform | Forbidden                                                           |
+| Persistence ownership preserved       | Extend `notification-delivery` only                                 |
+| Source of Truth preserved             | PC-06 / Ledger untouched                                            |
+| No Version 2 modification             | Consume only                                                        |
+| No Master Plan modification           | V3-N27 by PO authorization; Master Plan not revised                 |
+| W5-N01…N26 boundaries unchanged       | Regression                                                          |
+
+---
+
+## 5. Governance validation
+
+| Area                           | Must prove                                                   |
+| ------------------------------ | ------------------------------------------------------------ |
+| Ownership unchanged            | No ownership movement                                        |
+| Previous packages unmodified   | Consume only                                                 |
+| No hidden future functionality | Persistence does not smuggle later package scope             |
+| Implementation authorization   | Planning APPROVED; Repo Sync COMPLETE; slices not authorized |
+| Close Evidence assembled       | Deferred until authorized Close Evidence slice               |
+| Planning Approval              | **RECORDED**                                                 |
+| Repository Synchronization     | **COMPLETE**                                                 |
+
+---
+
+## 6. Implementation slice validation (deferred)
+
+Implementation slices W5-N27-a…e are **not opened**, **not named**, and **not authorized**. Slice-specific validation tables will be added only after Product Owner Planning Approval and separate slice authorization.
+
+| Check                                  | Expected / Status |
+| -------------------------------------- | ----------------- |
+| W5-N27-a…e opened                      | **No**            |
+| Runtime decision projection            | **No**            |
+| Runtime scheduling / execution         | **No** / **No**   |
+| Ownership / architecture changed       | **No** / **No**   |
+| Customer-visible feature from planning | **None**          |
+
+---
+
+## Mandatory Questions (planning)
+
+1. **What business problem does W5-N27 solve?** Plan Notification Retry Scheduling Decision Projection after the Decision Evaluation Foundation is complete.
+2. **Why does it follow W5-N26?** Decision Projection depends on the completed Decision Evaluation Foundation and all preceding retry foundations.
+3. **What does it consume?** Closed W5-N01…W5-N26 and existing notification-delivery capabilities.
+4. **What does it own?** Planning for Notification Retry Scheduling Decision Projection only.
+5. **What is explicitly out of scope?** Runtime decision projection, runtime decision evaluation, runtime scheduling, retry execution, Retry Engine, workers, timers, transports, monitoring, BC, HA, DR.
+6. **Does it perform Retry Backoff Calculation?** No.
+7. **Does it determine Retry Eligibility?** No.
+8. **Does it perform Scheduling Decision Evaluation?** No.
+9. **Does it perform Runtime Decision Projection?** No.
+10. **Does it perform Runtime Scheduling?** No.
+11. **Does it execute retries?** No.
+12. **Were any ownership boundaries changed?** No.
+13. **Were any architectural deviations introduced?** No.
+
+---
+
+## Technical debt delta
+
+| Category   | Item                                                                              |
+| ---------- | --------------------------------------------------------------------------------- |
+| Resolved   | Planning Approval completed                                                       |
+|            | W5-N27 Planning Package synchronized                                              |
+| Introduced | None                                                                              |
+| Deferred   | Implementation slices W5-N27-a…e                                                  |
+|            | W5-N27-a — Notification Retry Scheduling Decision Projection Inventory Foundation |
+
+---
+
+**STOP.** W5-N27 Planning Package is **APPROVED**. Repository Synchronization (Planning) is **COMPLETE**. Await Product Owner Repository Review. Do not open W5-N27-a until Repository Synchronization has been approved. Do not begin implementation. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
