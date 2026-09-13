@@ -118,7 +118,7 @@ describe('W5-N27-a retry scheduling decision projection conformance — unit', (
     expect(W5_N27_A_BINDING_FINDINGS.unifiedPlatformDecisionProjectionLayerMissing).toBe(true);
     expect(W5_N27_A_BINDING_FINDINGS.projectionPersistenceMissing).toBe(false);
     expect(W5_N27_A_BINDING_FINDINGS.projectionRecoveryMissing).toBe(false);
-    expect(W5_N27_A_BINDING_FINDINGS.projectionOperationalContinuityMissing).toBe(true);
+    expect(W5_N27_A_BINDING_FINDINGS.projectionOperationalContinuityMissing).toBe(false);
     expect(W5_N27_A_BINDING_FINDINGS.w5N25RetrySchedulingDecisionExists).toBe(true);
     expect(W5_N27_A_ARCHITECTURE_CLAIMS.projectionFunctionalClaimed).toBe(false);
     expect(W5_N27_A_ARCHITECTURE_CLAIMS.w5N27CompleteClaimed).toBe(false);
@@ -126,15 +126,15 @@ describe('W5-N27-a retry scheduling decision projection conformance — unit', (
     expect(W5_N27_A_ARCHITECTURE_CLAIMS.liveTradingClaimed).toBe(false);
   });
 
-  it('technical debt delta: inventory, persistence, and restart recovery baselines resolved; continuity / Close deferred; nothing introduced', () => {
+  it('technical debt delta: inventory, persistence, restart recovery, and operational continuity baselines resolved; Close deferred; nothing introduced', () => {
     expect(W5_N27_A_TECHNICAL_DEBT_DELTA.resolved).toEqual([
       'Notification Retry Scheduling Decision Projection inventory baseline established',
       'Notification Retry Scheduling Decision Projection Persistence Foundation',
       'Notification Retry Scheduling Decision Projection Restart Recovery Foundation',
+      'Notification Retry Scheduling Decision Projection Operational Continuity Foundation',
     ]);
     expect(W5_N27_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N27_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'Operational Continuity Foundation (W5-N27-d)',
       'Package Validation & Operational Verification (W5-N27-e)',
     ]);
   });

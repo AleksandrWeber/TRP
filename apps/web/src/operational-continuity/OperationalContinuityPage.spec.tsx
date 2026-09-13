@@ -359,6 +359,16 @@ const ready: OperationalContinuityReadinessView = {
     integrityVerified: true,
     workspaceIds: [],
   },
+  notificationPlatformRetrySchedulingDecisionProjection: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:00:00.000Z',
+    recoveryDurationMs: 42,
+    restoredCount: 0,
+    canonicalAnchorCount: 0,
+    integrityVerified: true,
+    workspaceIds: [],
+  },
 };
 
 const degraded: OperationalContinuityReadinessView = {
@@ -715,6 +725,16 @@ const degraded: OperationalContinuityReadinessView = {
     workspaceIds: ['ws-1'],
   },
   notificationPlatformRetrySchedulingDecisionEvaluation: {
+    operationalState: 'Ready',
+    ownerReadiness: 'ready',
+    recoveryTimestamp: '2026-08-26T12:01:00.000Z',
+    recoveryDurationMs: 100,
+    restoredCount: 1,
+    canonicalAnchorCount: 1,
+    integrityVerified: true,
+    workspaceIds: ['ws-1'],
+  },
+  notificationPlatformRetrySchedulingDecisionProjection: {
     operationalState: 'Ready',
     ownerReadiness: 'ready',
     recoveryTimestamp: '2026-08-26T12:01:00.000Z',
