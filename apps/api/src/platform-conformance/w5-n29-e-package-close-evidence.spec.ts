@@ -276,19 +276,38 @@ describe('W5-N29-e package close evidence — integration / planning', () => {
     expect(existsSync(join(WAVE5, 'wave-5-progress.md'))).toBe(true);
   });
 
-  it('status docs: W5-N29 NOT finally closed; FIV not started; slices a–d synchronized', () => {
+  it('status docs: W5-N29 CLOSED by Product Owner; Wave 5 COMPLETE not claimed', () => {
     const progress = readWave5('wave-5-progress.md');
     const overview = readWave5('w5-n29-overview.md');
-    expect(progress).toMatch(/W5-N29-a|W5-N29-b|W5-N29-c|W5-N29-d/);
-    expect(progress).toMatch(/SYNCHRONIZED/);
-    expect(progress).toMatch(/FIV|Final Integration Verification/i);
-    expect(progress).toMatch(/Not started|NOT STARTED|not started/i);
+    const close = readWave5('w5-n29-close-package-report.md');
+    const summary = readWave5('w5-n29-package-summary.md');
+    const walkthrough = readWave5('w5-n29-operational-walkthrough.md');
+    const finalIntegration = readWave5('w5-n29-final-integration-verification.md');
+    const poClose = readWave5('w5-n29-product-owner-close-record.md');
+    expect(existsSync(join(WAVE5, 'w5-n29-final-integration-verification.md'))).toBe(true);
+    expect(existsSync(join(WAVE5, 'w5-n29-product-owner-close-record.md'))).toBe(true);
+    expect(progress).toMatch(/W5-N29-a|W5-N29-b|W5-N29-c|W5-N29-d|W5-N29-e/);
+    expect(progress).toMatch(/CLOSED by Product Owner|W5-N29\s+\*\*CLOSED\*\*/i);
+    expect(progress).toMatch(/Final Integration Verification[\s\S]*PASS|FIV[\s\S]*PASS/i);
+    expect(progress).toMatch(/Wave 5 COMPLETE[\s\S]*Not claimed|Not claimed[\s\S]*Wave 5 COMPLETE/);
+    expect(overview).toMatch(/CLOSED by Product Owner|W5-N29[\s\S]*CLOSED/i);
     expect(overview).toMatch(/STOP/);
     expect(overview).toMatch(
-      /runtime Consumption|Runtime Consumption|Do NOT declare runtime|NOT FINALLY CLOSED|NOT IMPLEMENTED/i,
+      /runtime Consumption|Runtime Consumption|Consumption Foundation only|Do NOT declare runtime/i,
     );
-    expect(existsSync(join(WAVE5, 'w5-n29-final-integration-verification.md'))).toBe(false);
-    expect(existsSync(join(WAVE5, 'w5-n29-product-owner-close-record.md'))).toBe(false);
+    expect(close).toMatch(
+      /Package \*\*CLOSED\*\* by Product Owner|\*\*CLOSED\*\* by Product Owner|CLOSED by Product Owner/i,
+    );
+    expect(summary).toMatch(/\*\*CLOSED\*\* by Product Owner/);
+    expect(walkthrough).toMatch(/CLOSED by Product Owner|CLOSED — 2026-09-14/i);
+    expect(poClose).toMatch(
+      /officially CLOSED|Decision:\*\* \*\*CLOSED\*\*|Product Owner decision:\*\* \*\*CLOSED\*\*|Product Owner decision: \*\*CLOSED\*\*/i,
+    );
+    expect(poClose).toMatch(/Acceptance commit hash|Acceptance Commit/);
+    expect(poClose).toMatch(/`[0-9a-f]{7}`/);
+    expect(finalIntegration).toMatch(
+      /READY FOR PRODUCT OWNER FINAL CLOSE|Final Integration Verification[\s\S]*PASS|FIV VERDICT:\s*PASS/i,
+    );
     expect(W5_N29_E_ARCHITECTURE_CLAIMS.packageCloseEvidenceAssembled).toBe(true);
     expect(W5_N29_E_ARCHITECTURE_CLAIMS.packageDeclaredClosed).toBe(false);
     expect(W5_N29_E_ARCHITECTURE_CLAIMS.finalPackageIntegrationVerificationPerformed).toBe(false);

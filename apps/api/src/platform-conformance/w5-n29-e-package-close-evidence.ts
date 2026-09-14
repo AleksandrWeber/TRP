@@ -216,6 +216,9 @@ export const W5_N29_E_REQUIRED_REPORTS = Object.freeze([
   'w5-n29-e-security-review.md',
   'w5-n29-e-product-review.md',
   'w5-n29-e-validation-report.md',
+  'w5-n29-close-package-report.md',
+  'w5-n29-package-summary.md',
+  'w5-n29-operational-walkthrough.md',
 ] as const);
 
 export const W5_N29_E_IMPLEMENTATION_CHAIN = Object.freeze([

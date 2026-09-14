@@ -2,7 +2,7 @@
 
 **Document:** W5-N29 Notification Retry Scheduling Decision Projection Publication Consumption Foundation Overview
 **Date:** 2026-09-14
-**Status:** Product-facing record. Planning Package **APPROVED**. Planning Review **PASS**. Planning Approval **RECORDED**. Repository Synchronization (Planning) **COMPLETE**. No Runtime Consumption. No Runtime Publication. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
+**Status:** Product-facing record. Planning Package **APPROVED**. W5-N29 **CLOSED** by Product Owner (2026-09-14). FIV **PASS**. Product Owner Final Close **COMPLETE**. FOUNDATION ONLY. No Runtime Consumption. No Runtime Publication. No Live Notifications. No Production Ready. No Wave 5 COMPLETE.
 **Product:** Wave 5 — Notification Platform · Package W5-N29 (V3-N29 · CM-36)
 **Nature:** Customer / operator description. Not an RC. Not an ADR. Not a Master Plan revision.
 
@@ -86,13 +86,14 @@ Consumption output is informational only until activated by future approved pack
 
 ## Implementation slices (a–e)
 
-| Slice        | Name                                                                                                        | Status                             |
-| ------------ | ----------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| **W5-N29-a** | Notification Retry Scheduling Decision Projection Publication Consumption Inventory Foundation              | **SYNCHRONIZED** / CLOSED          |
-| **W5-N29-b** | Notification Retry Scheduling Decision Projection Publication Consumption Persistence Foundation            | **SYNCHRONIZED** / CLOSED          |
-| **W5-N29-c** | Notification Retry Scheduling Decision Projection Publication Consumption Restart Recovery Foundation       | **SYNCHRONIZED** / CLOSED          |
-| **W5-N29-d** | Notification Retry Scheduling Decision Projection Publication Consumption Operational Continuity Foundation | **SYNCHRONIZED** / CLOSED          |
-| **W5-N29-e** | Package Validation, Operational Verification & Close Evidence                                               | **SYNCHRONIZED** / CLOSED EVIDENCE |
+| Slice        | Name                                                                                                        | Status                                                 |
+| ------------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| **W5-N29-a** | Notification Retry Scheduling Decision Projection Publication Consumption Inventory Foundation              | **SYNCHRONIZED** / CLOSED                              |
+| **W5-N29-b** | Notification Retry Scheduling Decision Projection Publication Consumption Persistence Foundation            | **SYNCHRONIZED** / CLOSED                              |
+| **W5-N29-c** | Notification Retry Scheduling Decision Projection Publication Consumption Restart Recovery Foundation       | **SYNCHRONIZED** / CLOSED                              |
+| **W5-N29-d** | Notification Retry Scheduling Decision Projection Publication Consumption Operational Continuity Foundation | **SYNCHRONIZED** / CLOSED                              |
+| **W5-N29-e** | Package Validation, Operational Verification & Close Evidence                                               | **SYNCHRONIZED** / CLOSED EVIDENCE                     |
+| **W5-N29**   | Package                                                                                                     | **CLOSED** by Product Owner (2026-09-14); FIV **PASS** |
 
 ---
 
@@ -168,19 +169,19 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 
 ## Current status
 
-| Item                          | Status                             |
-| ----------------------------- | ---------------------------------- |
-| W5-N29 Planning Package       | **APPROVED**                       |
-| Product Owner Planning Review | **PASS**                           |
-| Planning Approval             | **RECORDED**                       |
-| Repository Synchronization    | **COMPLETE** (planning)            |
-| W5-N29-a…d                    | **SYNCHRONIZED** / CLOSED          |
-| W5-N29-e                      | **SYNCHRONIZED** / CLOSED EVIDENCE |
-| W5-N29 package                | **NOT FINALLY CLOSED**             |
-| FIV                           | **NOT STARTED**                    |
-| Product Owner Final Close     | **NOT STARTED**                    |
-| Runtime Consumption           | **Not implemented**                |
-| Wave 5 COMPLETE               | **Not claimed**                    |
+| Item                          | Status                                   |
+| ----------------------------- | ---------------------------------------- |
+| W5-N29 Planning Package       | **APPROVED**                             |
+| Product Owner Planning Review | **PASS**                                 |
+| Planning Approval             | **RECORDED**                             |
+| Repository Synchronization    | **COMPLETE** (planning)                  |
+| W5-N29-a…d                    | **SYNCHRONIZED** / CLOSED                |
+| W5-N29-e                      | **SYNCHRONIZED** / CLOSED EVIDENCE       |
+| W5-N29 package                | **CLOSED** by Product Owner (2026-09-14) |
+| FIV                           | **PASS**                                 |
+| Product Owner Final Close     | **COMPLETE**                             |
+| Runtime Consumption           | **Not implemented**                      |
+| Wave 5 COMPLETE               | **Not claimed**                          |
 
 ---
 
@@ -189,7 +190,7 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 1. **Business problem:** Establish Notification Retry Scheduling Decision Projection Publication Consumption after the Decision Projection Publication Foundation is complete.
 2. **Why after W5-N28:** Consumption depends on the completed Decision Projection Publication Foundation and all preceding retry foundations.
 3. **Consumes:** Closed W5-N01…N28 and existing notification-delivery capabilities.
-4. **Owns:** W5-N29-a inventory; W5-N29-b durable anchors; W5-N29-c restart recovery hydrate; W5-N29-d operational continuity; W5-N29-e package close evidence (local).
+4. **Owns:** W5-N29-a inventory; W5-N29-b durable anchors; W5-N29-c restart recovery hydrate; W5-N29-d operational continuity; W5-N29-e package close evidence — package **CLOSED** as FOUNDATION ONLY.
 5. **OUT:** Runtime Consumption, Runtime Publication, Runtime Decision Projection, Runtime Decision Evaluation, Runtime Scheduling, Retry Engine, Retry Execution, Workers, Timers, Monitoring, BC, HA, DR.
 6. **Performs Runtime Consumption?** No.
 7. **Performs Runtime Publication?** No.
@@ -202,4 +203,4 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 
 ---
 
-**STOP.** W5-N29-e Package Close Evidence is **SYNCHRONIZED**. W5-N29 is **NOT FINALLY CLOSED**. Do **NOT** perform Final Integration Verification without separate Product Owner authorization. Do **NOT** perform Product Owner Final Close. Do NOT declare runtime Consumption. Do NOT declare Runtime Consumption Engine. Do NOT declare Runtime Publication Engine. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare W5-N29 COMPLETE. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
+**STOP.** W5-N29 is **CLOSED** by Product Owner (2026-09-14) as a **FOUNDATION** package. FIV **PASS**. Product Owner Final Close **COMPLETE**. Runtime Consumption remains **NOT IMPLEMENTED**. Do NOT declare Runtime Consumption. Do NOT declare Runtime Publication. Do NOT declare Runtime Decision Projection. Do NOT declare Runtime Decision Evaluation. Do NOT declare Runtime Scheduling. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform Complete. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan. Do NOT open the next package without separate Product Owner authorization.

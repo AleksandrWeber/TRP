@@ -134,19 +134,25 @@ describe('W5-N29-a retry scheduling decision projection publication consumption 
     expect(W5_N29_A_ARCHITECTURE_CLAIMS.liveTradingClaimed).toBe(false);
   });
 
-  it('technical debt delta: inventory through close evidence resolved; FIV and runtime deferred; nothing introduced', () => {
+  it('technical debt delta: inventory through governance lifecycle resolved; runtime deferred; nothing introduced', () => {
     expect(W5_N29_A_TECHNICAL_DEBT_DELTA.resolved).toEqual([
       'Notification Retry Scheduling Decision Projection Publication Consumption inventory baseline established',
       'Notification Retry Scheduling Decision Projection Publication Consumption Persistence Foundation',
       'Notification Retry Scheduling Decision Projection Publication Consumption Restart Recovery Foundation',
       'Notification Retry Scheduling Decision Projection Publication Consumption Operational Continuity Foundation',
       'Notification Retry Scheduling Decision Projection Publication Consumption Package Close Evidence',
+      'Final Package Integration Verification completed',
+      'W5-N29 governance lifecycle completed',
     ]);
     expect(W5_N29_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N29_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'Final Integration Verification',
-      'Product Owner Final Close',
-      'All runtime consumption behavior',
+      'Runtime Consumption',
+      'Runtime Publication',
+      'Runtime Decision Projection',
+      'Runtime Decision Evaluation',
+      'Runtime Scheduling',
+      'Retry Engine / Retry Execution',
+      'Any future worker/timer/queue runtime implementation',
     ]);
   });
 
