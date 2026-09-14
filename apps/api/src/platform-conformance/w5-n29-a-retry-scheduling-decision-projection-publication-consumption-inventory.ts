@@ -2154,9 +2154,10 @@ export const W5_N29_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N29-b durable Decision Projection Publication Consumption anchors (persistence foundation)',
     'W5-N29-c Decision Projection Publication Consumption restart recovery hydrate',
     'W5-N29-d Decision Projection Publication Consumption operational continuity on Platform Readiness',
+    'W5-N29-e package Close Evidence synchronized',
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
-  plannedCapabilities: Object.freeze(['W5-N29-e package Close Evidence'] as const),
+  plannedCapabilities: Object.freeze([] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform Decision Projection Publication Consumption layer after Publication',
     'Operator Decision Projection Publication Consumption UI',
@@ -2184,10 +2185,12 @@ export const W5_N29_A_TECHNICAL_DEBT_DELTA = Object.freeze({
     'Notification Retry Scheduling Decision Projection Publication Consumption Persistence Foundation',
     'Notification Retry Scheduling Decision Projection Publication Consumption Restart Recovery Foundation',
     'Notification Retry Scheduling Decision Projection Publication Consumption Operational Continuity Foundation',
+    'Notification Retry Scheduling Decision Projection Publication Consumption Package Close Evidence',
   ] as const),
   introduced: Object.freeze([] as const),
   deferred: Object.freeze([
-    'W5-N29-e Package Close Evidence',
+    'Final Integration Verification',
+    'Product Owner Final Close',
     'All runtime consumption behavior',
   ] as const),
 } as const);

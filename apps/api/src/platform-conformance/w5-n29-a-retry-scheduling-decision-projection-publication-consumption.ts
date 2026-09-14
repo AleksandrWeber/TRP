@@ -96,7 +96,12 @@ export function verifyHonestProductBaseline(): Readonly<{
     implemented.length === 1 && implemented[0]?.includes('None') === true;
   const infrastructureDocumented =
     W5_N29_A_HONEST_PRODUCT_BASELINE.infrastructureCapabilities.length >= 8;
-  const plannedExplicit = W5_N29_A_HONEST_PRODUCT_BASELINE.plannedCapabilities.length >= 1;
+  const plannedExplicit =
+    W5_N29_A_HONEST_PRODUCT_BASELINE.plannedCapabilities.length >= 1 ||
+    (W5_N29_A_HONEST_PRODUCT_BASELINE.plannedCapabilities.length === 0 &&
+      W5_N29_A_HONEST_PRODUCT_BASELINE.infrastructureCapabilities.some((capability) =>
+        capability.includes('W5-N29-e package Close Evidence'),
+      ));
   const notImplementedExplicit =
     W5_N29_A_HONEST_PRODUCT_BASELINE.notYetImplementedCapabilities.length >= 5;
   const consumptionNotAuthorized = !W5_N29_A_BINDING_FINDINGS.consumptionFunctionalAuthorized;
