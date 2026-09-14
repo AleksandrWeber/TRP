@@ -284,16 +284,19 @@ describe('W5-N28-a notification retry scheduling decision projection publication
     ).toBeGreaterThanOrEqual(2);
   });
 
-  it('technical debt delta: publication inventory baseline resolved; b–e deferred; nothing introduced', () => {
+  it('technical debt delta: inventory through Close Evidence, FIV, and governance Close resolved; Repo Sync deferred; nothing introduced', () => {
     expect(W5_N28_A_TECHNICAL_DEBT_DELTA.resolved).toEqual([
       'Notification Retry Scheduling Decision Projection Publication inventory baseline established',
+      'Notification Retry Scheduling Decision Projection Publication Persistence Foundation',
+      'Notification Retry Scheduling Decision Projection Publication Restart Recovery Foundation',
+      'Notification Retry Scheduling Decision Projection Publication Operational Continuity Foundation',
+      'Notification Retry Scheduling Decision Projection Publication Package Close Evidence',
+      'Final Package Integration Verification completed',
+      'W5-N28 governance lifecycle completed',
     ]);
     expect(W5_N28_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N28_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'Persistence Foundation (W5-N28-b)',
-      'Restart Recovery Foundation (W5-N28-c)',
-      'Operational Continuity Foundation (W5-N28-d)',
-      'Package Validation & Operational Verification (W5-N28-e)',
+      'Repository Synchronization after Product Owner Final Close',
     ]);
   });
 

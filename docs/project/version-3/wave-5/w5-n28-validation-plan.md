@@ -224,9 +224,28 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 | Continuity executes retries                                      | **No**                           |
 | Ownership / architecture changed                                 | **No** / **No**                  |
 | Customer-visible feature                                         | Operator Platform Readiness only |
-| W5-N28-e Package Close                                           | **Not opened**                   |
+| W5-N28-e Package Close                                           | **COMPLETE** (local)             |
 
 **Evidence:** [`w5-n28-d-implementation-report.md`](./w5-n28-d-implementation-report.md) · [`w5-n28-d-validation-report.md`](./w5-n28-d-validation-report.md) · `apps/api/src/platform-conformance/w5-n28-d-notification-platform-retry-scheduling-decision-projection-publication-operational-continuity*.ts`
+
+### W5-N28-e Package Validation, Operational Verification & Close Evidence
+
+| Check                                            | Expected / Status             |
+| ------------------------------------------------ | ----------------------------- |
+| Complete operational journey                     | **PASS**                      |
+| Approved slices a–d validated                    | **Yes**                       |
+| Decision Projection Publication Foundation only  | **Yes**                       |
+| Operational Readiness derived only               | **Yes**                       |
+| Runtime Publication claimed                      | **No**                        |
+| Runtime Decision Projection claimed              | **No**                        |
+| Runtime Decision Evaluation claimed              | **No**                        |
+| Runtime Scheduler claimed                        | **No**                        |
+| Retry Execution claimed                          | **No**                        |
+| Ownership / architecture changed                 | **No** / **No**               |
+| Package declared CLOSED                          | **Yes** — CLOSED (2026-09-13) |
+| Final Package Integration Verification performed | **PASS** (local) — accepted   |
+
+**Evidence:** [`w5-n28-e-implementation-report.md`](./w5-n28-e-implementation-report.md) · [`w5-n28-e-validation-report.md`](./w5-n28-e-validation-report.md) · [`w5-n28-close-package-report.md`](./w5-n28-close-package-report.md) · [`w5-n28-final-integration-verification.md`](./w5-n28-final-integration-verification.md) · [`w5-n28-product-owner-close-record.md`](./w5-n28-product-owner-close-record.md) · `apps/api/src/platform-conformance/w5-n28-e-package-close-evidence*.ts`
 
 **Evidence:** [`w5-n28-c-implementation-report.md`](./w5-n28-c-implementation-report.md) · [`w5-n28-c-validation-report.md`](./w5-n28-c-validation-report.md) · `apps/api/src/platform-conformance/w5-n28-c-notification-platform-retry-scheduling-decision-projection-publication-restart-recovery*.ts`
 
@@ -257,10 +276,13 @@ Do not validate per-channel production transport I/O (N01…N04 transport scope)
 |            | Notification Retry Scheduling Decision Projection Publication Persistence Foundation            |
 |            | Notification Retry Scheduling Decision Projection Publication Restart Recovery Foundation       |
 |            | Notification Retry Scheduling Decision Projection Publication Operational Continuity Foundation |
+|            | Notification Retry Scheduling Decision Projection Publication Package Close Evidence            |
+|            | Final Package Integration Verification                                                          |
+|            | W5-N28 governance lifecycle completed                                                           |
 | Introduced | None                                                                                            |
-| Deferred   | W5-N28-e — Package Validation, Operational Verification & Close Evidence                        |
+| Deferred   | Repository Synchronization after Product Owner Final Close                                      |
 |            | Runtime Decision Projection Publication                                                         |
 
 ---
 
-**STOP.** W5-N28-d Operational Continuity is **COMPLETE** (local). Await Product Owner Review. Do **not** commit. Do **not** push. Do **not** open W5-N28-e. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.
+**STOP.** W5-N28 is **CLOSED** by Product Owner (2026-09-13). Await Repository Synchronization. Do **not** open W5-N29. Do **not** commit. Do **not** push. Do NOT declare Wave 5 COMPLETE. Do NOT modify the Master Plan.

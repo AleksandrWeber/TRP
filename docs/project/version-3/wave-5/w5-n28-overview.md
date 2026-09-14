@@ -144,6 +144,21 @@ It does NOT calculate backoff or determine eligibility.
 publicationOperationalContinuityMissing = false.
 ```
 
+### W5-N28-e status (Close Evidence)
+
+W5-N28-e assembles **package Close Evidence** for slices a–d. Customer-visible functionality: **None new** (Platform Readiness from d unchanged). Package CLOSED: **Yes** (2026-09-13). Final Package Integration Verification: **PASS** (local) — **accepted**.
+
+```text
+Close Evidence validates the completed foundation package only.
+Final Package Integration Verification PASS (local) was accepted by Product Owner.
+Product Owner Final Close records W5-N28 CLOSED.
+It does NOT publish Decision Projection.
+It does NOT perform runtime publication.
+It does NOT perform runtime Decision Projection.
+It does NOT perform runtime Decision Evaluation.
+It does NOT schedule or execute retries.
+```
+
 ## What the operator cannot do (still)
 
 - Assume retries were successfully delivered to recipients.
@@ -213,19 +228,21 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 
 ## Current status
 
-| Item                                    | Status               |
-| --------------------------------------- | -------------------- |
-| W5-N28 Planning Package                 | **APPROVED**         |
-| Product Owner Planning Review           | **PASS**             |
-| Planning Approval                       | **RECORDED**         |
-| Repository Synchronization              | **COMPLETE**         |
-| W5-N28-a Inventory                      | **COMPLETE**         |
-| W5-N28-b Persistence                    | **COMPLETE**         |
-| W5-N28-c Restart Recovery               | **COMPLETE** (local) |
-| W5-N28-d Operational Continuity         | **COMPLETE** (local) |
-| W5-N28-e                                | **Not opened**       |
-| Runtime Decision Projection Publication | **Not implemented**  |
-| Wave 5 COMPLETE                         | **Not claimed**      |
+| Item                                    | Status                  |
+| --------------------------------------- | ----------------------- |
+| W5-N28 Planning Package                 | **APPROVED**            |
+| Product Owner Planning Review           | **PASS**                |
+| Planning Approval                       | **RECORDED**            |
+| Repository Synchronization              | **COMPLETE**            |
+| W5-N28-a Inventory                      | **COMPLETE**            |
+| W5-N28-b Persistence                    | **COMPLETE**            |
+| W5-N28-c Restart Recovery               | **COMPLETE** (local)    |
+| W5-N28-d Operational Continuity         | **COMPLETE** (local)    |
+| W5-N28-e Close Evidence                 | **COMPLETE** (local)    |
+| Final Package Integration Verification  | **PASS** (local)        |
+| Package CLOSED                          | **CLOSED** (2026-09-13) |
+| Runtime Decision Projection Publication | **Not implemented**     |
+| Wave 5 COMPLETE                         | **Not claimed**         |
 
 ---
 
@@ -246,4 +263,4 @@ The platform can calculate backoff, determine eligibility, maintain scheduling s
 
 ---
 
-**STOP.** W5-N28-d Operational Continuity is **COMPLETE** (local). Await Product Owner Review. Do **NOT** commit. Do **NOT** push. Do **NOT** open W5-N28-e. Do NOT declare runtime Decision Projection Publication. Do NOT declare Runtime Publication Engine. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT modify the Master Plan.
+**STOP.** W5-N28 is **CLOSED** by Product Owner (2026-09-13). Do NOT declare runtime Decision Projection Publication. Do NOT declare Runtime Publication Engine. Do NOT declare Runtime Projection Engine. Do NOT declare Runtime Decision Engine. Do NOT declare Runtime Scheduler. Do NOT declare Retry Engine. Do NOT declare Retry Execution. Do NOT declare Wave 5 COMPLETE. Do NOT declare Notification Platform implemented. Do NOT declare Live Notifications. Do NOT declare Production Ready. Do NOT open W5-N29. Await Repository Synchronization. Do NOT commit. Do NOT push. Do NOT modify the Master Plan.

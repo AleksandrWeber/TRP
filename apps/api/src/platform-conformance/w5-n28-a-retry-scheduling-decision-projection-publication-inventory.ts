@@ -1981,12 +1981,13 @@ export const W5_N28_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'Notification Durable Queue — W3-O02 on notification-delivery owner (consumed)',
     'W5-N01…N24 machine inventories — foundation reference patterns',
     'Exchange Adapter / Wave 4 — reference only; untouched',
+    'W5-N28-b durable Decision Projection Publication anchors (persistence foundation)',
+    'W5-N28-c Decision Projection Publication restart recovery hydrate',
+    'W5-N28-d Decision Projection Publication operational continuity on Platform Readiness',
+    'W5-N28-e package Close Evidence assembled (Product Owner Final Close recorded)',
   ] as const),
   plannedCapabilities: Object.freeze([
-    'W5-N28-b Persistence Foundation — durable Decision Projection Publication anchors',
-    'W5-N28-c Restart Recovery Foundation',
-    'W5-N28-d Operational Continuity Foundation',
-    'W5-N28-e Package Close Evidence',
+    'Repository Synchronization after Product Owner Final Close',
   ] as const),
   notYetImplementedCapabilities: Object.freeze([
     'Unified cross-channel platform Decision Projection Publication layer after Decision Projection',
@@ -2002,21 +2003,22 @@ export const W5_N28_A_HONEST_PRODUCT_BASELINE = Object.freeze({
   ] as const),
   futureRoadmapCapabilities: Object.freeze([
     'Wave 6 — Live Trading (LT-02)',
-    'Wave 7 — Anthropic / AI Gateway (out of W5-N27 scope)',
+    'Wave 7 — Anthropic / AI Gateway (out of W5-N28 scope)',
   ] as const),
 } as const);
 
 export const W5_N28_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze([
     'Notification Retry Scheduling Decision Projection Publication inventory baseline established',
+    'Notification Retry Scheduling Decision Projection Publication Persistence Foundation',
+    'Notification Retry Scheduling Decision Projection Publication Restart Recovery Foundation',
+    'Notification Retry Scheduling Decision Projection Publication Operational Continuity Foundation',
+    'Notification Retry Scheduling Decision Projection Publication Package Close Evidence',
+    'Final Package Integration Verification completed',
+    'W5-N28 governance lifecycle completed',
   ] as const),
   introduced: Object.freeze([] as const),
-  deferred: Object.freeze([
-    'Persistence Foundation (W5-N28-b)',
-    'Restart Recovery Foundation (W5-N28-c)',
-    'Operational Continuity Foundation (W5-N28-d)',
-    'Package Validation & Operational Verification (W5-N28-e)',
-  ] as const),
+  deferred: Object.freeze(['Repository Synchronization after Product Owner Final Close'] as const),
 } as const);
 
 export function artifactIds(): readonly string[] {
