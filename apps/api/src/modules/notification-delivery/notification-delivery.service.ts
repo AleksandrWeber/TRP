@@ -9,8 +9,10 @@
  * Restart recovery is W3-O02-c. Retry execution is out of this slice.
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Optional } from '@nestjs/common';
+import type { Role } from '../identity/role';
 import { InMemoryNotificationStore } from './adapters/in-memory-notification-store';
+import { TelegramStartBindObserver } from './adapters/telegram-start-bind.observer';
 import {
   createDeliveryResult,
   type ChannelDeliveryAttempt,
@@ -67,6 +69,9 @@ export class NotificationDeliveryService implements NotificationServicePort {
     private readonly store: InMemoryNotificationStore,
     @Inject(TELEGRAM_CHANNEL_ADAPTER)
     private readonly telegram: NotificationChannelPort,
+    @Optional()
+    @Inject(TelegramStartBindObserver)
+    private readonly startBind?: TelegramStartBindObserver,
   ) {}
 
   listChannels() {
@@ -139,6 +144,54 @@ export class NotificationDeliveryService implements NotificationServicePort {
     const connected = bindTelegramChat(pending, cmd.chatId, nowOr(cmd.completedAt));
     this.store.saveTelegram(connected);
     return connected;
+  }
+
+  async observePendingTelegramBind(cmd: {
+    workspaceId: string;
+    userId: string;
+    actorUserId?: string;
+    actorRole?: Role;
+    completedAt?: string;
+  }): Promise<TelegramConnection> {
+    const workspaceId = cmd.workspaceId.trim();
+    const userId = cmd.userId.trim();
+    if (!workspaceId || !userId) {
+      throw new Error('Telegram connection is not awaiting bind');
+    }
+    const current = this.getTelegramConnection(workspaceId, userId);
+    if (current.status !== 'pending' || !current.connectionToken) {
+      throw new Error('Telegram connection is not awaiting bind');
+    }
+    if (!this.startBind) {
+      throw new Error('Telegram chat has not been observed');
+    }
+
+    const observed = await this.startBind.observeStartBind({
+      workspaceId,
+      expectedToken: current.connectionToken,
+      actorUserId: cmd.actorUserId,
+      actorRole: cmd.actorRole,
+    });
+    if (!observed.ok) {
+      throw new Error('Telegram chat has not been observed');
+    }
+
+    const pending = this.store.findTelegramByToken(current.connectionToken);
+    if (
+      !pending ||
+      pending.workspaceId !== workspaceId ||
+      pending.userId !== userId ||
+      pending.connectionToken !== current.connectionToken ||
+      pending.status !== 'pending'
+    ) {
+      throw new Error('Telegram chat has not been observed');
+    }
+
+    return this.completeTelegramConnect({
+      connectionToken: current.connectionToken,
+      chatId: observed.chatId,
+      ...(cmd.completedAt !== undefined ? { completedAt: cmd.completedAt } : {}),
+    });
   }
 
   verifyTelegramConnection(cmd: TelegramVerifyRequest): TelegramConnection {

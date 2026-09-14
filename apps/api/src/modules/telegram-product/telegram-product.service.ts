@@ -2,9 +2,8 @@
  * PC-07 — product adapter over existing NotificationServicePort Telegram methods.
  *
  * Delegates connect / complete / verify / disconnect / test / status.
- * Chat id is adapter-supplied for the in-memory bind — never a user field.
- * Notification Delivery remains owner. Telegram adapter remains transport only.
- * Does not introduce Bot API, scheduler, retries, or reserved channels.
+ * Production complete observes Telegram /start; chat id is never a user field.
+ * Notification Delivery remains owner. Telegram remains delivery-only.
  */
 
 import { Inject, Injectable } from '@nestjs/common';
@@ -31,8 +30,8 @@ import {
 } from './telegram.view';
 
 /**
- * In-memory platform bind. Chat id is supplied by the adapter path, never typed
- * by the operator. Never Telegram Bot API.
+ * Forbidden production destination. Tests may still identify this synthetic form.
+ * Production complete must not bind it.
  */
 export function inMemoryAdapterChatId(workspaceId: string, userId: string): string {
   return `in-memory:${workspaceId}:${userId}`;
@@ -58,14 +57,19 @@ export class TelegramProductService {
     );
   }
 
-  complete(workspaceId: string, userId: string): TelegramConnectionProductView {
+  async complete(
+    workspaceId: string,
+    userId: string,
+    actor?: Readonly<{ userId: string; role: Role }>,
+  ): Promise<TelegramConnectionProductView> {
     const current = this.notifications.getTelegramConnection(workspaceId, userId);
     if (current.status !== 'pending' || !current.connectionToken) {
       throw new Error('Telegram connection is not awaiting bind');
     }
-    const connected = this.notifications.completeTelegramConnect({
-      connectionToken: current.connectionToken,
-      chatId: inMemoryAdapterChatId(workspaceId, userId),
+    const connected = await this.notifications.observePendingTelegramBind({
+      workspaceId,
+      userId,
+      ...(actor ? { actorUserId: actor.userId, actorRole: actor.role } : {}),
     });
     return toTelegramConnectionView(connected);
   }

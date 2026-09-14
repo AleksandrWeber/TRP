@@ -91,6 +91,17 @@ export interface NotificationServicePort {
     chatId: string;
     completedAt?: string;
   }): TelegramConnection;
+  /**
+   * REM-02 — Observe Telegram /start via on-demand getUpdates and bind chat.id.
+   * Chat id is never supplied by the client.
+   */
+  observePendingTelegramBind(cmd: {
+    workspaceId: string;
+    userId: string;
+    actorUserId?: string;
+    actorRole?: Role;
+    completedAt?: string;
+  }): Promise<TelegramConnection>;
   verifyTelegramConnection(cmd: TelegramVerifyRequest): TelegramConnection;
   disconnectTelegram(cmd: TelegramDisconnectRequest): TelegramConnection;
   sendTestNotification(cmd: SendTestNotificationRequest): Promise<DeliveryResult>;

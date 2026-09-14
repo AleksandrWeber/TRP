@@ -104,8 +104,8 @@ export function TelegramSettingsView({
             {connection.status === 'not-connected' && (
               <div className="space-y-3" data-testid="telegram-wizard-not-connected">
                 <p className="text-sm text-slate-400">
-                  Connect starts a pending bind. The in-memory adapter supplies the chat id. You
-                  never type a chat id.
+                  Connect starts a pending bind. Chat id is observed from Telegram. You never type a
+                  chat id.
                 </p>
                 <button
                   type="button"
@@ -122,7 +122,8 @@ export function TelegramSettingsView({
             {connection.status === 'pending' && (
               <div className="space-y-3" data-testid="telegram-wizard-pending">
                 <p className="text-sm text-slate-400">
-                  Pending. Open the deep link, then complete bind. Chat id stays adapter-supplied.
+                  Pending. Open Telegram, send /start with the connection token from the deep link,
+                  then complete bind. Chat id is observed from Telegram, never typed.
                 </p>
                 {connection.deepLink && (
                   <p className="rounded-lg border border-white/10 bg-black/30 px-3 py-2 font-mono text-xs text-slate-300">

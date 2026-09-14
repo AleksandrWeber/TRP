@@ -8,6 +8,7 @@ import { InMemoryTelegramAdapter } from './adapters/in-memory-telegram.adapter';
 import { ProductionTelegramBotApiAdapter } from './adapters/telegram-bot-api.adapter';
 import { TelegramBotApiHttpClient } from './adapters/telegram-bot-api.http';
 import { TelegramBotTokenResolver } from './adapters/telegram-bot-token.resolver';
+import { TelegramStartBindObserver } from './adapters/telegram-start-bind.observer';
 import { TELEGRAM_NOTIFICATION_ANCHOR_REPOSITORY } from './domain/telegram-notification-anchor.repository';
 import { EMAIL_NOTIFICATION_ANCHOR_REPOSITORY } from './domain/email-notification-anchor.repository';
 import { SLACK_DISCORD_TEAMS_NOTIFICATION_ANCHOR_REPOSITORY } from './domain/slack-discord-teams-notification-anchor.repository';
@@ -459,6 +460,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
       useFactory: () => new TelegramBotApiHttpClient(),
     },
     TelegramBotTokenResolver,
+    TelegramStartBindObserver,
     ProductionTelegramBotApiAdapter,
     InMemoryTelegramAdapter,
     {

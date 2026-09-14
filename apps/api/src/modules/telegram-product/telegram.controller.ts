@@ -30,7 +30,8 @@ type RequestWithUser = { user: AuthUser };
 
 /**
  * PC-07 — HTTP transport for existing Telegram connection operations.
- * Chat id is never accepted from the client. No Bot API. No duplicated domain.
+ * Chat id is never accepted from the client. Complete observes Telegram /start.
+ * No trading control plane.
  */
 @Controller({ path: 'telegram', version: '1' })
 @RequirePermission(PermissionClass.Projection)
@@ -63,13 +64,16 @@ export class TelegramController {
   @RequirePermission(PermissionClass.OwnWorkspace)
   @Post('complete')
   @HttpCode(200)
-  complete(
+  async complete(
     @Req() request: RequestWithUser,
     @Headers('x-workspace-id') workspaceHeader: string | undefined,
-  ): TelegramConnectionProductView {
+  ): Promise<TelegramConnectionProductView> {
     const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
     try {
-      return this.product.complete(workspaceId, request.user.userId);
+      return await this.product.complete(workspaceId, request.user.userId, {
+        userId: request.user.userId,
+        role: request.user.role,
+      });
     } catch (error) {
       throw new BadRequestException(
         error instanceof Error ? error.message : 'Telegram connection is not awaiting bind',

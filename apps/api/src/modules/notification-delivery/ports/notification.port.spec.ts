@@ -19,13 +19,14 @@ describe('RC-24 Epic 6 — Notification ports', () => {
       'getTelegramConnection',
       'connectTelegram',
       'completeTelegramConnect',
+      'observePendingTelegramBind',
       'verifyTelegramConnection',
       'disconnectTelegram',
       'sendTestNotification',
       'deliver',
       'listDeliveries',
     ];
-    expect(required).toHaveLength(11);
+    expect(required).toHaveLength(12);
     expect(required).not.toContain('generateReport' as keyof NotificationServicePort);
     expect(required).not.toContain('pauseTrading' as keyof NotificationServicePort);
     expect(required).not.toContain('killSwitch' as keyof NotificationServicePort);

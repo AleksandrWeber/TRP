@@ -149,10 +149,20 @@ describe('Telegram controller (PC-07)', () => {
     });
   });
 
-  it('maps complete bind errors to 400', () => {
+  it('maps complete bind errors to 400', async () => {
     product.complete.mockImplementation(() => {
       throw new Error('Telegram connection is not awaiting bind');
     });
-    expect(() => controller.complete({ user: owner }, workspaceId)).toThrow(BadRequestException);
+    await expect(controller.complete({ user: owner }, workspaceId)).rejects.toBeInstanceOf(
+      BadRequestException,
+    );
+  });
+
+  it('passes the authenticated actor into complete', async () => {
+    await controller.complete({ user: owner }, workspaceId);
+    expect(product.complete).toHaveBeenCalledWith(workspaceId, owner.userId, {
+      userId: owner.userId,
+      role: owner.role,
+    });
   });
 });

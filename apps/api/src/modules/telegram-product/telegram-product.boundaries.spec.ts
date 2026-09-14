@@ -78,13 +78,14 @@ describe('PC-07 — telegram-product ownership boundaries', () => {
     }
     const service = readFileSync(join(PRODUCT_ROOT, 'telegram-product.service.ts'), 'utf8');
     expect(service).toMatch(/connectTelegram/);
-    expect(service).toMatch(/completeTelegramConnect/);
+    expect(service).toMatch(/observePendingTelegramBind/);
     expect(service).toMatch(/verifyTelegramConnection/);
     expect(service).toMatch(/disconnectTelegram/);
     expect(service).toMatch(/sendTestNotification/);
     expect(service).not.toMatch(/\.deliver\(/);
     expect(service).not.toMatch(/cron/i);
     expect(service).not.toMatch(/retryQueue/);
-    expect(service).toMatch(/inMemoryAdapterChatId/);
+    expect(service).not.toMatch(/chatId: inMemoryAdapterChatId\(/);
+    expect(service).not.toMatch(/api\.telegram\.org/);
   });
 });

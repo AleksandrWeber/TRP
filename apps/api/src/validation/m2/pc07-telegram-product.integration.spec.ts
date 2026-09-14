@@ -29,10 +29,10 @@ const evaluatedAt = '2026-08-15T19:00:00.000Z';
 
 /**
  * PC-07: Telegram HTTP over existing NotificationServicePort Telegram methods.
- * Chat id remains adapter-supplied. Notification Delivery remains owner.
+ * Chat id is observed from Telegram. Notification Delivery remains owner.
  */
 describe('PC-07 — Telegram product', () => {
-  it('connects, completes with adapter chat id, tests, and disconnects without Bot API', async () => {
+  it('connects, completes from observed chat id, tests, and disconnects without client chat id', async () => {
     const workspaces = new WorkspaceDomainService(new InMemoryWorkspaceRepository());
     const access = new WorkspaceAccessService(workspaces);
     const workspace = await workspaces.create({ name: 'Paper Lab', ownerUserId: OWNER.userId });
@@ -63,6 +63,10 @@ describe('PC-07 — Telegram product', () => {
       }),
       completeTelegramConnect: vi.fn((cmd: { chatId: string }) => {
         connection = bindTelegramChat(connection, cmd.chatId, '2026-08-15T19:01:00.000Z');
+        return connection;
+      }),
+      observePendingTelegramBind: vi.fn(async () => {
+        connection = bindTelegramChat(connection, '777001', '2026-08-15T19:01:00.000Z');
         return connection;
       }),
       verifyTelegramConnection: vi.fn(() => connection),
@@ -96,12 +100,19 @@ describe('PC-07 — Telegram product', () => {
     expect(connect.connection.status).toBe('pending');
     expect(connect.deepLink).toBe('tg://connect/tg-token');
 
-    const completed = telegram.complete({ user: OWNER }, workspace.id);
+    const completed = await telegram.complete({ user: OWNER }, workspace.id);
     expect(completed.connected).toBe(true);
-    expect(notifications.completeTelegramConnect).toHaveBeenCalledWith(
+    expect(notifications.observePendingTelegramBind).toHaveBeenCalledWith(
       expect.objectContaining({
-        chatId: inMemoryAdapterChatId(workspace.id, OWNER.userId),
+        workspaceId: workspace.id,
+        userId: OWNER.userId,
+        actorUserId: OWNER.userId,
+        actorRole: OWNER.role,
       }),
+    );
+    expect(notifications.completeTelegramConnect).not.toHaveBeenCalled();
+    expect(JSON.stringify(completed)).not.toContain(
+      inMemoryAdapterChatId(workspace.id, OWNER.userId),
     );
 
     expect(telegram.verify({ user: OWNER }, workspace.id).verified).toBe(true);

@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { Role } from '../identity/role';
 import { createDeliveryResult } from '../notification-delivery/domain/delivery';
 import { NOTIFICATION_CHANNEL_CATALOG } from '../notification-delivery/domain/notification-channel';
 import {
@@ -41,6 +42,10 @@ function harness() {
       connection = bindTelegramChat(connection, cmd.chatId, '2026-08-15T19:01:00.000Z');
       return connection;
     }),
+    observePendingTelegramBind: vi.fn(async () => {
+      connection = bindTelegramChat(connection, '777001', '2026-08-15T19:01:00.000Z');
+      return connection;
+    }),
     verifyTelegramConnection: vi.fn(() => connection),
     disconnectTelegram: vi.fn(() => {
       connection = disconnectTelegramConnection(connection, '2026-08-15T19:03:00.000Z');
@@ -66,7 +71,7 @@ function harness() {
 }
 
 describe('TelegramProductService (PC-07)', () => {
-  it('exposes existing connect → complete → verify → test → disconnect without Bot API', async () => {
+  it('connects then completes from observed Telegram chat id without synthesizing in-memory bind', async () => {
     const { service, notifications } = harness();
     expect(service.getConnection('ws-1', 'user-1').status).toBe('not-connected');
 
@@ -75,15 +80,22 @@ describe('TelegramProductService (PC-07)', () => {
     expect(connectedPending.deepLink).toBe('tg://connect/tg-token');
     expect(connectedPending.userEnteredBind).toBe(false);
 
-    const completed = service.complete('ws-1', 'user-1');
+    const completed = await service.complete('ws-1', 'user-1', {
+      userId: 'user-1',
+      role: Role.Trader,
+    });
     expect(completed.connected).toBe(true);
     expect(completed.testAvailable).toBe(true);
-    expect(notifications.completeTelegramConnect).toHaveBeenCalledWith(
+    expect(notifications.observePendingTelegramBind).toHaveBeenCalledWith(
       expect.objectContaining({
-        connectionToken: 'tg-token',
-        chatId: inMemoryAdapterChatId('ws-1', 'user-1'),
+        workspaceId: 'ws-1',
+        userId: 'user-1',
+        actorUserId: 'user-1',
+        actorRole: Role.Trader,
       }),
     );
+    expect(notifications.completeTelegramConnect).not.toHaveBeenCalled();
+    expect(JSON.stringify(completed)).not.toContain(inMemoryAdapterChatId('ws-1', 'user-1'));
 
     expect(service.verify('ws-1', 'user-1').verified).toBe(true);
     const test = await service.sendTest('ws-1', 'user-1');
@@ -93,12 +105,11 @@ describe('TelegramProductService (PC-07)', () => {
     expect(notifications.deliver).not.toHaveBeenCalled();
 
     expect(service.disconnect('ws-1', 'user-1').status).toBe('not-connected');
-    expect(JSON.stringify(completed)).not.toContain('in-memory:ws-1:user-1');
   });
 
-  it('rejects complete when not pending and lists telegram deliveries only', () => {
+  it('rejects complete when not pending and lists telegram deliveries only', async () => {
     const { service } = harness();
-    expect(() => service.complete('ws-1', 'user-1')).toThrow(
+    await expect(service.complete('ws-1', 'user-1')).rejects.toThrow(
       'Telegram connection is not awaiting bind',
     );
     const page = service.listDeliveries({ workspaceId: 'ws-1' });

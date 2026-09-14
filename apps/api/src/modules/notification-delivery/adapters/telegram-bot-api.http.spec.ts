@@ -58,6 +58,24 @@ describe('telegram-bot-api.http (REM-01-s1)', () => {
     expect(calls[0]!.method).toBe('GET');
   });
 
+  it('calls getUpdates against the compile-time origin with timeout=0 (MOCKED)', async () => {
+    const calls: Array<{ url: string; method: string; redirect: string }> = [];
+    const client = new TelegramBotApiHttpClient(async (url, init) => {
+      calls.push({ url, method: init.method, redirect: init.redirect });
+      return { status: 200, text: async () => '{"ok":true,"result":[]}' };
+    });
+    const result = await client.execute({ botToken: TOKEN, method: 'getUpdates' });
+    expect(result.ok).toBe(true);
+    expect(calls).toHaveLength(1);
+    const parsed = new URL(calls[0]!.url);
+    expect(parsed.protocol).toBe('https:');
+    expect(parsed.hostname).toBe('api.telegram.org');
+    expect(parsed.pathname.endsWith('/getUpdates')).toBe(true);
+    expect(parsed.searchParams.get('timeout')).toBe('0');
+    expect(calls[0]!.method).toBe('GET');
+    expect(calls[0]!.redirect).toBe('error');
+  });
+
   it('does not let operator-controlled URLs choose the target', async () => {
     const calls: string[] = [];
     const client = new TelegramBotApiHttpClient(async (url) => {

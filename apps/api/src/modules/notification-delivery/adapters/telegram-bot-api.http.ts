@@ -14,8 +14,13 @@ export const TELEGRAM_BOT_API_ORIGIN = 'https://api.telegram.org' as const;
 export const TELEGRAM_BOT_API_TIMEOUT_MS = 10_000;
 export const MAX_TELEGRAM_BOT_API_BODY_CHARS = 4096;
 
-export const TELEGRAM_BOT_API_METHODS = Object.freeze(['getMe', 'sendMessage'] as const);
+export const TELEGRAM_BOT_API_METHODS = Object.freeze([
+  'getMe',
+  'sendMessage',
+  'getUpdates',
+] as const);
 export type TelegramBotApiMethod = (typeof TELEGRAM_BOT_API_METHODS)[number];
+export const MAX_TELEGRAM_GET_UPDATES_BODY_CHARS = 65_536;
 
 const BOT_TOKEN_PATTERN = /^[0-9A-Za-z:_-]{1,200}$/;
 
@@ -84,8 +89,12 @@ export class TelegramBotApiHttpClient {
     }
 
     const httpMethod = input.method === 'sendMessage' ? 'POST' : 'GET';
-    const url = `${TELEGRAM_BOT_API_ORIGIN}/bot${token}/${input.method}`;
+    const url = constructedTelegramBotApiUrl(token, input.method);
     const constructed = assertConstructedTelegramUrl(url);
+    const maxBodyChars =
+      input.method === 'getUpdates'
+        ? MAX_TELEGRAM_GET_UPDATES_BODY_CHARS
+        : MAX_TELEGRAM_BOT_API_BODY_CHARS;
     if (!constructed.ok) {
       return constructed;
     }
@@ -108,7 +117,7 @@ export class TelegramBotApiHttpClient {
       return Object.freeze({
         ok: true,
         status: response.status,
-        bodyText: raw.slice(0, MAX_TELEGRAM_BOT_API_BODY_CHARS),
+        bodyText: raw.slice(0, maxBodyChars),
       });
     } catch (error) {
       if (isTelegramAbortError(error) || controller.signal.aborted) {
@@ -119,6 +128,22 @@ export class TelegramBotApiHttpClient {
       clearTimeout(timer);
     }
   }
+}
+
+/**
+ * Compile-time Bot API URL. getUpdates uses timeout=0 (no long-poll worker).
+ * Query strings are not operator-supplied.
+ */
+function constructedTelegramBotApiUrl(botToken: string, method: TelegramBotApiMethod): string {
+  const path = `${TELEGRAM_BOT_API_ORIGIN}/bot${botToken}/${method}`;
+  if (method !== 'getUpdates') {
+    return path;
+  }
+  const query = new URLSearchParams({
+    timeout: '0',
+    allowed_updates: JSON.stringify(['message']),
+  });
+  return `${path}?${query.toString()}`;
 }
 
 function assertConstructedTelegramUrl(
