@@ -1,9 +1,8 @@
 /**
  * PC-07 — channel-agnostic product views over existing Notification Delivery.
  *
- * Notification Delivery remains owner. Telegram is one active transport.
- * Reserved channels stay reserved-inactive. No SMTP/webhook SoT.
- * Not a scheduler. Not a new routing engine.
+ * Notification Delivery remains owner. Telegram and Email are active transports.
+ * Slack/Discord/Teams/Push stay reserved-inactive. Not a scheduler.
  */
 
 import type { DeliveryResult, DeliverySkipReason } from '../notification-delivery/domain/delivery';
@@ -15,6 +14,8 @@ import {
   NOTIFICATION_TYPES,
   type NotificationType,
 } from '../notification-delivery/domain/notification-type';
+import type { EmailConnection } from '../notification-delivery/domain/email-connection';
+import type { EmailTransportProjection } from '../notification-delivery/domain/email-transport-projection';
 import type { TelegramConnection } from '../notification-delivery/domain/telegram-connection';
 import type { TelegramTransportProjection } from '../notification-delivery/domain/telegram-transport-projection';
 import type { UserNotificationPreferences } from '../notification-delivery/domain/user-notification-preferences';
@@ -29,16 +30,22 @@ import {
 } from './notification.view';
 
 export const RESERVED_CHANNEL_REQUIRED_FIELDS: Readonly<
-  Record<Exclude<NotificationChannelId, 'telegram'>, readonly string[]>
+  Record<Exclude<NotificationChannelId, 'telegram' | 'email'>, readonly string[]>
 > = Object.freeze({
-  email: Object.freeze(['Provider / SMTP', 'Sender', 'Recipient(s)']),
   slack: Object.freeze(['Workspace', 'Webhook', 'Channel']),
   discord: Object.freeze(['Webhook', 'Channel']),
   teams: Object.freeze(['Webhook', 'Team', 'Channel']),
   push: Object.freeze(['Device', 'Browser']),
 });
 
-export type ChannelConfigurationKind = 'telegram-connection' | 'reserved-inactive';
+export const EMAIL_CHANNEL_REQUIRED_FIELDS = Object.freeze([
+  'SMTP credentials (Connections)',
+  'Recipient',
+  'Send test',
+]);
+
+export type ChannelConfigurationKind =
+  'telegram-connection' | 'email-connection' | 'reserved-inactive';
 
 export type NotificationChannelCardView = {
   channelId: NotificationChannelId;
@@ -50,8 +57,9 @@ export type NotificationChannelCardView = {
   testAvailable: boolean;
   connectAvailable: boolean;
   configurationKind: ChannelConfigurationKind;
-  transport: TelegramTransportProjection['transport'] | 'none';
-  connectionStatus: TelegramConnection['status'] | 'reserved-inactive';
+  transport:
+    TelegramTransportProjection['transport'] | EmailTransportProjection['transport'] | 'none';
+  connectionStatus: TelegramConnection['status'] | EmailConnection['status'] | 'reserved-inactive';
   liveTransportActivated: boolean;
   botApiUsed: boolean;
   authorityClass: 'notification-projection';
@@ -65,7 +73,7 @@ export type NotificationChannelConfigurationView = {
   connectAvailable: boolean;
   liveTransportActivated: boolean;
   botApiUsed: boolean;
-  userEnteredBind: false;
+  userEnteredBind: boolean;
 };
 
 export type NotificationDeliveryTimingView = {
@@ -120,7 +128,7 @@ export type NotificationChannelDetailView = NotificationChannelCardView & {
 
 export type NotificationChannelDiagnosticsView = {
   channelId: NotificationChannelId;
-  connectionState: TelegramConnection['status'] | 'reserved-inactive';
+  connectionState: TelegramConnection['status'] | EmailConnection['status'] | 'reserved-inactive';
   enabled: boolean;
   offered: boolean;
   configurationHealth: 'ready' | 'not-connected' | 'pending' | 'disabled' | 'reserved-inactive';
@@ -141,8 +149,35 @@ export function toChannelCardView(input: {
   prefs: UserNotificationPreferences;
   connection: TelegramConnection;
   honesty: TelegramTransportProjection;
+  emailConnection?: EmailConnection;
+  emailHonesty?: EmailTransportProjection;
 }): NotificationChannelCardView {
   const offered = input.channel.status === 'active';
+  if (input.channel.channelId === 'email') {
+    const email = input.emailConnection;
+    const emailHonesty = input.emailHonesty ?? {
+      transport: 'in-memory' as const,
+      smtpUsed: false,
+    };
+    const recipientBound = Boolean(email?.recipient);
+    const enabled = input.prefs.channels.email === true;
+    return {
+      channelId: 'email',
+      label: input.channel.label,
+      status: input.channel.status,
+      offered,
+      enabled,
+      configurable: offered,
+      testAvailable: offered && recipientBound,
+      connectAvailable: offered && email?.status !== 'connected',
+      configurationKind: 'email-connection',
+      transport: offered ? emailHonesty.transport : 'none',
+      connectionStatus: offered ? (email?.status ?? 'not-connected') : 'reserved-inactive',
+      liveTransportActivated: offered ? emailHonesty.smtpUsed : false,
+      botApiUsed: false,
+      authorityClass: 'notification-projection',
+    };
+  }
   const telegramConnected =
     input.connection.status === 'connected' && Boolean(input.connection.chatId);
   const enabled = input.prefs.channels[input.channel.channelId] === true;
@@ -177,6 +212,18 @@ export function toChannelConfigurationView(
       liveTransportActivated: card.liveTransportActivated,
       botApiUsed: card.botApiUsed,
       userEnteredBind: false,
+    };
+  }
+  if (card.channelId === 'email') {
+    return {
+      kind: 'email-connection',
+      requiredFields: EMAIL_CHANNEL_REQUIRED_FIELDS,
+      configurable: true,
+      testAvailable: card.testAvailable,
+      connectAvailable: card.connectAvailable,
+      liveTransportActivated: card.liveTransportActivated,
+      botApiUsed: false,
+      userEnteredBind: true,
     };
   }
   return {
@@ -214,6 +261,7 @@ export function toRoutingMatrixView(input: {
   connection: TelegramConnection;
   evaluatedAt: string;
   honesty: TelegramTransportProjection;
+  emailConnection?: EmailConnection;
 }): NotificationRoutingMatrixView {
   const routing = toRoutingView(input);
   return {
@@ -291,6 +339,8 @@ export function toChannelsWorkspaceView(input: {
   connection: TelegramConnection;
   evaluatedAt: string;
   honesty: TelegramTransportProjection;
+  emailConnection?: EmailConnection;
+  emailHonesty?: EmailTransportProjection;
 }): NotificationChannelsWorkspaceView {
   const cards = input.channels.map((channel) =>
     toChannelCardView({
@@ -298,6 +348,8 @@ export function toChannelsWorkspaceView(input: {
       prefs: input.prefs,
       connection: input.connection,
       honesty: input.honesty,
+      emailConnection: input.emailConnection,
+      emailHonesty: input.emailHonesty,
     }),
   );
   return {
@@ -325,6 +377,8 @@ export function toChannelDetailView(input: {
   deliveries: readonly DeliveryResult[];
   evaluatedAt: string;
   honesty: TelegramTransportProjection;
+  emailConnection?: EmailConnection;
+  emailHonesty?: EmailTransportProjection;
 }): NotificationChannelDetailView | null {
   const descriptor = input.channels.find((channel) => channel.channelId === input.channelId);
   if (!descriptor) return null;
@@ -333,6 +387,8 @@ export function toChannelDetailView(input: {
     prefs: input.prefs,
     connection: input.connection,
     honesty: input.honesty,
+    emailConnection: input.emailConnection,
+    emailHonesty: input.emailHonesty,
   });
   const matrix = toRoutingMatrixView(input);
   return {

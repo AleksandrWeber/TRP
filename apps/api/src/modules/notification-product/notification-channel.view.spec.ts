@@ -34,8 +34,9 @@ describe('PC-07 notification channel product views', () => {
     });
     expect(view.channels).toHaveLength(6);
     expect(view.channels.find((channel) => channel.channelId === 'telegram')?.offered).toBe(true);
-    expect(view.channels.find((channel) => channel.channelId === 'email')?.offered).toBe(false);
-    expect(view.channels.find((channel) => channel.channelId === 'email')?.configurable).toBe(
+    expect(view.channels.find((channel) => channel.channelId === 'email')?.offered).toBe(true);
+    expect(view.channels.find((channel) => channel.channelId === 'slack')?.offered).toBe(false);
+    expect(view.channels.find((channel) => channel.channelId === 'slack')?.configurable).toBe(
       false,
     );
     expect(view.deferredChannelsActivated).toBe(false);
@@ -43,12 +44,11 @@ describe('PC-07 notification channel product views', () => {
     expect(view.timing.hourlyDigest).toBe(false);
     expect(view.timing.perChannelQuietHours).toBe(false);
     expect(view.routingMatrix.rows).toHaveLength(13);
-    expect(view.routingMatrix.offeredChannelIds).toEqual(['telegram']);
-    expect(JSON.stringify(view)).not.toContain('smtp');
+    expect(view.routingMatrix.offeredChannelIds).toEqual(['telegram', 'email']);
     expect(JSON.stringify(view)).not.toContain('webhook');
   });
 
-  it('maps telegram as configurable and email as reserved disclosure', () => {
+  it('maps telegram as configurable and email as offered SMTP connection', () => {
     const telegram = toChannelDetailView({
       channelId: 'telegram',
       prefs: prefs(),
@@ -83,10 +83,11 @@ describe('PC-07 notification channel product views', () => {
       evaluatedAt,
       honesty: IN_MEMORY_TELEGRAM_TRANSPORT,
     });
-    expect(email?.configuration.kind).toBe('reserved-inactive');
-    expect(email?.configuration.requiredFields).toContain('Provider / SMTP');
+    expect(email?.configuration.kind).toBe('email-connection');
+    expect(email?.configuration.requiredFields).toContain('Recipient');
+    expect(email?.configuration.userEnteredBind).toBe(true);
     expect(email?.testAvailable).toBe(false);
-    expect(email?.diagnostics.configurationHealth).toBe('reserved-inactive');
+    expect(email?.diagnostics.configurationHealth).toBe('disabled');
     expect(toDeliveryTimingView(prefs()).producerTiming).toBe('immediate-on-deliver');
   });
 
@@ -100,12 +101,16 @@ describe('PC-07 notification channel product views', () => {
     });
     const telegram = view.channels.find((channel) => channel.channelId === 'telegram');
     const email = view.channels.find((channel) => channel.channelId === 'email');
+    const slack = view.channels.find((channel) => channel.channelId === 'slack');
     expect(telegram?.transport).toBe('bot-api');
     expect(telegram?.botApiUsed).toBe(true);
     expect(telegram?.liveTransportActivated).toBe(true);
-    expect(email?.transport).toBe('none');
+    expect(email?.transport).toBe('in-memory');
     expect(email?.botApiUsed).toBe(false);
     expect(email?.liveTransportActivated).toBe(false);
+    expect(slack?.transport).toBe('none');
+    expect(slack?.botApiUsed).toBe(false);
+    expect(slack?.liveTransportActivated).toBe(false);
 
     const telegramDetail = toChannelDetailView({
       channelId: 'telegram',
@@ -130,9 +135,22 @@ describe('PC-07 notification channel product views', () => {
       evaluatedAt,
       honesty: BOT_API_TELEGRAM_TRANSPORT,
     });
-    expect(emailDetail?.transport).toBe('none');
+    const slackDetail = toChannelDetailView({
+      channelId: 'slack',
+      prefs: prefs(),
+      channels: NOTIFICATION_CHANNEL_CATALOG,
+      connection: notConnectedTelegram('ws-1', 'user-1', evaluatedAt),
+      deliveries: [],
+      evaluatedAt,
+      honesty: BOT_API_TELEGRAM_TRANSPORT,
+    });
+    expect(emailDetail?.transport).toBe('in-memory');
     expect(emailDetail?.botApiUsed).toBe(false);
     expect(emailDetail?.liveTransportActivated).toBe(false);
     expect(emailDetail?.configuration.botApiUsed).toBe(false);
+    expect(slackDetail?.transport).toBe('none');
+    expect(slackDetail?.botApiUsed).toBe(false);
+    expect(slackDetail?.liveTransportActivated).toBe(false);
+    expect(slackDetail?.configuration.botApiUsed).toBe(false);
   });
 });

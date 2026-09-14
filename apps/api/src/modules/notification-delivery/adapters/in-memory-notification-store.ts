@@ -9,6 +9,7 @@
 import { Injectable } from '@nestjs/common';
 import type { DeliveryResult } from '../domain/delivery';
 import type { NotificationDeliveryQueueItem } from '../domain/delivery-queue';
+import type { EmailConnection } from '../domain/email-connection';
 import type { TelegramConnection } from '../domain/telegram-connection';
 import type { UserNotificationPreferences } from '../domain/user-notification-preferences';
 
@@ -19,6 +20,7 @@ function key(workspaceId: string, userId: string): string {
 export type NotificationStoreDurableState = Readonly<{
   preferences: UserNotificationPreferences[];
   telegram: TelegramConnection[];
+  email: EmailConnection[];
   deliveries: DeliveryResult[];
   /** W3-O02-b — in-flight / pending / retryable / terminal queue work (not Outbox). */
   queue: NotificationDeliveryQueueItem[];
@@ -28,6 +30,7 @@ export type NotificationStoreDurableState = Readonly<{
 export class InMemoryNotificationStore {
   private readonly preferences = new Map<string, UserNotificationPreferences>();
   private readonly telegram = new Map<string, TelegramConnection>();
+  private readonly email = new Map<string, EmailConnection>();
   private readonly tokenIndex = new Map<string, string>();
   private readonly deliveries: DeliveryResult[] = [];
   private readonly queue = new Map<string, NotificationDeliveryQueueItem>();
@@ -60,6 +63,14 @@ export class InMemoryNotificationStore {
     const k = this.tokenIndex.get(connectionToken);
     if (!k) return undefined;
     return this.telegram.get(k);
+  }
+
+  getEmail(workspaceId: string, userId: string): EmailConnection | undefined {
+    return this.email.get(key(workspaceId, userId));
+  }
+
+  saveEmail(connection: EmailConnection): void {
+    this.email.set(key(connection.workspaceId, connection.userId), connection);
   }
 
   recordDelivery(result: DeliveryResult): void {
@@ -111,6 +122,7 @@ export class InMemoryNotificationStore {
     return Object.freeze({
       preferences: [...this.preferences.values()],
       telegram: [...this.telegram.values()],
+      email: [...this.email.values()],
       deliveries: [...this.deliveries],
       queue: [...this.queue.values()],
     });
@@ -119,6 +131,7 @@ export class InMemoryNotificationStore {
   importDurableState(state: NotificationStoreDurableState): void {
     this.preferences.clear();
     this.telegram.clear();
+    this.email.clear();
     this.tokenIndex.clear();
     this.deliveries.length = 0;
     this.queue.clear();
@@ -127,6 +140,9 @@ export class InMemoryNotificationStore {
     }
     for (const connection of state.telegram ?? []) {
       this.saveTelegram(connection);
+    }
+    for (const connection of state.email ?? []) {
+      this.saveEmail(connection);
     }
     for (const delivery of state.deliveries ?? []) {
       this.deliveries.push(delivery);

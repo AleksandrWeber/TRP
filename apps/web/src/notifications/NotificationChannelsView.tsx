@@ -13,9 +13,11 @@ import {
 export type ChannelsDraft = {
   enabled: boolean;
   telegramEnabled: boolean;
+  emailEnabled: boolean;
   typeEnabled: Record<string, boolean>;
   typeCritical: Record<string, boolean>;
   typeTelegram: Record<string, boolean>;
+  typeEmail: Record<string, boolean>;
   timezone: string;
   dailyDeliveryTime: string;
   quietHoursEnabled: boolean;
@@ -28,18 +30,23 @@ export function draftFromWorkspace(workspace: NotificationChannelsWorkspaceView)
   const typeEnabled: Record<string, boolean> = {};
   const typeCritical: Record<string, boolean> = {};
   const typeTelegram: Record<string, boolean> = {};
+  const typeEmail: Record<string, boolean> = {};
   for (const row of workspace.routingMatrix.rows) {
     typeEnabled[row.type] = row.enabled;
     typeCritical[row.type] = row.critical;
     typeTelegram[row.type] = row.channels.telegram === true;
+    typeEmail[row.type] = row.channels.email === true;
   }
   return {
     enabled: workspace.masterEnabled,
     telegramEnabled:
       workspace.channels.find((channel) => channel.channelId === 'telegram')?.enabled === true,
+    emailEnabled:
+      workspace.channels.find((channel) => channel.channelId === 'email')?.enabled === true,
     typeEnabled,
     typeCritical,
     typeTelegram,
+    typeEmail,
     timezone: workspace.timing.timezone,
     dailyDeliveryTime: workspace.timing.dailyDeliveryTime,
     quietHoursEnabled: Boolean(workspace.quietHours),
@@ -81,7 +88,7 @@ export function NotificationChannelsView({
       <PageHeader
         productId="notification-channels"
         title="Notification channels"
-        description="Channel-agnostic product over Notification Delivery. Telegram is the active transport. Email, Slack, Discord, Microsoft Teams, and Push stay reserved. This page does not redesign routing, activate live transports, or schedule digests."
+        description="Channel-agnostic product over Notification Delivery. Telegram and Email are the active transports. Slack, Discord, Microsoft Teams, and Push stay reserved. This page does not schedule digests."
         extraActions={[{ to: '/notifications/history', label: 'Delivery history' }]}
       />
 
@@ -126,6 +133,15 @@ export function NotificationChannelsView({
                         onChange={(telegramEnabled) => onDraft({ ...draft, telegramEnabled })}
                       />
                     </div>
+                  ) : channel.channelId === 'email' ? (
+                    <div className="mt-3">
+                      <Toggle
+                        testId="channel-enable-email"
+                        checked={draft.emailEnabled}
+                        label="Email enabled"
+                        onChange={(emailEnabled) => onDraft({ ...draft, emailEnabled })}
+                      />
+                    </div>
                   ) : (
                     <p className="mt-3 text-xs text-slate-500">Live transport is not activated.</p>
                   )}
@@ -134,7 +150,11 @@ export function NotificationChannelsView({
                     className="mt-3 inline-block text-sm text-sky-400 hover:text-sky-300"
                     data-testid={`channel-configure-${channel.channelId}`}
                   >
-                    {channel.offered ? 'Configure Telegram' : 'View reserved channel'}
+                    {channel.channelId === 'telegram'
+                      ? 'Configure Telegram'
+                      : channel.channelId === 'email'
+                        ? 'Configure Email'
+                        : 'View reserved channel'}
                   </Link>
                 </li>
               ))}
@@ -210,6 +230,21 @@ export function NotificationChannelsView({
                                   ...draft,
                                   typeTelegram: {
                                     ...draft.typeTelegram,
+                                    [row.type]: event.target.checked,
+                                  },
+                                })
+                              }
+                            />
+                          ) : channelId === 'email' ? (
+                            <input
+                              type="checkbox"
+                              data-testid={`routing-email-${row.type}`}
+                              checked={draft.typeEmail[row.type] === true}
+                              onChange={(event) =>
+                                onDraft({
+                                  ...draft,
+                                  typeEmail: {
+                                    ...draft.typeEmail,
                                     [row.type]: event.target.checked,
                                   },
                                 })
@@ -320,7 +355,8 @@ export function NotificationChannelsView({
 
           <p className="text-xs text-slate-500">
             Configuration health is per channel. Telegram uses existing connect / verify / test.
-            Reserved channels stay reserved-inactive.
+            Email uses Connections SMTP credentials, recipient bind, and SMTP test. Reserved
+            channels stay reserved-inactive.
             {workspace.channels
               .map(
                 (channel) =>

@@ -83,6 +83,7 @@ export {
   ReportRunIdParamDto,
 } from './dto/reporting.dto';
 export {
+  BindEmailRecipientBodyDto,
   DeliveryIdParamDto,
   ListNotificationDeliveriesQueryDto,
   NotificationChannelIdParamDto,

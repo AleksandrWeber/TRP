@@ -82,6 +82,7 @@ export function resolveDeliveryRoutes(
   prefs: UserNotificationPreferences,
   options: Readonly<{
     telegramConnected: boolean;
+    emailConnected?: boolean;
   }>,
 ): readonly RoutedChannel[] {
   if (!prefs.enabled) {
@@ -114,6 +115,10 @@ export function resolveDeliveryRoutes(
       continue;
     }
     if (channelId === 'telegram' && !options.telegramConnected) {
+      routes.push({ channelId, skipReason: 'channel-not-connected' });
+      continue;
+    }
+    if (channelId === 'email' && !options.emailConnected) {
       routes.push({ channelId, skipReason: 'channel-not-connected' });
       continue;
     }

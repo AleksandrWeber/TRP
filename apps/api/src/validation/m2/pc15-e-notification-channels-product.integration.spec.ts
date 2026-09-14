@@ -6,6 +6,7 @@ import { InMemoryKnowledgeLakeIngestionAdapter } from '../../modules/knowledge-l
 import { InMemoryTelegramAdapter } from '../../modules/notification-delivery/adapters/in-memory-telegram.adapter';
 import { NotificationDeliveryModule } from '../../modules/notification-delivery/notification-delivery.module';
 import {
+  bindInMemoryEmailChannelForTests,
   bindInMemoryTelegramChannelForTests,
   stubSecretVaultForIsolatedNotificationDelivery,
 } from '../../modules/notification-delivery/notification-delivery.test-harness';
@@ -47,18 +48,20 @@ function admit(
 }
 
 async function compileFlow() {
-  return bindInMemoryTelegramChannelForTests(
-    stubSecretVaultForIsolatedNotificationDelivery(
-      Test.createTestingModule({
-        imports: [ReportingModule, NotificationDeliveryModule],
-        providers: [ReportNotificationConsumerService, NotificationChannelDispatchService],
-      })
-        .overrideProvider(OutboxDispatcher)
-        .useValue({
-          register: () => undefined,
-          stop: async () => undefined,
-          start: () => undefined,
-        }),
+  return bindInMemoryEmailChannelForTests(
+    bindInMemoryTelegramChannelForTests(
+      stubSecretVaultForIsolatedNotificationDelivery(
+        Test.createTestingModule({
+          imports: [ReportingModule, NotificationDeliveryModule],
+          providers: [ReportNotificationConsumerService, NotificationChannelDispatchService],
+        })
+          .overrideProvider(OutboxDispatcher)
+          .useValue({
+            register: () => undefined,
+            stop: async () => undefined,
+            start: () => undefined,
+          }),
+      ),
     ),
   ).compile();
 }
@@ -164,12 +167,15 @@ describe('PC-15 15-e — Notification Delivery → Channels product flow', () =>
       result.delivery?.attempts
         .filter((attempt) => attempt.skipReason === 'channel-reserved')
         .map((attempt) => attempt.channelId),
-    ).toEqual(['email', 'slack']);
+    ).toEqual(['slack']);
+    expect(
+      result.delivery?.attempts.find((attempt) => attempt.channelId === 'email')?.skipReason,
+    ).toBe('channel-disabled');
     expect(result.projection.deferredChannelsActivated).toBe(false);
     expect(result.projection.channelActivated).toBe(false);
     expect(
       notifications.listChannels().find((channel) => channel.channelId === 'email')?.status,
-    ).toBe('reserved-inactive');
+    ).toBe('active');
     expect(
       notifications.listChannels().find((channel) => channel.channelId === 'discord')?.status,
     ).toBe('reserved-inactive');

@@ -19,6 +19,7 @@ import {
 import { prepareNotificationStoreStateForRecovery } from '../domain/notification-queue-restart-recovery';
 import { buildNotificationQueueRecoveryDiagnostics } from '../domain/notification-queue-restart-recovery';
 import type { TelegramConnection } from '../domain/telegram-connection';
+import type { EmailConnection } from '../domain/email-connection';
 import type { UserNotificationPreferences } from '../domain/user-notification-preferences';
 import {
   InMemoryNotificationStore,
@@ -68,6 +69,11 @@ export class DurableNotificationStore extends InMemoryNotificationStore {
 
   override saveTelegram(connection: TelegramConnection): void {
     super.saveTelegram(connection);
+    this.persist();
+  }
+
+  override saveEmail(connection: EmailConnection): void {
+    super.saveEmail(connection);
     this.persist();
   }
 

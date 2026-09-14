@@ -2020,6 +2020,57 @@ export type TelegramConnectProductView = {
   authorityClass: 'notification-projection';
 };
 
+export type EmailConnectionProductView = {
+  status: 'not-connected' | 'pending' | 'connected';
+  connected: boolean;
+  recipientBound: boolean;
+  recipient: string | null;
+  pending: boolean;
+  verified: boolean;
+  connectedAt: string | null;
+  updatedAt: string;
+  bindAvailable: boolean;
+  testAvailable: boolean;
+  disconnectAvailable: boolean;
+  controlPlane: false;
+  transport: 'in-memory' | 'smtp';
+  smtpUsed: boolean;
+  userEnteredBind: true;
+  authorityClass: 'notification-projection';
+};
+
+export type EmailTestProductView = {
+  connection: EmailConnectionProductView;
+  delivery: NotificationDeliveryDetailView;
+  controlPlane: false;
+  smtpUsed: boolean;
+  authorityClass: 'notification-projection';
+};
+
+export type EmailDiagnosticsView = {
+  connection: EmailConnectionProductView;
+  verification: {
+    status: 'not-connected' | 'pending' | 'connected';
+    verified: boolean;
+    recipientBound: boolean;
+    pending: boolean;
+  };
+  lastEmailDelivery: {
+    deliveryId: string;
+    outcome: string;
+    skipReason: string | null;
+    adapterReached: boolean;
+    createdAt: string;
+  } | null;
+  emailTransport: 'in-memory' | 'smtp';
+  smtpUsed: boolean;
+  controlPlane: false;
+  deferredChannelsActivated: false;
+  scheduler: false;
+  retries: false;
+  authorityClass: 'notification-projection';
+};
+
 export type PreferenceClockView = {
   timezone: string;
   dailyDeliveryTime: string;
@@ -2139,8 +2190,8 @@ export type NotificationChannelCardView = {
   configurable: boolean;
   testAvailable: boolean;
   connectAvailable: boolean;
-  configurationKind: 'telegram-connection' | 'reserved-inactive';
-  transport: 'in-memory' | 'bot-api' | 'none';
+  configurationKind: 'telegram-connection' | 'email-connection' | 'reserved-inactive';
+  transport: 'in-memory' | 'bot-api' | 'smtp' | 'none';
   connectionStatus: 'not-connected' | 'pending' | 'connected' | 'reserved-inactive';
   liveTransportActivated: boolean;
   botApiUsed: boolean;
@@ -2148,14 +2199,14 @@ export type NotificationChannelCardView = {
 };
 
 export type NotificationChannelConfigurationView = {
-  kind: 'telegram-connection' | 'reserved-inactive';
+  kind: 'telegram-connection' | 'email-connection' | 'reserved-inactive';
   requiredFields: readonly string[];
   configurable: boolean;
   testAvailable: boolean;
   connectAvailable: boolean;
   liveTransportActivated: boolean;
   botApiUsed: boolean;
-  userEnteredBind: false;
+  userEnteredBind: boolean;
 };
 
 export type NotificationDeliveryTimingView = {
@@ -4244,6 +4295,23 @@ export const api = {
       body: JSON.stringify({}),
     }),
   getTelegramDiagnostics: () => request<TelegramDiagnosticsView>('/telegram/diagnostics'),
+  getEmailConnection: () => request<EmailConnectionProductView>('/email/connection'),
+  bindEmailRecipient: (recipient: string) =>
+    request<EmailConnectionProductView>('/email/bind', {
+      method: 'POST',
+      body: JSON.stringify({ recipient }),
+    }),
+  sendEmailTest: () =>
+    request<EmailTestProductView>('/email/test', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  disconnectEmail: () =>
+    request<EmailConnectionProductView>('/email/disconnect', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  getEmailDiagnostics: () => request<EmailDiagnosticsView>('/email/diagnostics'),
   listTelegramDeliveries: (query: NotificationDeliveryListQuery = {}) => {
     const params = new URLSearchParams();
     if (query.userId) params.set('userId', query.userId);

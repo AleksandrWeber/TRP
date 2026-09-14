@@ -5,6 +5,7 @@ import { WorkspaceDomainService } from '../../modules/workspace/workspace-domain
 import { createUserNotificationPreferences } from '../../modules/notification-delivery/domain/user-notification-preferences';
 import { createDeliveryResult } from '../../modules/notification-delivery/domain/delivery';
 import { NOTIFICATION_CHANNEL_CATALOG } from '../../modules/notification-delivery/domain/notification-channel';
+import { notConnectedEmail } from '../../modules/notification-delivery/domain/email-connection';
 import { notConnectedTelegram } from '../../modules/notification-delivery/domain/telegram-connection';
 import { NotificationSettingsController } from '../../modules/notification-product/notification.controller';
 import { NotificationDeliveriesController } from '../../modules/notification-product/notification.controller';
@@ -58,6 +59,7 @@ describe('PC-06 — Notification product', () => {
       getPreferences: () => prefs,
       upsertPreferences: vi.fn(() => prefs),
       getTelegramConnection: () => notConnectedTelegram(workspace.id, OWNER.userId, evaluatedAt),
+      getEmailConnection: () => notConnectedEmail(workspace.id, OWNER.userId, evaluatedAt),
       listDeliveries: vi.fn(() => [delivery]),
       deliver: vi.fn(),
       connectTelegram: vi.fn(),
@@ -75,7 +77,8 @@ describe('PC-06 — Notification product', () => {
     expect(snapshot.telegram.connected).toBe(false);
     expect(snapshot.telegram.connectAvailable).toBe(false);
     expect(snapshot.telegram.transport).toBe('in-memory');
-    expect(snapshot.channels.find((channel) => channel.channelId === 'email')?.offered).toBe(false);
+    expect(snapshot.channels.find((channel) => channel.channelId === 'email')?.offered).toBe(true);
+    expect(snapshot.channels.find((channel) => channel.channelId === 'slack')?.offered).toBe(false);
     expect(snapshot.controlPlane).toBe(false);
 
     const page = deliveries.list({ user: OWNER }, workspace.id, { type: 'daily-report' });

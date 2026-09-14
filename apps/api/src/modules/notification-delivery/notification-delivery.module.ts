@@ -4,8 +4,11 @@ import { PrismaModule, PrismaService } from '../../storage/prisma/prisma.module'
 import { SecretVaultModule } from '../secret-vault';
 import { DurableNotificationStore } from './adapters/durable-notification-store';
 import { InMemoryNotificationStore } from './adapters/in-memory-notification-store';
+import { InMemoryEmailAdapter } from './adapters/in-memory-email.adapter';
 import { InMemoryTelegramAdapter } from './adapters/in-memory-telegram.adapter';
+import { ProductionSmtpNotificationAdapter } from './adapters/production-smtp-notification.adapter';
 import { ProductionTelegramBotApiAdapter } from './adapters/telegram-bot-api.adapter';
+import { SmtpCredentialResolver } from './adapters/smtp-credential.resolver';
 import { TelegramBotApiHttpClient } from './adapters/telegram-bot-api.http';
 import { TelegramBotTokenResolver } from './adapters/telegram-bot-token.resolver';
 import { TelegramStartBindObserver } from './adapters/telegram-start-bind.observer';
@@ -67,7 +70,11 @@ import { PrismaNotificationPlatformRetrySchedulingDecisionProjectionAnchorReposi
 import { PrismaNotificationPlatformRetrySchedulingDecisionProjectionPublicationAnchorRepository } from './persistence/prisma-notification-platform-retry-scheduling-decision-projection-publication-anchor.repository';
 import { PrismaNotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionAnchorRepository } from './persistence/prisma-notification-platform-retry-scheduling-decision-projection-publication-consumption-anchor.repository';
 import { PrismaTelegramNotificationAnchorRepository } from './persistence/prisma-telegram-notification-anchor.repository';
-import { NOTIFICATION_SERVICE_PORT, TELEGRAM_CHANNEL_ADAPTER } from './ports/notification.port';
+import {
+  NOTIFICATION_SERVICE_PORT,
+  TELEGRAM_CHANNEL_ADAPTER,
+  EMAIL_CHANNEL_ADAPTER,
+} from './ports/notification.port';
 import { EmailNotificationPersistenceService } from './email-notification-persistence.service';
 import { SlackDiscordTeamsNotificationPersistenceService } from './slack-discord-teams-notification-persistence.service';
 import { SlackDiscordTeamsNotificationRecoveryStore } from './slack-discord-teams-notification-recovery-store';
@@ -463,9 +470,16 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     TelegramStartBindObserver,
     ProductionTelegramBotApiAdapter,
     InMemoryTelegramAdapter,
+    SmtpCredentialResolver,
+    ProductionSmtpNotificationAdapter,
+    InMemoryEmailAdapter,
     {
       provide: TELEGRAM_CHANNEL_ADAPTER,
       useExisting: ProductionTelegramBotApiAdapter,
+    },
+    {
+      provide: EMAIL_CHANNEL_ADAPTER,
+      useExisting: ProductionSmtpNotificationAdapter,
     },
     NotificationDeliveryService,
     {
@@ -478,8 +492,11 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationDeliveryService,
     InMemoryTelegramAdapter,
     ProductionTelegramBotApiAdapter,
+    InMemoryEmailAdapter,
+    ProductionSmtpNotificationAdapter,
     NOTIFICATION_SERVICE_PORT,
     TELEGRAM_CHANNEL_ADAPTER,
+    EMAIL_CHANNEL_ADAPTER,
     TELEGRAM_NOTIFICATION_ANCHOR_REPOSITORY,
     EMAIL_NOTIFICATION_ANCHOR_REPOSITORY,
     SLACK_DISCORD_TEAMS_NOTIFICATION_ANCHOR_REPOSITORY,

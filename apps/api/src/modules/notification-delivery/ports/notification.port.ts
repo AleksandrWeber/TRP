@@ -6,12 +6,14 @@
 
 import type { Role } from '../../identity/role';
 import type { DeliveryResult, DeliverNotificationCommand } from '../domain/delivery';
+import type { EmailConnection } from '../domain/email-connection';
 import type { NotificationChannelDescriptor } from '../domain/notification-channel';
 import type { TelegramConnection } from '../domain/telegram-connection';
 import type { UserNotificationPreferences } from '../domain/user-notification-preferences';
 
 export const NOTIFICATION_SERVICE_PORT = Symbol('NOTIFICATION_SERVICE_PORT');
 export const TELEGRAM_CHANNEL_ADAPTER = Symbol('TELEGRAM_CHANNEL_ADAPTER');
+export const EMAIL_CHANNEL_ADAPTER = Symbol('EMAIL_CHANNEL_ADAPTER');
 
 export type UpsertNotificationPreferences = Readonly<{
   workspaceId: string;
@@ -58,6 +60,21 @@ export type SendTestNotificationRequest = Readonly<{
   actorRole?: Role;
 }>;
 
+export type EmailBindRequest = Readonly<{
+  workspaceId: string;
+  userId: string;
+  recipient: string;
+  requestedAt?: string;
+}>;
+
+export type EmailDisconnectRequest = Readonly<{
+  workspaceId: string;
+  userId: string;
+  requestedAt?: string;
+}>;
+
+export type SendTestEmailNotificationRequest = SendTestNotificationRequest;
+
 export type NotificationChannelSendCommand = Readonly<{
   chatId: string;
   subject: string;
@@ -74,7 +91,7 @@ export type ListDeliveriesQuery = Readonly<{
 }>;
 
 /**
- * Notification Service port — delivery routing + preferences + Telegram workflow.
+ * Notification Service port — delivery routing + preferences + Telegram/Email workflows.
  */
 export interface NotificationServicePort {
   listChannels(): readonly NotificationChannelDescriptor[];
@@ -105,6 +122,10 @@ export interface NotificationServicePort {
   verifyTelegramConnection(cmd: TelegramVerifyRequest): TelegramConnection;
   disconnectTelegram(cmd: TelegramDisconnectRequest): TelegramConnection;
   sendTestNotification(cmd: SendTestNotificationRequest): Promise<DeliveryResult>;
+  getEmailConnection(workspaceId: string, userId: string): EmailConnection;
+  bindEmailRecipient(cmd: EmailBindRequest): EmailConnection;
+  disconnectEmail(cmd: EmailDisconnectRequest): EmailConnection;
+  sendTestEmailNotification(cmd: SendTestEmailNotificationRequest): Promise<DeliveryResult>;
   deliver(cmd: DeliverNotificationCommand): Promise<DeliveryResult>;
   /**
    * Read-only list of already-recorded deliveries. Not a new SoT.
@@ -113,7 +134,7 @@ export interface NotificationServicePort {
   listDeliveries(query: ListDeliveriesQuery): readonly DeliveryResult[];
 }
 
-/** Channel send surface (Telegram active; reserved channels inactive). */
+/** Channel send surface (Telegram and Email active; reserved channels inactive). */
 export interface NotificationChannelPort {
   readonly channelId: string;
   readonly active: boolean;
@@ -125,7 +146,7 @@ export interface NotificationChannelPort {
 export const NOTIFICATION_PORTS_ACTIVE = Object.freeze({
   notificationService: true,
   telegramChannel: true,
-  emailChannel: false,
+  emailChannel: true,
   slackChannel: false,
   discordChannel: false,
   teamsChannel: false,

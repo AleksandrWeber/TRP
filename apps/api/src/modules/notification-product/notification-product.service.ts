@@ -6,8 +6,9 @@
  * Notification Delivery remains owner. Reserved channels stay reserved.
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Optional } from '@nestjs/common';
 import {
+  EMAIL_CHANNEL_ADAPTER,
   NOTIFICATION_SERVICE_PORT,
   TELEGRAM_CHANNEL_ADAPTER,
   type NotificationChannelPort,
@@ -15,6 +16,7 @@ import {
   type UpsertNotificationPreferences,
 } from '../notification-delivery/ports/notification.port';
 import { projectTelegramTransport } from '../notification-delivery/domain/telegram-transport-projection';
+import { projectEmailTransport } from '../notification-delivery/domain/email-transport-projection';
 import type { NotificationChannelId } from '../notification-delivery/domain/notification-channel';
 import type { UserNotificationPreferences } from '../notification-delivery/domain/user-notification-preferences';
 import {
@@ -46,10 +48,23 @@ export class NotificationProductService {
     private readonly notifications: NotificationServicePort,
     @Inject(TELEGRAM_CHANNEL_ADAPTER)
     private readonly telegramChannel: NotificationChannelPort,
+    @Optional()
+    @Inject(EMAIL_CHANNEL_ADAPTER)
+    private readonly emailChannel?: NotificationChannelPort,
   ) {}
 
   private telegramHonesty() {
     return projectTelegramTransport(this.telegramChannel);
+  }
+
+  private emailHonesty() {
+    return this.emailChannel
+      ? projectEmailTransport(this.emailChannel)
+      : { transport: 'in-memory' as const, smtpUsed: false };
+  }
+
+  private emailConnection(workspaceId: string, userId: string) {
+    return this.notifications.getEmailConnection?.(workspaceId, userId);
   }
 
   getSettings(
@@ -63,6 +78,7 @@ export class NotificationProductService {
       connection: this.notifications.getTelegramConnection(workspaceId, userId),
       evaluatedAt,
       honesty: this.telegramHonesty(),
+      emailConnection: this.emailConnection(workspaceId, userId),
     });
   }
 
@@ -77,6 +93,7 @@ export class NotificationProductService {
       connection: this.notifications.getTelegramConnection(workspaceId, userId),
       evaluatedAt,
       honesty: this.telegramHonesty(),
+      emailConnection: this.emailConnection(workspaceId, userId),
     });
   }
 
@@ -95,6 +112,8 @@ export class NotificationProductService {
       connection: this.notifications.getTelegramConnection(workspaceId, userId),
       evaluatedAt,
       honesty: this.telegramHonesty(),
+      emailConnection: this.emailConnection(workspaceId, userId),
+      emailHonesty: this.emailHonesty(),
     });
   }
 
@@ -112,6 +131,8 @@ export class NotificationProductService {
       deliveries: this.notifications.listDeliveries({ workspaceId, userId }),
       evaluatedAt,
       honesty: this.telegramHonesty(),
+      emailConnection: this.emailConnection(workspaceId, userId),
+      emailHonesty: this.emailHonesty(),
     });
   }
 
@@ -142,6 +163,7 @@ export class NotificationProductService {
       connection,
       evaluatedAt,
       honesty: this.telegramHonesty(),
+      emailConnection: this.emailConnection(workspaceId, userId),
     }).preferences;
   }
 
@@ -155,6 +177,7 @@ export class NotificationProductService {
       connection,
       evaluatedAt: next.updatedAt,
       honesty: this.telegramHonesty(),
+      emailConnection: this.emailConnection(input.workspaceId, input.userId),
     }).preferences;
   }
 

@@ -86,7 +86,7 @@ export type NotificationDeliveryBoundary = Readonly<{
   activePorts: Readonly<{
     notificationService: true;
     telegramChannel: true;
-    emailChannel: false;
+    emailChannel: true;
     slackChannel: false;
     discordChannel: false;
     teamsChannel: false;
@@ -109,7 +109,7 @@ export const NOTIFICATION_DELIVERY_BOUNDARY: NotificationDeliveryBoundary = Obje
   activePorts: Object.freeze({
     notificationService: true,
     telegramChannel: true,
-    emailChannel: false,
+    emailChannel: true,
     slackChannel: false,
     discordChannel: false,
     teamsChannel: false,

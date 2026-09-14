@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createDeliveryResult } from '../notification-delivery/domain/delivery';
 import { NOTIFICATION_CHANNEL_CATALOG } from '../notification-delivery/domain/notification-channel';
+import { notConnectedEmail } from '../notification-delivery/domain/email-connection';
 import { notConnectedTelegram } from '../notification-delivery/domain/telegram-connection';
 import { createUserNotificationPreferences } from '../notification-delivery/domain/user-notification-preferences';
 import { InMemoryTelegramAdapter } from '../notification-delivery/adapters/in-memory-telegram.adapter';
@@ -43,6 +44,7 @@ function harness() {
       }),
     ),
     getTelegramConnection: vi.fn(() => notConnectedTelegram('ws-1', 'user-1', evaluatedAt)),
+    getEmailConnection: vi.fn(() => notConnectedEmail('ws-1', 'user-1', evaluatedAt)),
     listDeliveries: vi.fn(() => [delivery()]),
     deliver: vi.fn(),
     connectTelegram: vi.fn(),
@@ -95,7 +97,7 @@ describe('NotificationProductService (PC-06)', () => {
     );
   });
 
-  it('exposes channel workspace, telegram detail, and reserved email without sending', () => {
+  it('exposes channel workspace, telegram detail, and offered email without sending', () => {
     const { service, notifications } = harness();
     const workspace = service.getChannelsWorkspace('ws-1', 'user-1', evaluatedAt);
     expect(workspace.channels).toHaveLength(6);
@@ -109,9 +111,12 @@ describe('NotificationProductService (PC-06)', () => {
     expect(telegram?.diagnostics.lastSkipReason).toBe('channel-not-connected');
 
     const email = service.getChannel('ws-1', 'user-1', 'email', evaluatedAt);
-    expect(email?.offered).toBe(false);
-    expect(email?.configuration.kind).toBe('reserved-inactive');
+    expect(email?.offered).toBe(true);
+    expect(email?.configuration.kind).toBe('email-connection');
     expect(service.getChannelDiagnostics('ws-1', 'user-1', 'email')?.testAvailable).toBe(false);
+    expect(service.getChannel('ws-1', 'user-1', 'slack', evaluatedAt)?.configuration.kind).toBe(
+      'reserved-inactive',
+    );
 
     const history = service.listChannelDeliveries({
       workspaceId: 'ws-1',
@@ -140,7 +145,7 @@ describe('NotificationProductService (PC-06)', () => {
     expect(telegram?.liveTransportActivated).toBe(true);
 
     const email = service.getChannel('ws-1', 'user-1', 'email', evaluatedAt);
-    expect(email?.transport).toBe('none');
+    expect(email?.transport).toBe('in-memory');
     expect(email?.botApiUsed).toBe(false);
     expect(email?.liveTransportActivated).toBe(false);
 

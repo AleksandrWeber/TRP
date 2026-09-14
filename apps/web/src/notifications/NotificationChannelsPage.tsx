@@ -51,11 +51,12 @@ export function NotificationChannelsPage() {
     setSaved(false);
     const body: UpsertNotificationPreferencesRequest = {
       enabled: draft.enabled,
-      channels: { telegram: draft.telegramEnabled },
+      channels: { telegram: draft.telegramEnabled, email: draft.emailEnabled },
       typeRouting: Object.fromEntries(
         workspace.routingMatrix.rows.map((row) => {
           const reserved = workspace.routingMatrix.channelIds.filter(
-            (channelId) => channelId !== 'telegram' && row.channels[channelId] === true,
+            (channelId) =>
+              channelId !== 'telegram' && channelId !== 'email' && row.channels[channelId] === true,
           );
           return [
             row.type,
@@ -64,6 +65,7 @@ export function NotificationChannelsPage() {
               critical: draft.typeCritical[row.type] === true,
               channels: [
                 ...(draft.typeTelegram[row.type] === true ? ['telegram'] : []),
+                ...(draft.typeEmail[row.type] === true ? ['email'] : []),
                 ...reserved,
               ],
             },

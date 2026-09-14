@@ -53,6 +53,17 @@ export {
   type TelegramConnectionStatus,
 } from './domain/telegram-connection';
 export {
+  EMAIL_CONNECTION_STATUSES,
+  bindEmailRecipient,
+  disconnectEmailConnection,
+  markEmailSmtpFailed,
+  markEmailSmtpVerified,
+  notConnectedEmail,
+  parseEmailRecipient,
+  type EmailConnection,
+  type EmailConnectionStatus,
+} from './domain/email-connection';
+export {
   createUserNotificationPreferences,
   type ChannelEnablement,
   type CreateUserNotificationPreferencesInput,
@@ -120,9 +131,12 @@ export {
 } from './routing/resolve-delivery-routing';
 export { InMemoryNotificationStore } from './adapters/in-memory-notification-store';
 export { InMemoryTelegramAdapter } from './adapters/in-memory-telegram.adapter';
+export { InMemoryEmailAdapter } from './adapters/in-memory-email.adapter';
 export { ReservedInactiveChannelAdapter } from './adapters/reserved-inactive-channel.adapter';
 export { ProductionTelegramBotApiAdapter } from './adapters/telegram-bot-api.adapter';
 export { TelegramBotTokenResolver } from './adapters/telegram-bot-token.resolver';
+export { ProductionSmtpNotificationAdapter } from './adapters/production-smtp-notification.adapter';
+export { SmtpCredentialResolver } from './adapters/smtp-credential.resolver';
 export { NotificationDeliveryBoundaryService } from './notification-boundary.service';
 export { NotificationDeliveryService } from './notification-delivery.service';
 export { NotificationDeliveryModule } from './notification-delivery.module';
@@ -130,11 +144,15 @@ export {
   NOTIFICATION_PORTS_ACTIVE,
   NOTIFICATION_SERVICE_PORT,
   TELEGRAM_CHANNEL_ADAPTER,
+  EMAIL_CHANNEL_ADAPTER,
   type NotificationChannelPort,
   type NotificationChannelSendCommand,
   type NotificationServicePort,
   type ListDeliveriesQuery,
   type SendTestNotificationRequest,
+  type SendTestEmailNotificationRequest,
+  type EmailBindRequest,
+  type EmailDisconnectRequest,
   type TelegramConnectRequest,
   type TelegramConnectResult,
   type TelegramDisconnectRequest,

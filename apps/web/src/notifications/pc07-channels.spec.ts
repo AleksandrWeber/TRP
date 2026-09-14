@@ -19,6 +19,9 @@ describe('PC-07 Notification Channels product path', () => {
     expect(app).toContain('NotificationChannelHistoryPage');
     expect(channelsIdx).toBeLessThan(detailIdx);
     expect(app).toContain('Navigate to="/notifications/channels/telegram"');
+    const detail = readSrc('./NotificationChannelDetailPage.tsx');
+    expect(detail).toContain('TelegramSettingsPage');
+    expect(detail).toContain('EmailSettingsPage');
   });
 
   it('exposes channel workspace REST without duplicating Telegram connect', () => {
@@ -29,6 +32,8 @@ describe('PC-07 Notification Channels product path', () => {
     expect(api).toContain('getNotificationChannelDiagnostics');
     expect(api).toContain('listNotificationChannelDeliveries');
     expect(api).toContain('/telegram/connect');
+    expect(api).toContain('/email/bind');
+    expect(api).toContain('/email/test');
     expect(api).not.toContain('api.telegram.org');
     expect(api).not.toContain('smtp.gmail.com');
   });

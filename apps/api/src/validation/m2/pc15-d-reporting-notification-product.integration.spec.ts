@@ -141,7 +141,7 @@ describe('PC-15 15-d — Reporting → Notification Delivery product flow', () =
     expect(telegram.status).not.toBe('connected');
     expect(
       notifications.listChannels().find((channel) => channel.channelId === 'email')?.status,
-    ).toBe('reserved-inactive');
+    ).toBe('active');
     expect(
       notifications.listChannels().find((channel) => channel.channelId === 'slack')?.status,
     ).toBe('reserved-inactive');

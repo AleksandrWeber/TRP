@@ -23,6 +23,7 @@ import {
   NOTIFICATION_TYPES,
   type NotificationType,
 } from '../notification-delivery/domain/notification-type';
+import type { EmailConnection } from '../notification-delivery/domain/email-connection';
 import type { TelegramConnection } from '../notification-delivery/domain/telegram-connection';
 import type { TelegramTransportProjection } from '../notification-delivery/domain/telegram-transport-projection';
 import type {
@@ -263,6 +264,7 @@ export function toPreferencesView(
   prefs: UserNotificationPreferences,
   telegramConnected: boolean,
   evaluatedAt: string,
+  emailConnected = false,
 ): NotificationPreferencesView {
   return {
     workspaceId: prefs.workspaceId,
@@ -283,7 +285,7 @@ export function toPreferencesView(
             requestedAt: evaluatedAt,
           },
           prefs,
-          { telegramConnected },
+          { telegramConnected, emailConnected },
         ),
       ),
     ),
@@ -308,10 +310,18 @@ export function toRoutingView(input: {
   connection: TelegramConnection;
   evaluatedAt: string;
   honesty: TelegramTransportProjection;
+  emailConnection?: EmailConnection;
 }): NotificationRoutingView {
   const telegramConnected =
     input.connection.status === 'connected' && Boolean(input.connection.chatId);
-  const preferences = toPreferencesView(input.prefs, telegramConnected, input.evaluatedAt);
+  const emailConnected =
+    input.emailConnection?.status === 'connected' && Boolean(input.emailConnection.recipient);
+  const preferences = toPreferencesView(
+    input.prefs,
+    telegramConnected,
+    input.evaluatedAt,
+    emailConnected,
+  );
   return {
     workspaceId: input.prefs.workspaceId,
     userId: input.prefs.userId,
@@ -332,10 +342,18 @@ export function toSettingsView(input: {
   connection: TelegramConnection;
   evaluatedAt: string;
   honesty: TelegramTransportProjection;
+  emailConnection?: EmailConnection;
 }): NotificationSettingsView {
   const telegramConnected =
     input.connection.status === 'connected' && Boolean(input.connection.chatId);
-  const preferences = toPreferencesView(input.prefs, telegramConnected, input.evaluatedAt);
+  const emailConnected =
+    input.emailConnection?.status === 'connected' && Boolean(input.emailConnection.recipient);
+  const preferences = toPreferencesView(
+    input.prefs,
+    telegramConnected,
+    input.evaluatedAt,
+    emailConnected,
+  );
   const routing = toRoutingView(input);
   return {
     preferences,

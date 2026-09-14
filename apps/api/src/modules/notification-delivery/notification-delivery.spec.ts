@@ -1,9 +1,11 @@
 import { Test } from '@nestjs/testing';
 import { describe, expect, it } from 'vitest';
+import { InMemoryEmailAdapter } from './adapters/in-memory-email.adapter';
 import { InMemoryTelegramAdapter } from './adapters/in-memory-telegram.adapter';
 import { NotificationDeliveryModule } from './notification-delivery.module';
 import { NotificationDeliveryService } from './notification-delivery.service';
 import {
+  bindInMemoryEmailChannelForTests,
   bindInMemoryTelegramChannelForTests,
   stubSecretVaultForIsolatedNotificationDelivery,
 } from './notification-delivery.test-harness';
@@ -14,16 +16,19 @@ import { createUserNotificationPreferences } from './domain/user-notification-pr
 describe('RC-24 Epic 6 — Notification Delivery behaviour', () => {
   async function createService() {
     const moduleRef = await stubSecretVaultForIsolatedNotificationDelivery(
-      bindInMemoryTelegramChannelForTests(
-        Test.createTestingModule({
-          imports: [NotificationDeliveryModule],
-        }),
+      bindInMemoryEmailChannelForTests(
+        bindInMemoryTelegramChannelForTests(
+          Test.createTestingModule({
+            imports: [NotificationDeliveryModule],
+          }),
+        ),
       ),
     ).compile();
     const service = moduleRef.get(NotificationDeliveryService);
     const port = moduleRef.get<NotificationDeliveryService>(NOTIFICATION_SERVICE_PORT);
     const telegram = moduleRef.get(InMemoryTelegramAdapter);
-    return { service, port, telegram };
+    const email = moduleRef.get(InMemoryEmailAdapter);
+    return { service, port, telegram, email };
   }
 
   it('wires NotificationServicePort over Telegram adapter', async () => {
@@ -31,7 +36,8 @@ describe('RC-24 Epic 6 — Notification Delivery behaviour', () => {
     expect(port).toBe(service);
     const channels = service.listChannels();
     expect(channels.find((c) => c.channelId === 'telegram')?.status).toBe('active');
-    expect(channels.filter((c) => c.status === 'reserved-inactive')).toHaveLength(5);
+    expect(channels.find((c) => c.channelId === 'email')?.status).toBe('active');
+    expect(channels.filter((c) => c.status === 'reserved-inactive')).toHaveLength(4);
   });
 
   it('runs Telegram connection workflow without user-entered chat ids', async () => {
@@ -124,7 +130,7 @@ describe('RC-24 Epic 6 — Notification Delivery behaviour', () => {
         expect.objectContaining({
           channelId: 'email',
           outcome: 'skipped',
-          skipReason: 'channel-reserved',
+          skipReason: 'channel-disabled',
         }),
       ]),
     );

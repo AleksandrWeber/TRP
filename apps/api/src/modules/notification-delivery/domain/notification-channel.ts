@@ -1,7 +1,7 @@
 /**
  * RC-24 Epic 6 — Notification channel catalog.
  *
- * Only Telegram is implemented. Other channels are reserved placeholders.
+ * Telegram and Email are implemented. Slack, Discord, Teams, and Push stay reserved.
  */
 
 export const NOTIFICATION_CHANNELS = Object.freeze([
@@ -15,12 +15,11 @@ export const NOTIFICATION_CHANNELS = Object.freeze([
 
 export type NotificationChannelId = (typeof NOTIFICATION_CHANNELS)[number];
 
-export const ACTIVE_NOTIFICATION_CHANNELS = Object.freeze(['telegram'] as const);
+export const ACTIVE_NOTIFICATION_CHANNELS = Object.freeze(['telegram', 'email'] as const);
 
 export type ActiveNotificationChannelId = (typeof ACTIVE_NOTIFICATION_CHANNELS)[number];
 
 export const RESERVED_NOTIFICATION_CHANNELS = Object.freeze([
-  'email',
   'slack',
   'discord',
   'teams',
@@ -46,7 +45,7 @@ export const NOTIFICATION_CHANNEL_CATALOG: readonly NotificationChannelDescripto
     }),
     Object.freeze({
       channelId: 'email',
-      status: 'reserved-inactive',
+      status: 'active',
       label: 'Email',
     }),
     Object.freeze({
@@ -81,5 +80,5 @@ export function isActiveNotificationChannel(value: string): value is ActiveNotif
 }
 
 export function channelStatus(channelId: NotificationChannelId): NotificationChannelStatus {
-  return channelId === 'telegram' ? 'active' : 'reserved-inactive';
+  return isActiveNotificationChannel(channelId) ? 'active' : 'reserved-inactive';
 }

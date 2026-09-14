@@ -49,7 +49,8 @@ describe('PC-06 notification product views', () => {
     expect(JSON.stringify(view)).not.toContain('chatId');
     expect(JSON.stringify(view)).not.toContain('connectionToken');
     expect(view.channels.find((channel) => channel.channelId === 'telegram')?.offered).toBe(true);
-    expect(view.channels.find((channel) => channel.channelId === 'email')?.offered).toBe(false);
+    expect(view.channels.find((channel) => channel.channelId === 'email')?.offered).toBe(true);
+    expect(view.channels.find((channel) => channel.channelId === 'slack')?.offered).toBe(false);
     expect(view.scheduleClock.scheduler).toBe(false);
     expect(view.scheduleClock.clockKind).toBe('preference-clock');
     expect(view.scheduleClock.dailyDeliveryTime).toBe('09:00');

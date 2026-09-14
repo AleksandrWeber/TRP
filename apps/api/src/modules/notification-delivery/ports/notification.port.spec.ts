@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { NOTIFICATION_PORTS_ACTIVE, type NotificationServicePort } from './notification.port';
 
 describe('RC-24 Epic 6 — Notification ports', () => {
-  it('activates notification service + telegram only', () => {
+  it('activates notification service + telegram and email', () => {
     expect(NOTIFICATION_PORTS_ACTIVE.notificationService).toBe(true);
     expect(NOTIFICATION_PORTS_ACTIVE.telegramChannel).toBe(true);
-    expect(NOTIFICATION_PORTS_ACTIVE.emailChannel).toBe(false);
+    expect(NOTIFICATION_PORTS_ACTIVE.emailChannel).toBe(true);
     expect(NOTIFICATION_PORTS_ACTIVE.slackChannel).toBe(false);
     expect(NOTIFICATION_PORTS_ACTIVE.rest).toBe(false);
     expect(NOTIFICATION_PORTS_ACTIVE.persistence).toBe(true);
@@ -23,10 +23,14 @@ describe('RC-24 Epic 6 — Notification ports', () => {
       'verifyTelegramConnection',
       'disconnectTelegram',
       'sendTestNotification',
+      'getEmailConnection',
+      'bindEmailRecipient',
+      'disconnectEmail',
+      'sendTestEmailNotification',
       'deliver',
       'listDeliveries',
     ];
-    expect(required).toHaveLength(12);
+    expect(required).toHaveLength(16);
     expect(required).not.toContain('generateReport' as keyof NotificationServicePort);
     expect(required).not.toContain('pauseTrading' as keyof NotificationServicePort);
     expect(required).not.toContain('killSwitch' as keyof NotificationServicePort);

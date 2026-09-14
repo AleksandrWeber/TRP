@@ -45,6 +45,7 @@ export {
   type SsrfBlockReason,
   type SsrfValidationResult,
 } from './ssrf-allowlist';
+export { validateSmtpOutboundHost, type SmtpHostGuardResult } from './smtp-host-guard';
 export { emitPlatformSecurityEvent, type PlatformSecurityEvent } from './security-event';
 export { registerSecurityPlatformHttpHooks } from './security-platform.http';
 export { PlatformSecurityExceptionFilter } from './platform-security-exception.filter';

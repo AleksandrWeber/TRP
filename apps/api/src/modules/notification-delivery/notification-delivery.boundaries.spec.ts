@@ -63,6 +63,7 @@ describe('RC-24 Epic 6 — Notification Delivery dependency direction', () => {
     const moduleSource = readFileSync(join(ROOT, 'notification-delivery.module.ts'), 'utf8');
     expect(moduleSource).toMatch(/NOTIFICATION_SERVICE_PORT/);
     expect(moduleSource).toMatch(/TELEGRAM_CHANNEL_ADAPTER/);
+    expect(moduleSource).toMatch(/EMAIL_CHANNEL_ADAPTER/);
     expect(moduleSource).not.toMatch(/ReportingModule/);
     expect(moduleSource).not.toMatch(/AiAnalyticsModule/);
     expect(moduleSource).not.toMatch(/RuntimeEnforcementModule/);

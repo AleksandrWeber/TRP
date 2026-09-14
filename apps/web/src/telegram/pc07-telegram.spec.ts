@@ -14,6 +14,7 @@ describe('PC-07 Telegram channel path', () => {
     expect(app).toContain('path="telegram/history"');
     expect(app).toContain('Navigate to="/notifications/channels/telegram"');
     expect(detail).toContain('TelegramSettingsPage');
+    expect(detail).not.toContain('api.telegram.org');
   });
 
   it('exposes existing Telegram operations over telegram REST', () => {

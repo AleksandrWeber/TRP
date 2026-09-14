@@ -5,6 +5,7 @@ import { WorkspaceDomainService } from '../../modules/workspace/workspace-domain
 import { createUserNotificationPreferences } from '../../modules/notification-delivery/domain/user-notification-preferences';
 import { createDeliveryResult } from '../../modules/notification-delivery/domain/delivery';
 import { NOTIFICATION_CHANNEL_CATALOG } from '../../modules/notification-delivery/domain/notification-channel';
+import { notConnectedEmail } from '../../modules/notification-delivery/domain/email-connection';
 import { notConnectedTelegram } from '../../modules/notification-delivery/domain/telegram-connection';
 import { NotificationChannelsController } from '../../modules/notification-product/notification.controller';
 import { NotificationProductService } from '../../modules/notification-product/notification-product.service';
@@ -52,6 +53,7 @@ describe('PC-07 — Notification Channels product', () => {
       getPreferences: () => prefs,
       upsertPreferences: vi.fn(() => prefs),
       getTelegramConnection: () => notConnectedTelegram(workspace.id, OWNER.userId, evaluatedAt),
+      getEmailConnection: () => notConnectedEmail(workspace.id, OWNER.userId, evaluatedAt),
       listDeliveries: vi.fn(() => [delivery]),
       deliver: vi.fn(),
       connectTelegram: vi.fn(),
@@ -87,9 +89,11 @@ describe('PC-07 — Notification Channels product', () => {
     expect(telegram.liveTransportActivated).toBe(false);
 
     const email = channels.get({ user: OWNER }, workspace.id, { channelId: 'email' });
-    expect(email.configuration.kind).toBe('reserved-inactive');
+    expect(email.configuration.kind).toBe('email-connection');
     expect(email.testAvailable).toBe(false);
     expect(email.liveTransportActivated).toBe(false);
+    const slack = channels.get({ user: OWNER }, workspace.id, { channelId: 'slack' });
+    expect(slack.configuration.kind).toBe('reserved-inactive');
 
     const history = channels.listDeliveries(
       { user: OWNER },
@@ -116,6 +120,7 @@ describe('PC-07 — Notification Channels product', () => {
       listChannels: () => NOTIFICATION_CHANNEL_CATALOG,
       getPreferences: () => prefs,
       getTelegramConnection: () => notConnectedTelegram(workspace.id, OWNER.userId, evaluatedAt),
+      getEmailConnection: () => notConnectedEmail(workspace.id, OWNER.userId, evaluatedAt),
       listDeliveries: vi.fn(() => []),
     };
     const channels = new NotificationChannelsController(
@@ -133,8 +138,11 @@ describe('PC-07 — Notification Channels product', () => {
     expect(
       home.channels.find((channel) => channel.channelId === 'telegram')?.liveTransportActivated,
     ).toBe(true);
-    expect(home.channels.find((channel) => channel.channelId === 'email')?.transport).toBe('none');
+    expect(home.channels.find((channel) => channel.channelId === 'email')?.transport).toBe(
+      'in-memory',
+    );
     expect(home.channels.find((channel) => channel.channelId === 'email')?.botApiUsed).toBe(false);
+    expect(home.channels.find((channel) => channel.channelId === 'slack')?.transport).toBe('none');
 
     const telegram = channels.get({ user: OWNER }, workspace.id, { channelId: 'telegram' });
     expect(telegram.botApiUsed).toBe(true);

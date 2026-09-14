@@ -11,6 +11,7 @@
 
 import { Inject, Injectable, Optional } from '@nestjs/common';
 import type { Role } from '../identity/role';
+import { InMemoryEmailAdapter } from './adapters/in-memory-email.adapter';
 import { InMemoryNotificationStore } from './adapters/in-memory-notification-store';
 import { TelegramStartBindObserver } from './adapters/telegram-start-bind.observer';
 import {
@@ -26,6 +27,14 @@ import {
 } from './domain/delivery-queue';
 import { NOTIFICATION_CHANNEL_CATALOG } from './domain/notification-channel';
 import {
+  bindEmailRecipient as applyEmailRecipientBind,
+  disconnectEmailConnection,
+  markEmailSmtpFailed,
+  markEmailSmtpVerified,
+  notConnectedEmail,
+  type EmailConnection,
+} from './domain/email-connection';
+import {
   bindTelegramChat,
   createPendingTelegramConnection,
   disconnectTelegramConnection,
@@ -37,9 +46,13 @@ import {
   type UserNotificationPreferences,
 } from './domain/user-notification-preferences';
 import {
+  EMAIL_CHANNEL_ADAPTER,
   TELEGRAM_CHANNEL_ADAPTER,
+  type EmailBindRequest,
+  type EmailDisconnectRequest,
   type NotificationChannelPort,
   type NotificationServicePort,
+  type SendTestEmailNotificationRequest,
   type SendTestNotificationRequest,
   type TelegramConnectRequest,
   type TelegramConnectResult,
@@ -64,6 +77,8 @@ function nowOr(value: string | undefined): string {
 
 @Injectable()
 export class NotificationDeliveryService implements NotificationServicePort {
+  private readonly email: NotificationChannelPort;
+
   constructor(
     @Inject(InMemoryNotificationStore)
     private readonly store: InMemoryNotificationStore,
@@ -72,7 +87,12 @@ export class NotificationDeliveryService implements NotificationServicePort {
     @Optional()
     @Inject(TelegramStartBindObserver)
     private readonly startBind?: TelegramStartBindObserver,
-  ) {}
+    @Optional()
+    @Inject(EMAIL_CHANNEL_ADAPTER)
+    email?: NotificationChannelPort,
+  ) {
+    this.email = email ?? new InMemoryEmailAdapter();
+  }
 
   listChannels() {
     return NOTIFICATION_CHANNEL_CATALOG;
@@ -209,6 +229,28 @@ export class NotificationDeliveryService implements NotificationServicePort {
     return next;
   }
 
+  getEmailConnection(workspaceId: string, userId: string): EmailConnection {
+    const existing = this.store.getEmail(workspaceId, userId);
+    if (existing) return existing;
+    const created = notConnectedEmail(workspaceId, userId, new Date().toISOString());
+    this.store.saveEmail(created);
+    return created;
+  }
+
+  bindEmailRecipient(cmd: EmailBindRequest): EmailConnection {
+    const current = this.getEmailConnection(cmd.workspaceId, cmd.userId);
+    const next = applyEmailRecipientBind(current, cmd.recipient, nowOr(cmd.requestedAt));
+    this.store.saveEmail(next);
+    return next;
+  }
+
+  disconnectEmail(cmd: EmailDisconnectRequest): EmailConnection {
+    const current = this.getEmailConnection(cmd.workspaceId, cmd.userId);
+    const next = disconnectEmailConnection(current, nowOr(cmd.requestedAt));
+    this.store.saveEmail(next);
+    return next;
+  }
+
   async sendTestNotification(cmd: SendTestNotificationRequest): Promise<DeliveryResult> {
     return this.deliver({
       workspaceId: cmd.workspaceId,
@@ -220,6 +262,85 @@ export class NotificationDeliveryService implements NotificationServicePort {
       ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
       ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
     });
+  }
+
+  async sendTestEmailNotification(cmd: SendTestEmailNotificationRequest): Promise<DeliveryResult> {
+    const connection = this.getEmailConnection(cmd.workspaceId, cmd.userId);
+    if (!connection.recipient) {
+      throw new Error('Email recipient is not bound');
+    }
+    const requestedAt = nowOr(cmd.requestedAt);
+    const workspaceId = cmd.workspaceId.trim();
+    const queueItemId = `nq-${stableHash(
+      `${workspaceId}|${cmd.userId}|daily-report|${requestedAt}|email-test|queue`,
+    )}`;
+    const deliveryId = `del-${stableHash(
+      `${workspaceId}|${cmd.userId}|daily-report|${requestedAt}|email-test`,
+    )}`;
+
+    let queueItem = createPendingNotificationQueueItem({
+      queueItemId,
+      command: {
+        workspaceId,
+        userId: cmd.userId,
+        type: 'daily-report',
+        subject: 'Test notification',
+        body: 'TRP notification delivery test. Delivery channel only — not a trading command.',
+        requestedAt,
+        ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+        ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
+      },
+      createdAt: requestedAt,
+    });
+    this.store.saveQueueItem(queueItem);
+    queueItem = withNotificationQueueStatus(queueItem, 'in-flight', { updatedAt: requestedAt });
+    this.store.saveQueueItem(queueItem);
+
+    const result = await this.email.send({
+      chatId: connection.recipient,
+      subject: 'Test notification',
+      body: 'TRP notification delivery test. Delivery channel only — not a trading command.',
+      workspaceId,
+      ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+      ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
+    });
+
+    const verifiedAt = nowOr(undefined);
+    if (result.ok) {
+      this.store.saveEmail(markEmailSmtpVerified(connection, verifiedAt));
+    } else {
+      this.store.saveEmail(markEmailSmtpFailed(connection, verifiedAt));
+    }
+
+    const attempts: ChannelDeliveryAttempt[] = [
+      Object.freeze(
+        result.ok
+          ? { channelId: 'email' as const, outcome: 'delivered' as const }
+          : {
+              channelId: 'email' as const,
+              outcome: 'failed' as const,
+              detail: result.detail,
+            },
+      ),
+    ];
+    const delivery = createDeliveryResult({
+      deliveryId,
+      workspaceId,
+      userId: cmd.userId,
+      type: 'daily-report',
+      attempts,
+      createdAt: requestedAt,
+    });
+    this.store.recordDelivery(delivery);
+
+    const terminalStatus = delivery.outcome === 'failed' ? 'retryable' : 'completed';
+    queueItem = withNotificationQueueStatus(queueItem, terminalStatus, {
+      updatedAt: verifiedAt,
+      deliveryId: delivery.deliveryId,
+      ...(result.ok ? {} : { detail: result.detail }),
+    });
+    this.store.saveQueueItem(queueItem);
+    return delivery;
   }
 
   async deliver(cmd: DeliverNotificationCommand): Promise<DeliveryResult> {
@@ -248,8 +369,10 @@ export class NotificationDeliveryService implements NotificationServicePort {
 
     const prefs = this.getPreferences(workspaceId, cmd.userId);
     const telegram = this.getTelegramConnection(workspaceId, cmd.userId);
+    const email = this.getEmailConnection(workspaceId, cmd.userId);
     const routes = resolveDeliveryRoutes({ ...cmd, workspaceId }, prefs, {
       telegramConnected: telegram.status === 'connected' && Boolean(telegram.chatId),
+      emailConnected: email.status === 'connected' && Boolean(email.recipient),
     });
 
     const attempts: ChannelDeliveryAttempt[] = [];
@@ -283,6 +406,32 @@ export class NotificationDeliveryService implements NotificationServicePort {
                 }
               : {
                   channelId: 'telegram' as const,
+                  outcome: 'failed' as const,
+                  detail: result.detail,
+                },
+          ),
+        );
+        continue;
+      }
+
+      if (route.channelId === 'email') {
+        const result = await this.email.send({
+          chatId: email.recipient!,
+          subject: cmd.subject,
+          body: cmd.body,
+          workspaceId,
+          ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+          ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
+        });
+        attempts.push(
+          Object.freeze(
+            result.ok
+              ? {
+                  channelId: 'email' as const,
+                  outcome: 'delivered' as const,
+                }
+              : {
+                  channelId: 'email' as const,
                   outcome: 'failed' as const,
                   detail: result.detail,
                 },

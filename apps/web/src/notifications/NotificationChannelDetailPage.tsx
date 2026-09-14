@@ -9,6 +9,7 @@ import {
 } from '../shared/api';
 import { toUserFacingError } from '../shared/mapApiError';
 import { TelegramSettingsPage } from '../telegram';
+import { EmailSettingsPage } from '../email';
 import { NotificationChannelDetailView } from './NotificationChannelDetailView';
 
 const CATALOG = new Set(['telegram', 'email', 'slack', 'discord', 'teams', 'push']);
@@ -20,6 +21,9 @@ export function NotificationChannelDetailPage() {
   }
   if (channelId === 'telegram') {
     return <TelegramSettingsPage />;
+  }
+  if (channelId === 'email') {
+    return <EmailSettingsPage />;
   }
   return <ReservedChannelPage channelId={channelId} />;
 }

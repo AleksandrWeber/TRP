@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import type { TestingModuleBuilder } from '@nestjs/testing';
 import { SecretVaultModule } from '../secret-vault';
 import { SecretVaultService } from '../secret-vault/secret-vault.service';
+import { InMemoryEmailAdapter } from './adapters/in-memory-email.adapter';
 import { InMemoryTelegramAdapter } from './adapters/in-memory-telegram.adapter';
-import { TELEGRAM_CHANNEL_ADAPTER } from './ports/notification.port';
+import { EMAIL_CHANNEL_ADAPTER, TELEGRAM_CHANNEL_ADAPTER } from './ports/notification.port';
 
 /**
  * Isolated compile of NotificationDeliveryModule must not pull Workspace/Auth
@@ -34,5 +35,14 @@ export function bindInMemoryTelegramChannelForTests(
   return builder.overrideProvider(TELEGRAM_CHANNEL_ADAPTER).useFactory({
     factory: (adapter: InMemoryTelegramAdapter) => adapter,
     inject: [InMemoryTelegramAdapter],
+  });
+}
+
+export function bindInMemoryEmailChannelForTests(
+  builder: TestingModuleBuilder,
+): TestingModuleBuilder {
+  return builder.overrideProvider(EMAIL_CHANNEL_ADAPTER).useFactory({
+    factory: (adapter: InMemoryEmailAdapter) => adapter,
+    inject: [InMemoryEmailAdapter],
   });
 }

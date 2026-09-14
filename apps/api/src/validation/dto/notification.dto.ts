@@ -8,6 +8,7 @@ import {
   IsString,
   Matches,
   Max,
+  MaxLength,
   Min,
   MinLength,
   ValidateIf,
@@ -87,6 +88,13 @@ export class DeliveryIdParamDto {
 export class NotificationChannelIdParamDto {
   @IsIn(NOTIFICATION_CHANNEL_VALUES)
   channelId!: (typeof NOTIFICATION_CHANNEL_VALUES)[number];
+}
+
+export class BindEmailRecipientBodyDto {
+  @IsString()
+  @MinLength(3)
+  @MaxLength(320)
+  recipient!: string;
 }
 
 export class QuietHoursDto {
