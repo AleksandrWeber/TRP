@@ -2294,3 +2294,20 @@ model WorkspaceNotificationPlatformRetrySchedulingDecisionProjectionPublicationA
   @@id([workspaceId, publicationAnchorId])
   @@map("workspace_notification_platform_retry_decision_proj_pub_anchors")
 }
+
+model WorkspaceNotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionAnchor {
+  workspaceId                                                          String   @map("workspace_id")
+  consumptionAnchorId                                                  String   @map("consumption_anchor_id")
+  schemaVersion                                                        Int      @default(1) @map("schema_version")
+  platformRetrySchedulingDecisionProjectionPublicationConsumptionType  String   @map("np_retry_decision_proj_pub_cons_type")
+  consumptionAnchorState                                               String   @map("consumption_anchor_state")
+  channelScope                                                         String?  @map("channel_scope")
+  integrityMetadata                                                    String?  @map("integrity_metadata")
+  correlationId                                                        String?  @map("correlation_id")
+  recordedAt                                                           DateTime @map("recorded_at")
+  recordedByActorId                                                    String?  @map("recorded_by_actor_id")
+  updatedAt                                                            DateTime @updatedAt @map("updated_at")
+
+  @@id([workspaceId, consumptionAnchorId])
+  @@map("ws_np_retry_decision_proj_pub_cons_anchors")
+}

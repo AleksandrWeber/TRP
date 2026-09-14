@@ -211,7 +211,7 @@ describe('W5-N29-a notification retry scheduling decision projection publication
     expect(
       W5_N29_A_BINDING_FINDINGS.unifiedPlatformDecisionProjectionPublicationConsumptionLayerMissing,
     ).toBe(true);
-    expect(W5_N29_A_BINDING_FINDINGS.consumptionPersistenceMissing).toBe(true);
+    expect(W5_N29_A_BINDING_FINDINGS.consumptionPersistenceMissing).toBe(false);
     expect(W5_N29_A_BINDING_FINDINGS.consumptionInventoryMissing).toBe(false);
     expect(W5_N29_A_BINDING_FINDINGS.consumptionRecoveryMissing).toBe(true);
     expect(W5_N29_A_BINDING_FINDINGS.consumptionOperationalContinuityMissing).toBe(true);
@@ -311,13 +311,13 @@ describe('W5-N29-a notification retry scheduling decision projection publication
     ).toBeGreaterThanOrEqual(2);
   });
 
-  it('technical debt delta: inventory baseline resolved; b–e and runtime deferred; nothing introduced', () => {
+  it('technical debt delta: inventory and persistence resolved; c–e and runtime deferred; nothing introduced', () => {
     expect(W5_N29_A_TECHNICAL_DEBT_DELTA.resolved).toEqual([
       'Notification Retry Scheduling Decision Projection Publication Consumption inventory baseline established',
+      'Notification Retry Scheduling Decision Projection Publication Consumption Persistence Foundation',
     ]);
     expect(W5_N29_A_TECHNICAL_DEBT_DELTA.introduced).toEqual([]);
     expect(W5_N29_A_TECHNICAL_DEBT_DELTA.deferred).toEqual([
-      'W5-N29-b Consumption Persistence Foundation',
       'W5-N29-c Consumption Restart Recovery Foundation',
       'W5-N29-d Consumption Operational Continuity Foundation',
       'W5-N29-e Package Close Evidence',
@@ -325,17 +325,17 @@ describe('W5-N29-a notification retry scheduling decision projection publication
     ]);
   });
 
-  it('persistence, recovery, and continuity gaps remain open after inventory; unified consumption view remains open', () => {
+  it('persistence gap resolved by W5-N29-b; recovery and continuity remain open; unified consumption view remains open', () => {
     expect(
       W5_N29_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_CONSUMPTION_INVENTORY.find(
         (entry) => entry.artifactId === 'missing-consumption-persistence',
       )?.existsToday,
-    ).toBe(false);
+    ).toBe(true);
     expect(
       W5_N29_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_CONSUMPTION_INVENTORY.find(
         (entry) => entry.artifactId === 'persist-candidate-consumption-anchor',
       )?.existsToday,
-    ).toBe(false);
+    ).toBe(true);
     expect(
       W5_N29_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_CONSUMPTION_INVENTORY.find(
         (entry) => entry.artifactId === 'missing-consumption-persistence',
@@ -383,7 +383,7 @@ describe('W5-N29-a notification retry scheduling decision projection publication
           'missing-unified-platform-decision-projection-publication-consumption-view',
       )?.classification,
     ).toBe('EPHEMERAL');
-    expect(W5_N29_A_BINDING_FINDINGS.consumptionPersistenceMissing).toBe(true);
+    expect(W5_N29_A_BINDING_FINDINGS.consumptionPersistenceMissing).toBe(false);
     expect(W5_N29_A_BINDING_FINDINGS.consumptionInventoryMissing).toBe(false);
     expect(W5_N29_A_BINDING_FINDINGS.consumptionRecoveryMissing).toBe(true);
     expect(W5_N29_A_BINDING_FINDINGS.consumptionOperationalContinuityMissing).toBe(true);
