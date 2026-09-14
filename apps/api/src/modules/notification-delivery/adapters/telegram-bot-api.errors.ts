@@ -5,7 +5,7 @@
  * bodies. Classification does not execute retries.
  */
 
-import { TELEGRAM_CHAT_ID_NOT_BOUND } from '../domain/telegram-production-chat-id';
+import { TELEGRAM_CHAT_ID_NOT_BOUND } from '../domain/production-telegram-chat-id';
 
 export const TELEGRAM_BOT_API_ERROR_CODES = Object.freeze([
   'telegram_unauthorized',

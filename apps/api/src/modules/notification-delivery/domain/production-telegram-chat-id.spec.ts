@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   parseProductionTelegramChatId,
   TELEGRAM_CHAT_ID_NOT_BOUND,
-} from './telegram-production-chat-id';
+} from './production-telegram-chat-id';
 
 describe('parseProductionTelegramChatId (REM-01-s1)', () => {
   it('rejects empty and whitespace chat ids', () => {

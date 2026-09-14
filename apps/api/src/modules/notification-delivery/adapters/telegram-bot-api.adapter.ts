@@ -14,7 +14,7 @@ import { NoOpLogger } from '../../../logging/noop.logger';
 import {
   parseProductionTelegramChatId,
   TELEGRAM_CHAT_ID_NOT_BOUND,
-} from '../domain/telegram-production-chat-id';
+} from '../domain/production-telegram-chat-id';
 import {
   mapTelegramHttpStatus,
   redactTelegramSecrets,

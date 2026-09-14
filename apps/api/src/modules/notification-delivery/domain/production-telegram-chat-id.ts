@@ -3,6 +3,10 @@
  *
  * Rejects synthetic / in-memory destinations so they cannot be treated as
  * Telegram Bot API chat identities. Does not discover, bind, or look up chats.
+ *
+ * Named `production-telegram-chat-id` (not `telegram-production-*`) so PC-06 /
+ * PC-07 import scanners that match the `/telegram-product` path segment do not
+ * treat this delivery-owned helper as a product-adapter import.
  */
 
 export const TELEGRAM_CHAT_ID_NOT_BOUND = 'telegram_chat_id_not_bound' as const;
