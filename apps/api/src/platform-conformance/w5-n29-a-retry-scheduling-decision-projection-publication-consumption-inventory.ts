@@ -295,6 +295,8 @@ const N29B =
   'apps/api/src/modules/notification-delivery/notification-platform-retry-scheduling-decision-projection-publication-consumption-persistence.service.ts';
 const N29B_PRISMA =
   'apps/api/src/modules/notification-delivery/persistence/prisma-notification-platform-retry-scheduling-decision-projection-publication-consumption-anchor.repository.ts';
+const N29C =
+  'apps/api/src/modules/notification-delivery/domain/notification-platform-retry-scheduling-decision-projection-publication-consumption-restart-recovery.service.ts';
 const OR = 'apps/api/src/modules/operational-continuity/operational-readiness.ts';
 
 type RowInput = {
@@ -1213,24 +1215,27 @@ export const W5_N29_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_CONSUMPTI
     }),
     row({
       artifactId: 'missing-consumption-recovery',
-      artifact: 'Decision Projection Publication Consumption restart recovery — missing',
+      artifact:
+        'Decision Projection Publication Consumption restart recovery — resolved by W5-N29-c (gap row retained for inventory honesty)',
       kind: 'ephemeral-artifact',
       owner: 'notification-delivery',
-      purpose: 'Record absence of restart-safe consumption recovery until W5-N29-c',
-      consumptionRole: 'missing-gap',
+      purpose:
+        'Record resolved restart-safe decision projection publication consumption recovery gap after W5-N29-c',
+      consumptionRole: 'missing-gap-resolved',
       classification: 'EPHEMERAL',
       honestyRequirement:
-        'Must not claim consumption recovery from inventory alone; deferred to W5-N29-c',
-      futureW5N29Responsibility: 'W5-N29-c',
+        'Resolved by W5-N29-c — recovery only; not runtime consumption; not runtime publication; not scheduling/eligibility/backoff/execution; not operational continuity',
+      futureW5N29Responsibility: 'honesty-baseline',
       persistenceRequirement: 'none-missing',
-      recoveryRequirement: 'planned W5-N29-c',
+      recoveryRequirement: 'notification-delivery',
       operationalRequirement: 'none-missing',
-      capabilityCategory: 'planned',
-      honestProductState: 'planned',
-      currentStatus: 'Missing — planned W5-N29-c restart recovery foundation',
-      evidencePath: PKG,
-      existsToday: false,
-      customerVisibility: 'not customer-visible — absent',
+      capabilityCategory: 'infrastructure-only',
+      honestProductState: 'infrastructure-only',
+      currentStatus:
+        'Resolved by W5-N29-c — see persist-candidate-consumption-anchor hydrate; gap row retained for inventory honesty',
+      evidencePath: N29C,
+      existsToday: true,
+      customerVisibility: 'not customer-visible — gap resolved by W5-N29-c',
     }),
     row({
       artifactId: 'missing-consumption-operational-continuity',
@@ -1478,7 +1483,7 @@ export const W5_N29_A_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_CONSUMPTI
       capabilityCategory: 'infrastructure-only',
       honestProductState: 'infrastructure-only',
       currentStatus:
-        'Implemented — durable decision projection publication consumption anchors; restart recovery deferred to W5-N29-c; operational continuity deferred to W5-N29-d',
+        'Implemented — durable decision projection publication consumption anchors; restart recovery via W5-N29-c; operational continuity deferred to W5-N29-d',
       evidencePath: N29B_PRISMA,
       existsToday: true,
       customerVisibility: 'not customer-visible — infrastructure only',
@@ -1986,7 +1991,7 @@ export const W5_N29_A_BINDING_FINDINGS = Object.freeze({
   consumptionInventoryMissing: false,
   unifiedPlatformDecisionProjectionPublicationConsumptionLayerMissing: true,
   consumptionPersistenceMissing: false,
-  consumptionRecoveryMissing: true,
+  consumptionRecoveryMissing: false,
   consumptionOperationalContinuityMissing: true,
   productionTransportsDeferred: true,
   inventoryDoesNotMakeSchedulingDecisions: true,
@@ -2142,10 +2147,10 @@ export const W5_N29_A_HONEST_PRODUCT_BASELINE = Object.freeze({
     'W5-N01…N28 machine inventories — foundation reference patterns',
     'W5-N28 Decision Projection Publication foundation (consumed)',
     'W5-N29-b durable Decision Projection Publication Consumption anchors (persistence foundation)',
+    'W5-N29-c Decision Projection Publication Consumption restart recovery hydrate',
     'Exchange Adapter / Wave 4 — reference only; untouched',
   ] as const),
   plannedCapabilities: Object.freeze([
-    'W5-N29-c Decision Projection Publication Consumption restart recovery hydrate',
     'W5-N29-d Decision Projection Publication Consumption operational continuity on Platform Readiness',
     'W5-N29-e package Close Evidence',
   ] as const),
@@ -2174,10 +2179,10 @@ export const W5_N29_A_TECHNICAL_DEBT_DELTA = Object.freeze({
   resolved: Object.freeze([
     'Notification Retry Scheduling Decision Projection Publication Consumption inventory baseline established',
     'Notification Retry Scheduling Decision Projection Publication Consumption Persistence Foundation',
+    'Notification Retry Scheduling Decision Projection Publication Consumption Restart Recovery Foundation',
   ] as const),
   introduced: Object.freeze([] as const),
   deferred: Object.freeze([
-    'W5-N29-c Consumption Restart Recovery Foundation',
     'W5-N29-d Consumption Operational Continuity Foundation',
     'W5-N29-e Package Close Evidence',
     'All runtime consumption behavior',

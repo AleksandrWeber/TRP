@@ -1,28 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import type { DurableNotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionAnchor } from './durable-notification-platform-retry-scheduling-decision-projection-publication-consumption-anchor';
+import { sortNotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionAnchorsDeterministically } from './notification-platform-retry-scheduling-decision-projection-publication-consumption-restart-recovery';
 
 function compositeKey(workspaceId: string, consumptionAnchorId: string): string {
   return `${workspaceId}:${consumptionAnchorId}`;
 }
 
-export function sortNotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionAnchorsDeterministically(
-  anchors: readonly DurableNotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionAnchor[],
-): readonly DurableNotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionAnchor[] {
-  return Object.freeze(
-    [...anchors].sort((a, b) => {
-      const workspaceCompare = a.workspaceId.localeCompare(b.workspaceId);
-      if (workspaceCompare !== 0) {
-        return workspaceCompare;
-      }
-      return a.consumptionAnchorId.localeCompare(b.consumptionAnchorId);
-    }),
-  );
-}
-
 /**
- * In-memory write-through cache for Notification Platform Retry Scheduling Decision Projection
- * Publication Consumption anchors (W5-N29-b persistence foundation).
- * Not a second Source of Truth. Full restart hydrate orchestration is W5-N29-c — not implemented here.
+ * In-memory runtime cache for recovered Notification Platform Retry Scheduling Decision Projection
+ * Publication Consumption anchors (W5-N29-c). Not a second Source of Truth — hydrated from W5-N29-b
+ * persistence on restart.
  */
 @Injectable()
 export class NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionRecoveryStore {

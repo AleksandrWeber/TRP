@@ -102,6 +102,7 @@ import { NotificationPlatformRetrySchedulingDecisionProjectionPublicationRecover
 import { NotificationPlatformRetrySchedulingDecisionProjectionPublicationRestartRecoveryService } from './domain/notification-platform-retry-scheduling-decision-projection-publication-restart-recovery.service';
 import { NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionPersistenceService } from './notification-platform-retry-scheduling-decision-projection-publication-consumption-persistence.service';
 import { NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionRecoveryStore } from './domain/notification-platform-retry-scheduling-decision-projection-publication-consumption-recovery-store';
+import { NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionRestartRecoveryService } from './domain/notification-platform-retry-scheduling-decision-projection-publication-consumption-restart-recovery.service';
 import { NotificationPlatformRetryEligibilityRestartRecoveryService } from './domain/notification-platform-retry-eligibility-restart-recovery.service';
 import { NotificationPlatformRetryBackoffCalculationRecoveryStore } from './domain/notification-platform-retry-backoff-calculation-recovery-store';
 import { NotificationPlatformRetryBackoffCalculationRestartRecoveryService } from './domain/notification-platform-retry-backoff-calculation-restart-recovery.service';
@@ -420,6 +421,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetrySchedulingDecisionProjectionPublicationRestartRecoveryService,
     NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionPersistenceService,
     NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionRecoveryStore,
+    NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionRestartRecoveryService,
     NotificationPlatformRetryBackoffCalculationRecoveryStore,
     NotificationPlatformRetryBackoffCalculationRestartRecoveryService,
     NotificationPlatformRetryBackoffRecoveryStore,
@@ -531,6 +533,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformRetrySchedulingDecisionProjectionPublicationRestartRecoveryService,
     NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionPersistenceService,
     NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionRecoveryStore,
+    NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionRestartRecoveryService,
     NotificationPlatformRetryBackoffCalculationRecoveryStore,
     NotificationPlatformRetryBackoffCalculationRestartRecoveryService,
     NotificationPlatformRetryBackoffRecoveryStore,
