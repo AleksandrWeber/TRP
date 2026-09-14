@@ -8,6 +8,8 @@ import { NOTIFICATION_CHANNEL_CATALOG } from '../../modules/notification-deliver
 import { notConnectedTelegram } from '../../modules/notification-delivery/domain/telegram-connection';
 import { NotificationChannelsController } from '../../modules/notification-product/notification.controller';
 import { NotificationProductService } from '../../modules/notification-product/notification-product.service';
+import { InMemoryTelegramAdapter } from '../../modules/notification-delivery/adapters/in-memory-telegram.adapter';
+import { ProductionTelegramBotApiAdapter } from '../../modules/notification-delivery/adapters/telegram-bot-api.adapter';
 import type { AuthUser } from '../../modules/auth/jwt.strategy';
 import { Role } from '../../modules/identity/role';
 
@@ -55,7 +57,10 @@ describe('PC-07 — Notification Channels product', () => {
       connectTelegram: vi.fn(),
       sendTestNotification: vi.fn(),
     };
-    const service = new NotificationProductService(notifications as never);
+    const service = new NotificationProductService(
+      notifications as never,
+      new InMemoryTelegramAdapter(),
+    );
     const channels = new NotificationChannelsController(service, access);
 
     const home = channels.workspace({ user: OWNER }, workspace.id);
@@ -78,6 +83,8 @@ describe('PC-07 — Notification Channels product', () => {
     expect(telegram.configuration.kind).toBe('telegram-connection');
     expect(telegram.diagnostics.lastSkipReason).toBe('channel-not-connected');
     expect(telegram.botApiUsed).toBe(false);
+    expect(telegram.transport).toBe('in-memory');
+    expect(telegram.liveTransportActivated).toBe(false);
 
     const email = channels.get({ user: OWNER }, workspace.id, { channelId: 'email' });
     expect(email.configuration.kind).toBe('reserved-inactive');
@@ -94,5 +101,44 @@ describe('PC-07 — Notification Channels product', () => {
     expect(notifications.deliver).not.toHaveBeenCalled();
     expect(notifications.connectTelegram).not.toHaveBeenCalled();
     expect(notifications.sendTestNotification).not.toHaveBeenCalled();
+  });
+
+  it('projects bot-api honesty on telegram cards and keeps reserved channels none/false', async () => {
+    const workspaces = new WorkspaceDomainService(new InMemoryWorkspaceRepository());
+    const access = new WorkspaceAccessService(workspaces);
+    const workspace = await workspaces.create({ name: 'Paper Lab', ownerUserId: OWNER.userId });
+    const prefs = createUserNotificationPreferences({
+      workspaceId: workspace.id,
+      userId: OWNER.userId,
+      updatedAt: evaluatedAt,
+    });
+    const notifications = {
+      listChannels: () => NOTIFICATION_CHANNEL_CATALOG,
+      getPreferences: () => prefs,
+      getTelegramConnection: () => notConnectedTelegram(workspace.id, OWNER.userId, evaluatedAt),
+      listDeliveries: vi.fn(() => []),
+    };
+    const channels = new NotificationChannelsController(
+      new NotificationProductService(notifications as never, new ProductionTelegramBotApiAdapter()),
+      access,
+    );
+
+    const home = channels.workspace({ user: OWNER }, workspace.id);
+    expect(home.channels.find((channel) => channel.channelId === 'telegram')?.transport).toBe(
+      'bot-api',
+    );
+    expect(home.channels.find((channel) => channel.channelId === 'telegram')?.botApiUsed).toBe(
+      true,
+    );
+    expect(
+      home.channels.find((channel) => channel.channelId === 'telegram')?.liveTransportActivated,
+    ).toBe(true);
+    expect(home.channels.find((channel) => channel.channelId === 'email')?.transport).toBe('none');
+    expect(home.channels.find((channel) => channel.channelId === 'email')?.botApiUsed).toBe(false);
+
+    const telegram = channels.get({ user: OWNER }, workspace.id, { channelId: 'telegram' });
+    expect(telegram.botApiUsed).toBe(true);
+    expect(telegram.configuration.botApiUsed).toBe(true);
+    expect(telegram.diagnostics.botApiUsed).toBe(true);
   });
 });

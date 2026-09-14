@@ -7,6 +7,10 @@ import {
   notConnectedTelegram,
 } from '../notification-delivery/domain/telegram-connection';
 import {
+  BOT_API_TELEGRAM_TRANSPORT,
+  IN_MEMORY_TELEGRAM_TRANSPORT,
+} from '../notification-delivery/domain/telegram-transport-projection';
+import {
   telegramDeepLink,
   toTelegramConnectView,
   toTelegramConnectionView,
@@ -24,7 +28,7 @@ describe('PC-07 telegram product views', () => {
       connectionToken: 'tg-token',
       updatedAt: evaluatedAt,
     });
-    const view = toTelegramConnectionView(pending);
+    const view = toTelegramConnectionView(pending, IN_MEMORY_TELEGRAM_TRANSPORT);
     expect(view.status).toBe('pending');
     expect(view.pending).toBe(true);
     expect(view.connected).toBe(false);
@@ -39,7 +43,7 @@ describe('PC-07 telegram product views', () => {
     expect(JSON.stringify(view)).not.toContain('connectionToken');
 
     const connected = bindTelegramChat(pending, 'chat-auto', '2026-08-15T19:01:00.000Z');
-    const connectedView = toTelegramConnectionView(connected);
+    const connectedView = toTelegramConnectionView(connected, IN_MEMORY_TELEGRAM_TRANSPORT);
     expect(connectedView.connected).toBe(true);
     expect(connectedView.verified).toBe(true);
     expect(connectedView.testAvailable).toBe(true);
@@ -58,6 +62,7 @@ describe('PC-07 telegram product views', () => {
     const connect = toTelegramConnectView({
       connection: pending,
       deepLink: telegramDeepLink('tg-token'),
+      honesty: IN_MEMORY_TELEGRAM_TRANSPORT,
     });
     expect(connect.deepLink).toBe('tg://connect/tg-token');
     expect(connect.botApiUsed).toBe(false);
@@ -75,26 +80,76 @@ describe('PC-07 telegram product views', () => {
       connection: connected,
       delivery,
       channels: NOTIFICATION_CHANNEL_CATALOG,
+      honesty: IN_MEMORY_TELEGRAM_TRANSPORT,
     });
     expect(test.delivery.outcome).toBe('delivered');
     expect(test.delivery.channelDelivery.botApiUsed).toBe(false);
+    expect(test.delivery.channelDelivery.telegramTransport).toBe('in-memory');
     expect(JSON.stringify(test)).not.toContain('chat-auto');
 
     const diagnostics = toTelegramDiagnosticsView({
       connection: connected,
       deliveries: [delivery],
+      honesty: IN_MEMORY_TELEGRAM_TRANSPORT,
     });
     expect(diagnostics.lastTelegramDelivery?.deliveryId).toBe('del-1');
     expect(diagnostics.lastTelegramDelivery?.adapterReached).toBe(true);
     expect(diagnostics.scheduler).toBe(false);
     expect(diagnostics.retries).toBe(false);
     expect(diagnostics.botApiUsed).toBe(false);
+    expect(diagnostics.telegramTransport).toBe('in-memory');
 
     const empty = toTelegramDiagnosticsView({
       connection: notConnectedTelegram('ws-1', 'user-1', evaluatedAt),
       deliveries: [],
+      honesty: IN_MEMORY_TELEGRAM_TRANSPORT,
     });
     expect(empty.connection.connectAvailable).toBe(true);
     expect(empty.lastTelegramDelivery).toBeNull();
+  });
+
+  it('projects bot-api honesty from the production adapter without exposing chat id', () => {
+    const pending = createPendingTelegramConnection({
+      workspaceId: 'ws-1',
+      userId: 'user-1',
+      connectionToken: 'tg-token',
+      updatedAt: evaluatedAt,
+    });
+    const connected = bindTelegramChat(pending, '777001', '2026-08-15T19:01:00.000Z');
+    const view = toTelegramConnectionView(connected, BOT_API_TELEGRAM_TRANSPORT);
+    expect(view.transport).toBe('bot-api');
+    expect(view.botApiUsed).toBe(true);
+    expect(view.status).toBe('connected');
+    expect(view.chatBound).toBe(true);
+    expect(view.disconnectAvailable).toBe(true);
+    expect(JSON.stringify(view)).not.toContain('777001');
+    expect(JSON.stringify(view)).not.toContain('chatId');
+
+    const delivery = createDeliveryResult({
+      deliveryId: 'del-1',
+      workspaceId: 'ws-1',
+      userId: 'user-1',
+      type: 'daily-report',
+      attempts: [{ channelId: 'telegram', outcome: 'delivered' }],
+      createdAt: '2026-08-15T19:02:00.000Z',
+    });
+    const test = toTelegramTestView({
+      connection: connected,
+      delivery,
+      channels: NOTIFICATION_CHANNEL_CATALOG,
+      honesty: BOT_API_TELEGRAM_TRANSPORT,
+    });
+    expect(test.botApiUsed).toBe(true);
+    expect(test.delivery.channelDelivery.botApiUsed).toBe(true);
+    expect(test.delivery.channelDelivery.telegramTransport).toBe('bot-api');
+
+    const diagnostics = toTelegramDiagnosticsView({
+      connection: connected,
+      deliveries: [delivery],
+      honesty: BOT_API_TELEGRAM_TRANSPORT,
+    });
+    expect(diagnostics.telegramTransport).toBe('bot-api');
+    expect(diagnostics.botApiUsed).toBe(true);
+    expect(diagnostics.lastTelegramDelivery?.adapterReached).toBe(true);
   });
 });

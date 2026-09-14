@@ -1,4 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import {
+  BOT_API_TELEGRAM_TRANSPORT,
+  IN_MEMORY_TELEGRAM_TRANSPORT,
+} from '../notification-delivery/domain/telegram-transport-projection';
 import { toChannelDeliveryView } from './channel-delivery.view';
 
 const at = '2026-08-15T17:00:00.000Z';
@@ -47,6 +51,7 @@ describe('PC-15 15-e — ChannelDeliveryView', () => {
         outcome: 'delivered',
         createdAt: at,
       }),
+      honesty: IN_MEMORY_TELEGRAM_TRANSPORT,
     });
 
     expect(view.telegramAdapterReached).toBe(true);
@@ -64,5 +69,25 @@ describe('PC-15 15-e — ChannelDeliveryView', () => {
     );
     expect(view.authorityClass).toBe('notification-projection');
     expect(Object.isFrozen(view)).toBe(true);
+  });
+
+  it('projects bot-api honesty when the production adapter is bound', () => {
+    const view = toChannelDeliveryView({
+      workspaceId: 'ws-1',
+      userId: 'user-1',
+      connection: Object.freeze({
+        workspaceId: 'ws-1',
+        userId: 'user-1',
+        status: 'connected',
+        chatId: '777001',
+        updatedAt: at,
+      }),
+      channels,
+      honesty: BOT_API_TELEGRAM_TRANSPORT,
+    });
+    expect(view.telegramTransport).toBe('bot-api');
+    expect(view.botApiUsed).toBe(true);
+    expect(view.controlPlane).toBe(false);
+    expect(view.telegramConnectionStatus).toBe('connected');
   });
 });

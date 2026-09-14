@@ -107,7 +107,8 @@ export function NotificationDetailView({
         <p className="mt-3 text-xs text-slate-500">
           Telegram adapter{' '}
           {record.channelDelivery.telegramAdapterReached ? 'reached' : 'not reached'}. Bot API was
-          not used. Deferred channels stay reserved.
+          {record.channelDelivery.botApiUsed ? ' used' : ' not used'}. Deferred channels stay
+          reserved.
         </p>
       </Panel>
     </section>

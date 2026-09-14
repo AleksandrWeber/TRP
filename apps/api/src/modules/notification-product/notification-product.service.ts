@@ -9,9 +9,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
   NOTIFICATION_SERVICE_PORT,
+  TELEGRAM_CHANNEL_ADAPTER,
+  type NotificationChannelPort,
   type NotificationServicePort,
   type UpsertNotificationPreferences,
 } from '../notification-delivery/ports/notification.port';
+import { projectTelegramTransport } from '../notification-delivery/domain/telegram-transport-projection';
 import type { NotificationChannelId } from '../notification-delivery/domain/notification-channel';
 import type { UserNotificationPreferences } from '../notification-delivery/domain/user-notification-preferences';
 import {
@@ -41,7 +44,13 @@ export class NotificationProductService {
   constructor(
     @Inject(NOTIFICATION_SERVICE_PORT)
     private readonly notifications: NotificationServicePort,
+    @Inject(TELEGRAM_CHANNEL_ADAPTER)
+    private readonly telegramChannel: NotificationChannelPort,
   ) {}
+
+  private telegramHonesty() {
+    return projectTelegramTransport(this.telegramChannel);
+  }
 
   getSettings(
     workspaceId: string,
@@ -53,6 +62,7 @@ export class NotificationProductService {
       channels: this.notifications.listChannels(),
       connection: this.notifications.getTelegramConnection(workspaceId, userId),
       evaluatedAt,
+      honesty: this.telegramHonesty(),
     });
   }
 
@@ -66,6 +76,7 @@ export class NotificationProductService {
       channels: this.notifications.listChannels(),
       connection: this.notifications.getTelegramConnection(workspaceId, userId),
       evaluatedAt,
+      honesty: this.telegramHonesty(),
     });
   }
 
@@ -83,6 +94,7 @@ export class NotificationProductService {
       channels: this.notifications.listChannels(),
       connection: this.notifications.getTelegramConnection(workspaceId, userId),
       evaluatedAt,
+      honesty: this.telegramHonesty(),
     });
   }
 
@@ -99,6 +111,7 @@ export class NotificationProductService {
       connection: this.notifications.getTelegramConnection(workspaceId, userId),
       deliveries: this.notifications.listDeliveries({ workspaceId, userId }),
       evaluatedAt,
+      honesty: this.telegramHonesty(),
     });
   }
 
@@ -128,6 +141,7 @@ export class NotificationProductService {
       channels: this.notifications.listChannels(),
       connection,
       evaluatedAt,
+      honesty: this.telegramHonesty(),
     }).preferences;
   }
 
@@ -140,6 +154,7 @@ export class NotificationProductService {
       channels: this.notifications.listChannels(),
       connection,
       evaluatedAt: next.updatedAt,
+      honesty: this.telegramHonesty(),
     }).preferences;
   }
 
@@ -169,6 +184,7 @@ export class NotificationProductService {
       delivery,
       connection,
       channels: this.notifications.listChannels(),
+      honesty: this.telegramHonesty(),
     });
   }
 }

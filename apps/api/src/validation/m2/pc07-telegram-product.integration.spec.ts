@@ -10,6 +10,8 @@ import {
   disconnectTelegramConnection,
   notConnectedTelegram,
 } from '../../modules/notification-delivery/domain/telegram-connection';
+import { InMemoryTelegramAdapter } from '../../modules/notification-delivery/adapters/in-memory-telegram.adapter';
+import { ProductionTelegramBotApiAdapter } from '../../modules/notification-delivery/adapters/telegram-bot-api.adapter';
 import { TelegramController } from '../../modules/telegram-product/telegram.controller';
 import {
   inMemoryAdapterChatId,
@@ -89,12 +91,16 @@ describe('PC-07 — Telegram product', () => {
       listDeliveries: vi.fn(() => deliveries),
       deliver: vi.fn(),
     };
-    const service = new TelegramProductService(notifications as never);
+    const service = new TelegramProductService(
+      notifications as never,
+      new InMemoryTelegramAdapter(),
+    );
     const telegram = new TelegramController(service, access);
 
     const status = telegram.status({ user: OWNER }, workspace.id);
     expect(status.connectAvailable).toBe(true);
     expect(status.botApiUsed).toBe(false);
+    expect(status.transport).toBe('in-memory');
 
     const connect = telegram.connect({ user: OWNER }, workspace.id);
     expect(connect.connection.status).toBe('pending');
@@ -135,5 +141,76 @@ describe('PC-07 — Telegram product', () => {
     const disconnected = telegram.disconnect({ user: OWNER }, workspace.id);
     expect(disconnected.status).toBe('not-connected');
     expect(JSON.stringify(completed)).not.toContain('chatId');
+  });
+
+  it('projects bot-api honesty on status, test, and disconnect when the production adapter is bound', async () => {
+    const workspaces = new WorkspaceDomainService(new InMemoryWorkspaceRepository());
+    const access = new WorkspaceAccessService(workspaces);
+    const workspace = await workspaces.create({ name: 'Paper Lab', ownerUserId: OWNER.userId });
+    let connection = notConnectedTelegram(workspace.id, OWNER.userId, evaluatedAt);
+    const notifications = {
+      listChannels: () => NOTIFICATION_CHANNEL_CATALOG,
+      getTelegramConnection: () => connection,
+      connectTelegram: vi.fn(() => {
+        connection = createPendingTelegramConnection({
+          workspaceId: workspace.id,
+          userId: OWNER.userId,
+          connectionToken: 'tg-token',
+          updatedAt: evaluatedAt,
+        });
+        return { connection, deepLink: 'tg://connect/tg-token' };
+      }),
+      observePendingTelegramBind: vi.fn(async () => {
+        connection = bindTelegramChat(connection, '777001', '2026-08-15T19:01:00.000Z');
+        return connection;
+      }),
+      completeTelegramConnect: vi.fn(),
+      verifyTelegramConnection: vi.fn(() => connection),
+      disconnectTelegram: vi.fn(() => {
+        connection = disconnectTelegramConnection(connection, '2026-08-15T19:03:00.000Z');
+        return connection;
+      }),
+      sendTestNotification: vi.fn(() =>
+        createDeliveryResult({
+          deliveryId: 'del-test',
+          workspaceId: workspace.id,
+          userId: OWNER.userId,
+          type: 'daily-report',
+          attempts: [{ channelId: 'telegram', outcome: 'delivered' }],
+          createdAt: '2026-08-15T19:02:00.000Z',
+        }),
+      ),
+      listDeliveries: vi.fn(() => []),
+      deliver: vi.fn(),
+    };
+    const telegram = new TelegramController(
+      new TelegramProductService(notifications as never, new ProductionTelegramBotApiAdapter()),
+      access,
+    );
+
+    const status = telegram.status({ user: OWNER }, workspace.id);
+    expect(status.transport).toBe('bot-api');
+    expect(status.botApiUsed).toBe(true);
+    expect(status.status).toBe('not-connected');
+    expect(JSON.stringify(status)).not.toContain('chatId');
+
+    telegram.connect({ user: OWNER }, workspace.id);
+    const completed = await telegram.complete({ user: OWNER }, workspace.id);
+    expect(completed.transport).toBe('bot-api');
+    expect(completed.botApiUsed).toBe(true);
+    expect(completed.chatBound).toBe(true);
+    expect(JSON.stringify(completed)).not.toContain('777001');
+
+    const test = await telegram.sendTest({ user: OWNER }, workspace.id);
+    expect(test.botApiUsed).toBe(true);
+    expect(test.delivery.channelDelivery.telegramTransport).toBe('bot-api');
+    expect(test.delivery.channelDelivery.botApiUsed).toBe(true);
+
+    const disconnected = telegram.disconnect({ user: OWNER }, workspace.id);
+    expect(disconnected.status).toBe('not-connected');
+    expect(disconnected.transport).toBe('bot-api');
+    expect(disconnected.botApiUsed).toBe(true);
+    expect(disconnected.disconnectAvailable).toBe(false);
+    expect(notifications.deliver).not.toHaveBeenCalled();
   });
 });

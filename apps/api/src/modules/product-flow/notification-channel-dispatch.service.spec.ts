@@ -1,4 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
+import { InMemoryTelegramAdapter } from '../notification-delivery/adapters/in-memory-telegram.adapter';
+import { ProductionTelegramBotApiAdapter } from '../notification-delivery/adapters/telegram-bot-api.adapter';
 import type { DeliveryResult } from '../notification-delivery/domain/delivery';
 import type { TelegramConnection } from '../notification-delivery/domain/telegram-connection';
 import { NotificationChannelDispatchService } from './notification-channel-dispatch.service';
@@ -103,7 +105,10 @@ function harness(overrides?: { connection?: TelegramConnection; delivery?: Deliv
     completeTelegramConnect: vi.fn(() => connected()),
     listChannels: vi.fn(() => catalog),
   };
-  const service = new NotificationChannelDispatchService(notifications as never);
+  const service = new NotificationChannelDispatchService(
+    notifications as never,
+    new InMemoryTelegramAdapter(),
+  );
   return { service, notifications };
 }
 
@@ -182,5 +187,25 @@ describe('PC-15 15-e — NotificationChannelDispatchService', () => {
     });
     expect(notifications.connectTelegram).not.toHaveBeenCalled();
     expect(notifications.completeTelegramConnect).not.toHaveBeenCalled();
+  });
+
+  it('projects bot-api honesty when the production adapter is bound', async () => {
+    const notifications = {
+      deliver: vi.fn(() => deliveredResult()),
+      getTelegramConnection: vi.fn(() => connected()),
+      connectTelegram: vi.fn(),
+      completeTelegramConnect: vi.fn(),
+      listChannels: vi.fn(() => catalog),
+    };
+    const service = new NotificationChannelDispatchService(
+      notifications as never,
+      new ProductionTelegramBotApiAdapter(),
+    );
+    const result = await service.dispatch(deliverCmd);
+    expect(result.projection.telegramTransport).toBe('bot-api');
+    expect(result.projection.botApiUsed).toBe(true);
+    expect(result.projection.telegramAdapterReached).toBe(true);
+    expect(result.projection.controlPlane).toBe(false);
+    expect(notifications.deliver).toHaveBeenCalledWith(deliverCmd);
   });
 });

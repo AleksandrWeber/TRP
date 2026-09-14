@@ -9,6 +9,7 @@ import { notConnectedTelegram } from '../../modules/notification-delivery/domain
 import { NotificationSettingsController } from '../../modules/notification-product/notification.controller';
 import { NotificationDeliveriesController } from '../../modules/notification-product/notification.controller';
 import { NotificationProductService } from '../../modules/notification-product/notification-product.service';
+import { InMemoryTelegramAdapter } from '../../modules/notification-delivery/adapters/in-memory-telegram.adapter';
 import type { AuthUser } from '../../modules/auth/jwt.strategy';
 import { Role } from '../../modules/identity/role';
 
@@ -62,7 +63,10 @@ describe('PC-06 — Notification product', () => {
       connectTelegram: vi.fn(),
       sendTestNotification: vi.fn(),
     };
-    const service = new NotificationProductService(notifications as never);
+    const service = new NotificationProductService(
+      notifications as never,
+      new InMemoryTelegramAdapter(),
+    );
     const settings = new NotificationSettingsController(service, access);
     const deliveries = new NotificationDeliveriesController(service, access);
 
@@ -70,6 +74,7 @@ describe('PC-06 — Notification product', () => {
     expect(snapshot.preferences.schedule.dailyDeliveryTime).toBe('09:00');
     expect(snapshot.telegram.connected).toBe(false);
     expect(snapshot.telegram.connectAvailable).toBe(false);
+    expect(snapshot.telegram.transport).toBe('in-memory');
     expect(snapshot.channels.find((channel) => channel.channelId === 'email')?.offered).toBe(false);
     expect(snapshot.controlPlane).toBe(false);
 

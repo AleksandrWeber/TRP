@@ -3,6 +3,8 @@ import { createDeliveryResult } from '../notification-delivery/domain/delivery';
 import { NOTIFICATION_CHANNEL_CATALOG } from '../notification-delivery/domain/notification-channel';
 import { notConnectedTelegram } from '../notification-delivery/domain/telegram-connection';
 import { createUserNotificationPreferences } from '../notification-delivery/domain/user-notification-preferences';
+import { InMemoryTelegramAdapter } from '../notification-delivery/adapters/in-memory-telegram.adapter';
+import { ProductionTelegramBotApiAdapter } from '../notification-delivery/adapters/telegram-bot-api.adapter';
 import { NotificationProductService } from './notification-product.service';
 
 const evaluatedAt = '2026-08-15T18:00:00.000Z';
@@ -46,7 +48,10 @@ function harness() {
     connectTelegram: vi.fn(),
     sendTestNotification: vi.fn(),
   };
-  const service = new NotificationProductService(notifications as never);
+  const service = new NotificationProductService(
+    notifications as never,
+    new InMemoryTelegramAdapter(),
+  );
   return { service, notifications };
 }
 
@@ -56,6 +61,7 @@ describe('NotificationProductService (PC-06)', () => {
     const settings = service.getSettings('ws-1', 'user-1', evaluatedAt);
     expect(settings.preferences.enabled).toBe(true);
     expect(settings.telegram.connected).toBe(false);
+    expect(settings.telegram.transport).toBe('in-memory');
     expect(settings.routing.controlPlane).toBe(false);
     expect(service.listChannels().items).toHaveLength(6);
     expect(service.getRouting('ws-1', 'user-1', evaluatedAt).scheduleClock.scheduler).toBe(false);
@@ -98,6 +104,8 @@ describe('NotificationProductService (PC-06)', () => {
 
     const telegram = service.getChannel('ws-1', 'user-1', 'telegram', evaluatedAt);
     expect(telegram?.offered).toBe(true);
+    expect(telegram?.botApiUsed).toBe(false);
+    expect(telegram?.transport).toBe('in-memory');
     expect(telegram?.diagnostics.lastSkipReason).toBe('channel-not-connected');
 
     const email = service.getChannel('ws-1', 'user-1', 'email', evaluatedAt);
@@ -113,5 +121,33 @@ describe('NotificationProductService (PC-06)', () => {
     expect(notifications.connectTelegram).not.toHaveBeenCalled();
     expect(notifications.sendTestNotification).not.toHaveBeenCalled();
     expect(notifications.deliver).not.toHaveBeenCalled();
+  });
+
+  it('projects bot-api honesty when the production adapter is bound', () => {
+    const notifications = harness().notifications;
+    const service = new NotificationProductService(
+      notifications as never,
+      new ProductionTelegramBotApiAdapter(),
+    );
+    const settings = service.getSettings('ws-1', 'user-1', evaluatedAt);
+    expect(settings.telegram.transport).toBe('bot-api');
+    expect(settings.telegram.connectAvailable).toBe(false);
+    expect(settings.telegram.status).toBe('not-connected');
+
+    const telegram = service.getChannel('ws-1', 'user-1', 'telegram', evaluatedAt);
+    expect(telegram?.transport).toBe('bot-api');
+    expect(telegram?.botApiUsed).toBe(true);
+    expect(telegram?.liveTransportActivated).toBe(true);
+
+    const email = service.getChannel('ws-1', 'user-1', 'email', evaluatedAt);
+    expect(email?.transport).toBe('none');
+    expect(email?.botApiUsed).toBe(false);
+    expect(email?.liveTransportActivated).toBe(false);
+
+    const detail = service.getDelivery('ws-1', 'del-1', 'user-1');
+    expect(detail?.channelDelivery.telegramTransport).toBe('bot-api');
+    expect(detail?.channelDelivery.botApiUsed).toBe(true);
+    expect(notifications.deliver).not.toHaveBeenCalled();
+    expect(notifications.connectTelegram).not.toHaveBeenCalled();
   });
 });

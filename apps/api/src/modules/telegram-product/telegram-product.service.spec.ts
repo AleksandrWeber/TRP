@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { Role } from '../identity/role';
+import { InMemoryTelegramAdapter } from '../notification-delivery/adapters/in-memory-telegram.adapter';
+import { ProductionTelegramBotApiAdapter } from '../notification-delivery/adapters/telegram-bot-api.adapter';
 import { createDeliveryResult } from '../notification-delivery/domain/delivery';
 import { NOTIFICATION_CHANNEL_CATALOG } from '../notification-delivery/domain/notification-channel';
 import {
@@ -12,7 +14,10 @@ import { inMemoryAdapterChatId, TelegramProductService } from './telegram-produc
 
 const evaluatedAt = '2026-08-15T19:00:00.000Z';
 
-function harness() {
+function harness(
+  adapter:
+    InMemoryTelegramAdapter | ProductionTelegramBotApiAdapter = new InMemoryTelegramAdapter(),
+) {
   let connection = notConnectedTelegram('ws-1', 'user-1', evaluatedAt);
   const deliveries = [
     createDeliveryResult({
@@ -66,7 +71,7 @@ function harness() {
     listDeliveries: vi.fn(() => deliveries),
     deliver: vi.fn(),
   };
-  const service = new TelegramProductService(notifications as never);
+  const service = new TelegramProductService(notifications as never, adapter);
   return { service, notifications };
 }
 
@@ -101,6 +106,7 @@ describe('TelegramProductService (PC-07)', () => {
     const test = await service.sendTest('ws-1', 'user-1');
     expect(test.delivery.outcome).toBe('delivered');
     expect(test.botApiUsed).toBe(false);
+    expect(test.connection.transport).toBe('in-memory');
     expect(notifications.sendTestNotification).toHaveBeenCalled();
     expect(notifications.deliver).not.toHaveBeenCalled();
 
@@ -122,5 +128,45 @@ describe('TelegramProductService (PC-07)', () => {
     expect(service.getDiagnostics('ws-1', 'user-1').lastTelegramDelivery?.deliveryId).toBe(
       'del-skip',
     );
+  });
+
+  it('projects bot-api honesty when the production adapter is bound', async () => {
+    const { service, notifications } = harness(new ProductionTelegramBotApiAdapter());
+    const status = service.getConnection('ws-1', 'user-1');
+    expect(status.transport).toBe('bot-api');
+    expect(status.botApiUsed).toBe(true);
+    expect(status.status).toBe('not-connected');
+    expect(status.chatBound).toBe(false);
+    expect(status.disconnectAvailable).toBe(false);
+
+    service.connect('ws-1', 'user-1');
+    const completed = await service.complete('ws-1', 'user-1', {
+      userId: 'user-1',
+      role: Role.Trader,
+    });
+    expect(completed.transport).toBe('bot-api');
+    expect(completed.botApiUsed).toBe(true);
+    expect(completed.chatBound).toBe(true);
+    expect(completed.disconnectAvailable).toBe(true);
+    expect(JSON.stringify(completed)).not.toContain('chatId');
+    expect(JSON.stringify(completed)).not.toContain('777001');
+
+    const test = await service.sendTest('ws-1', 'user-1');
+    expect(test.botApiUsed).toBe(true);
+    expect(test.delivery.channelDelivery.telegramTransport).toBe('bot-api');
+    expect(test.delivery.channelDelivery.botApiUsed).toBe(true);
+    expect(notifications.sendTestNotification).toHaveBeenCalled();
+    expect(notifications.deliver).not.toHaveBeenCalled();
+
+    const diagnostics = service.getDiagnostics('ws-1', 'user-1');
+    expect(diagnostics.telegramTransport).toBe('bot-api');
+    expect(diagnostics.botApiUsed).toBe(true);
+
+    const disconnected = service.disconnect('ws-1', 'user-1');
+    expect(disconnected.status).toBe('not-connected');
+    expect(disconnected.transport).toBe('bot-api');
+    expect(disconnected.botApiUsed).toBe(true);
+    expect(disconnected.chatBound).toBe(false);
+    expect(disconnected.disconnectAvailable).toBe(false);
   });
 });

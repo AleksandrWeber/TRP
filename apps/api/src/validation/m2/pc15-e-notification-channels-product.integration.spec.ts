@@ -125,6 +125,7 @@ describe('PC-15 15-e — Notification Delivery → Channels product flow', () =>
     expect(result.projection.telegramAdapterReached).toBe(true);
     expect(result.projection.telegramTransport).toBe('in-memory');
     expect(result.projection.botApiUsed).toBe(false);
+    expect(telegram).toBeInstanceOf(InMemoryTelegramAdapter);
     expect(result.projection.controlPlane).toBe(false);
     expect(telegram.listSent()).toHaveLength(1);
     expect(telegram.listSent()[0]?.chatId).toBe('chat-15e');

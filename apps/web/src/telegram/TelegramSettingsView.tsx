@@ -56,7 +56,7 @@ export function TelegramSettingsView({
         <h2 className="mt-1 text-2xl font-semibold">Telegram settings</h2>
         <p className="mt-2 text-slate-400">
           Notification channel only. Telegram cannot trade, pause, or kill. Chat id is never
-          entered. Transport is in-memory — Bot API is not used.
+          entered.
         </p>
         <div className="mt-3 flex flex-wrap gap-3 text-sm">
           <Link to="/notifications/channels" className="text-sky-400 hover:text-sky-300">
@@ -91,7 +91,7 @@ export function TelegramSettingsView({
               <Fact label="Status" value={telegramStatusLabel(connection.status)} />
               <Fact label="Verification" value={telegramVerificationLabel(connection)} />
               <Fact label="Chat bound" value={connection.chatBound ? 'Yes' : 'No'} />
-              <Fact label="Transport" value="In-memory" />
+              <Fact label="Transport" value={telegramTransportLabel(connection.transport)} />
               <Fact
                 label="Connected at"
                 value={connection.connectedAt ? formatUtc(connection.connectedAt) : '—'}
@@ -210,7 +210,7 @@ export function TelegramSettingsView({
                   label="Adapter reached"
                   value={lastTest.delivery.channelDelivery.telegramAdapterReached ? 'Yes' : 'No'}
                 />
-                <Fact label="Bot API" value="Not used" />
+                <Fact label="Bot API" value={botApiUsedLabel(lastTest.botApiUsed)} />
               </dl>
             </Panel>
           )}
@@ -220,8 +220,11 @@ export function TelegramSettingsView({
               <dl className="grid gap-3 sm:grid-cols-2 text-sm" data-testid="telegram-diagnostics">
                 <Fact label="Status" value={telegramStatusLabel(diagnostics.connection.status)} />
                 <Fact label="Verified" value={diagnostics.verification.verified ? 'Yes' : 'No'} />
-                <Fact label="Transport" value="In-memory" />
-                <Fact label="Bot API" value="Not used" />
+                <Fact
+                  label="Transport"
+                  value={telegramTransportLabel(diagnostics.telegramTransport)}
+                />
+                <Fact label="Bot API" value={botApiUsedLabel(diagnostics.botApiUsed)} />
                 <Fact
                   label="Last Telegram delivery"
                   value={
@@ -294,4 +297,12 @@ function Fact({ label, value }: { label: string; value: string }) {
       <dd className="mt-1 text-slate-200">{value}</dd>
     </div>
   );
+}
+
+function telegramTransportLabel(transport: 'in-memory' | 'bot-api'): string {
+  return transport === 'bot-api' ? 'Bot API' : 'In-memory';
+}
+
+function botApiUsedLabel(used: boolean): string {
+  return used ? 'Used' : 'Not used';
 }

@@ -24,6 +24,7 @@ import {
   type NotificationType,
 } from '../notification-delivery/domain/notification-type';
 import type { TelegramConnection } from '../notification-delivery/domain/telegram-connection';
+import type { TelegramTransportProjection } from '../notification-delivery/domain/telegram-transport-projection';
 import type {
   QuietHours,
   TypeDeliveryPreference,
@@ -92,7 +93,7 @@ export type TelegramConnectionStatusView = {
   connectAvailable: false;
   testAvailable: false;
   controlPlane: false;
-  transport: 'in-memory';
+  transport: TelegramTransportProjection['transport'];
 };
 
 export type PreferenceClockView = {
@@ -207,7 +208,10 @@ export function toChannelPageView(
   };
 }
 
-export function toTelegramStatusView(connection: TelegramConnection): TelegramConnectionStatusView {
+export function toTelegramStatusView(
+  connection: TelegramConnection,
+  honesty: TelegramTransportProjection,
+): TelegramConnectionStatusView {
   return {
     status: connection.status,
     connected: connection.status === 'connected' && Boolean(connection.chatId),
@@ -217,7 +221,7 @@ export function toTelegramStatusView(connection: TelegramConnection): TelegramCo
     connectAvailable: false,
     testAvailable: false,
     controlPlane: false,
-    transport: 'in-memory',
+    transport: honesty.transport,
   };
 }
 
@@ -303,6 +307,7 @@ export function toRoutingView(input: {
   channels: readonly NotificationChannelDescriptor[];
   connection: TelegramConnection;
   evaluatedAt: string;
+  honesty: TelegramTransportProjection;
 }): NotificationRoutingView {
   const telegramConnected =
     input.connection.status === 'connected' && Boolean(input.connection.chatId);
@@ -313,7 +318,7 @@ export function toRoutingView(input: {
     masterEnabled: input.prefs.enabled,
     typeRouting: preferences.typeRouting,
     channels: input.channels.map(toChannelView),
-    telegram: toTelegramStatusView(input.connection),
+    telegram: toTelegramStatusView(input.connection, input.honesty),
     scheduleClock: toPreferenceClockView(input.prefs, input.evaluatedAt),
     deferredChannelsActivated: false,
     controlPlane: false,
@@ -326,6 +331,7 @@ export function toSettingsView(input: {
   channels: readonly NotificationChannelDescriptor[];
   connection: TelegramConnection;
   evaluatedAt: string;
+  honesty: TelegramTransportProjection;
 }): NotificationSettingsView {
   const telegramConnected =
     input.connection.status === 'connected' && Boolean(input.connection.chatId);
@@ -334,7 +340,7 @@ export function toSettingsView(input: {
   return {
     preferences,
     channels: input.channels.map(toChannelView),
-    telegram: toTelegramStatusView(input.connection),
+    telegram: toTelegramStatusView(input.connection, input.honesty),
     routing,
     scheduleClock: routing.scheduleClock,
     deferredChannelsActivated: false,
@@ -374,6 +380,7 @@ export function toDeliveryDetailView(input: {
   delivery: DeliveryResult;
   connection: TelegramConnection;
   channels: readonly NotificationChannelDescriptor[];
+  honesty: TelegramTransportProjection;
 }): NotificationDeliveryDetailView {
   return {
     ...toDeliveryListItemView(input.delivery),
@@ -389,8 +396,9 @@ export function toDeliveryDetailView(input: {
       delivery: input.delivery,
       connection: input.connection,
       channels: input.channels,
+      honesty: input.honesty,
     }),
-    telegram: toTelegramStatusView(input.connection),
+    telegram: toTelegramStatusView(input.connection, input.honesty),
   };
 }
 

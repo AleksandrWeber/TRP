@@ -3,12 +3,13 @@
  *
  * Notification Delivery remains delivery owner. Telegram remains transport only.
  * Chat id is never a product field. Connection tokens are never a product field.
- * Not a Bot API. Not a control plane. Not a new SoT.
+ * Transport is the bound adapter. Not a control plane. Not a new SoT.
  */
 
 import type { DeliveryResult, DeliverySkipReason } from '../notification-delivery/domain/delivery';
 import type { NotificationChannelDescriptor } from '../notification-delivery/domain/notification-channel';
 import type { TelegramConnection } from '../notification-delivery/domain/telegram-connection';
+import type { TelegramTransportProjection } from '../notification-delivery/domain/telegram-transport-projection';
 import {
   deliveryMatchesQuery,
   toDeliveryDetailView,
@@ -33,8 +34,8 @@ export type TelegramConnectionProductView = {
   testAvailable: boolean;
   disconnectAvailable: boolean;
   controlPlane: false;
-  transport: 'in-memory';
-  botApiUsed: false;
+  transport: TelegramTransportProjection['transport'];
+  botApiUsed: boolean;
   userEnteredBind: false;
   authorityClass: 'notification-projection';
 };
@@ -43,7 +44,7 @@ export type TelegramConnectProductView = {
   connection: TelegramConnectionProductView;
   deepLink: string;
   controlPlane: false;
-  botApiUsed: false;
+  botApiUsed: boolean;
   userEnteredBind: false;
   authorityClass: 'notification-projection';
 };
@@ -52,7 +53,7 @@ export type TelegramTestProductView = {
   connection: TelegramConnectionProductView;
   delivery: NotificationDeliveryDetailView;
   controlPlane: false;
-  botApiUsed: false;
+  botApiUsed: boolean;
   authorityClass: 'notification-projection';
 };
 
@@ -71,8 +72,8 @@ export type TelegramDiagnosticsView = {
     adapterReached: boolean;
     createdAt: string;
   } | null;
-  telegramTransport: 'in-memory';
-  botApiUsed: false;
+  telegramTransport: TelegramTransportProjection['transport'];
+  botApiUsed: boolean;
   controlPlane: false;
   deferredChannelsActivated: false;
   scheduler: false;
@@ -90,6 +91,7 @@ export function telegramDeepLink(connectionToken: string): string {
 
 export function toTelegramConnectionView(
   connection: TelegramConnection,
+  honesty: TelegramTransportProjection,
 ): TelegramConnectionProductView {
   const connected = connection.status === 'connected' && Boolean(connection.chatId);
   const pending = connection.status === 'pending';
@@ -109,8 +111,8 @@ export function toTelegramConnectionView(
     testAvailable: connected,
     disconnectAvailable: pending || connected,
     controlPlane: false,
-    transport: 'in-memory',
-    botApiUsed: false,
+    transport: honesty.transport,
+    botApiUsed: honesty.botApiUsed,
     userEnteredBind: false,
     authorityClass: 'notification-projection',
   };
@@ -119,12 +121,13 @@ export function toTelegramConnectionView(
 export function toTelegramConnectView(input: {
   connection: TelegramConnection;
   deepLink: string;
+  honesty: TelegramTransportProjection;
 }): TelegramConnectProductView {
   return {
-    connection: toTelegramConnectionView(input.connection),
+    connection: toTelegramConnectionView(input.connection, input.honesty),
     deepLink: input.deepLink,
     controlPlane: false,
-    botApiUsed: false,
+    botApiUsed: input.honesty.botApiUsed,
     userEnteredBind: false,
     authorityClass: 'notification-projection',
   };
@@ -134,16 +137,18 @@ export function toTelegramTestView(input: {
   connection: TelegramConnection;
   delivery: DeliveryResult;
   channels: readonly NotificationChannelDescriptor[];
+  honesty: TelegramTransportProjection;
 }): TelegramTestProductView {
   return {
-    connection: toTelegramConnectionView(input.connection),
+    connection: toTelegramConnectionView(input.connection, input.honesty),
     delivery: toDeliveryDetailView({
       delivery: input.delivery,
       connection: input.connection,
       channels: input.channels,
+      honesty: input.honesty,
     }),
     controlPlane: false,
-    botApiUsed: false,
+    botApiUsed: input.honesty.botApiUsed,
     authorityClass: 'notification-projection',
   };
 }
@@ -151,8 +156,9 @@ export function toTelegramTestView(input: {
 export function toTelegramDiagnosticsView(input: {
   connection: TelegramConnection;
   deliveries: readonly DeliveryResult[];
+  honesty: TelegramTransportProjection;
 }): TelegramDiagnosticsView {
-  const connection = toTelegramConnectionView(input.connection);
+  const connection = toTelegramConnectionView(input.connection, input.honesty);
   const latest = latestTelegramDelivery(input.deliveries);
   const telegramAttempt = latest?.attempts.find((attempt) => attempt.channelId === 'telegram');
   return {
@@ -173,8 +179,8 @@ export function toTelegramDiagnosticsView(input: {
           createdAt: latest.createdAt,
         }
       : null,
-    telegramTransport: 'in-memory',
-    botApiUsed: false,
+    telegramTransport: input.honesty.transport,
+    botApiUsed: input.honesty.botApiUsed,
     controlPlane: false,
     deferredChannelsActivated: false,
     scheduler: false,
@@ -201,6 +207,7 @@ export function toTelegramDeliveryDetailView(input: {
   delivery: DeliveryResult;
   connection: TelegramConnection;
   channels: readonly NotificationChannelDescriptor[];
+  honesty: TelegramTransportProjection;
 }): TelegramDeliveryDetailView {
   return toDeliveryDetailView(input);
 }

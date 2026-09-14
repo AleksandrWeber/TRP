@@ -1987,7 +1987,7 @@ export type TelegramConnectionStatusView = {
   connectAvailable: false;
   testAvailable: false;
   controlPlane: false;
-  transport: 'in-memory';
+  transport: 'in-memory' | 'bot-api';
 };
 
 export type TelegramConnectionProductView = {
@@ -2005,8 +2005,8 @@ export type TelegramConnectionProductView = {
   testAvailable: boolean;
   disconnectAvailable: boolean;
   controlPlane: false;
-  transport: 'in-memory';
-  botApiUsed: false;
+  transport: 'in-memory' | 'bot-api';
+  botApiUsed: boolean;
   userEnteredBind: false;
   authorityClass: 'notification-projection';
 };
@@ -2015,7 +2015,7 @@ export type TelegramConnectProductView = {
   connection: TelegramConnectionProductView;
   deepLink: string;
   controlPlane: false;
-  botApiUsed: false;
+  botApiUsed: boolean;
   userEnteredBind: false;
   authorityClass: 'notification-projection';
 };
@@ -2089,7 +2089,7 @@ export type NotificationDeliveryDetailView = NotificationDeliveryListItemView & 
     telegramOutcome: string;
     telegramSkipReason?: string;
     telegramAdapterReached: boolean;
-    botApiUsed: false;
+    botApiUsed: boolean;
     controlPlane: false;
     deferredChannelsActivated: false;
   };
@@ -2100,7 +2100,7 @@ export type TelegramTestProductView = {
   connection: TelegramConnectionProductView;
   delivery: NotificationDeliveryDetailView;
   controlPlane: false;
-  botApiUsed: false;
+  botApiUsed: boolean;
   authorityClass: 'notification-projection';
 };
 
@@ -2119,8 +2119,8 @@ export type TelegramDiagnosticsView = {
     adapterReached: boolean;
     createdAt: string;
   } | null;
-  telegramTransport: 'in-memory';
-  botApiUsed: false;
+  telegramTransport: 'in-memory' | 'bot-api';
+  botApiUsed: boolean;
   controlPlane: false;
   deferredChannelsActivated: false;
   scheduler: false;
@@ -2140,10 +2140,10 @@ export type NotificationChannelCardView = {
   testAvailable: boolean;
   connectAvailable: boolean;
   configurationKind: 'telegram-connection' | 'reserved-inactive';
-  transport: 'in-memory' | 'none';
+  transport: 'in-memory' | 'bot-api' | 'none';
   connectionStatus: 'not-connected' | 'pending' | 'connected' | 'reserved-inactive';
-  liveTransportActivated: false;
-  botApiUsed: false;
+  liveTransportActivated: boolean;
+  botApiUsed: boolean;
   authorityClass: 'notification-projection';
 };
 
@@ -2153,8 +2153,8 @@ export type NotificationChannelConfigurationView = {
   configurable: boolean;
   testAvailable: boolean;
   connectAvailable: boolean;
-  liveTransportActivated: false;
-  botApiUsed: false;
+  liveTransportActivated: boolean;
+  botApiUsed: boolean;
   userEnteredBind: false;
 };
 
@@ -2214,8 +2214,8 @@ export type NotificationChannelDiagnosticsView = {
   lastDeliveryAt: string | null;
   latencyAvailable: false;
   testAvailable: boolean;
-  liveTransportActivated: false;
-  botApiUsed: false;
+  liveTransportActivated: boolean;
+  botApiUsed: boolean;
   scheduler: false;
   authorityClass: 'notification-projection';
 };

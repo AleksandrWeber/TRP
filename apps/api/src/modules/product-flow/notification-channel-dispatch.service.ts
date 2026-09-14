@@ -4,8 +4,11 @@ import type {
   DeliveryResult,
 } from '../notification-delivery/domain/delivery';
 import type { TelegramConnection } from '../notification-delivery/domain/telegram-connection';
+import { projectTelegramTransport } from '../notification-delivery/domain/telegram-transport-projection';
 import {
   NOTIFICATION_SERVICE_PORT,
+  TELEGRAM_CHANNEL_ADAPTER,
+  type NotificationChannelPort,
   type NotificationServicePort,
 } from '../notification-delivery/ports/notification.port';
 import { toChannelDeliveryView, type ChannelDeliveryView } from './channel-delivery.view';
@@ -31,15 +34,17 @@ export type ChannelDispatchResult = Readonly<{
  * PC-15 15-e — Notification Delivery reaches existing channel adapters.
  *
  * Notification Delivery remains delivery only (`deliver()` is delegated).
- * Telegram adapter remains in-memory transport (existing connect / complete / send).
+ * Telegram send uses the bound TELEGRAM_CHANNEL_ADAPTER.
  * Reserved channels stay reserved and keep the documented skip.
- * No Bot API. No control plane. No scheduler. No retries.
+ * No control plane. No scheduler. No retries.
  */
 @Injectable()
 export class NotificationChannelDispatchService {
   constructor(
     @Inject(NOTIFICATION_SERVICE_PORT)
     private readonly notifications: NotificationServicePort,
+    @Inject(TELEGRAM_CHANNEL_ADAPTER)
+    private readonly telegramChannel: NotificationChannelPort,
   ) {}
 
   async dispatch(command: DeliverNotificationCommand): Promise<ChannelDispatchResult> {
@@ -111,6 +116,7 @@ export class NotificationChannelDispatchService {
         delivery,
         connection: current,
         channels: this.notifications.listChannels(),
+        honesty: projectTelegramTransport(this.telegramChannel),
       }),
     });
   }

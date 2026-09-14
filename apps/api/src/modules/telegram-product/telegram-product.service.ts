@@ -8,8 +8,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type { Role } from '../identity/role';
+import { projectTelegramTransport } from '../notification-delivery/domain/telegram-transport-projection';
 import {
   NOTIFICATION_SERVICE_PORT,
+  TELEGRAM_CHANNEL_ADAPTER,
+  type NotificationChannelPort,
   type NotificationServicePort,
 } from '../notification-delivery/ports/notification.port';
 import {
@@ -42,19 +45,29 @@ export class TelegramProductService {
   constructor(
     @Inject(NOTIFICATION_SERVICE_PORT)
     private readonly notifications: NotificationServicePort,
+    @Inject(TELEGRAM_CHANNEL_ADAPTER)
+    private readonly telegramChannel: NotificationChannelPort,
   ) {}
 
+  private telegramHonesty() {
+    return projectTelegramTransport(this.telegramChannel);
+  }
+
   getConnection(workspaceId: string, userId: string): TelegramConnectionProductView {
-    return toTelegramConnectionView(this.notifications.getTelegramConnection(workspaceId, userId));
+    return toTelegramConnectionView(
+      this.notifications.getTelegramConnection(workspaceId, userId),
+      this.telegramHonesty(),
+    );
   }
 
   connect(workspaceId: string, userId: string): TelegramConnectProductView {
-    return toTelegramConnectView(
-      this.notifications.connectTelegram({
+    return toTelegramConnectView({
+      ...this.notifications.connectTelegram({
         workspaceId,
         userId,
       }),
-    );
+      honesty: this.telegramHonesty(),
+    });
   }
 
   async complete(
@@ -71,17 +84,21 @@ export class TelegramProductService {
       userId,
       ...(actor ? { actorUserId: actor.userId, actorRole: actor.role } : {}),
     });
-    return toTelegramConnectionView(connected);
+    return toTelegramConnectionView(connected, this.telegramHonesty());
   }
 
   verify(workspaceId: string, userId: string): TelegramConnectionProductView {
     return toTelegramConnectionView(
       this.notifications.verifyTelegramConnection({ workspaceId, userId }),
+      this.telegramHonesty(),
     );
   }
 
   disconnect(workspaceId: string, userId: string): TelegramConnectionProductView {
-    return toTelegramConnectionView(this.notifications.disconnectTelegram({ workspaceId, userId }));
+    return toTelegramConnectionView(
+      this.notifications.disconnectTelegram({ workspaceId, userId }),
+      this.telegramHonesty(),
+    );
   }
 
   async sendTest(
@@ -98,6 +115,7 @@ export class TelegramProductService {
       connection: this.notifications.getTelegramConnection(workspaceId, userId),
       delivery,
       channels: this.notifications.listChannels(),
+      honesty: this.telegramHonesty(),
     });
   }
 
@@ -105,6 +123,7 @@ export class TelegramProductService {
     return toTelegramDiagnosticsView({
       connection: this.notifications.getTelegramConnection(workspaceId, userId),
       deliveries: this.notifications.listDeliveries({ workspaceId, userId }),
+      honesty: this.telegramHonesty(),
     });
   }
 
@@ -134,6 +153,7 @@ export class TelegramProductService {
       delivery,
       connection: this.notifications.getTelegramConnection(workspaceId, viewerUserId),
       channels: this.notifications.listChannels(),
+      honesty: this.telegramHonesty(),
     });
   }
 }

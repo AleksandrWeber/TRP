@@ -2,7 +2,7 @@
  * PC-07 — channel-agnostic product views over existing Notification Delivery.
  *
  * Notification Delivery remains owner. Telegram is one active transport.
- * Reserved channels stay reserved-inactive. No SMTP/webhook SoT. No Bot API.
+ * Reserved channels stay reserved-inactive. No SMTP/webhook SoT.
  * Not a scheduler. Not a new routing engine.
  */
 
@@ -16,6 +16,7 @@ import {
   type NotificationType,
 } from '../notification-delivery/domain/notification-type';
 import type { TelegramConnection } from '../notification-delivery/domain/telegram-connection';
+import type { TelegramTransportProjection } from '../notification-delivery/domain/telegram-transport-projection';
 import type { UserNotificationPreferences } from '../notification-delivery/domain/user-notification-preferences';
 import {
   deliveryMatchesQuery,
@@ -49,10 +50,10 @@ export type NotificationChannelCardView = {
   testAvailable: boolean;
   connectAvailable: boolean;
   configurationKind: ChannelConfigurationKind;
-  transport: 'in-memory' | 'none';
+  transport: TelegramTransportProjection['transport'] | 'none';
   connectionStatus: TelegramConnection['status'] | 'reserved-inactive';
-  liveTransportActivated: false;
-  botApiUsed: false;
+  liveTransportActivated: boolean;
+  botApiUsed: boolean;
   authorityClass: 'notification-projection';
 };
 
@@ -62,8 +63,8 @@ export type NotificationChannelConfigurationView = {
   configurable: boolean;
   testAvailable: boolean;
   connectAvailable: boolean;
-  liveTransportActivated: false;
-  botApiUsed: false;
+  liveTransportActivated: boolean;
+  botApiUsed: boolean;
   userEnteredBind: false;
 };
 
@@ -129,8 +130,8 @@ export type NotificationChannelDiagnosticsView = {
   lastDeliveryAt: string | null;
   latencyAvailable: false;
   testAvailable: boolean;
-  liveTransportActivated: false;
-  botApiUsed: false;
+  liveTransportActivated: boolean;
+  botApiUsed: boolean;
   scheduler: false;
   authorityClass: 'notification-projection';
 };
@@ -139,6 +140,7 @@ export function toChannelCardView(input: {
   channel: NotificationChannelDescriptor;
   prefs: UserNotificationPreferences;
   connection: TelegramConnection;
+  honesty: TelegramTransportProjection;
 }): NotificationChannelCardView {
   const offered = input.channel.status === 'active';
   const telegramConnected =
@@ -154,10 +156,10 @@ export function toChannelCardView(input: {
     testAvailable: offered && telegramConnected,
     connectAvailable: offered && input.connection.status === 'not-connected',
     configurationKind: offered ? 'telegram-connection' : 'reserved-inactive',
-    transport: offered ? 'in-memory' : 'none',
+    transport: offered ? input.honesty.transport : 'none',
     connectionStatus: offered ? input.connection.status : 'reserved-inactive',
-    liveTransportActivated: false,
-    botApiUsed: false,
+    liveTransportActivated: offered ? input.honesty.botApiUsed : false,
+    botApiUsed: offered ? input.honesty.botApiUsed : false,
     authorityClass: 'notification-projection',
   };
 }
@@ -172,8 +174,8 @@ export function toChannelConfigurationView(
       configurable: true,
       testAvailable: card.testAvailable,
       connectAvailable: card.connectAvailable,
-      liveTransportActivated: false,
-      botApiUsed: false,
+      liveTransportActivated: card.liveTransportActivated,
+      botApiUsed: card.botApiUsed,
       userEnteredBind: false,
     };
   }
@@ -211,6 +213,7 @@ export function toRoutingMatrixView(input: {
   channels: readonly NotificationChannelDescriptor[];
   connection: TelegramConnection;
   evaluatedAt: string;
+  honesty: TelegramTransportProjection;
 }): NotificationRoutingMatrixView {
   const routing = toRoutingView(input);
   return {
@@ -275,8 +278,8 @@ export function toChannelDiagnosticsView(input: {
     lastDeliveryAt: latest?.delivery.createdAt ?? null,
     latencyAvailable: false,
     testAvailable: input.card.testAvailable,
-    liveTransportActivated: false,
-    botApiUsed: false,
+    liveTransportActivated: input.card.liveTransportActivated,
+    botApiUsed: input.card.botApiUsed,
     scheduler: false,
     authorityClass: 'notification-projection',
   };
@@ -287,9 +290,15 @@ export function toChannelsWorkspaceView(input: {
   channels: readonly NotificationChannelDescriptor[];
   connection: TelegramConnection;
   evaluatedAt: string;
+  honesty: TelegramTransportProjection;
 }): NotificationChannelsWorkspaceView {
   const cards = input.channels.map((channel) =>
-    toChannelCardView({ channel, prefs: input.prefs, connection: input.connection }),
+    toChannelCardView({
+      channel,
+      prefs: input.prefs,
+      connection: input.connection,
+      honesty: input.honesty,
+    }),
   );
   return {
     channels: cards,
@@ -315,6 +324,7 @@ export function toChannelDetailView(input: {
   connection: TelegramConnection;
   deliveries: readonly DeliveryResult[];
   evaluatedAt: string;
+  honesty: TelegramTransportProjection;
 }): NotificationChannelDetailView | null {
   const descriptor = input.channels.find((channel) => channel.channelId === input.channelId);
   if (!descriptor) return null;
@@ -322,6 +332,7 @@ export function toChannelDetailView(input: {
     channel: descriptor,
     prefs: input.prefs,
     connection: input.connection,
+    honesty: input.honesty,
   });
   const matrix = toRoutingMatrixView(input);
   return {

@@ -1,8 +1,8 @@
 /**
  * PC-15 15-e — consumer projection of Notification → Channel dispatch.
  *
- * Not a Notification owner. Not a channel owner. Not Telegram Bot API.
- * Telegram remains in-memory transport. Deferred channels stay reserved.
+ * Not a Notification owner. Not a channel owner. Not a control plane.
+ * Telegram transport is the bound adapter. Deferred channels stay reserved.
  */
 import type {
   DeliveryOutcome,
@@ -15,6 +15,7 @@ import type {
 } from '../notification-delivery/domain/notification-channel';
 import type { NotificationType } from '../notification-delivery/domain/notification-type';
 import type { TelegramConnection } from '../notification-delivery/domain/telegram-connection';
+import type { TelegramTransportProjection } from '../notification-delivery/domain/telegram-transport-projection';
 
 export type ReservedChannelProjection = Readonly<{
   channelId: NotificationChannelId;
@@ -34,8 +35,8 @@ export type ChannelDeliveryView = Readonly<{
   telegramAdapterReached: boolean;
   telegramOutcome: DeliveryOutcome | 'not-attempted';
   telegramSkipReason?: DeliverySkipReason;
-  telegramTransport: 'in-memory';
-  botApiUsed: false;
+  telegramTransport: TelegramTransportProjection['transport'];
+  botApiUsed: boolean;
   controlPlane: false;
   reservedChannels: readonly ReservedChannelProjection[];
   deferredChannelsActivated: false;
@@ -50,6 +51,7 @@ export function toChannelDeliveryView(input: {
   delivery?: DeliveryResult | null;
   connection?: TelegramConnection | null;
   channels: readonly NotificationChannelDescriptor[];
+  honesty: TelegramTransportProjection;
 }): ChannelDeliveryView {
   const attempts = input.delivery?.attempts ?? [];
   const telegramAttempt = attempts.find((attempt) => attempt.channelId === 'telegram');
@@ -80,8 +82,8 @@ export function toChannelDeliveryView(input: {
     telegramAdapterReached,
     telegramOutcome: telegramAttempt?.outcome ?? 'not-attempted',
     ...(telegramAttempt?.skipReason ? { telegramSkipReason: telegramAttempt.skipReason } : {}),
-    telegramTransport: 'in-memory' as const,
-    botApiUsed: false as const,
+    telegramTransport: input.honesty.transport,
+    botApiUsed: input.honesty.botApiUsed,
     controlPlane: false as const,
     reservedChannels,
     deferredChannelsActivated: false as const,

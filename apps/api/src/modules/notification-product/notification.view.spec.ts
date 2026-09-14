@@ -4,6 +4,10 @@ import { createDeliveryResult } from '../notification-delivery/domain/delivery';
 import { NOTIFICATION_CHANNEL_CATALOG } from '../notification-delivery/domain/notification-channel';
 import { notConnectedTelegram } from '../notification-delivery/domain/telegram-connection';
 import {
+  BOT_API_TELEGRAM_TRANSPORT,
+  IN_MEMORY_TELEGRAM_TRANSPORT,
+} from '../notification-delivery/domain/telegram-transport-projection';
+import {
   deliveryMatchesQuery,
   toDeliveryDetailView,
   toPreferenceClockView,
@@ -33,6 +37,7 @@ describe('PC-06 notification product views', () => {
       channels: NOTIFICATION_CHANNEL_CATALOG,
       connection: notConnectedTelegram('ws-1', 'user-1', evaluatedAt),
       evaluatedAt,
+      honesty: IN_MEMORY_TELEGRAM_TRANSPORT,
     });
     expect(view.authorityClass).toBe('notification-projection');
     expect(view.generatesReports).toBe(false);
@@ -88,15 +93,50 @@ describe('PC-06 notification product views', () => {
       delivery,
       connection: notConnectedTelegram('ws-1', 'user-1', evaluatedAt),
       channels: NOTIFICATION_CHANNEL_CATALOG,
+      honesty: IN_MEMORY_TELEGRAM_TRANSPORT,
     });
     expect(detail.outcome).toBe('skipped');
     expect(detail.skipReasons).toEqual(['channel-not-connected', 'channel-reserved']);
     expect(detail.generatesReports).toBe(false);
     expect(detail.channelDelivery.botApiUsed).toBe(false);
+    expect(detail.channelDelivery.telegramTransport).toBe('in-memory');
+    expect(detail.telegram.transport).toBe('in-memory');
     expect(detail.channelDelivery.deferredChannelsActivated).toBe(false);
     expect(deliveryMatchesQuery(delivery, { workspaceId: 'ws-1', q: 'not-connected' })).toBe(true);
     expect(deliveryMatchesQuery(delivery, { workspaceId: 'ws-1', type: 'weekly-report' })).toBe(
       false,
     );
+  });
+
+  it('projects bot-api honesty onto settings and delivery detail when production transport is bound', () => {
+    const settings = toSettingsView({
+      prefs: prefs(),
+      channels: NOTIFICATION_CHANNEL_CATALOG,
+      connection: notConnectedTelegram('ws-1', 'user-1', evaluatedAt),
+      evaluatedAt,
+      honesty: BOT_API_TELEGRAM_TRANSPORT,
+    });
+    expect(settings.telegram.transport).toBe('bot-api');
+    expect(settings.telegram.connectAvailable).toBe(false);
+    expect(settings.telegram.status).toBe('not-connected');
+    expect(settings.controlPlane).toBe(false);
+
+    const delivery = createDeliveryResult({
+      deliveryId: 'del-1',
+      workspaceId: 'ws-1',
+      userId: 'user-1',
+      type: 'daily-report',
+      attempts: [{ channelId: 'telegram', outcome: 'delivered' }],
+      createdAt: evaluatedAt,
+    });
+    const detail = toDeliveryDetailView({
+      delivery,
+      connection: notConnectedTelegram('ws-1', 'user-1', evaluatedAt),
+      channels: NOTIFICATION_CHANNEL_CATALOG,
+      honesty: BOT_API_TELEGRAM_TRANSPORT,
+    });
+    expect(detail.channelDelivery.telegramTransport).toBe('bot-api');
+    expect(detail.channelDelivery.botApiUsed).toBe(true);
+    expect(detail.telegram.transport).toBe('bot-api');
   });
 });

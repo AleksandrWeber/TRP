@@ -241,4 +241,28 @@ describe('Notification UI (PC-06)', () => {
       outcome: 'skipped',
     });
   });
+
+  it('renders production-shaped delivery honesty from API values', () => {
+    const html = renderToStaticMarkup(
+      <MemoryRouter>
+        <NotificationDetailView
+          record={{
+            ...detail,
+            channelDelivery: {
+              ...detail.channelDelivery,
+              botApiUsed: true,
+            },
+            telegram: {
+              ...detail.telegram,
+              transport: 'bot-api',
+            },
+          }}
+          loading={false}
+          error={null}
+        />
+      </MemoryRouter>,
+    );
+    expect(html).toContain('Bot API was used');
+    expect(html).not.toContain('Bot API was not used');
+  });
 });

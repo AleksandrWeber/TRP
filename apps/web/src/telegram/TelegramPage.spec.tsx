@@ -145,6 +145,7 @@ describe('Telegram UI (PC-07)', () => {
     expect(idle).toContain('Connect Telegram');
     expect(idle).toContain('cannot trade, pause, or kill');
     expect(idle).toContain('Chat id is never entered');
+    expect(idle).not.toContain('Transport is in-memory — Bot API is not used');
     expect(idle).not.toContain('Coming Soon');
     expect(idle).not.toContain('name="chatId"');
     expect(idle).not.toContain('Bot API was used');
@@ -194,7 +195,64 @@ describe('Telegram UI (PC-07)', () => {
     expect(ready).toContain('Verified');
     expect(ready).toContain('Bot API');
     expect(ready).toContain('Not used');
+    expect(ready).toContain('In-memory');
     expect(ready).not.toContain('Coming Soon');
+  });
+
+  it('renders production-shaped Telegram honesty from API values', () => {
+    const productionConnection = {
+      ...connected,
+      transport: 'bot-api' as const,
+      botApiUsed: true,
+    };
+    const productionDiagnostics = {
+      ...diagnostics,
+      connection: productionConnection,
+      telegramTransport: 'bot-api' as const,
+      botApiUsed: true,
+    };
+    const productionTest = {
+      ...lastTest,
+      connection: productionConnection,
+      botApiUsed: true,
+      delivery: {
+        ...lastTest.delivery,
+        channelDelivery: {
+          ...lastTest.delivery.channelDelivery,
+          botApiUsed: true,
+        },
+        telegram: {
+          ...lastTest.delivery.telegram,
+          transport: 'bot-api' as const,
+        },
+      },
+    };
+    const html = renderToStaticMarkup(
+      <MemoryRouter>
+        <TelegramSettingsView
+          connection={productionConnection}
+          diagnostics={productionDiagnostics}
+          history={[item]}
+          lastTest={productionTest}
+          loading={false}
+          acting={false}
+          error={null}
+          onConnect={() => undefined}
+          onComplete={() => undefined}
+          onVerify={() => undefined}
+          onTest={() => undefined}
+          onDisconnect={() => undefined}
+        />
+      </MemoryRouter>,
+    );
+    expect(html).toContain('Bot API');
+    expect(html).toContain('Used');
+    expect(html).toContain('Send test notification');
+    expect(html).toContain('Disconnect');
+    expect(html).not.toContain('Transport is in-memory');
+    expect(html).not.toContain('Bot API is not used');
+    expect(html).not.toContain('In-memory');
+    expect(html).not.toContain('Not used');
   });
 
   it('renders telegram history empty and loading states', () => {
