@@ -20,7 +20,7 @@ describe('RC-28 Epic 4 — notification continuity', () => {
       chatId: 'chat-notify',
       completedAt: E2E_AS_OF,
     });
-    const delivered = notify.port.deliver({
+    const delivered = await notify.port.deliver({
       workspaceId: 'ws-1',
       userId: 'op-1',
       type: 'daily-report',

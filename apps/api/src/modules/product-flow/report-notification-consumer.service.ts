@@ -63,7 +63,9 @@ export class ReportNotificationConsumerService {
     private readonly notifications: NotificationServicePort,
   ) {}
 
-  requestAndDeliver(command: RequestReportAndDeliverCommand): ReportNotificationFlowResult {
+  async requestAndDeliver(
+    command: RequestReportAndDeliverCommand,
+  ): Promise<ReportNotificationFlowResult> {
     const report = this.reporting.requestReportRun(command);
     const reportRunId =
       report.reportRun?.reportRunId ?? command.reportRunId?.trim() ?? 'unspecified';
@@ -77,7 +79,9 @@ export class ReportNotificationConsumerService {
     );
   }
 
-  deliverCompletedRun(command: DeliverCompletedReportCommand): ReportNotificationFlowResult {
+  async deliverCompletedRun(
+    command: DeliverCompletedReportCommand,
+  ): Promise<ReportNotificationFlowResult> {
     const run = this.reportingQuery.getRun(command.reportRunId);
     const scoped = run && run.workspaceId === command.workspaceId ? run : null;
     const report: ReportRunResult = Object.freeze({
@@ -99,14 +103,14 @@ export class ReportNotificationConsumerService {
     );
   }
 
-  private maybeDeliver(
+  private async maybeDeliver(
     workspaceId: string,
     userId: string,
     reportRunId: string,
     report: ReportRunResult,
     requestedType: NotificationType | undefined,
     requestedAt: string | undefined,
-  ): ReportNotificationFlowResult {
+  ): Promise<ReportNotificationFlowResult> {
     const trimmedUser = userId.trim();
     if (!trimmedUser) {
       return this.skip(workspaceId, userId, reportRunId, report, requestedType, 'user_id_required');
@@ -137,7 +141,7 @@ export class ReportNotificationConsumerService {
     const type = requestedType ?? notificationTypeForReportKind(run.definitionSnapshot.kind);
     const at = requestedAt ?? run.createdAt;
     const copy = deliveryCopy(run);
-    const delivery = this.notifications.deliver({
+    const delivery = await this.notifications.deliver({
       workspaceId,
       userId: trimmedUser,
       type,

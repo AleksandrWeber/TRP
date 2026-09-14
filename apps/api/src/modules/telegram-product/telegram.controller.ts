@@ -102,12 +102,15 @@ export class TelegramController {
   @RequirePermission(PermissionClass.OwnWorkspace)
   @Post('test')
   @HttpCode(200)
-  sendTest(
+  async sendTest(
     @Req() request: RequestWithUser,
     @Headers('x-workspace-id') workspaceHeader: string | undefined,
-  ): TelegramTestProductView {
+  ): Promise<TelegramTestProductView> {
     const workspaceId = requireWorkspace(this.workspaceAccess, request.user, workspaceHeader);
-    return this.product.sendTest(workspaceId, request.user.userId);
+    return this.product.sendTest(workspaceId, request.user.userId, {
+      userId: request.user.userId,
+      role: request.user.role,
+    });
   }
 
   @Get('diagnostics')

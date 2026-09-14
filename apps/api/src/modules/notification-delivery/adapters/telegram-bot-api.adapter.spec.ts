@@ -1,7 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { LogContext, Logger } from '../../../logging/logger';
+import { Role } from '../../identity/role';
 import { ProductionTelegramBotApiAdapter } from './telegram-bot-api.adapter';
 import { TelegramBotApiHttpClient, type TelegramBotApiFetch } from './telegram-bot-api.http';
 
@@ -57,6 +58,7 @@ function adapterFor(
 ): ProductionTelegramBotApiAdapter {
   return new ProductionTelegramBotApiAdapter(
     new TelegramBotApiHttpClient(fetchFn, timeoutMs),
+    undefined,
     logger,
   );
 }
@@ -183,7 +185,7 @@ describe('ProductionTelegramBotApiAdapter (REM-01-s1)', () => {
       'not-a-chat',
     ];
     for (const chatId of rejected) {
-      const result = await subject.send({
+      const result = await subject.sendMessage({
         botToken: TOKEN,
         chatId,
         subject: 's',
@@ -263,8 +265,90 @@ describe('ProductionTelegramBotApiAdapter (REM-01-s1)', () => {
     expect(ADAPTER_SOURCE).not.toMatch(/start trade|stop trade|approve trade/i);
   });
 
-  it('does not implement the synchronous NotificationChannelPort send signature', () => {
-    expect(ADAPTER_SOURCE).not.toMatch(/implements NotificationChannelPort/);
+  it('implements the async NotificationChannelPort send signature', () => {
+    expect(ADAPTER_SOURCE).toMatch(/implements NotificationChannelPort/);
     expect(ADAPTER_SOURCE).toMatch(/async send\(/);
+  });
+});
+
+describe('ProductionTelegramBotApiAdapter port send (REM-01-s2)', () => {
+  it('rejects synthetic chat ids before retrieving a token', async () => {
+    const retrieve = vi.fn();
+    const calls: string[] = [];
+    const subject = new ProductionTelegramBotApiAdapter(
+      new TelegramBotApiHttpClient(async (url) => {
+        calls.push(url);
+        return { status: 200, text: async () => '{"ok":true,"result":{"message_id":1}}' };
+      }),
+      { resolve: retrieve } as never,
+    );
+    const result = await subject.send({
+      chatId: 'in-memory:workspace-a:user-a',
+      subject: 's',
+      body: 'b',
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      actorRole: Role.Trader,
+    });
+    expect(result).toEqual({ ok: false, detail: 'telegram_chat_id_not_bound' });
+    expect(retrieve).not.toHaveBeenCalled();
+    expect(calls).toEqual([]);
+  });
+
+  it('retrieves at send then posts sendMessage without putting the token on the port result', async () => {
+    const retrieve = vi.fn(async () => ({ ok: true as const, botToken: TOKEN }));
+    const sink: Array<{ url: string; body?: string }> = [];
+    const subject = new ProductionTelegramBotApiAdapter(
+      new TelegramBotApiHttpClient(async (url, init) => {
+        sink.push({ url, body: init.body });
+        return { status: 200, text: async () => '{"ok":true,"result":{"message_id":7}}' };
+      }),
+      { resolve: retrieve } as never,
+    );
+    const result = await subject.send({
+      chatId: '123456789',
+      subject: 'Hello',
+      body: 'World',
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      actorRole: Role.Admin,
+    });
+    expect(result).toEqual({ ok: true });
+    expect(JSON.stringify(result)).not.toContain(TOKEN);
+    expect(retrieve).toHaveBeenCalledWith({
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      actorRole: Role.Admin,
+    });
+    expect(sink).toHaveLength(1);
+    expect(new URL(sink[0]!.url).hostname).toBe('api.telegram.org');
+    expect(JSON.parse(sink[0]!.body ?? '{}')).toEqual({
+      chat_id: '123456789',
+      text: 'Hello\n\nWorld',
+    });
+  });
+
+  it('fails closed when the resolver has no actor and does not fetch', async () => {
+    const retrieve = vi.fn(async () => ({
+      ok: false as const,
+      detail: 'telegram_invalid_request' as const,
+    }));
+    const calls: string[] = [];
+    const subject = new ProductionTelegramBotApiAdapter(
+      new TelegramBotApiHttpClient(async (url) => {
+        calls.push(url);
+        return { status: 200, text: async () => '{"ok":true,"result":{"message_id":1}}' };
+      }),
+      { resolve: retrieve } as never,
+    );
+    const result = await subject.send({
+      chatId: '42',
+      subject: 's',
+      body: 'b',
+      workspaceId: 'workspace-a',
+    });
+    expect(result).toEqual({ ok: false, detail: 'telegram_invalid_request' });
+    expect(retrieve).toHaveBeenCalled();
+    expect(calls).toEqual([]);
   });
 });

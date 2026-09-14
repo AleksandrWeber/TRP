@@ -94,9 +94,9 @@ function harness(overrides?: {
 }
 
 describe('PC-15 15-d — ReportNotificationConsumerService', () => {
-  it('requests a ReportRun then delivers with an existing type and reportRunId', () => {
+  it('requests a ReportRun then delivers with an existing type and reportRunId', async () => {
     const { consumer, reporting, notifications, delivery } = harness();
-    const result = consumer.requestAndDeliver({
+    const result = await consumer.requestAndDeliver({
       workspaceId: 'ws-1',
       userId: 'user-1',
       reportDefinitionId: 'def-1',
@@ -126,13 +126,13 @@ describe('PC-15 15-d — ReportNotificationConsumerService', () => {
     expect(result.projection.skipReasons).toEqual(['channel-not-connected']);
   });
 
-  it('maps ops_weekly onto the existing weekly-report type', () => {
+  it('maps ops_weekly onto the existing weekly-report type', async () => {
     const weekly = completedRun('ops_weekly');
     const { consumer, notifications } = harness({
       report: completedReport({ reportRun: weekly }),
       delivery: skippedDelivery({ type: 'weekly-report', reportRunId: 'run-1' }),
     });
-    consumer.requestAndDeliver({
+    await consumer.requestAndDeliver({
       workspaceId: 'ws-1',
       userId: 'user-1',
       reportDefinitionId: 'def-1',
@@ -145,7 +145,7 @@ describe('PC-15 15-d — ReportNotificationConsumerService', () => {
     );
   });
 
-  it('does not deliver when Reporting rejects or the run is missing', () => {
+  it('does not deliver when Reporting rejects or the run is missing', async () => {
     const { consumer, notifications } = harness({
       report: completedReport({
         outcome: 'rejected',
@@ -153,7 +153,7 @@ describe('PC-15 15-d — ReportNotificationConsumerService', () => {
         rejectionReasons: ['definition_required'],
       }),
     });
-    const result = consumer.requestAndDeliver({
+    const result = await consumer.requestAndDeliver({
       workspaceId: 'ws-1',
       userId: 'user-1',
       window: { from: '2026-08-15T00:00:00.000Z', to: '2026-08-16T00:00:00.000Z' },
@@ -168,11 +168,11 @@ describe('PC-15 15-d — ReportNotificationConsumerService', () => {
     expect(result.projection.reportMutated).toBe(false);
   });
 
-  it('delivers an already completed ReportRun via query without rewriting the run', () => {
+  it('delivers an already completed ReportRun via query without rewriting the run', async () => {
     const { consumer, reporting, reportingQuery, notifications } = harness({
       run: completedRun(),
     });
-    const result = consumer.deliverCompletedRun({
+    const result = await consumer.deliverCompletedRun({
       workspaceId: 'ws-1',
       userId: 'user-1',
       reportRunId: 'run-1',

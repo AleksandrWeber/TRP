@@ -6,6 +6,7 @@ import { OutboxDispatcher } from '../modules/event-processing';
 import { AiAnalyticsModule } from '../modules/ai-analytics/ai-analytics.module';
 import { ExchangeScopeModule } from '../modules/exchange-scope/exchange-scope.module';
 import { NotificationDeliveryModule } from '../modules/notification-delivery/notification-delivery.module';
+import { stubSecretVaultForIsolatedNotificationDelivery } from '../modules/notification-delivery/notification-delivery.test-harness';
 import { RuntimeEnforcementModule } from '../modules/runtime-enforcement/runtime-enforcement.module';
 import { StrategyLibraryModule } from '../modules/strategy-library/strategy-library.module';
 import { TradingOrchestratorModule } from '../modules/trading-orchestrator/trading-orchestrator.module';
@@ -44,12 +45,15 @@ describe('RC-28 Epic 5 — startup integrity', () => {
       AiAnalyticsModule,
     ];
     for (const nestModule of modules) {
-      const moduleRef = await Test.createTestingModule({
+      let builder = Test.createTestingModule({
         imports: [nestModule],
       })
         .overrideProvider(OutboxDispatcher)
-        .useValue(silentOutbox)
-        .compile();
+        .useValue(silentOutbox);
+      if (nestModule === NotificationDeliveryModule) {
+        builder = stubSecretVaultForIsolatedNotificationDelivery(builder);
+      }
+      const moduleRef = await builder.compile();
       expect(moduleRef).toBeTruthy();
       await moduleRef.close();
     }

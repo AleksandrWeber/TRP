@@ -11,7 +11,6 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { InMemoryNotificationStore } from './adapters/in-memory-notification-store';
-import { InMemoryTelegramAdapter } from './adapters/in-memory-telegram.adapter';
 import {
   createDeliveryResult,
   type ChannelDeliveryAttempt,
@@ -37,6 +36,7 @@ import {
 } from './domain/user-notification-preferences';
 import {
   TELEGRAM_CHANNEL_ADAPTER,
+  type NotificationChannelPort,
   type NotificationServicePort,
   type SendTestNotificationRequest,
   type TelegramConnectRequest,
@@ -66,7 +66,7 @@ export class NotificationDeliveryService implements NotificationServicePort {
     @Inject(InMemoryNotificationStore)
     private readonly store: InMemoryNotificationStore,
     @Inject(TELEGRAM_CHANNEL_ADAPTER)
-    private readonly telegram: InMemoryTelegramAdapter,
+    private readonly telegram: NotificationChannelPort,
   ) {}
 
   listChannels() {
@@ -156,7 +156,7 @@ export class NotificationDeliveryService implements NotificationServicePort {
     return next;
   }
 
-  sendTestNotification(cmd: SendTestNotificationRequest): DeliveryResult {
+  async sendTestNotification(cmd: SendTestNotificationRequest): Promise<DeliveryResult> {
     return this.deliver({
       workspaceId: cmd.workspaceId,
       userId: cmd.userId,
@@ -164,10 +164,12 @@ export class NotificationDeliveryService implements NotificationServicePort {
       subject: 'Test notification',
       body: 'TRP notification delivery test. Delivery channel only — not a trading command.',
       requestedAt: nowOr(cmd.requestedAt),
+      ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+      ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
     });
   }
 
-  deliver(cmd: DeliverNotificationCommand): DeliveryResult {
+  async deliver(cmd: DeliverNotificationCommand): Promise<DeliveryResult> {
     const workspaceId = cmd.workspaceId.trim();
     if (!workspaceId) {
       throw new Error('Notification delivery requires workspaceId');
@@ -211,10 +213,13 @@ export class NotificationDeliveryService implements NotificationServicePort {
       }
 
       if (route.channelId === 'telegram') {
-        const result = this.telegram.send({
+        const result = await this.telegram.send({
           chatId: telegram.chatId!,
           subject: cmd.subject,
           body: cmd.body,
+          workspaceId,
+          ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+          ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
         });
         attempts.push(
           Object.freeze(

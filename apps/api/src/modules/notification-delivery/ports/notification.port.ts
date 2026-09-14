@@ -4,6 +4,7 @@
  * Delivery only. No report generation. No trading commands. No REST.
  */
 
+import type { Role } from '../../identity/role';
 import type { DeliveryResult, DeliverNotificationCommand } from '../domain/delivery';
 import type { NotificationChannelDescriptor } from '../domain/notification-channel';
 import type { TelegramConnection } from '../domain/telegram-connection';
@@ -53,6 +54,17 @@ export type SendTestNotificationRequest = Readonly<{
   workspaceId: string;
   userId: string;
   requestedAt?: string;
+  actorUserId?: string;
+  actorRole?: Role;
+}>;
+
+export type NotificationChannelSendCommand = Readonly<{
+  chatId: string;
+  subject: string;
+  body: string;
+  workspaceId: string;
+  actorUserId?: string;
+  actorRole?: Role;
 }>;
 
 export type ListDeliveriesQuery = Readonly<{
@@ -81,8 +93,8 @@ export interface NotificationServicePort {
   }): TelegramConnection;
   verifyTelegramConnection(cmd: TelegramVerifyRequest): TelegramConnection;
   disconnectTelegram(cmd: TelegramDisconnectRequest): TelegramConnection;
-  sendTestNotification(cmd: SendTestNotificationRequest): DeliveryResult;
-  deliver(cmd: DeliverNotificationCommand): DeliveryResult;
+  sendTestNotification(cmd: SendTestNotificationRequest): Promise<DeliveryResult>;
+  deliver(cmd: DeliverNotificationCommand): Promise<DeliveryResult>;
   /**
    * Read-only list of already-recorded deliveries. Not a new SoT.
    * Does not send, retry, or generate reports.
@@ -95,12 +107,8 @@ export interface NotificationChannelPort {
   readonly channelId: string;
   readonly active: boolean;
   send(
-    cmd: Readonly<{
-      chatId: string;
-      subject: string;
-      body: string;
-    }>,
-  ): Readonly<{ ok: true } | { ok: false; detail: string }>;
+    cmd: NotificationChannelSendCommand,
+  ): Promise<Readonly<{ ok: true } | { ok: false; detail: string }>>;
 }
 
 export const NOTIFICATION_PORTS_ACTIVE = Object.freeze({

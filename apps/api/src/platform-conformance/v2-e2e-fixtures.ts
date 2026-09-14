@@ -10,6 +10,10 @@ import { InMemoryKnowledgeLakeIngestionAdapter } from '../modules/knowledge-lake
 import { InMemoryTelegramAdapter } from '../modules/notification-delivery/adapters/in-memory-telegram.adapter';
 import { NotificationDeliveryModule } from '../modules/notification-delivery/notification-delivery.module';
 import { NotificationDeliveryService } from '../modules/notification-delivery/notification-delivery.service';
+import {
+  bindInMemoryTelegramChannelForTests,
+  stubSecretVaultForIsolatedNotificationDelivery,
+} from '../modules/notification-delivery/notification-delivery.test-harness';
 import { NOTIFICATION_SERVICE_PORT } from '../modules/notification-delivery/ports/notification.port';
 import { InMemoryOrchestratorMarketStateAdapter } from '../modules/trading-orchestrator/adapters/in-memory-market-state.adapter';
 import {
@@ -187,9 +191,13 @@ export async function bootProjectionScenario() {
 }
 
 export async function bootNotificationScenario() {
-  const moduleRef = await Test.createTestingModule({
-    imports: [NotificationDeliveryModule],
-  }).compile();
+  const moduleRef = await stubSecretVaultForIsolatedNotificationDelivery(
+    bindInMemoryTelegramChannelForTests(
+      Test.createTestingModule({
+        imports: [NotificationDeliveryModule],
+      }),
+    ),
+  ).compile();
   return {
     moduleRef,
     service: moduleRef.get(NotificationDeliveryService),

@@ -8,6 +8,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type { Role } from '../identity/role';
 import {
   NOTIFICATION_SERVICE_PORT,
   type NotificationServicePort,
@@ -79,8 +80,16 @@ export class TelegramProductService {
     return toTelegramConnectionView(this.notifications.disconnectTelegram({ workspaceId, userId }));
   }
 
-  sendTest(workspaceId: string, userId: string): TelegramTestProductView {
-    const delivery = this.notifications.sendTestNotification({ workspaceId, userId });
+  async sendTest(
+    workspaceId: string,
+    userId: string,
+    actor?: Readonly<{ userId: string; role: Role }>,
+  ): Promise<TelegramTestProductView> {
+    const delivery = await this.notifications.sendTestNotification({
+      workspaceId,
+      userId,
+      ...(actor ? { actorUserId: actor.userId, actorRole: actor.role } : {}),
+    });
     return toTelegramTestView({
       connection: this.notifications.getTelegramConnection(workspaceId, userId),
       delivery,

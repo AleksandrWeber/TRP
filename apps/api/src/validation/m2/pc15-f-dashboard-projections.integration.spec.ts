@@ -11,6 +11,10 @@ import {
 import { MARKET_PROFILE_QUERY_PORT } from '../../modules/market-profile/ports/market-profile.port';
 import { NotificationDeliveryModule } from '../../modules/notification-delivery/notification-delivery.module';
 import {
+  bindInMemoryTelegramChannelForTests,
+  stubSecretVaultForIsolatedNotificationDelivery,
+} from '../../modules/notification-delivery/notification-delivery.test-harness';
+import {
   NOTIFICATION_SERVICE_PORT,
   type NotificationServicePort,
 } from '../../modules/notification-delivery/ports/notification.port';
@@ -55,7 +59,7 @@ function admit(
 }
 
 async function compileFlow() {
-  return Test.createTestingModule({
+  const builder = Test.createTestingModule({
     imports: [ReportingModule, AiAnalyticsModule, NotificationDeliveryModule],
     providers: [
       ReportNarrativeConsumerService,
@@ -121,8 +125,10 @@ async function compileFlow() {
       register: () => undefined,
       stop: async () => undefined,
       start: () => undefined,
-    })
-    .compile();
+    });
+  return bindInMemoryTelegramChannelForTests(
+    stubSecretVaultForIsolatedNotificationDelivery(builder),
+  ).compile();
 }
 
 describe('PC-15 15-f — Dashboard and Command Center product projections', () => {
@@ -182,7 +188,7 @@ describe('PC-15 15-f — Dashboard and Command Center product projections', () =
     expect(narrative.attachment.attached).toBe(true);
     expect(narrative.attachment.narrativeUnavailable).toBe(false);
 
-    const delivery = deliveries.deliverCompletedRun({
+    const delivery = await deliveries.deliverCompletedRun({
       workspaceId: 'ws-1',
       userId: 'user-1',
       reportRunId: 'run-15f-1',

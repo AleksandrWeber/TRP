@@ -2,6 +2,7 @@
  * RC-24 Epic 6 — Delivery request / result artifacts (immutable).
  */
 
+import type { Role } from '../../identity/role';
 import type { NotificationChannelId } from './notification-channel';
 import type { NotificationType } from './notification-type';
 
@@ -32,6 +33,10 @@ export type DeliverNotificationCommand = Readonly<{
   /** When true, treat as critical regardless of type catalog. */
   critical?: boolean;
   requestedAt: string;
+  /** Authenticated Vault actor user id. Missing actor fails closed at send. */
+  actorUserId?: string;
+  /** Authenticated Vault actor role. Missing actor fails closed at send. */
+  actorRole?: Role;
 }>;
 
 export type ChannelDeliveryAttempt = Readonly<{

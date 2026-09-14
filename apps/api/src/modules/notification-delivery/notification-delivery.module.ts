@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
 import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
 import { PrismaModule, PrismaService } from '../../storage/prisma/prisma.module';
+import { SecretVaultModule } from '../secret-vault';
 import { DurableNotificationStore } from './adapters/durable-notification-store';
 import { InMemoryNotificationStore } from './adapters/in-memory-notification-store';
 import { InMemoryTelegramAdapter } from './adapters/in-memory-telegram.adapter';
+import { ProductionTelegramBotApiAdapter } from './adapters/telegram-bot-api.adapter';
+import { TelegramBotApiHttpClient } from './adapters/telegram-bot-api.http';
+import { TelegramBotTokenResolver } from './adapters/telegram-bot-token.resolver';
 import { TELEGRAM_NOTIFICATION_ANCHOR_REPOSITORY } from './domain/telegram-notification-anchor.repository';
 import { EMAIL_NOTIFICATION_ANCHOR_REPOSITORY } from './domain/email-notification-anchor.repository';
 import { SLACK_DISCORD_TEAMS_NOTIFICATION_ANCHOR_REPOSITORY } from './domain/slack-discord-teams-notification-anchor.repository';
@@ -183,7 +187,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
  * Trading Session / Orders / Ledger. Does not expose REST or trading commands.
  */
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, SecretVaultModule],
   providers: [
     NotificationDeliveryBoundaryService,
     {
@@ -450,10 +454,16 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationPlatformIntegrationRestartRecoveryService,
     EmailNotificationRecoveryStore,
     EmailNotificationRestartRecoveryService,
+    {
+      provide: TelegramBotApiHttpClient,
+      useFactory: () => new TelegramBotApiHttpClient(),
+    },
+    TelegramBotTokenResolver,
+    ProductionTelegramBotApiAdapter,
     InMemoryTelegramAdapter,
     {
       provide: TELEGRAM_CHANNEL_ADAPTER,
-      useExisting: InMemoryTelegramAdapter,
+      useExisting: ProductionTelegramBotApiAdapter,
     },
     NotificationDeliveryService,
     {
@@ -465,6 +475,7 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     NotificationDeliveryBoundaryService,
     NotificationDeliveryService,
     InMemoryTelegramAdapter,
+    ProductionTelegramBotApiAdapter,
     NOTIFICATION_SERVICE_PORT,
     TELEGRAM_CHANNEL_ADAPTER,
     TELEGRAM_NOTIFICATION_ANCHOR_REPOSITORY,

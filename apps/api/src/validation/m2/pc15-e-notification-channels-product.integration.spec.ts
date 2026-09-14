@@ -6,6 +6,10 @@ import { InMemoryKnowledgeLakeIngestionAdapter } from '../../modules/knowledge-l
 import { InMemoryTelegramAdapter } from '../../modules/notification-delivery/adapters/in-memory-telegram.adapter';
 import { NotificationDeliveryModule } from '../../modules/notification-delivery/notification-delivery.module';
 import {
+  bindInMemoryTelegramChannelForTests,
+  stubSecretVaultForIsolatedNotificationDelivery,
+} from '../../modules/notification-delivery/notification-delivery.test-harness';
+import {
   NOTIFICATION_SERVICE_PORT,
   type NotificationServicePort,
 } from '../../modules/notification-delivery/ports/notification.port';
@@ -43,17 +47,20 @@ function admit(
 }
 
 async function compileFlow() {
-  return Test.createTestingModule({
-    imports: [ReportingModule, NotificationDeliveryModule],
-    providers: [ReportNotificationConsumerService, NotificationChannelDispatchService],
-  })
-    .overrideProvider(OutboxDispatcher)
-    .useValue({
-      register: () => undefined,
-      stop: async () => undefined,
-      start: () => undefined,
-    })
-    .compile();
+  return bindInMemoryTelegramChannelForTests(
+    stubSecretVaultForIsolatedNotificationDelivery(
+      Test.createTestingModule({
+        imports: [ReportingModule, NotificationDeliveryModule],
+        providers: [ReportNotificationConsumerService, NotificationChannelDispatchService],
+      })
+        .overrideProvider(OutboxDispatcher)
+        .useValue({
+          register: () => undefined,
+          stop: async () => undefined,
+          start: () => undefined,
+        }),
+    ),
+  ).compile();
 }
 
 describe('PC-15 15-e — Notification Delivery → Channels product flow', () => {
@@ -88,8 +95,8 @@ describe('PC-15 15-e — Notification Delivery → Channels product flow', () =>
     );
   });
 
-  it('reaches the in-memory Telegram adapter after existing connect/complete and records delivery', () => {
-    const result = channels.bindAndDispatch(
+  it('reaches the in-memory Telegram adapter after existing connect/complete and records delivery', async () => {
+    const result = await channels.bindAndDispatch(
       {
         workspaceId: 'ws-1',
         userId: 'user-1',
@@ -124,7 +131,7 @@ describe('PC-15 15-e — Notification Delivery → Channels product flow', () =>
     expect(telegram.listSent()[0]?.subject).toContain('run-15e');
   });
 
-  it('keeps reserved channels reserved-inactive with the documented skip', () => {
+  it('keeps reserved channels reserved-inactive with the documented skip', async () => {
     notifications.upsertPreferences({
       workspaceId: 'ws-1',
       userId: 'user-1',
@@ -134,7 +141,7 @@ describe('PC-15 15-e — Notification Delivery → Channels product flow', () =>
       updatedAt: at,
     });
 
-    const result = channels.bindAndDispatch(
+    const result = await channels.bindAndDispatch(
       {
         workspaceId: 'ws-1',
         userId: 'user-1',
@@ -173,8 +180,8 @@ describe('PC-15 15-e — Notification Delivery → Channels product flow', () =>
     ).toBe('reserved-inactive');
   });
 
-  it('does not reach the Telegram adapter when the channel is not connected', () => {
-    const result = channels.dispatch({
+  it('does not reach the Telegram adapter when the channel is not connected', async () => {
+    const result = await channels.dispatch({
       workspaceId: 'ws-1',
       userId: 'user-1',
       type: 'daily-report',
@@ -188,7 +195,7 @@ describe('PC-15 15-e — Notification Delivery → Channels product flow', () =>
     expect(telegram.listSent()).toHaveLength(0);
   });
 
-  it('lets a completed ReportRun reach the in-memory Telegram adapter without mutating the run', () => {
+  it('lets a completed ReportRun reach the in-memory Telegram adapter without mutating the run', async () => {
     admit(lake, { eventId: 'evt-15e-1' });
     channels.bindInMemoryTelegram({
       workspaceId: 'ws-1',
@@ -197,7 +204,7 @@ describe('PC-15 15-e — Notification Delivery → Channels product flow', () =>
       requestedAt: at,
     });
 
-    const result = reports.requestAndDeliver({
+    const result = await reports.requestAndDeliver({
       workspaceId: 'ws-1',
       userId: 'user-1',
       reportDefinitionId: 'def-15e',

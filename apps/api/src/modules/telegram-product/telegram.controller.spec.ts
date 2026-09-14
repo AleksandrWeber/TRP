@@ -112,10 +112,12 @@ describe('Telegram controller (PC-07)', () => {
     controller = new TelegramController(product as unknown as TelegramProductService, access);
   });
 
-  it('requires a workspace header', () => {
+  it('requires a workspace header', async () => {
     expect(() => controller.status({ user: owner }, undefined)).toThrow(BadRequestException);
     expect(() => controller.connect({ user: owner }, undefined)).toThrow(BadRequestException);
-    expect(() => controller.sendTest({ user: owner }, undefined)).toThrow(BadRequestException);
+    await expect(controller.sendTest({ user: owner }, undefined)).rejects.toBeInstanceOf(
+      BadRequestException,
+    );
   });
 
   it('rejects a foreign workspace', () => {
@@ -137,6 +139,14 @@ describe('Telegram controller (PC-07)', () => {
     expect(() =>
       controller.getDelivery({ user: owner }, workspaceId, { deliveryId: 'missing' }),
     ).toThrow(NotFoundException);
+  });
+
+  it('passes the authenticated actor into sendTest', async () => {
+    await controller.sendTest({ user: owner }, workspaceId);
+    expect(product.sendTest).toHaveBeenCalledWith(workspaceId, owner.userId, {
+      userId: owner.userId,
+      role: owner.role,
+    });
   });
 
   it('maps complete bind errors to 400', () => {

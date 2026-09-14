@@ -97,7 +97,7 @@ export class TradingSessionRuntimeWorker implements OnModuleInit {
         });
         const result = await this.pipeline.run(command);
         if (result.outcome === 'filled') {
-          this.afterFill(
+          await this.afterFill(
             session.workspaceId,
             session.id,
             session.actorId,
@@ -116,14 +116,14 @@ export class TradingSessionRuntimeWorker implements OnModuleInit {
     }
   }
 
-  private afterFill(
+  private async afterFill(
     workspaceId: string,
     sessionId: string,
     userId: string,
     candle: EvaluationCandleInput,
     recordedAt: string,
     result: StrategyTradingPipelineResult,
-  ): void {
+  ): Promise<void> {
     const reportRunId = `runtime-paper:${sessionId}:${candle.eventId}`;
     const window = reportWindow(candle.openTime, recordedAt);
     const definition = createReportDefinition({
@@ -153,7 +153,7 @@ export class TradingSessionRuntimeWorker implements OnModuleInit {
       );
     }
     try {
-      this.notifications.requestAndDeliver({
+      await this.notifications.requestAndDeliver({
         workspaceId,
         userId,
         definition,

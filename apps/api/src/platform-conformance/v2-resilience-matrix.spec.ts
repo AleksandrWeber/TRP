@@ -113,7 +113,7 @@ describe('RC-28 Epic 5 — resilience matrix', () => {
     await stack.moduleRef.close();
 
     const notify = await bootNotificationScenario();
-    const skipped = notify.port.deliver({
+    const skipped = await notify.port.deliver({
       workspaceId: 'ws-1',
       userId: 'op-1',
       type: 'daily-report',

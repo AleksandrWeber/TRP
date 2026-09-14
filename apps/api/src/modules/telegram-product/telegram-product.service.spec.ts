@@ -66,7 +66,7 @@ function harness() {
 }
 
 describe('TelegramProductService (PC-07)', () => {
-  it('exposes existing connect → complete → verify → test → disconnect without Bot API', () => {
+  it('exposes existing connect → complete → verify → test → disconnect without Bot API', async () => {
     const { service, notifications } = harness();
     expect(service.getConnection('ws-1', 'user-1').status).toBe('not-connected');
 
@@ -86,7 +86,7 @@ describe('TelegramProductService (PC-07)', () => {
     );
 
     expect(service.verify('ws-1', 'user-1').verified).toBe(true);
-    const test = service.sendTest('ws-1', 'user-1');
+    const test = await service.sendTest('ws-1', 'user-1');
     expect(test.delivery.outcome).toBe('delivered');
     expect(test.botApiUsed).toBe(false);
     expect(notifications.sendTestNotification).toHaveBeenCalled();

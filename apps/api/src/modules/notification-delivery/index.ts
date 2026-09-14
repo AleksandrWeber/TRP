@@ -121,6 +121,8 @@ export {
 export { InMemoryNotificationStore } from './adapters/in-memory-notification-store';
 export { InMemoryTelegramAdapter } from './adapters/in-memory-telegram.adapter';
 export { ReservedInactiveChannelAdapter } from './adapters/reserved-inactive-channel.adapter';
+export { ProductionTelegramBotApiAdapter } from './adapters/telegram-bot-api.adapter';
+export { TelegramBotTokenResolver } from './adapters/telegram-bot-token.resolver';
 export { NotificationDeliveryBoundaryService } from './notification-boundary.service';
 export { NotificationDeliveryService } from './notification-delivery.service';
 export { NotificationDeliveryModule } from './notification-delivery.module';
@@ -129,6 +131,7 @@ export {
   NOTIFICATION_SERVICE_PORT,
   TELEGRAM_CHANNEL_ADAPTER,
   type NotificationChannelPort,
+  type NotificationChannelSendCommand,
   type NotificationServicePort,
   type ListDeliveriesQuery,
   type SendTestNotificationRequest,

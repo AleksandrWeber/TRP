@@ -105,9 +105,17 @@ describe('PC-07 — Telegram product', () => {
     );
 
     expect(telegram.verify({ user: OWNER }, workspace.id).verified).toBe(true);
-    const test = telegram.sendTest({ user: OWNER }, workspace.id);
+    const test = await telegram.sendTest({ user: OWNER }, workspace.id);
     expect(test.delivery.outcome).toBe('delivered');
     expect(test.botApiUsed).toBe(false);
+    expect(notifications.sendTestNotification).toHaveBeenCalledWith(
+      expect.objectContaining({
+        workspaceId: workspace.id,
+        userId: OWNER.userId,
+        actorUserId: OWNER.userId,
+        actorRole: OWNER.role,
+      }),
+    );
     expect(notifications.deliver).not.toHaveBeenCalled();
 
     const history = telegram.listDeliveries({ user: OWNER }, workspace.id, {});

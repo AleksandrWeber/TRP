@@ -42,8 +42,8 @@ export class NotificationChannelDispatchService {
     private readonly notifications: NotificationServicePort,
   ) {}
 
-  dispatch(command: DeliverNotificationCommand): ChannelDispatchResult {
-    const delivery = this.notifications.deliver(command);
+  async dispatch(command: DeliverNotificationCommand): Promise<ChannelDispatchResult> {
+    const delivery = await this.notifications.deliver(command);
     return this.project(command.workspaceId, command.userId, delivery);
   }
 
@@ -76,10 +76,10 @@ export class NotificationChannelDispatchService {
     });
   }
 
-  bindAndDispatch(
+  async bindAndDispatch(
     bind: InMemoryTelegramBindCommand,
     command: DeliverNotificationCommand,
-  ): ChannelDispatchResult {
+  ): Promise<ChannelDispatchResult> {
     if (
       bind.workspaceId.trim() !== command.workspaceId.trim() ||
       bind.userId.trim() !== command.userId.trim()

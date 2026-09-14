@@ -3,15 +3,23 @@ import { describe, expect, it } from 'vitest';
 import { InMemoryTelegramAdapter } from './adapters/in-memory-telegram.adapter';
 import { NotificationDeliveryModule } from './notification-delivery.module';
 import { NotificationDeliveryService } from './notification-delivery.service';
+import {
+  bindInMemoryTelegramChannelForTests,
+  stubSecretVaultForIsolatedNotificationDelivery,
+} from './notification-delivery.test-harness';
 import { NOTIFICATION_SERVICE_PORT } from './ports/notification.port';
 import { isWithinQuietHours, resolveDeliveryRoutes } from './routing/resolve-delivery-routing';
 import { createUserNotificationPreferences } from './domain/user-notification-preferences';
 
 describe('RC-24 Epic 6 — Notification Delivery behaviour', () => {
   async function createService() {
-    const moduleRef = await Test.createTestingModule({
-      imports: [NotificationDeliveryModule],
-    }).compile();
+    const moduleRef = await stubSecretVaultForIsolatedNotificationDelivery(
+      bindInMemoryTelegramChannelForTests(
+        Test.createTestingModule({
+          imports: [NotificationDeliveryModule],
+        }),
+      ),
+    ).compile();
     const service = moduleRef.get(NotificationDeliveryService);
     const port = moduleRef.get<NotificationDeliveryService>(NOTIFICATION_SERVICE_PORT);
     const telegram = moduleRef.get(InMemoryTelegramAdapter);
@@ -54,7 +62,7 @@ describe('RC-24 Epic 6 — Notification Delivery behaviour', () => {
     const verified = service.verifyTelegramConnection({ workspaceId, userId });
     expect(verified.status).toBe('connected');
 
-    const test = service.sendTestNotification({
+    const test = await service.sendTestNotification({
       workspaceId,
       userId,
       requestedAt: '2026-08-10T10:02:00.000Z',
@@ -99,7 +107,7 @@ describe('RC-24 Epic 6 — Notification Delivery behaviour', () => {
       completedAt: '2026-08-10T11:02:00.000Z',
     });
 
-    const delivered = service.deliver({
+    const delivered = await service.deliver({
       workspaceId,
       userId,
       type: 'daily-report',
@@ -127,7 +135,7 @@ describe('RC-24 Epic 6 — Notification Delivery behaviour', () => {
     expect(listed[0]?.deliveryId).toBe(delivered.deliveryId);
     expect(listed[0]?.outcome).toBe('delivered');
 
-    const skippedOrders = service.deliver({
+    const skippedOrders = await service.deliver({
       workspaceId,
       userId,
       type: 'order-events',

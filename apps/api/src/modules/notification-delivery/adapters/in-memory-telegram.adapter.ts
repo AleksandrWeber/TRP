@@ -6,7 +6,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { NotificationChannelPort } from '../ports/notification.port';
+import type {
+  NotificationChannelPort,
+  NotificationChannelSendCommand,
+} from '../ports/notification.port';
 
 export type TelegramOutboundMessage = Readonly<{
   chatId: string;
@@ -22,13 +25,9 @@ export class InMemoryTelegramAdapter implements NotificationChannelPort {
 
   private readonly sent: TelegramOutboundMessage[] = [];
 
-  send(
-    cmd: Readonly<{
-      chatId: string;
-      subject: string;
-      body: string;
-    }>,
-  ): Readonly<{ ok: true } | { ok: false; detail: string }> {
+  async send(
+    cmd: NotificationChannelSendCommand,
+  ): Promise<Readonly<{ ok: true } | { ok: false; detail: string }>> {
     if (!cmd.chatId.trim()) {
       return { ok: false, detail: 'chatId missing' };
     }

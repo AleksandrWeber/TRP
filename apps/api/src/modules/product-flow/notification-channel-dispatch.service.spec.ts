@@ -118,9 +118,9 @@ const deliverCmd = Object.freeze({
 });
 
 describe('PC-15 15-e — NotificationChannelDispatchService', () => {
-  it('dispatches through existing deliver() without connecting Telegram', () => {
+  it('dispatches through existing deliver() without connecting Telegram', async () => {
     const { service, notifications } = harness();
-    const result = service.dispatch(deliverCmd);
+    const result = await service.dispatch(deliverCmd);
 
     expect(notifications.deliver).toHaveBeenCalledWith(deliverCmd);
     expect(notifications.connectTelegram).not.toHaveBeenCalled();
@@ -131,7 +131,7 @@ describe('PC-15 15-e — NotificationChannelDispatchService', () => {
     expect(result.projection.deferredChannelsActivated).toBe(false);
   });
 
-  it('binds in-memory Telegram through existing connect/complete then reaches the adapter path', () => {
+  it('binds in-memory Telegram through existing connect/complete then reaches the adapter path', async () => {
     const { service, notifications } = harness({
       connection: notConnected(),
       delivery: deliveredResult(),
@@ -140,7 +140,7 @@ describe('PC-15 15-e — NotificationChannelDispatchService', () => {
       .mockReturnValueOnce(notConnected())
       .mockReturnValue(connected());
 
-    const result = service.bindAndDispatch(
+    const result = await service.bindAndDispatch(
       {
         workspaceId: 'ws-1',
         userId: 'user-1',

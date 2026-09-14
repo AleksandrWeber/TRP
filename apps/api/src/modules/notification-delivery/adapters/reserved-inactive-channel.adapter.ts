@@ -10,7 +10,7 @@ export class ReservedInactiveChannelAdapter implements NotificationChannelPort {
 
   constructor(readonly channelId: ReservedNotificationChannelId) {}
 
-  send(): Readonly<{ ok: false; detail: string }> {
+  async send(): Promise<Readonly<{ ok: false; detail: string }>> {
     return {
       ok: false,
       detail: `Channel ${this.channelId} is reserved-inactive`,

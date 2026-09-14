@@ -1,26 +1,30 @@
 /**
- * REM-01-s1 — Production Telegram Bot API adapter (isolated).
+ * REM-01-s1/s2 — Production Telegram Bot API adapter.
  *
  * Delivery only. No trading commands. No inbound Telegram processing.
- * Does not implement the synchronous NotificationChannelPort in this slice —
- * Bot API I/O is async. Nest production binding and Vault retrieve are REM-01-s2.
- *
- * Token is a per-call argument only. Never stored on the adapter.
+ * Token is retrieved at send time and never stored on the adapter.
  * This adapter is not a customer-visible delivery proof.
  */
 
+import { Inject, Injectable, Optional } from '@nestjs/common';
 import type { LogContext, Logger } from '../../../logging/logger';
+import { LOGGER } from '../../../logging/logger.token';
 import { NoOpLogger } from '../../../logging/noop.logger';
 import {
   parseProductionTelegramChatId,
   TELEGRAM_CHAT_ID_NOT_BOUND,
 } from '../domain/production-telegram-chat-id';
+import type {
+  NotificationChannelPort,
+  NotificationChannelSendCommand,
+} from '../ports/notification.port';
 import {
   mapTelegramHttpStatus,
   redactTelegramSecrets,
   type TelegramBotApiErrorCode,
 } from './telegram-bot-api.errors';
 import { TelegramBotApiHttpClient } from './telegram-bot-api.http';
+import { TelegramBotTokenResolver } from './telegram-bot-token.resolver';
 
 export type TelegramBotApiOperationResult =
   Readonly<{ ok: true }> | Readonly<{ ok: false; detail: TelegramBotApiErrorCode }>;
@@ -43,15 +47,23 @@ type TelegramApiEnvelope = {
   result?: unknown;
 };
 
-export class ProductionTelegramBotApiAdapter {
+@Injectable()
+export class ProductionTelegramBotApiAdapter implements NotificationChannelPort {
   readonly channelId = 'telegram' as const;
   readonly active = true;
 
   private readonly http: TelegramBotApiHttpClient;
+  private readonly tokens: TelegramBotTokenResolver | undefined;
   private readonly logger: Logger;
 
-  constructor(http: TelegramBotApiHttpClient = new TelegramBotApiHttpClient(), logger?: Logger) {
+  constructor(
+    @Inject(TelegramBotApiHttpClient)
+    http: TelegramBotApiHttpClient = new TelegramBotApiHttpClient(),
+    @Optional() @Inject(TelegramBotTokenResolver) tokens?: TelegramBotTokenResolver,
+    @Optional() @Inject(LOGGER) logger?: Logger,
+  ) {
     this.http = http;
+    this.tokens = tokens;
     this.logger = logger?.child(ProductionTelegramBotApiAdapter.name) ?? new NoOpLogger();
   }
 
@@ -94,10 +106,42 @@ export class ProductionTelegramBotApiAdapter {
   }
 
   async sendMessage(input: TelegramBotApiSendRequest): Promise<TelegramBotApiOperationResult> {
-    return this.send(input);
+    return this.dispatchSendMessage(input);
   }
 
-  async send(input: TelegramBotApiSendRequest): Promise<TelegramBotApiOperationResult> {
+  /**
+   * NotificationChannelPort send: validate chat id, retrieve token, then Bot API.
+   * Does not accept or store botToken on the port.
+   */
+  async send(cmd: NotificationChannelSendCommand): Promise<TelegramBotApiOperationResult> {
+    const started = Date.now();
+    const destination = parseProductionTelegramChatId(cmd.chatId);
+    if (!destination.ok) {
+      return this.fail('sendMessage', TELEGRAM_CHAT_ID_NOT_BOUND, started, cmd.workspaceId, '');
+    }
+    if (!this.tokens) {
+      return this.fail('sendMessage', 'telegram_invalid_request', started, cmd.workspaceId, '');
+    }
+    const resolved = await this.tokens.resolve({
+      workspaceId: cmd.workspaceId,
+      actorUserId: cmd.actorUserId,
+      actorRole: cmd.actorRole,
+    });
+    if (!resolved.ok) {
+      return this.fail('sendMessage', resolved.detail, started, cmd.workspaceId, '');
+    }
+    return this.dispatchSendMessage({
+      botToken: resolved.botToken,
+      chatId: destination.chatId,
+      subject: cmd.subject,
+      body: cmd.body,
+      workspaceId: cmd.workspaceId,
+    });
+  }
+
+  private async dispatchSendMessage(
+    input: TelegramBotApiSendRequest,
+  ): Promise<TelegramBotApiOperationResult> {
     const started = Date.now();
     const token = input.botToken.trim();
     if (!token) {

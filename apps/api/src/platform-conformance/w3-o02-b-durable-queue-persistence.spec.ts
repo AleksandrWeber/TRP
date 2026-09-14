@@ -194,7 +194,7 @@ describe('W3-O02-b durable queue persistence — integration', () => {
     expect(() => service.listDeliveryQueue({ workspaceId: '  ' })).toThrow(/workspaceId/);
   });
 
-  it('persistence integrity: deliver() records queue terminal state with history', () => {
+  it('persistence integrity: deliver() records queue terminal state with history', async () => {
     const store = new InMemoryNotificationStore();
     const telegram = new InMemoryTelegramAdapter();
     const service = new NotificationDeliveryService(store, telegram);
@@ -212,7 +212,7 @@ describe('W3-O02-b durable queue persistence — integration', () => {
       completedAt: '2026-08-27T14:01:00.000Z',
     });
 
-    const result = service.deliver({
+    const result = await service.deliver({
       workspaceId: 'ws-d',
       userId: 'u-d',
       type: 'daily-report',

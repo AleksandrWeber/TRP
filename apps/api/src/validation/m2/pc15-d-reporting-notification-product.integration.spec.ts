@@ -5,6 +5,10 @@ import type { AnalyticalFactAdmission } from '../../modules/knowledge-lake/domai
 import { InMemoryKnowledgeLakeIngestionAdapter } from '../../modules/knowledge-lake/ingestion/in-memory-knowledge-lake-ingestion.adapter';
 import { NotificationDeliveryModule } from '../../modules/notification-delivery/notification-delivery.module';
 import {
+  bindInMemoryTelegramChannelForTests,
+  stubSecretVaultForIsolatedNotificationDelivery,
+} from '../../modules/notification-delivery/notification-delivery.test-harness';
+import {
   NOTIFICATION_SERVICE_PORT,
   type NotificationServicePort,
 } from '../../modules/notification-delivery/ports/notification.port';
@@ -39,17 +43,20 @@ function admit(
 }
 
 async function compileFlow() {
-  return Test.createTestingModule({
-    imports: [ReportingModule, NotificationDeliveryModule],
-    providers: [ReportNotificationConsumerService],
-  })
-    .overrideProvider(OutboxDispatcher)
-    .useValue({
-      register: () => undefined,
-      stop: async () => undefined,
-      start: () => undefined,
-    })
-    .compile();
+  return bindInMemoryTelegramChannelForTests(
+    stubSecretVaultForIsolatedNotificationDelivery(
+      Test.createTestingModule({
+        imports: [ReportingModule, NotificationDeliveryModule],
+        providers: [ReportNotificationConsumerService],
+      })
+        .overrideProvider(OutboxDispatcher)
+        .useValue({
+          register: () => undefined,
+          stop: async () => undefined,
+          start: () => undefined,
+        }),
+    ),
+  ).compile();
 }
 
 describe('PC-15 15-d — Reporting → Notification Delivery product flow', () => {
@@ -90,11 +97,11 @@ describe('PC-15 15-d — Reporting → Notification Delivery product flow', () =
     );
   });
 
-  it('invokes deliver() when a ReportRun completes and records the routing result', () => {
+  it('invokes deliver() when a ReportRun completes and records the routing result', async () => {
     admit(lake, { eventId: 'evt-15d-1' });
     const beforeRuns = JSON.stringify(query.listRuns({ workspaceId: 'ws-1' }));
 
-    const result = consumer.requestAndDeliver({
+    const result = await consumer.requestAndDeliver({
       workspaceId: 'ws-1',
       userId: 'user-1',
       reportDefinitionId: 'def-15d',
@@ -140,9 +147,9 @@ describe('PC-15 15-d — Reporting → Notification Delivery product flow', () =
     ).toBe('reserved-inactive');
   });
 
-  it('uses existing weekly-report type for ops_weekly and preserves ReportRun immutability', () => {
+  it('uses existing weekly-report type for ops_weekly and preserves ReportRun immutability', async () => {
     admit(lake, { eventId: 'evt-15d-2' });
-    const first = consumer.requestAndDeliver({
+    const first = await consumer.requestAndDeliver({
       workspaceId: 'ws-1',
       userId: 'user-1',
       reportDefinitionId: 'def-15d-weekly',
@@ -160,7 +167,7 @@ describe('PC-15 15-d — Reporting → Notification Delivery product flow', () =
     expect(first.delivery?.type).toBe('weekly-report');
     expect(first.projection.notificationType).toBe('weekly-report');
 
-    const second = consumer.deliverCompletedRun({
+    const second = await consumer.deliverCompletedRun({
       workspaceId: 'ws-1',
       userId: 'user-1',
       reportRunId: 'run-15d-weekly',
@@ -174,8 +181,8 @@ describe('PC-15 15-d — Reporting → Notification Delivery product flow', () =
     expect(second.delivery?.deliveryId).toMatch(/^del-/);
   });
 
-  it('does not invent a report or invoke deliver when Reporting cannot supply the run', () => {
-    const result = consumer.deliverCompletedRun({
+  it('does not invent a report or invoke deliver when Reporting cannot supply the run', async () => {
+    const result = await consumer.deliverCompletedRun({
       workspaceId: 'ws-1',
       userId: 'user-1',
       reportRunId: 'missing-15d',
@@ -189,7 +196,7 @@ describe('PC-15 15-d — Reporting → Notification Delivery product flow', () =
     expect(query.getRun('missing-15d')).toBeNull();
   });
 
-  it('records type-disabled skip through existing routing when that type is disabled', () => {
+  it('records type-disabled skip through existing routing when that type is disabled', async () => {
     admit(lake, { eventId: 'evt-15d-3' });
     notifications.upsertPreferences({
       workspaceId: 'ws-1',
@@ -200,7 +207,7 @@ describe('PC-15 15-d — Reporting → Notification Delivery product flow', () =
       updatedAt: at,
     });
 
-    const result = consumer.requestAndDeliver({
+    const result = await consumer.requestAndDeliver({
       workspaceId: 'ws-1',
       userId: 'user-1',
       reportDefinitionId: 'def-15d',
