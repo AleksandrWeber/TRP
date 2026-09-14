@@ -1102,6 +1102,8 @@ export type OperationalContinuityReadinessView = {
   notificationPlatformRetrySchedulingDecisionProjection: NotificationPlatformRetrySchedulingDecisionProjectionContinuityView | null;
   /** W5-N28-d — Notification Platform Retry Scheduling Decision Projection Publication operational continuity. */
   notificationPlatformRetrySchedulingDecisionProjectionPublication: NotificationPlatformRetrySchedulingDecisionProjectionPublicationContinuityView | null;
+  /** W5-N29-d — Notification Platform Retry Scheduling Decision Projection Publication Consumption operational continuity. */
+  notificationPlatformRetrySchedulingDecisionProjectionPublicationConsumption: NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionContinuityView | null;
 };
 
 export type NotificationQueueContinuityView = {
@@ -1529,6 +1531,19 @@ export type NotificationPlatformRetrySchedulingDecisionProjectionPublicationCont
   integrityVerified: boolean;
   workspaceIds: readonly string[];
 };
+
+export type NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionContinuityView =
+  {
+    operationalState: OperationalContinuityState;
+    ownerReadiness: 'ready' | 'unavailable' | 'degraded';
+    recoveryTimestamp: string | null;
+    recoveryDurationMs: number | null;
+    reason?: string;
+    restoredCount: number;
+    canonicalAnchorCount: number;
+    integrityVerified: boolean;
+    workspaceIds: readonly string[];
+  };
 
 export type ReportAggregationView = {
   sliceId: string;

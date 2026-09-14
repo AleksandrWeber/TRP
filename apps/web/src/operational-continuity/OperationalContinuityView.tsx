@@ -2331,6 +2331,100 @@ export function OperationalContinuityView({ readiness }: Props) {
       </section>
 
       <section>
+        <h2 className="text-lg font-semibold text-slate-100">
+          Notification Platform Retry Scheduling Decision Projection Publication Consumption
+        </h2>
+        {readiness.notificationPlatformRetrySchedulingDecisionProjectionPublicationConsumption ? (
+          <dl
+            className="mt-4 grid gap-3 sm:grid-cols-2"
+            data-testid="notification-platform-retry-scheduling-decision-projection-publication-consumption-continuity"
+          >
+            <div>
+              <dt className="text-sm text-slate-400">
+                Notification Platform Retry Scheduling Decision Projection Publication Consumption
+                operational state
+              </dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-retry-scheduling-decision-projection-publication-consumption-state"
+              >
+                {
+                  readiness
+                    .notificationPlatformRetrySchedulingDecisionProjectionPublicationConsumption
+                    .operationalState
+                }
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Owner readiness</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-retry-scheduling-decision-projection-publication-consumption-owner-readiness"
+              >
+                {
+                  readiness
+                    .notificationPlatformRetrySchedulingDecisionProjectionPublicationConsumption
+                    .ownerReadiness
+                }
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery timestamp</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-retry-scheduling-decision-projection-publication-consumption-recovery-timestamp"
+              >
+                {readiness
+                  .notificationPlatformRetrySchedulingDecisionProjectionPublicationConsumption
+                  .recoveryTimestamp ?? '—'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Recovery duration (ms)</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-retry-scheduling-decision-projection-publication-consumption-recovery-duration-ms"
+              >
+                {formatDuration(
+                  readiness
+                    .notificationPlatformRetrySchedulingDecisionProjectionPublicationConsumption
+                    .recoveryDurationMs,
+                )}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Restored count</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-retry-scheduling-decision-projection-publication-consumption-restored-count"
+              >
+                {
+                  readiness
+                    .notificationPlatformRetrySchedulingDecisionProjectionPublicationConsumption
+                    .restoredCount
+                }
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-400">Canonical anchors</dt>
+              <dd
+                className="text-slate-100"
+                data-testid="notification-platform-retry-scheduling-decision-projection-publication-consumption-canonical-anchor-count"
+              >
+                {
+                  readiness
+                    .notificationPlatformRetrySchedulingDecisionProjectionPublicationConsumption
+                    .canonicalAnchorCount
+                }
+              </dd>
+            </div>
+          </dl>
+        ) : (
+          <p className="mt-2 text-slate-400">Not evaluated</p>
+        )}
+      </section>
+
+      <section>
         <h2 className="text-lg font-semibold text-slate-100">Owner operational state</h2>
         <table className="mt-3 w-full text-left text-sm text-slate-200">
           <thead className="text-slate-400">

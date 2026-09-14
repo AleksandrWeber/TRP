@@ -12,14 +12,14 @@ import { W5_N29_C_NOTIFICATION_PLATFORM_RETRY_SCHEDULING_DECISION_PROJECTION_PUB
 export type NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionRecoveryOutcome =
   'ready' | 'unavailable';
 
-export type NotificationPlatformRetrySchedulingDecisionProjectionPublicationOwnerReadiness =
+export type NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionOwnerReadiness =
   'ready' | 'unavailable' | 'degraded';
 
 export type NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionContinuityRecord =
   Readonly<{
     owner: typeof W5_N29_C_NOTIFICATION_PLATFORM_RETRY_SCHEDULING_DECISION_PROJECTION_PUBLICATION_CONSUMPTION_RECOVERY_OWNER;
     outcome: NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionRecoveryOutcome;
-    ownerReadiness: NotificationPlatformRetrySchedulingDecisionProjectionPublicationOwnerReadiness;
+    ownerReadiness: NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionOwnerReadiness;
     integrityVerified: boolean;
     integrityFailure: boolean;
     reason?: string;
@@ -55,7 +55,7 @@ export function recordNotificationPlatformRetrySchedulingDecisionProjectionPubli
 export function recordNotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionRecoverySuccess(input: {
   diagnostics: NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionRecoveryDiagnostics;
   reason?: string;
-  ownerReadiness?: NotificationPlatformRetrySchedulingDecisionProjectionPublicationOwnerReadiness;
+  ownerReadiness?: NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionOwnerReadiness;
   completedAtMs?: number;
 }): void {
   const completedAtMs = input.completedAtMs ?? Date.now();
@@ -77,7 +77,7 @@ export function recordNotificationPlatformRetrySchedulingDecisionProjectionPubli
 
 export function recordNotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionRecoveryFailure(input: {
   reason: string;
-  ownerReadiness?: NotificationPlatformRetrySchedulingDecisionProjectionPublicationOwnerReadiness;
+  ownerReadiness?: NotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionOwnerReadiness;
   completedAtMs?: number;
 }): void {
   const completedAtMs = input.completedAtMs ?? Date.now();
@@ -98,7 +98,7 @@ export function recordNotificationPlatformRetrySchedulingDecisionProjectionPubli
 }
 
 /** Integrity failure honesty — Degraded, never fabricates Ready. */
-export function recordNotificationPlatformRetrySchedulingDecisionProjectionPublicationIntegrityFailure(
+export function recordNotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionIntegrityFailure(
   reason: string,
 ): void {
   if (!record) {
@@ -117,7 +117,7 @@ export function getNotificationPlatformRetrySchedulingDecisionProjectionPublicat
   return record;
 }
 
-export function isNotificationPlatformRetrySchedulingDecisionProjectionPublicationRecovering(): boolean {
+export function isNotificationPlatformRetrySchedulingDecisionProjectionPublicationConsumptionRecovering(): boolean {
   return record !== null && record.recoveryCompletedAt === null;
 }
 
