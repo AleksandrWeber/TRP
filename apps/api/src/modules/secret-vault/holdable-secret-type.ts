@@ -10,6 +10,7 @@ export const HoldableSecretType = {
   Okx: 'okx',
   Telegram: 'telegram',
   Smtp: 'smtp',
+  SlackWebhook: 'slack-webhook',
   OpenRouter: 'openrouter',
 } as const;
 

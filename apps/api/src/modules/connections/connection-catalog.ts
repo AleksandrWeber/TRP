@@ -39,6 +39,12 @@ export const CONNECTION_PROVIDERS = [
     credentialFields: ['host', 'port', 'username', 'password', 'sender'],
   },
   {
+    id: 'SLACK',
+    displayName: 'Slack Incoming Webhook',
+    connectionType: 'NOTIFICATION',
+    credentialFields: ['webhookUrl'],
+  },
+  {
     id: 'OPENROUTER',
     displayName: 'OpenRouter',
     connectionType: 'AI',

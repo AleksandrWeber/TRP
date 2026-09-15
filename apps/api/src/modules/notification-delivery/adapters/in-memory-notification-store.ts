@@ -10,6 +10,7 @@ import { Injectable } from '@nestjs/common';
 import type { DeliveryResult } from '../domain/delivery';
 import type { NotificationDeliveryQueueItem } from '../domain/delivery-queue';
 import type { EmailConnection } from '../domain/email-connection';
+import type { SlackConnection } from '../domain/slack-connection';
 import type { TelegramConnection } from '../domain/telegram-connection';
 import type { UserNotificationPreferences } from '../domain/user-notification-preferences';
 
@@ -21,6 +22,7 @@ export type NotificationStoreDurableState = Readonly<{
   preferences: UserNotificationPreferences[];
   telegram: TelegramConnection[];
   email: EmailConnection[];
+  slack: SlackConnection[];
   deliveries: DeliveryResult[];
   /** W3-O02-b — in-flight / pending / retryable / terminal queue work (not Outbox). */
   queue: NotificationDeliveryQueueItem[];
@@ -31,6 +33,7 @@ export class InMemoryNotificationStore {
   private readonly preferences = new Map<string, UserNotificationPreferences>();
   private readonly telegram = new Map<string, TelegramConnection>();
   private readonly email = new Map<string, EmailConnection>();
+  private readonly slack = new Map<string, SlackConnection>();
   private readonly tokenIndex = new Map<string, string>();
   private readonly deliveries: DeliveryResult[] = [];
   private readonly queue = new Map<string, NotificationDeliveryQueueItem>();
@@ -71,6 +74,14 @@ export class InMemoryNotificationStore {
 
   saveEmail(connection: EmailConnection): void {
     this.email.set(key(connection.workspaceId, connection.userId), connection);
+  }
+
+  getSlack(workspaceId: string, userId: string): SlackConnection | undefined {
+    return this.slack.get(key(workspaceId, userId));
+  }
+
+  saveSlack(connection: SlackConnection): void {
+    this.slack.set(key(connection.workspaceId, connection.userId), connection);
   }
 
   recordDelivery(result: DeliveryResult): void {
@@ -123,6 +134,7 @@ export class InMemoryNotificationStore {
       preferences: [...this.preferences.values()],
       telegram: [...this.telegram.values()],
       email: [...this.email.values()],
+      slack: [...this.slack.values()],
       deliveries: [...this.deliveries],
       queue: [...this.queue.values()],
     });
@@ -132,6 +144,7 @@ export class InMemoryNotificationStore {
     this.preferences.clear();
     this.telegram.clear();
     this.email.clear();
+    this.slack.clear();
     this.tokenIndex.clear();
     this.deliveries.length = 0;
     this.queue.clear();
@@ -143,6 +156,9 @@ export class InMemoryNotificationStore {
     }
     for (const connection of state.email ?? []) {
       this.saveEmail(connection);
+    }
+    for (const connection of state.slack ?? []) {
+      this.saveSlack(connection);
     }
     for (const delivery of state.deliveries ?? []) {
       this.deliveries.push(delivery);

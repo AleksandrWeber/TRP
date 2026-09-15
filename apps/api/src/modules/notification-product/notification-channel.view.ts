@@ -1,8 +1,8 @@
 /**
  * PC-07 — channel-agnostic product views over existing Notification Delivery.
  *
- * Notification Delivery remains owner. Telegram and Email are active transports.
- * Slack/Discord/Teams/Push stay reserved-inactive. Not a scheduler.
+ * Notification Delivery remains owner. Telegram, Email, and Slack are active
+ * transports. Discord/Teams/Push stay reserved-inactive. Not a scheduler.
  */
 
 import type { DeliveryResult, DeliverySkipReason } from '../notification-delivery/domain/delivery';
@@ -16,6 +16,8 @@ import {
 } from '../notification-delivery/domain/notification-type';
 import type { EmailConnection } from '../notification-delivery/domain/email-connection';
 import type { EmailTransportProjection } from '../notification-delivery/domain/email-transport-projection';
+import type { SlackConnection } from '../notification-delivery/domain/slack-connection';
+import type { SlackTransportProjection } from '../notification-delivery/domain/slack-transport-projection';
 import type { TelegramConnection } from '../notification-delivery/domain/telegram-connection';
 import type { TelegramTransportProjection } from '../notification-delivery/domain/telegram-transport-projection';
 import type { UserNotificationPreferences } from '../notification-delivery/domain/user-notification-preferences';
@@ -30,9 +32,8 @@ import {
 } from './notification.view';
 
 export const RESERVED_CHANNEL_REQUIRED_FIELDS: Readonly<
-  Record<Exclude<NotificationChannelId, 'telegram' | 'email'>, readonly string[]>
+  Record<Exclude<NotificationChannelId, 'telegram' | 'email' | 'slack'>, readonly string[]>
 > = Object.freeze({
-  slack: Object.freeze(['Workspace', 'Webhook', 'Channel']),
   discord: Object.freeze(['Webhook', 'Channel']),
   teams: Object.freeze(['Webhook', 'Team', 'Channel']),
   push: Object.freeze(['Device', 'Browser']),
@@ -44,8 +45,14 @@ export const EMAIL_CHANNEL_REQUIRED_FIELDS = Object.freeze([
   'Send test',
 ]);
 
+export const SLACK_CHANNEL_REQUIRED_FIELDS = Object.freeze([
+  'Slack Incoming Webhook (Connections)',
+  'Bind',
+  'Send test',
+]);
+
 export type ChannelConfigurationKind =
-  'telegram-connection' | 'email-connection' | 'reserved-inactive';
+  'telegram-connection' | 'email-connection' | 'slack-connection' | 'reserved-inactive';
 
 export type NotificationChannelCardView = {
   channelId: NotificationChannelId;
@@ -58,8 +65,15 @@ export type NotificationChannelCardView = {
   connectAvailable: boolean;
   configurationKind: ChannelConfigurationKind;
   transport:
-    TelegramTransportProjection['transport'] | EmailTransportProjection['transport'] | 'none';
-  connectionStatus: TelegramConnection['status'] | EmailConnection['status'] | 'reserved-inactive';
+    | TelegramTransportProjection['transport']
+    | EmailTransportProjection['transport']
+    | SlackTransportProjection['transport']
+    | 'none';
+  connectionStatus:
+    | TelegramConnection['status']
+    | EmailConnection['status']
+    | SlackConnection['status']
+    | 'reserved-inactive';
   liveTransportActivated: boolean;
   botApiUsed: boolean;
   authorityClass: 'notification-projection';
@@ -151,6 +165,8 @@ export function toChannelCardView(input: {
   honesty: TelegramTransportProjection;
   emailConnection?: EmailConnection;
   emailHonesty?: EmailTransportProjection;
+  slackConnection?: SlackConnection;
+  slackHonesty?: SlackTransportProjection;
 }): NotificationChannelCardView {
   const offered = input.channel.status === 'active';
   if (input.channel.channelId === 'email') {
@@ -174,6 +190,31 @@ export function toChannelCardView(input: {
       transport: offered ? emailHonesty.transport : 'none',
       connectionStatus: offered ? (email?.status ?? 'not-connected') : 'reserved-inactive',
       liveTransportActivated: offered ? emailHonesty.smtpUsed : false,
+      botApiUsed: false,
+      authorityClass: 'notification-projection',
+    };
+  }
+  if (input.channel.channelId === 'slack') {
+    const slack = input.slackConnection;
+    const slackHonesty = input.slackHonesty ?? {
+      transport: 'in-memory' as const,
+      webhookUsed: false,
+    };
+    const bound = slack?.status === 'pending' || slack?.status === 'connected';
+    const enabled = input.prefs.channels.slack === true;
+    return {
+      channelId: 'slack',
+      label: input.channel.label,
+      status: input.channel.status,
+      offered,
+      enabled,
+      configurable: offered,
+      testAvailable: offered && bound,
+      connectAvailable: offered && slack?.status !== 'connected',
+      configurationKind: 'slack-connection',
+      transport: offered ? slackHonesty.transport : 'none',
+      connectionStatus: offered ? (slack?.status ?? 'not-connected') : 'reserved-inactive',
+      liveTransportActivated: offered ? slackHonesty.webhookUsed : false,
       botApiUsed: false,
       authorityClass: 'notification-projection',
     };
@@ -226,6 +267,18 @@ export function toChannelConfigurationView(
       userEnteredBind: true,
     };
   }
+  if (card.channelId === 'slack') {
+    return {
+      kind: 'slack-connection',
+      requiredFields: SLACK_CHANNEL_REQUIRED_FIELDS,
+      configurable: true,
+      testAvailable: card.testAvailable,
+      connectAvailable: card.connectAvailable,
+      liveTransportActivated: card.liveTransportActivated,
+      botApiUsed: false,
+      userEnteredBind: false,
+    };
+  }
   return {
     kind: 'reserved-inactive',
     requiredFields: RESERVED_CHANNEL_REQUIRED_FIELDS[card.channelId],
@@ -262,6 +315,7 @@ export function toRoutingMatrixView(input: {
   evaluatedAt: string;
   honesty: TelegramTransportProjection;
   emailConnection?: EmailConnection;
+  slackConnection?: SlackConnection;
 }): NotificationRoutingMatrixView {
   const routing = toRoutingView(input);
   return {
@@ -341,6 +395,8 @@ export function toChannelsWorkspaceView(input: {
   honesty: TelegramTransportProjection;
   emailConnection?: EmailConnection;
   emailHonesty?: EmailTransportProjection;
+  slackConnection?: SlackConnection;
+  slackHonesty?: SlackTransportProjection;
 }): NotificationChannelsWorkspaceView {
   const cards = input.channels.map((channel) =>
     toChannelCardView({
@@ -350,6 +406,8 @@ export function toChannelsWorkspaceView(input: {
       honesty: input.honesty,
       emailConnection: input.emailConnection,
       emailHonesty: input.emailHonesty,
+      slackConnection: input.slackConnection,
+      slackHonesty: input.slackHonesty,
     }),
   );
   return {
@@ -379,6 +437,8 @@ export function toChannelDetailView(input: {
   honesty: TelegramTransportProjection;
   emailConnection?: EmailConnection;
   emailHonesty?: EmailTransportProjection;
+  slackConnection?: SlackConnection;
+  slackHonesty?: SlackTransportProjection;
 }): NotificationChannelDetailView | null {
   const descriptor = input.channels.find((channel) => channel.channelId === input.channelId);
   if (!descriptor) return null;
@@ -389,6 +449,8 @@ export function toChannelDetailView(input: {
     honesty: input.honesty,
     emailConnection: input.emailConnection,
     emailHonesty: input.emailHonesty,
+    slackConnection: input.slackConnection,
+    slackHonesty: input.slackHonesty,
   });
   const matrix = toRoutingMatrixView(input);
   return {

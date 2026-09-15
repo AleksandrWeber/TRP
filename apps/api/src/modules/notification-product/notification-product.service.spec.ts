@@ -93,11 +93,11 @@ describe('NotificationProductService (PC-06)', () => {
     expect(notifications.upsertPreferences).toHaveBeenCalled();
     expect(notifications.deliver).not.toHaveBeenCalled();
     expect(service.listChannels().items.find((item) => item.channelId === 'slack')?.offered).toBe(
-      false,
+      true,
     );
   });
 
-  it('exposes channel workspace, telegram detail, and offered email without sending', () => {
+  it('exposes channel workspace, telegram detail, and offered email/slack without sending', () => {
     const { service, notifications } = harness();
     const workspace = service.getChannelsWorkspace('ws-1', 'user-1', evaluatedAt);
     expect(workspace.channels).toHaveLength(6);
@@ -115,7 +115,7 @@ describe('NotificationProductService (PC-06)', () => {
     expect(email?.configuration.kind).toBe('email-connection');
     expect(service.getChannelDiagnostics('ws-1', 'user-1', 'email')?.testAvailable).toBe(false);
     expect(service.getChannel('ws-1', 'user-1', 'slack', evaluatedAt)?.configuration.kind).toBe(
-      'reserved-inactive',
+      'slack-connection',
     );
 
     const history = service.listChannelDeliveries({

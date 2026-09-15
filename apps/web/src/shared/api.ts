@@ -2071,6 +2071,61 @@ export type EmailDiagnosticsView = {
   authorityClass: 'notification-projection';
 };
 
+export type SlackConnectionProductView = {
+  status: 'not-connected' | 'pending' | 'connected';
+  connected: boolean;
+  bound: boolean;
+  pending: boolean;
+  verified: boolean;
+  failed: boolean;
+  lastErrorCode: string | null;
+  connectedAt: string | null;
+  boundAt: string | null;
+  updatedAt: string;
+  bindAvailable: boolean;
+  testAvailable: boolean;
+  disconnectAvailable: boolean;
+  controlPlane: false;
+  transport: 'in-memory' | 'webhook';
+  webhookUsed: boolean;
+  userEnteredBind: false;
+  authorityClass: 'notification-projection';
+};
+
+export type SlackTestProductView = {
+  connection: SlackConnectionProductView;
+  delivery: NotificationDeliveryDetailView;
+  controlPlane: false;
+  webhookUsed: boolean;
+  authorityClass: 'notification-projection';
+};
+
+export type SlackDiagnosticsView = {
+  connection: SlackConnectionProductView;
+  verification: {
+    status: 'not-connected' | 'pending' | 'connected';
+    verified: boolean;
+    bound: boolean;
+    pending: boolean;
+    failed: boolean;
+    lastErrorCode: string | null;
+  };
+  lastSlackDelivery: {
+    deliveryId: string;
+    outcome: string;
+    skipReason: string | null;
+    adapterReached: boolean;
+    createdAt: string;
+  } | null;
+  slackTransport: 'in-memory' | 'webhook';
+  webhookUsed: boolean;
+  controlPlane: false;
+  deferredChannelsActivated: false;
+  scheduler: false;
+  retries: false;
+  authorityClass: 'notification-projection';
+};
+
 export type PreferenceClockView = {
   timezone: string;
   dailyDeliveryTime: string;
@@ -2190,8 +2245,9 @@ export type NotificationChannelCardView = {
   configurable: boolean;
   testAvailable: boolean;
   connectAvailable: boolean;
-  configurationKind: 'telegram-connection' | 'email-connection' | 'reserved-inactive';
-  transport: 'in-memory' | 'bot-api' | 'smtp' | 'none';
+  configurationKind:
+    'telegram-connection' | 'email-connection' | 'slack-connection' | 'reserved-inactive';
+  transport: 'in-memory' | 'bot-api' | 'smtp' | 'webhook' | 'none';
   connectionStatus: 'not-connected' | 'pending' | 'connected' | 'reserved-inactive';
   liveTransportActivated: boolean;
   botApiUsed: boolean;
@@ -2199,7 +2255,7 @@ export type NotificationChannelCardView = {
 };
 
 export type NotificationChannelConfigurationView = {
-  kind: 'telegram-connection' | 'email-connection' | 'reserved-inactive';
+  kind: 'telegram-connection' | 'email-connection' | 'slack-connection' | 'reserved-inactive';
   requiredFields: readonly string[];
   configurable: boolean;
   testAvailable: boolean;
@@ -4312,6 +4368,23 @@ export const api = {
       body: JSON.stringify({}),
     }),
   getEmailDiagnostics: () => request<EmailDiagnosticsView>('/email/diagnostics'),
+  getSlackConnection: () => request<SlackConnectionProductView>('/slack/connection'),
+  bindSlackChannel: () =>
+    request<SlackConnectionProductView>('/slack/bind', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  sendSlackTest: () =>
+    request<SlackTestProductView>('/slack/test', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  disconnectSlack: () =>
+    request<SlackConnectionProductView>('/slack/disconnect', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  getSlackDiagnostics: () => request<SlackDiagnosticsView>('/slack/diagnostics'),
   listTelegramDeliveries: (query: NotificationDeliveryListQuery = {}) => {
     const params = new URLSearchParams();
     if (query.userId) params.set('userId', query.userId);

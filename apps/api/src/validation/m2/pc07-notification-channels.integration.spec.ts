@@ -25,7 +25,7 @@ const evaluatedAt = '2026-08-15T19:00:00.000Z';
 
 /**
  * PC-07: Notification Channels HTTP over existing catalog, routing, and deliveries.
- * Telegram remains the only active transport. Reserved channels stay reserved.
+ * Telegram, Email, and Slack are active. Discord/Teams/Push stay reserved.
  */
 describe('PC-07 — Notification Channels product', () => {
   it('lists all catalog channels, routes existing types, and does not activate reserved transports', async () => {
@@ -75,7 +75,7 @@ describe('PC-07 — Notification Channels product', () => {
       'push',
     ]);
     expect(home.channels.find((channel) => channel.channelId === 'telegram')?.offered).toBe(true);
-    expect(home.channels.find((channel) => channel.channelId === 'slack')?.offered).toBe(false);
+    expect(home.channels.find((channel) => channel.channelId === 'slack')?.offered).toBe(true);
     expect(home.routingMatrix.rows).toHaveLength(13);
     expect(home.timing.scheduler).toBe(false);
     expect(home.timing.hourlyDigest).toBe(false);
@@ -93,7 +93,8 @@ describe('PC-07 — Notification Channels product', () => {
     expect(email.testAvailable).toBe(false);
     expect(email.liveTransportActivated).toBe(false);
     const slack = channels.get({ user: OWNER }, workspace.id, { channelId: 'slack' });
-    expect(slack.configuration.kind).toBe('reserved-inactive');
+    expect(slack.configuration.kind).toBe('slack-connection');
+    expect(slack.offered).toBe(true);
 
     const history = channels.listDeliveries(
       { user: OWNER },
@@ -142,7 +143,9 @@ describe('PC-07 — Notification Channels product', () => {
       'in-memory',
     );
     expect(home.channels.find((channel) => channel.channelId === 'email')?.botApiUsed).toBe(false);
-    expect(home.channels.find((channel) => channel.channelId === 'slack')?.transport).toBe('none');
+    expect(home.channels.find((channel) => channel.channelId === 'slack')?.transport).toBe(
+      'in-memory',
+    );
 
     const telegram = channels.get({ user: OWNER }, workspace.id, { channelId: 'telegram' });
     expect(telegram.botApiUsed).toBe(true);

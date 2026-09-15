@@ -64,6 +64,16 @@ export {
   type EmailConnectionStatus,
 } from './domain/email-connection';
 export {
+  SLACK_CONNECTION_STATUSES,
+  bindSlackChannel,
+  disconnectSlackConnection,
+  markSlackWebhookFailed,
+  markSlackWebhookVerified,
+  notConnectedSlack,
+  type SlackConnection,
+  type SlackConnectionStatus,
+} from './domain/slack-connection';
+export {
   createUserNotificationPreferences,
   type ChannelEnablement,
   type CreateUserNotificationPreferencesInput,
@@ -132,11 +142,14 @@ export {
 export { InMemoryNotificationStore } from './adapters/in-memory-notification-store';
 export { InMemoryTelegramAdapter } from './adapters/in-memory-telegram.adapter';
 export { InMemoryEmailAdapter } from './adapters/in-memory-email.adapter';
+export { InMemorySlackAdapter } from './adapters/in-memory-slack.adapter';
 export { ReservedInactiveChannelAdapter } from './adapters/reserved-inactive-channel.adapter';
 export { ProductionTelegramBotApiAdapter } from './adapters/telegram-bot-api.adapter';
 export { TelegramBotTokenResolver } from './adapters/telegram-bot-token.resolver';
 export { ProductionSmtpNotificationAdapter } from './adapters/production-smtp-notification.adapter';
 export { SmtpCredentialResolver } from './adapters/smtp-credential.resolver';
+export { ProductionSlackWebhookNotificationAdapter } from './adapters/production-slack-webhook-notification.adapter';
+export { SlackWebhookCredentialResolver } from './adapters/slack-webhook-credential.resolver';
 export { NotificationDeliveryBoundaryService } from './notification-boundary.service';
 export { NotificationDeliveryService } from './notification-delivery.service';
 export { NotificationDeliveryModule } from './notification-delivery.module';
@@ -145,14 +158,18 @@ export {
   NOTIFICATION_SERVICE_PORT,
   TELEGRAM_CHANNEL_ADAPTER,
   EMAIL_CHANNEL_ADAPTER,
+  SLACK_CHANNEL_ADAPTER,
   type NotificationChannelPort,
   type NotificationChannelSendCommand,
   type NotificationServicePort,
   type ListDeliveriesQuery,
   type SendTestNotificationRequest,
   type SendTestEmailNotificationRequest,
+  type SendTestSlackNotificationRequest,
   type EmailBindRequest,
   type EmailDisconnectRequest,
+  type SlackBindRequest,
+  type SlackDisconnectRequest,
   type TelegramConnectRequest,
   type TelegramConnectResult,
   type TelegramDisconnectRequest,

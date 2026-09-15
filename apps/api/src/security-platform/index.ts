@@ -46,6 +46,12 @@ export {
   type SsrfValidationResult,
 } from './ssrf-allowlist';
 export { validateSmtpOutboundHost, type SmtpHostGuardResult } from './smtp-host-guard';
+export {
+  validateSlackIncomingWebhookUrl,
+  SLACK_INCOMING_WEBHOOK_HOST,
+  MAX_SLACK_WEBHOOK_URL_CHARS,
+  type SlackWebhookUrlGuardResult,
+} from './slack-webhook-url-guard';
 export { emitPlatformSecurityEvent, type PlatformSecurityEvent } from './security-event';
 export { registerSecurityPlatformHttpHooks } from './security-platform.http';
 export { PlatformSecurityExceptionFilter } from './platform-security-exception.filter';

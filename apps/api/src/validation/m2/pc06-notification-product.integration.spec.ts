@@ -78,7 +78,7 @@ describe('PC-06 — Notification product', () => {
     expect(snapshot.telegram.connectAvailable).toBe(false);
     expect(snapshot.telegram.transport).toBe('in-memory');
     expect(snapshot.channels.find((channel) => channel.channelId === 'email')?.offered).toBe(true);
-    expect(snapshot.channels.find((channel) => channel.channelId === 'slack')?.offered).toBe(false);
+    expect(snapshot.channels.find((channel) => channel.channelId === 'slack')?.offered).toBe(true);
     expect(snapshot.controlPlane).toBe(false);
 
     const page = deliveries.list({ user: OWNER }, workspace.id, { type: 'daily-report' });

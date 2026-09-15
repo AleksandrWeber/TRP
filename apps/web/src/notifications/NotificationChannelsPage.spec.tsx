@@ -59,15 +59,15 @@ const workspace: NotificationChannelsWorkspaceView = {
     {
       channelId: 'slack',
       label: 'Slack',
-      status: 'reserved-inactive',
-      offered: false,
+      status: 'active',
+      offered: true,
       enabled: false,
-      configurable: false,
+      configurable: true,
       testAvailable: false,
-      connectAvailable: false,
-      configurationKind: 'reserved-inactive',
-      transport: 'none',
-      connectionStatus: 'reserved-inactive',
+      connectAvailable: true,
+      configurationKind: 'slack-connection',
+      transport: 'in-memory',
+      connectionStatus: 'not-connected',
       liveTransportActivated: false,
       botApiUsed: false,
       authorityClass: 'notification-projection',
@@ -139,7 +139,7 @@ const workspace: NotificationChannelsWorkspaceView = {
       },
     ],
     channelIds: ['telegram', 'email', 'slack', 'discord', 'teams', 'push'],
-    offeredChannelIds: ['telegram', 'email'],
+    offeredChannelIds: ['telegram', 'email', 'slack'],
     deferredChannelsActivated: false,
     controlPlane: false,
     authorityClass: 'notification-projection',
@@ -166,11 +166,11 @@ const workspace: NotificationChannelsWorkspaceView = {
   authorityClass: 'notification-projection',
 };
 
-const slackChannel: NotificationChannelDetailView = {
-  ...workspace.channels[2],
+const reservedChannel: NotificationChannelDetailView = {
+  ...workspace.channels[3],
   configuration: {
     kind: 'reserved-inactive',
-    requiredFields: ['Workspace', 'Webhook', 'Channel'],
+    requiredFields: ['Webhook', 'Channel'],
     configurable: false,
     testAvailable: false,
     connectAvailable: false,
@@ -180,7 +180,7 @@ const slackChannel: NotificationChannelDetailView = {
   },
   routing: [],
   diagnostics: {
-    channelId: 'slack',
+    channelId: 'discord',
     connectionState: 'reserved-inactive',
     enabled: false,
     offered: false,
@@ -198,7 +198,7 @@ const slackChannel: NotificationChannelDetailView = {
   },
 };
 
-const diagnostics: NotificationChannelDiagnosticsView = slackChannel.diagnostics;
+const diagnostics: NotificationChannelDiagnosticsView = reservedChannel.diagnostics;
 
 const item: NotificationDeliveryListItemView = {
   deliveryId: 'del-1',
@@ -232,6 +232,7 @@ describe('Notification Channels UI (PC-07)', () => {
     expect(html).toContain('Notification channels');
     expect(html).toContain('data-testid="channel-card-telegram"');
     expect(html).toContain('data-testid="channel-card-email"');
+    expect(html).toContain('data-testid="channel-card-slack"');
     expect(html).toContain('Reserved — not offered');
     expect(html).toContain('Routing matrix');
     expect(html).toContain('Immediate on deliver');
@@ -249,7 +250,7 @@ describe('Notification Channels UI (PC-07)', () => {
     const html = renderToStaticMarkup(
       <MemoryRouter>
         <ChannelDetailView
-          channel={slackChannel}
+          channel={reservedChannel}
           diagnostics={diagnostics}
           history={[item]}
           loading={false}
@@ -257,7 +258,7 @@ describe('Notification Channels UI (PC-07)', () => {
         />
       </MemoryRouter>,
     );
-    expect(html).toContain('Workspace');
+    expect(html).toContain('Webhook');
     expect(html).toContain('Reserved — not offered');
     expect(html).toContain('Channel reserved');
     expect(html).toContain('Latency');
@@ -269,7 +270,7 @@ describe('Notification Channels UI (PC-07)', () => {
     const history = renderToStaticMarkup(
       <MemoryRouter>
         <NotificationChannelHistoryView
-          channelId="slack"
+          channelId="discord"
           items={[item]}
           search=""
           outcome="all"
@@ -282,7 +283,7 @@ describe('Notification Channels UI (PC-07)', () => {
         />
       </MemoryRouter>,
     );
-    expect(history).toContain('Slack delivery history');
+    expect(history).toContain('Discord delivery history');
     expect(history).toContain('Channel reserved');
   });
 });

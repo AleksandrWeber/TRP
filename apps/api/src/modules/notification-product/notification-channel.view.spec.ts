@@ -35,17 +35,16 @@ describe('PC-07 notification channel product views', () => {
     expect(view.channels).toHaveLength(6);
     expect(view.channels.find((channel) => channel.channelId === 'telegram')?.offered).toBe(true);
     expect(view.channels.find((channel) => channel.channelId === 'email')?.offered).toBe(true);
-    expect(view.channels.find((channel) => channel.channelId === 'slack')?.offered).toBe(false);
-    expect(view.channels.find((channel) => channel.channelId === 'slack')?.configurable).toBe(
-      false,
-    );
+    expect(view.channels.find((channel) => channel.channelId === 'slack')?.offered).toBe(true);
+    expect(view.channels.find((channel) => channel.channelId === 'slack')?.configurable).toBe(true);
     expect(view.deferredChannelsActivated).toBe(false);
     expect(view.timing.scheduler).toBe(false);
     expect(view.timing.hourlyDigest).toBe(false);
     expect(view.timing.perChannelQuietHours).toBe(false);
     expect(view.routingMatrix.rows).toHaveLength(13);
-    expect(view.routingMatrix.offeredChannelIds).toEqual(['telegram', 'email']);
-    expect(JSON.stringify(view)).not.toContain('webhook');
+    expect(view.routingMatrix.offeredChannelIds).toEqual(['telegram', 'email', 'slack']);
+    expect(JSON.stringify(view)).not.toContain('hooks.slack.com');
+    expect(JSON.stringify(view)).not.toContain('webhookUrl');
   });
 
   it('maps telegram as configurable and email as offered SMTP connection', () => {
@@ -108,9 +107,10 @@ describe('PC-07 notification channel product views', () => {
     expect(email?.transport).toBe('in-memory');
     expect(email?.botApiUsed).toBe(false);
     expect(email?.liveTransportActivated).toBe(false);
-    expect(slack?.transport).toBe('none');
+    expect(slack?.transport).toBe('in-memory');
     expect(slack?.botApiUsed).toBe(false);
     expect(slack?.liveTransportActivated).toBe(false);
+    expect(slack?.configurationKind).toBe('slack-connection');
 
     const telegramDetail = toChannelDetailView({
       channelId: 'telegram',
@@ -148,9 +148,10 @@ describe('PC-07 notification channel product views', () => {
     expect(emailDetail?.botApiUsed).toBe(false);
     expect(emailDetail?.liveTransportActivated).toBe(false);
     expect(emailDetail?.configuration.botApiUsed).toBe(false);
-    expect(slackDetail?.transport).toBe('none');
+    expect(slackDetail?.transport).toBe('in-memory');
     expect(slackDetail?.botApiUsed).toBe(false);
     expect(slackDetail?.liveTransportActivated).toBe(false);
+    expect(slackDetail?.configuration.kind).toBe('slack-connection');
     expect(slackDetail?.configuration.botApiUsed).toBe(false);
   });
 });

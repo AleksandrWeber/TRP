@@ -144,7 +144,7 @@ describe('PC-15 15-d — Reporting → Notification Delivery product flow', () =
     ).toBe('active');
     expect(
       notifications.listChannels().find((channel) => channel.channelId === 'slack')?.status,
-    ).toBe('reserved-inactive');
+    ).toBe('active');
   });
 
   it('uses existing weekly-report type for ops_weekly and preserves ReportRun immutability', async () => {

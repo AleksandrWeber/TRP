@@ -19,6 +19,9 @@ const WELL_FORMED: Readonly<Record<HoldableSecretType, Record<string, string>>> 
     password: 'pass-1',
     sender: 'alerts@example.com',
   },
+  [HoldableSecretType.SlackWebhook]: {
+    webhookUrl: 'https://hooks.slack.com/services/TEAM/HOOK/TOKEN',
+  },
   [HoldableSecretType.OpenRouter]: { apiKey: 'or-key-1' },
 };
 

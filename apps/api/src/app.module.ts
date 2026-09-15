@@ -29,6 +29,7 @@ import { ReportingProductModule } from './modules/reporting-product';
 import { NotificationProductModule } from './modules/notification-product';
 import { TelegramProductModule } from './modules/telegram-product';
 import { EmailProductModule } from './modules/email-product';
+import { SlackProductModule } from './modules/slack-product';
 import { ExchangeConnectivityModule } from './modules/exchange-connectivity';
 import { ConnectionsModule } from './modules/connections/connections.module';
 import { AiConnectivityModule } from './modules/ai-connectivity';
@@ -183,6 +184,7 @@ import { OperationalContinuityModule } from './modules/operational-continuity';
     NotificationProductModule,
     TelegramProductModule,
     EmailProductModule,
+    SlackProductModule,
     ExchangeConnectivityModule,
     ConnectionsModule,
     AiConnectivityModule,

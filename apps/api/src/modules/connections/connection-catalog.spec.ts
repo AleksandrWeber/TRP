@@ -54,6 +54,11 @@ describe('Connection catalog (W2-S01-a)', () => {
               displayName: 'SMTP',
               credentialFields: ['host', 'port', 'username', 'password', 'sender'],
             },
+            {
+              id: 'SLACK',
+              displayName: 'Slack Incoming Webhook',
+              credentialFields: ['webhookUrl'],
+            },
           ],
         },
         {

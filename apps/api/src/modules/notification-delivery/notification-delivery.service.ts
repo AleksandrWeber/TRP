@@ -13,6 +13,8 @@ import { Inject, Injectable, Optional } from '@nestjs/common';
 import type { Role } from '../identity/role';
 import { InMemoryEmailAdapter } from './adapters/in-memory-email.adapter';
 import { InMemoryNotificationStore } from './adapters/in-memory-notification-store';
+import { InMemorySlackAdapter } from './adapters/in-memory-slack.adapter';
+import { SlackWebhookCredentialResolver } from './adapters/slack-webhook-credential.resolver';
 import { TelegramStartBindObserver } from './adapters/telegram-start-bind.observer';
 import {
   createDeliveryResult,
@@ -35,6 +37,14 @@ import {
   type EmailConnection,
 } from './domain/email-connection';
 import {
+  bindSlackChannel as applySlackChannelBind,
+  disconnectSlackConnection,
+  markSlackWebhookFailed,
+  markSlackWebhookVerified,
+  notConnectedSlack,
+  type SlackConnection,
+} from './domain/slack-connection';
+import {
   bindTelegramChat,
   createPendingTelegramConnection,
   disconnectTelegramConnection,
@@ -47,6 +57,7 @@ import {
 } from './domain/user-notification-preferences';
 import {
   EMAIL_CHANNEL_ADAPTER,
+  SLACK_CHANNEL_ADAPTER,
   TELEGRAM_CHANNEL_ADAPTER,
   type EmailBindRequest,
   type EmailDisconnectRequest,
@@ -54,6 +65,9 @@ import {
   type NotificationServicePort,
   type SendTestEmailNotificationRequest,
   type SendTestNotificationRequest,
+  type SendTestSlackNotificationRequest,
+  type SlackBindRequest,
+  type SlackDisconnectRequest,
   type TelegramConnectRequest,
   type TelegramConnectResult,
   type TelegramDisconnectRequest,
@@ -78,6 +92,7 @@ function nowOr(value: string | undefined): string {
 @Injectable()
 export class NotificationDeliveryService implements NotificationServicePort {
   private readonly email: NotificationChannelPort;
+  private readonly slack: NotificationChannelPort;
 
   constructor(
     @Inject(InMemoryNotificationStore)
@@ -90,8 +105,15 @@ export class NotificationDeliveryService implements NotificationServicePort {
     @Optional()
     @Inject(EMAIL_CHANNEL_ADAPTER)
     email?: NotificationChannelPort,
+    @Optional()
+    @Inject(SLACK_CHANNEL_ADAPTER)
+    slack?: NotificationChannelPort,
+    @Optional()
+    @Inject(SlackWebhookCredentialResolver)
+    private readonly slackCredentials?: SlackWebhookCredentialResolver,
   ) {
     this.email = email ?? new InMemoryEmailAdapter();
+    this.slack = slack ?? new InMemorySlackAdapter();
   }
 
   listChannels() {
@@ -343,6 +365,115 @@ export class NotificationDeliveryService implements NotificationServicePort {
     return delivery;
   }
 
+  getSlackConnection(workspaceId: string, userId: string): SlackConnection {
+    const existing = this.store.getSlack(workspaceId, userId);
+    if (existing) return existing;
+    const created = notConnectedSlack(workspaceId, userId, new Date().toISOString());
+    this.store.saveSlack(created);
+    return created;
+  }
+
+  async bindSlackChannel(cmd: SlackBindRequest): Promise<SlackConnection> {
+    const configured = await this.slackCredentials?.isConfigured({
+      workspaceId: cmd.workspaceId,
+      actorUserId: cmd.actorUserId ?? cmd.userId,
+      actorRole: cmd.actorRole,
+    });
+    if (!configured) {
+      throw new Error('Slack webhook is not configured');
+    }
+    const current = this.getSlackConnection(cmd.workspaceId, cmd.userId);
+    const next = applySlackChannelBind(current, nowOr(cmd.requestedAt));
+    this.store.saveSlack(next);
+    return next;
+  }
+
+  disconnectSlack(cmd: SlackDisconnectRequest): SlackConnection {
+    const current = this.getSlackConnection(cmd.workspaceId, cmd.userId);
+    const next = disconnectSlackConnection(current, nowOr(cmd.requestedAt));
+    this.store.saveSlack(next);
+    return next;
+  }
+
+  async sendTestSlackNotification(cmd: SendTestSlackNotificationRequest): Promise<DeliveryResult> {
+    const connection = this.getSlackConnection(cmd.workspaceId, cmd.userId);
+    if (connection.status === 'not-connected') {
+      throw new Error('Slack channel is not bound');
+    }
+    const requestedAt = nowOr(cmd.requestedAt);
+    const workspaceId = cmd.workspaceId.trim();
+    const queueItemId = `nq-${stableHash(
+      `${workspaceId}|${cmd.userId}|daily-report|${requestedAt}|slack-test|queue`,
+    )}`;
+    const deliveryId = `del-${stableHash(
+      `${workspaceId}|${cmd.userId}|daily-report|${requestedAt}|slack-test`,
+    )}`;
+
+    let queueItem = createPendingNotificationQueueItem({
+      queueItemId,
+      command: {
+        workspaceId,
+        userId: cmd.userId,
+        type: 'daily-report',
+        subject: 'Test notification',
+        body: 'TRP notification delivery test. Delivery channel only — not a trading command.',
+        requestedAt,
+        ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+        ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
+      },
+      createdAt: requestedAt,
+    });
+    this.store.saveQueueItem(queueItem);
+    queueItem = withNotificationQueueStatus(queueItem, 'in-flight', { updatedAt: requestedAt });
+    this.store.saveQueueItem(queueItem);
+
+    const result = await this.slack.send({
+      chatId: '',
+      subject: 'Test notification',
+      body: 'TRP notification delivery test. Delivery channel only — not a trading command.',
+      workspaceId,
+      ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+      ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
+    });
+
+    const verifiedAt = nowOr(undefined);
+    if (result.ok) {
+      this.store.saveSlack(markSlackWebhookVerified(connection, verifiedAt));
+    } else {
+      this.store.saveSlack(markSlackWebhookFailed(connection, verifiedAt, result.detail));
+    }
+
+    const attempts: ChannelDeliveryAttempt[] = [
+      Object.freeze(
+        result.ok
+          ? { channelId: 'slack' as const, outcome: 'delivered' as const }
+          : {
+              channelId: 'slack' as const,
+              outcome: 'failed' as const,
+              detail: result.detail,
+            },
+      ),
+    ];
+    const delivery = createDeliveryResult({
+      deliveryId,
+      workspaceId,
+      userId: cmd.userId,
+      type: 'daily-report',
+      attempts,
+      createdAt: requestedAt,
+    });
+    this.store.recordDelivery(delivery);
+
+    const terminalStatus = delivery.outcome === 'failed' ? 'retryable' : 'completed';
+    queueItem = withNotificationQueueStatus(queueItem, terminalStatus, {
+      updatedAt: verifiedAt,
+      deliveryId: delivery.deliveryId,
+      ...(result.ok ? {} : { detail: result.detail }),
+    });
+    this.store.saveQueueItem(queueItem);
+    return delivery;
+  }
+
   async deliver(cmd: DeliverNotificationCommand): Promise<DeliveryResult> {
     const workspaceId = cmd.workspaceId.trim();
     if (!workspaceId) {
@@ -370,9 +501,11 @@ export class NotificationDeliveryService implements NotificationServicePort {
     const prefs = this.getPreferences(workspaceId, cmd.userId);
     const telegram = this.getTelegramConnection(workspaceId, cmd.userId);
     const email = this.getEmailConnection(workspaceId, cmd.userId);
+    const slack = this.getSlackConnection(workspaceId, cmd.userId);
     const routes = resolveDeliveryRoutes({ ...cmd, workspaceId }, prefs, {
       telegramConnected: telegram.status === 'connected' && Boolean(telegram.chatId),
       emailConnected: email.status === 'connected' && Boolean(email.recipient),
+      slackConnected: slack.status === 'connected',
     });
 
     const attempts: ChannelDeliveryAttempt[] = [];
@@ -432,6 +565,32 @@ export class NotificationDeliveryService implements NotificationServicePort {
                 }
               : {
                   channelId: 'email' as const,
+                  outcome: 'failed' as const,
+                  detail: result.detail,
+                },
+          ),
+        );
+        continue;
+      }
+
+      if (route.channelId === 'slack') {
+        const result = await this.slack.send({
+          chatId: '',
+          subject: cmd.subject,
+          body: cmd.body,
+          workspaceId,
+          ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+          ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
+        });
+        attempts.push(
+          Object.freeze(
+            result.ok
+              ? {
+                  channelId: 'slack' as const,
+                  outcome: 'delivered' as const,
+                }
+              : {
+                  channelId: 'slack' as const,
                   outcome: 'failed' as const,
                   detail: result.detail,
                 },

@@ -73,6 +73,10 @@ const CUSTOMER_BY_TYPE: Readonly<Record<HoldableSecretType, SecretClassification
   [HoldableSecretType.Okx]: { name: 'OKX API', ...CUSTOMER_ROW },
   [HoldableSecretType.Telegram]: { name: 'Telegram Bot', ...CUSTOMER_ROW },
   [HoldableSecretType.Smtp]: { name: 'SMTP (customer notification mail)', ...CUSTOMER_ROW },
+  [HoldableSecretType.SlackWebhook]: {
+    name: 'Slack Incoming Webhook',
+    ...CUSTOMER_ROW,
+  },
   [HoldableSecretType.OpenRouter]: { name: 'OpenRouter', ...CUSTOMER_ROW },
 };
 

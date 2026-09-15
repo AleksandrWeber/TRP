@@ -4,6 +4,7 @@
  * Canonical types: v3-s03-product-scope.md holdable types.
  */
 
+import { validateSlackIncomingWebhookUrl } from '../../security-platform/slack-webhook-url-guard';
 import { HoldableSecretType } from './holdable-secret-type';
 import { createSecretMaterial, type SecretFieldMap } from './secret-material';
 import { VaultValidationError } from './vault-errors';
@@ -14,6 +15,7 @@ const REQUIRED_FIELDS: Readonly<Record<HoldableSecretType, readonly string[]>> =
   [HoldableSecretType.Okx]: ['apiKey', 'apiSecret', 'passphrase'],
   [HoldableSecretType.Telegram]: ['botToken'],
   [HoldableSecretType.Smtp]: ['host', 'port', 'username', 'password', 'sender'],
+  [HoldableSecretType.SlackWebhook]: ['webhookUrl'],
   [HoldableSecretType.OpenRouter]: ['apiKey'],
 };
 
@@ -49,6 +51,10 @@ export function validateHoldableSecretFields(
     assertSmtpPort(material.port);
   }
 
+  if (type === HoldableSecretType.SlackWebhook) {
+    assertSlackWebhookUrl(material.webhookUrl);
+  }
+
   return material;
 }
 
@@ -59,5 +65,15 @@ function assertSmtpPort(port: string | undefined): void {
   const numeric = Number(port);
   if (!Number.isInteger(numeric) || numeric < 1 || numeric > 65535) {
     throw new VaultValidationError('Required credential fields are missing.');
+  }
+}
+
+function assertSlackWebhookUrl(webhookUrl: string | undefined): void {
+  if (webhookUrl === undefined) {
+    throw new VaultValidationError('Required credential fields are missing.');
+  }
+  const guard = validateSlackIncomingWebhookUrl(webhookUrl);
+  if (!guard.ok) {
+    throw new VaultValidationError('The credential could not be stored.');
   }
 }

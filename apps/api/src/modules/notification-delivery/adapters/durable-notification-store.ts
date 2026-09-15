@@ -20,6 +20,7 @@ import { prepareNotificationStoreStateForRecovery } from '../domain/notification
 import { buildNotificationQueueRecoveryDiagnostics } from '../domain/notification-queue-restart-recovery';
 import type { TelegramConnection } from '../domain/telegram-connection';
 import type { EmailConnection } from '../domain/email-connection';
+import type { SlackConnection } from '../domain/slack-connection';
 import type { UserNotificationPreferences } from '../domain/user-notification-preferences';
 import {
   InMemoryNotificationStore,
@@ -74,6 +75,11 @@ export class DurableNotificationStore extends InMemoryNotificationStore {
 
   override saveEmail(connection: EmailConnection): void {
     super.saveEmail(connection);
+    this.persist();
+  }
+
+  override saveSlack(connection: SlackConnection): void {
+    super.saveSlack(connection);
     this.persist();
   }
 

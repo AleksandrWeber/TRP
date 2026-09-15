@@ -8,12 +8,14 @@ import type { Role } from '../../identity/role';
 import type { DeliveryResult, DeliverNotificationCommand } from '../domain/delivery';
 import type { EmailConnection } from '../domain/email-connection';
 import type { NotificationChannelDescriptor } from '../domain/notification-channel';
+import type { SlackConnection } from '../domain/slack-connection';
 import type { TelegramConnection } from '../domain/telegram-connection';
 import type { UserNotificationPreferences } from '../domain/user-notification-preferences';
 
 export const NOTIFICATION_SERVICE_PORT = Symbol('NOTIFICATION_SERVICE_PORT');
 export const TELEGRAM_CHANNEL_ADAPTER = Symbol('TELEGRAM_CHANNEL_ADAPTER');
 export const EMAIL_CHANNEL_ADAPTER = Symbol('EMAIL_CHANNEL_ADAPTER');
+export const SLACK_CHANNEL_ADAPTER = Symbol('SLACK_CHANNEL_ADAPTER');
 
 export type UpsertNotificationPreferences = Readonly<{
   workspaceId: string;
@@ -75,6 +77,22 @@ export type EmailDisconnectRequest = Readonly<{
 
 export type SendTestEmailNotificationRequest = SendTestNotificationRequest;
 
+export type SlackBindRequest = Readonly<{
+  workspaceId: string;
+  userId: string;
+  requestedAt?: string;
+  actorUserId?: string;
+  actorRole?: Role;
+}>;
+
+export type SlackDisconnectRequest = Readonly<{
+  workspaceId: string;
+  userId: string;
+  requestedAt?: string;
+}>;
+
+export type SendTestSlackNotificationRequest = SendTestNotificationRequest;
+
 export type NotificationChannelSendCommand = Readonly<{
   chatId: string;
   subject: string;
@@ -126,6 +144,10 @@ export interface NotificationServicePort {
   bindEmailRecipient(cmd: EmailBindRequest): EmailConnection;
   disconnectEmail(cmd: EmailDisconnectRequest): EmailConnection;
   sendTestEmailNotification(cmd: SendTestEmailNotificationRequest): Promise<DeliveryResult>;
+  getSlackConnection(workspaceId: string, userId: string): SlackConnection;
+  bindSlackChannel(cmd: SlackBindRequest): Promise<SlackConnection>;
+  disconnectSlack(cmd: SlackDisconnectRequest): SlackConnection;
+  sendTestSlackNotification(cmd: SendTestSlackNotificationRequest): Promise<DeliveryResult>;
   deliver(cmd: DeliverNotificationCommand): Promise<DeliveryResult>;
   /**
    * Read-only list of already-recorded deliveries. Not a new SoT.
@@ -134,7 +156,7 @@ export interface NotificationServicePort {
   listDeliveries(query: ListDeliveriesQuery): readonly DeliveryResult[];
 }
 
-/** Channel send surface (Telegram and Email active; reserved channels inactive). */
+/** Channel send surface (Telegram, Email, Slack active; reserved channels inactive). */
 export interface NotificationChannelPort {
   readonly channelId: string;
   readonly active: boolean;
@@ -147,7 +169,7 @@ export const NOTIFICATION_PORTS_ACTIVE = Object.freeze({
   notificationService: true,
   telegramChannel: true,
   emailChannel: true,
-  slackChannel: false,
+  slackChannel: true,
   discordChannel: false,
   teamsChannel: false,
   pushChannel: false,

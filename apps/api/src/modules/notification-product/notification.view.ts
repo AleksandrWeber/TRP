@@ -24,6 +24,7 @@ import {
   type NotificationType,
 } from '../notification-delivery/domain/notification-type';
 import type { EmailConnection } from '../notification-delivery/domain/email-connection';
+import type { SlackConnection } from '../notification-delivery/domain/slack-connection';
 import type { TelegramConnection } from '../notification-delivery/domain/telegram-connection';
 import type { TelegramTransportProjection } from '../notification-delivery/domain/telegram-transport-projection';
 import type {
@@ -265,6 +266,7 @@ export function toPreferencesView(
   telegramConnected: boolean,
   evaluatedAt: string,
   emailConnected = false,
+  slackConnected = false,
 ): NotificationPreferencesView {
   return {
     workspaceId: prefs.workspaceId,
@@ -285,7 +287,7 @@ export function toPreferencesView(
             requestedAt: evaluatedAt,
           },
           prefs,
-          { telegramConnected, emailConnected },
+          { telegramConnected, emailConnected, slackConnected },
         ),
       ),
     ),
@@ -311,16 +313,19 @@ export function toRoutingView(input: {
   evaluatedAt: string;
   honesty: TelegramTransportProjection;
   emailConnection?: EmailConnection;
+  slackConnection?: SlackConnection;
 }): NotificationRoutingView {
   const telegramConnected =
     input.connection.status === 'connected' && Boolean(input.connection.chatId);
   const emailConnected =
     input.emailConnection?.status === 'connected' && Boolean(input.emailConnection.recipient);
+  const slackConnected = input.slackConnection?.status === 'connected';
   const preferences = toPreferencesView(
     input.prefs,
     telegramConnected,
     input.evaluatedAt,
     emailConnected,
+    slackConnected,
   );
   return {
     workspaceId: input.prefs.workspaceId,
@@ -343,16 +348,19 @@ export function toSettingsView(input: {
   evaluatedAt: string;
   honesty: TelegramTransportProjection;
   emailConnection?: EmailConnection;
+  slackConnection?: SlackConnection;
 }): NotificationSettingsView {
   const telegramConnected =
     input.connection.status === 'connected' && Boolean(input.connection.chatId);
   const emailConnected =
     input.emailConnection?.status === 'connected' && Boolean(input.emailConnection.recipient);
+  const slackConnected = input.slackConnection?.status === 'connected';
   const preferences = toPreferencesView(
     input.prefs,
     telegramConnected,
     input.evaluatedAt,
     emailConnected,
+    slackConnected,
   );
   const routing = toRoutingView(input);
   return {

@@ -28,6 +28,7 @@ export function defaultPurposeForType(
       return SecretPurpose.Trading;
     case 'telegram':
     case 'smtp':
+    case 'slack-webhook':
       return SecretPurpose.Notification;
     case 'openrouter':
       return SecretPurpose.Ai;

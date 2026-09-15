@@ -22,6 +22,7 @@ describe('RC-24 Epic 6 — Notification Delivery boundary', () => {
     expect(NOTIFICATION_DELIVERY_BOUNDARY.sourceOfTruth).toBe(false);
     expect(NOTIFICATION_DELIVERY_BOUNDARY.activePorts.telegramChannel).toBe(true);
     expect(NOTIFICATION_DELIVERY_BOUNDARY.activePorts.emailChannel).toBe(true);
+    expect(NOTIFICATION_DELIVERY_BOUNDARY.activePorts.slackChannel).toBe(true);
     expect(NOTIFICATION_DELIVERY_BOUNDARY.activePorts.rest).toBe(false);
   });
 

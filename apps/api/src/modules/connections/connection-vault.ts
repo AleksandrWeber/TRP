@@ -7,6 +7,7 @@ const PROVIDER_SECRET_TYPES: Readonly<Record<ConnectionProvider, HoldableType>> 
   OKX: HoldableSecretType.Okx,
   TELEGRAM: HoldableSecretType.Telegram,
   SMTP: HoldableSecretType.Smtp,
+  SLACK: HoldableSecretType.SlackWebhook,
   OPENROUTER: HoldableSecretType.OpenRouter,
 };
 
