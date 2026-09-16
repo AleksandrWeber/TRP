@@ -10,6 +10,7 @@ import {
 import { toUserFacingError } from '../shared/mapApiError';
 import { TelegramSettingsPage } from '../telegram';
 import { EmailSettingsPage } from '../email';
+import { DiscordSettingsPage } from '../discord';
 import { SlackSettingsPage } from '../slack';
 import { NotificationChannelDetailView } from './NotificationChannelDetailView';
 
@@ -28,6 +29,9 @@ export function NotificationChannelDetailPage() {
   }
   if (channelId === 'slack') {
     return <SlackSettingsPage />;
+  }
+  if (channelId === 'discord') {
+    return <DiscordSettingsPage />;
   }
   return <ReservedChannelPage channelId={channelId} />;
 }

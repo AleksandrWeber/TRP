@@ -8,6 +8,7 @@
 
 import { Inject, Injectable, Optional } from '@nestjs/common';
 import {
+  DISCORD_CHANNEL_ADAPTER,
   EMAIL_CHANNEL_ADAPTER,
   NOTIFICATION_SERVICE_PORT,
   SLACK_CHANNEL_ADAPTER,
@@ -16,6 +17,7 @@ import {
   type NotificationServicePort,
   type UpsertNotificationPreferences,
 } from '../notification-delivery/ports/notification.port';
+import { projectDiscordTransport } from '../notification-delivery/domain/discord-transport-projection';
 import { projectTelegramTransport } from '../notification-delivery/domain/telegram-transport-projection';
 import { projectEmailTransport } from '../notification-delivery/domain/email-transport-projection';
 import { projectSlackTransport } from '../notification-delivery/domain/slack-transport-projection';
@@ -56,6 +58,9 @@ export class NotificationProductService {
     @Optional()
     @Inject(SLACK_CHANNEL_ADAPTER)
     private readonly slackChannel?: NotificationChannelPort,
+    @Optional()
+    @Inject(DISCORD_CHANNEL_ADAPTER)
+    private readonly discordChannel?: NotificationChannelPort,
   ) {}
 
   private telegramHonesty() {
@@ -74,12 +79,22 @@ export class NotificationProductService {
       : { transport: 'in-memory' as const, webhookUsed: false };
   }
 
+  private discordHonesty() {
+    return this.discordChannel
+      ? projectDiscordTransport(this.discordChannel)
+      : { transport: 'in-memory' as const, webhookUsed: false };
+  }
+
   private emailConnection(workspaceId: string, userId: string) {
     return this.notifications.getEmailConnection?.(workspaceId, userId);
   }
 
   private slackConnection(workspaceId: string, userId: string) {
     return this.notifications.getSlackConnection?.(workspaceId, userId);
+  }
+
+  private discordConnection(workspaceId: string, userId: string) {
+    return this.notifications.getDiscordConnection?.(workspaceId, userId);
   }
 
   getSettings(
@@ -95,6 +110,7 @@ export class NotificationProductService {
       honesty: this.telegramHonesty(),
       emailConnection: this.emailConnection(workspaceId, userId),
       slackConnection: this.slackConnection(workspaceId, userId),
+      discordConnection: this.discordConnection(workspaceId, userId),
     });
   }
 
@@ -111,6 +127,7 @@ export class NotificationProductService {
       honesty: this.telegramHonesty(),
       emailConnection: this.emailConnection(workspaceId, userId),
       slackConnection: this.slackConnection(workspaceId, userId),
+      discordConnection: this.discordConnection(workspaceId, userId),
     });
   }
 
@@ -133,6 +150,8 @@ export class NotificationProductService {
       emailHonesty: this.emailHonesty(),
       slackConnection: this.slackConnection(workspaceId, userId),
       slackHonesty: this.slackHonesty(),
+      discordConnection: this.discordConnection(workspaceId, userId),
+      discordHonesty: this.discordHonesty(),
     });
   }
 
@@ -154,6 +173,8 @@ export class NotificationProductService {
       emailHonesty: this.emailHonesty(),
       slackConnection: this.slackConnection(workspaceId, userId),
       slackHonesty: this.slackHonesty(),
+      discordConnection: this.discordConnection(workspaceId, userId),
+      discordHonesty: this.discordHonesty(),
     });
   }
 
@@ -186,6 +207,7 @@ export class NotificationProductService {
       honesty: this.telegramHonesty(),
       emailConnection: this.emailConnection(workspaceId, userId),
       slackConnection: this.slackConnection(workspaceId, userId),
+      discordConnection: this.discordConnection(workspaceId, userId),
     }).preferences;
   }
 
@@ -201,6 +223,7 @@ export class NotificationProductService {
       honesty: this.telegramHonesty(),
       emailConnection: this.emailConnection(input.workspaceId, input.userId),
       slackConnection: this.slackConnection(input.workspaceId, input.userId),
+      discordConnection: this.discordConnection(input.workspaceId, input.userId),
     }).preferences;
   }
 

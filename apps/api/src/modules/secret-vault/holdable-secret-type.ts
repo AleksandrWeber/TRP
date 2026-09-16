@@ -11,6 +11,7 @@ export const HoldableSecretType = {
   Telegram: 'telegram',
   Smtp: 'smtp',
   SlackWebhook: 'slack-webhook',
+  DiscordWebhook: 'discord-webhook',
   OpenRouter: 'openrouter',
 } as const;
 

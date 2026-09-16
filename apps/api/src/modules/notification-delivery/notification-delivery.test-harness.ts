@@ -3,9 +3,11 @@ import type { TestingModuleBuilder } from '@nestjs/testing';
 import { SecretVaultModule } from '../secret-vault';
 import { SecretVaultService } from '../secret-vault/secret-vault.service';
 import { InMemoryEmailAdapter } from './adapters/in-memory-email.adapter';
+import { InMemoryDiscordAdapter } from './adapters/in-memory-discord.adapter';
 import { InMemorySlackAdapter } from './adapters/in-memory-slack.adapter';
 import { InMemoryTelegramAdapter } from './adapters/in-memory-telegram.adapter';
 import {
+  DISCORD_CHANNEL_ADAPTER,
   EMAIL_CHANNEL_ADAPTER,
   SLACK_CHANNEL_ADAPTER,
   TELEGRAM_CHANNEL_ADAPTER,
@@ -58,5 +60,14 @@ export function bindInMemorySlackChannelForTests(
   return builder.overrideProvider(SLACK_CHANNEL_ADAPTER).useFactory({
     factory: (adapter: InMemorySlackAdapter) => adapter,
     inject: [InMemorySlackAdapter],
+  });
+}
+
+export function bindInMemoryDiscordChannelForTests(
+  builder: TestingModuleBuilder,
+): TestingModuleBuilder {
+  return builder.overrideProvider(DISCORD_CHANNEL_ADAPTER).useFactory({
+    factory: (adapter: InMemoryDiscordAdapter) => adapter,
+    inject: [InMemoryDiscordAdapter],
   });
 }

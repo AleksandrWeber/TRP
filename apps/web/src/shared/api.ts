@@ -13,7 +13,8 @@ const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 const API_PREFIX = '/v1';
 
 export type ConnectionType = 'EXCHANGE' | 'NOTIFICATION' | 'AI';
-export type ConnectionProvider = 'BINANCE' | 'BYBIT' | 'OKX' | 'TELEGRAM' | 'SMTP' | 'OPENROUTER';
+export type ConnectionProvider =
+  'BINANCE' | 'BYBIT' | 'OKX' | 'TELEGRAM' | 'SMTP' | 'OPENROUTER' | 'SLACK' | 'DISCORD';
 export type ExchangeProviderCapability =
   'SPOT' | 'FUTURES' | 'TESTNET' | 'MARGIN' | 'WEBSOCKET' | 'REST';
 export type ExchangeProviderAvailability = 'AVAILABLE' | 'UNAVAILABLE';
@@ -2126,6 +2127,61 @@ export type SlackDiagnosticsView = {
   authorityClass: 'notification-projection';
 };
 
+export type DiscordConnectionProductView = {
+  status: 'not-connected' | 'pending' | 'connected';
+  connected: boolean;
+  bound: boolean;
+  pending: boolean;
+  verified: boolean;
+  failed: boolean;
+  lastErrorCode: string | null;
+  connectedAt: string | null;
+  boundAt: string | null;
+  updatedAt: string;
+  bindAvailable: boolean;
+  testAvailable: boolean;
+  disconnectAvailable: boolean;
+  controlPlane: false;
+  transport: 'in-memory' | 'webhook';
+  webhookUsed: boolean;
+  userEnteredBind: false;
+  authorityClass: 'notification-projection';
+};
+
+export type DiscordTestProductView = {
+  connection: DiscordConnectionProductView;
+  delivery: NotificationDeliveryDetailView;
+  controlPlane: false;
+  webhookUsed: boolean;
+  authorityClass: 'notification-projection';
+};
+
+export type DiscordDiagnosticsView = {
+  connection: DiscordConnectionProductView;
+  verification: {
+    status: 'not-connected' | 'pending' | 'connected';
+    verified: boolean;
+    bound: boolean;
+    pending: boolean;
+    failed: boolean;
+    lastErrorCode: string | null;
+  };
+  lastDiscordDelivery: {
+    deliveryId: string;
+    outcome: string;
+    skipReason: string | null;
+    adapterReached: boolean;
+    createdAt: string;
+  } | null;
+  discordTransport: 'in-memory' | 'webhook';
+  webhookUsed: boolean;
+  controlPlane: false;
+  deferredChannelsActivated: false;
+  scheduler: false;
+  retries: false;
+  authorityClass: 'notification-projection';
+};
+
 export type PreferenceClockView = {
   timezone: string;
   dailyDeliveryTime: string;
@@ -2246,7 +2302,11 @@ export type NotificationChannelCardView = {
   testAvailable: boolean;
   connectAvailable: boolean;
   configurationKind:
-    'telegram-connection' | 'email-connection' | 'slack-connection' | 'reserved-inactive';
+    | 'telegram-connection'
+    | 'email-connection'
+    | 'slack-connection'
+    | 'discord-connection'
+    | 'reserved-inactive';
   transport: 'in-memory' | 'bot-api' | 'smtp' | 'webhook' | 'none';
   connectionStatus: 'not-connected' | 'pending' | 'connected' | 'reserved-inactive';
   liveTransportActivated: boolean;
@@ -2255,7 +2315,12 @@ export type NotificationChannelCardView = {
 };
 
 export type NotificationChannelConfigurationView = {
-  kind: 'telegram-connection' | 'email-connection' | 'slack-connection' | 'reserved-inactive';
+  kind:
+    | 'telegram-connection'
+    | 'email-connection'
+    | 'slack-connection'
+    | 'discord-connection'
+    | 'reserved-inactive';
   requiredFields: readonly string[];
   configurable: boolean;
   testAvailable: boolean;
@@ -4385,6 +4450,23 @@ export const api = {
       body: JSON.stringify({}),
     }),
   getSlackDiagnostics: () => request<SlackDiagnosticsView>('/slack/diagnostics'),
+  getDiscordConnection: () => request<DiscordConnectionProductView>('/discord/connection'),
+  bindDiscordChannel: () =>
+    request<DiscordConnectionProductView>('/discord/bind', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  sendDiscordTest: () =>
+    request<DiscordTestProductView>('/discord/test', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  disconnectDiscord: () =>
+    request<DiscordConnectionProductView>('/discord/disconnect', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  getDiscordDiagnostics: () => request<DiscordDiagnosticsView>('/discord/diagnostics'),
   listTelegramDeliveries: (query: NotificationDeliveryListQuery = {}) => {
     const params = new URLSearchParams();
     if (query.userId) params.set('userId', query.userId);

@@ -77,6 +77,10 @@ const CUSTOMER_BY_TYPE: Readonly<Record<HoldableSecretType, SecretClassification
     name: 'Slack Incoming Webhook',
     ...CUSTOMER_ROW,
   },
+  [HoldableSecretType.DiscordWebhook]: {
+    name: 'Discord Incoming Webhook',
+    ...CUSTOMER_ROW,
+  },
   [HoldableSecretType.OpenRouter]: { name: 'OpenRouter', ...CUSTOMER_ROW },
 };
 

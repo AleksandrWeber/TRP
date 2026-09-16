@@ -45,6 +45,12 @@ export const CONNECTION_PROVIDERS = [
     credentialFields: ['webhookUrl'],
   },
   {
+    id: 'DISCORD',
+    displayName: 'Discord Incoming Webhook',
+    connectionType: 'NOTIFICATION',
+    credentialFields: ['webhookUrl'],
+  },
+  {
     id: 'OPENROUTER',
     displayName: 'OpenRouter',
     connectionType: 'AI',

@@ -13,7 +13,9 @@ import { Inject, Injectable, Optional } from '@nestjs/common';
 import type { Role } from '../identity/role';
 import { InMemoryEmailAdapter } from './adapters/in-memory-email.adapter';
 import { InMemoryNotificationStore } from './adapters/in-memory-notification-store';
+import { InMemoryDiscordAdapter } from './adapters/in-memory-discord.adapter';
 import { InMemorySlackAdapter } from './adapters/in-memory-slack.adapter';
+import { DiscordWebhookCredentialResolver } from './adapters/discord-webhook-credential.resolver';
 import { SlackWebhookCredentialResolver } from './adapters/slack-webhook-credential.resolver';
 import { TelegramStartBindObserver } from './adapters/telegram-start-bind.observer';
 import {
@@ -28,6 +30,14 @@ import {
   type NotificationDeliveryQueueItem,
 } from './domain/delivery-queue';
 import { NOTIFICATION_CHANNEL_CATALOG } from './domain/notification-channel';
+import {
+  bindDiscordChannel as applyDiscordChannelBind,
+  disconnectDiscordConnection,
+  markDiscordWebhookFailed,
+  markDiscordWebhookVerified,
+  notConnectedDiscord,
+  type DiscordConnection,
+} from './domain/discord-connection';
 import {
   bindEmailRecipient as applyEmailRecipientBind,
   disconnectEmailConnection,
@@ -56,13 +66,17 @@ import {
   type UserNotificationPreferences,
 } from './domain/user-notification-preferences';
 import {
+  DISCORD_CHANNEL_ADAPTER,
   EMAIL_CHANNEL_ADAPTER,
   SLACK_CHANNEL_ADAPTER,
   TELEGRAM_CHANNEL_ADAPTER,
+  type DiscordBindRequest,
+  type DiscordDisconnectRequest,
   type EmailBindRequest,
   type EmailDisconnectRequest,
   type NotificationChannelPort,
   type NotificationServicePort,
+  type SendTestDiscordNotificationRequest,
   type SendTestEmailNotificationRequest,
   type SendTestNotificationRequest,
   type SendTestSlackNotificationRequest,
@@ -93,6 +107,7 @@ function nowOr(value: string | undefined): string {
 export class NotificationDeliveryService implements NotificationServicePort {
   private readonly email: NotificationChannelPort;
   private readonly slack: NotificationChannelPort;
+  private readonly discord: NotificationChannelPort;
 
   constructor(
     @Inject(InMemoryNotificationStore)
@@ -109,11 +124,18 @@ export class NotificationDeliveryService implements NotificationServicePort {
     @Inject(SLACK_CHANNEL_ADAPTER)
     slack?: NotificationChannelPort,
     @Optional()
+    @Inject(DISCORD_CHANNEL_ADAPTER)
+    discord?: NotificationChannelPort,
+    @Optional()
     @Inject(SlackWebhookCredentialResolver)
     private readonly slackCredentials?: SlackWebhookCredentialResolver,
+    @Optional()
+    @Inject(DiscordWebhookCredentialResolver)
+    private readonly discordCredentials?: DiscordWebhookCredentialResolver,
   ) {
     this.email = email ?? new InMemoryEmailAdapter();
     this.slack = slack ?? new InMemorySlackAdapter();
+    this.discord = discord ?? new InMemoryDiscordAdapter();
   }
 
   listChannels() {
@@ -474,6 +496,117 @@ export class NotificationDeliveryService implements NotificationServicePort {
     return delivery;
   }
 
+  getDiscordConnection(workspaceId: string, userId: string): DiscordConnection {
+    const existing = this.store.getDiscord(workspaceId, userId);
+    if (existing) return existing;
+    const created = notConnectedDiscord(workspaceId, userId, new Date().toISOString());
+    this.store.saveDiscord(created);
+    return created;
+  }
+
+  async bindDiscordChannel(cmd: DiscordBindRequest): Promise<DiscordConnection> {
+    const configured = await this.discordCredentials?.isConfigured({
+      workspaceId: cmd.workspaceId,
+      actorUserId: cmd.actorUserId ?? cmd.userId,
+      actorRole: cmd.actorRole,
+    });
+    if (!configured) {
+      throw new Error('Discord webhook is not configured');
+    }
+    const current = this.getDiscordConnection(cmd.workspaceId, cmd.userId);
+    const next = applyDiscordChannelBind(current, nowOr(cmd.requestedAt));
+    this.store.saveDiscord(next);
+    return next;
+  }
+
+  disconnectDiscord(cmd: DiscordDisconnectRequest): DiscordConnection {
+    const current = this.getDiscordConnection(cmd.workspaceId, cmd.userId);
+    const next = disconnectDiscordConnection(current, nowOr(cmd.requestedAt));
+    this.store.saveDiscord(next);
+    return next;
+  }
+
+  async sendTestDiscordNotification(
+    cmd: SendTestDiscordNotificationRequest,
+  ): Promise<DeliveryResult> {
+    const connection = this.getDiscordConnection(cmd.workspaceId, cmd.userId);
+    if (connection.status === 'not-connected') {
+      throw new Error('Discord channel is not bound');
+    }
+    const requestedAt = nowOr(cmd.requestedAt);
+    const workspaceId = cmd.workspaceId.trim();
+    const queueItemId = `nq-${stableHash(
+      `${workspaceId}|${cmd.userId}|daily-report|${requestedAt}|discord-test|queue`,
+    )}`;
+    const deliveryId = `del-${stableHash(
+      `${workspaceId}|${cmd.userId}|daily-report|${requestedAt}|discord-test`,
+    )}`;
+
+    let queueItem = createPendingNotificationQueueItem({
+      queueItemId,
+      command: {
+        workspaceId,
+        userId: cmd.userId,
+        type: 'daily-report',
+        subject: 'Test notification',
+        body: 'TRP notification delivery test. Delivery channel only — not a trading command.',
+        requestedAt,
+        ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+        ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
+      },
+      createdAt: requestedAt,
+    });
+    this.store.saveQueueItem(queueItem);
+    queueItem = withNotificationQueueStatus(queueItem, 'in-flight', { updatedAt: requestedAt });
+    this.store.saveQueueItem(queueItem);
+
+    const result = await this.discord.send({
+      chatId: '',
+      subject: 'Test notification',
+      body: 'TRP notification delivery test. Delivery channel only — not a trading command.',
+      workspaceId,
+      ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+      ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
+    });
+
+    const verifiedAt = nowOr(undefined);
+    if (result.ok) {
+      this.store.saveDiscord(markDiscordWebhookVerified(connection, verifiedAt));
+    } else {
+      this.store.saveDiscord(markDiscordWebhookFailed(connection, verifiedAt, result.detail));
+    }
+
+    const attempts: ChannelDeliveryAttempt[] = [
+      Object.freeze(
+        result.ok
+          ? { channelId: 'discord' as const, outcome: 'delivered' as const }
+          : {
+              channelId: 'discord' as const,
+              outcome: 'failed' as const,
+              detail: result.detail,
+            },
+      ),
+    ];
+    const delivery = createDeliveryResult({
+      deliveryId,
+      workspaceId,
+      userId: cmd.userId,
+      type: 'daily-report',
+      attempts,
+      createdAt: requestedAt,
+    });
+    this.store.recordDelivery(delivery);
+
+    const terminalStatus = delivery.outcome === 'failed' ? 'retryable' : 'completed';
+    queueItem = withNotificationQueueStatus(queueItem, terminalStatus, {
+      updatedAt: verifiedAt,
+      deliveryId: delivery.deliveryId,
+      ...(result.ok ? {} : { detail: result.detail }),
+    });
+    this.store.saveQueueItem(queueItem);
+    return delivery;
+  }
+
   async deliver(cmd: DeliverNotificationCommand): Promise<DeliveryResult> {
     const workspaceId = cmd.workspaceId.trim();
     if (!workspaceId) {
@@ -502,10 +635,12 @@ export class NotificationDeliveryService implements NotificationServicePort {
     const telegram = this.getTelegramConnection(workspaceId, cmd.userId);
     const email = this.getEmailConnection(workspaceId, cmd.userId);
     const slack = this.getSlackConnection(workspaceId, cmd.userId);
+    const discord = this.getDiscordConnection(workspaceId, cmd.userId);
     const routes = resolveDeliveryRoutes({ ...cmd, workspaceId }, prefs, {
       telegramConnected: telegram.status === 'connected' && Boolean(telegram.chatId),
       emailConnected: email.status === 'connected' && Boolean(email.recipient),
       slackConnected: slack.status === 'connected',
+      discordConnected: discord.status === 'connected',
     });
 
     const attempts: ChannelDeliveryAttempt[] = [];
@@ -591,6 +726,32 @@ export class NotificationDeliveryService implements NotificationServicePort {
                 }
               : {
                   channelId: 'slack' as const,
+                  outcome: 'failed' as const,
+                  detail: result.detail,
+                },
+          ),
+        );
+        continue;
+      }
+
+      if (route.channelId === 'discord') {
+        const result = await this.discord.send({
+          chatId: '',
+          subject: cmd.subject,
+          body: cmd.body,
+          workspaceId,
+          ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+          ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
+        });
+        attempts.push(
+          Object.freeze(
+            result.ok
+              ? {
+                  channelId: 'discord' as const,
+                  outcome: 'delivered' as const,
+                }
+              : {
+                  channelId: 'discord' as const,
                   outcome: 'failed' as const,
                   detail: result.detail,
                 },

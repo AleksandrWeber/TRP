@@ -22,6 +22,9 @@ const WELL_FORMED: Readonly<Record<HoldableSecretType, Record<string, string>>> 
   [HoldableSecretType.SlackWebhook]: {
     webhookUrl: 'https://hooks.slack.com/services/TEAM/HOOK/TOKEN',
   },
+  [HoldableSecretType.DiscordWebhook]: {
+    webhookUrl: 'https://discord.com/api/webhooks/123456789012345678/AbCdEfGhIjKlMnOpQrStUvWxYz',
+  },
   [HoldableSecretType.OpenRouter]: { apiKey: 'or-key-1' },
 };
 

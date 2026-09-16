@@ -59,6 +59,11 @@ describe('Connection catalog (W2-S01-a)', () => {
               displayName: 'Slack Incoming Webhook',
               credentialFields: ['webhookUrl'],
             },
+            {
+              id: 'DISCORD',
+              displayName: 'Discord Incoming Webhook',
+              credentialFields: ['webhookUrl'],
+            },
           ],
         },
         {

@@ -75,15 +75,15 @@ const workspace: NotificationChannelsWorkspaceView = {
     {
       channelId: 'discord',
       label: 'Discord',
-      status: 'reserved-inactive',
-      offered: false,
+      status: 'active',
+      offered: true,
       enabled: false,
-      configurable: false,
+      configurable: true,
       testAvailable: false,
-      connectAvailable: false,
-      configurationKind: 'reserved-inactive',
-      transport: 'none',
-      connectionStatus: 'reserved-inactive',
+      connectAvailable: true,
+      configurationKind: 'discord-connection',
+      transport: 'in-memory',
+      connectionStatus: 'not-connected',
       liveTransportActivated: false,
       botApiUsed: false,
       authorityClass: 'notification-projection',
@@ -139,7 +139,7 @@ const workspace: NotificationChannelsWorkspaceView = {
       },
     ],
     channelIds: ['telegram', 'email', 'slack', 'discord', 'teams', 'push'],
-    offeredChannelIds: ['telegram', 'email', 'slack'],
+    offeredChannelIds: ['telegram', 'email', 'slack', 'discord'],
     deferredChannelsActivated: false,
     controlPlane: false,
     authorityClass: 'notification-projection',
@@ -167,10 +167,10 @@ const workspace: NotificationChannelsWorkspaceView = {
 };
 
 const reservedChannel: NotificationChannelDetailView = {
-  ...workspace.channels[3],
+  ...workspace.channels[4],
   configuration: {
     kind: 'reserved-inactive',
-    requiredFields: ['Webhook', 'Channel'],
+    requiredFields: ['Webhook', 'Team', 'Channel'],
     configurable: false,
     testAvailable: false,
     connectAvailable: false,
@@ -180,7 +180,7 @@ const reservedChannel: NotificationChannelDetailView = {
   },
   routing: [],
   diagnostics: {
-    channelId: 'discord',
+    channelId: 'teams',
     connectionState: 'reserved-inactive',
     enabled: false,
     offered: false,
@@ -270,7 +270,7 @@ describe('Notification Channels UI (PC-07)', () => {
     const history = renderToStaticMarkup(
       <MemoryRouter>
         <NotificationChannelHistoryView
-          channelId="discord"
+          channelId="teams"
           items={[item]}
           search=""
           outcome="all"
@@ -283,7 +283,7 @@ describe('Notification Channels UI (PC-07)', () => {
         />
       </MemoryRouter>,
     );
-    expect(history).toContain('Discord delivery history');
+    expect(history).toContain('Microsoft Teams delivery history');
     expect(history).toContain('Channel reserved');
   });
 });

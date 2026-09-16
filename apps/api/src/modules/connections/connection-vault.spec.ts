@@ -8,6 +8,7 @@ describe('Connection Vault reference mapping (W2-S01-b)', () => {
     expect(vaultSecretTypeForProvider('TELEGRAM')).toBe(HoldableSecretType.Telegram);
     expect(vaultSecretTypeForProvider('SMTP')).toBe(HoldableSecretType.Smtp);
     expect(vaultSecretTypeForProvider('SLACK')).toBe(HoldableSecretType.SlackWebhook);
+    expect(vaultSecretTypeForProvider('DISCORD')).toBe(HoldableSecretType.DiscordWebhook);
     expect(vaultSecretTypeForProvider('OPENROUTER')).toBe(HoldableSecretType.OpenRouter);
   });
 });

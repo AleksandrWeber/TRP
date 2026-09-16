@@ -74,6 +74,16 @@ export {
   type SlackConnectionStatus,
 } from './domain/slack-connection';
 export {
+  DISCORD_CONNECTION_STATUSES,
+  bindDiscordChannel,
+  disconnectDiscordConnection,
+  markDiscordWebhookFailed,
+  markDiscordWebhookVerified,
+  notConnectedDiscord,
+  type DiscordConnection,
+  type DiscordConnectionStatus,
+} from './domain/discord-connection';
+export {
   createUserNotificationPreferences,
   type ChannelEnablement,
   type CreateUserNotificationPreferencesInput,
@@ -143,6 +153,7 @@ export { InMemoryNotificationStore } from './adapters/in-memory-notification-sto
 export { InMemoryTelegramAdapter } from './adapters/in-memory-telegram.adapter';
 export { InMemoryEmailAdapter } from './adapters/in-memory-email.adapter';
 export { InMemorySlackAdapter } from './adapters/in-memory-slack.adapter';
+export { InMemoryDiscordAdapter } from './adapters/in-memory-discord.adapter';
 export { ReservedInactiveChannelAdapter } from './adapters/reserved-inactive-channel.adapter';
 export { ProductionTelegramBotApiAdapter } from './adapters/telegram-bot-api.adapter';
 export { TelegramBotTokenResolver } from './adapters/telegram-bot-token.resolver';
@@ -150,6 +161,8 @@ export { ProductionSmtpNotificationAdapter } from './adapters/production-smtp-no
 export { SmtpCredentialResolver } from './adapters/smtp-credential.resolver';
 export { ProductionSlackWebhookNotificationAdapter } from './adapters/production-slack-webhook-notification.adapter';
 export { SlackWebhookCredentialResolver } from './adapters/slack-webhook-credential.resolver';
+export { ProductionDiscordWebhookNotificationAdapter } from './adapters/production-discord-webhook-notification.adapter';
+export { DiscordWebhookCredentialResolver } from './adapters/discord-webhook-credential.resolver';
 export { NotificationDeliveryBoundaryService } from './notification-boundary.service';
 export { NotificationDeliveryService } from './notification-delivery.service';
 export { NotificationDeliveryModule } from './notification-delivery.module';
@@ -159,6 +172,7 @@ export {
   TELEGRAM_CHANNEL_ADAPTER,
   EMAIL_CHANNEL_ADAPTER,
   SLACK_CHANNEL_ADAPTER,
+  DISCORD_CHANNEL_ADAPTER,
   type NotificationChannelPort,
   type NotificationChannelSendCommand,
   type NotificationServicePort,
@@ -166,10 +180,13 @@ export {
   type SendTestNotificationRequest,
   type SendTestEmailNotificationRequest,
   type SendTestSlackNotificationRequest,
+  type SendTestDiscordNotificationRequest,
   type EmailBindRequest,
   type EmailDisconnectRequest,
   type SlackBindRequest,
   type SlackDisconnectRequest,
+  type DiscordBindRequest,
+  type DiscordDisconnectRequest,
   type TelegramConnectRequest,
   type TelegramConnectResult,
   type TelegramDisconnectRequest,

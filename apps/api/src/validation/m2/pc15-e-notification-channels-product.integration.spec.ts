@@ -135,7 +135,7 @@ describe('PC-15 15-e — Notification Delivery → Channels product flow', () =>
     expect(telegram.listSent()[0]?.subject).toContain('run-15e');
   });
 
-  it('keeps Discord/Teams/Push reserved and Slack not-connected when unbound', async () => {
+  it('keeps Teams/Push reserved; Discord active but not-connected when unbound', async () => {
     notifications.upsertPreferences({
       workspaceId: 'ws-1',
       userId: 'user-1',
@@ -168,7 +168,10 @@ describe('PC-15 15-e — Notification Delivery → Channels product flow', () =>
       result.delivery?.attempts
         .filter((attempt) => attempt.skipReason === 'channel-reserved')
         .map((attempt) => attempt.channelId),
-    ).toEqual(['discord']);
+    ).toEqual([]);
+    expect(
+      result.delivery?.attempts.find((attempt) => attempt.channelId === 'discord')?.skipReason,
+    ).toBe('channel-not-connected');
     expect(
       result.delivery?.attempts.find((attempt) => attempt.channelId === 'slack')?.skipReason,
     ).toBe('channel-not-connected');
@@ -185,7 +188,7 @@ describe('PC-15 15-e — Notification Delivery → Channels product flow', () =>
     ).toBe('active');
     expect(
       notifications.listChannels().find((channel) => channel.channelId === 'discord')?.status,
-    ).toBe('reserved-inactive');
+    ).toBe('active');
     expect(
       notifications.listChannels().find((channel) => channel.channelId === 'teams')?.status,
     ).toBe('reserved-inactive');

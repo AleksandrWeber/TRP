@@ -38,7 +38,8 @@ describe('RC-24 Epic 6 — Notification Delivery behaviour', () => {
     expect(channels.find((c) => c.channelId === 'telegram')?.status).toBe('active');
     expect(channels.find((c) => c.channelId === 'email')?.status).toBe('active');
     expect(channels.find((c) => c.channelId === 'slack')?.status).toBe('active');
-    expect(channels.filter((c) => c.status === 'reserved-inactive')).toHaveLength(3);
+    expect(channels.find((c) => c.channelId === 'discord')?.status).toBe('active');
+    expect(channels.filter((c) => c.status === 'reserved-inactive')).toHaveLength(2);
   });
 
   it('runs Telegram connection workflow without user-entered chat ids', async () => {

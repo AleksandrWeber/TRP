@@ -88,7 +88,7 @@ export function NotificationChannelsView({
       <PageHeader
         productId="notification-channels"
         title="Notification channels"
-        description="Channel-agnostic product over Notification Delivery. Telegram and Email are the active transports. Slack, Discord, Microsoft Teams, and Push stay reserved. This page does not schedule digests."
+        description="Channel-agnostic product over Notification Delivery. Telegram, Email, Slack, and Discord are the active transports. Microsoft Teams and Push stay reserved. This page does not schedule digests."
         extraActions={[{ to: '/notifications/history', label: 'Delivery history' }]}
       />
 

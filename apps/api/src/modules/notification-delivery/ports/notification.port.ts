@@ -6,6 +6,7 @@
 
 import type { Role } from '../../identity/role';
 import type { DeliveryResult, DeliverNotificationCommand } from '../domain/delivery';
+import type { DiscordConnection } from '../domain/discord-connection';
 import type { EmailConnection } from '../domain/email-connection';
 import type { NotificationChannelDescriptor } from '../domain/notification-channel';
 import type { SlackConnection } from '../domain/slack-connection';
@@ -16,6 +17,7 @@ export const NOTIFICATION_SERVICE_PORT = Symbol('NOTIFICATION_SERVICE_PORT');
 export const TELEGRAM_CHANNEL_ADAPTER = Symbol('TELEGRAM_CHANNEL_ADAPTER');
 export const EMAIL_CHANNEL_ADAPTER = Symbol('EMAIL_CHANNEL_ADAPTER');
 export const SLACK_CHANNEL_ADAPTER = Symbol('SLACK_CHANNEL_ADAPTER');
+export const DISCORD_CHANNEL_ADAPTER = Symbol('DISCORD_CHANNEL_ADAPTER');
 
 export type UpsertNotificationPreferences = Readonly<{
   workspaceId: string;
@@ -93,6 +95,22 @@ export type SlackDisconnectRequest = Readonly<{
 
 export type SendTestSlackNotificationRequest = SendTestNotificationRequest;
 
+export type DiscordBindRequest = Readonly<{
+  workspaceId: string;
+  userId: string;
+  requestedAt?: string;
+  actorUserId?: string;
+  actorRole?: Role;
+}>;
+
+export type DiscordDisconnectRequest = Readonly<{
+  workspaceId: string;
+  userId: string;
+  requestedAt?: string;
+}>;
+
+export type SendTestDiscordNotificationRequest = SendTestNotificationRequest;
+
 export type NotificationChannelSendCommand = Readonly<{
   chatId: string;
   subject: string;
@@ -148,6 +166,10 @@ export interface NotificationServicePort {
   bindSlackChannel(cmd: SlackBindRequest): Promise<SlackConnection>;
   disconnectSlack(cmd: SlackDisconnectRequest): SlackConnection;
   sendTestSlackNotification(cmd: SendTestSlackNotificationRequest): Promise<DeliveryResult>;
+  getDiscordConnection(workspaceId: string, userId: string): DiscordConnection;
+  bindDiscordChannel(cmd: DiscordBindRequest): Promise<DiscordConnection>;
+  disconnectDiscord(cmd: DiscordDisconnectRequest): DiscordConnection;
+  sendTestDiscordNotification(cmd: SendTestDiscordNotificationRequest): Promise<DeliveryResult>;
   deliver(cmd: DeliverNotificationCommand): Promise<DeliveryResult>;
   /**
    * Read-only list of already-recorded deliveries. Not a new SoT.
@@ -170,7 +192,7 @@ export const NOTIFICATION_PORTS_ACTIVE = Object.freeze({
   telegramChannel: true,
   emailChannel: true,
   slackChannel: true,
-  discordChannel: false,
+  discordChannel: true,
   teamsChannel: false,
   pushChannel: false,
   persistence: true,
