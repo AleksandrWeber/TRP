@@ -118,7 +118,12 @@ describe('W3-O02-a notification queue inventory — unit', () => {
       expect(row.requiresDurableQueue).toBe(false);
     }
     expect(W3_O02_A_ARCHITECTURE_CLAIMS.wave5TransportsClaimed).toBe(false);
-    expect(W3_O02_A_DISTINCTION_EVIDENCE.reservedChannels.length).toBeGreaterThan(0);
+    // Wave 5 transport evidence is the active notification channel catalog.
+    // After CM-16, all catalog channels are active — reserved may be empty.
+    expect(W3_O02_A_DISTINCTION_EVIDENCE.activeChannels.length).toBeGreaterThan(0);
+    expect(W3_O02_A_DISTINCTION_EVIDENCE.activeChannels).toContain('telegram');
+    expect(W3_O02_A_DISTINCTION_EVIDENCE.activeChannels).toContain('push');
+    expect(W3_O02_A_DISTINCTION_EVIDENCE.reservedChannels).toEqual([]);
   });
 
   it('honesty: pending/retryable/abandoned notification queue states are absent today', () => {
