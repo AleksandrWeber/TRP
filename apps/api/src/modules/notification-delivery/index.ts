@@ -165,6 +165,7 @@ export { InMemoryEmailAdapter } from './adapters/in-memory-email.adapter';
 export { InMemorySlackAdapter } from './adapters/in-memory-slack.adapter';
 export { InMemoryDiscordAdapter } from './adapters/in-memory-discord.adapter';
 export { InMemoryTeamsAdapter } from './adapters/in-memory-teams.adapter';
+export { InMemoryPushAdapter } from './adapters/in-memory-push.adapter';
 export { ReservedInactiveChannelAdapter } from './adapters/reserved-inactive-channel.adapter';
 export { ProductionTelegramBotApiAdapter } from './adapters/telegram-bot-api.adapter';
 export { TelegramBotTokenResolver } from './adapters/telegram-bot-token.resolver';
@@ -176,6 +177,9 @@ export { ProductionDiscordWebhookNotificationAdapter } from './adapters/producti
 export { DiscordWebhookCredentialResolver } from './adapters/discord-webhook-credential.resolver';
 export { ProductionTeamsWebhookNotificationAdapter } from './adapters/production-teams-webhook-notification.adapter';
 export { TeamsWebhookCredentialResolver } from './adapters/teams-webhook-credential.resolver';
+export { ProductionWebPushNotificationAdapter } from './adapters/production-web-push-notification.adapter';
+export { WebPushVapidCredentialResolver } from './adapters/web-push-vapid-credential.resolver';
+export { WebPushSubscriptionService } from './web-push-subscription.service';
 export { NotificationDeliveryBoundaryService } from './notification-boundary.service';
 export { NotificationDeliveryService } from './notification-delivery.service';
 export { NotificationDeliveryModule } from './notification-delivery.module';
@@ -187,6 +191,7 @@ export {
   SLACK_CHANNEL_ADAPTER,
   DISCORD_CHANNEL_ADAPTER,
   TEAMS_CHANNEL_ADAPTER,
+  PUSH_CHANNEL_ADAPTER,
   type NotificationChannelPort,
   type NotificationChannelSendCommand,
   type NotificationServicePort,
@@ -196,6 +201,7 @@ export {
   type SendTestSlackNotificationRequest,
   type SendTestDiscordNotificationRequest,
   type SendTestTeamsNotificationRequest,
+  type SendTestPushNotificationRequest,
   type EmailBindRequest,
   type EmailDisconnectRequest,
   type SlackBindRequest,
@@ -204,9 +210,30 @@ export {
   type DiscordDisconnectRequest,
   type TeamsBindRequest,
   type TeamsDisconnectRequest,
+  type PushBindRequest,
+  type PushDisconnectRequest,
+  type RegisterPushSubscriptionRequest,
+  type RevokePushSubscriptionRequest,
   type TelegramConnectRequest,
   type TelegramConnectResult,
   type TelegramDisconnectRequest,
   type TelegramVerifyRequest,
   type UpsertNotificationPreferences,
 } from './ports/notification.port';
+export {
+  PUSH_CONNECTION_STATUSES,
+  bindPushChannel,
+  disconnectPushConnection,
+  markPushFailed,
+  markPushVerified,
+  notConnectedPush,
+  type PushConnection,
+  type PushConnectionStatus,
+} from './domain/push-connection';
+export {
+  projectPushTransport,
+  IN_MEMORY_PUSH_TRANSPORT,
+  WEB_PUSH_TRANSPORT,
+  type PushTransportProjection,
+  type PushTransportKind,
+} from './domain/push-transport-projection';

@@ -85,6 +85,10 @@ const CUSTOMER_BY_TYPE: Readonly<Record<HoldableSecretType, SecretClassification
     name: 'Microsoft Teams Incoming Webhook',
     ...CUSTOMER_ROW,
   },
+  [HoldableSecretType.WebPushVapid]: {
+    name: 'Web Push VAPID',
+    ...CUSTOMER_ROW,
+  },
   [HoldableSecretType.OpenRouter]: { name: 'OpenRouter', ...CUSTOMER_ROW },
 };
 

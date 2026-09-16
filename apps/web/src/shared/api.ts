@@ -2237,6 +2237,86 @@ export type TeamsDiagnosticsView = {
   authorityClass: 'notification-projection';
 };
 
+export type PushConnectionProductView = {
+  status: 'not-connected' | 'pending' | 'connected';
+  connected: boolean;
+  bound: boolean;
+  pending: boolean;
+  verified: boolean;
+  failed: boolean;
+  lastErrorCode: string | null;
+  connectedAt: string | null;
+  boundAt: string | null;
+  updatedAt: string;
+  bindAvailable: boolean;
+  testAvailable: boolean;
+  disconnectAvailable: boolean;
+  controlPlane: false;
+  transport: 'in-memory' | 'web-push';
+  pushUsed: boolean;
+  adapterReached: boolean;
+  userEnteredBind: false;
+  authorityClass: 'notification-projection';
+};
+
+export type PushTestProductView = {
+  connection: PushConnectionProductView;
+  delivery: NotificationDeliveryDetailView;
+  controlPlane: false;
+  pushUsed: boolean;
+  authorityClass: 'notification-projection';
+};
+
+export type PushDiagnosticsView = {
+  connection: PushConnectionProductView;
+  verification: {
+    status: 'not-connected' | 'pending' | 'connected';
+    verified: boolean;
+    bound: boolean;
+    pending: boolean;
+    failed: boolean;
+    lastErrorCode: string | null;
+  };
+  lastPushDelivery: {
+    deliveryId: string;
+    outcome: string;
+    skipReason: string | null;
+    adapterReached: boolean;
+    createdAt: string;
+  } | null;
+  pushTransport: 'in-memory' | 'web-push';
+  pushUsed: boolean;
+  controlPlane: false;
+  deferredChannelsActivated: false;
+  scheduler: false;
+  retries: false;
+  authorityClass: 'notification-projection';
+  /** Present when API exposes subscription presence; optional for honesty alignment. */
+  subscriptionPresent?: boolean;
+  subscriptionCount?: number;
+};
+
+export type PushVapidPublicKeyView = {
+  publicKey: string;
+  controlPlane: false;
+  authorityClass: 'notification-projection';
+};
+
+export type PushSubscriptionProductView = {
+  id: string;
+  status: 'active' | 'revoked' | 'expired';
+  createdAt: string;
+  endpointHost?: string;
+  controlPlane: false;
+  authorityClass: 'notification-projection';
+};
+
+export type RegisterPushSubscriptionBody = {
+  endpoint: string;
+  keys: { p256dh: string; auth: string };
+  expirationTime?: number | null;
+};
+
 export type PreferenceClockView = {
   timezone: string;
   dailyDeliveryTime: string;
@@ -4541,6 +4621,33 @@ export const api = {
       body: JSON.stringify({}),
     }),
   getTeamsDiagnostics: () => request<TeamsDiagnosticsView>('/teams/diagnostics'),
+  getPushConnection: () => request<PushConnectionProductView>('/push/connection'),
+  bindPushChannel: () =>
+    request<PushConnectionProductView>('/push/bind', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  getPushVapidPublicKey: () => request<PushVapidPublicKeyView>('/push/vapid-public-key'),
+  registerPushSubscription: (body: RegisterPushSubscriptionBody) =>
+    request<PushSubscriptionProductView>('/push/subscriptions', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  revokePushSubscription: (id: string) =>
+    request<PushSubscriptionProductView>(`/push/subscriptions/${id}`, {
+      method: 'DELETE',
+    }),
+  sendPushTest: () =>
+    request<PushTestProductView>('/push/test', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  disconnectPush: () =>
+    request<PushConnectionProductView>('/push/disconnect', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  getPushDiagnostics: () => request<PushDiagnosticsView>('/push/diagnostics'),
   listTelegramDeliveries: (query: NotificationDeliveryListQuery = {}) => {
     const params = new URLSearchParams();
     if (query.userId) params.set('userId', query.userId);

@@ -48,6 +48,7 @@ describe('PC-07 notification channel product views', () => {
       'slack',
       'discord',
       'teams',
+      'push',
     ]);
     expect(JSON.stringify(view)).not.toContain('hooks.slack.com');
     expect(JSON.stringify(view)).not.toContain('webhookUrl');
@@ -96,7 +97,7 @@ describe('PC-07 notification channel product views', () => {
     expect(toDeliveryTimingView(prefs()).producerTiming).toBe('immediate-on-deliver');
   });
 
-  it('projects bot-api honesty on telegram cards only and keeps reserved channels none/false', () => {
+  it('projects bot-api honesty on telegram cards only and keeps other channels honest', () => {
     const view = toChannelsWorkspaceView({
       prefs: prefs(),
       channels: NOTIFICATION_CHANNEL_CATALOG,

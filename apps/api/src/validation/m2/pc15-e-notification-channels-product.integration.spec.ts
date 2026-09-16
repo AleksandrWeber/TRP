@@ -200,7 +200,7 @@ describe('PC-15 15-e — Notification Delivery → Channels product flow', () =>
     ).toBe('active');
     expect(
       notifications.listChannels().find((channel) => channel.channelId === 'push')?.status,
-    ).toBe('reserved-inactive');
+    ).toBe('active');
   });
 
   it('does not reach the Telegram adapter when the channel is not connected', async () => {

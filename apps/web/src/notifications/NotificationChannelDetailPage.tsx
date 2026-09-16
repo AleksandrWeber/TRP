@@ -13,6 +13,7 @@ import { EmailSettingsPage } from '../email';
 import { DiscordSettingsPage } from '../discord';
 import { SlackSettingsPage } from '../slack';
 import { TeamsSettingsPage } from '../teams';
+import { PushSettingsPage } from '../push';
 import { NotificationChannelDetailView } from './NotificationChannelDetailView';
 
 const CATALOG = new Set(['telegram', 'email', 'slack', 'discord', 'teams', 'push']);
@@ -36,6 +37,9 @@ export function NotificationChannelDetailPage() {
   }
   if (channelId === 'teams') {
     return <TeamsSettingsPage />;
+  }
+  if (channelId === 'push') {
+    return <PushSettingsPage />;
   }
   return <ReservedChannelPage channelId={channelId} />;
 }

@@ -14,12 +14,15 @@ import type { Role } from '../identity/role';
 import { InMemoryEmailAdapter } from './adapters/in-memory-email.adapter';
 import { InMemoryNotificationStore } from './adapters/in-memory-notification-store';
 import { InMemoryDiscordAdapter } from './adapters/in-memory-discord.adapter';
+import { InMemoryPushAdapter } from './adapters/in-memory-push.adapter';
 import { InMemorySlackAdapter } from './adapters/in-memory-slack.adapter';
 import { InMemoryTeamsAdapter } from './adapters/in-memory-teams.adapter';
 import { DiscordWebhookCredentialResolver } from './adapters/discord-webhook-credential.resolver';
 import { SlackWebhookCredentialResolver } from './adapters/slack-webhook-credential.resolver';
 import { TeamsWebhookCredentialResolver } from './adapters/teams-webhook-credential.resolver';
+import { WebPushVapidCredentialResolver } from './adapters/web-push-vapid-credential.resolver';
 import { TelegramStartBindObserver } from './adapters/telegram-start-bind.observer';
+import { WebPushSubscriptionService } from './web-push-subscription.service';
 import {
   createDeliveryResult,
   type ChannelDeliveryAttempt,
@@ -48,6 +51,15 @@ import {
   notConnectedEmail,
   type EmailConnection,
 } from './domain/email-connection';
+import {
+  bindPushChannel as applyPushChannelBind,
+  disconnectPushConnection,
+  markPushFailed,
+  markPushVerified,
+  notConnectedPush,
+  type PushConnection,
+} from './domain/push-connection';
+import type { WebPushSubscriptionPublicView } from './domain/web-push-subscription';
 import {
   bindSlackChannel as applySlackChannelBind,
   disconnectSlackConnection,
@@ -78,6 +90,7 @@ import {
 import {
   DISCORD_CHANNEL_ADAPTER,
   EMAIL_CHANNEL_ADAPTER,
+  PUSH_CHANNEL_ADAPTER,
   SLACK_CHANNEL_ADAPTER,
   TEAMS_CHANNEL_ADAPTER,
   TELEGRAM_CHANNEL_ADAPTER,
@@ -87,9 +100,14 @@ import {
   type EmailDisconnectRequest,
   type NotificationChannelPort,
   type NotificationServicePort,
+  type PushBindRequest,
+  type PushDisconnectRequest,
+  type RegisterPushSubscriptionRequest,
+  type RevokePushSubscriptionRequest,
   type SendTestDiscordNotificationRequest,
   type SendTestEmailNotificationRequest,
   type SendTestNotificationRequest,
+  type SendTestPushNotificationRequest,
   type SendTestSlackNotificationRequest,
   type SendTestTeamsNotificationRequest,
   type SlackBindRequest,
@@ -123,6 +141,7 @@ export class NotificationDeliveryService implements NotificationServicePort {
   private readonly slack: NotificationChannelPort;
   private readonly discord: NotificationChannelPort;
   private readonly teams: NotificationChannelPort;
+  private readonly push: NotificationChannelPort;
 
   constructor(
     @Inject(InMemoryNotificationStore)
@@ -145,6 +164,9 @@ export class NotificationDeliveryService implements NotificationServicePort {
     @Inject(TEAMS_CHANNEL_ADAPTER)
     teams?: NotificationChannelPort,
     @Optional()
+    @Inject(PUSH_CHANNEL_ADAPTER)
+    push?: NotificationChannelPort,
+    @Optional()
     @Inject(SlackWebhookCredentialResolver)
     private readonly slackCredentials?: SlackWebhookCredentialResolver,
     @Optional()
@@ -153,11 +175,18 @@ export class NotificationDeliveryService implements NotificationServicePort {
     @Optional()
     @Inject(TeamsWebhookCredentialResolver)
     private readonly teamsCredentials?: TeamsWebhookCredentialResolver,
+    @Optional()
+    @Inject(WebPushVapidCredentialResolver)
+    private readonly pushCredentials?: WebPushVapidCredentialResolver,
+    @Optional()
+    @Inject(WebPushSubscriptionService)
+    private readonly pushSubscriptions?: WebPushSubscriptionService,
   ) {
     this.email = email ?? new InMemoryEmailAdapter();
     this.slack = slack ?? new InMemorySlackAdapter();
     this.discord = discord ?? new InMemoryDiscordAdapter();
     this.teams = teams ?? new InMemoryTeamsAdapter();
+    this.push = push ?? new InMemoryPushAdapter();
   }
 
   listChannels() {
@@ -738,6 +767,161 @@ export class NotificationDeliveryService implements NotificationServicePort {
     return delivery;
   }
 
+  getPushConnection(workspaceId: string, userId: string): PushConnection {
+    const existing = this.store.getPush(workspaceId, userId);
+    if (existing) return existing;
+    const created = notConnectedPush(workspaceId, userId, new Date().toISOString());
+    this.store.savePush(created);
+    return created;
+  }
+
+  async bindPushChannel(cmd: PushBindRequest): Promise<PushConnection> {
+    const configured = await this.pushCredentials?.isConfigured({
+      workspaceId: cmd.workspaceId,
+      actorUserId: cmd.actorUserId ?? cmd.userId,
+      actorRole: cmd.actorRole,
+    });
+    if (!configured) {
+      throw new Error('Web Push VAPID is not configured');
+    }
+    const current = this.getPushConnection(cmd.workspaceId, cmd.userId);
+    const next = applyPushChannelBind(current, nowOr(cmd.requestedAt));
+    this.store.savePush(next);
+    return next;
+  }
+
+  async disconnectPush(cmd: PushDisconnectRequest): Promise<PushConnection> {
+    const current = this.getPushConnection(cmd.workspaceId, cmd.userId);
+    const next = disconnectPushConnection(current, nowOr(cmd.requestedAt));
+    this.store.savePush(next);
+    await this.pushSubscriptions?.revokeAllForUser(cmd.workspaceId, cmd.userId);
+    return next;
+  }
+
+  async registerPushSubscription(
+    cmd: RegisterPushSubscriptionRequest,
+  ): Promise<WebPushSubscriptionPublicView> {
+    if (!this.pushSubscriptions) {
+      throw new Error('Web Push subscription registry is unavailable');
+    }
+    return this.pushSubscriptions.upsert({
+      workspaceId: cmd.workspaceId,
+      userId: cmd.userId,
+      endpoint: cmd.endpoint,
+      p256dh: cmd.keys.p256dh,
+      auth: cmd.keys.auth,
+      ...(cmd.userAgent ? { userAgent: cmd.userAgent } : {}),
+    });
+  }
+
+  async revokePushSubscription(
+    cmd: RevokePushSubscriptionRequest,
+  ): Promise<WebPushSubscriptionPublicView | null> {
+    if (!this.pushSubscriptions) return null;
+    return this.pushSubscriptions.revokeById(cmd.workspaceId, cmd.userId, cmd.subscriptionId);
+  }
+
+  async listPushSubscriptions(
+    workspaceId: string,
+    userId: string,
+  ): Promise<readonly WebPushSubscriptionPublicView[]> {
+    if (!this.pushSubscriptions) return Object.freeze([]);
+    return this.pushSubscriptions.listActivePublic(workspaceId, userId);
+  }
+
+  async getPushVapidPublicKey(cmd: {
+    workspaceId: string;
+    actorUserId: string;
+    actorRole: Role;
+  }): Promise<string | null> {
+    const resolved = await this.pushCredentials?.resolvePublicKey({
+      workspaceId: cmd.workspaceId,
+      actorUserId: cmd.actorUserId,
+      actorRole: cmd.actorRole,
+    });
+    if (!resolved?.ok) return null;
+    return resolved.publicKey;
+  }
+
+  async sendTestPushNotification(cmd: SendTestPushNotificationRequest): Promise<DeliveryResult> {
+    const connection = this.getPushConnection(cmd.workspaceId, cmd.userId);
+    if (connection.status === 'not-connected') {
+      throw new Error('Push channel is not bound');
+    }
+    const requestedAt = nowOr(cmd.requestedAt);
+    const workspaceId = cmd.workspaceId.trim();
+    const queueItemId = `nq-${stableHash(
+      `${workspaceId}|${cmd.userId}|daily-report|${requestedAt}|push-test|queue`,
+    )}`;
+    const deliveryId = `del-${stableHash(
+      `${workspaceId}|${cmd.userId}|daily-report|${requestedAt}|push-test`,
+    )}`;
+
+    let queueItem = createPendingNotificationQueueItem({
+      queueItemId,
+      command: {
+        workspaceId,
+        userId: cmd.userId,
+        type: 'daily-report',
+        subject: 'Test notification',
+        body: 'TRP notification delivery test. Delivery channel only — not a trading command.',
+        requestedAt,
+        ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+        ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
+      },
+      createdAt: requestedAt,
+    });
+    this.store.saveQueueItem(queueItem);
+    queueItem = withNotificationQueueStatus(queueItem, 'in-flight', { updatedAt: requestedAt });
+    this.store.saveQueueItem(queueItem);
+
+    const result = await this.push.send({
+      chatId: cmd.userId,
+      subject: 'Test notification',
+      body: 'TRP notification delivery test. Delivery channel only — not a trading command.',
+      workspaceId,
+      ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+      ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
+    });
+
+    const verifiedAt = nowOr(undefined);
+    if (result.ok) {
+      this.store.savePush(markPushVerified(connection, verifiedAt));
+    } else {
+      this.store.savePush(markPushFailed(connection, verifiedAt, result.detail));
+    }
+
+    const attempts: ChannelDeliveryAttempt[] = [
+      Object.freeze(
+        result.ok
+          ? { channelId: 'push' as const, outcome: 'delivered' as const }
+          : {
+              channelId: 'push' as const,
+              outcome: 'failed' as const,
+              detail: result.detail,
+            },
+      ),
+    ];
+    const delivery = createDeliveryResult({
+      deliveryId,
+      workspaceId,
+      userId: cmd.userId,
+      type: 'daily-report',
+      attempts,
+      createdAt: requestedAt,
+    });
+    this.store.recordDelivery(delivery);
+
+    const terminalStatus = delivery.outcome === 'failed' ? 'retryable' : 'completed';
+    queueItem = withNotificationQueueStatus(queueItem, terminalStatus, {
+      updatedAt: verifiedAt,
+      deliveryId: delivery.deliveryId,
+      ...(result.ok ? {} : { detail: result.detail }),
+    });
+    this.store.saveQueueItem(queueItem);
+    return delivery;
+  }
+
   async deliver(cmd: DeliverNotificationCommand): Promise<DeliveryResult> {
     const workspaceId = cmd.workspaceId.trim();
     if (!workspaceId) {
@@ -768,12 +952,14 @@ export class NotificationDeliveryService implements NotificationServicePort {
     const slack = this.getSlackConnection(workspaceId, cmd.userId);
     const discord = this.getDiscordConnection(workspaceId, cmd.userId);
     const teams = this.getTeamsConnection(workspaceId, cmd.userId);
+    const push = this.getPushConnection(workspaceId, cmd.userId);
     const routes = resolveDeliveryRoutes({ ...cmd, workspaceId }, prefs, {
       telegramConnected: telegram.status === 'connected' && Boolean(telegram.chatId),
       emailConnected: email.status === 'connected' && Boolean(email.recipient),
       slackConnected: slack.status === 'connected',
       discordConnected: discord.status === 'connected',
       teamsConnected: teams.status === 'connected',
+      pushConnected: push.status === 'connected',
     });
 
     const attempts: ChannelDeliveryAttempt[] = [];
@@ -911,6 +1097,32 @@ export class NotificationDeliveryService implements NotificationServicePort {
                 }
               : {
                   channelId: 'teams' as const,
+                  outcome: 'failed' as const,
+                  detail: result.detail,
+                },
+          ),
+        );
+        continue;
+      }
+
+      if (route.channelId === 'push') {
+        const result = await this.push.send({
+          chatId: cmd.userId,
+          subject: cmd.subject,
+          body: cmd.body,
+          workspaceId,
+          ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+          ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
+        });
+        attempts.push(
+          Object.freeze(
+            result.ok
+              ? {
+                  channelId: 'push' as const,
+                  outcome: 'delivered' as const,
+                }
+              : {
+                  channelId: 'push' as const,
                   outcome: 'failed' as const,
                   detail: result.detail,
                 },

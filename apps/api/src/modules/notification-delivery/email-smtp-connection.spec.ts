@@ -159,7 +159,7 @@ describe('Email SMTP connection and delivery', () => {
     await moduleRef.close();
   });
 
-  it('keeps Push reserved while Slack, Discord, and Teams stay active', async () => {
+  it('keeps Slack, Discord, Teams, and Push active', async () => {
     const { moduleRef, service } = await createService();
     const reserved = service
       .listChannels()
@@ -171,7 +171,10 @@ describe('Email SMTP connection and delivery', () => {
     expect(service.listChannels().find((channel) => channel.channelId === 'discord')?.status).toBe(
       'active',
     );
-    expect(reserved).toEqual(['push']);
+    expect(service.listChannels().find((channel) => channel.channelId === 'push')?.status).toBe(
+      'active',
+    );
+    expect(reserved).toEqual([]);
     await moduleRef.close();
   });
 });

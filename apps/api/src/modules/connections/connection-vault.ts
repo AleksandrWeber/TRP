@@ -10,6 +10,7 @@ const PROVIDER_SECRET_TYPES: Readonly<Record<ConnectionProvider, HoldableType>> 
   SLACK: HoldableSecretType.SlackWebhook,
   DISCORD: HoldableSecretType.DiscordWebhook,
   TEAMS: HoldableSecretType.TeamsWebhook,
+  PUSH: HoldableSecretType.WebPushVapid,
   OPENROUTER: HoldableSecretType.OpenRouter,
 };
 

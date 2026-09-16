@@ -3,7 +3,7 @@
  *
  * Delegates queries, preference upserts, and channel catalog views.
  * Does not deliver, connect Telegram, send tests, or generate reports.
- * Notification Delivery remains owner. Reserved channels stay reserved.
+ * Notification Delivery remains owner. Channel catalog honesty is projected.
  */
 
 import { Inject, Injectable, Optional } from '@nestjs/common';
@@ -11,6 +11,7 @@ import {
   DISCORD_CHANNEL_ADAPTER,
   EMAIL_CHANNEL_ADAPTER,
   NOTIFICATION_SERVICE_PORT,
+  PUSH_CHANNEL_ADAPTER,
   SLACK_CHANNEL_ADAPTER,
   TEAMS_CHANNEL_ADAPTER,
   TELEGRAM_CHANNEL_ADAPTER,
@@ -23,6 +24,7 @@ import { projectTelegramTransport } from '../notification-delivery/domain/telegr
 import { projectEmailTransport } from '../notification-delivery/domain/email-transport-projection';
 import { projectSlackTransport } from '../notification-delivery/domain/slack-transport-projection';
 import { projectTeamsTransport } from '../notification-delivery/domain/teams-transport-projection';
+import { projectPushTransport } from '../notification-delivery/domain/push-transport-projection';
 import type { NotificationChannelId } from '../notification-delivery/domain/notification-channel';
 import type { UserNotificationPreferences } from '../notification-delivery/domain/user-notification-preferences';
 import {
@@ -66,6 +68,9 @@ export class NotificationProductService {
     @Optional()
     @Inject(TEAMS_CHANNEL_ADAPTER)
     private readonly teamsChannel?: NotificationChannelPort,
+    @Optional()
+    @Inject(PUSH_CHANNEL_ADAPTER)
+    private readonly pushChannel?: NotificationChannelPort,
   ) {}
 
   private telegramHonesty() {
@@ -96,6 +101,12 @@ export class NotificationProductService {
       : { transport: 'in-memory' as const, webhookUsed: false };
   }
 
+  private pushHonesty() {
+    return this.pushChannel
+      ? projectPushTransport(this.pushChannel)
+      : { transport: 'in-memory' as const, pushUsed: false, adapterReached: false };
+  }
+
   private emailConnection(workspaceId: string, userId: string) {
     return this.notifications.getEmailConnection?.(workspaceId, userId);
   }
@@ -110,6 +121,10 @@ export class NotificationProductService {
 
   private teamsConnection(workspaceId: string, userId: string) {
     return this.notifications.getTeamsConnection?.(workspaceId, userId);
+  }
+
+  private pushConnection(workspaceId: string, userId: string) {
+    return this.notifications.getPushConnection?.(workspaceId, userId);
   }
 
   getSettings(
@@ -127,6 +142,7 @@ export class NotificationProductService {
       slackConnection: this.slackConnection(workspaceId, userId),
       discordConnection: this.discordConnection(workspaceId, userId),
       teamsConnection: this.teamsConnection(workspaceId, userId),
+      pushConnection: this.pushConnection(workspaceId, userId),
     });
   }
 
@@ -145,6 +161,7 @@ export class NotificationProductService {
       slackConnection: this.slackConnection(workspaceId, userId),
       discordConnection: this.discordConnection(workspaceId, userId),
       teamsConnection: this.teamsConnection(workspaceId, userId),
+      pushConnection: this.pushConnection(workspaceId, userId),
     });
   }
 
@@ -171,6 +188,8 @@ export class NotificationProductService {
       discordHonesty: this.discordHonesty(),
       teamsConnection: this.teamsConnection(workspaceId, userId),
       teamsHonesty: this.teamsHonesty(),
+      pushConnection: this.pushConnection(workspaceId, userId),
+      pushHonesty: this.pushHonesty(),
     });
   }
 
@@ -196,6 +215,8 @@ export class NotificationProductService {
       discordHonesty: this.discordHonesty(),
       teamsConnection: this.teamsConnection(workspaceId, userId),
       teamsHonesty: this.teamsHonesty(),
+      pushConnection: this.pushConnection(workspaceId, userId),
+      pushHonesty: this.pushHonesty(),
     });
   }
 
@@ -230,6 +251,7 @@ export class NotificationProductService {
       slackConnection: this.slackConnection(workspaceId, userId),
       discordConnection: this.discordConnection(workspaceId, userId),
       teamsConnection: this.teamsConnection(workspaceId, userId),
+      pushConnection: this.pushConnection(workspaceId, userId),
     }).preferences;
   }
 
@@ -247,6 +269,7 @@ export class NotificationProductService {
       slackConnection: this.slackConnection(input.workspaceId, input.userId),
       discordConnection: this.discordConnection(input.workspaceId, input.userId),
       teamsConnection: this.teamsConnection(input.workspaceId, input.userId),
+      pushConnection: this.pushConnection(input.workspaceId, input.userId),
     }).preferences;
   }
 

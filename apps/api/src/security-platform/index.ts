@@ -52,6 +52,12 @@ export {
   MAX_SLACK_WEBHOOK_URL_CHARS,
   type SlackWebhookUrlGuardResult,
 } from './slack-webhook-url-guard';
+export {
+  validateWebPushEndpointUrl,
+  MAX_WEB_PUSH_ENDPOINT_URL_CHARS,
+  type WebPushEndpointGuardResult,
+  type WebPushEndpointGuardReason,
+} from './web-push-endpoint-guard';
 export { emitPlatformSecurityEvent, type PlatformSecurityEvent } from './security-event';
 export { registerSecurityPlatformHttpHooks } from './security-platform.http';
 export { PlatformSecurityExceptionFilter } from './platform-security-exception.filter';

@@ -1885,6 +1885,28 @@ model WorkspacePushNotificationAnchor {
   @@map("workspace_push_notification_anchors")
 }
 
+/// CM-16 — Durable Web Push subscription registry on Notification Delivery owner.
+/// Endpoints and encryption keys are sensitive. Not an anchor. Not FCM/APNs.
+model WorkspaceWebPushSubscription {
+  id            String    @id @default(cuid())
+  workspaceId   String    @map("workspace_id")
+  userId        String    @map("user_id")
+  providerKind  String    @default("web-push") @map("provider_kind")
+  endpoint      String
+  p256dh        String
+  auth          String
+  status        String // active | revoked | expired
+  userAgent     String?   @map("user_agent")
+  lastErrorCode String?   @map("last_error_code")
+  lastSuccessAt DateTime? @map("last_success_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@unique([workspaceId, userId, endpoint])
+  @@index([workspaceId, userId, status])
+  @@map("workspace_web_push_subscriptions")
+}
+
 /// W5-N05-b — Durable Notification Platform Integration anchors on existing Notification Delivery owner.
 /// Canonical platform integration state only. No delivery state. No runtime state. No transport I/O.
 /// Persistence only — restart recovery and operational continuity are later slices.

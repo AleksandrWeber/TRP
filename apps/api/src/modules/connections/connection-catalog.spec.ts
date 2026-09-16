@@ -69,6 +69,11 @@ describe('Connection catalog (W2-S01-a)', () => {
               displayName: 'Microsoft Teams Incoming Webhook',
               credentialFields: ['webhookUrl'],
             },
+            {
+              id: 'PUSH',
+              displayName: 'Web Push (VAPID)',
+              credentialFields: ['publicKey', 'privateKey', 'subject'],
+            },
           ],
         },
         {

@@ -206,13 +206,13 @@ describe('Slack webhook connection and delivery', () => {
     await moduleRef.close();
   });
 
-  it('keeps Push reserved (Discord and Teams are active)', async () => {
+  it('keeps all notification channels active including Push', async () => {
     const { moduleRef, service } = await createService();
     const reserved = service
       .listChannels()
       .filter((channel) => channel.status === 'reserved-inactive')
       .map((channel) => channel.channelId);
-    expect(reserved).toEqual(['push']);
+    expect(reserved).toEqual([]);
     await moduleRef.close();
   });
 });

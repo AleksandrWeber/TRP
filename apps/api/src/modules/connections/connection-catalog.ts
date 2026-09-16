@@ -57,6 +57,12 @@ export const CONNECTION_PROVIDERS = [
     credentialFields: ['webhookUrl'],
   },
   {
+    id: 'PUSH',
+    displayName: 'Web Push (VAPID)',
+    connectionType: 'NOTIFICATION',
+    credentialFields: ['publicKey', 'privateKey', 'subject'],
+  },
+  {
     id: 'OPENROUTER',
     displayName: 'OpenRouter',
     connectionType: 'AI',

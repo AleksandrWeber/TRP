@@ -29,6 +29,11 @@ const WELL_FORMED: Readonly<Record<HoldableSecretType, Record<string, string>>> 
     webhookUrl:
       'https://defaultenv.e1.environment.api.powerplatform.com/powerautomate/automations/direct/workflows/wfid123/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=TESTSIG_NOT_A_REAL_SECRET',
   },
+  [HoldableSecretType.WebPushVapid]: {
+    publicKey:
+      'BNcRdreALRFXTkOOUHK1EtK2wtaz5Ry4YfYCA_0QTpQtUbVlUls0VJXg7A8u-Ts1XbjhazAkj7I99e8QcY7AcEk',
+    privateKey: 'FAKESECRET_o3p4q5r6s7t8u9v0w1x2',
+  },
   [HoldableSecretType.OpenRouter]: { apiKey: 'or-key-1' },
 };
 
@@ -102,5 +107,26 @@ describe('holdable secret validation (V3-S03-c)', () => {
     expect(() => validateHoldableSecretFields(HoldableSecretType.Binance, {})).toThrow(
       VaultValidationError,
     );
+  });
+
+  it('does not treat incomplete material as stored-valid', () => {
+    expect(() => validateHoldableSecretFields(HoldableSecretType.Binance, {})).toThrow(
+      VaultValidationError,
+    );
+  });
+
+  it('accepts optional subject for Web Push VAPID and rejects bad subject', () => {
+    expect(
+      validateHoldableSecretFields(HoldableSecretType.WebPushVapid, {
+        ...WELL_FORMED[HoldableSecretType.WebPushVapid],
+        subject: 'mailto:ops@example.com',
+      }),
+    ).toMatchObject({ subject: 'mailto:ops@example.com' });
+    expect(() =>
+      validateHoldableSecretFields(HoldableSecretType.WebPushVapid, {
+        ...WELL_FORMED[HoldableSecretType.WebPushVapid],
+        subject: 'not-a-contact',
+      }),
+    ).toThrow(VaultValidationError);
   });
 });

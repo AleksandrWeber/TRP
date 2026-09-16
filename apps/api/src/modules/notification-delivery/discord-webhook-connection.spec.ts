@@ -210,14 +210,17 @@ describe('Discord webhook connection and delivery', () => {
     await moduleRef.close();
   });
 
-  it('keeps Push reserved and Discord active', async () => {
+  it('keeps Push and Discord active', async () => {
     const { moduleRef, service } = await createService();
     const reserved = service
       .listChannels()
       .filter((channel) => channel.status === 'reserved-inactive')
       .map((channel) => channel.channelId);
-    expect(reserved).toEqual(['push']);
+    expect(reserved).toEqual([]);
     expect(service.listChannels().find((channel) => channel.channelId === 'discord')?.status).toBe(
+      'active',
+    );
+    expect(service.listChannels().find((channel) => channel.channelId === 'push')?.status).toBe(
       'active',
     );
     await moduleRef.close();

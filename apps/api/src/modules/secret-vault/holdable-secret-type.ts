@@ -13,6 +13,7 @@ export const HoldableSecretType = {
   SlackWebhook: 'slack-webhook',
   DiscordWebhook: 'discord-webhook',
   TeamsWebhook: 'teams-webhook',
+  WebPushVapid: 'web-push-vapid',
   OpenRouter: 'openrouter',
 } as const;
 

@@ -32,6 +32,7 @@ import { EmailProductModule } from './modules/email-product';
 import { SlackProductModule } from './modules/slack-product';
 import { DiscordProductModule } from './modules/discord-product';
 import { TeamsProductModule } from './modules/teams-product';
+import { PushProductModule } from './modules/push-product';
 import { ExchangeConnectivityModule } from './modules/exchange-connectivity';
 import { ConnectionsModule } from './modules/connections/connections.module';
 import { AiConnectivityModule } from './modules/ai-connectivity';
@@ -189,6 +190,7 @@ import { OperationalContinuityModule } from './modules/operational-continuity';
     SlackProductModule,
     DiscordProductModule,
     TeamsProductModule,
+    PushProductModule,
     ExchangeConnectivityModule,
     ConnectionsModule,
     AiConnectivityModule,

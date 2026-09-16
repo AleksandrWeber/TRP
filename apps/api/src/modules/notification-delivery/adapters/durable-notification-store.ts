@@ -23,6 +23,7 @@ import type { EmailConnection } from '../domain/email-connection';
 import type { DiscordConnection } from '../domain/discord-connection';
 import type { SlackConnection } from '../domain/slack-connection';
 import type { TeamsConnection } from '../domain/teams-connection';
+import type { PushConnection } from '../domain/push-connection';
 import type { UserNotificationPreferences } from '../domain/user-notification-preferences';
 import {
   InMemoryNotificationStore,
@@ -92,6 +93,11 @@ export class DurableNotificationStore extends InMemoryNotificationStore {
 
   override saveTeams(connection: TeamsConnection): void {
     super.saveTeams(connection);
+    this.persist();
+  }
+
+  override savePush(connection: PushConnection): void {
+    super.savePush(connection);
     this.persist();
   }
 

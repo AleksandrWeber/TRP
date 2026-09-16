@@ -102,8 +102,8 @@ describe('PC-07 — Notification Channels product', () => {
     expect(teams.offered).toBe(true);
     expect(teams.configuration.kind).toBe('teams-connection');
     const push = channels.get({ user: OWNER }, workspace.id, { channelId: 'push' });
-    expect(push.offered).toBe(false);
-    expect(push.configuration.kind).toBe('reserved-inactive');
+    expect(push.offered).toBe(true);
+    expect(push.configuration.kind).toBe('push-connection');
 
     const history = channels.listDeliveries(
       { user: OWNER },

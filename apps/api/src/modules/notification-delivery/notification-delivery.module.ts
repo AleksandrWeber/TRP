@@ -13,14 +13,20 @@ import { ProductionSmtpNotificationAdapter } from './adapters/production-smtp-no
 import { ProductionDiscordWebhookNotificationAdapter } from './adapters/production-discord-webhook-notification.adapter';
 import { ProductionSlackWebhookNotificationAdapter } from './adapters/production-slack-webhook-notification.adapter';
 import { ProductionTeamsWebhookNotificationAdapter } from './adapters/production-teams-webhook-notification.adapter';
+import { ProductionWebPushNotificationAdapter } from './adapters/production-web-push-notification.adapter';
 import { ProductionTelegramBotApiAdapter } from './adapters/telegram-bot-api.adapter';
 import { SmtpCredentialResolver } from './adapters/smtp-credential.resolver';
 import { DiscordWebhookCredentialResolver } from './adapters/discord-webhook-credential.resolver';
 import { SlackWebhookCredentialResolver } from './adapters/slack-webhook-credential.resolver';
 import { TeamsWebhookCredentialResolver } from './adapters/teams-webhook-credential.resolver';
+import { WebPushVapidCredentialResolver } from './adapters/web-push-vapid-credential.resolver';
+import { InMemoryPushAdapter } from './adapters/in-memory-push.adapter';
 import { TelegramBotApiHttpClient } from './adapters/telegram-bot-api.http';
 import { TelegramBotTokenResolver } from './adapters/telegram-bot-token.resolver';
 import { TelegramStartBindObserver } from './adapters/telegram-start-bind.observer';
+import { WEB_PUSH_SUBSCRIPTION_REPOSITORY } from './domain/web-push-subscription.repository';
+import { PrismaWebPushSubscriptionRepository } from './persistence/prisma-web-push-subscription.repository';
+import { WebPushSubscriptionService } from './web-push-subscription.service';
 import { TELEGRAM_NOTIFICATION_ANCHOR_REPOSITORY } from './domain/telegram-notification-anchor.repository';
 import { EMAIL_NOTIFICATION_ANCHOR_REPOSITORY } from './domain/email-notification-anchor.repository';
 import { SLACK_DISCORD_TEAMS_NOTIFICATION_ANCHOR_REPOSITORY } from './domain/slack-discord-teams-notification-anchor.repository';
@@ -86,6 +92,7 @@ import {
   SLACK_CHANNEL_ADAPTER,
   DISCORD_CHANNEL_ADAPTER,
   TEAMS_CHANNEL_ADAPTER,
+  PUSH_CHANNEL_ADAPTER,
 } from './ports/notification.port';
 import { EmailNotificationPersistenceService } from './email-notification-persistence.service';
 import { SlackDiscordTeamsNotificationPersistenceService } from './slack-discord-teams-notification-persistence.service';
@@ -238,6 +245,11 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     {
       provide: PUSH_NOTIFICATION_ANCHOR_REPOSITORY,
       useFactory: (prisma: PrismaService) => new PrismaPushNotificationAnchorRepository(prisma),
+      inject: [PrismaService],
+    },
+    {
+      provide: WEB_PUSH_SUBSCRIPTION_REPOSITORY,
+      useFactory: (prisma: PrismaService) => new PrismaWebPushSubscriptionRepository(prisma),
       inject: [PrismaService],
     },
     {
@@ -494,6 +506,10 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     TeamsWebhookCredentialResolver,
     ProductionTeamsWebhookNotificationAdapter,
     InMemoryTeamsAdapter,
+    WebPushVapidCredentialResolver,
+    WebPushSubscriptionService,
+    ProductionWebPushNotificationAdapter,
+    InMemoryPushAdapter,
     {
       provide: TELEGRAM_CHANNEL_ADAPTER,
       useExisting: ProductionTelegramBotApiAdapter,
@@ -514,6 +530,10 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
       provide: TEAMS_CHANNEL_ADAPTER,
       useExisting: ProductionTeamsWebhookNotificationAdapter,
     },
+    {
+      provide: PUSH_CHANNEL_ADAPTER,
+      useExisting: ProductionWebPushNotificationAdapter,
+    },
     NotificationDeliveryService,
     {
       provide: NOTIFICATION_SERVICE_PORT,
@@ -533,16 +553,21 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     ProductionDiscordWebhookNotificationAdapter,
     InMemoryTeamsAdapter,
     ProductionTeamsWebhookNotificationAdapter,
+    InMemoryPushAdapter,
+    ProductionWebPushNotificationAdapter,
+    WebPushSubscriptionService,
     NOTIFICATION_SERVICE_PORT,
     TELEGRAM_CHANNEL_ADAPTER,
     EMAIL_CHANNEL_ADAPTER,
     SLACK_CHANNEL_ADAPTER,
     DISCORD_CHANNEL_ADAPTER,
     TEAMS_CHANNEL_ADAPTER,
+    PUSH_CHANNEL_ADAPTER,
     TELEGRAM_NOTIFICATION_ANCHOR_REPOSITORY,
     EMAIL_NOTIFICATION_ANCHOR_REPOSITORY,
     SLACK_DISCORD_TEAMS_NOTIFICATION_ANCHOR_REPOSITORY,
     PUSH_NOTIFICATION_ANCHOR_REPOSITORY,
+    WEB_PUSH_SUBSCRIPTION_REPOSITORY,
     NOTIFICATION_PLATFORM_INTEGRATION_ANCHOR_REPOSITORY,
     NOTIFICATION_PLATFORM_DELIVERY_ANCHOR_REPOSITORY,
     NOTIFICATION_PLATFORM_DISPATCH_ANCHOR_REPOSITORY,

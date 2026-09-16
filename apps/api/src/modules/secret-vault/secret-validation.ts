@@ -20,10 +20,18 @@ const REQUIRED_FIELDS: Readonly<Record<HoldableSecretType, readonly string[]>> =
   [HoldableSecretType.SlackWebhook]: ['webhookUrl'],
   [HoldableSecretType.DiscordWebhook]: ['webhookUrl'],
   [HoldableSecretType.TeamsWebhook]: ['webhookUrl'],
+  [HoldableSecretType.WebPushVapid]: ['publicKey', 'privateKey'],
   [HoldableSecretType.OpenRouter]: ['apiKey'],
 };
 
+/** Optional extras allowed only for Web Push VAPID (subject). */
+const OPTIONAL_FIELDS: Readonly<Partial<Record<HoldableSecretType, readonly string[]>>> = {
+  [HoldableSecretType.WebPushVapid]: ['subject'],
+};
+
 const SMTP_PORT = /^[0-9]{1,5}$/;
+const VAPID_KEY = /^[A-Za-z0-9_-]{20,}$/;
+const VAPID_SUBJECT = /^mailto:.+|https:.+/i;
 
 export function requiredFieldsForType(type: HoldableSecretType): readonly string[] {
   return REQUIRED_FIELDS[type];
@@ -47,7 +55,9 @@ export function validateHoldableSecretFields(
     }
   }
 
-  if (names.some((name) => !required.includes(name))) {
+  const optional = OPTIONAL_FIELDS[type] ?? [];
+  const allowed = new Set([...required, ...optional]);
+  if (names.some((name) => !allowed.has(name))) {
     throw new VaultValidationError('The credential could not be stored.');
   }
 
@@ -65,6 +75,10 @@ export function validateHoldableSecretFields(
 
   if (type === HoldableSecretType.TeamsWebhook) {
     assertTeamsWebhookUrl(material.webhookUrl);
+  }
+
+  if (type === HoldableSecretType.WebPushVapid) {
+    assertWebPushVapidFields(material);
   }
 
   return material;
@@ -106,6 +120,21 @@ function assertTeamsWebhookUrl(webhookUrl: string | undefined): void {
   }
   const guard = validateTeamsIncomingWebhookUrl(webhookUrl);
   if (!guard.ok) {
+    throw new VaultValidationError('The credential could not be stored.');
+  }
+}
+
+function assertWebPushVapidFields(material: SecretFieldMap): void {
+  const publicKey = material.publicKey;
+  const privateKey = material.privateKey;
+  if (publicKey === undefined || privateKey === undefined) {
+    throw new VaultValidationError('Required credential fields are missing.');
+  }
+  if (!VAPID_KEY.test(publicKey) || !VAPID_KEY.test(privateKey)) {
+    throw new VaultValidationError('The credential could not be stored.');
+  }
+  const subject = material.subject;
+  if (subject !== undefined && !VAPID_SUBJECT.test(subject)) {
     throw new VaultValidationError('The credential could not be stored.');
   }
 }

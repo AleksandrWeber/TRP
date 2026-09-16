@@ -9,10 +9,12 @@ import type { DeliveryResult, DeliverNotificationCommand } from '../domain/deliv
 import type { DiscordConnection } from '../domain/discord-connection';
 import type { EmailConnection } from '../domain/email-connection';
 import type { NotificationChannelDescriptor } from '../domain/notification-channel';
+import type { PushConnection } from '../domain/push-connection';
 import type { SlackConnection } from '../domain/slack-connection';
 import type { TeamsConnection } from '../domain/teams-connection';
 import type { TelegramConnection } from '../domain/telegram-connection';
 import type { UserNotificationPreferences } from '../domain/user-notification-preferences';
+import type { WebPushSubscriptionPublicView } from '../domain/web-push-subscription';
 
 export const NOTIFICATION_SERVICE_PORT = Symbol('NOTIFICATION_SERVICE_PORT');
 export const TELEGRAM_CHANNEL_ADAPTER = Symbol('TELEGRAM_CHANNEL_ADAPTER');
@@ -20,6 +22,7 @@ export const EMAIL_CHANNEL_ADAPTER = Symbol('EMAIL_CHANNEL_ADAPTER');
 export const SLACK_CHANNEL_ADAPTER = Symbol('SLACK_CHANNEL_ADAPTER');
 export const DISCORD_CHANNEL_ADAPTER = Symbol('DISCORD_CHANNEL_ADAPTER');
 export const TEAMS_CHANNEL_ADAPTER = Symbol('TEAMS_CHANNEL_ADAPTER');
+export const PUSH_CHANNEL_ADAPTER = Symbol('PUSH_CHANNEL_ADAPTER');
 
 export type UpsertNotificationPreferences = Readonly<{
   workspaceId: string;
@@ -129,6 +132,39 @@ export type TeamsDisconnectRequest = Readonly<{
 
 export type SendTestTeamsNotificationRequest = SendTestNotificationRequest;
 
+export type PushBindRequest = Readonly<{
+  workspaceId: string;
+  userId: string;
+  requestedAt?: string;
+  actorUserId?: string;
+  actorRole?: Role;
+}>;
+
+export type PushDisconnectRequest = Readonly<{
+  workspaceId: string;
+  userId: string;
+  requestedAt?: string;
+}>;
+
+export type SendTestPushNotificationRequest = SendTestNotificationRequest;
+
+export type RegisterPushSubscriptionRequest = Readonly<{
+  workspaceId: string;
+  userId: string;
+  endpoint: string;
+  keys: Readonly<{ p256dh: string; auth: string }>;
+  expirationTime?: number | null;
+  userAgent?: string;
+  actorUserId?: string;
+  actorRole?: Role;
+}>;
+
+export type RevokePushSubscriptionRequest = Readonly<{
+  workspaceId: string;
+  userId: string;
+  subscriptionId: string;
+}>;
+
 export type NotificationChannelSendCommand = Readonly<{
   chatId: string;
   subject: string;
@@ -192,6 +228,25 @@ export interface NotificationServicePort {
   bindTeamsChannel(cmd: TeamsBindRequest): Promise<TeamsConnection>;
   disconnectTeams(cmd: TeamsDisconnectRequest): TeamsConnection;
   sendTestTeamsNotification(cmd: SendTestTeamsNotificationRequest): Promise<DeliveryResult>;
+  getPushConnection(workspaceId: string, userId: string): PushConnection;
+  bindPushChannel(cmd: PushBindRequest): Promise<PushConnection>;
+  disconnectPush(cmd: PushDisconnectRequest): Promise<PushConnection>;
+  sendTestPushNotification(cmd: SendTestPushNotificationRequest): Promise<DeliveryResult>;
+  registerPushSubscription(
+    cmd: RegisterPushSubscriptionRequest,
+  ): Promise<WebPushSubscriptionPublicView>;
+  revokePushSubscription(
+    cmd: RevokePushSubscriptionRequest,
+  ): Promise<WebPushSubscriptionPublicView | null>;
+  listPushSubscriptions(
+    workspaceId: string,
+    userId: string,
+  ): Promise<readonly WebPushSubscriptionPublicView[]>;
+  getPushVapidPublicKey(cmd: {
+    workspaceId: string;
+    actorUserId: string;
+    actorRole: Role;
+  }): Promise<string | null>;
   deliver(cmd: DeliverNotificationCommand): Promise<DeliveryResult>;
   /**
    * Read-only list of already-recorded deliveries. Not a new SoT.
@@ -200,7 +255,7 @@ export interface NotificationServicePort {
   listDeliveries(query: ListDeliveriesQuery): readonly DeliveryResult[];
 }
 
-/** Channel send surface (Telegram, Email, Slack active; reserved channels inactive). */
+/** Channel send surface (Telegram, Email, Slack, Discord, Teams, Push active). */
 export interface NotificationChannelPort {
   readonly channelId: string;
   readonly active: boolean;
@@ -216,7 +271,7 @@ export const NOTIFICATION_PORTS_ACTIVE = Object.freeze({
   slackChannel: true,
   discordChannel: true,
   teamsChannel: true,
-  pushChannel: false,
+  pushChannel: true,
   persistence: true,
   rest: false,
 } as const);
