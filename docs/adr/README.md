@@ -111,3 +111,7 @@ File: [`ADR-018-architectural-invariants.md`](./ADR-018-architectural-invariants
 ADR-019 — Event Emission Semantics (application events are infrastructure notifications; Contract B)
 Status: Accepted
 File: [`ADR-019-event-emission-semantics.md`](./ADR-019-event-emission-semantics.md)
+
+ADR-020 — Wave 6 Live-Capital (opt-in live-capital boundary; Paper Freeze preserved as default)
+Status: DRAFT
+File: [`ADR-020-live-capital.md`](./ADR-020-live-capital.md)
