@@ -228,6 +228,27 @@ describe('Web Push pinned HTTPS agent', () => {
     expect(v6).toBe('2001:4860:4860::8888');
     agent.destroy();
   });
+
+  it('lookup with all:true returns address objects (Node 18+ https.Agent)', () => {
+    const agent = createWebPushPinnedHttpsAgent([
+      PUBLIC_V4,
+      { address: '2001:4860:4860::8888', family: 6 },
+    ]);
+    const lookup = agent.options.lookup;
+    expect(typeof lookup).toBe('function');
+    if (typeof lookup !== 'function') return;
+
+    let addresses: Array<{ address: string; family: number }> | undefined;
+    lookup('fcm.googleapis.com', { all: true }, ((err: Error | null, result: unknown) => {
+      expect(err).toBeNull();
+      addresses = result as Array<{ address: string; family: number }>;
+    }) as (err: Error | null, address: string, family: number) => void);
+    expect(addresses).toEqual([
+      { address: '8.8.8.8', family: 4 },
+      { address: '2001:4860:4860::8888', family: 6 },
+    ]);
+    agent.destroy();
+  });
 });
 
 describe('Web Push redirect / send-path outbound validation', () => {

@@ -199,9 +199,18 @@ export function createWebPushPinnedHttpsAgent(
   const pinnedLookup = (
     _hostname: string,
     options: number | import('node:dns').LookupOneOptions | undefined,
-    callback: (err: NodeJS.ErrnoException | null, address: string, family: number) => void,
+    callback: (
+      err: NodeJS.ErrnoException | null,
+      address: string | Array<{ address: string; family: number }>,
+      family?: number,
+    ) => void,
   ): void => {
     const familyHint = extractLookupFamily(options);
+    const wantsAll =
+      typeof options === 'object' &&
+      options !== null &&
+      'all' in options &&
+      (options as { all?: unknown }).all === true;
     const candidates =
       familyHint === 4 || familyHint === 6
         ? addresses.filter((entry) => entry.family === familyHint)
@@ -210,7 +219,21 @@ export function createWebPushPinnedHttpsAgent(
       const error = Object.assign(new Error('No validated public address for family'), {
         code: 'ENOTFOUND',
       }) as NodeJS.ErrnoException;
-      callback(error, '', 0);
+      if (wantsAll) {
+        callback(error, []);
+      } else {
+        callback(error, '', 0);
+      }
+      return;
+    }
+    // Node 18+ https.Agent often calls lookup with { all: true } and expects
+    // callback(err, Array<{ address, family }>). The legacy 3-arg form still
+    // applies when all is not set.
+    if (wantsAll) {
+      callback(
+        null,
+        candidates.map((entry) => ({ address: entry.address, family: entry.family })),
+      );
       return;
     }
     const pick = candidates[0]!;
