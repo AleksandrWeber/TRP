@@ -113,5 +113,5 @@ Status: Accepted
 File: [`ADR-019-event-emission-semantics.md`](./ADR-019-event-emission-semantics.md)
 
 ADR-020 — Wave 6 Live-Capital (opt-in live-capital boundary; Paper Freeze preserved as default)
-Status: DRAFT
+Status: Accepted
 File: [`ADR-020-live-capital.md`](./ADR-020-live-capital.md)

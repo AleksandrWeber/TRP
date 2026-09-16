@@ -1,19 +1,19 @@
 # ADR-020 — Wave 6 Live-Capital
 
-Status: DRAFT
+Status: Accepted
 
 Date: 2026-09-16
 
-Scope: Wave 6 — Live Trading (governance / architecture draft only)
+Scope: Wave 6 — Live Trading (governance / architecture decision)
 
 Identity: **Wave 6 Live-Capital ADR** (Master Plan / Execution Roadmap named future ADR)
 
 ---
 
-## Governance header (binding for this draft)
+## Governance header (binding)
 
 ```text
-Status                              = DRAFT
+Status                              = Accepted
 D-GOV-04 §1a Create Authorization   = GRANTED
   (commit 52e1b3aa2617d43d4b06c93fac5ff9a05bd5f2a4)
 Architecture Review                 = PASS
@@ -22,10 +22,11 @@ Security Review                     = PASS
   (see [`../project/version-3/wave-6/adr-020-security-review.md`](../project/version-3/wave-6/adr-020-security-review.md))
 PO / Governance Review              = PASS
   (see [`../project/version-3/wave-6/adr-020-po-governance-review.md`](../project/version-3/wave-6/adr-020-po-governance-review.md))
-Final PO / Governance Approval      = NOT GRANTED
-D-GOV-01 satisfaction               = NOT ACHIEVED
-  (approved Live-Capital ADR required before V3-L01 implementation)
+Final PO / Governance Approval      = GRANTED
+  (see [`../project/version-3/wave-6/adr-020-final-po-governance-approval.md`](../project/version-3/wave-6/adr-020-final-po-governance-approval.md))
+D-GOV-01 approved-ADR prerequisite  = SATISFIED (this Accepted ADR)
 D-GOV-05 / Implementation           = NOT AUTHORIZED
+V3-L01 … L05 implementation         = NOT AUTHORIZED
 Live trading / real capital         = NOT AUTHORIZED
 Live UI implementation              = NOT AUTHORIZED
 FIV PASS                            = NOT CLAIMED
@@ -33,14 +34,16 @@ Wave 5                              = NOT COMPLETE / NOT CLOSED
 CM-15                               = OPEN / DEFERRED / NON-BLOCKING
 ```
 
-**Planning Approved ≠ Live-Capital Approved.**  
-**Create Authorization ≠ ADR Approved.**  
-**This DRAFT ≠ Implementation Authorization.**
+**ADR Accepted ≠ Implementation Authorized.**
+**ADR Accepted ≠ Live Capital Enabled.**
+**D-GOV-05 remains NOT GRANTED.**
 
 Provenance:
 
 - Planning Approval baseline: `79e1ac23843f05e9b8236474cabbe4d5ac3af9f8`
 - Create-authorization act: `52e1b3aa2617d43d4b06c93fac5ff9a05bd5f2a4`
+- PO / Governance Review commit: `4804160458dfee146edbc6238b0d75c3b2a86a70`
+- Final Approval record: [`../project/version-3/wave-6/adr-020-final-po-governance-approval.md`](../project/version-3/wave-6/adr-020-final-po-governance-approval.md)
 - Decision Register: [`../project/version-3/wave-6/wave-6-po-decision-register.md`](../project/version-3/wave-6/wave-6-po-decision-register.md)
 - Planning Package: [`../project/version-3/wave-6/wave-6-planning-package.md`](../project/version-3/wave-6/wave-6-planning-package.md)
 - Paper Freeze: ADR-012 … ADR-018
@@ -71,7 +74,7 @@ Authoritative sources require a **future / approved live-capital ADR** before Wa
 - Execution Roadmap: Wave 6 starts only after Waves 1–4 exit **and** an **approved** live-capital ADR.
 - D-GOV-01 Interpretation A: an **approved** live-capital ADR must exist **before** V3-L01 **implementation** may begin.
 
-This document is that named Wave 6 Live-Capital ADR artifact, currently in **DRAFT** only.
+This document is that named Wave 6 Live-Capital ADR artifact, now **Accepted**.
 
 ### Wave 6 scope
 
@@ -84,7 +87,7 @@ This ADR defines the architectural / governance boundary required before those p
 - Roadmap package name: “Live capital ADR + workspace policy”.
 - D-GOV-01 Interpretation B (L01 creates/owns the ADR as substitute for prior approval) was **NOT SELECTED**.
 - **Approved** ADR must exist **before** V3-L01 **implementation**.
-- Therefore: **V3-L01 implementation = NOT AUTHORIZED** until this ADR receives Final PO / Governance Approval and is published as approved per D-GOV-04 §5 (Architecture Review = **PASS**; Security Review = **PASS**; PO / Governance Review = **PASS**; ADR remains **DRAFT**; Final Approval = **NOT GRANTED**).
+- Therefore: **V3-L01 implementation = NOT AUTHORIZED** until separate **D-GOV-05** implementation authorization is granted (approved-ADR prerequisite = **SATISFIED** by this Accepted ADR; Architecture / Security / PO Reviews = **PASS**; Final Approval = **GRANTED**; D-GOV-05 = **NOT GRANTED**).
 
 ### Relationship to existing execution architecture
 
@@ -130,7 +133,7 @@ It does **not** authorize implementation, live trading, live UI, real-capital mo
 
 ## Paper Freeze compatibility
 
-This DRAFT does **not** repeal Paper Freeze for the platform as a whole.
+This Accepted ADR does **not** repeal Paper Freeze for the platform as a whole.
 
 | Constraint                                        | Source                      | Preserved?                                                                                    |
 | ------------------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------------- |
@@ -161,9 +164,11 @@ Paper remains default. Opt-in is per workspace. Transition has **not** occurred.
 
 ---
 
-## Decision (DRAFT — pending acceptance)
+## Decision (Accepted)
 
-The following architectural / governance decisions are **proposed** for review. They are **not** Accepted. Architecture Review = **PASS**. Security Review = **PASS**. PO / Governance Review = **PASS**. Final acceptance remains pending separate Final PO / Governance Approval.
+The following architectural / governance decisions are **Accepted** by Final PO / Governance Approval. Architecture Review = **PASS**. Security Review = **PASS**. PO / Governance Review = **PASS**. Final Approval = **GRANTED**.
+
+**Acceptance does not authorize implementation.** D-GOV-05 remains **NOT GRANTED**. OPEN mechanism items remain **OPEN**.
 
 ### 1. Live-capital activation boundary
 
@@ -317,14 +322,14 @@ When Security Review runs, scope includes at least:
 - operator UI truthfulness (L04);
 - SSRF / egress considerations for live execution where relevant (Planning Package security OPEN items).
 
-**Security Review = PASS.** This draft does **not** claim the project is live-ready or secure for live capital enablement. Implementation and live capital remain **NOT AUTHORIZED**.
+**Security Review = PASS.** This Accepted ADR does **not** claim the project is live-ready or that live capital is enabled. Implementation and live capital remain **NOT AUTHORIZED** (D-GOV-05 **NOT GRANTED**).
 
 ---
 
 ## Implementation boundary
 
 ```text
-This ADR DRAFT does NOT authorize implementation.
+This Accepted ADR does NOT authorize implementation.
 V3-L01 implementation = NOT AUTHORIZED
 V3-L02 … L05 implementation = NOT AUTHORIZED
 Live UI implementation = NOT AUTHORIZED
@@ -332,33 +337,35 @@ Live order submission = NOT AUTHORIZED
 Real-capital movement = NOT AUTHORIZED
 Production enablement = NOT AUTHORIZED
 FIV PASS = NOT CLAIMED
+D-GOV-05 = NOT GRANTED
 ```
 
-Per **D-GOV-01**, V3-L01 implementation may begin only after an **approved** Live-Capital ADR exists **and** separate implementation authorization (**D-GOV-05**) is granted, plus other applicable gates.
+Per **D-GOV-01**, the approved Live-Capital ADR prerequisite is **satisfied** by this Accepted ADR. V3-L01 implementation may begin only after separate implementation authorization (**D-GOV-05**) is also granted, plus other applicable gates.
 
 ---
 
 ## Review and approval chain (D-GOV-04)
 
 ```text
-1. ADR Draft                         ← CREATED (Status: DRAFT)
+1. ADR Draft                         ← CREATED
 2. Architecture Review               ← PASS
    (adr-020-architecture-review.md)
 3. Security Review                   ← PASS
    (adr-020-security-review.md)
 4. PO / Governance Review            ← PASS
    (adr-020-po-governance-review.md)
-5. Final PO / Governance Approval    ← NOT GRANTED
-6. Repository publication/acceptance ← pending Final Approval (Status remains DRAFT until then)
+5. Final PO / Governance Approval    ← GRANTED
+   (adr-020-final-po-governance-approval.md)
+6. Repository publication/acceptance ← ACCEPTED (Status: Accepted)
 ```
 
-For D-GOV-01 satisfaction, **all** of D-GOV-04 §5 must hold (physical artifact; Wave 6 Live-Capital identity; Architecture PASS; Security PASS; PO approval recorded; published). `Status: Accepted` alone will not be sufficient proof.
+For D-GOV-01, the approved-ADR prerequisite is satisfied when D-GOV-04 §5 holds. **D-GOV-05 remains separately required for implementation.** `Status: Accepted` alone does not authorize V3-L01.
 
 ---
 
 ## Open decisions
 
-Do **not** treat the following as decided by this DRAFT:
+Do **not** treat the following as decided by Acceptance of this ADR. They remain **OPEN** (or out of scope) for later package / architecture / security / governance acts:
 
 | ID / topic                                                                    | Status                                                         |
 | ----------------------------------------------------------------------------- | -------------------------------------------------------------- |
@@ -383,7 +390,7 @@ Do **not** treat the following as decided by this DRAFT:
 
 ---
 
-## Consequences (expected if later Accepted)
+## Consequences
 
 ### Advantages
 
@@ -394,30 +401,30 @@ Do **not** treat the following as decided by this DRAFT:
 
 ### Constraints
 
-- No live implementation until approval + D-GOV-05 (+ other gates).
+- No live implementation until **D-GOV-05** (+ other applicable gates).
 - No claim that Wave 5 COMPLETE or CM-15 CLOSED is required or granted by this ADR.
 - OPEN mechanisms must be resolved by later architecture / security / package decisions — not silently filled by implementers.
 
-### Follow-up (after approval — not authorized now)
+### Follow-up (not authorized by this Acceptance)
 
-- V3-L01 workspace policy implementation (only after D-GOV-01 + D-GOV-05).
+- Separate **D-GOV-05** implementation authorization before any V3-L01…L05 production code.
+- V3-L01 workspace policy implementation (only after D-GOV-05).
 - V3-L02 live adapter path; V3-L03 audit log; V3-L04 honest UI; V3-L05 replay protection.
-- PO / Governance Review = **PASS**. Await separate Final PO / Governance Approval (Architecture Review = PASS; Security Review = PASS; ADR remains DRAFT).
 - Explicit release / production enablement acts (separate from ADR acceptance).
 
 ---
 
 ## Non-declarations
 
-This DRAFT does **not**:
+This Accepted ADR does **not**:
 
-- accept or approve itself;
-- authorize V3-L01 … L05 implementation;
+- grant **D-GOV-05** or authorize V3-L01 … L05 implementation;
 - enable live trading or real capital;
 - provision credentials;
 - perform or claim FIV PASS;
 - close Wave 5 or CM-15;
 - create exceptions or waivers;
+- close OPEN mechanism decisions listed above;
 - modify ADR-012…018 Accepted text;
 - redesign Master Plan or Execution Roadmap.
 
@@ -425,4 +432,4 @@ This DRAFT does **not**:
 
 ## STOP
 
-**STOP.** ADR-020 is **DRAFT**. Architecture Review = **PASS**. Security Review = **PASS**. PO / Governance Review = **PASS**. Final Approval **NOT GRANTED**. Implementation **NOT AUTHORIZED**. Do not begin live capital enablement from this artifact.
+**STOP.** ADR-020 = **Accepted**. Final PO / Governance Approval = **GRANTED**. D-GOV-05 = **NOT GRANTED**. Implementation = **NOT AUTHORIZED**. Do not begin V3-L01. Do not enable live capital.
