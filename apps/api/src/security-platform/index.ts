@@ -54,9 +54,17 @@ export {
 } from './slack-webhook-url-guard';
 export {
   validateWebPushEndpointUrl,
+  validateWebPushEndpointOutbound,
+  defaultWebPushDnsResolve,
+  createWebPushPinnedHttpsAgent,
+  isNonPublicOutboundIp,
+  WEB_PUSH_DNS_RESOLVE,
   MAX_WEB_PUSH_ENDPOINT_URL_CHARS,
   type WebPushEndpointGuardResult,
+  type WebPushEndpointOutboundGuardResult,
   type WebPushEndpointGuardReason,
+  type WebPushDnsResolveFn,
+  type WebPushResolvedAddress,
 } from './web-push-endpoint-guard';
 export { emitPlatformSecurityEvent, type PlatformSecurityEvent } from './security-event';
 export { registerSecurityPlatformHttpHooks } from './security-platform.http';

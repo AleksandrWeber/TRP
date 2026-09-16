@@ -4,11 +4,20 @@
  * Delivery only. VAPID credentials retrieved at send time and never stored on
  * the adapter. Connected is defined by successful HTTPS Web Push (HTTP 201/200).
  * FCM/APNs/native are out of scope. Outbound only.
+ *
+ * Immediately before each send: resolve DNS, reject non-public addresses, and
+ * pin the HTTPS agent lookup to validated public IPs (TLS hostname unchanged).
  */
 
 import { Inject, Injectable, Optional } from '@nestjs/common';
+import type { Agent as HttpsAgent } from 'node:https';
 import webpush from 'web-push';
-import { validateWebPushEndpointUrl } from '../../../security-platform/web-push-endpoint-guard';
+import {
+  createWebPushPinnedHttpsAgent,
+  validateWebPushEndpointOutbound,
+  WEB_PUSH_DNS_RESOLVE,
+  type WebPushDnsResolveFn,
+} from '../../../security-platform/web-push-endpoint-guard';
 import type { LogContext, Logger } from '../../../logging/logger';
 import { LOGGER } from '../../../logging/logger.token';
 import { NoOpLogger } from '../../../logging/noop.logger';
@@ -49,6 +58,8 @@ export type WebPushSendFn = (
       publicKey: string;
       privateKey: string;
     }>;
+    /** Pinned agent — production path always supplies this after outbound guard. */
+    agent?: HttpsAgent;
   }>,
 ) => Promise<Readonly<{ statusCode: number }>>;
 
@@ -61,6 +72,7 @@ export class ProductionWebPushNotificationAdapter implements NotificationChannel
   private readonly subscriptions: WebPushSubscriptionService | undefined;
   private readonly logger: Logger;
   private readonly sendFn: WebPushSendFn;
+  private readonly resolveDns: WebPushDnsResolveFn | undefined;
   private readonly timeoutMs: number;
 
   constructor(
@@ -72,11 +84,13 @@ export class ProductionWebPushNotificationAdapter implements NotificationChannel
     subscriptions?: WebPushSubscriptionService,
     @Optional() @Inject(LOGGER) logger?: Logger,
     @Optional() @Inject(WEB_PUSH_SEND) sendFn?: WebPushSendFn,
+    @Optional() @Inject(WEB_PUSH_DNS_RESOLVE) resolveDns?: WebPushDnsResolveFn,
   ) {
     this.credentials = credentials;
     this.subscriptions = subscriptions;
     this.logger = logger?.child(ProductionWebPushNotificationAdapter.name) ?? new NoOpLogger();
     this.sendFn = sendFn ?? defaultWebPushSend;
+    this.resolveDns = resolveDns;
     this.timeoutMs = WEB_PUSH_TIMEOUT_MS;
   }
 
@@ -128,12 +142,15 @@ export class ProductionWebPushNotificationAdapter implements NotificationChannel
     let anyOk = false;
 
     for (const subscription of active) {
-      const guard = validateWebPushEndpointUrl(subscription.endpoint);
+      const guard = await validateWebPushEndpointOutbound(subscription.endpoint, {
+        ...(this.resolveDns ? { resolveDns: this.resolveDns } : {}),
+      });
       if (!guard.ok) {
         lastError = 'web_push_blocked_endpoint';
         continue;
       }
 
+      const agent = createWebPushPinnedHttpsAgent(guard.pinnedAddresses);
       const secrets = {
         endpoint: guard.preservedUrl,
         publicKey: resolved.credential.publicKey,
@@ -158,6 +175,7 @@ export class ProductionWebPushNotificationAdapter implements NotificationChannel
               publicKey: resolved.credential.publicKey,
               privateKey: resolved.credential.privateKey,
             },
+            agent,
           },
         );
         const statusClass = classifyWebPushHttpStatus(response.statusCode);
@@ -183,6 +201,8 @@ export class ProductionWebPushNotificationAdapter implements NotificationChannel
           'web_push_notification_failed',
           safeLogContext('send', started, cmd.workspaceId, lastError, secrets),
         );
+      } finally {
+        agent.destroy();
       }
     }
 
@@ -237,8 +257,10 @@ async function defaultWebPushSend(
       publicKey: string;
       privateKey: string;
     }>;
+    agent?: HttpsAgent;
   }>,
 ): Promise<Readonly<{ statusCode: number }>> {
+  // web-push uses https.request and does not follow redirects; 3xx fails closed.
   const result = await webpush.sendNotification(
     {
       endpoint: subscription.endpoint,
@@ -256,6 +278,7 @@ async function defaultWebPushSend(
         publicKey: options.vapidDetails.publicKey,
         privateKey: options.vapidDetails.privateKey,
       },
+      ...(options.agent ? { agent: options.agent } : {}),
     },
   );
   return Object.freeze({ statusCode: result.statusCode });

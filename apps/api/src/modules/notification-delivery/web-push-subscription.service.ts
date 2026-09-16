@@ -1,12 +1,16 @@
 /**
  * Web Push subscription registry service (CM-16).
  *
- * Validates endpoints before persist. Never returns private keys or full
- * encryption material on public views.
+ * Validates endpoints (syntactic + public DNS) before persist. Never returns
+ * private keys or full encryption material on public views.
  */
 
 import { Inject, Injectable, Optional } from '@nestjs/common';
-import { validateWebPushEndpointUrl } from '../../security-platform/web-push-endpoint-guard';
+import {
+  validateWebPushEndpointOutbound,
+  WEB_PUSH_DNS_RESOLVE,
+  type WebPushDnsResolveFn,
+} from '../../security-platform/web-push-endpoint-guard';
 import {
   toWebPushSubscriptionPublicView,
   type UpsertWebPushSubscriptionInput,
@@ -20,11 +24,18 @@ import {
 
 @Injectable()
 export class WebPushSubscriptionService {
+  private readonly resolveDns: WebPushDnsResolveFn | undefined;
+
   constructor(
     @Optional()
     @Inject(WEB_PUSH_SUBSCRIPTION_REPOSITORY)
     private readonly repo?: WebPushSubscriptionRepository,
-  ) {}
+    @Optional()
+    @Inject(WEB_PUSH_DNS_RESOLVE)
+    resolveDns?: WebPushDnsResolveFn,
+  ) {
+    this.resolveDns = resolveDns;
+  }
 
   async listActive(workspaceId: string, userId: string): Promise<readonly WebPushSubscription[]> {
     if (!this.repo) return Object.freeze([]);
@@ -43,7 +54,9 @@ export class WebPushSubscriptionService {
     if (!this.repo) {
       throw new Error('Web Push subscription registry is unavailable');
     }
-    const guard = validateWebPushEndpointUrl(input.endpoint);
+    const guard = await validateWebPushEndpointOutbound(input.endpoint, {
+      ...(this.resolveDns ? { resolveDns: this.resolveDns } : {}),
+    });
     if (!guard.ok) {
       throw new Error('Web Push endpoint is not allowed');
     }

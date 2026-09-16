@@ -17,6 +17,7 @@ import {
 } from './adapters/web-push-notification.errors';
 import type { WebPushVapidCredentialResolver } from './adapters/web-push-vapid-credential.resolver';
 import type { WebPushSubscriptionService } from './web-push-subscription.service';
+import type { WebPushDnsResolveFn } from '../../security-platform/web-push-endpoint-guard';
 import { Role } from '../identity/role';
 
 const evaluatedAt = '2026-09-16T12:00:00.000Z';
@@ -43,6 +44,9 @@ describe('PushConnection domain', () => {
 });
 
 describe('ProductionWebPushNotificationAdapter contract', () => {
+  const publicDns: WebPushDnsResolveFn = async () =>
+    Object.freeze([{ address: '8.8.8.8', family: 4 as const }]);
+
   it('sends via injected WEB_PUSH_SEND and never logs secrets', async () => {
     const sendFn: WebPushSendFn = async () => ({ statusCode: 201 });
     const credentials = {
@@ -81,6 +85,7 @@ describe('ProductionWebPushNotificationAdapter contract', () => {
       subscriptions,
       undefined,
       sendFn,
+      publicDns,
     );
     const result = await adapter.send({
       chatId: 'user-1',
@@ -130,6 +135,7 @@ describe('ProductionWebPushNotificationAdapter contract', () => {
       subscriptions,
       undefined,
       sendFn,
+      publicDns,
     );
     const result = await adapter.send({
       chatId: 'user-1',
