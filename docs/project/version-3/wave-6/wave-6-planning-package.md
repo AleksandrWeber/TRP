@@ -7,18 +7,20 @@
 **Wave:** 6 — Live Trading
 **Revision:** Approval-ready expansion for PO / Chief Architect review
 **Supersedes for review purposes:** [`../next-wave-planning-package-proposal.md`](../next-wave-planning-package-proposal.md) (proposal retained; this file is the formal package)
-**Authority:** Product Owner / Chief Architect — **FORMAL WAVE 6 PLANNING AUTHORIZED** (governance-only)
-**Repository baseline:** `af54cc34b59e88822c80bd805a900c19d25ccc0c` (`main` == `origin/main`)
+**Authority:** Product Owner / Chief Architect — **FORMAL WAVE 6 PLANNING AUTHORIZED**; **Planning Approval = APPROVED** (see [`wave-6-planning-approval.md`](./wave-6-planning-approval.md) · [`wave-6-po-planning-review.md`](./wave-6-po-planning-review.md))
+**Repository baseline (planning sync):** `ea23e255106af091b36f6791f0e2fd7469447240` (governance-synchronized package); Approval sync follows this Approval act
 **Canon:** [`../version-3-master-plan.md`](../version-3-master-plan.md) · [`../v3-execution-roadmap.md`](../v3-execution-roadmap.md) · [`../v3-capability-inventory.md`](../v3-capability-inventory.md) · [`../v3-planning-consistency-audit.md`](../v3-planning-consistency-audit.md) · `docs/adr/ADR-012`…`ADR-018`
 
 ```text
 FORMAL WAVE 6 PLANNING           = AUTHORIZED (this artifact)
+Wave 6 Planning Package          = PLANNING APPROVED
 Wave 6 implementation            = NOT AUTHORIZED
 Live trading                     = NOT AUTHORIZED
 Real-capital movement            = NOT AUTHORIZED
 Live UI implementation           = NOT AUTHORIZED
 ADR creation                     = NOT AUTHORIZED by this package
-  (D-GOV-04: only PO / Governance may authorize creation; planning ≠ create auth)
+  (D-GOV-04: only PO / Governance may authorize creation; planning ≠ create auth;
+   Planning Approval does NOT grant ADR create-auth)
 ADR approval                     = NOT CLAIMED (REQUIRED — NOT YET CREATED / NOT APPROVED)
 ADR ↔ V3-L01 sequencing (D-GOV-01) = DECIDED — INTERPRETATION A ACCEPTED
   (approved live-capital ADR must exist before V3-L01 implementation)
@@ -153,28 +155,28 @@ ADR-012…018 Accepted. Paper-only; real-capital orders forbidden (ADR-018 #10).
 
 ## V3-L01 — Live capital ADR + workspace policy (LT-01)
 
-| Topic                    | Content                                                                                                      | Class                                           |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
-| Objective                | Opt-in live sessions under Paper-default policy after ADR                                                    | AUTHORITATIVE (LT-01)                           |
-| Capability               | LT-01 Live capital path                                                                                      | AUTHORITATIVE                                   |
-| Dependencies             | ADR; Waves 1–4; Gate; human start; Kill Switch                                                               | AUTHORITATIVE (LT-01)                           |
-| Wave 6 deps              | W1–4 exit; W3 kill switch; approved live-capital ADR; Runtime Enforcement Gate                               | AUTHORITATIVE (Roadmap)                         |
-| Inputs                   | Workspace identity; Admin/authorized actor; Gate/certification status; Kill Switch state; ADR approval state | DERIVED                                         |
-| Outputs                  | Workspace live policy (opt-in/off); enablement audit intent                                                  | DERIVED from outcomes                           |
-| Affected architecture    | Session/Runtime live mode; Deployment live flag; Gate live admission; Admin policy                           | AUTHORITATIVE (Master Plan §10 minor extension) |
-| Reuse                    | Session, Gate, workspace, Admin role, Kill Switch foundation (V3-O04)                                        | AUTHORITATIVE reuse                             |
-| New components           | Live policy persistence / enablement APIs                                                                    | NOT SPECIFIED — TO BE DEFINED DURING PLANNING   |
-| Workspace policy         | Paper default; live per-workspace opt-in; off until authorized enablement                                    | AUTHORITATIVE                                   |
-| Authorization            | Admin + ADR; not trader self-serve without audit                                                             | AUTHORITATIVE (Master Plan §11)                 |
-| Human start              | Required for live session                                                                                    | AUTHORITATIVE                                   |
-| Kill Switch              | Consume foundation; Wave 6 exit requires live stop/reject                                                    | AUTHORITATIVE                                   |
-| Runtime Enforcement Gate | Dependency; live admission attributes                                                                        | NOT SPECIFIED detail — OPEN                     |
-| Paper Freeze             | Remains default; ADR supersedes for opted-in only                                                            | AUTHORITATIVE                                   |
-| Consumer outcome         | Authorized enablement path; live remains off by default until verified release                               | AUTHORITATIVE intent                            |
-| Non-claims now           | Live on; ADR approved; L01 implemented                                                                       | AUTHORITATIVE governance                        |
-| ADR sequencing           | **DECIDED (D-GOV-01 A)** — approved Live-Capital ADR must exist before V3-L01 **implementation**             | AUTHORITATIVE                                   |
-| L01 naming note          | Package identity remains “Live capital ADR + workspace policy”; does **not** authorize L01 impl before approved ADR; ADR create/draft/approve still under D-GOV-04 (create auth **not** granted by this package) | PLANNING NOTE (not a new rule) |
-| Slices                   | —                                                                                                            | NOT SPECIFIED — TO BE DEFINED DURING PLANNING   |
+| Topic                    | Content                                                                                                                                                                                                          | Class                                           |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Objective                | Opt-in live sessions under Paper-default policy after ADR                                                                                                                                                        | AUTHORITATIVE (LT-01)                           |
+| Capability               | LT-01 Live capital path                                                                                                                                                                                          | AUTHORITATIVE                                   |
+| Dependencies             | ADR; Waves 1–4; Gate; human start; Kill Switch                                                                                                                                                                   | AUTHORITATIVE (LT-01)                           |
+| Wave 6 deps              | W1–4 exit; W3 kill switch; approved live-capital ADR; Runtime Enforcement Gate                                                                                                                                   | AUTHORITATIVE (Roadmap)                         |
+| Inputs                   | Workspace identity; Admin/authorized actor; Gate/certification status; Kill Switch state; ADR approval state                                                                                                     | DERIVED                                         |
+| Outputs                  | Workspace live policy (opt-in/off); enablement audit intent                                                                                                                                                      | DERIVED from outcomes                           |
+| Affected architecture    | Session/Runtime live mode; Deployment live flag; Gate live admission; Admin policy                                                                                                                               | AUTHORITATIVE (Master Plan §10 minor extension) |
+| Reuse                    | Session, Gate, workspace, Admin role, Kill Switch foundation (V3-O04)                                                                                                                                            | AUTHORITATIVE reuse                             |
+| New components           | Live policy persistence / enablement APIs                                                                                                                                                                        | NOT SPECIFIED — TO BE DEFINED DURING PLANNING   |
+| Workspace policy         | Paper default; live per-workspace opt-in; off until authorized enablement                                                                                                                                        | AUTHORITATIVE                                   |
+| Authorization            | Admin + ADR; not trader self-serve without audit                                                                                                                                                                 | AUTHORITATIVE (Master Plan §11)                 |
+| Human start              | Required for live session                                                                                                                                                                                        | AUTHORITATIVE                                   |
+| Kill Switch              | Consume foundation; Wave 6 exit requires live stop/reject                                                                                                                                                        | AUTHORITATIVE                                   |
+| Runtime Enforcement Gate | Dependency; live admission attributes                                                                                                                                                                            | NOT SPECIFIED detail — OPEN                     |
+| Paper Freeze             | Remains default; ADR supersedes for opted-in only                                                                                                                                                                | AUTHORITATIVE                                   |
+| Consumer outcome         | Authorized enablement path; live remains off by default until verified release                                                                                                                                   | AUTHORITATIVE intent                            |
+| Non-claims now           | Live on; ADR approved; L01 implemented                                                                                                                                                                           | AUTHORITATIVE governance                        |
+| ADR sequencing           | **DECIDED (D-GOV-01 A)** — approved Live-Capital ADR must exist before V3-L01 **implementation**                                                                                                                 | AUTHORITATIVE                                   |
+| L01 naming note          | Package identity remains “Live capital ADR + workspace policy”; does **not** authorize L01 impl before approved ADR; ADR create/draft/approve still under D-GOV-04 (create auth **not** granted by this package) | PLANNING NOTE (not a new rule)                  |
+| Slices                   | —                                                                                                                                                                                                                | NOT SPECIFIED — TO BE DEFINED DURING PLANNING   |
 
 ### L01 failure states
 
@@ -187,16 +189,16 @@ ADR-012…018 Accepted. Paper-only; real-capital orders forbidden (ADR-018 #10).
 
 ### L01 acceptance criteria
 
-| Criterion                                         | Class                |
-| ------------------------------------------------- | -------------------- |
-| Paper default; live opt-in                        | AUTHORITATIVE        |
-| Live off until authorized enablement              | AUTHORITATIVE        |
-| Session needs certified + Gate PASS + human start | AUTHORITATIVE        |
-| AI cannot start/approve/size                      | AUTHORITATIVE        |
-| Approved ADR before live enablement               | AUTHORITATIVE        |
-| Approved ADR before V3-L01 implementation         | AUTHORITATIVE (D-GOV-01 A) |
+| Criterion                                         | Class                                                                                |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Paper default; live opt-in                        | AUTHORITATIVE                                                                        |
+| Live off until authorized enablement              | AUTHORITATIVE                                                                        |
+| Session needs certified + Gate PASS + human start | AUTHORITATIVE                                                                        |
+| AI cannot start/approve/size                      | AUTHORITATIVE                                                                        |
+| Approved ADR before live enablement               | AUTHORITATIVE                                                                        |
+| Approved ADR before V3-L01 implementation         | AUTHORITATIVE (D-GOV-01 A)                                                           |
 | L01 package name vs ADR-first sequencing          | PLANNING NOTE — name retained; D-GOV-01 governs impl order; do not invent a new rule |
-| MFA / exact Admin UX                              | OPEN / NOT SPECIFIED |
+| MFA / exact Admin UX                              | OPEN / NOT SPECIFIED                                                                 |
 
 ### L01 FIV (planning)
 
@@ -437,13 +439,13 @@ Where behavior not specified beyond principles: **OPEN — do not invent.**
 
 # 10. DEVELOPER / ARCHITECTURE REVIEW
 
-| Package | Existing Components                                                   | New Components                | Interfaces                       | Data Changes                    | External Dependencies       | Risks                             |
-| ------- | --------------------------------------------------------------------- | ----------------------------- | -------------------------------- | ------------------------------- | --------------------------- | --------------------------------- |
+| Package | Existing Components                                                   | New Components                | Interfaces                       | Data Changes                                           | External Dependencies       | Risks                                                                                                                 |
+| ------- | --------------------------------------------------------------------- | ----------------------------- | -------------------------------- | ------------------------------------------------------ | --------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | L01     | Session, Gate, workspace, Admin, KS foundation                        | Live policy store/API **TBD** | Admin enablement; Gate live flag | Workspace live policy implementation **OPEN** (detail) | Approved ADR (missing)      | Premature enable if L01 impl starts without approved ADR (forbidden by D-GOV-01 A; ADR-before-L01-impl = **DECIDED**) |
-| L02     | Risk, Orders, Execution Engine, adapter port, Vault, Position, Ledger | Live adapter binding          | Submit/cancel/reconcile          | Order live mode fields **OPEN** | Venue + trading credentials | TD-051; real capital              |
-| L03     | Audit/SEC-09 cues, Ledger immutability pattern                        | Financial action log          | Append API; query                | Append-only log **OPEN**        | —                           | Integrity OPEN                    |
-| L04     | PC-19 chrome; `/trading/live`→paper                                   | Honest live surfaces **TBD**  | UI↔API                           | —                               | Depends L01/L02 verified    | Misleading UI; Rule 1             |
-| L05     | Idempotency/SEC-08 patterns                                           | Live replay controls **TBD**  | Place/cancel APIs                | Idempotency store **OPEN**      | —                           | Double execution                  |
+| L02     | Risk, Orders, Execution Engine, adapter port, Vault, Position, Ledger | Live adapter binding          | Submit/cancel/reconcile          | Order live mode fields **OPEN**                        | Venue + trading credentials | TD-051; real capital                                                                                                  |
+| L03     | Audit/SEC-09 cues, Ledger immutability pattern                        | Financial action log          | Append API; query                | Append-only log **OPEN**                               | —                           | Integrity OPEN                                                                                                        |
+| L04     | PC-19 chrome; `/trading/live`→paper                                   | Honest live surfaces **TBD**  | UI↔API                           | —                                                      | Depends L01/L02 verified    | Misleading UI; Rule 1                                                                                                 |
+| L05     | Idempotency/SEC-08 patterns                                           | Live replay controls **TBD**  | Place/cancel APIs                | Idempotency store **OPEN**                             | —                           | Double execution                                                                                                      |
 
 **No second engine / parallel Bot** unless Master Plan revised (forbidden now).
 
@@ -498,17 +500,17 @@ Do not invent a venue. Do not simulate FIV PASS. FIV verifies only; does not fix
 
 # 14. WAVE 6 EXIT MATRIX
 
-| Exit Requirement                           | Source                  | Required Package       | Required Evidence       | Current State                                 |
-| ------------------------------------------ | ----------------------- | ---------------------- | ----------------------- | --------------------------------------------- |
-| Paper default; live opt-in                 | Roadmap exit            | L01                    | Policy + ADR            | Missing ADR; not implemented                  |
-| Certified + Gate PASS + human start        | Roadmap / Master Plan   | L01 + Gate             | Session admission tests | Gate exists; live admission OPEN              |
-| Canonical live path                        | Roadmap exit            | L02                    | Path + venue evidence   | Unauthorized; not implemented                 |
-| Append-only attributable place/cancel/kill | Roadmap / SEC-10/16     | L03                    | Audit evidence          | Not implemented                               |
-| Kill Switch stops live eval/orders         | Roadmap exit            | L01/L02 + KS           | Live KS FIV             | Foundation only; live proof missing           |
-| AI cannot start/approve/size               | Master Plan / exit      | All                    | Negative tests          | Invariant exists; live path N/A               |
-| Honest live UI or hidden                   | Roadmap / LT-04         | L04                    | UI honesty + venue      | Hidden/redirect today; live UI not authorized |
-| Approved live-capital ADR                  | Live gate               | Before live enablement | ADR approval record     | **MISSING**                                   |
-| Replay protection live place/cancel        | Master Plan             | L05                    | Replay FIV              | Not implemented                               |
+| Exit Requirement                           | Source                  | Required Package       | Required Evidence       | Current State                                                                                     |
+| ------------------------------------------ | ----------------------- | ---------------------- | ----------------------- | ------------------------------------------------------------------------------------------------- |
+| Paper default; live opt-in                 | Roadmap exit            | L01                    | Policy + ADR            | Missing ADR; not implemented                                                                      |
+| Certified + Gate PASS + human start        | Roadmap / Master Plan   | L01 + Gate             | Session admission tests | Gate exists; live admission OPEN                                                                  |
+| Canonical live path                        | Roadmap exit            | L02                    | Path + venue evidence   | Unauthorized; not implemented                                                                     |
+| Append-only attributable place/cancel/kill | Roadmap / SEC-10/16     | L03                    | Audit evidence          | Not implemented                                                                                   |
+| Kill Switch stops live eval/orders         | Roadmap exit            | L01/L02 + KS           | Live KS FIV             | Foundation only; live proof missing                                                               |
+| AI cannot start/approve/size               | Master Plan / exit      | All                    | Negative tests          | Invariant exists; live path N/A                                                                   |
+| Honest live UI or hidden                   | Roadmap / LT-04         | L04                    | UI honesty + venue      | Hidden/redirect today; live UI not authorized                                                     |
+| Approved live-capital ADR                  | Live gate               | Before live enablement | ADR approval record     | **MISSING**                                                                                       |
+| Replay protection live place/cancel        | Master Plan             | L05                    | Replay FIV              | Not implemented                                                                                   |
 | Wave 5 COMPLETE                            | Rule 1 for irreversible | —                      | PO declaration          | **NOT COMPLETE** / **NOT CLOSED** (withheld per D-GOV-03 C; CM-15 OPEN / DEFERRED / NON-BLOCKING) |
 
 Trace: Master Plan → L01–L05 → Security → FIV → Consumer → Wave 6 Exit.
@@ -616,15 +618,21 @@ Must **NOT** claim: Wave 6 COMPLETE; Live Trading delivered; honest live UI avai
 
 - See §16.
 
-**Do NOT provide a single APPROVED verdict.** Status remains review-ready planning only.
+**Planning Approval recorded separately:** [`wave-6-planning-approval.md`](./wave-6-planning-approval.md) — **PLANNING APPROVED**; Implementation remains **NOT AUTHORIZED**.
+
+**Do NOT collapse:** PLANNING APPROVED ≠ IMPLEMENTATION APPROVED ≠ LIVE READY ≠ PRODUCTION READY.
 
 ---
 
 ## WAVE 6 PLANNING STATUS
 
 ```text
-READY FOR PO / CHIEF ARCHITECT REVIEW
+PLANNING APPROVED
+Implementation = NOT AUTHORIZED
 ```
+
+Formal review: [`wave-6-po-planning-review.md`](./wave-6-po-planning-review.md).
+Approval record: [`wave-6-planning-approval.md`](./wave-6-planning-approval.md).
 
 This is **NOT** implementation approval.
 
@@ -690,15 +698,15 @@ Before ADR / before impl approval / before FIV / before Wave 6 close — documen
 
 ## BLOCKERS
 
-| Blocker                                                                                                       | Blocks                                                                                                             |
-| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| No approved live-capital ADR                                                                                  | Live enablement, live orders, live authorization claims; **V3-L01 implementation** (per D-GOV-01 Interpretation A) |
-| Live-Capital ADR not yet created / approved (D-GOV-04 chain defined but not executed)                         | Compliant production of the ADR that would satisfy D-GOV-01                                                        |
-| Rule 1 irreversible product promises (esp. live UI) while Wave 5 NOT COMPLETE (**D-GOV-02 Interpretation C**) | Irreversible Wave 6 product promises; live UI remains NOT AUTHORIZED                                               |
-| Wave 5 COMPLETE withheld / CM-15 deferred (**D-GOV-03 DECIDED C**)                                        | Wave 5 COMPLETE/CLOSED declaration only (withheld; not a blanket Wave 6 planning blocker); CM-15 remains OPEN / DEFERRED / NON-BLOCKING on existing lifecycle |
-| No implementation authorization (**D-GOV-05**)                                                                | All L01–L05 code                                                                                                   |
-| Safe live FIV venue unspecified                                                                               | L02 live FIV (`FIV BLOCKED — ENVIRONMENT REQUIRED` if absent)                                                      |
-| Slice/mechanism OPENs                                                                                         | Detailed implementation packages                                                                                   |
+| Blocker                                                                                                       | Blocks                                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| No approved live-capital ADR                                                                                  | Live enablement, live orders, live authorization claims; **V3-L01 implementation** (per D-GOV-01 Interpretation A)                                            |
+| Live-Capital ADR not yet created / approved (D-GOV-04 chain defined but not executed)                         | Compliant production of the ADR that would satisfy D-GOV-01                                                                                                   |
+| Rule 1 irreversible product promises (esp. live UI) while Wave 5 NOT COMPLETE (**D-GOV-02 Interpretation C**) | Irreversible Wave 6 product promises; live UI remains NOT AUTHORIZED                                                                                          |
+| Wave 5 COMPLETE withheld / CM-15 deferred (**D-GOV-03 DECIDED C**)                                            | Wave 5 COMPLETE/CLOSED declaration only (withheld; not a blanket Wave 6 planning blocker); CM-15 remains OPEN / DEFERRED / NON-BLOCKING on existing lifecycle |
+| No implementation authorization (**D-GOV-05**)                                                                | All L01–L05 code                                                                                                                                              |
+| Safe live FIV venue unspecified                                                                               | L02 live FIV (`FIV BLOCKED — ENVIRONMENT REQUIRED` if absent)                                                                                                 |
+| Slice/mechanism OPENs                                                                                         | Detailed implementation packages                                                                                                                              |
 
 ## NON-DECLARATIONS
 
@@ -712,4 +720,4 @@ This revision does **NOT** authorize: ADR creation; ADR approval; implementation
 
 ## STOP
 
-STOP — Planning Package synchronized to D-GOV-01…04 decided state. Wave 5 remains NOT COMPLETE / NOT CLOSED. CM-15 remains NOT CLOSED. No ADR created or approved. No implementation authorized.
+STOP — Wave 6 Planning Package = PLANNING APPROVED. Implementation remains NOT AUTHORIZED. Wave 5 remains NOT COMPLETE / NOT CLOSED. CM-15 remains NOT CLOSED. No ADR created or approved.
