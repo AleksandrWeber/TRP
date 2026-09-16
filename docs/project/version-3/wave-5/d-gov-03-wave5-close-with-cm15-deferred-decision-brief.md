@@ -281,7 +281,7 @@ Whether Wave 5 may be declared COMPLETE/CLOSED while CM-15 remains OPEN/DEFERRED
 
 **Wave 5 is NOT authorized to be declared COMPLETE or CLOSED at this time.**
 
-Wave 5 closure is withheld because the governance treatment of a **shipped-but-deferred** CM-15 package has not yet been explicitly resolved.
+Wave 5 closure is withheld. The PO does **NOT** authorize a new exception or special closure mechanism for closing Wave 5 while CM-15 remains an included package that is **NOT CLOSED**. No new rule is created. Existing lifecycle is preserved for later CM-15 completion when the external dependency is available.
 
 | Interpretation                                                                                              | Outcome          |
 | ----------------------------------------------------------------------------------------------------------- | ---------------- |
@@ -311,49 +311,79 @@ Evidence sources: this brief (Sections 2–10); [`d-gov-03-evidence-verification
 ### Governance condition (current)
 
 ```text
-Wave 5 remains OPEN until the PO / Chief Architect explicitly resolves
-the CM-15 closure/deferral treatment for Wave Close, based on an
-authoritative governance rule or an explicit governance decision.
+Wave 5 closure is currently withheld.
+CM-15 remains deferred.
+No new closure mechanism is created.
+Existing lifecycle remains available for later completion of CM-15
+when the external dependency is available.
 ```
 
-This is a **governance clarification requirement** only.
+### Final-state clarification (PO / Chief Architect)
+
+**Governance principle applied:** Do not create new governance rules, exceptions, waivers, or closure mechanisms unless there is an acute and demonstrated necessity. Repository evidence does **not** demonstrate such necessity for the current CM-15 situation.
+
+**Clarification (not a new rule):**
+
+1. The PO does **NOT** authorize a new exception or special closure mechanism allowing Wave 5 to close while CM-15 remains an included package that is **NOT CLOSED**.
+2. No new rule is required at this time.
+3. CM-15 may remain deferred until the required external Microsoft 365 / Teams Workflows environment becomes available.
+4. When that external dependency becomes available, CM-15 may continue through the **existing** lifecycle:
+
+```text
+FIV → PO Review / Final Close → CLOSED
+```
+
+subject to the normal applicable gates.
+
+5. After CM-15 reaches the required existing closure state, Wave 5 may be reconsidered for normal Wave completion/closure under the existing governance lifecycle.
+
+**This clarification is NOT:** a new governance rule; a waiver; an exception; conditional closure; a special closure state; a claim that all packages must always be CLOSED before Wave Close; DEFERRED ≡ RESERVED; abandonment of CM-15; a permanent open requirement; a technical block of Wave 5; or a change to D-GOV-02 Wave 6 governance planning authorization.
+
+**This clarification IS:** the decision to **preserve the existing lifecycle** rather than create an exception, while Wave 5 COMPLETE/CLOSED remains withheld and CM-15 remains OPEN / DEFERRED / NON-BLOCKING.
+
+Evidence history (Sections 2–10) and the verification addendum remain intact and are **not** rewritten. Documented ambiguity is preserved; no rule is retroactively invented.
 
 ### Decision effect
 
-| Item                        | Effect                                         |
-| --------------------------- | ---------------------------------------------- |
-| Wave 5 COMPLETE             | **NO**                                         |
-| Wave 5 CLOSED               | **NO**                                         |
-| CM-15 Implementation        | **PASS** (unchanged)                           |
-| CM-15 FIV                   | **DEFERRED** (unchanged)                       |
-| CM-15 Final Close           | **NOT AUTHORIZED** (unchanged)                 |
-| CM-15 CLOSED                | **NO** (unchanged)                             |
-| TD-CM15-TEAMS-LIVE          | **OPEN / DEFERRED / NON-BLOCKING** (unchanged) |
-| Live-Capital ADR            | **Unaffected**                                 |
-| Wave 6 governance planning  | Remains authorized per **D-GOV-02**            |
-| Wave 6 implementation       | Remains **NOT AUTHORIZED** per **D-GOV-05**    |
-| Live trading / real capital | Remains **NOT AUTHORIZED**                     |
+| Item                                         | Effect                                         |
+| -------------------------------------------- | ---------------------------------------------- |
+| Wave 5 COMPLETE                              | **NO**                                         |
+| Wave 5 CLOSED                                | **NO**                                         |
+| CM-15 Implementation                         | **PASS** (unchanged)                           |
+| CM-15 FIV                                    | **DEFERRED** (unchanged)                       |
+| CM-15 Final Close                            | **NOT AUTHORIZED** (unchanged)                 |
+| CM-15 CLOSED                                 | **NO** (unchanged)                             |
+| TD-CM15-TEAMS-LIVE                           | **OPEN / DEFERRED / NON-BLOCKING** (unchanged) |
+| New exception / waiver / conditional closure | **NOT CREATED**                                |
+| Existing CM-15 lifecycle path                | **PRESERVED** for later completion             |
+| Live-Capital ADR                             | **Unaffected**                                 |
+| Wave 6 governance planning                   | Remains authorized per **D-GOV-02**            |
+| Wave 6 implementation                        | Remains **NOT AUTHORIZED** per **D-GOV-05**    |
+| Live trading / real capital                  | Remains **NOT AUTHORIZED**                     |
 
 ---
 
 ## SECTION 12 — NON-DECLARATIONS
 
-- D-GOV-03 is recorded as **DECIDED — INTERPRETATION C ACCEPTED**; this sync does not invent further governance decisions beyond that selection.
-- Wave 5 remains **NOT COMPLETE** / **NOT CLOSED**.
+- D-GOV-03 remains **DECIDED — INTERPRETATION C ACCEPTED**; this final-state sync clarifies treatment without inventing a new rule or mechanism.
+- Wave 5 remains **NOT COMPLETE** / **NOT CLOSED** (closure withheld).
 - CM-15 remains **NOT CLOSED**; Final Close **NOT AUTHORIZED**; FIV **DEFERRED**; Implementation **PASS**.
 - TD-CM15-TEAMS-LIVE remains **OPEN** / **DEFERRED** / **NON-BLOCKING**.
+- No new exception, waiver, conditional closure, or special closure state was created.
+- Existing lifecycle path for later CM-15 completion is preserved (not a new path).
 - D-GOV-01 / D-GOV-02 / D-GOV-04 unchanged.
 - D-GOV-05 remains **NOT GRANTED**.
 - No Live-Capital ADR created or approved.
 - No implementation.
 - No FIV PASS / no CM-15 FIV authorization.
-- No Microsoft 365 / Teams Workflows credential creation.
+- No Microsoft 365 / Teams Workflows credential creation required by this act.
 - No Wave 5 closure.
-- No CM-15 closure (and no requirement that CM-15 must be CLOSED was decided).
+- No CM-15 closure.
 - No Master Plan / Roadmap / protected leftover modification by this task.
+- Evidence history and documented ambiguity are preserved (not rewritten).
 
 ---
 
 ## STOP
 
-STOP — D-GOV-03 Interpretation C synchronized. No Wave 5 closure. No CM-15 closure. No FIV. No ADR. No implementation.
+STOP — D-GOV-03 final-state sync: existing lifecycle preserved; no new mechanism; Wave 5 closure withheld; CM-15 remains deferred.
