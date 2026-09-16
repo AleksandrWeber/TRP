@@ -25,27 +25,27 @@ Provide a precise register of unresolved decisions that Product Owner / Chief Ar
 
 ## CURRENT GOVERNANCE STATE
 
-| Item                                         | Status                                                                               |
-| -------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Wave 5                                       | **NOT COMPLETE** / **NOT CLOSED**                                                    |
-| CM-15                                        | OPEN / DEFERRED / **NON-BLOCKING** (Final Close not authorized; CLOSED = NO)         |
-| TD-CM15-TEAMS-LIVE                           | OPEN / DEFERRED / NON-BLOCKING                                                       |
-| Wave 6 planning                              | **AUTHORIZED** (governance-only)                                                     |
-| Wave 6 implementation                        | **NOT AUTHORIZED**                                                                   |
-| Live trading                                 | **NOT AUTHORIZED**                                                                   |
-| Real-capital movement                        | **NOT AUTHORIZED**                                                                   |
-| Live UI implementation                       | **NOT AUTHORIZED**                                                                   |
-| Live-capital ADR                             | **REQUIRED** / **NOT CREATED** / **NOT APPROVED** (no file; no number)               |
-| ADR ↔ V3-L01 sequencing (D-GOV-01)           | **DECIDED — INTERPRETATION A ACCEPTED**                                              |
-| D-GOV-02 (Wave 5 → Wave 6 / Rule 1)          | **DECIDED — INTERPRETATION C ACCEPTED**                                              |
-| D-GOV-03 (Wave 5 COMPLETE / CM-15 deferred)  | **DECIDED — INTERPRETATION C ACCEPTED**                                              |
-| D-GOV-04 (ADR creation / approval authority) | **DECIDED**                                                                          |
-| D-GOV-05 (implementation authorization)      | **OPEN** / **NOT GRANTED**                                                           |
-| FIV live/test environment                    | **NOT YET ESTABLISHED**                                                              |
-| Technical Debt closure                       | **NOT AUTHORIZED**                                                                   |
-| ADR creation by this synchronization task    | **NOT AUTHORIZED** (D-GOV-04 records who may authorize; does not grant a create act) |
+| Item                                         | Status                                                                         |
+| -------------------------------------------- | ------------------------------------------------------------------------------ |
+| Wave 5                                       | **NOT COMPLETE** / **NOT CLOSED**                                              |
+| CM-15                                        | OPEN / DEFERRED / **NON-BLOCKING** (Final Close not authorized; CLOSED = NO)   |
+| TD-CM15-TEAMS-LIVE                           | OPEN / DEFERRED / NON-BLOCKING                                                 |
+| Wave 6 planning                              | **AUTHORIZED** (governance-only)                                               |
+| Wave 6 implementation                        | **NOT AUTHORIZED**                                                             |
+| Live trading                                 | **NOT AUTHORIZED**                                                             |
+| Real-capital movement                        | **NOT AUTHORIZED**                                                             |
+| Live UI implementation                       | **NOT AUTHORIZED**                                                             |
+| Live-capital ADR                             | **REQUIRED** / **NOT CREATED** / **NOT APPROVED** (no file; no number)         |
+| ADR ↔ V3-L01 sequencing (D-GOV-01)           | **DECIDED — INTERPRETATION A ACCEPTED**                                        |
+| D-GOV-02 (Wave 5 → Wave 6 / Rule 1)          | **DECIDED — INTERPRETATION C ACCEPTED**                                        |
+| D-GOV-03 (Wave 5 COMPLETE / CM-15 deferred)  | **DECIDED — INTERPRETATION C ACCEPTED**                                        |
+| D-GOV-04 (ADR creation / approval authority) | **DECIDED**                                                                    |
+| Live-Capital ADR Creation Authorization      | **GRANTED** (PO / Governance create-auth act under D-GOV-04; ADR still absent) |
+| D-GOV-05 (implementation authorization)      | **OPEN** / **NOT GRANTED**                                                     |
+| FIV live/test environment                    | **NOT YET ESTABLISHED**                                                        |
+| Technical Debt closure                       | **NOT AUTHORIZED**                                                             |
 
-Statuses above reflect PO decision synchronization for D-GOV-01, D-GOV-02, D-GOV-03, and D-GOV-04. Do not invent further status changes.
+Statuses above reflect PO decision synchronization for D-GOV-01…04 **and** the subsequent Live-Capital ADR **create-authorization act**. Do not invent further status changes.
 
 ---
 
@@ -242,46 +242,75 @@ This preserves the existing lifecycle rather than creating an exception. Does **
 
 **Authoritative decision (Product Owner / Chief Architect):**
 
-#### 1. Authorization to create the Live-Capital ADR
+#### 1. Authorization to create the Live-Capital ADR (authority rule — unchanged)
 
 Authority to **authorize creation** of the future Wave 6 Live-Capital ADR belongs to **Product Owner / Governance**.
 Wave 6 **planning** authorization does **NOT** automatically constitute authorization to create the ADR.
-**This synchronization does NOT grant a create act** — it records who may authorize creation later.
+D-GOV-04 = **DECIDED** records this authority chain; it does **not** by itself equal a create act.
+
+#### 1a. Create-authorization act (PO / Governance — now granted)
+
+**PO / Governance Authorization to CREATE the Wave 6 Live-Capital ADR = GRANTED.**
+
+| Field                              | Content                                                                              |
+| ---------------------------------- | ------------------------------------------------------------------------------------ |
+| **Act**                            | Explicit D-GOV-04 **create authorization** for the future Wave 6 Live-Capital ADR    |
+| **Authority**                      | Product Owner / Governance                                                           |
+| **Date**                           | 2026-09-16                                                                           |
+| **Planning Approval baseline**     | `79e1ac23843f05e9b8236474cabbe4d5ac3af9f8`                                           |
+| **Resulting permission**           | Engineering / Architecture may prepare the Live-Capital ADR as a **DRAFT**           |
+| **ADR artifact**                   | Remains **NOT CREATED** / **NOT APPROVED** (no file; no number assigned by this act) |
+| **Architecture Review**            | **NOT STARTED**                                                                      |
+| **Security Review**                | **NOT STARTED**                                                                      |
+| **PO / Governance Review**         | **NOT STARTED**                                                                      |
+| **Final PO / Governance approval** | **NOT GRANTED**                                                                      |
+| **D-GOV-05 / Implementation**      | Remains **NOT AUTHORIZED**                                                           |
+
+```text
+CREATE AUTHORIZATION = GRANTED
+≠ ADR CREATED
+≠ ADR APPROVED
+≠ IMPLEMENTATION AUTHORIZED
+≠ LIVE TRADING / LIVE CAPITAL AUTHORIZED
+≠ V3-L01 READY
+```
 
 #### 2. ADR drafting authority
 
-**After explicit creation authorization:** Engineering / Architecture may prepare the ADR **draft**.
+**After this explicit creation authorization:** Engineering / Architecture may prepare the ADR **draft**.
 Drafting is strictly separate from: ADR approval · implementation authorization · live-capital authorization.
 Drafting must **not** be treated as approval.
+This act does **not** create the ADR file and does **not** assign an ADR number.
 
-#### 3. Mandatory ADR reviews
+#### 3. Mandatory ADR reviews (remaining — not completed)
 
 Before final approval, the Live-Capital ADR must undergo:
 
-- **Architecture Review**
-- **Security Review** (mandatory gate)
-- **Product Owner / Governance Review**
+- **Architecture Review** — **NOT STARTED**
+- **Security Review** (mandatory gate) — **NOT STARTED**
+- **Product Owner / Governance Review** — **NOT STARTED**
 
 Operations may provide required operational input where the ADR covers venue, credentials, operational controls, rollback/runbook, or production procedures. Operations does **NOT** automatically become an ADR approval authority.
 
 #### 4. Final ADR approval authority
 
 Final governance approval belongs to **Product Owner / Governance**, only after Architecture and Security reviews have passed.
+Final approval remains **NOT GRANTED**.
 
 ```text
-ADR creation authorization (PO / Governance)
+ADR creation authorization (PO / Governance)     ← GRANTED (this act)
         ↓
-ADR drafting (Engineering / Architecture)
+ADR drafting (Engineering / Architecture)        ← now permitted; draft NOT YET CREATED
         ↓
-Architecture Review
+Architecture Review                              ← NOT STARTED
         ↓
-Security Review
+Security Review                                  ← NOT STARTED
         ↓
-PO / Governance Review
+PO / Governance Review                           ← NOT STARTED
         ↓
-PO / Governance Approval
+PO / Governance Approval                         ← NOT GRANTED
         ↓
-Approved Live-Capital ADR
+Approved Live-Capital ADR                        ← NOT ACHIEVED
 ```
 
 #### 5. Definition of an ADR that satisfies D-GOV-01
@@ -297,20 +326,23 @@ For D-GOV-01, the Live-Capital ADR is **approved** only when **all** of the foll
 7. The ADR is published in the repository.
 
 `Status: Accepted` may be used consistently with ADR-012…018 precedent, but the status string alone is **NOT** sufficient proof of governance approval.
+**Create authorization alone does NOT satisfy D-GOV-01.**
 
 #### 6. Relationship to D-GOV-01
 
 D-GOV-01 remains **DECIDED — Interpretation A**: an approved Live-Capital ADR **MUST EXIST** before V3-L01 implementation may begin.
 **D-GOV-04 does NOT itself satisfy D-GOV-01.** Only the eventual approved Live-Capital ADR does.
+This create-authorization act does **not** satisfy D-GOV-01.
 
 #### 7. Relationship to implementation
 
 Approval of the Live-Capital ADR does **NOT** automatically authorize: V3-L01 / Wave 6 implementation · live trading · real-capital movement · live production enablement · FIV PASS.
 V3-L01 implementation remains subject to **D-GOV-05 / Package Approval** and other applicable gates.
+**This create-authorization act does NOT authorize implementation.**
 
-**Current artifact state (unchanged by this decision):** Live-Capital ADR = **NOT CREATED** / **NOT APPROVED**.
+**Current artifact state (unchanged by this create-authorization act):** Live-Capital ADR = **NOT CREATED** / **NOT APPROVED**.
 
-**Do not create the ADR in this task.**
+**This act authorizes drafting only.** It does **not** create the ADR file, assign an ADR number, approve the ADR, or grant D-GOV-05.
 
 ---
 
@@ -429,22 +461,22 @@ Authority: **OPERATIONS / RELEASE** for environment/credentials/runbooks; **PO**
 
 ## DECISION IMPACT MATRIX
 
-| Decision                                     | Authority                                    | Package                 | Planning Blocker | Implementation Blocker                                                          | FIV Blocker   | Release Blocker | Wave Close Blocker | Evidence                                                                                      |
-| -------------------------------------------- | -------------------------------------------- | ----------------------- | ---------------- | ------------------------------------------------------------------------------- | ------------- | --------------- | ------------------ | --------------------------------------------------------------------------------------------- |
-| D-GOV-01 ADR↔L01 (**DECIDED A**)             | PO                                           | L01+                    | NO               | YES — until approved ADR exists **and** D-GOV-05 grants impl auth               | YES           | YES             | YES                | Interpretation A: approved ADR before L01 impl                                                |
-| D-GOV-02 W5→W6 (**DECIDED C**)               | PO                                           | planning / ADR / Rule 1 | NO               | YES for irreversible promises / live UI; L01 still needs ADR+D-GOV-05           | YES*          | YES*            | NOT SPECIFIED      | Interp C: W5 CLOSED not blanket; Rule 1 binds irreversible                                    |
-| D-GOV-03 W5 COMPLETE / CM-15 (**DECIDED C**) | PO                                           | Wave 5                  | NO               | NO — W5 COMPLETE withheld; existing CM-15 lifecycle preserved; no new exception | NO            | NO              | NO                 | Interp C: withhold W5 close; preserve lifecycle; NOT new rule/waiver; NOT “DEFERRED≡RESERVED” |
-| D-GOV-04 ADR authority (**DECIDED**)         | PO / Governance (Arch+Sec reviews mandatory) | ADR                     | NO               | YES — until approved ADR exists per D-GOV-04 §5 **and** D-GOV-05                | YES           | YES             | YES                | Authority chain decided; ADR still missing                                                    |
-| D-GOV-05 Impl authorization                  | PO                                           | All L                   | NO               | YES                                                                             | YES           | YES             | YES                | Package template                                                                              |
-| D-ARCH-01 slices                             | Architect / PO                               | All L                   | NO               | YES                                                                             | NOT SPECIFIED | NOT SPECIFIED   | NOT SPECIFIED      | No slice IDs                                                                                  |
-| D-ARCH-03 Gate attrs                         | Architect                                    | L01/L02                 | NO               | YES                                                                             | YES           | YES             | YES                | Roadmap deps                                                                                  |
-| D-ARCH-08 venue binding                      | Architect                                    | L02                     | NO               | YES                                                                             | YES           | YES             | YES                | LT-02                                                                                         |
-| D-ARCH-10/11 log schema/integrity            | Architect                                    | L03                     | NO               | YES                                                                             | YES           | YES             | YES                | SEC-10/16                                                                                     |
-| D-ARCH-14 UI state model                     | Architect                                    | L04                     | NO               | YES                                                                             | YES           | YES             | YES                | L04 NOT SPECIFIED                                                                             |
-| D-ARCH-16 replay mechanism                   | Architect                                    | L05                     | NO               | YES                                                                             | YES           | YES             | YES                | L05 OPEN                                                                                      |
-| D-OPS-01 FIV venue                           | Ops / PO                                     | L02                     | NO               | NOT SPECIFIED                                                                   | YES           | YES             | YES                | FIV matrix                                                                                    |
-| D-OPS-08 release gate                        | Ops / PO                                     | Wave 6                  | NO               | NO                                                                              | NO            | YES             | YES                | Release boundary                                                                              |
-| D-PROD-01…06 Live meaning/UI                 | PO / Product                                 | L04                     | NO               | YES                                                                             | YES           | YES             | YES                | Honesty rules                                                                                 |
+| Decision                                     | Authority                                    | Package                 | Planning Blocker | Implementation Blocker                                                          | FIV Blocker   | Release Blocker | Wave Close Blocker | Evidence                                                                                                  |
+| -------------------------------------------- | -------------------------------------------- | ----------------------- | ---------------- | ------------------------------------------------------------------------------- | ------------- | --------------- | ------------------ | --------------------------------------------------------------------------------------------------------- |
+| D-GOV-01 ADR↔L01 (**DECIDED A**)             | PO                                           | L01+                    | NO               | YES — until approved ADR exists **and** D-GOV-05 grants impl auth               | YES           | YES             | YES                | Interpretation A: approved ADR before L01 impl                                                            |
+| D-GOV-02 W5→W6 (**DECIDED C**)               | PO                                           | planning / ADR / Rule 1 | NO               | YES for irreversible promises / live UI; L01 still needs ADR+D-GOV-05           | YES*          | YES*            | NOT SPECIFIED      | Interp C: W5 CLOSED not blanket; Rule 1 binds irreversible                                                |
+| D-GOV-03 W5 COMPLETE / CM-15 (**DECIDED C**) | PO                                           | Wave 5                  | NO               | NO — W5 COMPLETE withheld; existing CM-15 lifecycle preserved; no new exception | NO            | NO              | NO                 | Interp C: withhold W5 close; preserve lifecycle; NOT new rule/waiver; NOT “DEFERRED≡RESERVED”             |
+| D-GOV-04 ADR authority (**DECIDED**)         | PO / Governance (Arch+Sec reviews mandatory) | ADR                     | NO               | YES — until approved ADR exists per D-GOV-04 §5 **and** D-GOV-05                | YES           | YES             | YES                | Authority chain decided; **Create Authorization = GRANTED**; ADR still **NOT CREATED** / **NOT APPROVED** |
+| D-GOV-05 Impl authorization                  | PO                                           | All L                   | NO               | YES                                                                             | YES           | YES             | YES                | Package template                                                                                          |
+| D-ARCH-01 slices                             | Architect / PO                               | All L                   | NO               | YES                                                                             | NOT SPECIFIED | NOT SPECIFIED   | NOT SPECIFIED      | No slice IDs                                                                                              |
+| D-ARCH-03 Gate attrs                         | Architect                                    | L01/L02                 | NO               | YES                                                                             | YES           | YES             | YES                | Roadmap deps                                                                                              |
+| D-ARCH-08 venue binding                      | Architect                                    | L02                     | NO               | YES                                                                             | YES           | YES             | YES                | LT-02                                                                                                     |
+| D-ARCH-10/11 log schema/integrity            | Architect                                    | L03                     | NO               | YES                                                                             | YES           | YES             | YES                | SEC-10/16                                                                                                 |
+| D-ARCH-14 UI state model                     | Architect                                    | L04                     | NO               | YES                                                                             | YES           | YES             | YES                | L04 NOT SPECIFIED                                                                                         |
+| D-ARCH-16 replay mechanism                   | Architect                                    | L05                     | NO               | YES                                                                             | YES           | YES             | YES                | L05 OPEN                                                                                                  |
+| D-OPS-01 FIV venue                           | Ops / PO                                     | L02                     | NO               | NOT SPECIFIED                                                                   | YES           | YES             | YES                | FIV matrix                                                                                                |
+| D-OPS-08 release gate                        | Ops / PO                                     | Wave 6                  | NO               | NO                                                                              | NO            | YES             | YES                | Release boundary                                                                                          |
+| D-PROD-01…06 Live meaning/UI                 | PO / Product                                 | L04                     | NO               | YES                                                                             | YES           | YES             | YES                | Honesty rules                                                                                             |
 
 \*For D-GOV-02 FIV/Release: live UI / live enablement / real-capital remain **prohibited**; live FIV/release also need approved ADR and other gates. D-GOV-02 does **not** authorize them.
 
@@ -469,12 +501,13 @@ D-GOV-03 = Interpretation C ACCEPTED
    Wave 6 planning unaffected)
        ↓
 D-GOV-04 = DECIDED — authority chain
-  create auth (PO) → draft (Eng/Arch) → Architecture Review
-  → Security Review → PO Review → PO Approval → Approved ADR
+  create auth (PO) = GRANTED → draft (Eng/Arch) now permitted
+  → Architecture Review (NOT STARTED) → Security Review (NOT STARTED)
+  → PO Review (NOT STARTED) → PO Approval (NOT GRANTED) → Approved ADR
   (Wave 5 CLOSED NOT an additional ADR prerequisite)
        ↓
 Approved live-capital ADR   ← REQUIRED; currently NOT CREATED / NOT APPROVED
-  (D-GOV-04 does NOT itself satisfy D-GOV-01)
+  (create-auth GRANTED does NOT itself satisfy D-GOV-01)
        ↓
 Architecture / Security decisions (D-ARCH-*, security OPENs for L packages)
        ↓
@@ -490,7 +523,7 @@ Release Gate  [NOT SPECIFIED checklist — OPEN]
 Wave 6 Exit / CLOSE  [PO exclusive — not started]
 ```
 
-**Not invented:** L01→L05 order is AUTHORITATIVE. D-GOV-01 places **approved** ADR **before** L01 implementation. D-GOV-02 Interpretation C: Wave 5 CLOSED is not a blanket prerequisite. D-GOV-03 Interpretation C: Wave 5 COMPLETE/CLOSED withheld; existing CM-15 lifecycle preserved; **no** new exception/waiver/conditional closure created (does **not** establish “all packages must CLOSE” or “DEFERRED≡RESERVED”). D-GOV-04 defines the create/draft/review/approve chain. ADR is **not** yet created or approved. D-GOV-05 remains **NOT GRANTED**. Release checklist content **NOT SPECIFIED**.
+**Not invented:** L01→L05 order is AUTHORITATIVE. D-GOV-01 places **approved** ADR **before** L01 implementation. D-GOV-02 Interpretation C: Wave 5 CLOSED is not a blanket prerequisite. D-GOV-03 Interpretation C: Wave 5 COMPLETE/CLOSED withheld; existing CM-15 lifecycle preserved; **no** new exception/waiver/conditional closure created (does **not** establish “all packages must CLOSE” or “DEFERRED≡RESERVED”). D-GOV-04 defines the create/draft/review/approve chain; **Create Authorization = GRANTED**; ADR is **not** yet created or approved. D-GOV-05 remains **NOT GRANTED**. Release checklist content **NOT SPECIFIED**.
 
 ---
 
@@ -500,11 +533,12 @@ Supported under current governance boundary:
 
 - Documentation and planning revision (Wave 6 planning authorized)
 - PO / Chief Architect decision preparation (this register)
+- **Live-Capital ADR DRAFT preparation** by Engineering / Architecture (create-auth **GRANTED**; draft ≠ approval)
 - Architecture analysis / security analysis (planning-gate, non-approving)
 - FIV **preparation** (environment requirements listing — not FIV execution/PASS)
 - Read-only evidence gathering
 
-**Planning is not implementation authorization.**
+**Planning is not implementation authorization. Create authorization is not ADR approval.**
 
 ---
 
@@ -516,7 +550,8 @@ Supported under current governance boundary:
 - Live UI implementation
 - Production release
 - ADR approval without Architecture + Security + PO / Governance approval (D-GOV-04)
-- ADR creation without explicit PO / Governance creation authorization (D-GOV-04); this sync does not grant a create act
+- Treating Live-Capital ADR **create authorization** as ADR **approval**, implementation authorization, or live-capital enablement
+- Creating an ADR marked Approved / Accepted / Implemented / Live / Production Ready without completing D-GOV-04 reviews
 - Wave 5 closure
 - CM-15 closure
 - Technical Debt closure
@@ -532,7 +567,7 @@ Supported under current governance boundary:
 
 1. D-GOV-05 implementation authorization (**OPEN** — not granted)
 2. D-GOV-01 ADR↔L01 sequencing — **DECIDED A**: **approved** live-capital ADR must exist before L01 implementation
-3. D-GOV-04 ADR creation/approval path — **DECIDED** (authority chain recorded); **and** resulting **approved** live-capital ADR per D-GOV-04 §5 (currently **NOT CREATED** / **NOT APPROVED**)
+3. D-GOV-04 ADR creation/approval path — **DECIDED** (authority chain recorded); Live-Capital ADR **Creation Authorization = GRANTED**; resulting **approved** live-capital ADR per D-GOV-04 §5 still required (currently **NOT CREATED** / **NOT APPROVED**)
 4. D-GOV-02 — **DECIDED C**: Wave 5 CLOSED not blanket prerequisite; Rule 1 still constrains irreversible promises (esp. live UI); classify L01 enablement irreversibility where needed
 5. D-ARCH-01 (L01 slices) · D-ARCH-02 · D-ARCH-03 · D-ARCH-04 · D-ARCH-05 (as applicable to L01 scope)
 6. Security: live policy / Admin enablement controls OPEN items affecting L01
@@ -595,7 +630,7 @@ All exit criteria evidence · PO Wave COMPLETE declaration · no outstanding AUT
 This register does **not** authorize and does **not** claim:
 
 - no implementation authorized;
-- no ADR created;
+- no ADR created (create-auth ≠ ADR artifact);
 - no ADR approved;
 - no live trading;
 - no real-capital movement;
@@ -610,10 +645,10 @@ This register does **not** authorize and does **not** claim:
 **D-GOV-01** is recorded as **DECIDED — INTERPRETATION A ACCEPTED**.
 **D-GOV-02** is recorded as **DECIDED — INTERPRETATION C ACCEPTED**. That does **not** close Wave 5, create/approve the ADR, grant **D-GOV-05**, or authorize implementation.
 **D-GOV-03** is recorded as **DECIDED — INTERPRETATION C ACCEPTED**. Wave 5 closure remains withheld. CM-15 remains OPEN / DEFERRED / NON-BLOCKING. No new exception, waiver, or conditional closure was created. Existing lifecycle is preserved for later CM-15 completion. That does **not** equate DEFERRED with RESERVED and does **not** newly establish that every package must always be CLOSED before Wave Close.
-**D-GOV-04** is recorded as **DECIDED** (authority chain). That does **not** create or approve the Live-Capital ADR.
+**D-GOV-04** is recorded as **DECIDED** (authority chain). **Live-Capital ADR Creation Authorization = GRANTED.** That does **not** create or approve the Live-Capital ADR and does **not** grant **D-GOV-05**.
 
 ---
 
 ## STOP
 
-STOP — D-GOV-03 final-state sync: existing lifecycle preserved; no new mechanism; Wave 5 remains NOT COMPLETE / NOT CLOSED; CM-15 remains NOT CLOSED. No ADR. No implementation.
+STOP — Live-Capital ADR Creation Authorization = GRANTED. ADR remains NOT CREATED / NOT APPROVED. Architecture / Security / PO Reviews NOT STARTED. Implementation remains NOT AUTHORIZED. Wave 5 remains NOT COMPLETE / NOT CLOSED. CM-15 remains NOT CLOSED.
