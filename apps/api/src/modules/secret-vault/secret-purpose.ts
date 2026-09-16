@@ -30,6 +30,7 @@ export function defaultPurposeForType(
     case 'smtp':
     case 'slack-webhook':
     case 'discord-webhook':
+    case 'teams-webhook':
       return SecretPurpose.Notification;
     case 'openrouter':
       return SecretPurpose.Ai;

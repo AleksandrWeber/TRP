@@ -7,14 +7,17 @@ import { InMemoryNotificationStore } from './adapters/in-memory-notification-sto
 import { InMemoryEmailAdapter } from './adapters/in-memory-email.adapter';
 import { InMemoryDiscordAdapter } from './adapters/in-memory-discord.adapter';
 import { InMemorySlackAdapter } from './adapters/in-memory-slack.adapter';
+import { InMemoryTeamsAdapter } from './adapters/in-memory-teams.adapter';
 import { InMemoryTelegramAdapter } from './adapters/in-memory-telegram.adapter';
 import { ProductionSmtpNotificationAdapter } from './adapters/production-smtp-notification.adapter';
 import { ProductionDiscordWebhookNotificationAdapter } from './adapters/production-discord-webhook-notification.adapter';
 import { ProductionSlackWebhookNotificationAdapter } from './adapters/production-slack-webhook-notification.adapter';
+import { ProductionTeamsWebhookNotificationAdapter } from './adapters/production-teams-webhook-notification.adapter';
 import { ProductionTelegramBotApiAdapter } from './adapters/telegram-bot-api.adapter';
 import { SmtpCredentialResolver } from './adapters/smtp-credential.resolver';
 import { DiscordWebhookCredentialResolver } from './adapters/discord-webhook-credential.resolver';
 import { SlackWebhookCredentialResolver } from './adapters/slack-webhook-credential.resolver';
+import { TeamsWebhookCredentialResolver } from './adapters/teams-webhook-credential.resolver';
 import { TelegramBotApiHttpClient } from './adapters/telegram-bot-api.http';
 import { TelegramBotTokenResolver } from './adapters/telegram-bot-token.resolver';
 import { TelegramStartBindObserver } from './adapters/telegram-start-bind.observer';
@@ -82,6 +85,7 @@ import {
   EMAIL_CHANNEL_ADAPTER,
   SLACK_CHANNEL_ADAPTER,
   DISCORD_CHANNEL_ADAPTER,
+  TEAMS_CHANNEL_ADAPTER,
 } from './ports/notification.port';
 import { EmailNotificationPersistenceService } from './email-notification-persistence.service';
 import { SlackDiscordTeamsNotificationPersistenceService } from './slack-discord-teams-notification-persistence.service';
@@ -487,6 +491,9 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     DiscordWebhookCredentialResolver,
     ProductionDiscordWebhookNotificationAdapter,
     InMemoryDiscordAdapter,
+    TeamsWebhookCredentialResolver,
+    ProductionTeamsWebhookNotificationAdapter,
+    InMemoryTeamsAdapter,
     {
       provide: TELEGRAM_CHANNEL_ADAPTER,
       useExisting: ProductionTelegramBotApiAdapter,
@@ -502,6 +509,10 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     {
       provide: DISCORD_CHANNEL_ADAPTER,
       useExisting: ProductionDiscordWebhookNotificationAdapter,
+    },
+    {
+      provide: TEAMS_CHANNEL_ADAPTER,
+      useExisting: ProductionTeamsWebhookNotificationAdapter,
     },
     NotificationDeliveryService,
     {
@@ -520,11 +531,14 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
     ProductionSlackWebhookNotificationAdapter,
     InMemoryDiscordAdapter,
     ProductionDiscordWebhookNotificationAdapter,
+    InMemoryTeamsAdapter,
+    ProductionTeamsWebhookNotificationAdapter,
     NOTIFICATION_SERVICE_PORT,
     TELEGRAM_CHANNEL_ADAPTER,
     EMAIL_CHANNEL_ADAPTER,
     SLACK_CHANNEL_ADAPTER,
     DISCORD_CHANNEL_ADAPTER,
+    TEAMS_CHANNEL_ADAPTER,
     TELEGRAM_NOTIFICATION_ANCHOR_REPOSITORY,
     EMAIL_NOTIFICATION_ANCHOR_REPOSITORY,
     SLACK_DISCORD_TEAMS_NOTIFICATION_ANCHOR_REPOSITORY,

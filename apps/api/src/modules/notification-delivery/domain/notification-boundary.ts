@@ -89,7 +89,7 @@ export type NotificationDeliveryBoundary = Readonly<{
     emailChannel: true;
     slackChannel: true;
     discordChannel: false;
-    teamsChannel: false;
+    teamsChannel: true;
     pushChannel: false;
     persistence: true;
     rest: false;
@@ -112,7 +112,7 @@ export const NOTIFICATION_DELIVERY_BOUNDARY: NotificationDeliveryBoundary = Obje
     emailChannel: true,
     slackChannel: true,
     discordChannel: false,
-    teamsChannel: false,
+    teamsChannel: true,
     pushChannel: false,
     persistence: true,
     rest: false,

@@ -25,7 +25,7 @@ const evaluatedAt = '2026-08-15T19:00:00.000Z';
 
 /**
  * PC-07: Notification Channels HTTP over existing catalog, routing, and deliveries.
- * Telegram, Email, Slack, and Discord are active. Teams/Push stay reserved.
+ * Telegram, Email, Slack, Discord, and Teams are active. Push stays reserved.
  */
 describe('PC-07 — Notification Channels product', () => {
   it('lists all catalog channels, routes existing types, and does not activate reserved transports', async () => {
@@ -99,8 +99,11 @@ describe('PC-07 — Notification Channels product', () => {
     expect(discord.configuration.kind).toBe('discord-connection');
     expect(discord.offered).toBe(true);
     const teams = channels.get({ user: OWNER }, workspace.id, { channelId: 'teams' });
-    expect(teams.offered).toBe(false);
-    expect(teams.configuration.kind).toBe('reserved-inactive');
+    expect(teams.offered).toBe(true);
+    expect(teams.configuration.kind).toBe('teams-connection');
+    const push = channels.get({ user: OWNER }, workspace.id, { channelId: 'push' });
+    expect(push.offered).toBe(false);
+    expect(push.configuration.kind).toBe('reserved-inactive');
 
     const history = channels.listDeliveries(
       { user: OWNER },

@@ -12,6 +12,7 @@ import {
   EMAIL_CHANNEL_ADAPTER,
   NOTIFICATION_SERVICE_PORT,
   SLACK_CHANNEL_ADAPTER,
+  TEAMS_CHANNEL_ADAPTER,
   TELEGRAM_CHANNEL_ADAPTER,
   type NotificationChannelPort,
   type NotificationServicePort,
@@ -21,6 +22,7 @@ import { projectDiscordTransport } from '../notification-delivery/domain/discord
 import { projectTelegramTransport } from '../notification-delivery/domain/telegram-transport-projection';
 import { projectEmailTransport } from '../notification-delivery/domain/email-transport-projection';
 import { projectSlackTransport } from '../notification-delivery/domain/slack-transport-projection';
+import { projectTeamsTransport } from '../notification-delivery/domain/teams-transport-projection';
 import type { NotificationChannelId } from '../notification-delivery/domain/notification-channel';
 import type { UserNotificationPreferences } from '../notification-delivery/domain/user-notification-preferences';
 import {
@@ -61,6 +63,9 @@ export class NotificationProductService {
     @Optional()
     @Inject(DISCORD_CHANNEL_ADAPTER)
     private readonly discordChannel?: NotificationChannelPort,
+    @Optional()
+    @Inject(TEAMS_CHANNEL_ADAPTER)
+    private readonly teamsChannel?: NotificationChannelPort,
   ) {}
 
   private telegramHonesty() {
@@ -85,6 +90,12 @@ export class NotificationProductService {
       : { transport: 'in-memory' as const, webhookUsed: false };
   }
 
+  private teamsHonesty() {
+    return this.teamsChannel
+      ? projectTeamsTransport(this.teamsChannel)
+      : { transport: 'in-memory' as const, webhookUsed: false };
+  }
+
   private emailConnection(workspaceId: string, userId: string) {
     return this.notifications.getEmailConnection?.(workspaceId, userId);
   }
@@ -95,6 +106,10 @@ export class NotificationProductService {
 
   private discordConnection(workspaceId: string, userId: string) {
     return this.notifications.getDiscordConnection?.(workspaceId, userId);
+  }
+
+  private teamsConnection(workspaceId: string, userId: string) {
+    return this.notifications.getTeamsConnection?.(workspaceId, userId);
   }
 
   getSettings(
@@ -111,6 +126,7 @@ export class NotificationProductService {
       emailConnection: this.emailConnection(workspaceId, userId),
       slackConnection: this.slackConnection(workspaceId, userId),
       discordConnection: this.discordConnection(workspaceId, userId),
+      teamsConnection: this.teamsConnection(workspaceId, userId),
     });
   }
 
@@ -128,6 +144,7 @@ export class NotificationProductService {
       emailConnection: this.emailConnection(workspaceId, userId),
       slackConnection: this.slackConnection(workspaceId, userId),
       discordConnection: this.discordConnection(workspaceId, userId),
+      teamsConnection: this.teamsConnection(workspaceId, userId),
     });
   }
 
@@ -152,6 +169,8 @@ export class NotificationProductService {
       slackHonesty: this.slackHonesty(),
       discordConnection: this.discordConnection(workspaceId, userId),
       discordHonesty: this.discordHonesty(),
+      teamsConnection: this.teamsConnection(workspaceId, userId),
+      teamsHonesty: this.teamsHonesty(),
     });
   }
 
@@ -175,6 +194,8 @@ export class NotificationProductService {
       slackHonesty: this.slackHonesty(),
       discordConnection: this.discordConnection(workspaceId, userId),
       discordHonesty: this.discordHonesty(),
+      teamsConnection: this.teamsConnection(workspaceId, userId),
+      teamsHonesty: this.teamsHonesty(),
     });
   }
 
@@ -208,6 +229,7 @@ export class NotificationProductService {
       emailConnection: this.emailConnection(workspaceId, userId),
       slackConnection: this.slackConnection(workspaceId, userId),
       discordConnection: this.discordConnection(workspaceId, userId),
+      teamsConnection: this.teamsConnection(workspaceId, userId),
     }).preferences;
   }
 
@@ -224,6 +246,7 @@ export class NotificationProductService {
       emailConnection: this.emailConnection(input.workspaceId, input.userId),
       slackConnection: this.slackConnection(input.workspaceId, input.userId),
       discordConnection: this.discordConnection(input.workspaceId, input.userId),
+      teamsConnection: this.teamsConnection(input.workspaceId, input.userId),
     }).preferences;
   }
 

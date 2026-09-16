@@ -12,6 +12,7 @@ import type { NotificationDeliveryQueueItem } from '../domain/delivery-queue';
 import type { DiscordConnection } from '../domain/discord-connection';
 import type { EmailConnection } from '../domain/email-connection';
 import type { SlackConnection } from '../domain/slack-connection';
+import type { TeamsConnection } from '../domain/teams-connection';
 import type { TelegramConnection } from '../domain/telegram-connection';
 import type { UserNotificationPreferences } from '../domain/user-notification-preferences';
 
@@ -25,6 +26,7 @@ export type NotificationStoreDurableState = Readonly<{
   email: EmailConnection[];
   slack: SlackConnection[];
   discord: DiscordConnection[];
+  teams: TeamsConnection[];
   deliveries: DeliveryResult[];
   /** W3-O02-b — in-flight / pending / retryable / terminal queue work (not Outbox). */
   queue: NotificationDeliveryQueueItem[];
@@ -37,6 +39,7 @@ export class InMemoryNotificationStore {
   private readonly email = new Map<string, EmailConnection>();
   private readonly slack = new Map<string, SlackConnection>();
   private readonly discord = new Map<string, DiscordConnection>();
+  private readonly teams = new Map<string, TeamsConnection>();
   private readonly tokenIndex = new Map<string, string>();
   private readonly deliveries: DeliveryResult[] = [];
   private readonly queue = new Map<string, NotificationDeliveryQueueItem>();
@@ -95,6 +98,14 @@ export class InMemoryNotificationStore {
     this.discord.set(key(connection.workspaceId, connection.userId), connection);
   }
 
+  getTeams(workspaceId: string, userId: string): TeamsConnection | undefined {
+    return this.teams.get(key(workspaceId, userId));
+  }
+
+  saveTeams(connection: TeamsConnection): void {
+    this.teams.set(key(connection.workspaceId, connection.userId), connection);
+  }
+
   recordDelivery(result: DeliveryResult): void {
     this.deliveries.push(result);
   }
@@ -147,6 +158,7 @@ export class InMemoryNotificationStore {
       email: [...this.email.values()],
       slack: [...this.slack.values()],
       discord: [...this.discord.values()],
+      teams: [...this.teams.values()],
       deliveries: [...this.deliveries],
       queue: [...this.queue.values()],
     });
@@ -158,6 +170,7 @@ export class InMemoryNotificationStore {
     this.email.clear();
     this.slack.clear();
     this.discord.clear();
+    this.teams.clear();
     this.tokenIndex.clear();
     this.deliveries.length = 0;
     this.queue.clear();
@@ -175,6 +188,9 @@ export class InMemoryNotificationStore {
     }
     for (const connection of state.discord ?? []) {
       this.saveDiscord(connection);
+    }
+    for (const connection of state.teams ?? []) {
+      this.saveTeams(connection);
     }
     for (const delivery of state.deliveries ?? []) {
       this.deliveries.push(delivery);

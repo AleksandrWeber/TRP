@@ -51,6 +51,12 @@ export const CONNECTION_PROVIDERS = [
     credentialFields: ['webhookUrl'],
   },
   {
+    id: 'TEAMS',
+    displayName: 'Microsoft Teams Incoming Webhook',
+    connectionType: 'NOTIFICATION',
+    credentialFields: ['webhookUrl'],
+  },
+  {
     id: 'OPENROUTER',
     displayName: 'OpenRouter',
     connectionType: 'AI',

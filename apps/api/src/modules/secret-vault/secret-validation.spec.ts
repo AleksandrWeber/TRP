@@ -25,6 +25,10 @@ const WELL_FORMED: Readonly<Record<HoldableSecretType, Record<string, string>>> 
   [HoldableSecretType.DiscordWebhook]: {
     webhookUrl: 'https://discord.com/api/webhooks/123456789012345678/AbCdEfGhIjKlMnOpQrStUvWxYz',
   },
+  [HoldableSecretType.TeamsWebhook]: {
+    webhookUrl:
+      'https://defaultenv.e1.environment.api.powerplatform.com/powerautomate/automations/direct/workflows/wfid123/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=TESTSIG_NOT_A_REAL_SECRET',
+  },
   [HoldableSecretType.OpenRouter]: { apiKey: 'or-key-1' },
 };
 

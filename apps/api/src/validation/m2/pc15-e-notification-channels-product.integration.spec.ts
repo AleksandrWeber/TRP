@@ -135,13 +135,16 @@ describe('PC-15 15-e — Notification Delivery → Channels product flow', () =>
     expect(telegram.listSent()[0]?.subject).toContain('run-15e');
   });
 
-  it('keeps Teams/Push reserved; Discord active but not-connected when unbound', async () => {
+  it('keeps Push reserved; Teams/Discord active but not-connected when unbound', async () => {
     notifications.upsertPreferences({
       workspaceId: 'ws-1',
       userId: 'user-1',
-      channels: { telegram: true, slack: true, discord: true },
+      channels: { telegram: true, slack: true, discord: true, teams: true },
       typeRouting: {
-        'daily-report': { enabled: true, channels: ['telegram', 'email', 'slack', 'discord'] },
+        'daily-report': {
+          enabled: true,
+          channels: ['telegram', 'email', 'slack', 'discord', 'teams'],
+        },
       },
       updatedAt: at,
     });
@@ -173,6 +176,9 @@ describe('PC-15 15-e — Notification Delivery → Channels product flow', () =>
       result.delivery?.attempts.find((attempt) => attempt.channelId === 'discord')?.skipReason,
     ).toBe('channel-not-connected');
     expect(
+      result.delivery?.attempts.find((attempt) => attempt.channelId === 'teams')?.skipReason,
+    ).toBe('channel-not-connected');
+    expect(
       result.delivery?.attempts.find((attempt) => attempt.channelId === 'slack')?.skipReason,
     ).toBe('channel-not-connected');
     expect(
@@ -191,7 +197,7 @@ describe('PC-15 15-e — Notification Delivery → Channels product flow', () =>
     ).toBe('active');
     expect(
       notifications.listChannels().find((channel) => channel.channelId === 'teams')?.status,
-    ).toBe('reserved-inactive');
+    ).toBe('active');
     expect(
       notifications.listChannels().find((channel) => channel.channelId === 'push')?.status,
     ).toBe('reserved-inactive');

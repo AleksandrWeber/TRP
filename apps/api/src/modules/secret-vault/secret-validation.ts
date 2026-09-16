@@ -6,6 +6,7 @@
 
 import { validateDiscordIncomingWebhookUrl } from '../../security-platform/discord-webhook-url-guard';
 import { validateSlackIncomingWebhookUrl } from '../../security-platform/slack-webhook-url-guard';
+import { validateTeamsIncomingWebhookUrl } from '../../security-platform/teams-webhook-url-guard';
 import { HoldableSecretType } from './holdable-secret-type';
 import { createSecretMaterial, type SecretFieldMap } from './secret-material';
 import { VaultValidationError } from './vault-errors';
@@ -18,6 +19,7 @@ const REQUIRED_FIELDS: Readonly<Record<HoldableSecretType, readonly string[]>> =
   [HoldableSecretType.Smtp]: ['host', 'port', 'username', 'password', 'sender'],
   [HoldableSecretType.SlackWebhook]: ['webhookUrl'],
   [HoldableSecretType.DiscordWebhook]: ['webhookUrl'],
+  [HoldableSecretType.TeamsWebhook]: ['webhookUrl'],
   [HoldableSecretType.OpenRouter]: ['apiKey'],
 };
 
@@ -61,6 +63,10 @@ export function validateHoldableSecretFields(
     assertDiscordWebhookUrl(material.webhookUrl);
   }
 
+  if (type === HoldableSecretType.TeamsWebhook) {
+    assertTeamsWebhookUrl(material.webhookUrl);
+  }
+
   return material;
 }
 
@@ -89,6 +95,16 @@ function assertDiscordWebhookUrl(webhookUrl: string | undefined): void {
     throw new VaultValidationError('Required credential fields are missing.');
   }
   const guard = validateDiscordIncomingWebhookUrl(webhookUrl);
+  if (!guard.ok) {
+    throw new VaultValidationError('The credential could not be stored.');
+  }
+}
+
+function assertTeamsWebhookUrl(webhookUrl: string | undefined): void {
+  if (webhookUrl === undefined) {
+    throw new VaultValidationError('Required credential fields are missing.');
+  }
+  const guard = validateTeamsIncomingWebhookUrl(webhookUrl);
   if (!guard.ok) {
     throw new VaultValidationError('The credential could not be stored.');
   }

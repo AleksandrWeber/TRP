@@ -64,6 +64,11 @@ describe('Connection catalog (W2-S01-a)', () => {
               displayName: 'Discord Incoming Webhook',
               credentialFields: ['webhookUrl'],
             },
+            {
+              id: 'TEAMS',
+              displayName: 'Microsoft Teams Incoming Webhook',
+              credentialFields: ['webhookUrl'],
+            },
           ],
         },
         {

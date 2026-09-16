@@ -206,13 +206,13 @@ describe('Slack webhook connection and delivery', () => {
     await moduleRef.close();
   });
 
-  it('keeps Teams/Push reserved (Discord is active after CM-14)', async () => {
+  it('keeps Push reserved (Discord and Teams are active)', async () => {
     const { moduleRef, service } = await createService();
     const reserved = service
       .listChannels()
       .filter((channel) => channel.status === 'reserved-inactive')
       .map((channel) => channel.channelId);
-    expect(reserved).toEqual(['teams', 'push']);
+    expect(reserved).toEqual(['push']);
     await moduleRef.close();
   });
 });

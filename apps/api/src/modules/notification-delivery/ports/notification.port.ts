@@ -10,6 +10,7 @@ import type { DiscordConnection } from '../domain/discord-connection';
 import type { EmailConnection } from '../domain/email-connection';
 import type { NotificationChannelDescriptor } from '../domain/notification-channel';
 import type { SlackConnection } from '../domain/slack-connection';
+import type { TeamsConnection } from '../domain/teams-connection';
 import type { TelegramConnection } from '../domain/telegram-connection';
 import type { UserNotificationPreferences } from '../domain/user-notification-preferences';
 
@@ -18,6 +19,7 @@ export const TELEGRAM_CHANNEL_ADAPTER = Symbol('TELEGRAM_CHANNEL_ADAPTER');
 export const EMAIL_CHANNEL_ADAPTER = Symbol('EMAIL_CHANNEL_ADAPTER');
 export const SLACK_CHANNEL_ADAPTER = Symbol('SLACK_CHANNEL_ADAPTER');
 export const DISCORD_CHANNEL_ADAPTER = Symbol('DISCORD_CHANNEL_ADAPTER');
+export const TEAMS_CHANNEL_ADAPTER = Symbol('TEAMS_CHANNEL_ADAPTER');
 
 export type UpsertNotificationPreferences = Readonly<{
   workspaceId: string;
@@ -111,6 +113,22 @@ export type DiscordDisconnectRequest = Readonly<{
 
 export type SendTestDiscordNotificationRequest = SendTestNotificationRequest;
 
+export type TeamsBindRequest = Readonly<{
+  workspaceId: string;
+  userId: string;
+  requestedAt?: string;
+  actorUserId?: string;
+  actorRole?: Role;
+}>;
+
+export type TeamsDisconnectRequest = Readonly<{
+  workspaceId: string;
+  userId: string;
+  requestedAt?: string;
+}>;
+
+export type SendTestTeamsNotificationRequest = SendTestNotificationRequest;
+
 export type NotificationChannelSendCommand = Readonly<{
   chatId: string;
   subject: string;
@@ -170,6 +188,10 @@ export interface NotificationServicePort {
   bindDiscordChannel(cmd: DiscordBindRequest): Promise<DiscordConnection>;
   disconnectDiscord(cmd: DiscordDisconnectRequest): DiscordConnection;
   sendTestDiscordNotification(cmd: SendTestDiscordNotificationRequest): Promise<DeliveryResult>;
+  getTeamsConnection(workspaceId: string, userId: string): TeamsConnection;
+  bindTeamsChannel(cmd: TeamsBindRequest): Promise<TeamsConnection>;
+  disconnectTeams(cmd: TeamsDisconnectRequest): TeamsConnection;
+  sendTestTeamsNotification(cmd: SendTestTeamsNotificationRequest): Promise<DeliveryResult>;
   deliver(cmd: DeliverNotificationCommand): Promise<DeliveryResult>;
   /**
    * Read-only list of already-recorded deliveries. Not a new SoT.
@@ -193,7 +215,7 @@ export const NOTIFICATION_PORTS_ACTIVE = Object.freeze({
   emailChannel: true,
   slackChannel: true,
   discordChannel: true,
-  teamsChannel: false,
+  teamsChannel: true,
   pushChannel: false,
   persistence: true,
   rest: false,

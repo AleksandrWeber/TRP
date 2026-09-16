@@ -52,6 +52,7 @@ describe('PC-06 notification product views', () => {
     expect(view.channels.find((channel) => channel.channelId === 'email')?.offered).toBe(true);
     expect(view.channels.find((channel) => channel.channelId === 'slack')?.offered).toBe(true);
     expect(view.channels.find((channel) => channel.channelId === 'discord')?.offered).toBe(true);
+    expect(view.channels.find((channel) => channel.channelId === 'teams')?.offered).toBe(true);
     expect(view.scheduleClock.scheduler).toBe(false);
     expect(view.scheduleClock.clockKind).toBe('preference-clock');
     expect(view.scheduleClock.dailyDeliveryTime).toBe('09:00');

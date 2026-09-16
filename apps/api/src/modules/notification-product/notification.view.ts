@@ -26,6 +26,7 @@ import {
 import type { DiscordConnection } from '../notification-delivery/domain/discord-connection';
 import type { EmailConnection } from '../notification-delivery/domain/email-connection';
 import type { SlackConnection } from '../notification-delivery/domain/slack-connection';
+import type { TeamsConnection } from '../notification-delivery/domain/teams-connection';
 import type { TelegramConnection } from '../notification-delivery/domain/telegram-connection';
 import type { TelegramTransportProjection } from '../notification-delivery/domain/telegram-transport-projection';
 import type {
@@ -269,6 +270,7 @@ export function toPreferencesView(
   emailConnected = false,
   slackConnected = false,
   discordConnected = false,
+  teamsConnected = false,
 ): NotificationPreferencesView {
   return {
     workspaceId: prefs.workspaceId,
@@ -289,7 +291,7 @@ export function toPreferencesView(
             requestedAt: evaluatedAt,
           },
           prefs,
-          { telegramConnected, emailConnected, slackConnected, discordConnected },
+          { telegramConnected, emailConnected, slackConnected, discordConnected, teamsConnected },
         ),
       ),
     ),
@@ -317,6 +319,7 @@ export function toRoutingView(input: {
   emailConnection?: EmailConnection;
   slackConnection?: SlackConnection;
   discordConnection?: DiscordConnection;
+  teamsConnection?: TeamsConnection;
 }): NotificationRoutingView {
   const telegramConnected =
     input.connection.status === 'connected' && Boolean(input.connection.chatId);
@@ -324,6 +327,7 @@ export function toRoutingView(input: {
     input.emailConnection?.status === 'connected' && Boolean(input.emailConnection.recipient);
   const slackConnected = input.slackConnection?.status === 'connected';
   const discordConnected = input.discordConnection?.status === 'connected';
+  const teamsConnected = input.teamsConnection?.status === 'connected';
   const preferences = toPreferencesView(
     input.prefs,
     telegramConnected,
@@ -331,6 +335,7 @@ export function toRoutingView(input: {
     emailConnected,
     slackConnected,
     discordConnected,
+    teamsConnected,
   );
   return {
     workspaceId: input.prefs.workspaceId,
@@ -355,6 +360,7 @@ export function toSettingsView(input: {
   emailConnection?: EmailConnection;
   slackConnection?: SlackConnection;
   discordConnection?: DiscordConnection;
+  teamsConnection?: TeamsConnection;
 }): NotificationSettingsView {
   const telegramConnected =
     input.connection.status === 'connected' && Boolean(input.connection.chatId);
@@ -362,6 +368,7 @@ export function toSettingsView(input: {
     input.emailConnection?.status === 'connected' && Boolean(input.emailConnection.recipient);
   const slackConnected = input.slackConnection?.status === 'connected';
   const discordConnected = input.discordConnection?.status === 'connected';
+  const teamsConnected = input.teamsConnection?.status === 'connected';
   const preferences = toPreferencesView(
     input.prefs,
     telegramConnected,
@@ -369,6 +376,7 @@ export function toSettingsView(input: {
     emailConnected,
     slackConnected,
     discordConnected,
+    teamsConnected,
   );
   const routing = toRoutingView(input);
   return {

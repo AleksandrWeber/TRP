@@ -88,7 +88,7 @@ export function NotificationChannelsView({
       <PageHeader
         productId="notification-channels"
         title="Notification channels"
-        description="Channel-agnostic product over Notification Delivery. Telegram, Email, Slack, and Discord are the active transports. Microsoft Teams and Push stay reserved. This page does not schedule digests."
+        description="Channel-agnostic product over Notification Delivery. Telegram, Email, Slack, Discord, and Microsoft Teams are the active transports. Push stays reserved. This page does not schedule digests."
         extraActions={[{ to: '/notifications/history', label: 'Delivery history' }]}
       />
 
@@ -355,8 +355,8 @@ export function NotificationChannelsView({
 
           <p className="text-xs text-slate-500">
             Configuration health is per channel. Telegram uses existing connect / verify / test.
-            Email uses Connections SMTP credentials, recipient bind, and SMTP test. Reserved
-            channels stay reserved-inactive.
+            Email uses Connections SMTP credentials, recipient bind, and SMTP test. Push stays
+            reserved-inactive.
             {workspace.channels
               .map(
                 (channel) =>

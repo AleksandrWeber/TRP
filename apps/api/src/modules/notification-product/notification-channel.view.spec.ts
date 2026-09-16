@@ -42,7 +42,13 @@ describe('PC-07 notification channel product views', () => {
     expect(view.timing.hourlyDigest).toBe(false);
     expect(view.timing.perChannelQuietHours).toBe(false);
     expect(view.routingMatrix.rows).toHaveLength(13);
-    expect(view.routingMatrix.offeredChannelIds).toEqual(['telegram', 'email', 'slack', 'discord']);
+    expect(view.routingMatrix.offeredChannelIds).toEqual([
+      'telegram',
+      'email',
+      'slack',
+      'discord',
+      'teams',
+    ]);
     expect(JSON.stringify(view)).not.toContain('hooks.slack.com');
     expect(JSON.stringify(view)).not.toContain('webhookUrl');
   });

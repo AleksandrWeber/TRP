@@ -9,6 +9,7 @@ const PROVIDER_SECRET_TYPES: Readonly<Record<ConnectionProvider, HoldableType>> 
   SMTP: HoldableSecretType.Smtp,
   SLACK: HoldableSecretType.SlackWebhook,
   DISCORD: HoldableSecretType.DiscordWebhook,
+  TEAMS: HoldableSecretType.TeamsWebhook,
   OPENROUTER: HoldableSecretType.OpenRouter,
 };
 

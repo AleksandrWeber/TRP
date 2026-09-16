@@ -85,6 +85,7 @@ export function resolveDeliveryRoutes(
     emailConnected?: boolean;
     slackConnected?: boolean;
     discordConnected?: boolean;
+    teamsConnected?: boolean;
   }>,
 ): readonly RoutedChannel[] {
   if (!prefs.enabled) {
@@ -129,6 +130,10 @@ export function resolveDeliveryRoutes(
       continue;
     }
     if (channelId === 'discord' && !options.discordConnected) {
+      routes.push({ channelId, skipReason: 'channel-not-connected' });
+      continue;
+    }
+    if (channelId === 'teams' && !options.teamsConnected) {
       routes.push({ channelId, skipReason: 'channel-not-connected' });
       continue;
     }

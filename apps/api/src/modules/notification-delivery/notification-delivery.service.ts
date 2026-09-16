@@ -15,8 +15,10 @@ import { InMemoryEmailAdapter } from './adapters/in-memory-email.adapter';
 import { InMemoryNotificationStore } from './adapters/in-memory-notification-store';
 import { InMemoryDiscordAdapter } from './adapters/in-memory-discord.adapter';
 import { InMemorySlackAdapter } from './adapters/in-memory-slack.adapter';
+import { InMemoryTeamsAdapter } from './adapters/in-memory-teams.adapter';
 import { DiscordWebhookCredentialResolver } from './adapters/discord-webhook-credential.resolver';
 import { SlackWebhookCredentialResolver } from './adapters/slack-webhook-credential.resolver';
+import { TeamsWebhookCredentialResolver } from './adapters/teams-webhook-credential.resolver';
 import { TelegramStartBindObserver } from './adapters/telegram-start-bind.observer';
 import {
   createDeliveryResult,
@@ -55,6 +57,14 @@ import {
   type SlackConnection,
 } from './domain/slack-connection';
 import {
+  bindTeamsChannel as applyTeamsChannelBind,
+  disconnectTeamsConnection,
+  markTeamsWebhookFailed,
+  markTeamsWebhookVerified,
+  notConnectedTeams,
+  type TeamsConnection,
+} from './domain/teams-connection';
+import {
   bindTelegramChat,
   createPendingTelegramConnection,
   disconnectTelegramConnection,
@@ -69,6 +79,7 @@ import {
   DISCORD_CHANNEL_ADAPTER,
   EMAIL_CHANNEL_ADAPTER,
   SLACK_CHANNEL_ADAPTER,
+  TEAMS_CHANNEL_ADAPTER,
   TELEGRAM_CHANNEL_ADAPTER,
   type DiscordBindRequest,
   type DiscordDisconnectRequest,
@@ -80,8 +91,11 @@ import {
   type SendTestEmailNotificationRequest,
   type SendTestNotificationRequest,
   type SendTestSlackNotificationRequest,
+  type SendTestTeamsNotificationRequest,
   type SlackBindRequest,
   type SlackDisconnectRequest,
+  type TeamsBindRequest,
+  type TeamsDisconnectRequest,
   type TelegramConnectRequest,
   type TelegramConnectResult,
   type TelegramDisconnectRequest,
@@ -108,6 +122,7 @@ export class NotificationDeliveryService implements NotificationServicePort {
   private readonly email: NotificationChannelPort;
   private readonly slack: NotificationChannelPort;
   private readonly discord: NotificationChannelPort;
+  private readonly teams: NotificationChannelPort;
 
   constructor(
     @Inject(InMemoryNotificationStore)
@@ -127,15 +142,22 @@ export class NotificationDeliveryService implements NotificationServicePort {
     @Inject(DISCORD_CHANNEL_ADAPTER)
     discord?: NotificationChannelPort,
     @Optional()
+    @Inject(TEAMS_CHANNEL_ADAPTER)
+    teams?: NotificationChannelPort,
+    @Optional()
     @Inject(SlackWebhookCredentialResolver)
     private readonly slackCredentials?: SlackWebhookCredentialResolver,
     @Optional()
     @Inject(DiscordWebhookCredentialResolver)
     private readonly discordCredentials?: DiscordWebhookCredentialResolver,
+    @Optional()
+    @Inject(TeamsWebhookCredentialResolver)
+    private readonly teamsCredentials?: TeamsWebhookCredentialResolver,
   ) {
     this.email = email ?? new InMemoryEmailAdapter();
     this.slack = slack ?? new InMemorySlackAdapter();
     this.discord = discord ?? new InMemoryDiscordAdapter();
+    this.teams = teams ?? new InMemoryTeamsAdapter();
   }
 
   listChannels() {
@@ -607,6 +629,115 @@ export class NotificationDeliveryService implements NotificationServicePort {
     return delivery;
   }
 
+  getTeamsConnection(workspaceId: string, userId: string): TeamsConnection {
+    const existing = this.store.getTeams(workspaceId, userId);
+    if (existing) return existing;
+    const created = notConnectedTeams(workspaceId, userId, new Date().toISOString());
+    this.store.saveTeams(created);
+    return created;
+  }
+
+  async bindTeamsChannel(cmd: TeamsBindRequest): Promise<TeamsConnection> {
+    const configured = await this.teamsCredentials?.isConfigured({
+      workspaceId: cmd.workspaceId,
+      actorUserId: cmd.actorUserId ?? cmd.userId,
+      actorRole: cmd.actorRole,
+    });
+    if (!configured) {
+      throw new Error('Teams webhook is not configured');
+    }
+    const current = this.getTeamsConnection(cmd.workspaceId, cmd.userId);
+    const next = applyTeamsChannelBind(current, nowOr(cmd.requestedAt));
+    this.store.saveTeams(next);
+    return next;
+  }
+
+  disconnectTeams(cmd: TeamsDisconnectRequest): TeamsConnection {
+    const current = this.getTeamsConnection(cmd.workspaceId, cmd.userId);
+    const next = disconnectTeamsConnection(current, nowOr(cmd.requestedAt));
+    this.store.saveTeams(next);
+    return next;
+  }
+
+  async sendTestTeamsNotification(cmd: SendTestTeamsNotificationRequest): Promise<DeliveryResult> {
+    const connection = this.getTeamsConnection(cmd.workspaceId, cmd.userId);
+    if (connection.status === 'not-connected') {
+      throw new Error('Teams channel is not bound');
+    }
+    const requestedAt = nowOr(cmd.requestedAt);
+    const workspaceId = cmd.workspaceId.trim();
+    const queueItemId = `nq-${stableHash(
+      `${workspaceId}|${cmd.userId}|daily-report|${requestedAt}|teams-test|queue`,
+    )}`;
+    const deliveryId = `del-${stableHash(
+      `${workspaceId}|${cmd.userId}|daily-report|${requestedAt}|teams-test`,
+    )}`;
+
+    let queueItem = createPendingNotificationQueueItem({
+      queueItemId,
+      command: {
+        workspaceId,
+        userId: cmd.userId,
+        type: 'daily-report',
+        subject: 'Test notification',
+        body: 'TRP notification delivery test. Delivery channel only — not a trading command.',
+        requestedAt,
+        ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+        ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
+      },
+      createdAt: requestedAt,
+    });
+    this.store.saveQueueItem(queueItem);
+    queueItem = withNotificationQueueStatus(queueItem, 'in-flight', { updatedAt: requestedAt });
+    this.store.saveQueueItem(queueItem);
+
+    const result = await this.teams.send({
+      chatId: '',
+      subject: 'Test notification',
+      body: 'TRP notification delivery test. Delivery channel only — not a trading command.',
+      workspaceId,
+      ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+      ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
+    });
+
+    const verifiedAt = nowOr(undefined);
+    if (result.ok) {
+      this.store.saveTeams(markTeamsWebhookVerified(connection, verifiedAt));
+    } else {
+      this.store.saveTeams(markTeamsWebhookFailed(connection, verifiedAt, result.detail));
+    }
+
+    const attempts: ChannelDeliveryAttempt[] = [
+      Object.freeze(
+        result.ok
+          ? { channelId: 'teams' as const, outcome: 'delivered' as const }
+          : {
+              channelId: 'teams' as const,
+              outcome: 'failed' as const,
+              detail: result.detail,
+            },
+      ),
+    ];
+    const delivery = createDeliveryResult({
+      deliveryId,
+      workspaceId,
+      userId: cmd.userId,
+      type: 'daily-report',
+      attempts,
+      createdAt: requestedAt,
+    });
+    this.store.recordDelivery(delivery);
+
+    const terminalStatus = delivery.outcome === 'failed' ? 'retryable' : 'completed';
+    queueItem = withNotificationQueueStatus(queueItem, terminalStatus, {
+      updatedAt: verifiedAt,
+      deliveryId: delivery.deliveryId,
+      ...(result.ok ? {} : { detail: result.detail }),
+    });
+    this.store.saveQueueItem(queueItem);
+    return delivery;
+  }
+
   async deliver(cmd: DeliverNotificationCommand): Promise<DeliveryResult> {
     const workspaceId = cmd.workspaceId.trim();
     if (!workspaceId) {
@@ -636,11 +767,13 @@ export class NotificationDeliveryService implements NotificationServicePort {
     const email = this.getEmailConnection(workspaceId, cmd.userId);
     const slack = this.getSlackConnection(workspaceId, cmd.userId);
     const discord = this.getDiscordConnection(workspaceId, cmd.userId);
+    const teams = this.getTeamsConnection(workspaceId, cmd.userId);
     const routes = resolveDeliveryRoutes({ ...cmd, workspaceId }, prefs, {
       telegramConnected: telegram.status === 'connected' && Boolean(telegram.chatId),
       emailConnected: email.status === 'connected' && Boolean(email.recipient),
       slackConnected: slack.status === 'connected',
       discordConnected: discord.status === 'connected',
+      teamsConnected: teams.status === 'connected',
     });
 
     const attempts: ChannelDeliveryAttempt[] = [];
@@ -752,6 +885,32 @@ export class NotificationDeliveryService implements NotificationServicePort {
                 }
               : {
                   channelId: 'discord' as const,
+                  outcome: 'failed' as const,
+                  detail: result.detail,
+                },
+          ),
+        );
+        continue;
+      }
+
+      if (route.channelId === 'teams') {
+        const result = await this.teams.send({
+          chatId: '',
+          subject: cmd.subject,
+          body: cmd.body,
+          workspaceId,
+          ...(cmd.actorUserId !== undefined ? { actorUserId: cmd.actorUserId } : {}),
+          ...(cmd.actorRole !== undefined ? { actorRole: cmd.actorRole } : {}),
+        });
+        attempts.push(
+          Object.freeze(
+            result.ok
+              ? {
+                  channelId: 'teams' as const,
+                  outcome: 'delivered' as const,
+                }
+              : {
+                  channelId: 'teams' as const,
                   outcome: 'failed' as const,
                   detail: result.detail,
                 },

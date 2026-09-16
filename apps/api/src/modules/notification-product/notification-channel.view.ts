@@ -1,8 +1,8 @@
 /**
  * PC-07 — channel-agnostic product views over existing Notification Delivery.
  *
- * Notification Delivery remains owner. Telegram, Email, Slack, and Discord are active
- * transports. Teams/Push stay reserved-inactive. Not a scheduler.
+ * Notification Delivery remains owner. Telegram, Email, Slack, Discord, and Teams are active
+ * transports. Push stays reserved-inactive. Not a scheduler.
  */
 
 import type { DeliveryResult, DeliverySkipReason } from '../notification-delivery/domain/delivery';
@@ -20,6 +20,8 @@ import type { EmailConnection } from '../notification-delivery/domain/email-conn
 import type { EmailTransportProjection } from '../notification-delivery/domain/email-transport-projection';
 import type { SlackConnection } from '../notification-delivery/domain/slack-connection';
 import type { SlackTransportProjection } from '../notification-delivery/domain/slack-transport-projection';
+import type { TeamsConnection } from '../notification-delivery/domain/teams-connection';
+import type { TeamsTransportProjection } from '../notification-delivery/domain/teams-transport-projection';
 import type { TelegramConnection } from '../notification-delivery/domain/telegram-connection';
 import type { TelegramTransportProjection } from '../notification-delivery/domain/telegram-transport-projection';
 import type { UserNotificationPreferences } from '../notification-delivery/domain/user-notification-preferences';
@@ -35,11 +37,10 @@ import {
 
 export const RESERVED_CHANNEL_REQUIRED_FIELDS: Readonly<
   Record<
-    Exclude<NotificationChannelId, 'telegram' | 'email' | 'slack' | 'discord'>,
+    Exclude<NotificationChannelId, 'telegram' | 'email' | 'slack' | 'discord' | 'teams'>,
     readonly string[]
   >
 > = Object.freeze({
-  teams: Object.freeze(['Webhook', 'Team', 'Channel']),
   push: Object.freeze(['Device', 'Browser']),
 });
 
@@ -61,11 +62,18 @@ export const DISCORD_CHANNEL_REQUIRED_FIELDS = Object.freeze([
   'Send test',
 ]);
 
+export const TEAMS_CHANNEL_REQUIRED_FIELDS = Object.freeze([
+  'Microsoft Teams Incoming Webhook (Connections)',
+  'Bind',
+  'Send test',
+]);
+
 export type ChannelConfigurationKind =
   | 'telegram-connection'
   | 'email-connection'
   | 'slack-connection'
   | 'discord-connection'
+  | 'teams-connection'
   | 'reserved-inactive';
 
 export type NotificationChannelCardView = {
@@ -83,12 +91,14 @@ export type NotificationChannelCardView = {
     | EmailTransportProjection['transport']
     | SlackTransportProjection['transport']
     | DiscordTransportProjection['transport']
+    | TeamsTransportProjection['transport']
     | 'none';
   connectionStatus:
     | TelegramConnection['status']
     | EmailConnection['status']
     | SlackConnection['status']
     | DiscordConnection['status']
+    | TeamsConnection['status']
     | 'reserved-inactive';
   liveTransportActivated: boolean;
   botApiUsed: boolean;
@@ -185,6 +195,8 @@ export function toChannelCardView(input: {
   slackHonesty?: SlackTransportProjection;
   discordConnection?: DiscordConnection;
   discordHonesty?: DiscordTransportProjection;
+  teamsConnection?: TeamsConnection;
+  teamsHonesty?: TeamsTransportProjection;
 }): NotificationChannelCardView {
   const offered = input.channel.status === 'active';
   if (input.channel.channelId === 'email') {
@@ -262,6 +274,31 @@ export function toChannelCardView(input: {
       authorityClass: 'notification-projection',
     };
   }
+  if (input.channel.channelId === 'teams') {
+    const teams = input.teamsConnection;
+    const teamsHonesty = input.teamsHonesty ?? {
+      transport: 'in-memory' as const,
+      webhookUsed: false,
+    };
+    const bound = teams?.status === 'pending' || teams?.status === 'connected';
+    const enabled = input.prefs.channels.teams === true;
+    return {
+      channelId: 'teams',
+      label: input.channel.label,
+      status: input.channel.status,
+      offered,
+      enabled,
+      configurable: offered,
+      testAvailable: offered && bound,
+      connectAvailable: offered && teams?.status !== 'connected',
+      configurationKind: 'teams-connection',
+      transport: offered ? teamsHonesty.transport : 'none',
+      connectionStatus: offered ? (teams?.status ?? 'not-connected') : 'reserved-inactive',
+      liveTransportActivated: offered ? teamsHonesty.webhookUsed : false,
+      botApiUsed: false,
+      authorityClass: 'notification-projection',
+    };
+  }
   const telegramConnected =
     input.connection.status === 'connected' && Boolean(input.connection.chatId);
   const enabled = input.prefs.channels[input.channel.channelId] === true;
@@ -334,6 +371,18 @@ export function toChannelConfigurationView(
       userEnteredBind: false,
     };
   }
+  if (card.channelId === 'teams') {
+    return {
+      kind: 'teams-connection',
+      requiredFields: TEAMS_CHANNEL_REQUIRED_FIELDS,
+      configurable: true,
+      testAvailable: card.testAvailable,
+      connectAvailable: card.connectAvailable,
+      liveTransportActivated: card.liveTransportActivated,
+      botApiUsed: false,
+      userEnteredBind: false,
+    };
+  }
   return {
     kind: 'reserved-inactive',
     requiredFields: RESERVED_CHANNEL_REQUIRED_FIELDS[card.channelId],
@@ -372,6 +421,7 @@ export function toRoutingMatrixView(input: {
   emailConnection?: EmailConnection;
   slackConnection?: SlackConnection;
   discordConnection?: DiscordConnection;
+  teamsConnection?: TeamsConnection;
 }): NotificationRoutingMatrixView {
   const routing = toRoutingView(input);
   return {
@@ -455,6 +505,8 @@ export function toChannelsWorkspaceView(input: {
   slackHonesty?: SlackTransportProjection;
   discordConnection?: DiscordConnection;
   discordHonesty?: DiscordTransportProjection;
+  teamsConnection?: TeamsConnection;
+  teamsHonesty?: TeamsTransportProjection;
 }): NotificationChannelsWorkspaceView {
   const cards = input.channels.map((channel) =>
     toChannelCardView({
@@ -468,6 +520,8 @@ export function toChannelsWorkspaceView(input: {
       slackHonesty: input.slackHonesty,
       discordConnection: input.discordConnection,
       discordHonesty: input.discordHonesty,
+      teamsConnection: input.teamsConnection,
+      teamsHonesty: input.teamsHonesty,
     }),
   );
   return {
@@ -501,6 +555,8 @@ export function toChannelDetailView(input: {
   slackHonesty?: SlackTransportProjection;
   discordConnection?: DiscordConnection;
   discordHonesty?: DiscordTransportProjection;
+  teamsConnection?: TeamsConnection;
+  teamsHonesty?: TeamsTransportProjection;
 }): NotificationChannelDetailView | null {
   const descriptor = input.channels.find((channel) => channel.channelId === input.channelId);
   if (!descriptor) return null;
@@ -515,6 +571,8 @@ export function toChannelDetailView(input: {
     slackHonesty: input.slackHonesty,
     discordConnection: input.discordConnection,
     discordHonesty: input.discordHonesty,
+    teamsConnection: input.teamsConnection,
+    teamsHonesty: input.teamsHonesty,
   });
   const matrix = toRoutingMatrixView(input);
   return {

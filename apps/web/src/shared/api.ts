@@ -14,7 +14,7 @@ const API_PREFIX = '/v1';
 
 export type ConnectionType = 'EXCHANGE' | 'NOTIFICATION' | 'AI';
 export type ConnectionProvider =
-  'BINANCE' | 'BYBIT' | 'OKX' | 'TELEGRAM' | 'SMTP' | 'OPENROUTER' | 'SLACK' | 'DISCORD';
+  'BINANCE' | 'BYBIT' | 'OKX' | 'TELEGRAM' | 'SMTP' | 'OPENROUTER' | 'SLACK' | 'DISCORD' | 'TEAMS';
 export type ExchangeProviderCapability =
   'SPOT' | 'FUTURES' | 'TESTNET' | 'MARGIN' | 'WEBSOCKET' | 'REST';
 export type ExchangeProviderAvailability = 'AVAILABLE' | 'UNAVAILABLE';
@@ -2182,6 +2182,61 @@ export type DiscordDiagnosticsView = {
   authorityClass: 'notification-projection';
 };
 
+export type TeamsConnectionProductView = {
+  status: 'not-connected' | 'pending' | 'connected';
+  connected: boolean;
+  bound: boolean;
+  pending: boolean;
+  verified: boolean;
+  failed: boolean;
+  lastErrorCode: string | null;
+  connectedAt: string | null;
+  boundAt: string | null;
+  updatedAt: string;
+  bindAvailable: boolean;
+  testAvailable: boolean;
+  disconnectAvailable: boolean;
+  controlPlane: false;
+  transport: 'in-memory' | 'webhook';
+  webhookUsed: boolean;
+  userEnteredBind: false;
+  authorityClass: 'notification-projection';
+};
+
+export type TeamsTestProductView = {
+  connection: TeamsConnectionProductView;
+  delivery: NotificationDeliveryDetailView;
+  controlPlane: false;
+  webhookUsed: boolean;
+  authorityClass: 'notification-projection';
+};
+
+export type TeamsDiagnosticsView = {
+  connection: TeamsConnectionProductView;
+  verification: {
+    status: 'not-connected' | 'pending' | 'connected';
+    verified: boolean;
+    bound: boolean;
+    pending: boolean;
+    failed: boolean;
+    lastErrorCode: string | null;
+  };
+  lastTeamsDelivery: {
+    deliveryId: string;
+    outcome: string;
+    skipReason: string | null;
+    adapterReached: boolean;
+    createdAt: string;
+  } | null;
+  teamsTransport: 'in-memory' | 'webhook';
+  webhookUsed: boolean;
+  controlPlane: false;
+  deferredChannelsActivated: false;
+  scheduler: false;
+  retries: false;
+  authorityClass: 'notification-projection';
+};
+
 export type PreferenceClockView = {
   timezone: string;
   dailyDeliveryTime: string;
@@ -2306,6 +2361,7 @@ export type NotificationChannelCardView = {
     | 'email-connection'
     | 'slack-connection'
     | 'discord-connection'
+    | 'teams-connection'
     | 'reserved-inactive';
   transport: 'in-memory' | 'bot-api' | 'smtp' | 'webhook' | 'none';
   connectionStatus: 'not-connected' | 'pending' | 'connected' | 'reserved-inactive';
@@ -2320,6 +2376,7 @@ export type NotificationChannelConfigurationView = {
     | 'email-connection'
     | 'slack-connection'
     | 'discord-connection'
+    | 'teams-connection'
     | 'reserved-inactive';
   requiredFields: readonly string[];
   configurable: boolean;
@@ -4467,6 +4524,23 @@ export const api = {
       body: JSON.stringify({}),
     }),
   getDiscordDiagnostics: () => request<DiscordDiagnosticsView>('/discord/diagnostics'),
+  getTeamsConnection: () => request<TeamsConnectionProductView>('/teams/connection'),
+  bindTeamsChannel: () =>
+    request<TeamsConnectionProductView>('/teams/bind', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  sendTeamsTest: () =>
+    request<TeamsTestProductView>('/teams/test', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  disconnectTeams: () =>
+    request<TeamsConnectionProductView>('/teams/disconnect', {
+      method: 'POST',
+      body: JSON.stringify({}),
+    }),
+  getTeamsDiagnostics: () => request<TeamsDiagnosticsView>('/teams/diagnostics'),
   listTelegramDeliveries: (query: NotificationDeliveryListQuery = {}) => {
     const params = new URLSearchParams();
     if (query.userId) params.set('userId', query.userId);
