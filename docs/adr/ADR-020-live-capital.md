@@ -20,7 +20,8 @@ Architecture Review                 = PASS
   (see [`../project/version-3/wave-6/adr-020-architecture-review.md`](../project/version-3/wave-6/adr-020-architecture-review.md))
 Security Review                     = PASS
   (see [`../project/version-3/wave-6/adr-020-security-review.md`](../project/version-3/wave-6/adr-020-security-review.md))
-PO / Governance Review              = NOT STARTED
+PO / Governance Review              = PASS
+  (see [`../project/version-3/wave-6/adr-020-po-governance-review.md`](../project/version-3/wave-6/adr-020-po-governance-review.md))
 Final PO / Governance Approval      = NOT GRANTED
 D-GOV-01 satisfaction               = NOT ACHIEVED
   (approved Live-Capital ADR required before V3-L01 implementation)
@@ -83,7 +84,7 @@ This ADR defines the architectural / governance boundary required before those p
 - Roadmap package name: “Live capital ADR + workspace policy”.
 - D-GOV-01 Interpretation B (L01 creates/owns the ADR as substitute for prior approval) was **NOT SELECTED**.
 - **Approved** ADR must exist **before** V3-L01 **implementation**.
-- Therefore: **V3-L01 implementation = NOT AUTHORIZED** until this ADR completes PO / Governance approval and is published as approved per D-GOV-04 §5 (Architecture Review = **PASS**; Security Review = **PASS**; ADR remains **DRAFT**).
+- Therefore: **V3-L01 implementation = NOT AUTHORIZED** until this ADR receives Final PO / Governance Approval and is published as approved per D-GOV-04 §5 (Architecture Review = **PASS**; Security Review = **PASS**; PO / Governance Review = **PASS**; ADR remains **DRAFT**; Final Approval = **NOT GRANTED**).
 
 ### Relationship to existing execution architecture
 
@@ -162,7 +163,7 @@ Paper remains default. Opt-in is per workspace. Transition has **not** occurred.
 
 ## Decision (DRAFT — pending acceptance)
 
-The following architectural / governance decisions are **proposed** for review. They are **not** Accepted. Architecture Review = **PASS**. Security Review = **PASS**. Final acceptance remains pending PO / Governance approval.
+The following architectural / governance decisions are **proposed** for review. They are **not** Accepted. Architecture Review = **PASS**. Security Review = **PASS**. PO / Governance Review = **PASS**. Final acceptance remains pending separate Final PO / Governance Approval.
 
 ### 1. Live-capital activation boundary
 
@@ -345,9 +346,10 @@ Per **D-GOV-01**, V3-L01 implementation may begin only after an **approved** Liv
    (adr-020-architecture-review.md)
 3. Security Review                   ← PASS
    (adr-020-security-review.md)
-4. PO / Governance Review            ← NOT STARTED
+4. PO / Governance Review            ← PASS
+   (adr-020-po-governance-review.md)
 5. Final PO / Governance Approval    ← NOT GRANTED
-6. Repository publication/acceptance ← pending approval (Status remains DRAFT until then)
+6. Repository publication/acceptance ← pending Final Approval (Status remains DRAFT until then)
 ```
 
 For D-GOV-01 satisfaction, **all** of D-GOV-04 §5 must hold (physical artifact; Wave 6 Live-Capital identity; Architecture PASS; Security PASS; PO approval recorded; published). `Status: Accepted` alone will not be sufficient proof.
@@ -400,7 +402,7 @@ Do **not** treat the following as decided by this DRAFT:
 
 - V3-L01 workspace policy implementation (only after D-GOV-01 + D-GOV-05).
 - V3-L02 live adapter path; V3-L03 audit log; V3-L04 honest UI; V3-L05 replay protection.
-- Security Review = **PASS**. Await PO / Governance Review of **this** ADR (Architecture Review = PASS).
+- PO / Governance Review = **PASS**. Await separate Final PO / Governance Approval (Architecture Review = PASS; Security Review = PASS; ADR remains DRAFT).
 - Explicit release / production enablement acts (separate from ADR acceptance).
 
 ---
@@ -423,4 +425,4 @@ This DRAFT does **not**:
 
 ## STOP
 
-**STOP.** ADR-020 is **DRAFT**. Architecture Review = **PASS**. Security Review = **PASS**. PO / Governance Review **NOT STARTED**. Final approval **NOT GRANTED**. Implementation **NOT AUTHORIZED**. Do not begin live capital enablement from this artifact.
+**STOP.** ADR-020 is **DRAFT**. Architecture Review = **PASS**. Security Review = **PASS**. PO / Governance Review = **PASS**. Final Approval **NOT GRANTED**. Implementation **NOT AUTHORIZED**. Do not begin live capital enablement from this artifact.
