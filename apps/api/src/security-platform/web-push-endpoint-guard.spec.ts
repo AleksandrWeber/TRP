@@ -239,10 +239,18 @@ describe('Web Push pinned HTTPS agent', () => {
     if (typeof lookup !== 'function') return;
 
     let addresses: Array<{ address: string; family: number }> | undefined;
-    lookup('fcm.googleapis.com', { all: true }, ((err: Error | null, result: unknown) => {
-      expect(err).toBeNull();
-      addresses = result as Array<{ address: string; family: number }>;
-    }) as (err: Error | null, address: string, family: number) => void);
+    lookup(
+      'fcm.googleapis.com',
+      { all: true },
+      (
+        err: NodeJS.ErrnoException | null,
+        result: string | Array<{ address: string; family: number }>,
+      ) => {
+        expect(err).toBeNull();
+        expect(Array.isArray(result)).toBe(true);
+        addresses = result as Array<{ address: string; family: number }>;
+      },
+    );
     expect(addresses).toEqual([
       { address: '8.8.8.8', family: 4 },
       { address: '2001:4860:4860::8888', family: 6 },
