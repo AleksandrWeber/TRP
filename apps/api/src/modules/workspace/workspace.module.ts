@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { LoggingModule } from '../../logging/logging.module';
 import type { Metrics } from '../../metrics/metrics';
 import { METRICS } from '../../metrics/metrics.token';
 import { instrumentRepository } from '../../metrics/instrument-repository';
@@ -22,9 +23,13 @@ import { WorkspaceLivePolicyController } from './live-policy/workspace-live-poli
  *
  * PROPOSED-V3-L01-S02: Workspace-owned live-policy satellite persistence ports.
  * PROPOSED-V3-L01-S03: Admin enable/disable + Security Audit (RoleAdmin + membership).
+ *
+ * LoggingModule is imported explicitly so WorkspaceLivePolicyAdminService's LOGGER
+ * resolves when WorkspaceModule is booted in isolation (module specs that do not
+ * import AppModule / LoggingModule).
  */
 @Module({
-  imports: [PrismaModule, SecurityAuditModule],
+  imports: [LoggingModule, PrismaModule, SecurityAuditModule],
   controllers: [WorkspaceController, WorkspaceLivePolicyController],
   providers: [
     {
