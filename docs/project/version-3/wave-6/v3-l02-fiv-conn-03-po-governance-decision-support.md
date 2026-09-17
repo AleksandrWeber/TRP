@@ -14,9 +14,10 @@ D-CONN-03-01 FROZEN (PO APPROVED — OPTION A)
 D-CONN-03-02 FROZEN (PO APPROVED — OPTION A)
 D-CONN-03-03 FROZEN (PO APPROVED — OPTION B)
 D-CONN-03-04 FROZEN (PO APPROVED — OPTION A)
-D-CONN-03-05 OPEN — DECISION SUPPORT PENDING PO APPROVAL
+D-CONN-03-05 FROZEN (PO APPROVED — OPTION A)
 
-Full decision-freeze artifact:  NOT CREATED (awaiting D-CONN-03-05)
+Full decision set:              ALL FIVE FROZEN
+Full decision-freeze artifact:  docs/project/version-3/wave-6/v3-l02-fiv-conn-03-po-governance-decision-freeze.md
 Implementation:                 NOT PERFORMED
 Implementation authorization:   NOT GRANTED
 External I/O:                   ZERO
@@ -61,15 +62,18 @@ FROZEN — APPROVED OPTION B
 D-CONN-03-04:
 FROZEN — APPROVED OPTION A
 
-Still open:
-D-CONN-03-05
+D-CONN-03-05:
+FROZEN — APPROVED OPTION A
+
+Full five-decision set:
+FROZEN
 ```
 
 ### Pre-check (this update)
 
 ```text
-HEAD:        bb06f83e2439d523c09b5af068771d89d5706de6
-origin/main: bb06f83e2439d523c09b5af068771d89d5706de6
+HEAD:        9f9e4c45a592772370cd34525ff190e1c7137c19
+origin/main: 9f9e4c45a592772370cd34525ff190e1c7137c19
 HEAD == origin/main: YES
 ```
 
@@ -96,8 +100,8 @@ RECOMMENDED FOR PO/GOVERNANCE CONSIDERATION
   ≠
 APPROVED / FROZEN / ACCEPTED
 
-D-CONN-03-01 through D-CONN-03-04 are FROZEN (explicit PO approvals).
-D-CONN-03-05 recommendations remain non-binding.
+D-CONN-03-01 through D-CONN-03-05 are FROZEN (explicit PO approvals).
+Recommendations in historical support sections are non-binding audit trail only.
 ```
 
 ---
@@ -1166,12 +1170,70 @@ See section "D-CONN-03-04 — PO DECISION" above.
 
 ---
 
-## D-CONN-03-05 — DECISION SUPPORT
+## D-CONN-03-05 — PO DECISION
 
 ```text
-Status: OPEN — PO APPROVAL REQUIRED
-Depends on: D-CONN-03-01…04 FROZEN
-Does NOT freeze client-purpose prohibition in this act.
+Status:                         FROZEN
+Decision:                       APPROVED — OPTION A
+Decision authority:             PO / Governance
+Implementation authorization:   NOT GRANTED
+```
+
+### Exact frozen decision
+
+```text
+SecretPurpose MUST NEVER be client-authoritative. Purpose is derived
+server-side from trusted Connection context and governed credential binding.
+The client must not be able to select, override, or inject a Vault
+SecretPurpose as a credential-selection authority.
+```
+
+### Defensive implementation detail (frozen with Option A)
+
+Option B behavior is also required as a defensive security measure:
+
+- internal server-side purpose parameters are permitted;
+- client-supplied purpose MUST NOT become authoritative;
+- an explicitly supplied/smuggled client purpose field must be ignored or rejected according to the governed API contract;
+- client input must not select Vault SecretPurpose;
+- client input must not select a sibling credential;
+- client input must not override Connection.environment;
+- client input must not override vaultSecretId;
+- client input must not trigger credential fallback.
+
+### Required properties (frozen)
+
+1. Purpose is never client-authoritative.
+2. Purpose is derived server-side.
+3. Connection.environment remains trusted server-side context.
+4. vaultSecretId remains the specific credential binding.
+5. Client cannot select SecretPurpose.
+6. Client cannot select another credential by purpose.
+7. Client cannot select a sibling LIVE credential.
+8. Client cannot cross LIVE ↔ TESTNET through purpose injection.
+9. Client cannot bypass Model C.
+10. No provider-only lookup.
+11. No sibling-secret substitution.
+12. No cross-environment fallback.
+13. No first-match credential selection.
+
+```text
+This freezes the GOVERNANCE POLICY ONLY.
+It does NOT authorize implementation.
+It completes the FIV-CONN-03 five-decision freeze set.
+It does NOT grant Slice Approval or FIV authorization.
+```
+
+### Prior decision support (retained for audit)
+
+The Option A/B analysis remains below for history. **PO selected OPTION A** (with Option B defensive detail).
+
+---
+
+## D-CONN-03-05 — DECISION SUPPORT (historical)
+
+```text
+Status: SUPERSEDED BY PO DECISION ABOVE — was OPEN; now FROZEN OPTION A
 ```
 
 ### Question
@@ -1339,7 +1401,7 @@ D-CONN-03-01: Server derives purpose; pass through validate→handshake→capabi
 D-CONN-03-02: LIVE {Trading,TradingLive}; TESTNET {TradingTestnet}; id-bound; no fallback
 D-CONN-03-03: EXCHANGE+NULL FAIL CLOSED; non-EXCHANGE NULL may continue; NULL≠LIVE
 D-CONN-03-04: Actual Vault purpose vs Connection.environment before use
-D-CONN-03-05: Client MUST NOT be authoritative for SecretPurpose (OPEN)
+D-CONN-03-05: Client MUST NOT be authoritative for SecretPurpose (FROZEN)
 ```
 
 Collective chain:
@@ -1372,32 +1434,65 @@ Difference A vs B:
       it must not become credential-selection authority
 ```
 
+### PO/Governance status
+
 ```text
-PO/GOVERNANCE APPROVAL REQUIRED: YES
-Status: OPEN — NOT FROZEN
+PO/GOVERNANCE APPROVAL: GRANTED (this session)
+Status: FROZEN — APPROVED OPTION A
+See section "D-CONN-03-05 — PO DECISION" above.
 ```
 
 ---
 
 ## Cross-Decision Consistency
 
-With **D-CONN-03-01…04 frozen**, if PO freezes **05=A** (or A+B defensive), the composition guarantees:
+All five decisions are FROZEN. The governed chain is:
 
-| Guarantee                                           | How                         |
-| --------------------------------------------------- | --------------------------- |
-| LIVE → LIVE purpose only (id-bound)                 | 01+02+04                    |
-| TESTNET → TESTNET purpose only                      | 01+02+04                    |
-| NULL EXCHANGE → no trading credential use           | 03                          |
-| NULL ≠ LIVE                                         | 03                          |
-| Actual purpose verified before handshake/capability | 04                          |
-| Client cannot select Vault purpose                  | 05 (OPEN — recommended A/B) |
-| Provider-only / sibling-secret fallback forbidden   | 01+02+04+05                 |
+```text
+CLIENT
+  ↓
+Connection context
+  ↓
+trusted Connection.environment
+  ↓
+expected purpose class
+  ↓
+exact vaultSecretId
+  ↓
+actual Vault secret
+  ↓
+actual SecretPurpose
+  ↓
+Model C assertion
+  ↓
+credential use
+  ↓
+handshake / capability
+```
 
-**Inconsistency warnings for PO:**
+| Guarantee                                           | How         |
+| --------------------------------------------------- | ----------- |
+| LIVE → LIVE purpose only (id-bound)                 | 01+02+04    |
+| TESTNET → TESTNET purpose only                      | 01+02+04    |
+| NULL EXCHANGE → no trading credential use           | 03          |
+| NULL ≠ LIVE                                         | 03          |
+| Actual purpose verified before handshake/capability | 04          |
+| Client cannot select Vault purpose                  | 05          |
+| Provider-only / sibling-secret fallback forbidden   | 01+02+04+05 |
 
-1. Approving client-authoritative purpose (05 Option C) would bypass 01–04.
-2. Allowing client purpose to pick between Trading/TradingLive would violate D-CONN-03-02 id-binding.
-3. Implementing 01–04 without freezing 05 leaves a future API-expansion risk if purpose is added carelessly.
+**Explicitly impossible:**
+
+```text
+Client → SecretPurpose → arbitrary Vault credential
+Client → sibling vaultSecretId
+Client → provider-only lookup
+LIVE → TradingTestnet
+TESTNET → Trading
+TESTNET → TradingLive
+NULL → implicit LIVE
+Mismatch → handshake
+Mismatch → capability
+```
 
 ## Security Matrix
 
@@ -1516,19 +1611,10 @@ D-CONN-03-01: FROZEN — APPROVED OPTION A
 D-CONN-03-02: FROZEN — APPROVED OPTION A
 D-CONN-03-03: FROZEN — APPROVED OPTION B
 D-CONN-03-04: FROZEN — APPROVED OPTION A
-D-CONN-03-05: OPEN
+D-CONN-03-05: FROZEN — APPROVED OPTION A
 
-Full five-decision freeze artifact: NOT CREATED
-Reason: D-CONN-03-05 lacks explicit PO approval.
-D-CONN-03-05 recommendations are NOT approvals.
-```
-
-### How PO completes freeze later
-
-PO/Governance must explicitly approve D-CONN-03-05. Only when **all five** are approved may a separate freeze artifact be created:
-
-```text
-docs/project/version-3/wave-6/v3-l02-fiv-conn-03-po-governance-decision-freeze.md
+Full decision set: FROZEN
+Full five-decision freeze artifact: CREATED (companion freeze document)
 ```
 
 Freeze still does **not** authorize implementation.
@@ -1538,18 +1624,16 @@ Freeze still does **not** authorize implementation.
 ## Next governance gate
 
 ```text
-Next required PO decision:
-  D-CONN-03-05
+All five FIV-CONN-03 PO decisions: FROZEN
 
-After PO freezes D-CONN-03-01…05 (all five):
+Next governance gate:
   FIV-CONN-03 ARCHITECTURE REVIEW
   + FIV-CONN-03 SECURITY REVIEW
   → PO/Governance Planning Approval
   → Slice Approval
   → Implementation (only if authorized)
 
-Until all five are frozen:
-  Implementation authorization: NOT GRANTED
+Implementation authorization: NOT GRANTED
 ```
 
 ---
