@@ -4,6 +4,8 @@ export {
   type AdapterCancellationResult,
   type AdapterFilledResult,
   type AdapterAcknowledgedResult,
+  type AdapterUnknownSubmissionResult,
+  type AdapterRejectedSubmissionResult,
   type AdapterOrderQueryResult,
   type AdapterSubmissionAcknowledgement,
   type AdapterSubmissionResult,

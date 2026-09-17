@@ -1090,6 +1090,20 @@ model PaperOrder {
   reservationId    String?               @map("reservation_id")
   adapterOrderId   String?               @map("adapter_order_id")
   rejectionReason  String?               @map("rejection_reason")
+  /// V3-L02-S-UNK1 — technical submission phase (≠ business status).
+  submissionPhase  String                @default("none") @map("submission_phase")
+  readyToTransmitAt DateTime?            @map("ready_to_transmit_at")
+  transmittedAt    DateTime?             @map("transmitted_at")
+  completedAt      DateTime?             @map("completed_at")
+  reconciliationRequired Boolean         @default(false) @map("reconciliation_required")
+  unknownEnteredAt DateTime?             @map("unknown_entered_at")
+  lastReconcileAt  DateTime?             @map("last_reconcile_at")
+  reconcileAttempts Int                  @default(0) @map("reconcile_attempts")
+  venueClientOrderId String?             @map("venue_client_order_id")
+  venueOrderId     String?               @map("venue_order_id")
+  humanStartProofId String?              @map("human_start_proof_id")
+  lastReconcileResult String?            @map("last_reconcile_result")
+  ambiguityReason  String?               @map("ambiguity_reason")
   createdAt        DateTime              @map("created_at")
   recordedAt       DateTime              @map("recorded_at")
   lifecycle        OrderLifecycleEntry[]
@@ -1099,6 +1113,7 @@ model PaperOrder {
   @@unique([workspaceId, intentHash])
   @@index([workspaceId, tradingSessionId, status])
   @@index([workspaceId, paperAccountId])
+  @@index([workspaceId, reconciliationRequired])
   @@map("paper_orders")
 }
 

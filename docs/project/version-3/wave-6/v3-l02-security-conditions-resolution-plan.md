@@ -42,38 +42,38 @@ All live capital safety invariants remain frozen. C7 stays deny-all until a sepa
 
 ## 2. Current Governance State
 
-| Item | Status |
-| ---- | ------ |
-| Architecture | APPROVED WITH CONDITIONS |
-| Security | PASS WITH CONDITIONS |
-| Slice Approval S01–S06 | **NOT GRANTED** |
-| Implementation | **NOT AUTHORIZED** |
-| Live venue I/O | **FORBIDDEN** |
-| Real capital | **FORBIDDEN** |
-| FIV | **NOT PERFORMED** |
-| SB-01…SB-07 | **PLANNED — NOT IMPLEMENTED** |
+| Item                   | Status                        |
+| ---------------------- | ----------------------------- |
+| Architecture           | APPROVED WITH CONDITIONS      |
+| Security               | PASS WITH CONDITIONS          |
+| Slice Approval S01–S06 | **NOT GRANTED**               |
+| Implementation         | **NOT AUTHORIZED**            |
+| Live venue I/O         | **FORBIDDEN**                 |
+| Real capital           | **FORBIDDEN**                 |
+| FIV                    | **NOT PERFORMED**             |
+| SB-01…SB-07            | **PLANNED — NOT IMPLEMENTED** |
 
 ---
 
 ## 3. Repository Evidence (Existing vs Missing)
 
-| Capability | Classification | Evidence |
-| ---------- | -------------- | -------- |
-| Paper-only `ExecutionAdapterPort` / Engine | **Existing runtime** | `execution-adapter.port.ts`; `PaperExecutionAdapter`; engine rejects non-paper |
-| C7 deny-all; `/v1/live/*` LiveCommand | **Existing runtime** | `permission-matrix.ts`; `live-trading.controller.ts` |
-| S04 fail-closed admission | **Existing runtime** | `decide-live-admission.ts`; `LiveAdmissionService` |
-| Human-start in-memory consume-on-evaluate | **Existing runtime (interim)** | `InMemoryHumanStartProofStore`; no ACTION/COMMAND |
-| Durable human-start / claim-at-I/O | **Architecture design / missing** | AD-L02-04; PO-L02-05A…D |
-| UNKNOWN order status / pre-send markers | **Architecture design / missing** | AD-L02-07/11; `OrderStatus` has no `unknown` |
-| Paper order uniques | **Existing runtime** | `PaperOrder` `@@unique` workspace+clientOrderId/idempotencyKey |
-| Live ExecutionAdapterPort BINANCE/BYBIT/OKX | **Missing** | Stubs throw in `exchange-adapter`; not bound to EXECUTION_ADAPTER |
-| SSRF helper for webhooks | **Existing elsewhere** | `validateOutboundSsrfTarget` in security-platform — **not** on exchange path |
-| Binance handshake hardcoded origin + `redirect: 'error'` | **Existing runtime** | connectivity BC only; ≠ live authz |
-| Vault opaque `vaultSecretId` + AAD + C8 | **Existing runtime** | Connections / Vault |
-| Durable KS (no auto-cancel) | **Existing runtime** | `KillSwitchPersistenceService` |
-| EmergencyManager cancel-all | **Existing parallel** | `live-trading-engine`; AppModule; C7-gated |
-| Test/live credential env separation for L02 | **Missing / unverified** | No L02-enforced testnet↔mainnet binding control found |
-| Cross-workspace live regression suite | **Missing** | Paper isolation tests exist; live suite not |
+| Capability                                               | Classification                    | Evidence                                                                       |
+| -------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------ |
+| Paper-only `ExecutionAdapterPort` / Engine               | **Existing runtime**              | `execution-adapter.port.ts`; `PaperExecutionAdapter`; engine rejects non-paper |
+| C7 deny-all; `/v1/live/*` LiveCommand                    | **Existing runtime**              | `permission-matrix.ts`; `live-trading.controller.ts`                           |
+| S04 fail-closed admission                                | **Existing runtime**              | `decide-live-admission.ts`; `LiveAdmissionService`                             |
+| Human-start in-memory consume-on-evaluate                | **Existing runtime (interim)**    | `InMemoryHumanStartProofStore`; no ACTION/COMMAND                              |
+| Durable human-start / claim-at-I/O                       | **Architecture design / missing** | AD-L02-04; PO-L02-05A…D                                                        |
+| UNKNOWN order status / pre-send markers                  | **Existing runtime (UNK1)**       | `OrderStatus.UNKNOWN`; `submission_phase` on `PaperOrder`; engine pre-send     |
+| Paper order uniques                                      | **Existing runtime**              | `PaperOrder` `@@unique` workspace+clientOrderId/idempotencyKey                 |
+| Live ExecutionAdapterPort BINANCE/BYBIT/OKX              | **Missing**                       | Stubs throw in `exchange-adapter`; not bound to EXECUTION_ADAPTER              |
+| SSRF helper for webhooks                                 | **Existing elsewhere**            | `validateOutboundSsrfTarget` in security-platform — **not** on exchange path   |
+| Binance handshake hardcoded origin + `redirect: 'error'` | **Existing runtime**              | connectivity BC only; ≠ live authz                                             |
+| Vault opaque `vaultSecretId` + AAD + C8                  | **Existing runtime**              | Connections / Vault                                                            |
+| Durable KS (no auto-cancel)                              | **Existing runtime**              | `KillSwitchPersistenceService`                                                 |
+| EmergencyManager cancel-all                              | **Existing parallel**             | `live-trading-engine`; AppModule; C7-gated                                     |
+| Test/live credential env separation for L02              | **Missing / unverified**          | No L02-enforced testnet↔mainnet binding control found                          |
+| Cross-workspace live regression suite                    | **Missing**                       | Paper isolation tests exist; live suite not                                    |
 
 ---
 
@@ -90,16 +90,16 @@ Prevent live trading adapters from becoming a generic SSRF / open egress primiti
 
 ### Policy (plan)
 
-| Control | Requirement |
-| ------- | ----------- |
-| Schemes | `https` only for live |
-| Hosts | Explicit allowlist per venue (official API hosts only; no wildcards to arbitrary domains) |
-| Ports | Default 443 only unless venue officially requires otherwise — still allowlisted |
-| Redirects | Fail closed (`redirect: 'error'` or equivalent); never follow off-allowlist |
-| DNS | Resolve then re-validate final IP against private/loopback/link-local deny policy where applicable; document DNS pinning/rebind stance |
-| Private/loopback/link-local | Deny for live venue egress |
-| User-controlled destination | **Forbidden** |
-| Paper/Mock | Isolated; must not inherit live allowlist as a way to call real hosts; Mock stays in-process / non-production |
+| Control                     | Requirement                                                                                                                            |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Schemes                     | `https` only for live                                                                                                                  |
+| Hosts                       | Explicit allowlist per venue (official API hosts only; no wildcards to arbitrary domains)                                              |
+| Ports                       | Default 443 only unless venue officially requires otherwise — still allowlisted                                                        |
+| Redirects                   | Fail closed (`redirect: 'error'` or equivalent); never follow off-allowlist                                                            |
+| DNS                         | Resolve then re-validate final IP against private/loopback/link-local deny policy where applicable; document DNS pinning/rebind stance |
+| Private/loopback/link-local | Deny for live venue egress                                                                                                             |
+| User-controlled destination | **Forbidden**                                                                                                                          |
+| Paper/Mock                  | Isolated; must not inherit live allowlist as a way to call real hosts; Mock stays in-process / non-production                          |
 
 ### Acceptance criteria
 
@@ -138,15 +138,15 @@ Prisma table (pattern: KS / live-policy), Nest `HumanStartProofStore` durable im
 
 ### Schema fields (design — not migrated here)
 
-| Field | Role |
-| ----- | ---- |
-| `id` | Proof id |
-| `token_hash` | Unique lookup |
-| `workspace_id`, `actor_id`, `session_id`, `action_command` | Binding |
-| `created_at`, `expires_at` | TTL (retain 15m unless PO changes) |
-| `claimed_at` nullable | Atomic single-use |
-| `claimed_logical_action_id` optional | Correlation |
-| `schema_version` | Evolution |
+| Field                                                      | Role                               |
+| ---------------------------------------------------------- | ---------------------------------- |
+| `id`                                                       | Proof id                           |
+| `token_hash`                                               | Unique lookup                      |
+| `workspace_id`, `actor_id`, `session_id`, `action_command` | Binding                            |
+| `created_at`, `expires_at`                                 | TTL (retain 15m unless PO changes) |
+| `claimed_at` nullable                                      | Atomic single-use                  |
+| `claimed_logical_action_id` optional                       | Correlation                        |
+| `schema_version`                                           | Evolution                          |
 
 ### Lifecycle
 
@@ -188,28 +188,30 @@ Realize AD-L02-07/09/11: first-class UNKNOWN; pre-send marker; reconcile-before-
 
 ### Minimum persistence (extend canonical Orders / `PaperOrder` pattern)
 
-| Concern | Fields |
-| ------- | ------ |
-| Identity | existing `client_order_id`, `idempotency_key`, `id` uniques |
-| Status | add `unknown`; keep `cancel_pending` |
-| Venue | `venue_client_order_id`, `venue_order_id` |
-| Crash | `submission_phase` (`none` \| `ready_to_transmit` \| `transmitted` \| `completed`), attempt timestamps |
-| UNKNOWN / reconcile | `reconciliation_required`, `unknown_entered_at`, `last_reconcile_at`, `reconcile_attempts` |
-| Human-start | claim correlation id |
+| Concern             | Fields                                                                                                 |
+| ------------------- | ------------------------------------------------------------------------------------------------------ |
+| Identity            | existing `client_order_id`, `idempotency_key`, `id` uniques                                            |
+| Status              | add `unknown`; keep `cancel_pending`                                                                   |
+| Venue               | `venue_client_order_id`, `venue_order_id`                                                              |
+| Crash               | `submission_phase` (`none` \| `ready_to_transmit` \| `transmitted` \| `completed`), attempt timestamps |
+| UNKNOWN / reconcile | `reconciliation_required`, `unknown_entered_at`, `last_reconcile_at`, `reconcile_attempts`             |
+| Human-start         | claim correlation id                                                                                   |
 
 ### Acceptance criteria
 
-| Scenario | Required outcome |
-| -------- | ---------------- |
-| Crash before transmit (no transmitted marker) | No false submission |
-| Crash after transmit / before response | **UNKNOWN** |
-| Crash after venue accept / before local persist | **UNKNOWN** until reconcile |
-| Retry after UNKNOWN | **No** blind submit; reconcile first |
-| Reconcile | Resolve to known state **or** remain UNKNOWN on venue evidence |
+| Scenario                                        | Required outcome                                               |
+| ----------------------------------------------- | -------------------------------------------------------------- |
+| Crash before transmit (no transmitted marker)   | No false submission                                            |
+| Crash after transmit / before response          | **UNKNOWN**                                                    |
+| Crash after venue accept / before local persist | **UNKNOWN** until reconcile                                    |
+| Retry after UNKNOWN                             | **No** blind submit; reconcile first                           |
+| Reconcile                                       | Resolve to known state **or** remain UNKNOWN on venue evidence |
 
 ### Status
 
-**PLANNED — NOT IMPLEMENTED**
+**UNK1 IMPLEMENTATION-COMPLETE** (durable UNKNOWN + pre-send + reconcile metadata/API). Evidence: [`v3-l02-s-unk1-unknown-implementation-evidence.md`](./v3-l02-s-unk1-unknown-implementation-evidence.md).
+
+**Not** Slice Approval. Live adapter reconciliation network calls remain unauthorized (ADP1). Residual: wire venue query evidence when ADP1 is separately authorized.
 
 ### PO gate
 
@@ -217,7 +219,7 @@ None if faithful to frozen UNKNOWN/idempotency/cancel invariants. **New PO** if 
 
 ### Implementation authorization
 
-**Required** before schema/code.
+**Granted for L02-S-UNK1 only** (separate PO/task act). Remaining SB-01/04/06/07 coding remains unauthorized.
 
 ---
 
@@ -229,15 +231,15 @@ BINANCE / BYBIT / OKX live adapters on **canonical** `ExecutionEngineService` �
 
 ### Per-venue responsibilities (plan)
 
-| Concern | Requirement |
-| ------- | ----------- |
-| Operations | submit, cancel, query/reconcile (minimum L02) |
-| Endpoints | Fixed allowlisted hosts (SB-01) |
-| Auth | Vault retrieve inside adapter; workspace-bound |
-| clientOrderId | Stable map from platform identity (AD-L02-09) |
-| Errors / timeout / rate-limit | Honest mapping; ambiguity → UNKNOWN |
-| Environment | SB-06 binding (testnet≠mainnet) |
-| Handshake | Connectivity ≠ authorization / C7 / S04 |
+| Concern                       | Requirement                                    |
+| ----------------------------- | ---------------------------------------------- |
+| Operations                    | submit, cancel, query/reconcile (minimum L02)  |
+| Endpoints                     | Fixed allowlisted hosts (SB-01)                |
+| Auth                          | Vault retrieve inside adapter; workspace-bound |
+| clientOrderId                 | Stable map from platform identity (AD-L02-09)  |
+| Errors / timeout / rate-limit | Honest mapping; ambiguity → UNKNOWN            |
+| Environment                   | SB-06 binding (testnet≠mainnet)                |
+| Handshake                     | Connectivity ≠ authorization / C7 / S04        |
 
 ### Tests
 
@@ -261,12 +263,12 @@ None within frozen venue scope. **New PO** for additional venues or live capital
 
 ### Current reachability (repository)
 
-| Path | Finding |
-| ---- | ------- |
-| S04 / durable KS | Does **not** import or call `EmergencyManager` |
+| Path                   | Finding                                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------------------------------- |
+| S04 / durable KS       | Does **not** import or call `EmergencyManager`                                                          |
 | `/v1/live/kill-switch` | `LiveTradingService` → `EmergencyManager.activateKillSwitch` (freeze + **cancel-all** + optional close) |
-| AppModule | Imports `LiveTradingEngineModule` |
-| Authz | Mutations require C7 (deny-all today) |
+| AppModule              | Imports `LiveTradingEngineModule`                                                                       |
+| Authz                  | Mutations require C7 (deny-all today)                                                                   |
 
 ### Required proof (without changing EM semantics unless Arch forces)
 
@@ -298,14 +300,14 @@ Fail closed on test↔live credential/endpoint confusion.
 
 ### Plan
 
-| Control | Requirement |
-| ------- | ----------- |
+| Control              | Requirement                                                                                           |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
 | Environment identity | Explicit `trading_environment` / purpose on Vault secret metadata + adapter config (`test` \| `live`) |
-| Venue binding | Provider + environment must match allowlisted endpoint set (SB-01) |
-| Workspace binding | Existing Vault AAD + membership retained |
-| Validation | Adapter refuse retrieve/use if env≠endpoint class |
-| Logging | Never log secrets; errors must not echo material |
-| Selection | Adapter factory cannot pair live host with test purpose (and reverse) |
+| Venue binding        | Provider + environment must match allowlisted endpoint set (SB-01)                                    |
+| Workspace binding    | Existing Vault AAD + membership retained                                                              |
+| Validation           | Adapter refuse retrieve/use if env≠endpoint class                                                     |
+| Logging              | Never log secrets; errors must not echo material                                                      |
+| Selection            | Adapter factory cannot pair live host with test purpose (and reverse)                                 |
 
 ### Acceptance
 
@@ -332,13 +334,13 @@ May need **PO confirmation** only if introducing new environment labels beyond e
 
 ### Suite scope (no production venue calls)
 
-| Class | Cases |
-| ----- | ----- |
-| Workspace | A cannot use B creds; submit/cancel/reconcile B orders; use B human-start; collide on B idempotency identity |
-| Actor | No membership ⇒ deny |
-| Human-start | Wrong actor/workspace/session/action fail closed |
-| Idempotency | Same keys in different workspaces do not collide |
-| KS/policy/session | A state does not authorize/block B incorrectly |
+| Class             | Cases                                                                                                        |
+| ----------------- | ------------------------------------------------------------------------------------------------------------ |
+| Workspace         | A cannot use B creds; submit/cancel/reconcile B orders; use B human-start; collide on B idempotency identity |
+| Actor             | No membership ⇒ deny                                                                                         |
+| Human-start       | Wrong actor/workspace/session/action fail closed                                                             |
+| Idempotency       | Same keys in different workspaces do not collide                                                             |
+| KS/policy/session | A state does not authorize/block B incorrectly                                                               |
 
 Use fakes/mocks for venue I/O. Depends on SB-02/03/04 surfaces existing (or test doubles of their contracts).
 
@@ -389,14 +391,14 @@ None for tests. Live production calls require separate authorization (not part o
 
 ### Justification (repository-backed)
 
-| Edge | Why |
-| ---- | --- |
-| SB-02 before SB-03/04 I/O wiring | PO sequence: claim before irreversible I/O; without durable claim, live I/O cannot be authorized |
-| SB-03 before SB-04 production-path I/O | Pre-send + UNKNOWN required before real transmit ambiguity is survivable |
-| SB-01 before/with SB-04 | Adapters must not ship without egress gate |
-| SB-06 before/with SB-04 | Env mismatch fail-closed at adapter boundary |
-| SB-05 early / parallel | EM already mounted; isolation proof does not need adapters |
-| SB-07 last (full) | Needs contracts from 02–04; scaffold tests can start earlier with fakes |
+| Edge                                   | Why                                                                                              |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| SB-02 before SB-03/04 I/O wiring       | PO sequence: claim before irreversible I/O; without durable claim, live I/O cannot be authorized |
+| SB-03 before SB-04 production-path I/O | Pre-send + UNKNOWN required before real transmit ambiguity is survivable                         |
+| SB-01 before/with SB-04                | Adapters must not ship without egress gate                                                       |
+| SB-06 before/with SB-04                | Env mismatch fail-closed at adapter boundary                                                     |
+| SB-05 early / parallel                 | EM already mounted; isolation proof does not need adapters                                       |
+| SB-07 last (full)                      | Needs contracts from 02–04; scaffold tests can start earlier with fakes                          |
 
 ### Parallelizable
 
@@ -412,15 +414,15 @@ None for tests. Live production calls require separate authorization (not part o
 
 ## 12. Proposed Implementation Slices
 
-| Slice ID | Objective | SBs | Likely components | Deps | Sec risk | Tests | Arch review | Sec verify | PO | Live I/O |
-| -------- | --------- | --- | ----------------- | ---- | -------- | ----- | ----------- | ---------- | -- | -------- |
-| **L02-S-EM1** | Prove/enforce EM non-reachability from L02 capital path | SB-05 | composition, import lint/tests, docs boundary | None | Medium (confusion) | No EM on KS/policy/session; no Engine→EM | Confirm NON-SoT | Yes | No* | **Forbidden** |
-| **L02-S-HS1** | Durable human-start + ACTION/COMMAND + claim-at-I/O API | SB-02 | Prisma HS table, store, LiveAdmission verify≠claim, Engine claim hook (no venue) | Impl auth | High | Replay/race/binding/restart | AD-L02-04 | SD-L02-04 | No | **HS1 COMPLETE — PO review next** |
-| **L02-S-UNK1** | UNKNOWN status + pre-send + reconcile metadata | SB-03 | Orders status/transitions, persistence fields, engine markers | HS1 helpful | High | Crash-window unit/integration w/ fake adapter | AD-L02-07/09/11 | SD-L02-05/06 | No | **Forbidden** |
-| **L02-S-EG1** | Live egress allowlist gate | SB-01 | shared outbound validator for live adapters | Impl auth | High (SSRF) | Allowlist/redirect/private-IP fails | AD-L02-14 | SD-L02-01 | No† | **Forbidden** |
-| **L02-S-ENV1** | Test/live credential↔endpoint binding | SB-06 | Vault metadata checks, adapter factory guards | EG1 aligned | High | Mismatch fail-closed; no log leak | AD-L02-14 | SD-L02-02 | Maybe‡ | **Forbidden** |
-| **L02-S-ADP1** | Live adapters BINANCE/BYBIT/OKX on ExecutionAdapterPort | SB-04 | New live adapters; Nest binding behind flags; **still no production calls** | HS1, UNK1, EG1, ENV1 | Critical | Mocked HTTP contract tests | AD-L02-14 | SD-L02-01/02/06 | No§ | **Forbidden** until all SB + PO capital acts |
-| **L02-S-ISO1** | Cross-workspace live regression suite | SB-07 | platform-conformance / api specs | ADP1 contracts or fakes | Medium | Full matrix §10 | — | SD-L02-03 | No | **Forbidden** |
+| Slice ID       | Objective                                               | SBs   | Likely components                                                                | Deps                    | Sec risk           | Tests                                         | Arch review     | Sec verify      | PO     | Live I/O                                     |
+| -------------- | ------------------------------------------------------- | ----- | -------------------------------------------------------------------------------- | ----------------------- | ------------------ | --------------------------------------------- | --------------- | --------------- | ------ | -------------------------------------------- |
+| **L02-S-EM1**  | Prove/enforce EM non-reachability from L02 capital path | SB-05 | composition, import lint/tests, docs boundary                                    | None                    | Medium (confusion) | No EM on KS/policy/session; no Engine→EM      | Confirm NON-SoT | Yes             | No*    | **Forbidden**                                |
+| **L02-S-HS1**  | Durable human-start + ACTION/COMMAND + claim-at-I/O API | SB-02 | Prisma HS table, store, LiveAdmission verify≠claim, Engine claim hook (no venue) | Impl auth               | High               | Replay/race/binding/restart                   | AD-L02-04       | SD-L02-04       | No     | **HS1 COMPLETE — PO review next**            |
+| **L02-S-UNK1** | UNKNOWN status + pre-send + reconcile metadata          | SB-03 | Orders status/transitions, persistence fields, engine markers                    | HS1 helpful             | High               | Crash-window unit/integration w/ fake adapter | AD-L02-07/09/11 | SD-L02-05/06    | No     | **UNK1 COMPLETE — PO review next**           |
+| **L02-S-EG1**  | Live egress allowlist gate                              | SB-01 | shared outbound validator for live adapters                                      | Impl auth               | High (SSRF)        | Allowlist/redirect/private-IP fails           | AD-L02-14       | SD-L02-01       | No†    | **Forbidden**                                |
+| **L02-S-ENV1** | Test/live credential↔endpoint binding                   | SB-06 | Vault metadata checks, adapter factory guards                                    | EG1 aligned             | High               | Mismatch fail-closed; no log leak             | AD-L02-14       | SD-L02-02       | Maybe‡ | **Forbidden**                                |
+| **L02-S-ADP1** | Live adapters BINANCE/BYBIT/OKX on ExecutionAdapterPort | SB-04 | New live adapters; Nest binding behind flags; **still no production calls**      | HS1, UNK1, EG1, ENV1    | Critical           | Mocked HTTP contract tests                    | AD-L02-14       | SD-L02-01/02/06 | No§    | **Forbidden** until all SB + PO capital acts |
+| **L02-S-ISO1** | Cross-workspace live regression suite                   | SB-07 | platform-conformance / api specs                                                 | ADP1 contracts or fakes | Medium             | Full matrix §10                               | —               | SD-L02-03       | No     | **Forbidden**                                |
 
 \* Unless EM product change proposed → PO.
 † Unless new hosts/venues → PO.
@@ -437,15 +439,15 @@ None for tests. Live production calls require separate authorization (not part o
 
 ## 13. Acceptance Matrix
 
-| SB | Condition | Implementation Evidence | Required Tests | Security Evidence | Architecture Evidence | PO Gate | Status |
-| -- | --------- | ----------------------- | -------------- | ----------------- | --------------------- | ------- | ------ |
-| SB-01 | SSRF/egress allowlist on live adapters | Outbound gate + allowlisted hosts wired to live adapters | Arbitrary URL deny; redirect deny; private IP deny; paper isolation | SD-L02-01 close-out | AD-L02-14 | None† | **PLANNED — NOT IMPLEMENTED** |
-| SB-02 | Durable HS claim-at-I/O + ACTION/COMMAND | Prisma store; claim CAS; verify≠claim | Replay/race/binding/expiry/restart/multi-instance | SD-L02-04 | AD-L02-04 | None (frozen) | **HS1 COMPLETE** (claim API; Engine live I/O wiring residual) |
-| SB-03 | UNKNOWN/pre-send/reconcile persistence | Status+markers+reconcile fields; engine behavior | Crash matrix; no blind retry | SD-L02-05/06 | AD-L02-07/09/11 | None (frozen) | **PLANNED — NOT IMPLEMENTED** |
-| SB-04 | Live ExecutionAdapterPort | Live adapters bound to EXECUTION_ADAPTER under gates | Mocked submit/cancel/query; fail-closed | SD-L02-01/02/06 | AD-L02-01/14 | None† / capital act separate | **PLANNED — NOT IMPLEMENTED** |
-| SB-05 | EmergencyManager isolation | No L02 dependency; regressions | KS/policy/session no cancel-all; no Engine→EM | SD-L02-07 | AD-L02-01 | None* | **EM1 COMPLETE** (isolation evidenced; EM still mounted residual) |
-| SB-06 | Test/live credential separation | Env metadata + adapter checks | Mismatch fail-closed; no secret logs | SD-L02-02 | AD-L02-14 | Maybe‡ | **PLANNED — NOT IMPLEMENTED** |
-| SB-07 | Cross-workspace live regressions | Dedicated suite green | Full isolation matrix | SD-L02-03 | — | None | **PLANNED — NOT IMPLEMENTED** |
+| SB    | Condition                                | Implementation Evidence                                  | Required Tests                                                      | Security Evidence   | Architecture Evidence | PO Gate                      | Status                                                            |
+| ----- | ---------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------- | ------------------- | --------------------- | ---------------------------- | ----------------------------------------------------------------- |
+| SB-01 | SSRF/egress allowlist on live adapters   | Outbound gate + allowlisted hosts wired to live adapters | Arbitrary URL deny; redirect deny; private IP deny; paper isolation | SD-L02-01 close-out | AD-L02-14             | None†                        | **PLANNED — NOT IMPLEMENTED**                                     |
+| SB-02 | Durable HS claim-at-I/O + ACTION/COMMAND | Prisma store; claim CAS; verify≠claim                    | Replay/race/binding/expiry/restart/multi-instance                   | SD-L02-04           | AD-L02-04             | None (frozen)                | **HS1 COMPLETE** (claim API; Engine live I/O wiring residual)     |
+| SB-03 | UNKNOWN/pre-send/reconcile persistence   | Status+markers+reconcile fields; engine behavior         | Crash matrix; no blind retry                                        | SD-L02-05/06        | AD-L02-07/09/11       | None (frozen)                | **UNK1 COMPLETE** (venue query wiring residual for ADP1)          |
+| SB-04 | Live ExecutionAdapterPort                | Live adapters bound to EXECUTION_ADAPTER under gates     | Mocked submit/cancel/query; fail-closed                             | SD-L02-01/02/06     | AD-L02-01/14          | None† / capital act separate | **PLANNED — NOT IMPLEMENTED**                                     |
+| SB-05 | EmergencyManager isolation               | No L02 dependency; regressions                           | KS/policy/session no cancel-all; no Engine→EM                       | SD-L02-07           | AD-L02-01             | None*                        | **EM1 COMPLETE** (isolation evidenced; EM still mounted residual) |
+| SB-06 | Test/live credential separation          | Env metadata + adapter checks                            | Mismatch fail-closed; no secret logs                                | SD-L02-02           | AD-L02-14             | Maybe‡                       | **PLANNED — NOT IMPLEMENTED**                                     |
+| SB-07 | Cross-workspace live regressions         | Dedicated suite green                                    | Full isolation matrix                                               | SD-L02-03           | —                     | None                         | **PLANNED — NOT IMPLEMENTED**                                     |
 
 ---
 
@@ -465,14 +467,14 @@ Re-confirm AD-L02-01/04/07/09/11/14 conditions against each slice PR: canonical 
 
 ## 16. PO Approval Boundaries
 
-| Already frozen — do not reopen | New PO required only if… |
-| ------------------------------ | ------------------------ |
-| Venues BINANCE/BYBIT/OKX; MOCK test-only | Adding venues / user-configurable URLs |
-| Capital = trading execution only | Banking/treasury/withdrawals |
-| Lifecycle / UNKNOWN / cancel / idempotency invariants | Changing those semantics |
-| C7 final gate; human-start grain + 05A–D | Changing C7 grants, TTL, consume timing, grain |
-| KS/policy/session: block new; no auto cancel-all | Making EM cancel-all the L02 SoT |
-| Paper default; live capital not activated | Live-capital activation / FIV / C7 role grants |
+| Already frozen — do not reopen                        | New PO required only if…                       |
+| ----------------------------------------------------- | ---------------------------------------------- |
+| Venues BINANCE/BYBIT/OKX; MOCK test-only              | Adding venues / user-configurable URLs         |
+| Capital = trading execution only                      | Banking/treasury/withdrawals                   |
+| Lifecycle / UNKNOWN / cancel / idempotency invariants | Changing those semantics                       |
+| C7 final gate; human-start grain + 05A–D              | Changing C7 grants, TTL, consume timing, grain |
+| KS/policy/session: block new; no auto cancel-all      | Making EM cancel-all the L02 SoT               |
+| Paper default; live capital not activated             | Live-capital activation / FIV / C7 role grants |
 
 **This plan invents no new PO decisions.**
 
@@ -495,13 +497,13 @@ Live venue I/O MAY NOT be authorized until ALL are true:
 
 ## 18. Risks and Residual Risks
 
-| Risk | Residual |
-| ---- | -------- |
-| Implementing adapters before SB-01/06 | SSRF / env confusion — **forbid by dependency graph** |
-| Claiming SB cleared by docs only | Treat as NOT IMPLEMENTED until tests green |
-| EM remains mounted | Confusion hazard until SB-05 evidenced |
-| Per-venue API gaps | Adapter Security dependency — do not invent capabilities |
-| Worker/queue not yet defined | Must still honor SB-02/03 invariants when introduced |
+| Risk                                  | Residual                                                 |
+| ------------------------------------- | -------------------------------------------------------- |
+| Implementing adapters before SB-01/06 | SSRF / env confusion — **forbid by dependency graph**    |
+| Claiming SB cleared by docs only      | Treat as NOT IMPLEMENTED until tests green               |
+| EM remains mounted                    | Confusion hazard until SB-05 evidenced                   |
+| Per-venue API gaps                    | Adapter Security dependency — do not invent capabilities |
+| Worker/queue not yet defined          | Must still honor SB-02/03 invariants when introduced     |
 
 ---
 
@@ -521,8 +523,8 @@ This Security Conditions Resolution Plan does NOT authorize:
   - Slice Approval
 
 Existence of this plan ≠ authorization to begin coding.
-SB-01, SB-03, SB-04, SB-06, SB-07 remain PLANNED — NOT IMPLEMENTED.
-SB-05 (EM1) and SB-02 (HS1) have separately authorized implementation evidence; Slice Approval remains NOT GRANTED.
+SB-01, SB-04, SB-06, SB-07 remain PLANNED — NOT IMPLEMENTED.
+SB-05 (EM1), SB-02 (HS1), and SB-03 (UNK1) have separately authorized implementation evidence; Slice Approval remains NOT GRANTED.
 V3-L02 full live implementation remains NOT AUTHORIZED.
 ```
 

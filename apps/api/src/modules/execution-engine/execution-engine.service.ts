@@ -14,6 +14,10 @@ import type { PaperFillConfiguration } from '../execution-adapter/paper-fill-con
 import { OrderService } from '../orders/order.service';
 import type { Order } from '../orders/domain/order';
 import { OrderStatus } from '../orders/domain/order-status';
+import {
+  SubmissionPhase,
+  type OrderReconciliationEvidence,
+} from '../orders/domain/order-execution-state';
 import { RiskDecisionStatus } from '../risk/domain/risk-decision';
 import { AccountingReconciliationService } from '../positions/reconciliation/accounting-reconciliation.service';
 import { assertExecutionEligible } from '../trading-session/domain/execution-eligibility';
@@ -57,9 +61,15 @@ export type CancelExecutionCommand = Readonly<{
 export type ReconcileExecutionCommand = Readonly<{
   workspaceId: string;
   orderId: string;
+  actorId?: string;
+  correlationId?: string;
+  occurredAt?: string;
+  recordedAt?: string;
+  /** Authoritative simulated/venue evidence (UNK1). Omit → unresolved query path. */
+  evidence?: OrderReconciliationEvidence;
 }>;
 
-export type ExecutionOutcome = 'filled' | 'resting' | 'already_executed';
+export type ExecutionOutcome = 'filled' | 'resting' | 'already_executed' | 'unknown' | 'rejected';
 
 export type ExecutionResult = Readonly<{
   order: Order;
@@ -108,6 +118,27 @@ export class ExecutionEngineService {
     if (!order) throw new Error('order not found in workspace');
     assertPaper(order);
 
+    // UNKNOWN must reconcile first — no blind retry (AD-L02-11 / UNK1).
+    if (order.status === OrderStatus.UNKNOWN) {
+      throw new Error('order is UNKNOWN; reconcile before any resubmit');
+    }
+
+    // Crash after transmit marker without known outcome → UNKNOWN (no second submit).
+    if (
+      order.status === OrderStatus.EXECUTABLE &&
+      order.execution.submissionPhase === SubmissionPhase.TRANSMITTED
+    ) {
+      const unknown = await this.orders.markSubmissionUnknown(order, {
+        eventType: 'OrderUnknownAfterTransmitCrash',
+        actorId: command.actorId,
+        correlationId: command.correlationId,
+        ambiguityReason: 'crash_or_retry_after_transmit_without_known_outcome',
+        occurredAt: command.occurredAt,
+        recordedAt: command.recordedAt,
+      });
+      return Object.freeze({ order: unknown, fill: null, outcome: 'unknown' as const });
+    }
+
     // Only an EXECUTABLE Order may be submitted. Any later state means execution
     // already began; returning the current facts keeps submit idempotent so a
     // duplicate command cannot duplicate an adapter submission or a Fill.
@@ -132,14 +163,96 @@ export class ExecutionEngineService {
     if (!session) throw new Error('trading session not found for order');
     assertExecutionEligible(session, order.intent.sessionFencingToken, command.occurredAt);
 
-    const acknowledgement = await this.adapter.submit(
-      buildAdapterCommand(order, command, this.configuration),
-    );
+    // Pre-send then transmitted markers BEFORE adapter I/O (AD-L02-11).
+    let prepared = await this.transactions.run(async (transaction) => {
+      let current = order;
+      current = await this.orders.markReadyToTransmit(
+        current,
+        {
+          eventType: 'OrderPreSendMarked',
+          actorId: command.actorId,
+          correlationId: command.correlationId,
+          venueClientOrderId: order.intent.clientOrderId,
+          occurredAt: command.occurredAt,
+          recordedAt: command.recordedAt,
+        },
+        transaction,
+      );
+      current = await this.orders.markTransmitted(
+        current,
+        {
+          eventType: 'OrderTransmitMarked',
+          actorId: command.actorId,
+          correlationId: command.correlationId,
+          occurredAt: command.occurredAt,
+          recordedAt: command.recordedAt,
+        },
+        transaction,
+      );
+      return current;
+    });
+
+    let acknowledgement;
+    try {
+      acknowledgement = await this.adapter.submit(
+        buildAdapterCommand(prepared, command, this.configuration),
+      );
+    } catch (error) {
+      // Ambiguous transport failures after transmit → UNKNOWN (never inferred reject).
+      const unknown = await this.orders.markSubmissionUnknown(prepared, {
+        eventType: 'OrderUnknownAfterAdapterError',
+        actorId: command.actorId,
+        correlationId: command.correlationId,
+        ambiguityReason:
+          error instanceof Error ? `adapter_error:${error.message}` : 'adapter_error:unknown',
+        occurredAt: command.occurredAt,
+        recordedAt: command.recordedAt,
+      });
+      return Object.freeze({ order: unknown, fill: null, outcome: 'unknown' as const });
+    }
+
+    if (acknowledgement.outcome === 'unknown') {
+      const unknown = await this.orders.markSubmissionUnknown(prepared, {
+        eventType: 'OrderUnknownAfterAmbiguousSubmit',
+        actorId: command.actorId,
+        correlationId: command.correlationId,
+        ambiguityReason: acknowledgement.ambiguityReason,
+        adapterOrderId: acknowledgement.adapterOrderId ?? undefined,
+        occurredAt: command.occurredAt,
+        recordedAt: command.recordedAt,
+      });
+      return Object.freeze({ order: unknown, fill: null, outcome: 'unknown' as const });
+    }
+
+    if (acknowledgement.outcome === 'rejected') {
+      const rejected = await this.transactions.run(async (transaction) => {
+        return this.orders.applyExecutionTransition(
+          prepared,
+          {
+            toStatus: OrderStatus.REJECTED,
+            eventType: 'OrderRejectedByVenue',
+            actorId: command.actorId,
+            correlationId: command.correlationId,
+            reason: acknowledgement.rejectionReason,
+            adapterOrderId: acknowledgement.adapterOrderId ?? undefined,
+            occurredAt: command.occurredAt,
+            recordedAt: command.recordedAt,
+            execution: {
+              submissionPhase: SubmissionPhase.COMPLETED,
+              completedAt: command.occurredAt,
+              reconciliationRequired: false,
+            },
+          },
+          transaction,
+        );
+      });
+      return Object.freeze({ order: rejected, fill: null, outcome: 'rejected' as const });
+    }
 
     try {
       return await this.transactions.run(async (transaction) => {
         const submitted = await this.orders.applyExecutionTransition(
-          order,
+          prepared,
           {
             toStatus: OrderStatus.SUBMITTED,
             eventType: 'OrderSubmitted',
@@ -148,6 +261,12 @@ export class ExecutionEngineService {
             adapterOrderId: acknowledgement.adapterOrderId,
             occurredAt: command.occurredAt,
             recordedAt: command.recordedAt,
+            execution: {
+              submissionPhase: SubmissionPhase.COMPLETED,
+              completedAt: command.occurredAt,
+              venueOrderId: acknowledgement.adapterOrderId,
+              reconciliationRequired: false,
+            },
           },
           transaction,
         );
@@ -210,6 +329,25 @@ export class ExecutionEngineService {
         const current = await this.orders.get(command.workspaceId, command.orderId);
         if (current) return this.existingResult(command.workspaceId, command.orderId, current);
       }
+      // Persistence failure after known adapter response with transmit already marked:
+      // durable UNKNOWN until reconcile — do not invent FILLED/ACCEPTED.
+      const current = await this.orders.get(command.workspaceId, command.orderId);
+      if (
+        current &&
+        current.status === OrderStatus.EXECUTABLE &&
+        current.execution.submissionPhase === SubmissionPhase.TRANSMITTED
+      ) {
+        const unknown = await this.orders.markSubmissionUnknown(current, {
+          eventType: 'OrderUnknownAfterPersistFailure',
+          actorId: command.actorId,
+          correlationId: command.correlationId,
+          ambiguityReason: 'persist_failure_after_possible_venue_accept',
+          adapterOrderId: acknowledgement.adapterOrderId,
+          occurredAt: command.occurredAt,
+          recordedAt: command.recordedAt,
+        });
+        return Object.freeze({ order: unknown, fill: null, outcome: 'unknown' as const });
+      }
       throw error;
     }
   }
@@ -254,22 +392,50 @@ export class ExecutionEngineService {
     const order = await this.orders.get(command.workspaceId, command.orderId);
     if (!order) throw new Error('order not found in workspace');
     const fills = await this.fills.findByOrder(command.workspaceId, command.orderId);
+    const occurredAt = command.occurredAt ?? new Date().toISOString();
+    const recordedAt = command.recordedAt ?? occurredAt;
+    const actorId = command.actorId ?? 'execution-engine';
+
+    let current = order;
+    const evidenceProvided = command.evidence !== undefined;
+    if (order.status === OrderStatus.UNKNOWN) {
+      const evidence: OrderReconciliationEvidence = command.evidence ?? {
+        kind: 'unresolved',
+        reason: 'no_authoritative_evidence',
+      };
+      current = await this.orders.applyReconciliationEvidence(order, evidence, {
+        eventType: 'OrderReconcile',
+        actorId,
+        correlationId: command.correlationId,
+        occurredAt,
+        recordedAt,
+      });
+    }
+
     const terminal =
-      order.status === OrderStatus.FILLED ||
-      order.status === OrderStatus.REJECTED ||
-      order.status === OrderStatus.CANCELLED;
-    let reconciliationRequired = false;
-    if (!terminal && order.adapterOrderId !== null) {
+      current.status === OrderStatus.FILLED ||
+      current.status === OrderStatus.REJECTED ||
+      current.status === OrderStatus.CANCELLED;
+    let reconciliationRequired = current.execution.reconciliationRequired;
+    if (
+      !evidenceProvided &&
+      !terminal &&
+      current.adapterOrderId !== null &&
+      current.status !== OrderStatus.UNKNOWN
+    ) {
       const query = await this.adapter.query({
         mode: 'paper',
-        workspaceId: order.workspaceId,
-        adapterOrderId: order.adapterOrderId,
+        workspaceId: current.workspaceId,
+        adapterOrderId: current.adapterOrderId,
       });
       reconciliationRequired = query.reconciliationRequired;
     }
+    if (current.status === OrderStatus.UNKNOWN) {
+      reconciliationRequired = true;
+    }
     return Object.freeze({
-      orderId: order.id,
-      status: order.status,
+      orderId: current.id,
+      status: current.status,
       terminal,
       fills: Object.freeze(fills),
       reconciliationRequired,

@@ -23,14 +23,19 @@ import {
 } from '../trading-session/persistence/trading-session.repository';
 import {
   applyOrderFill,
+  applyOrderReconciliation,
   createOrder,
   completeOrderCancellation,
+  markOrderReadyToTransmit,
+  markOrderSubmissionUnknown,
+  markOrderTransmitted,
   requestOrderCancellation,
   transitionOrder,
   type Order,
   type OrderTransitionInput,
 } from './domain/order';
 import { createOrderIntent, type CreateOrderIntentInput } from './domain/order-intent';
+import type { OrderReconciliationEvidence } from './domain/order-execution-state';
 import {
   mapProposeOrderFromSignalIntent,
   type ProposeOrderFromSignalIntentCommand,
@@ -350,6 +355,71 @@ export class OrderService {
     const saved = await this.orders.save(next, order.version, transaction);
     await this.outbox.append(transaction, orderEnvelope(saved), input.recordedAt);
     return saved;
+  }
+
+  /** Persist pre-send marker (UNK1). Does not perform venue I/O. */
+  async markReadyToTransmit(
+    order: Order,
+    input: Omit<OrderTransitionInput, 'toStatus' | 'execution'> & {
+      humanStartProofId?: string | null;
+      venueClientOrderId?: string | null;
+    },
+    transaction: TransactionContext,
+  ): Promise<Order> {
+    const next = markOrderReadyToTransmit(order, input);
+    if (next === order) return order;
+    const saved = await this.orders.save(next, order.version, transaction);
+    await this.outbox.append(transaction, orderEnvelope(saved), input.recordedAt);
+    return saved;
+  }
+
+  /** Persist transmitted marker immediately before/around I/O boundary (UNK1). */
+  async markTransmitted(
+    order: Order,
+    input: Omit<OrderTransitionInput, 'toStatus' | 'execution'>,
+    transaction: TransactionContext,
+  ): Promise<Order> {
+    const next = markOrderTransmitted(order, input);
+    if (next === order) return order;
+    const saved = await this.orders.save(next, order.version, transaction);
+    await this.outbox.append(transaction, orderEnvelope(saved), input.recordedAt);
+    return saved;
+  }
+
+  /** Persist UNKNOWN for ambiguous venue outcome (UNK1). Never invents fills. */
+  async markSubmissionUnknown(
+    order: Order,
+    input: Omit<OrderTransitionInput, 'toStatus' | 'execution'> & {
+      ambiguityReason: string;
+    },
+    transaction?: TransactionContext,
+  ): Promise<Order> {
+    const next = markOrderSubmissionUnknown(order, input);
+    if (transaction) {
+      const saved = await this.orders.save(next, order.version, transaction);
+      await this.outbox.append(transaction, orderEnvelope(saved), input.recordedAt);
+      return saved;
+    }
+    return this.persistTransition(order, next);
+  }
+
+  /**
+   * Resolve UNKNOWN only with authoritative evidence (UNK1).
+   * Unresolved evidence leaves UNKNOWN. Does not call venues.
+   */
+  async applyReconciliationEvidence(
+    order: Order,
+    evidence: OrderReconciliationEvidence,
+    input: Omit<OrderTransitionInput, 'toStatus' | 'execution'>,
+    transaction?: TransactionContext,
+  ): Promise<Order> {
+    const next = applyOrderReconciliation(order, evidence, input);
+    if (transaction) {
+      const saved = await this.orders.save(next, order.version, transaction);
+      await this.outbox.append(transaction, orderEnvelope(saved), input.recordedAt);
+      return saved;
+    }
+    return this.persistTransition(order, next);
   }
 
   get(workspaceId: string, orderId: string): Promise<Order | null> {

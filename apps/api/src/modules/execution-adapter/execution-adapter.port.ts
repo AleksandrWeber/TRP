@@ -66,7 +66,37 @@ export type AdapterAcknowledgedResult = AdapterSubmissionBase &
     outcome: 'acknowledged';
   }>;
 
-export type AdapterSubmissionResult = AdapterFilledResult | AdapterAcknowledgedResult;
+/**
+ * Ambiguous transport/venue outcome (V3-L02-S-UNK1).
+ * Must map to OrderStatus.UNKNOWN — never inferred as rejected/cancelled/filled.
+ * Live adapters (ADP1) may return this; PaperExecutionAdapter does not.
+ */
+export type AdapterUnknownSubmissionResult = Readonly<{
+  mode: 'paper';
+  outcome: 'unknown';
+  clientOrderId: string;
+  ambiguityReason: string;
+  adapterOrderId?: string | null;
+  executionContextHash?: string;
+  roundingContext?: PaperRoundingContext;
+}>;
+
+/** Known venue rejection (not ambiguity). */
+export type AdapterRejectedSubmissionResult = Readonly<{
+  mode: 'paper';
+  outcome: 'rejected';
+  clientOrderId: string;
+  rejectionReason: string;
+  adapterOrderId?: string | null;
+  executionContextHash?: string;
+  roundingContext?: PaperRoundingContext;
+}>;
+
+export type AdapterSubmissionResult =
+  | AdapterFilledResult
+  | AdapterAcknowledgedResult
+  | AdapterUnknownSubmissionResult
+  | AdapterRejectedSubmissionResult;
 
 /** Backwards-compatible alias retained for consumers of the acknowledged shape. */
 export type AdapterSubmissionAcknowledgement = AdapterAcknowledgedResult;

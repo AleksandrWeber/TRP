@@ -61,7 +61,7 @@ export type RunCanonicalExecutionPathCommand = AdvanceCanonicalOrderCommand &
   }>;
 
 export type CanonicalExecutionPathOutcome =
-  'filled' | 'resting' | 'rejected' | 'already_executed' | 'executable_without_submit';
+  'filled' | 'resting' | 'rejected' | 'unknown' | 'already_executed' | 'executable_without_submit';
 
 export type CanonicalExecutionPathResult = Readonly<{
   order: Order;

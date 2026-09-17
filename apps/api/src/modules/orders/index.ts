@@ -28,12 +28,24 @@ export {
   ORDER_SCHEMA_VERSION,
   createOrder,
   applyOrderFill,
+  applyOrderReconciliation,
   completeOrderCancellation,
+  markOrderReadyToTransmit,
+  markOrderSubmissionUnknown,
+  markOrderTransmitted,
   requestOrderCancellation,
+  transitionOrder,
   type Order,
   type OrderLifecycleEntry,
   type OrderTransitionInput,
 } from './domain/order';
+export {
+  DEFAULT_ORDER_EXECUTION_STATE,
+  SubmissionPhase,
+  isSubmissionPhase,
+  type OrderExecutionState,
+  type OrderReconciliationEvidence,
+} from './domain/order-execution-state';
 export {
   OrderStatus,
   TERMINAL_ORDER_STATUSES,

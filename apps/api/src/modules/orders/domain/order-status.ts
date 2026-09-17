@@ -10,6 +10,8 @@ export enum OrderStatus {
   REJECTED = 'rejected',
   CANCEL_PENDING = 'cancel_pending',
   CANCELLED = 'cancelled',
+  /** Ambiguous venue outcome — not rejection, cancellation, or success (V3-L02-S-UNK1). */
+  UNKNOWN = 'unknown',
 }
 
 export const TERMINAL_ORDER_STATUSES: ReadonlySet<OrderStatus> = new Set([
@@ -37,17 +39,40 @@ const ALLOWED_ORDER_TRANSITIONS: ReadonlyMap<OrderStatus, ReadonlySet<OrderStatu
   ],
   [
     OrderStatus.EXECUTABLE,
-    new Set([OrderStatus.SUBMITTED, OrderStatus.REJECTED, OrderStatus.CANCEL_PENDING]),
+    new Set([
+      OrderStatus.SUBMITTED,
+      OrderStatus.REJECTED,
+      OrderStatus.CANCEL_PENDING,
+      OrderStatus.UNKNOWN,
+    ]),
   ],
   [
     OrderStatus.SUBMITTED,
-    new Set([OrderStatus.ACKNOWLEDGED, OrderStatus.REJECTED, OrderStatus.CANCEL_PENDING]),
+    new Set([
+      OrderStatus.ACKNOWLEDGED,
+      OrderStatus.REJECTED,
+      OrderStatus.CANCEL_PENDING,
+      OrderStatus.UNKNOWN,
+    ]),
   ],
   [
     OrderStatus.ACKNOWLEDGED,
     new Set([OrderStatus.FILLED, OrderStatus.REJECTED, OrderStatus.CANCEL_PENDING]),
   ],
-  [OrderStatus.CANCEL_PENDING, new Set([OrderStatus.CANCELLED, OrderStatus.FILLED])],
+  [
+    OrderStatus.CANCEL_PENDING,
+    new Set([OrderStatus.CANCELLED, OrderStatus.FILLED, OrderStatus.UNKNOWN]),
+  ],
+  [
+    OrderStatus.UNKNOWN,
+    new Set([
+      OrderStatus.ACKNOWLEDGED,
+      OrderStatus.REJECTED,
+      OrderStatus.FILLED,
+      OrderStatus.CANCELLED,
+      OrderStatus.UNKNOWN,
+    ]),
+  ],
   [OrderStatus.FILLED, new Set()],
   [OrderStatus.REJECTED, new Set()],
   [OrderStatus.CANCELLED, new Set()],

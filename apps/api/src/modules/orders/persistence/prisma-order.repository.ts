@@ -5,6 +5,7 @@ import {
 } from '../../../storage/prisma/prisma-transaction.service';
 import type { Order, OrderLifecycleEntry } from '../domain/order';
 import { createOrderIntent, OrderSide, OrderType, type OrderIntent } from '../domain/order-intent';
+import { isSubmissionPhase, SubmissionPhase } from '../domain/order-execution-state';
 import { isOrderStatus, type OrderStatus } from '../domain/order-status';
 import {
   RiskDecisionStatus,
@@ -117,6 +118,19 @@ function toCreateData(order: Order): Prisma.PaperOrderUncheckedCreateInput {
     reservationId: order.reservationId,
     adapterOrderId: order.adapterOrderId,
     rejectionReason: order.rejectionReason,
+    submissionPhase: order.execution.submissionPhase,
+    readyToTransmitAt: toDateOrNull(order.execution.readyToTransmitAt),
+    transmittedAt: toDateOrNull(order.execution.transmittedAt),
+    completedAt: toDateOrNull(order.execution.completedAt),
+    reconciliationRequired: order.execution.reconciliationRequired,
+    unknownEnteredAt: toDateOrNull(order.execution.unknownEnteredAt),
+    lastReconcileAt: toDateOrNull(order.execution.lastReconcileAt),
+    reconcileAttempts: order.execution.reconcileAttempts,
+    venueClientOrderId: order.execution.venueClientOrderId,
+    venueOrderId: order.execution.venueOrderId,
+    humanStartProofId: order.execution.humanStartProofId,
+    lastReconcileResult: order.execution.lastReconcileResult,
+    ambiguityReason: order.execution.ambiguityReason,
     createdAt: new Date(order.createdAt),
     recordedAt: new Date(order.recordedAt),
   };
@@ -135,6 +149,19 @@ function toUpdateData(order: Order): Prisma.PaperOrderUpdateManyMutationInput {
     reservationId: order.reservationId,
     adapterOrderId: order.adapterOrderId,
     rejectionReason: order.rejectionReason,
+    submissionPhase: order.execution.submissionPhase,
+    readyToTransmitAt: toDateOrNull(order.execution.readyToTransmitAt),
+    transmittedAt: toDateOrNull(order.execution.transmittedAt),
+    completedAt: toDateOrNull(order.execution.completedAt),
+    reconciliationRequired: order.execution.reconciliationRequired,
+    unknownEnteredAt: toDateOrNull(order.execution.unknownEnteredAt),
+    lastReconcileAt: toDateOrNull(order.execution.lastReconcileAt),
+    reconcileAttempts: order.execution.reconcileAttempts,
+    venueClientOrderId: order.execution.venueClientOrderId,
+    venueOrderId: order.execution.venueOrderId,
+    humanStartProofId: order.execution.humanStartProofId,
+    lastReconcileResult: order.execution.lastReconcileResult,
+    ambiguityReason: order.execution.ambiguityReason,
     recordedAt: new Date(order.recordedAt),
   };
 }
@@ -202,10 +229,36 @@ function toDomain(row: PaperOrderWithLifecycle): Order {
     reservationId: row.reservationId,
     adapterOrderId: row.adapterOrderId,
     rejectionReason: row.rejectionReason,
+    execution: Object.freeze({
+      submissionPhase: parseSubmissionPhase(row.submissionPhase),
+      readyToTransmitAt: row.readyToTransmitAt?.toISOString() ?? null,
+      transmittedAt: row.transmittedAt?.toISOString() ?? null,
+      completedAt: row.completedAt?.toISOString() ?? null,
+      reconciliationRequired: row.reconciliationRequired,
+      unknownEnteredAt: row.unknownEnteredAt?.toISOString() ?? null,
+      lastReconcileAt: row.lastReconcileAt?.toISOString() ?? null,
+      reconcileAttempts: row.reconcileAttempts,
+      venueClientOrderId: row.venueClientOrderId,
+      venueOrderId: row.venueOrderId,
+      humanStartProofId: row.humanStartProofId,
+      lastReconcileResult: row.lastReconcileResult,
+      ambiguityReason: row.ambiguityReason,
+    }),
     lifecycle,
     createdAt: row.createdAt.toISOString(),
     recordedAt: row.recordedAt.toISOString(),
   });
+}
+
+function parseSubmissionPhase(value: string): SubmissionPhase {
+  if (!isSubmissionPhase(value)) {
+    throw new Error(`unsupported submission phase: ${value}`);
+  }
+  return value;
+}
+
+function toDateOrNull(value: string | null): Date | null {
+  return value === null ? null : new Date(value);
 }
 
 function parseRiskDecision(value: Prisma.JsonValue): ApprovedRiskDecisionReference | null {

@@ -4,6 +4,12 @@ import {
   type ApprovedRiskDecisionReference,
 } from '../../risk/domain/risk-decision';
 import type { OrderIntent } from './order-intent';
+import {
+  DEFAULT_ORDER_EXECUTION_STATE,
+  SubmissionPhase,
+  type OrderExecutionState,
+  type OrderReconciliationEvidence,
+} from './order-execution-state';
 import { assertOrderTransition, OrderStatus, TERMINAL_ORDER_STATUSES } from './order-status';
 
 export const ORDER_SCHEMA_VERSION = 1;
@@ -32,6 +38,8 @@ export type Order = Readonly<{
   reservationId: string | null;
   adapterOrderId: string | null;
   rejectionReason: string | null;
+  /** Technical submission/reconcile substrate (V3-L02-S-UNK1). Not a second business SoT. */
+  execution: OrderExecutionState;
   lifecycle: ReadonlyArray<OrderLifecycleEntry>;
   createdAt: string;
   recordedAt: string;
@@ -46,6 +54,7 @@ export type OrderTransitionInput = Readonly<{
   riskDecision?: ApprovedRiskDecisionReference;
   reservationId?: string;
   adapterOrderId?: string;
+  execution?: Partial<OrderExecutionState>;
   occurredAt: string;
   recordedAt: string;
 }>;
@@ -75,6 +84,7 @@ export function createOrder(intent: OrderIntent): Order {
     reservationId: null,
     adapterOrderId: null,
     rejectionReason: null,
+    execution: DEFAULT_ORDER_EXECUTION_STATE,
     lifecycle,
     createdAt: intent.occurredAt,
     recordedAt: intent.recordedAt,
@@ -109,6 +119,12 @@ export function transitionOrder(order: Order, input: OrderTransitionInput): Orde
     input.toStatus === OrderStatus.REJECTED
       ? required(input.reason ?? '', 'rejection reason')
       : order.rejectionReason;
+  const execution = mergeExecution(
+    order.execution,
+    input.execution,
+    input.toStatus,
+    input.occurredAt,
+  );
   const entry = lifecycleEntry({
     sequence: order.version + 1,
     fromStatus: order.status,
@@ -130,6 +146,7 @@ export function transitionOrder(order: Order, input: OrderTransitionInput): Orde
     reservationId,
     adapterOrderId,
     rejectionReason,
+    execution,
     lifecycle: Object.freeze([...order.lifecycle, entry]),
     recordedAt: input.recordedAt,
   });
@@ -201,9 +218,292 @@ export function applyOrderFill(
     ...order,
     version: order.version + 1,
     filledQuantity: total.toString(),
+    execution: order.execution,
     lifecycle: Object.freeze([...order.lifecycle, entry]),
     recordedAt: input.recordedAt,
   });
+}
+
+/**
+ * Persist local pre-send marker before irreversible venue I/O (AD-L02-11).
+ * Does not change business status. Pre-send ≠ venue submission evidence.
+ */
+export function markOrderReadyToTransmit(
+  order: Order,
+  input: Omit<OrderTransitionInput, 'toStatus' | 'execution'> & {
+    humanStartProofId?: string | null;
+    venueClientOrderId?: string | null;
+  },
+): Order {
+  assertNotTerminal(order);
+  if (order.status === OrderStatus.UNKNOWN) {
+    throw new Error('cannot mark ready_to_transmit on UNKNOWN order');
+  }
+  if (order.execution.submissionPhase === SubmissionPhase.READY_TO_TRANSMIT) {
+    return order;
+  }
+  if (order.execution.submissionPhase !== SubmissionPhase.NONE) {
+    throw new Error(
+      `cannot mark ready_to_transmit from submission phase ${order.execution.submissionPhase}`,
+    );
+  }
+  return appendExecutionLifecycle(order, {
+    ...input,
+    eventType: input.eventType || 'OrderPreSendMarked',
+    execution: {
+      submissionPhase: SubmissionPhase.READY_TO_TRANSMIT,
+      readyToTransmitAt: input.occurredAt,
+      venueClientOrderId: input.venueClientOrderId ?? order.intent.clientOrderId,
+      humanStartProofId:
+        input.humanStartProofId !== undefined
+          ? input.humanStartProofId
+          : order.execution.humanStartProofId,
+    },
+  });
+}
+
+/**
+ * Persist that the application crossed the local I/O boundary (transmit may have occurred).
+ * Still not evidence of venue acceptance. Does not change business status alone.
+ */
+export function markOrderTransmitted(
+  order: Order,
+  input: Omit<OrderTransitionInput, 'toStatus' | 'execution'>,
+): Order {
+  assertNotTerminal(order);
+  if (
+    order.execution.submissionPhase !== SubmissionPhase.READY_TO_TRANSMIT &&
+    order.execution.submissionPhase !== SubmissionPhase.TRANSMITTED
+  ) {
+    throw new Error(
+      `cannot mark transmitted from submission phase ${order.execution.submissionPhase}`,
+    );
+  }
+  if (order.execution.submissionPhase === SubmissionPhase.TRANSMITTED) {
+    return order;
+  }
+  return appendExecutionLifecycle(order, {
+    ...input,
+    eventType: input.eventType || 'OrderTransmitMarked',
+    execution: {
+      submissionPhase: SubmissionPhase.TRANSMITTED,
+      transmittedAt: input.occurredAt,
+    },
+  });
+}
+
+/**
+ * Mark ambiguous venue outcome as UNKNOWN. Never invents REJECTED/CANCELLED/FILLED.
+ */
+export function markOrderSubmissionUnknown(
+  order: Order,
+  input: Omit<OrderTransitionInput, 'toStatus' | 'execution'> & {
+    ambiguityReason: string;
+  },
+): Order {
+  if (order.status === OrderStatus.UNKNOWN) {
+    return appendExecutionLifecycle(order, {
+      ...input,
+      eventType: input.eventType || 'OrderUnknownPersisted',
+      execution: {
+        reconciliationRequired: true,
+        ambiguityReason: required(input.ambiguityReason, 'ambiguity reason'),
+        unknownEnteredAt: order.execution.unknownEnteredAt ?? input.occurredAt,
+      },
+    });
+  }
+  return transitionOrder(order, {
+    ...input,
+    toStatus: OrderStatus.UNKNOWN,
+    eventType: input.eventType || 'OrderUnknown',
+    reason: input.ambiguityReason,
+    adapterOrderId: input.adapterOrderId,
+    execution: {
+      submissionPhase:
+        order.execution.submissionPhase === SubmissionPhase.NONE
+          ? SubmissionPhase.TRANSMITTED
+          : order.execution.submissionPhase,
+      reconciliationRequired: true,
+      unknownEnteredAt: input.occurredAt,
+      ambiguityReason: required(input.ambiguityReason, 'ambiguity reason'),
+    },
+  });
+}
+
+/**
+ * Resolve UNKNOWN only from authoritative evidence. Unresolved keeps UNKNOWN.
+ * Does not create fills/positions — filled evidence only updates order status/qty marker.
+ */
+export function applyOrderReconciliation(
+  order: Order,
+  evidence: OrderReconciliationEvidence,
+  input: Omit<OrderTransitionInput, 'toStatus' | 'execution'>,
+): Order {
+  if (order.status !== OrderStatus.UNKNOWN) {
+    throw new Error(`reconciliation applies only to UNKNOWN orders (got ${order.status})`);
+  }
+  const attempts = order.execution.reconcileAttempts + 1;
+  const baseExecution: Partial<OrderExecutionState> = {
+    lastReconcileAt: input.occurredAt,
+    reconcileAttempts: attempts,
+  };
+
+  if (evidence.kind === 'unresolved') {
+    return transitionOrder(order, {
+      ...input,
+      toStatus: OrderStatus.UNKNOWN,
+      eventType: input.eventType || 'OrderReconcileUnresolved',
+      reason: evidence.reason ?? order.execution.ambiguityReason ?? undefined,
+      execution: {
+        ...baseExecution,
+        reconciliationRequired: true,
+        lastReconcileResult: 'unresolved',
+      },
+    });
+  }
+
+  if (evidence.kind === 'acknowledged') {
+    return transitionOrder(order, {
+      ...input,
+      toStatus: OrderStatus.ACKNOWLEDGED,
+      adapterOrderId: evidence.adapterOrderId ?? order.adapterOrderId ?? undefined,
+      eventType: input.eventType || 'OrderReconcileAcknowledged',
+      execution: {
+        ...baseExecution,
+        submissionPhase: SubmissionPhase.COMPLETED,
+        completedAt: input.occurredAt,
+        reconciliationRequired: false,
+        lastReconcileResult: 'acknowledged',
+        venueOrderId: evidence.venueOrderId ?? order.execution.venueOrderId,
+        ambiguityReason: null,
+      },
+    });
+  }
+
+  if (evidence.kind === 'rejected') {
+    return transitionOrder(order, {
+      ...input,
+      toStatus: OrderStatus.REJECTED,
+      reason: evidence.reason,
+      eventType: input.eventType || 'OrderReconcileRejected',
+      execution: {
+        ...baseExecution,
+        submissionPhase: SubmissionPhase.COMPLETED,
+        completedAt: input.occurredAt,
+        reconciliationRequired: false,
+        lastReconcileResult: 'rejected',
+        ambiguityReason: null,
+      },
+    });
+  }
+
+  if (evidence.kind === 'cancelled') {
+    return transitionOrder(order, {
+      ...input,
+      toStatus: OrderStatus.CANCELLED,
+      eventType: input.eventType || 'OrderReconcileCancelled',
+      execution: {
+        ...baseExecution,
+        submissionPhase: SubmissionPhase.COMPLETED,
+        completedAt: input.occurredAt,
+        reconciliationRequired: false,
+        lastReconcileResult: 'cancelled',
+        ambiguityReason: null,
+      },
+    });
+  }
+
+  // filled — status only; Positions/Ledger must not auto-settle from UNKNOWN alone.
+  const amount = FinancialDecimal.from(evidence.fillQuantity).assertPositive('fill quantity');
+  const ordered = FinancialDecimal.from(order.intent.quantity);
+  if (amount.compare(ordered) !== 0) {
+    throw new Error('UNKNOWN fill reconciliation requires exact order quantity evidence');
+  }
+  const filled = transitionOrder(order, {
+    ...input,
+    toStatus: OrderStatus.FILLED,
+    adapterOrderId: evidence.adapterOrderId ?? order.adapterOrderId ?? undefined,
+    eventType: input.eventType || 'OrderReconcileFilled',
+    execution: {
+      ...baseExecution,
+      submissionPhase: SubmissionPhase.COMPLETED,
+      completedAt: input.occurredAt,
+      reconciliationRequired: false,
+      lastReconcileResult: 'filled',
+      venueOrderId: evidence.venueOrderId ?? order.execution.venueOrderId,
+      ambiguityReason: null,
+    },
+  });
+  return Object.freeze({ ...filled, filledQuantity: amount.toString() });
+}
+
+function appendExecutionLifecycle(
+  order: Order,
+  input: Omit<OrderTransitionInput, 'toStatus'> & { execution: Partial<OrderExecutionState> },
+): Order {
+  assertIso(input.occurredAt, 'occurredAt');
+  assertIso(input.recordedAt, 'recordedAt');
+  const entry = lifecycleEntry({
+    sequence: order.version + 1,
+    fromStatus: order.status,
+    toStatus: order.status,
+    eventType: required(input.eventType, 'event type'),
+    reason: input.reason,
+    actorId: input.actorId,
+    correlationId: input.correlationId,
+    occurredAt: input.occurredAt,
+    recordedAt: input.recordedAt,
+  });
+  return Object.freeze({
+    ...order,
+    version: order.version + 1,
+    execution: mergeExecution(order.execution, input.execution, order.status, input.occurredAt),
+    adapterOrderId:
+      input.adapterOrderId !== undefined
+        ? required(input.adapterOrderId, 'adapter order id')
+        : order.adapterOrderId,
+    lifecycle: Object.freeze([...order.lifecycle, entry]),
+    recordedAt: input.recordedAt,
+  });
+}
+
+function mergeExecution(
+  current: OrderExecutionState,
+  patch: Partial<OrderExecutionState> | undefined,
+  toStatus: OrderStatus,
+  occurredAt: string,
+): OrderExecutionState {
+  const next: OrderExecutionState = {
+    ...current,
+    ...(patch ?? {}),
+  };
+  if (toStatus === OrderStatus.UNKNOWN) {
+    return Object.freeze({
+      ...next,
+      reconciliationRequired: true,
+      unknownEnteredAt: next.unknownEnteredAt ?? occurredAt,
+    });
+  }
+  if (
+    toStatus === OrderStatus.ACKNOWLEDGED ||
+    toStatus === OrderStatus.FILLED ||
+    toStatus === OrderStatus.REJECTED ||
+    toStatus === OrderStatus.CANCELLED
+  ) {
+    return Object.freeze({
+      ...next,
+      submissionPhase: patch?.submissionPhase ?? SubmissionPhase.COMPLETED,
+      completedAt: patch?.completedAt ?? occurredAt,
+      reconciliationRequired: patch?.reconciliationRequired ?? false,
+    });
+  }
+  return Object.freeze(next);
+}
+
+function assertNotTerminal(order: Order): void {
+  if (TERMINAL_ORDER_STATUSES.has(order.status)) {
+    throw new Error(`order is terminal: ${order.status}`);
+  }
 }
 
 function validateTransitionReferences(order: Order, input: OrderTransitionInput): void {
