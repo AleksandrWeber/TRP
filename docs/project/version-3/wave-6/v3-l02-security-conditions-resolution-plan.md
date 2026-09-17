@@ -68,6 +68,7 @@ All live capital safety invariants remain frozen. C7 stays deny-all until a sepa
 | Paper order uniques                                      | **Existing runtime**              | `PaperOrder` `@@unique` workspace+clientOrderId/idempotencyKey                 |
 | Live ExecutionAdapterPort BINANCE/BYBIT/OKX              | **Missing**                       | Stubs throw in `exchange-adapter`; not bound to EXECUTION_ADAPTER              |
 | SSRF helper for webhooks                                 | **Existing elsewhere**            | `validateOutboundSsrfTarget` in security-platform — **not** on exchange path   |
+| Live venue egress allowlist (EG1)                        | **Existing runtime (EG1)**        | `execution-adapter/live-venue-egress`; Paper unbound; ADP1 must consume        |
 | Binance handshake hardcoded origin + `redirect: 'error'` | **Existing runtime**              | connectivity BC only; ≠ live authz                                             |
 | Vault opaque `vaultSecretId` + AAD + C8                  | **Existing runtime**              | Connections / Vault                                                            |
 | Durable KS (no auto-cancel)                              | **Existing runtime**              | `KillSwitchPersistenceService`                                                 |
@@ -114,7 +115,7 @@ Prevent live trading adapters from becoming a generic SSRF / open egress primiti
 
 - Arch: AD-L02-14 boundary confirmation.
 - Sec: SD-L02-01 clearance tests + code review of outbound gate.
-- Status: **PLANNED — NOT IMPLEMENTED**
+- Status: **EG1 IMPLEMENTATION-COMPLETE** — evidence: [`v3-l02-s-eg1-egress-security-implementation-evidence.md`](./v3-l02-s-eg1-egress-security-implementation-evidence.md). Live adapters not yet wired (ADP1 residual).
 
 ### PO gate
 
@@ -122,7 +123,7 @@ None if limited to PO-approved venues BINANCE/BYBIT/OKX with fixed hosts. **New 
 
 ### Implementation authorization
 
-**Required** before coding (separate act). This plan alone is insufficient.
+**Granted for L02-S-EG1 only** (separate PO/task act). ADP1 live adapter coding remains unauthorized.
 
 ---
 
@@ -419,7 +420,7 @@ None for tests. Live production calls require separate authorization (not part o
 | **L02-S-EM1**  | Prove/enforce EM non-reachability from L02 capital path | SB-05 | composition, import lint/tests, docs boundary                                    | None                    | Medium (confusion) | No EM on KS/policy/session; no Engine→EM      | Confirm NON-SoT | Yes             | No*    | **Forbidden**                                |
 | **L02-S-HS1**  | Durable human-start + ACTION/COMMAND + claim-at-I/O API | SB-02 | Prisma HS table, store, LiveAdmission verify≠claim, Engine claim hook (no venue) | Impl auth               | High               | Replay/race/binding/restart                   | AD-L02-04       | SD-L02-04       | No     | **HS1 COMPLETE — PO review next**            |
 | **L02-S-UNK1** | UNKNOWN status + pre-send + reconcile metadata          | SB-03 | Orders status/transitions, persistence fields, engine markers                    | HS1 helpful             | High               | Crash-window unit/integration w/ fake adapter | AD-L02-07/09/11 | SD-L02-05/06    | No     | **UNK1 COMPLETE — PO review next**           |
-| **L02-S-EG1**  | Live egress allowlist gate                              | SB-01 | shared outbound validator for live adapters                                      | Impl auth               | High (SSRF)        | Allowlist/redirect/private-IP fails           | AD-L02-14       | SD-L02-01       | No†    | **Forbidden**                                |
+| **L02-S-EG1**  | Live egress allowlist gate                              | SB-01 | shared outbound validator for live adapters                                      | Impl auth               | High (SSRF)        | Allowlist/redirect/private-IP fails           | AD-L02-14       | SD-L02-01       | No†    | **EG1 COMPLETE — PO review next**            |
 | **L02-S-ENV1** | Test/live credential↔endpoint binding                   | SB-06 | Vault metadata checks, adapter factory guards                                    | EG1 aligned             | High               | Mismatch fail-closed; no log leak             | AD-L02-14       | SD-L02-02       | Maybe‡ | **Forbidden**                                |
 | **L02-S-ADP1** | Live adapters BINANCE/BYBIT/OKX on ExecutionAdapterPort | SB-04 | New live adapters; Nest binding behind flags; **still no production calls**      | HS1, UNK1, EG1, ENV1    | Critical           | Mocked HTTP contract tests                    | AD-L02-14       | SD-L02-01/02/06 | No§    | **Forbidden** until all SB + PO capital acts |
 | **L02-S-ISO1** | Cross-workspace live regression suite                   | SB-07 | platform-conformance / api specs                                                 | ADP1 contracts or fakes | Medium             | Full matrix §10                               | —               | SD-L02-03       | No     | **Forbidden**                                |
@@ -441,7 +442,7 @@ None for tests. Live production calls require separate authorization (not part o
 
 | SB    | Condition                                | Implementation Evidence                                  | Required Tests                                                      | Security Evidence   | Architecture Evidence | PO Gate                      | Status                                                            |
 | ----- | ---------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------- | ------------------- | --------------------- | ---------------------------- | ----------------------------------------------------------------- |
-| SB-01 | SSRF/egress allowlist on live adapters   | Outbound gate + allowlisted hosts wired to live adapters | Arbitrary URL deny; redirect deny; private IP deny; paper isolation | SD-L02-01 close-out | AD-L02-14             | None†                        | **PLANNED — NOT IMPLEMENTED**                                     |
+| SB-01 | SSRF/egress allowlist on live adapters   | Outbound gate + allowlisted hosts wired to live adapters | Arbitrary URL deny; redirect deny; private IP deny; paper isolation | SD-L02-01 close-out | AD-L02-14             | None†                        | **EG1 COMPLETE** (ADP1 must consume gate)                         |
 | SB-02 | Durable HS claim-at-I/O + ACTION/COMMAND | Prisma store; claim CAS; verify≠claim                    | Replay/race/binding/expiry/restart/multi-instance                   | SD-L02-04           | AD-L02-04             | None (frozen)                | **HS1 COMPLETE** (claim API; Engine live I/O wiring residual)     |
 | SB-03 | UNKNOWN/pre-send/reconcile persistence   | Status+markers+reconcile fields; engine behavior         | Crash matrix; no blind retry                                        | SD-L02-05/06        | AD-L02-07/09/11       | None (frozen)                | **UNK1 COMPLETE** (venue query wiring residual for ADP1)          |
 | SB-04 | Live ExecutionAdapterPort                | Live adapters bound to EXECUTION_ADAPTER under gates     | Mocked submit/cancel/query; fail-closed                             | SD-L02-01/02/06     | AD-L02-01/14          | None† / capital act separate | **PLANNED — NOT IMPLEMENTED**                                     |
@@ -523,8 +524,8 @@ This Security Conditions Resolution Plan does NOT authorize:
   - Slice Approval
 
 Existence of this plan ≠ authorization to begin coding.
-SB-01, SB-04, SB-06, SB-07 remain PLANNED — NOT IMPLEMENTED.
-SB-05 (EM1), SB-02 (HS1), and SB-03 (UNK1) have separately authorized implementation evidence; Slice Approval remains NOT GRANTED.
+SB-04, SB-06, SB-07 remain PLANNED — NOT IMPLEMENTED.
+SB-05 (EM1), SB-02 (HS1), SB-03 (UNK1), and SB-01 (EG1) have separately authorized implementation evidence; Slice Approval remains NOT GRANTED.
 V3-L02 full live implementation remains NOT AUTHORIZED.
 ```
 
