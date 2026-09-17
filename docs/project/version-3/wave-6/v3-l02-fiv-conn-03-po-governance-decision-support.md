@@ -11,9 +11,10 @@
 ```text
 STATUS:
 D-CONN-03-01 FROZEN (PO APPROVED — OPTION A)
-D-CONN-03-02…05 OPEN — DECISION SUPPORT PENDING PO APPROVAL
+D-CONN-03-02 FROZEN (PO APPROVED — OPTION A)
+D-CONN-03-03…05 OPEN — DECISION SUPPORT PENDING PO APPROVAL
 
-Full decision-freeze artifact:  NOT CREATED (awaiting D-CONN-03-02…05)
+Full decision-freeze artifact:  NOT CREATED (awaiting D-CONN-03-03…05)
 Implementation:                 NOT PERFORMED
 Implementation authorization:   NOT GRANTED
 External I/O:                   ZERO
@@ -49,8 +50,10 @@ PLANNING REVIEW PASS WITH REQUIRED PO DECISIONS
 D-CONN-03-01:
 FROZEN — APPROVED OPTION A
 
+D-CONN-03-02:
+FROZEN — APPROVED OPTION A
+
 Still open:
-D-CONN-03-02
 D-CONN-03-03
 D-CONN-03-04
 D-CONN-03-05
@@ -59,8 +62,8 @@ D-CONN-03-05
 ### Pre-check (this update)
 
 ```text
-HEAD:        ce9aaac0b5f46dfb8730abdc9fa4d358b9bf0ccd
-origin/main: ce9aaac0b5f46dfb8730abdc9fa4d358b9bf0ccd
+HEAD:        e6c036f232b1d1b767e8bc34a3c81920774e386d
+origin/main: e6c036f232b1d1b767e8bc34a3c81920774e386d
 HEAD == origin/main: YES
 ```
 
@@ -87,8 +90,8 @@ RECOMMENDED FOR PO/GOVERNANCE CONSIDERATION
   ≠
 APPROVED / FROZEN / ACCEPTED
 
-Only D-CONN-03-01 is FROZEN below (explicit PO approval in this session).
-D-CONN-03-02…05 recommendations remain non-binding.
+D-CONN-03-01 and D-CONN-03-02 are FROZEN (explicit PO approvals).
+D-CONN-03-03…05 recommendations remain non-binding.
 ```
 
 ---
@@ -128,7 +131,7 @@ governed EXCHANGE validate → handshake → capability path.
 ```text
 This freezes the GOVERNANCE DECISION ONLY.
 It does NOT authorize implementation.
-It does NOT freeze D-CONN-03-02…05.
+It does NOT freeze D-CONN-03-03…05 by itself.
 It does NOT create the full FIV-CONN-03 decision-freeze artifact.
 ```
 
@@ -244,13 +247,62 @@ See section "D-CONN-03-01 — PO DECISION" above.
 
 ---
 
-## D-CONN-03-02 — DECISION SUPPORT
+## D-CONN-03-02 — PO DECISION
 
 ```text
-Status: OPEN — PO APPROVAL REQUIRED
-Highest-risk remaining decision: YES
-Depends on: D-CONN-03-01 FROZEN (purpose must be passed on validate path)
-Does NOT freeze LIVE dual-purpose policy in this act.
+Status:                         FROZEN
+Decision:                       APPROVED — OPTION A
+Decision authority:             PO / Governance
+Implementation authorization:   NOT GRANTED
+```
+
+### Exact frozen decision
+
+```text
+LIVE-class purposes are {Trading, TradingLive}; TESTNET purpose is
+{TradingTestnet}. LIVE dual-purpose handling is deterministic and MUST remain
+bound to the specific Connection.vaultSecretId. The presence of two permitted
+LIVE purpose classes does NOT authorize trying sibling secrets, ambient
+credential fallback, first-match selection, or provider-only resolution.
+```
+
+### Required properties (frozen)
+
+1. Connection identity determines the credential reference.
+2. `vaultSecretId` remains the specific credential reference.
+3. LIVE may recognize `Trading` and `TradingLive` only as explicitly governed LIVE purpose classes.
+4. TESTNET recognizes `TradingTestnet` only.
+5. `TradingTestnet` MUST NEVER be accepted for LIVE.
+6. `Trading` MUST NEVER be accepted for TESTNET.
+7. `TradingLive` MUST NEVER be accepted for TESTNET.
+8. A LIVE Connection MUST NOT substitute another LIVE Connection's `vaultSecretId` merely because it has a permitted LIVE purpose.
+9. No sibling-secret substitution.
+10. No provider-only fallback.
+11. No first-valid-credential selection.
+12. No database-order-dependent credential selection.
+13. No retry-across-purpose behavior.
+14. No cross-workspace fallback.
+15. Client cannot select `SecretPurpose`.
+16. Model C remains authoritative.
+17. `Connection.environment` ↔ actual Vault purpose mismatch **FAILS CLOSED**.
+
+```text
+This freezes the GOVERNANCE POLICY ONLY.
+It does NOT authorize implementation.
+It does NOT freeze D-CONN-03-03…05.
+It does NOT create the full five-decision freeze artifact.
+```
+
+### Prior decision support (retained for audit)
+
+The expanded Option A/B analysis and deterministic id-match contract remain below for history. **PO selected OPTION A** with the vaultSecretId-bound LIVE-class policy above.
+
+---
+
+## D-CONN-03-02 — DECISION SUPPORT (historical)
+
+```text
+Status: SUPERSEDED BY PO DECISION ABOVE — was OPEN; now FROZEN OPTION A
 ```
 
 ### Question
@@ -480,19 +532,17 @@ LIVE + Trading / TradingLive are **not** marked ALLOW as frozen.
 16. Secret non-leakage
 17. No external venue calls
 
-### Cross-decision dependencies
+### Cross-decision dependencies (at time of D-CONN-03-02 support)
 
 ```text
 D-CONN-03-01: FROZEN — APPROVED OPTION A
-D-CONN-03-02: OPEN
+D-CONN-03-02: FROZEN — APPROVED OPTION A   (recorded this session)
 D-CONN-03-03: OPEN
 D-CONN-03-04: OPEN
 D-CONN-03-05: OPEN
 ```
 
-Frozen D-CONN-03-01 requires a derived purpose on the validate path; D-CONN-03-02 defines **which LIVE-class purposes are eligible** and the deterministic selection rule. Do not claim the full FIV-CONN-03 decision set is frozen.
-
-### Recommended for PO/Governance consideration
+### Recommended for PO/Governance consideration (historical — superseded)
 
 ```text
 RECOMMENDED FOR PO/GOVERNANCE CONSIDERATION:
@@ -501,96 +551,238 @@ OPTION A
   — TESTNET-class {TradingTestnet}
   — deterministic vaultSecretId-matched resolution within allowlist
   — NEVER ambient cascade; NEVER Testnet on LIVE path
-
-OPTION B
-  — only if PO explicitly accepts legacy Trading LIVE breakage
-    or schedules separate governed migration outside CONN-03
-
-OPTION C (ambient try-until-works):
-  REJECTED — do not approve
 ```
 
+### PO/Governance status
+
 ```text
-PO/GOVERNANCE APPROVAL REQUIRED: YES
-Status: OPEN — NOT FROZEN
+PO/GOVERNANCE APPROVAL: GRANTED (this session)
+Status: FROZEN — APPROVED OPTION A
+See section "D-CONN-03-02 — PO DECISION" above.
 ```
 
 ---
 
-## Decision D-CONN-03-03 — NULL-environment validation behavior
+## D-CONN-03-03 — DECISION SUPPORT
+
+```text
+Status: OPEN — PO APPROVAL REQUIRED
+Depends on: D-CONN-03-01 FROZEN; D-CONN-03-02 FROZEN
+Does NOT freeze NULL-environment policy in this act.
+```
 
 ### Question
 
-Until FIV-CONN-04 LIVE backfill, how must EXCHANGE validate / handshake / capability behave when `Connection.environment IS NULL`?
+How should the governed EXCHANGE Connection validate / handshake / capability path behave when:
 
-### Current repository evidence
+```text
+Connection.environment IS NULL
+```
 
-| Fact                        | Evidence                                                               |
-| --------------------------- | ---------------------------------------------------------------------- |
-| Column nullable             | CONN-01 migration; no backfill yet                                     |
-| NULL ≠ LIVE                 | Frozen PO-CRED / D-CRED-02 semantics; CONN-02 uniqueness excludes NULL |
-| `vaultPurposeForConnection` | Returns `undefined` when env not populated → omit-purpose → `Trading`  |
-| Observed NULL EXCHANGE rows | Still present per CONN-02 audits (metadata/credentialed legacy)        |
-| New EXCHANGE creates        | Must supply `live`\|`testnet` (CONN-01)                                |
+Frozen constraint:
 
-**Forbidden:** `NULL → implicit LIVE` identity.
+```text
+NULL != LIVE
+The system MUST NOT silently interpret NULL as LIVE.
+NULL is not a credential class.
+```
 
-### Options
+### Repository evidence
 
-#### OPTION A — FAIL CLOSED / reject EXCHANGE validate when environment IS NULL
+| #   | Finding                                                                | Evidence                                                                                                     |
+| --- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| 1   | `environment` column is nullable                                       | CONN-01 migration; schema `String?`; no CONN-04 backfill yet                                                 |
+| 2   | New EXCHANGE creates require `live`\|`testnet`                         | `resolveConnectionEnvironmentForCreate` — omit/demo rejected                                                 |
+| 3   | Notification/AI creates may keep `environment = null`                  | CONN-01 tests; single-purpose Vault types                                                                    |
+| 4   | Legacy EXCHANGE NULL rows still exist                                  | CONN-02 audits observed NULL EXCHANGE groups; Strategy B excludes `environment IS NULL`                      |
+| 5   | Rename/status ops tolerate NULL                                        | Environment immutable; not rewritten                                                                         |
+| 6   | `vaultPurposeForConnection` returns `undefined` when env not populated | Omit-purpose → Vault `Trading` default **today**                                                             |
+| 7   | EXCHANGE validate → handshake/capability currently omit purpose        | Environment lost; retrieve defaults to `Trading` — **implicit LIVE-class retrieve hazard for NULL EXCHANGE** |
+| 8   | Slot check with NULL env does not filter by environment                | `assertCredentialSlotAvailable` only adds env predicate when non-null                                        |
+| 9   | Slot probe for NULL EXCHANGE uses omit-purpose path                    | `vaultPurposesToProbe` returns `null` → omit-purpose get                                                     |
+| 10  | NULL is transitional for EXCHANGE until FIV-CONN-04 backfill           | Parent freeze D-CRED-02-04/05; CONN-04 owns backfill                                                         |
+| 11  | Non-EXCHANGE NULL is normal/permanent for notification/AI              | Not multi-env; not a trading credential class                                                                |
+| 12  | UI hardcodes `environment: 'live'` on EXCHANGE create                  | CRED-05; does not create new NULL EXCHANGE via UI                                                            |
+
+**Interpretation:** NULL is an **incomplete EXCHANGE environment state** (legacy) or a **non-trading normal omit** (notification/AI). It must not become a credential-selection mechanism. Today's NULL EXCHANGE validate path effectively retrieves omit-purpose `Trading` — that is the hazard D-CONN-03-03 must close without calling NULL “LIVE”.
+
+### Option A — FAIL CLOSED for governed EXCHANGE validation when environment is NULL
 
 ```text
 EXCHANGE + environment IS NULL
-  → reject validate / handshake / capability
+  → reject / FAIL CLOSED on validate → handshake → capability
   → no Vault trading credential retrieve
+  → NULL never interpreted as LIVE
 ```
 
-| Dimension           | Assessment                                                                 |
-| ------------------- | -------------------------------------------------------------------------- |
-| Security            | Strongest; eliminates NULL omit-purpose LIVE retrieve during transition    |
-| Operational         | Breaks validate for existing NULL credentialed EXCHANGE rows until CONN-04 |
-| CONN-04 interaction | Encourages timely backfill; NULL rows remain listable/renamable            |
-| CRED-05 UI          | UI already hardcodes live on create; NULL is legacy-only                   |
-| Tests               | Assert reject; assert no retrieve                                          |
+| Dimension            | Assessment                                                             |
+| -------------------- | ---------------------------------------------------------------------- |
+| Security             | Strongest for EXCHANGE; removes NULL omit-purpose Trading retrieve     |
+| Model C              | Compatible — no env means no eligible purpose class                    |
+| D-CONN-03-01         | Compatible — no omit-purpose on governed path                          |
+| D-CONN-03-02         | Compatible — no LIVE-class allowlist selection without env             |
+| Existing data        | NULL EXCHANGE credentialed rows cannot validate until CONN-04 backfill |
+| Operational          | List/rename/disable/revoke may remain; CONNECT blocked                 |
+| FIV-CONN-04          | Dependency: backfill restores validate for unambiguous LIVE rows       |
+| FIV-CONN-05          | UI must not reinterpret NULL as LIVE                                   |
+| Testability          | High                                                                   |
+| Complexity           | Low                                                                    |
+| Accidental LIVE risk | **Lowest**                                                             |
 
-#### OPTION B — Transition exception: allow omit-purpose `Trading` retrieve for NULL EXCHANGE only, with explicit documentation that NULL ≠ LIVE identity
+### Option B — Non-EXCHANGE / non-credentialed behavior allowed; EXCHANGE trading credential validate FAIL CLOSED while NULL
 
 ```text
-NULL EXCHANGE validate may retrieve omit-purpose Trading (legacy path)
-  BUT must never treat NULL as environment=live for uniqueness/identity
-  AND must never retrieve TradingTestnet for NULL
+Non-EXCHANGE (notification/AI) with NULL env:
+  may continue non-trading flows as today (local validate with type-default purpose)
+
+EXCHANGE with NULL env:
+  any trading credential validate / handshake / capability → FAIL CLOSED
+  no trading credential retrieve
+
+Metadata-only EXCHANGE (NULL env, no vaultSecretId):
+  validate still FAIL CLOSED (nothing to authorize safely)
 ```
 
-| Dimension           | Assessment                                                                                 |
-| ------------------- | ------------------------------------------------------------------------------------------ |
-| Security            | Weaker; documents exception; risk of operator confusion if treated as LIVE                 |
-| Operational         | Preserves validate for legacy NULL rows                                                    |
-| CONN-04 interaction | Backfill later converts NULL→live without Vault rewrite                                    |
-| Tests               | NULL + Trading governed allow; NULL + TradingTestnet DENY; NULL never equals live identity |
+| Dimension            | Assessment                                                                |
+| -------------------- | ------------------------------------------------------------------------- |
+| Security             | Same EXCHANGE trading safety as A; preserves legitimate NULL non-EXCHANGE |
+| Model C / 01 / 02    | Compatible                                                                |
+| Existing data        | Same EXCHANGE impact as A; notification/AI unaffected                     |
+| Operational          | Better than a naive “all Connections reject” reading of A                 |
+| FIV-CONN-04 / 05     | Same as A                                                                 |
+| Accidental LIVE risk | **Lowest** for trading paths                                              |
 
-#### OPTION C — Treat NULL as live for retrieve only
+### Option C — Other
 
 ```text
-FORBIDDEN — silent LIVE default / PO-CRED-03 violation
+No additional option required.
+
+REJECTED (must not be approved):
+  - Treat NULL as LIVE for retrieve
+  - Allow omit-purpose Trading retrieve for NULL EXCHANGE as continuity exception
+    (conflicts with frozen D-CONN-03-01 omit-purpose prohibition on governed path)
+  - Allow TradingTestnet for NULL
+  - Provider-only sibling substitution while NULL
 ```
+
+### Critical NULL scenarios
+
+| Scenario | Setup                                           | Policy status                                                                                                             |
+| -------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| 1        | NULL + Vault Trading                            | **OPEN — PO DECISION REQUIRED** (A/B: DENY trading validate; never identity=LIVE)                                         |
+| 2        | NULL + Vault TradingLive                        | **OPEN — PO DECISION REQUIRED** (A/B: DENY trading validate)                                                              |
+| 3        | NULL + Vault TradingTestnet                     | **DENY / FAIL CLOSED**                                                                                                    |
+| 4        | NULL + no credential                            | **OPEN — PO DECISION REQUIRED** (recommend: reject EXCHANGE validate; non-EXCHANGE unchanged under B)                     |
+| 5        | NULL later backfilled to LIVE by CONN-04        | Must preserve safe transition: current NULL behavior must not invent LIVE identity; after backfill, D-CONN-03-01/02 apply |
+| 6        | NULL + client purpose=Trading                   | **FORBIDDEN** (client-controlled purpose)                                                                                 |
+| 7        | NULL + provider matches another LIVE Connection | No provider-only lookup; no sibling-secret substitution                                                                   |
+
+### NULL must not become a credential class
+
+```text
+NULL is NOT:
+  LIVE | TESTNET | Trading | TradingLive | TradingTestnet
+
+NULL is:
+  incomplete / unresolved EXCHANGE environment state
+  OR normal omit for non-multi-env Connection types
+```
+
+### Security analysis
+
+| Requirement                                  | A                         | B                 |
+| -------------------------------------------- | ------------------------- | ----------------- |
+| NULL ≠ LIVE                                  | PASS                      | PASS              |
+| Model C                                      | PASS                      | PASS              |
+| Exact Connection credential binding          | PASS (no retrieve)        | PASS for EXCHANGE |
+| vaultSecretId separation                     | PASS                      | PASS              |
+| Workspace / provider / environment isolation | PASS                      | PASS              |
+| No provider-only lookup                      | PASS                      | PASS              |
+| No client-controlled purpose                 | PASS                      | PASS              |
+| No sibling-secret substitution               | PASS                      | PASS              |
+| No cross-environment fallback                | PASS                      | PASS              |
+| Fail-closed unsafe credential use            | PASS                      | PASS              |
+| Secret non-exposure                          | PASS                      | PASS              |
+| Non-EXCHANGE continuity                      | May over-block if misread | **PASS**          |
+
+### FIV-CONN-04 dependency
+
+```text
+FIV-CONN-04 owns LIVE backfill / EXCHANGE NOT NULL / audit / quarantine.
+D-CONN-03-03 MUST NOT perform backfill or rewrite environment.
+If PO chooses A or B, NULL EXCHANGE trading validate remains blocked until
+CONN-04 assigns an explicit environment (expected: live for unambiguous rows).
+Document as dependency — do not implement here.
+```
+
+Note: Task text mentioning “FIV-CONN-04 owns LIVE origin management” is out of band for this decision; **origins remain FIV-CRED-04**. CONN-04 ownership here is **backfill / NOT NULL**.
+
+### FIV-CONN-05 boundary
+
+```text
+UI / Testnet operator flow remains FIV-CRED-05 / FIV-CONN-05 scope.
+UI must not reinterpret NULL as LIVE.
+No UI implementation in this act.
+```
+
+### Decision matrix (D-CONN-03-03)
+
+| Connection environment | Vault purpose  | D-CONN-03-03 policy                   |
+| ---------------------- | -------------- | ------------------------------------- |
+| NULL                   | Trading        | **OPEN**                              |
+| NULL                   | TradingLive    | **OPEN**                              |
+| NULL                   | TradingTestnet | **DENY**                              |
+| LIVE                   | Trading        | governed by **D-CONN-03-02** (FROZEN) |
+| LIVE                   | TradingLive    | governed by **D-CONN-03-02** (FROZEN) |
+| LIVE                   | TradingTestnet | **DENY**                              |
+| TESTNET                | Trading        | **DENY**                              |
+| TESTNET                | TradingLive    | **DENY**                              |
+| TESTNET                | TradingTestnet | **ALLOW**                             |
+
+NULL + Trading / TradingLive are **not** marked approved.
+
+### Future test matrix
+
+1. NULL + Trading → EXCHANGE trading validate DENY (once frozen)
+2. NULL + TradingLive → DENY
+3. NULL + TradingTestnet → DENY
+4. NULL + no credential → EXCHANGE validate reject
+5. NULL + provider-only lookup attempt → DENY
+6. NULL + client-supplied purpose → rejected
+7. NULL + wrong workspace → DENY
+8. NULL + wrong provider → DENY
+9. NULL → future LIVE backfill compatibility (no identity invention before backfill)
+10. validate path
+11. handshake path
+12. capability path
+13. no implicit LIVE behavior
+14. no sibling-secret substitution
+15. no secret leakage
+16. regression D-CONN-03-01
+17. regression D-CONN-03-02
+18. Non-EXCHANGE NULL local validate still works (if Option B frozen)
+
+No external venue calls.
 
 ### Recommended for PO/Governance consideration
 
 ```text
 RECOMMENDED FOR PO/GOVERNANCE CONSIDERATION:
-OPTION A (fail closed)
-  — if PO prioritizes security clarity during transition
-
-ALTERNATE (explicitly weaker):
 OPTION B
-  — only if PO prioritizes continuity for existing NULL credentialed EXCHANGE rows
-    until CONN-04, with mandatory documentation that NULL ≠ LIVE
+  — EXCHANGE trading credential validate/handshake/capability FAIL CLOSED while environment IS NULL
+  — non-EXCHANGE / non-trading NULL behavior may continue
+  — NULL never equals LIVE
+  — no omit-purpose Trading retrieve for NULL EXCHANGE
+  — no backfill in CONN-03
 
-OPTION C:
-REJECTED — must not be approved
+OPTION A
+  — acceptable if interpreted as EXCHANGE-scoped only (same trading outcome as B)
+
+REJECTED:
+  NULL → LIVE
+  omit-purpose Trading continuity for NULL EXCHANGE
+  TradingTestnet for NULL
 ```
-
-### PO/Governance approval required
 
 ```text
 PO/GOVERNANCE APPROVAL REQUIRED: YES
@@ -729,48 +921,45 @@ Status: OPEN — NOT FROZEN
 
 ## Cross-Decision Consistency
 
-If PO later freezes the **recommended remaining set** (02=A id-matched, 03=A or documented B, 04=A, 05=A) **together with already-frozen D-CONN-03-01=A**, the composition guarantees:
+With **D-CONN-03-01=A** and **D-CONN-03-02=A** frozen, if PO later freezes **03=B (or EXCHANGE-scoped A), 04=A, 05=A**, the composition guarantees:
 
-| Guarantee                                 | How                                         |
-| ----------------------------------------- | ------------------------------------------- |
-| LIVE Connection → LIVE purpose only       | 01+02+04                                    |
-| TESTNET Connection → TESTNET purpose only | 01+02+04                                    |
-| NULL environment → never implicitly LIVE  | 03 rejects C; A or documented B             |
-| Mismatch → FAIL CLOSED                    | 04 before use (+ bind)                      |
-| Client cannot select Vault purpose        | 05                                          |
-| Provider-only fallback forbidden          | 01+02 id/env-bound; D-CRED-02-07            |
-| Cross-workspace fallback forbidden        | existing ACL + workspaceId on all retrieves |
-| No cross-environment credential fallback  | 02 forbidden list                           |
+| Guarantee                                                    | How                    |
+| ------------------------------------------------------------ | ---------------------- |
+| LIVE Connection → LIVE purpose only (id-bound)               | 01+02+04               |
+| TESTNET Connection → TESTNET purpose only                    | 01+02+04               |
+| NULL environment → never implicitly LIVE                     | 03                     |
+| NULL EXCHANGE → no trading credential use until env assigned | 03                     |
+| Mismatch → FAIL CLOSED                                       | 04 before use (+ bind) |
+| Client cannot select Vault purpose                           | 05                     |
+| Provider-only / sibling-secret fallback forbidden            | 01+02                  |
+| Cross-workspace fallback forbidden                           | ACL + workspaceId      |
 
 **Inconsistency warnings for PO:**
 
-1. ~~Choosing 01=C (defer) without interim~~ — **N/A: D-CONN-03-01 is FROZEN Option A.**
-2. Choosing **02=B (TradingLive only)** without a migration plan breaks legacy `Trading` after NULL→live backfill.
-3. Choosing **03=B** while claiming “NULL never retrieves LIVE-class” is contradictory — B explicitly allows omit-purpose `Trading` for NULL as a **documented exception**, not as LIVE identity.
-4. Choosing **04=C (store only)** contradicts residual CONN-03 purpose (validate path).
-5. Implementing D-CONN-03-01 without freezing D-CONN-03-02 leaves LIVE-class selection underspecified for legacy Trading vs TradingLive.
+1. Approving omit-purpose Trading retrieve for NULL EXCHANGE **conflicts** with frozen D-CONN-03-01.
+2. Choosing **04=C (store only)** still contradicts residual CONN-03 validate-path purpose.
+3. Implementing 01+02 without freezing 03 leaves NULL EXCHANGE validate as omit-purpose Trading hazard.
 
 ---
 
 ## Security Matrix
 
-Results that depend on OPEN decisions are marked accordingly. **No LIVE+Trading / LIVE+TradingLive ALLOW frozen without PO decision on D-CONN-03-02.**
-
-| Connection environment               | Vault purpose  | Expected result                                                                                                  |
-| ------------------------------------ | -------------- | ---------------------------------------------------------------------------------------------------------------- |
-| LIVE                                 | Trading        | **OPEN — PO DECISION REQUIRED** (D-CONN-03-02: ALLOW if id-matched under A; DENY under B)                        |
-| LIVE                                 | TradingLive    | **OPEN — PO DECISION REQUIRED** (D-CONN-03-02: ALLOW under A/B if id/exact match)                                |
-| LIVE                                 | TradingTestnet | **DENY**                                                                                                         |
-| TESTNET                              | Trading        | **DENY**                                                                                                         |
-| TESTNET                              | TradingLive    | **DENY**                                                                                                         |
-| TESTNET                              | TradingTestnet | **ALLOW**                                                                                                        |
-| NULL                                 | Trading        | **OPEN — PO DECISION REQUIRED** (D-CONN-03-03: DENY under A; governed legacy allow under B; never identity=LIVE) |
-| NULL                                 | TradingLive    | **OPEN — PO DECISION REQUIRED** (typically DENY unless PO expands B — default expect DENY)                       |
-| NULL                                 | TradingTestnet | **DENY**                                                                                                         |
-| wrong workspace                      | any            | **DENY**                                                                                                         |
-| wrong provider / wrong vaultSecretId | any            | **DENY**                                                                                                         |
-| provider-only lookup (populated env) | n/a            | **FORBIDDEN / DENY**                                                                                             |
-| client-supplied purpose              | n/a            | **FORBIDDEN / DENY** (D-CONN-03-05)                                                                              |
+| Connection environment               | Vault purpose  | Expected result                                          |
+| ------------------------------------ | -------------- | -------------------------------------------------------- |
+| LIVE                                 | Trading        | governed by **D-CONN-03-02** (FROZEN — id-matched ALLOW) |
+| LIVE                                 | TradingLive    | governed by **D-CONN-03-02** (FROZEN — id-matched ALLOW) |
+| LIVE                                 | TradingTestnet | **DENY**                                                 |
+| TESTNET                              | Trading        | **DENY**                                                 |
+| TESTNET                              | TradingLive    | **DENY**                                                 |
+| TESTNET                              | TradingTestnet | **ALLOW**                                                |
+| NULL                                 | Trading        | **OPEN — D-CONN-03-03**                                  |
+| NULL                                 | TradingLive    | **OPEN — D-CONN-03-03**                                  |
+| NULL                                 | TradingTestnet | **DENY**                                                 |
+| wrong workspace                      | any            | **DENY**                                                 |
+| wrong provider / wrong vaultSecretId | any            | **DENY**                                                 |
+| provider-only lookup (populated env) | n/a            | **FORBIDDEN / DENY**                                     |
+| sibling-secret substitution          | n/a            | **FORBIDDEN / DENY** (D-CONN-03-02)                      |
+| client-supplied purpose              | n/a            | **FORBIDDEN / DENY**                                     |
 
 ---
 
@@ -866,19 +1055,19 @@ Protected leftovers:          UNTOUCHED
 
 ```text
 D-CONN-03-01: FROZEN — APPROVED OPTION A
-D-CONN-03-02: OPEN
+D-CONN-03-02: FROZEN — APPROVED OPTION A
 D-CONN-03-03: OPEN
 D-CONN-03-04: OPEN
 D-CONN-03-05: OPEN
 
 Full five-decision freeze artifact: NOT CREATED
-Reason: Only D-CONN-03-01 has explicit PO approval.
-D-CONN-03-02…05 recommendations are NOT approvals.
+Reason: D-CONN-03-03…05 lack explicit PO approval.
+D-CONN-03-03…05 recommendations are NOT approvals.
 ```
 
 ### How PO completes freeze later
 
-PO/Governance must explicitly approve D-CONN-03-02…05. Only when **all five** are approved may a separate freeze artifact be created:
+PO/Governance must explicitly approve D-CONN-03-03…05. Only when **all five** are approved may a separate freeze artifact be created:
 
 ```text
 docs/project/version-3/wave-6/v3-l02-fiv-conn-03-po-governance-decision-freeze.md
@@ -892,7 +1081,7 @@ Freeze still does **not** authorize implementation.
 
 ```text
 Next required PO decision:
-  D-CONN-03-02
+  D-CONN-03-03
 
 After PO freezes D-CONN-03-01…05 (all five):
   FIV-CONN-03 ARCHITECTURE REVIEW
