@@ -351,12 +351,17 @@ Use fakes/mocks for venue I/O. Depends on SB-02/03/04 surfaces existing (or test
 
 ### Status
 
-**PLANNED — NOT IMPLEMENTED**
+**ISO1 COMPLETE — implementation-complete for cross-workspace / live-path isolation regression (SB-07).**
+Evidence: `docs/project/version-3/wave-6/v3-l02-s-iso1-isolation-regression-implementation-evidence.md`.
+Composes EM1/HS1/UNK1/EG1/ENV1/ADP1 boundaries; 96 focused ISO1 tests + L02 regressions green. **Not** live trading activated. **Not** Slice Approval. **Not** FIV. Runtime live I/O remains gated/blocked.
 
 ### PO gate
 
 None for tests. Live production calls require separate authorization (not part of this suite).
 
+### Implementation authorization
+
+ISO1 authorized and implemented for SB-07 isolation regression only; no live venue I/O; no capital activation.
 ---
 
 ## 11. Dependency Graph
@@ -427,7 +432,7 @@ None for tests. Live production calls require separate authorization (not part o
 | **L02-S-EG1**  | Live egress allowlist gate                              | SB-01 | shared outbound validator for live adapters                                      | Impl auth               | High (SSRF)        | Allowlist/redirect/private-IP fails           | AD-L02-14       | SD-L02-01       | No†    | **EG1 COMPLETE — PO review next**            |
 | **L02-S-ENV1** | Test/live credential↔endpoint binding                   | SB-06 | Vault metadata checks, adapter factory guards                                    | EG1 aligned             | High               | Mismatch fail-closed; no log leak             | AD-L02-14       | SD-L02-02       | Maybe‡ | **Forbidden**                                |
 | **L02-S-ADP1** | Live adapters BINANCE/BYBIT/OKX on ExecutionAdapterPort | SB-04 | New live adapters; Nest binding behind flags; **still no production calls**      | HS1, UNK1, EG1, ENV1    | Critical           | Mocked HTTP contract tests                    | AD-L02-14       | SD-L02-01/02/06 | No§    | **Forbidden** until all SB + PO capital acts |
-| **L02-S-ISO1** | Cross-workspace live regression suite                   | SB-07 | platform-conformance / api specs                                                 | ADP1 contracts or fakes | Medium             | Full matrix §10                               | —               | SD-L02-03       | No     | **Forbidden**                                |
+| **L02-S-ISO1** | Cross-workspace live regression suite                   | SB-07 | platform-conformance / api specs                                                 | ADP1 contracts or fakes | Medium             | Full matrix §10                               | —               | SD-L02-03       | No     | **ISO1 COMPLETE — PO review next**           |
 
 \* Unless EM product change proposed → PO.
 † Unless new hosts/venues → PO.
@@ -452,7 +457,7 @@ None for tests. Live production calls require separate authorization (not part o
 | SB-04 | Live ExecutionAdapterPort                | Live adapters bound to EXECUTION_ADAPTER under gates     | Mocked submit/cancel/query; fail-closed                             | SD-L02-01/02/06     | AD-L02-01/14          | None† / capital act separate | **ADP1 COMPLETE** (runtime live-I/O gated/blocked)                |
 | SB-05 | EmergencyManager isolation               | No L02 dependency; regressions                           | KS/policy/session no cancel-all; no Engine→EM                       | SD-L02-07           | AD-L02-01             | None*                        | **EM1 COMPLETE** (isolation evidenced; EM still mounted residual) |
 | SB-06 | Test/live credential separation          | Env metadata + adapter checks                            | Mismatch fail-closed; no secret logs                                | SD-L02-02           | AD-L02-14             | Maybe‡                       | **ENV1 COMPLETE** (ADP1 must consume binding)                     |
-| SB-07 | Cross-workspace live regressions         | Dedicated suite green                                    | Full isolation matrix                                               | SD-L02-03           | —                     | None                         | **PLANNED — NOT IMPLEMENTED**                                     |
+| SB-07 | Cross-workspace live regressions         | Dedicated suite green                                    | Full isolation matrix                                               | SD-L02-03           | —                     | None                         | **ISO1 COMPLETE** (runtime live-I/O still gated/blocked)          |
 
 ---
 
@@ -528,8 +533,7 @@ This Security Conditions Resolution Plan does NOT authorize:
   - Slice Approval
 
 Existence of this plan ≠ authorization to begin coding.
-SB-07 remains PLANNED — NOT IMPLEMENTED.
-SB-05 (EM1), SB-02 (HS1), SB-03 (UNK1), SB-01 (EG1), SB-06 (ENV1), and SB-04 (ADP1) have separately authorized implementation evidence; Slice Approval remains NOT GRANTED.
+SB-01…SB-07 have separately authorized implementation evidence (EM1/HS1/UNK1/EG1/ENV1/ADP1/ISO1); Slice Approval remains NOT GRANTED.
 V3-L02 full live implementation remains NOT AUTHORIZED. Runtime live-I/O remains gated/blocked.
 ```
 
