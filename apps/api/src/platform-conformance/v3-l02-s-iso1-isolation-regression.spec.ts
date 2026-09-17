@@ -1013,7 +1013,7 @@ describe(`V3-L02-S-ISO1 isolation regression (${V3_L02_S_ISO1_SLICE_ID})`, () =>
 
     it('ISO-LT01 — RoutingExecutionAdapter paper → paper; live → live', async () => {
       const paper = new PaperExecutionAdapter();
-      const liveFetch = vi.fn(async (url: string) => ({
+      const liveFetch = vi.fn(async (_url: string) => ({
         status: 200,
         text: async () => JSON.stringify({ orderId: 1, status: 'NEW', clientOrderId: 'clid-1' }),
       }));
