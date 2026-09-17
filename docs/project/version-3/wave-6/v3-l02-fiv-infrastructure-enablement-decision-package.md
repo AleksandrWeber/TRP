@@ -445,15 +445,108 @@ NO conversion of UNKNOWN into success/rejection
 
 ---
 
+## FIV-PRE-01 Verification Update
+
+**Date:** 2026-09-17
+**Nature:** Repository-side credential metadata verification only.
+**Conclusion:** `NOT VERIFIED`
+
+```text
+PROHIBITED during this verification:
+NO secret values printed
+NO Binance HTTP/API calls
+NO signed requests
+NO order submit/cancel
+NO capital movement
+NO code/config changes
+```
+
+### Method (FACT)
+
+Safe Prisma metadata query against local DB: `VaultSecret` rows with `type = 'binance'` selecting only `id`, `workspaceId`, `type`, `purpose`, `state`, `revision`, timestamps; ciphertext presence checked only as boolean (`payload IS NOT NULL`, `wrapped_data_key IS NOT NULL`). Connection metadata for `provider = BINANCE` without credential fields. No `SecretVaultService.retrieve`, no decrypt, no payload contents.
+
+### Target vs observed
+
+| Required for FIV-PRE-01 | Observed | Label |
+| ----------------------- | -------- | ----- |
+| Vault-backed credential exists | Yes — Binance Vault rows present with wrapped ciphertext | FACT / VERIFIED (presence) |
+| Associated with Binance (`type = binance`) | Yes | VERIFIED |
+| Associated with purpose **`trading_testnet`** | **No** — count `trading_testnet` = **0** | FACT / **NOT VERIFIED** |
+| Purpose correct for Testnet FIV | Observed purposes: **`trading` only** (LIVE-class under ENV1) | FACT / GAP |
+| Workspace binding present | Yes — each secret has `workspaceId` | VERIFIED |
+| Server-side retrieval path exists | Yes — Vault retrieve is server-side (code) | VERIFIED (path) |
+| Secret not in Git/source | No exchange API keys in repo from this check | VERIFIED (repo) |
+| Secret not returned on Connections list views | Connections DTOs omit credential values (code + tests) | VERIFIED |
+| Frontend cannot read secret after store | Store UX: values not re-displayed (code) | VERIFIED |
+| `trading_testnet` → Testnet host mapping | ENV1 maps `trading_testnet` → `testnet`; EG1 host `testnet.binance.vision` | VERIFIED (code) |
+| `trading` / `trading_live` → production host class | ENV1 maps to **`live`** → `api.binance.com` | FACT |
+| Testnet credential cannot be used against production | Requires purpose `trading_testnet` + ENV1 fail-closed; **no such secret provisioned** | GAP for FIV target |
+| Connections UI provisions `trading_testnet` | Connections `vault.store` **omits purpose** → default `trading` | FACT / GAP |
+| Binance API permission TRADE/USER_DATA | Not inspected | **NOT VERIFIED — external credential inspection intentionally prohibited in this task** |
+
+### Counts (FACT, redacted)
+
+```text
+binance VaultSecret rows:     3
+purpose trading:              3
+purpose trading_testnet:      0
+purpose trading_live:         0
+purpose trading_demo:         0
+ciphertext present:           yes (all observed rows)
+```
+
+Operator Connections store (if recent) lands in the **`trading`** slot, not **`trading_testnet`**. That does **not** satisfy the frozen FIV-D04 class.
+
+### Environment isolation (FACT + GAP)
+
+| Path | Behavior |
+| ---- | -------- |
+| Purpose `trading_testnet` | Maps to EG1 `testnet` / `testnet.binance.vision` |
+| Purpose `trading` (observed) | Maps to EG1 **`live`** / `api.binance.com` |
+| Cross-env fail-closed | ENV1 denies live purpose vs testnet URL and vice versa (code/tests) |
+
+**GAP:** Observed provisioned Binance secrets are LIVE-class purpose. They are **not** the authorized FIV Testnet credential class. Using them under a live-capable path would target production host class, not Testnet.
+
+### FIV-PRE-01 conclusion
+
+```text
+NOT VERIFIED
+```
+
+Reason: repository metadata does **not** prove a Vault-backed `binance` + **`trading_testnet`** credential. Existing Binance secrets are purpose **`trading`** (LIVE-class).
+
+### Remaining blockers (unchanged)
+
+```text
+FIV-PRE-02 — C7 scoped authorization
+REMAINS OPEN
+
+FIV-PRE-03 — controlled Testnet I/O enablement
+REMAINS OPEN
+```
+
+Credential activity (Connections store) does **NOT** authorize C7, live I/O, FIV execution, production access, or capital movement.
+
+### FIV readiness
+
+```text
+FIV remains NOT READY
+FIV PASS / FIV READY = NOT CLAIMED
+```
+
+---
+
 ## Governance Status
 
 ```text
 FIV readiness:              NOT READY
-This package:               DECISION SUPPORT ONLY
+FIV-PRE-01:                 NOT VERIFIED (no trading_testnet Vault slot)
+FIV-PRE-02:                 REMAINS OPEN
+FIV-PRE-03:                 REMAINS OPEN
+This package:               DECISION SUPPORT + verification update
 Implementation:             NOT AUTHORIZED by this artifact
 FIV execution:              NOT AUTHORIZED by this artifact
 Live I/O:                   NOT AUTHORIZED
-Credentials provisioned:    NO (this task)
 Capital movement:           NOT AUTHORIZED
 ```
 
@@ -484,7 +577,8 @@ Do not skip gates.
 - ADR-020; Wave 6 planning / D-GOV-01…05 (as referenced in wave-6 register)
 - V3-L02 planning, PO freezes, architecture/security reviews & closeouts
 - Slice approval readiness; FIV authorization package; FIV freeze; FIV execution report
-- Code: `permission-matrix`, `live-admission.service`, `execution-adapter.module`, `live-venue-egress-http`, `live-venue-allowlist`, `secret-purpose`, ENV1 policy, Vault service patterns
+- Code: `permission-matrix`, `live-admission.service`, `execution-adapter.module`, `live-venue-egress-http`, `live-venue-allowlist`, `secret-purpose`, ENV1 policy, Vault service patterns, Connections → Vault store (no purpose)
+- Local Vault/Connection **metadata** query (2026-09-17) — no secret material
 
 ---
 
