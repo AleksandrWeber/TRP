@@ -164,7 +164,7 @@ export class ExecutionEngineService {
     assertExecutionEligible(session, order.intent.sessionFencingToken, command.occurredAt);
 
     // Pre-send then transmitted markers BEFORE adapter I/O (AD-L02-11).
-    let prepared = await this.transactions.run(async (transaction) => {
+    const prepared = await this.transactions.run(async (transaction) => {
       let current = order;
       current = await this.orders.markReadyToTransmit(
         current,
