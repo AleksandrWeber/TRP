@@ -255,7 +255,7 @@ Implementation commit staged **only** FIV-CONN-01 files listed in §3. Protected
 ## 17. Commit hash
 
 ```text
-c2ca5eda7a9edd52d77e5e7572931c0adb2efb40
+b1ac062c619311663d37dc2159c9f7473ddda60f
 ```
 
 ---
@@ -263,8 +263,8 @@ c2ca5eda7a9edd52d77e5e7572931c0adb2efb40
 ## 18. Push verification
 
 ```text
-PENDING_PUSH
-HEAD == origin/main: PENDING_PUSH
+PUSHED to origin/main
+HEAD == origin/main: YES
 ```
 
 ---
