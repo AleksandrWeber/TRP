@@ -451,13 +451,13 @@ ISO1 authorized and implemented for SB-07 isolation regression only; no live ven
 
 | SB    | Condition                                | Implementation Evidence                                  | Required Tests                                                      | Security Evidence   | Architecture Evidence | PO Gate                      | Status                                                            |
 | ----- | ---------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------- | ------------------- | --------------------- | ---------------------------- | ----------------------------------------------------------------- |
-| SB-01 | SSRF/egress allowlist on live adapters   | Outbound gate + allowlisted hosts wired to live adapters | Arbitrary URL deny; redirect deny; private IP deny; paper isolation | SD-L02-01 close-out | AD-L02-14             | None†                        | **EG1 COMPLETE** (ADP1 must consume gate)                         |
-| SB-02 | Durable HS claim-at-I/O + ACTION/COMMAND | Prisma store; claim CAS; verify≠claim                    | Replay/race/binding/expiry/restart/multi-instance                   | SD-L02-04           | AD-L02-04             | None (frozen)                | **HS1 COMPLETE** (claim API; Engine live I/O wiring residual)     |
-| SB-03 | UNKNOWN/pre-send/reconcile persistence   | Status+markers+reconcile fields; engine behavior         | Crash matrix; no blind retry                                        | SD-L02-05/06        | AD-L02-07/09/11       | None (frozen)                | **UNK1 COMPLETE** (venue query wiring residual for ADP1)          |
-| SB-04 | Live ExecutionAdapterPort                | Live adapters bound to EXECUTION_ADAPTER under gates     | Mocked submit/cancel/query; fail-closed                             | SD-L02-01/02/06     | AD-L02-01/14          | None† / capital act separate | **ADP1 COMPLETE** (runtime live-I/O gated/blocked)                |
-| SB-05 | EmergencyManager isolation               | No L02 dependency; regressions                           | KS/policy/session no cancel-all; no Engine→EM                       | SD-L02-07           | AD-L02-01             | None*                        | **EM1 COMPLETE** (isolation evidenced; EM still mounted residual) |
-| SB-06 | Test/live credential separation          | Env metadata + adapter checks                            | Mismatch fail-closed; no secret logs                                | SD-L02-02           | AD-L02-14             | Maybe‡                       | **ENV1 COMPLETE** (ADP1 must consume binding)                     |
-| SB-07 | Cross-workspace live regressions         | Dedicated suite green                                    | Full isolation matrix                                               | SD-L02-03           | —                     | None                         | **ISO1 COMPLETE** (runtime live-I/O still gated/blocked)          |
+| SB-01 | SSRF/egress allowlist on live adapters   | Outbound gate + allowlisted hosts wired to live adapters | Arbitrary URL deny; redirect deny; private IP deny; paper isolation | SD-L02-01 close-out | AD-L02-14             | None†                        | **FINAL CLOSE-OUT PASS** (DNS pin residual → FIV)                 |
+| SB-02 | Durable HS claim-at-I/O + ACTION/COMMAND | Prisma store; claim CAS; verify≠claim                    | Replay/race/binding/expiry/restart/multi-instance                   | SD-L02-04           | AD-L02-04             | None (frozen)                | **FINAL CLOSE-OUT PASS**                                          |
+| SB-03 | UNKNOWN/pre-send/reconcile persistence   | Status+markers+reconcile fields; engine behavior         | Crash matrix; no blind retry                                        | SD-L02-05/06        | AD-L02-07/09/11       | None (frozen)                | **FINAL CLOSE-OUT PASS**                                          |
+| SB-04 | Live ExecutionAdapterPort                | Live adapters bound to EXECUTION_ADAPTER under gates     | Mocked submit/cancel/query; fail-closed                             | SD-L02-01/02/06     | AD-L02-01/14          | None† / capital act separate | **FINAL CLOSE-OUT PASS** (runtime live-I/O gated/blocked)         |
+| SB-05 | EmergencyManager isolation               | No L02 dependency; regressions                           | KS/policy/session no cancel-all; no Engine→EM                       | SD-L02-07           | AD-L02-01             | None*                        | **FINAL CLOSE-OUT PASS** (EM NON-SoT residual)                    |
+| SB-06 | Test/live credential separation          | Env metadata + adapter checks                            | Mismatch fail-closed; no secret logs                                | SD-L02-02           | AD-L02-14             | Maybe‡                       | **FINAL CLOSE-OUT PASS**                                          |
+| SB-07 | Cross-workspace live regressions         | Dedicated suite green                                    | Full isolation matrix                                               | SD-L02-03           | —                     | None                         | **FINAL CLOSE-OUT PASS**                                          |
 
 ---
 
@@ -533,12 +533,32 @@ This Security Conditions Resolution Plan does NOT authorize:
   - Slice Approval
 
 Existence of this plan ≠ authorization to begin coding.
-SB-01…SB-07 have separately authorized implementation evidence (EM1/HS1/UNK1/EG1/ENV1/ADP1/ISO1); Slice Approval remains NOT GRANTED.
-V3-L02 full live implementation remains NOT AUTHORIZED. Runtime live-I/O remains gated/blocked.
+SB-01…SB-07 have separately authorized implementation evidence (EM1/HS1/UNK1/EG1/ENV1/ADP1/ISO1).
+**Final Security Close-Out (2026-09-17):** `SECURITY PASS WITH CONDITIONS` — evidence:
+[`v3-l02-final-security-closeout.md`](./v3-l02-final-security-closeout.md).
+DNS/rebinding pin composition remains a **CONDITION** for FIV (not a current runtime bypass).
+Slice Approval remains NOT GRANTED. FIV NOT PERFORMED. Runtime live-I/O remains gated/blocked.
 ```
+
+---
+
+## 20. Final Security Close-Out Status
+
+```text
+SECURITY PASS WITH CONDITIONS
+Evidence: docs/project/version-3/wave-6/v3-l02-final-security-closeout.md
+Architecture Re-Verification: PASS WITH CONDITIONS (aligned)
+DNS/rebinding: CONDITION REMAINS (FIV prerequisite)
+Slice Approval: NOT GRANTED
+FIV: NOT PERFORMED
+Live capital / venue I/O: NOT AUTHORIZED
+```
+
+Next governance action: **PO Review of Security Final Close-out**, then (separately) Slice Approval if supported.
 
 ---
 
 ## STOP
 
 **STOP.** Resolution plan recorded. Do not implement from this artifact.
+Do not grant Slice Approval or perform FIV from this plan.
