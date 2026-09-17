@@ -1,0 +1,1 @@
+export const HUMAN_START_PROOF_STORE = Symbol('HUMAN_START_PROOF_STORE');
