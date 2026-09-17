@@ -1,10 +1,10 @@
 # V3-L02 FIV Execution Report
 
-**Document:** Controlled FIV execution report  
-**Date:** 2026-09-17  
-**Wave:** 6 — Live Trading  
-**Package:** V3-L02  
-**Nature:** Verification attempt record only. **Not** FIV Authorization. **Not** implementation. **Not** L02 closure. **Not** capital authorization.
+**Document:** Controlled FIV execution report (Binance Testnet attempt)
+**Date:** 2026-09-17
+**Wave:** 6 — Live Trading
+**Package:** V3-L02
+**Nature:** Verification attempt record only. **Not** implementation. **Not** L02 closure. **Not** capital authorization.
 
 ```text
 Final FIV result: FIV NOT READY
@@ -14,215 +14,200 @@ Final FIV result: FIV NOT READY
 
 ## 1. Authorization Reference
 
-| Artifact | Path / state |
-| -------- | ------------ |
-| FIV Authorization & Execution Package | [`v3-l02-fiv-authorization-execution-package.md`](./v3-l02-fiv-authorization-execution-package.md) |
-| Package verdict | `READY FOR PO FIV AUTHORIZATION REVIEW` |
-| Package grant of FIV | **Explicitly does NOT authorize FIV** |
-| Separate PO FIV Authorization decision artifact with FIV-D01…D08 filled | **NOT FOUND in repository** |
-| Slice Approval (per prior governance context) | GRANTED (readiness package existed; no venue I/O implied) |
-| Task claim “FIV Authorization GRANTED” | **Not backed by a repository decision record specifying FIV-D01…D08** |
-
-Per mandatory parameter lock (§2 of execution task) and FIV package §26/§27:
-
-> Do NOT invent missing values. If any required parameter is not explicitly authorized or available → `FIV = NOT READY` / `STOP`.
+| Item | Value |
+| ---- | ----- |
+| Freeze artifact | [`v3-l02-fiv-authorization-decision-freeze.md`](./v3-l02-fiv-authorization-decision-freeze.md) |
+| Freeze status | `FIV PARAMETERS FROZEN — READY FOR FIV EXECUTION PREFLIGHT` |
+| Freeze commit | `38841b579ca139804e197af2191f4ccdf6b5e5bc` |
+| HEAD at attempt | `38841b579ca139804e197af2191f4ccdf6b5e5bc` = `origin/main` |
+| Authorization match | **PASS** — D01…D08 match task + freeze exactly |
 
 ---
 
-## 2. Exact FIV-D01…D08 Parameters
+## 2. D01–D08 Values (verified against freeze)
 
-| Decision | Authorized value | Status |
-| -------- | ---------------- | ------ |
-| **FIV-D01** Mode (A/B/C/D) | — | **NOT AUTHORIZED / NOT RECORDED** |
-| **FIV-D02** Venue | — | **NOT AUTHORIZED / NOT RECORDED** |
-| **FIV-D03** Environment | — | **NOT AUTHORIZED / NOT RECORDED** |
-| **FIV-D04** Credential class | — | **NOT AUTHORIZED / NOT RECORDED** |
-| **FIV-D05** C7 authorization | — | **NOT AUTHORIZED / NOT RECORDED** (runtime remains DENY-ALL) |
-| **FIV-D06** Capital scope | — | **NOT AUTHORIZED** (default: no real-capital movement) |
-| **FIV-D07** Authorized operations | — | **NOT AUTHORIZED / NOT RECORDED** |
-| **FIV-D08** Abort threshold | Package §20 defaults only | **Not separately decided**; package abort table exists but mode/ops unset |
+| Decision | Frozen value | Verified |
+| -------- | ------------ | -------- |
+| FIV-D01 | B — Testnet / Demo | PASS |
+| FIV-D02 | BINANCE | PASS |
+| FIV-D03 | BINANCE TESTNET | PASS |
+| FIV-D04 | `trading_testnet` | PASS |
+| FIV-D05 | Scoped temporary C7 for this exact FIV only | PASS (decision recorded; runtime apply failed — see §4) |
+| FIV-D06 | ZERO REAL CAPITAL | PASS |
+| FIV-D07 | Controlled submit → outcome verification → reconciliation if required → cancellation where applicable | PASS |
+| FIV-D08 | Hard-stop; UNKNOWN → STOP + RECONCILE; no blind retry | PASS |
+
+---
+
+## 3. Preflight Results (every gate)
+
+| Gate | Result | Notes |
+| ---- | ------ | ----- |
+| Repository HEAD == origin/main | **PASS** | `38841b5` |
+| Protected leftovers untouched | **PASS** | Present; not cleaned |
+| Authorization D01…D08 match | **PASS** | Exact match |
+| Environment = BINANCE TESTNET | **PASS** (configured allowlist) | Host `testnet.binance.vision`; not `api.binance.com` |
+| Endpoint vs allowlist | **PASS** | `LIVE_VENUE_ALLOWED_HOSTS.BINANCE.testnet` |
+| Credential `trading_testnet` available | **FAIL → NOT READY** | No Vault-backed Binance `trading_testnet` secret found; not created |
+| C7 before | **PASS (observed)** | DENY-ALL |
+| Scoped C7 application (FIV-D05) | **FAIL → NOT READY** | No safe supported scoped temporary grant mechanism |
+| `allowRealVenueIo` controlled enable | **FAIL → NOT READY** | Nest hardcodes `false`; enable would be global I/O flag / code change |
+| Human-start | **not executed** | Stopped before HS issuance |
+| S04 | **not executed** | Stopped before admission |
+| Policy | **not executed** | Stopped |
+| Session | **not executed** | Stopped |
+| Kill Switch | **not executed** | Stopped |
+| ENV1 binding attempt | **not executed** | No credential to bind |
+| EG1 syntactic allowlist | **PASS** (static) | Testnet host approved; no request sent |
+| DNS pinning under real I/O composition | **not demonstrated** | Real I/O path not enabled; pin not exercised |
+| Canonical route exercise | **not executed** | No request |
+| Real capital = ZERO (preflight intent) | **PASS (boundary)** | FIV-D06 forbids; no action taken |
+
+**Pre-I/O final gate: FAIL.** No Binance network request was sent.
+
+---
+
+## 4. C7
+
+### Before execution
 
 ```text
-FIV execution record: PARAMETERS INCOMPLETE
-→ FIV = NOT READY
-→ STOP before any external / irreversible / venue I/O
+C7 = DENY-ALL
 ```
 
-No Mode A/B/C/D was selected by this executor. No venue, environment, credential class, or operation was invented.
+`PermissionClass.LiveCommand` is not granted to any role in `permission-matrix.ts` (verified by matrix tests / matrix contents).
+
+### Scoped authorization application (FIV-D05)
+
+Inspected existing mechanism:
+
+| Mechanism | Assessment |
+| --------- | ---------- |
+| Role matrix grant of LiveCommand | Would be permanent/architectural change — **forbidden** during FIV; not scoped to one run |
+| `authorizationOverride` on admission command | Documented **harness/test-only** seam (ISO1/ADP1); using it for FIV would be a **C7 bypass**, not a scoped temporary production authorization |
+| Env/config temporary C7 grant bound to workspace/actor/session/action | **Not present** in repository |
+
+```text
+STOP
+FIV NOT READY
+Reason: No safe supported mechanism exists to apply FIV-D05 scoped temporary C7
+without inventing a bypass or modifying C7 architecture.
+```
+
+C7 was **not** modified. No bypass applied. Runtime remains DENY-ALL.
 
 ---
 
-## 3. Preflight (No Venue I/O)
-
-### Repository
+## 5. Credential / Environment
 
 | Check | Result |
 | ----- | ------ |
-| `git rev-parse HEAD` | `0edba4c0cc1af1de98cccb735eaeb0ec17d9103a` |
-| `git rev-parse origin/main` | `0edba4c0cc1af1de98cccb735eaeb0ec17d9103a` |
-| Protected leftovers | Present; **untouched** |
-| Application start for FIV | **Not started for venue FIV** — stopped at parameter lock |
-
-### Runtime (from repository composition; not modified)
-
-| Control | Observed | Evidence class |
-| ------- | -------- | -------------- |
-| C7 | **DENY-ALL** (`LiveCommand` not granted) | verified (code/matrix; unchanged) |
-| `allowRealVenueIo` | **`false`** (Nest binding) | verified (composition; unchanged) |
-| Live policy | Not exercised for FIV | not verified (no authorized session/action) |
-| Kill Switch | Not exercised for FIV | not verified |
-| Session | Not created for FIV | not verified |
-
-### Canonical route / NON-SoT
-
-Intended path (from package/implementation) remains:
+| Authorized class | `trading_testnet` |
+| Authorized venue/env | BINANCE / TESTNET |
+| Vault purpose enum support | Present (`SecretPurpose.TradingTestnet`) |
+| Provisioned workspace Binance `trading_testnet` secret | **ABSENT** |
+| Env files contain exchange API keys for testnet | **Not found** (redacted key scan; only wrapping key / market-data provider class keys observed) |
+| Production credential substitution | **Not used** |
 
 ```text
-Orders → Execution Engine → Routing → Live Venue Adapter → ENV1 → EG1 → DNS-pinned transport → Venue
+FIV NOT READY — credential absent
 ```
 
-Excluded: `live-trading-engine`, EmergencyManager, EM `/v1/live` cancel-all.
-
-**Route was not exercised** because FIV parameters and C7/credential gates were not ready.
+No retrieve/decrypt. No secrets printed.
 
 ---
 
-## 4. Environment
+## 6. Human-Start
 
 ```text
-not applicable — FIV-D03 not authorized
+not verified — no FIV action initiated
 ```
 
 ---
 
-## 5. Venue
+## 7. S04
 
 ```text
-not applicable — FIV-D02 not authorized
-```
-
-No Binance / Bybit / OKX contact attempted.
-
----
-
-## 6. Credential Class
-
-```text
-blocked — FIV-D04 not authorized; production credentials remain absent
-```
-
-No Vault retrieve performed for FIV. No secrets printed or used.
-
----
-
-## 7. Human-Start
-
-```text
-not verified — no authorized FIV action initiated
+not verified — no pre-I/O admission
 ```
 
 ---
 
-## 8. S04
+## 8. Policy / Session / Kill Switch
 
 ```text
-not verified — no pre-I/O admission for FIV
+not verified — stopped at earlier mandatory gates
 ```
 
 ---
 
-## 9. C7
+## 9. ENV1
 
 ```text
-verified (runtime posture): DENY-ALL
-blocked for venue I/O: C7 PASS not present; FIV-D05 missing
+not verified — no credential retrieve/binding for FIV
 ```
 
-Per execution gate: if C7 remains DENY-ALL → **no live venue I/O**. C7 was **not** modified.
+Static taxonomy confirms `trading_testnet` ↔ EG1 `testnet` for Binance when a secret exists.
 
 ---
 
-## 10. Policy
+## 10. EG1
 
-```text
-not verified — no live FIV admission attempt
-```
-
----
-
-## 11. Session
-
-```text
-not verified — no FIV session established
-```
+| Check | Result |
+| ----- | ------ |
+| Approved hostname for Binance testnet | `testnet.binance.vision` |
+| HTTPS / 443 | Required by EG1 policy |
+| Production host excluded for this FIV | `api.binance.com` not used |
+| Live request through EG1 | **not sent** |
 
 ---
 
-## 12. Kill Switch
+## 11. DNS / Pinning
 
-```text
-not verified — no FIV admission attempt
-```
+| Check | Result |
+| ----- | ------ |
+| Pinned path exists when `allowRealVenueIo=true` and no `fetchFn` | Implemented in `LiveVenueEgressHttpClient` |
+| Nest composition | `allowRealVenueIo: false` → refuse-first |
+| Demonstrated pin on this FIV | **not demonstrated** (I/O not enabled) |
+| `fetchFn` / mock as FIV evidence | **Rejected** — not used |
 
----
+Hard gate: without demonstrable pinned transport under authorized composition → **DO NOT SEND REQUEST**.
 
-## 13. ENV1
-
-```text
-not verified — no credential retrieve / binding for FIV
-```
-
----
-
-## 14. EG1
-
-```text
-not verified — no egress for FIV
-```
+Additionally, enabling `allowRealVenueIo` requires changing Nest binding (implementation/config change during FIV — forbidden). The flag is **not** testnet-scoped; it enables the real HTTPS path for the live adapter generally (ENV1/EG1 still constrain destination, but the task forbids enabling unrestricted live venue I/O capability as a workaround).
 
 ---
 
-## 15. DNS / Pinning
+## 12. Canonical Route
+
+Intended (not exercised):
 
 ```text
-blocked — CONDITION REMAINS; cannot demonstrate pinned real-I/O path without authorized enablement
+Orders → Execution Engine → Routing → Live Venue Adapter → ENV1 → EG1 → DNS-pinned transport → Binance Testnet
 ```
 
-Hard gate: without demonstrable DNS-pinned transport under authorized composition → **DO NOT PERFORM VENUE I/O**.
-
-Injected `fetchFn` / mock transport were **not** used as FIV evidence.
+Prohibited paths **not** used: `live-trading-engine`, EmergencyManager, EM `/v1/live`.
 
 ---
 
-## 16. Canonical Route
+## 13. Exact Authorized Operation
 
 ```text
-not verified under live FIV — no request issued
+none executed
 ```
 
-Architecture/security close-outs previously verified composition under gated runtime; that is **not** substituted for this FIV run.
+FIV-D07 was authorized but preflight blocked execution.
 
 ---
 
-## 17. Action
+## 14. Order Lifecycle
 
 ```text
-none — FIV-D07 not authorized
-```
-
-No submit, cancel, query, or reconcile against a real/testnet/demo venue.
-
----
-
-## 18. Order Lifecycle
-
-```text
-not applicable — no order action
+not applicable — no order
 ```
 
 ---
 
-## 19. Idempotency
+## 15. Idempotency
 
 ```text
 not verified — no live action
@@ -230,27 +215,27 @@ not verified — no live action
 
 ---
 
-## 20. UNKNOWN / Reconciliation
+## 16. UNKNOWN / Reconciliation
 
 ```text
-not applicable — no venue ambiguity generated
+not applicable — no venue ambiguity
 ```
 
-No blind retry occurred.
+No blind retry.
 
 ---
 
-## 21. Cancellation
+## 17. Cancellation
 
 ```text
-not applicable — not authorized; not performed
+not applicable — not performed
 ```
 
-EmergencyManager cancel-all **not** invoked.
+No EmergencyManager cancel-all.
 
 ---
 
-## 22. Position / Ledger
+## 18. Position / Ledger
 
 ```text
 not applicable — no execution
@@ -258,95 +243,109 @@ not applicable — no execution
 
 ---
 
-## 23. Capital Effect
+## 19. Capital Verification
 
 ```text
-verified: real capital did NOT move
+REAL CAPITAL MOVED = ZERO
 ```
 
-Explicit: **no real-capital movement**. FIV-D06 not authorized. No amount/asset/account/size invented.
+Verified by absence of any venue submit/cancel and FIV-D06 boundary. No production funds, live account, or real exposure introduced.
 
 ---
 
-## 24. Abort Conditions
+## 20. Abort Conditions Encountered
 
-| Trigger | Outcome |
-| ------- | ------- |
-| Missing FIV-D01…D08 repository authorization values | **STOP / NOT READY** |
-| C7 DENY-ALL / FIV-D05 missing | Would ABORT venue I/O if attempted |
-| Credentials absent / FIV-D04 missing | Would ABORT venue I/O if attempted |
-| DNS pin not demonstrable under authorized live composition | Would ABORT venue I/O if attempted |
-| `allowRealVenueIo=false` | Venue I/O blocked by composition |
+| Condition | Action taken |
+| --------- | ------------ |
+| `trading_testnet` credential absent | **STOP / NOT READY** |
+| No safe scoped C7 application mechanism | **STOP / NOT READY** |
+| `allowRealVenueIo` hardcoded false; enable = config change / non-scoped I/O flag | **STOP / NOT READY** |
+| DNS pin not demonstrable under current composition | Reinforcing STOP (no request) |
 
-No venue I/O was started; abort of an in-flight venue call was **not applicable**.
+No in-flight venue abort (no request started).
 
 ---
 
-## 25. Evidence Integrity
+## 21. Defects Discovered (classification only — no fixes)
+
+| ID | Class | Description |
+| -- | ----- | ----------- |
+| FIV-PRE-01 | Prerequisite gap | No provisioned Binance `trading_testnet` Vault secret for an FIV workspace |
+| FIV-PRE-02 | Prerequisite / platform gap | No supported **scoped temporary** C7 grant for a single FIV run (only DENY-ALL matrix or harness `authorizationOverride`) |
+| FIV-PRE-03 | Prerequisite / composition | Nest binds `allowRealVenueIo: false` with no FIV-scoped enablement path short of code/config change |
+
+Remediation requires **separate** authorization. No silent fixes in this task.
+
+---
+
+## 22. Evidence Integrity
 
 | Claim | Classification |
 | ----- | -------------- |
-| FIV-D01…D08 filled by PO decision in repo | **not verified** / **blocked** |
-| Venue contact | **not verified** (none) |
-| Mock/unit suite as FIV | **not used** as FIV evidence |
-| Capital movement | **verified absent** |
-| Implementation changes during this act | **none** (docs only) |
+| Authorization freeze match | verified |
+| Binance Testnet contact | **not verified** (none) |
+| Production Binance contact | verified absent |
+| Bybit/OKX contact | verified absent |
+| Credential use | verified absent |
+| Capital movement | verified zero |
+| Mock/`fetchFn` as FIV | not used |
 
 ---
 
-## 26. Final FIV Result
+## 23. Final FIV Verdict
 
 ```text
 FIV NOT READY
 ```
 
-Mandatory gates skipped or unmet before venue I/O:
-
-1. No repository record of FIV-D01…D08 authorization values.  
-2. C7 remains DENY-ALL without FIV-D05.  
-3. Credentials absent without FIV-D04.  
-4. DNS-pinned real-I/O path not demonstrable under current gated composition.  
-5. `allowRealVenueIo` remains `false`.
-
-This is **not** `FIV PASS`, `FIV PASS WITH CONDITIONS`, `FIV FAIL`, or `FIV ABORTED` (no run started). Honest status: **NOT READY**.
+No authorized FIV operation was executed because mandatory prerequisites were missing. This is **not** `FIV FAIL` (no executed run failed). This is **not** `FIV ABORTED` mid-request.
 
 ---
 
-## 27. Remaining Conditions
+## 24. Remaining Conditions / Next Prerequisites
 
-- Separate PO/Governance FIV Authorization artifact answering FIV-D01…D08.  
-- Credential provisioning for authorized class (if Mode B/C/D).  
-- Explicit C7 authorization if required by mode (FIV-D05).  
-- Composition enablement for pinned transport only when authorized.  
-- Architecture/Security DNS CONDITION for Modes B/C/D.  
-- Capital authorization under ADR-020 if Mode C/D implies capital (FIV-D06).  
-- NON-SoT exclusion verification during actual run.
+Before re-attempting Binance Testnet FIV under the same freeze:
+
+1. Provision Vault-backed Binance `trading_testnet` for the FIV workspace (separate ops act).
+2. Provide a **safe supported** scoped temporary C7 application mechanism (separate implementation/governance authorization if new mechanism required) — do not use harness override as production FIV.
+3. Provide an authorized, controlled way to enable DNS-pinned testnet I/O for the FIV without unrestricted production enablement and without forbidden mid-FIV architecture changes.
+4. Then re-run full preflight → single FIV-D07 action.
+
+DNS/rebinding CONDITION remains for any future venue-contacting run.
 
 ---
 
-## 28. Explicit Capital Statement
+## 25. Final Runtime Safety State
 
 ```text
-Real capital moved: NO
+C7 = DENY-ALL
+allowRealVenueIo = false
+no credentials retrieved
+no venue I/O
+REAL CAPITAL MOVED = ZERO
 ```
 
 ---
 
-## Explicit Non-Claims
+## Explicit Confirmations
 
-- Did **not** contact Binance, Bybit, or OKX.  
-- Did **not** use testnet/demo/live credentials.  
-- Did **not** enable `allowRealVenueIo`.  
-- Did **not** change C7.  
-- Did **not** invoke EmergencyManager or `live-trading-engine`.  
-- Did **not** fix implementation defects.  
-- Did **not** close V3-L02.  
-- Did **not** treat unit/isolation tests as this FIV run.
+```text
+NO BINANCE PRODUCTION CALLS
+NO BYBIT CALLS
+NO OKX CALLS
+NO BINANCE TESTNET CALLS
+NO REAL CAPITAL
+NO BLIND RETRY
+NO EMERGENCYMANAGER
+NO LIVE-TRADING-ENGINE
+NO UNAUTHORIZED OPERATION
+NO SILENT FIXES
+NO L02 CLOSURE
+```
 
 ---
 
 ## STOP
 
-Next: **PO Review of V3-L02 FIV Execution Report**, then (if desired) a **separate** FIV Authorization decision recording FIV-D01…D08 before any re-attempt.
-
-Do not re-run FIV from this document alone.
+Next: **PO Review of the V3-L02 FIV Execution Report.**
+Do not re-run FIV from this document until prerequisites are separately authorized and satisfied.
