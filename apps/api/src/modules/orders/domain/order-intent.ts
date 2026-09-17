@@ -1,8 +1,6 @@
 import { createHash } from 'node:crypto';
 import { resolveExchangeScopeId } from '../../exchange-scope';
 import { FinancialDecimal } from '../../financial';
-import type { LiveVenueId } from '../../execution-adapter/live-venue-egress/live-venue-allowlist';
-import type { TradingCredentialEnvironment } from '../../execution-adapter/live-venue-egress/trading-credential-environment';
 
 export enum OrderSide {
   BUY = 'buy',
@@ -29,6 +27,24 @@ export type OrderOrigin = 'manual' | 'strategy';
 
 export type OrderExecutionMode = 'paper' | 'live';
 
+/**
+ * Live venue binding on Order Intent (Orders-owned vocabulary).
+ * Must stay aligned with EG1 allowlist ids — without importing Execution Adapter.
+ */
+export const ORDER_LIVE_VENUE_IDS = Object.freeze(['BINANCE', 'BYBIT', 'OKX'] as const);
+export type OrderLiveVenueId = (typeof ORDER_LIVE_VENUE_IDS)[number];
+
+/**
+ * Live credential environment on Order Intent (Orders-owned vocabulary).
+ * Must stay aligned with ENV1 taxonomy — without importing Execution Adapter.
+ */
+export const ORDER_LIVE_TRADING_ENVIRONMENTS = Object.freeze([
+  'live',
+  'testnet',
+  'demo',
+] as const);
+export type OrderLiveTradingEnvironment = (typeof ORDER_LIVE_TRADING_ENVIRONMENTS)[number];
+
 export type OrderIntent = Readonly<{
   intentVersion: 1;
   orderId: string;
@@ -43,9 +59,9 @@ export type OrderIntent = Readonly<{
   sessionFencingToken: number;
   mode: OrderExecutionMode;
   /** Live venue binding (null for paper). Trusted server-side only. */
-  liveVenue: LiveVenueId | null;
+  liveVenue: OrderLiveVenueId | null;
   /** Live credential environment (null for paper). Trusted server-side only. */
-  liveTradingEnvironment: TradingCredentialEnvironment | null;
+  liveTradingEnvironment: OrderLiveTradingEnvironment | null;
   origin: OrderOrigin;
   /** Immutable Signal Intent id when origin is strategy; otherwise null. */
   signalIntentId: string | null;
@@ -74,8 +90,8 @@ export type CreateOrderIntentInput = Readonly<{
   tradingSessionId: string;
   sessionFencingToken: number;
   mode: OrderExecutionMode;
-  liveVenue?: LiveVenueId | null;
-  liveTradingEnvironment?: TradingCredentialEnvironment | null;
+  liveVenue?: OrderLiveVenueId | null;
+  liveTradingEnvironment?: OrderLiveTradingEnvironment | null;
   origin: OrderOrigin;
   /** Required when origin is strategy; forbidden for manual. */
   signalIntentId?: string | null;
@@ -241,8 +257,8 @@ export function createOrderIntent(input: CreateOrderIntentInput): OrderIntent {
 
 function normalizeLiveVenue(
   mode: OrderExecutionMode,
-  value: LiveVenueId | null | undefined,
-): LiveVenueId | null {
+  value: OrderLiveVenueId | null | undefined,
+): OrderLiveVenueId | null {
   if (mode === 'paper') {
     if (value !== undefined && value !== null) {
       throw new Error('paper order intent cannot bind a live venue');
@@ -257,8 +273,8 @@ function normalizeLiveVenue(
 
 function normalizeLiveEnvironment(
   mode: OrderExecutionMode,
-  value: TradingCredentialEnvironment | null | undefined,
-): TradingCredentialEnvironment | null {
+  value: OrderLiveTradingEnvironment | null | undefined,
+): OrderLiveTradingEnvironment | null {
   if (mode === 'paper') {
     if (value !== undefined && value !== null) {
       throw new Error('paper order intent cannot bind a live trading environment');

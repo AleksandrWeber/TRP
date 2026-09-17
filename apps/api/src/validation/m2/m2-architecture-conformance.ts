@@ -28,14 +28,26 @@ export function evaluateM2ArchitectureConformance(): readonly M2ConformanceFindi
   });
 
   const adapterModule = source('execution-adapter/execution-adapter.module.ts');
+  // M2 originally required paper-only binding. V3-L02 may bind RoutingExecutionAdapter
+  // (paper + live) only while real venue I/O remains gated off (allowRealVenueIo=false).
+  const paperOnlyBinding =
+    /useExisting:\s*PaperExecutionAdapter/.test(adapterModule) &&
+    !/LiveExecution|BinanceExecution|RealExecution|LiveVenueExecutionAdapter|RoutingExecutionAdapter/.test(
+      adapterModule,
+    );
+  const gatedLiveRoutingBinding =
+    /RoutingExecutionAdapter/.test(adapterModule) &&
+    /PaperExecutionAdapter/.test(adapterModule) &&
+    /LiveVenueExecutionAdapter/.test(adapterModule) &&
+    /allowRealVenueIo:\s*false/.test(adapterModule);
   findings.push({
     id: 'ADR-012-paper-only-adapter',
-    severity:
-      /useExisting:\s*PaperExecutionAdapter/.test(adapterModule) &&
-      !/LiveExecution|BinanceExecution|RealExecution/.test(adapterModule)
-        ? 'pass'
-        : 'blocker',
-    detail: 'Execution Adapter runtime binding is structurally paper-only.',
+    severity: paperOnlyBinding || gatedLiveRoutingBinding ? 'pass' : 'blocker',
+    detail: gatedLiveRoutingBinding
+      ? 'Execution Adapter routes paper|live under RoutingExecutionAdapter with allowRealVenueIo=false (live I/O gated).'
+      : paperOnlyBinding
+        ? 'Execution Adapter runtime binding is structurally paper-only.'
+        : 'Execution Adapter binding is neither paper-only nor gated live routing (allowRealVenueIo=false required).',
   });
 
   const adapterCallLeaks = productionFiles.filter((path) => {
