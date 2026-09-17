@@ -10,9 +10,7 @@ import type {
   ExecutionAdapterHealth,
   ExecutionAdapterPort,
   ExecutionCommand,
-  PaperCancelCommand,
   PaperExecutionCommand,
-  PaperQueryCommand,
   QueryCommand,
 } from './execution-adapter.port';
 import {

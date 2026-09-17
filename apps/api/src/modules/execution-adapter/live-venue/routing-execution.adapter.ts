@@ -37,7 +37,6 @@ export class RoutingExecutionAdapter implements ExecutionAdapterPort {
   }
 
   capabilities(): ExecutionAdapterCapabilities {
-    const paper = this.paper.capabilities();
     const live = this.live.capabilities();
     return Object.freeze({
       mode: 'routing',
