@@ -59,3 +59,10 @@ export { InMemoryHumanStartProofStore } from './in-memory-human-start-proof.stor
 export { HUMAN_START_PROOF_STORE } from './human-start-proof.tokens';
 export { LiveAdmissionService, type EvaluateLiveAdmissionCommand } from './live-admission.service';
 export { LiveAdmissionModule } from './live-admission.module';
+export {
+  LIVE_ADMISSION_GATE_PORT,
+  UnavailableLiveAdmissionGatePort,
+  type LiveAdmissionGateDecision,
+  type LiveAdmissionGatePort,
+  type LiveAdmissionGateRequest,
+} from './live-admission-gate.port';

@@ -3,12 +3,12 @@
  *
  * Intentionally does NOT import WorkspaceModule (avoids AdminService/LOGGER coupling).
  * Consumes S02 policy via direct persistence adapter. Consumes durable KS via Prisma.
- * Consumes Gate via RuntimeEnforcementModule.
+ * Consumes Gate via LIVE_ADMISSION_GATE_PORT bound at composition root
+ * (LiveAdmissionGatePortsModule) — Session must not import Runtime Enforcement.
  */
 
 import { Module } from '@nestjs/common';
 import { PrismaService } from '../../../storage/prisma/prisma.module';
-import { RuntimeEnforcementModule } from '../../runtime-enforcement/runtime-enforcement.module';
 import { PrismaWorkspaceLivePolicyStateRepository } from '../../workspace/live-policy/persistence/prisma-workspace-live-policy-state.repository';
 import { WorkspaceLivePolicyPersistenceService } from '../../workspace/live-policy/workspace-live-policy-persistence.service';
 import { LIVE_POLICY_STATE_REPOSITORY } from '../../workspace/live-policy/workspace-live-policy-state.repository';
@@ -21,7 +21,6 @@ import { InMemoryHumanStartProofStore } from './in-memory-human-start-proof.stor
 import { LiveAdmissionService } from './live-admission.service';
 
 @Module({
-  imports: [RuntimeEnforcementModule],
   providers: [
     {
       provide: HUMAN_START_PROOF_STORE,

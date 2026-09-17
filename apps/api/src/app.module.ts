@@ -56,6 +56,7 @@ import { PaperAccountModule } from './modules/paper-account';
 import { TradingSessionModule } from './modules/trading-session';
 import { LiveAdmissionModule } from './modules/trading-session/live-admission';
 import { BotFacadeModule } from './modules/bot-facade';
+import { LiveAdmissionGatePortsModule } from './composition/live-admission-gate-ports.module';
 import { RecoveryReconciliationPortsModule } from './composition/recovery-reconciliation-ports.module';
 import { OrdersModule } from './modules/orders';
 import { RiskModule } from './modules/risk';
@@ -128,6 +129,7 @@ import { OperationalContinuityModule } from './modules/operational-continuity';
     EventProcessingModule,
     PaperAccountModule,
     RecoveryReconciliationPortsModule,
+    LiveAdmissionGatePortsModule,
     TradingSessionModule,
     LiveAdmissionModule,
     BotFacadeModule,

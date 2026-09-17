@@ -1,13 +1,13 @@
 /**
- * PROPOSED-V3-L01-S04 — Map Gate EnforcementDecision to admission input.
- * Consumes RuntimeEnforcementPort — does not create a second Gate.
+ * PROPOSED-V3-L01-S04 — Map Gate decision projection to admission input.
+ * Consumes LiveAdmissionGatePort — does not create a second Gate.
  */
 
-import type { EnforcementDecision } from '../../../runtime-enforcement/ports/runtime-enforcement.port';
+import type { LiveAdmissionGateDecision } from '../live-admission-gate.port';
 import type { LiveAdmissionGateInput } from './decide-live-admission';
 
 export type GateLoadResult =
-  | Readonly<{ status: 'ok'; decision: EnforcementDecision }>
+  | Readonly<{ status: 'ok'; decision: LiveAdmissionGateDecision }>
   | Readonly<{ status: 'unavailable' }>
   | Readonly<{ status: 'unknown' }>;
 

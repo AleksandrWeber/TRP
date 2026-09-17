@@ -10,11 +10,6 @@ import { Inject, Injectable, Optional } from '@nestjs/common';
 import { decideAuthorization } from '../../auth/authorization-decision';
 import { PermissionClass } from '../../auth/permission-catalog';
 import type { Role } from '../../identity/role';
-import {
-  RUNTIME_ENFORCEMENT_PORT,
-  type RuntimeEnforcementPort,
-  type ValidateDeploymentRequest,
-} from '../../runtime-enforcement/ports/runtime-enforcement.port';
 import { WorkspaceLivePolicyPersistenceService } from '../../workspace/live-policy/workspace-live-policy-persistence.service';
 import { WorkspaceLivePolicy } from '../../workspace/live-policy/durable-workspace-live-policy-state';
 import { KillSwitchPersistenceService } from '../kill-switch/kill-switch-persistence.service';
@@ -40,6 +35,11 @@ import {
 import { buildV2LiveAdmissionSnapshot } from './domain/v2-live-admission-prerequisites';
 import { InMemoryHumanStartProofStore } from './in-memory-human-start-proof.store';
 import { HUMAN_START_PROOF_STORE } from './human-start-proof.tokens';
+import {
+  LIVE_ADMISSION_GATE_PORT,
+  type LiveAdmissionGatePort,
+  type LiveAdmissionGateRequest,
+} from './live-admission-gate.port';
 
 export type EvaluateLiveAdmissionCommand = Readonly<{
   workspaceId: string;
@@ -50,10 +50,10 @@ export type EvaluateLiveAdmissionCommand = Readonly<{
   humanStartToken?: string | null;
   /** Session facts (caller supplies minimal eligibility facts). */
   session: LiveAdmissionSessionFacts | null;
-  /** Optional Gate request fields for RuntimeEnforcementPort. */
+  /** Optional Gate request fields for LIVE_ADMISSION_GATE_PORT. */
   gateRequest?: Partial<
     Pick<
-      ValidateDeploymentRequest,
+      LiveAdmissionGateRequest,
       'libraryEntryId' | 'strategyFamilyId' | 'strategyVersion' | 'exchangeScopeId' | 'tacticPoint'
     >
   >;
@@ -82,8 +82,8 @@ export class LiveAdmissionService {
     private readonly livePolicy: WorkspaceLivePolicyPersistenceService,
     @Inject(KillSwitchPersistenceService)
     private readonly killSwitch: KillSwitchPersistenceService,
-    @Inject(RUNTIME_ENFORCEMENT_PORT)
-    private readonly enforcement: RuntimeEnforcementPort,
+    @Inject(LIVE_ADMISSION_GATE_PORT)
+    private readonly gate: LiveAdmissionGatePort,
     @Optional()
     @Inject(HUMAN_START_PROOF_STORE)
     humanStartStore?: HumanStartProofStore,
@@ -231,9 +231,8 @@ export class LiveAdmissionService {
       return mapGateToAdmissionInput({ status: 'unavailable' });
     }
     try {
-      const decision = this.enforcement.validateDeployment({
+      const decision = this.gate.validateForLiveAdmission({
         workspaceId: command.workspaceId,
-        purpose: 'session_start',
         tradingSessionId: command.sessionId,
         requestedAt: evaluatedAt,
         libraryEntryId: gateRequest.libraryEntryId,

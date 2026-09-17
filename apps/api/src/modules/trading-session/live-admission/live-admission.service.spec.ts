@@ -65,21 +65,16 @@ function createService(options?: {
           },
     ),
   };
-  const enforcement = {
-    validateDeployment: vi.fn(() =>
+  const gate = {
+    validateForLiveAdmission: vi.fn(() =>
       options?.gatePass === false
         ? {
             outcome: 'fail' as const,
             validation: 'INVALID' as const,
-            reasons: ['certification_missing' as const],
-            checkedAt: '2026-09-17T12:00:00.000Z',
           }
         : {
             outcome: 'pass' as const,
             validation: 'VALID' as const,
-            reasons: [],
-            libraryEntryId: 'lib-1',
-            checkedAt: '2026-09-17T12:00:00.000Z',
           },
     ),
   };
@@ -87,10 +82,10 @@ function createService(options?: {
   const service = new LiveAdmissionService(
     livePolicy as never,
     killSwitch as never,
-    enforcement as never,
+    gate as never,
     store,
   );
-  return { service, store, livePolicy, killSwitch, enforcement };
+  return { service, store, livePolicy, killSwitch, gate };
 }
 
 const sessionFacts = Object.freeze({
@@ -182,7 +177,7 @@ describe('LiveAdmissionService (PROPOSED-V3-L01-S04)', () => {
   });
 
   it('T-37 Gate is consulted (no bypass) when identity present', async () => {
-    const { service, enforcement } = createService({
+    const { service, gate } = createService({
       policy: WorkspaceLivePolicy.LIVE_POLICY_OPTED_IN,
       gatePass: false,
     });
@@ -202,7 +197,7 @@ describe('LiveAdmissionService (PROPOSED-V3-L01-S04)', () => {
       v2Overrides: { liveCapitalAuthorized: true, paperFreezeBlocksLive: false },
       authorizationOverride: 'allowed',
     });
-    expect(enforcement.validateDeployment).toHaveBeenCalled();
+    expect(gate.validateForLiveAdmission).toHaveBeenCalled();
     expect(decision.reason).toBe('GATE_DENIED');
   });
 
