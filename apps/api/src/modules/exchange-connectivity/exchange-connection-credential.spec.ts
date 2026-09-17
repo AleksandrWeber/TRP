@@ -282,22 +282,8 @@ describe('FIV-CONN-03 governed exchange credential resolution', () => {
   });
 
   it('CASE 12: sibling-secret substitution DENY — A mismatches, B would work', async () => {
-    const vault = governedVault([
-      tradingSecret({
-        id: 'secret-a',
-        purpose: SecretPurpose.Trading,
-        fields: { apiKey: 'bad', apiSecret: 'bad' },
-      }),
-      tradingSecret({
-        id: 'secret-b',
-        purpose: SecretPurpose.TradingLive,
-        fields: { apiKey: 'good-key', apiSecret: 'good-secret' },
-      }),
-    ]);
-    // Connection points at A which is Trading but we claim TESTNET env → mismatch path;
-    // sibling B is TradingLive LIVE-class and would work for LIVE — must not be selected
-    // when Connection is LIVE but vaultSecretId is A with wrong purpose for a DENY scenario:
-    // Use LIVE connection pointing at A where A is TradingTestnet and B is TradingLive.
+    // Connection points at A (TradingTestnet) while environment is LIVE.
+    // Sibling B is TradingLive and would work for LIVE — must not be selected.
     const denyVault = governedVault([
       tradingSecret({ id: 'secret-a', purpose: SecretPurpose.TradingTestnet }),
       tradingSecret({
@@ -536,12 +522,6 @@ describe('FIV-CONN-03 governed exchange credential resolution', () => {
     expect(vault.getCalls.every((call) => call.purpose !== undefined)).toBe(true);
     expect(vault.retrieveCalls.every((call) => call.purpose !== undefined)).toBe(true);
 
-    const mismatch = await handshake.perform({
-      ...request,
-      environment: 'live',
-      vaultSecretId: 'secret-a',
-    });
-    // Force mismatch via separate vault
     const mismatchVault = governedVault([
       tradingSecret({ id: 'secret-a', purpose: SecretPurpose.TradingTestnet }),
     ]);
@@ -578,6 +558,5 @@ describe('FIV-CONN-03 governed exchange credential resolution', () => {
       handshakeSucceeded: true,
     });
     expect(failedCap?.verificationFailed).toBe(true);
-    void mismatch;
   });
 });
