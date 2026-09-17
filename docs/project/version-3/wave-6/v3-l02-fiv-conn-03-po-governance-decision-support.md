@@ -13,9 +13,10 @@ STATUS:
 D-CONN-03-01 FROZEN (PO APPROVED — OPTION A)
 D-CONN-03-02 FROZEN (PO APPROVED — OPTION A)
 D-CONN-03-03 FROZEN (PO APPROVED — OPTION B)
-D-CONN-03-04…05 OPEN — DECISION SUPPORT PENDING PO APPROVAL
+D-CONN-03-04 FROZEN (PO APPROVED — OPTION A)
+D-CONN-03-05 OPEN — DECISION SUPPORT PENDING PO APPROVAL
 
-Full decision-freeze artifact:  NOT CREATED (awaiting D-CONN-03-04…05)
+Full decision-freeze artifact:  NOT CREATED (awaiting D-CONN-03-05)
 Implementation:                 NOT PERFORMED
 Implementation authorization:   NOT GRANTED
 External I/O:                   ZERO
@@ -57,16 +58,18 @@ FROZEN — APPROVED OPTION A
 D-CONN-03-03:
 FROZEN — APPROVED OPTION B
 
+D-CONN-03-04:
+FROZEN — APPROVED OPTION A
+
 Still open:
-D-CONN-03-04
 D-CONN-03-05
 ```
 
 ### Pre-check (this update)
 
 ```text
-HEAD:        7e38f4f2c0a456b6f8bbb57f396f9c6c9cd456a9
-origin/main: 7e38f4f2c0a456b6f8bbb57f396f9c6c9cd456a9
+HEAD:        bb06f83e2439d523c09b5af068771d89d5706de6
+origin/main: bb06f83e2439d523c09b5af068771d89d5706de6
 HEAD == origin/main: YES
 ```
 
@@ -93,8 +96,8 @@ RECOMMENDED FOR PO/GOVERNANCE CONSIDERATION
   ≠
 APPROVED / FROZEN / ACCEPTED
 
-D-CONN-03-01, D-CONN-03-02, and D-CONN-03-03 are FROZEN (explicit PO approvals).
-D-CONN-03-04…05 recommendations remain non-binding.
+D-CONN-03-01 through D-CONN-03-04 are FROZEN (explicit PO approvals).
+D-CONN-03-05 recommendations remain non-binding.
 ```
 
 ---
@@ -134,7 +137,7 @@ governed EXCHANGE validate → handshake → capability path.
 ```text
 This freezes the GOVERNANCE DECISION ONLY.
 It does NOT authorize implementation.
-It does NOT freeze D-CONN-03-04…05 by itself.
+It does NOT freeze D-CONN-03-05 by itself.
 It does NOT create the full FIV-CONN-03 decision-freeze artifact.
 ```
 
@@ -292,7 +295,7 @@ credential fallback, first-match selection, or provider-only resolution.
 ```text
 This freezes the GOVERNANCE POLICY ONLY.
 It does NOT authorize implementation.
-It does NOT freeze D-CONN-03-04…05.
+It does NOT freeze D-CONN-03-05.
 It does NOT create the full five-decision freeze artifact.
 ```
 
@@ -605,7 +608,7 @@ environment mutation is performed by FIV-CONN-03.
 ```text
 This freezes the POLICY ONLY.
 It does NOT authorize implementation.
-It does NOT freeze D-CONN-03-04…05.
+It does NOT freeze D-CONN-03-05.
 It does NOT create the full five-decision freeze artifact.
 ```
 
@@ -842,12 +845,71 @@ See section "D-CONN-03-03 — PO DECISION" above.
 
 ---
 
-## D-CONN-03-04 — DECISION SUPPORT
+## D-CONN-03-04 — PO DECISION
 
 ```text
-Status: OPEN — PO APPROVAL REQUIRED
-Depends on: D-CONN-03-01…03 FROZEN
-Does NOT freeze Model C mismatch timing in this act.
+Status:                         FROZEN
+Decision:                       APPROVED — OPTION A
+Decision authority:             PO / Governance
+Implementation authorization:   NOT GRANTED
+```
+
+### Exact frozen decision
+
+```text
+Model C MUST enforce the actual Vault SecretPurpose against the trusted
+Connection.environment before credential use for handshake/capability.
+Bind-time store/replace validation is preferred. The governed use path MUST
+perform an actual-purpose check before handshake/capability use. A shared
+purpose-validation helper SHOULD be used for capability paths to avoid
+duplicate credential retrieval.
+```
+
+### Required conceptual sequence
+
+```text
+Connection
+→ expected purpose class
+→ exact vaultSecretId-matched resolution
+→ Vault metadata / actual SecretPurpose
+→ Model C actual-purpose assertion
+→ credential retrieval/use
+→ handshake/capability
+```
+
+### Required properties (frozen)
+
+1. Actual Vault SecretPurpose must be verified.
+2. Connection.environment alone is not sufficient proof of the actual secret's purpose.
+3. The check must occur before credential use.
+4. No mismatched credential may reach handshake.
+5. No mismatched credential may reach capability.
+6. Bind-time store/replace validation is preferred where applicable.
+7. Capability should reuse the governed validation/helper rather than creating an independent credential resolution mechanism.
+8. No sibling-secret substitution.
+9. No provider-only lookup.
+10. No cross-environment fallback.
+11. No client-controlled purpose.
+12. NULL EXCHANGE behavior remains governed by D-CONN-03-03.
+13. LIVE dual-purpose behavior remains governed by D-CONN-03-02.
+
+```text
+This freezes the GOVERNANCE POLICY ONLY.
+It does NOT authorize implementation.
+It does NOT freeze D-CONN-03-05.
+It does NOT create the full five-decision freeze artifact.
+```
+
+### Prior decision support (retained for audit)
+
+The Option A/B timing analysis remains below for history. **PO selected OPTION A.**
+
+---
+
+## D-CONN-03-04 — DECISION SUPPORT (historical)
+
+```text
+Status: SUPERSEDED BY PO DECISION ABOVE — was OPEN; now FROZEN OPTION A
 ```
 
 ### Question
@@ -1075,7 +1137,7 @@ D-CONN-03-05: OPEN
 Full five-decision freeze: NOT CREATED
 ```
 
-### Recommended for PO/Governance consideration
+### Recommended for PO/Governance consideration (historical — superseded)
 
 ```text
 RECOMMENDED FOR PO/GOVERNANCE CONSIDERATION:
@@ -1094,55 +1156,221 @@ REJECTED:
   sibling-secret search
 ```
 
+### PO/Governance status
+
 ```text
-PO/GOVERNANCE APPROVAL REQUIRED: YES
-Status: OPEN — NOT FROZEN
+PO/GOVERNANCE APPROVAL: GRANTED (this session)
+Status: FROZEN — APPROVED OPTION A
+See section "D-CONN-03-04 — PO DECISION" above.
 ```
 
 ---
 
-## Decision D-CONN-03-05 — Prohibition of client-supplied purpose
+## D-CONN-03-05 — DECISION SUPPORT
+
+```text
+Status: OPEN — PO APPROVAL REQUIRED
+Depends on: D-CONN-03-01…04 FROZEN
+Does NOT freeze client-purpose prohibition in this act.
+```
 
 ### Question
 
-May any Connections HTTP/API client supply `SecretPurpose` (or equivalent) as an authoritative credential-selection input?
+Should `SecretPurpose` or any equivalent credential-purpose selector be exposed as a **client-authoritative** input?
 
-### Current repository evidence
+```text
+Security objective:
+  The client MUST NOT select which Vault credential purpose is used.
+  The server derives expected purpose from trusted Connection context.
+```
 
-| Surface                       | Purpose field?                                           |
-| ----------------------------- | -------------------------------------------------------- |
-| `CreateConnectionMetadataDto` | `environment?` only — no purpose                         |
-| Connections controller create | Passes `body.environment` only                           |
-| Store/replace/validate HTTP   | No purpose parameter observed                            |
-| Server derivation             | `vaultPurposeForConnection(connection)` from trusted row |
+### Repository evidence
 
-### Options
+| #   | Finding                                                | Evidence                                                                                                           |
+| --- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| 1   | No DTO accepts `SecretPurpose` / `purpose`             | `connections.dto.ts` — create has `environment?` only; store has `credentials` only; rename has `displayName` only |
+| 2   | No Connections HTTP API accepts purpose                | Controller create/store/replace/validate — no purpose param                                                        |
+| 3   | No handshake/capability HTTP purpose field             | Internal services; request types have no purpose today (to be added server-side under 01)                          |
+| 4   | Web connections UI has no purpose field                | `apps/web/src/connections` — no purpose matches                                                                    |
+| 5   | Purpose is server-derived from Connection row          | `vaultPurposeForConnection(connection)`                                                                            |
+| 6   | Client may supply `environment` **only at create**     | `CreateConnectionMetadataDto.environment?`; EXCHANGE required; immutable after create                              |
+| 7   | Environment immutability protects post-create path     | Rename does not accept environment                                                                                 |
+| 8   | Client cannot supply `vaultSecretId`                   | Not in DTOs; set only from Vault store metadata id                                                                 |
+| 9   | Internal Vault APIs accept optional purpose            | Server-to-Vault only — not client authoritative                                                                    |
+| 10  | Slot probe multi-purpose is server conflict check only | Not client-driven search                                                                                           |
+| 11  | Handshake currently omits purpose                      | Residual implementation gap; not a client purpose API                                                              |
 
-#### OPTION A — Purpose never exposed on client API
+**Interpretation:** Client-authoritative purpose is **not currently exposed**. D-CONN-03-05 freezes that it must **remain** non-authoritative (and that sneaked body fields must not become authority).
 
-Client supplies Connection identity (+ environment only at create). Server derives purpose. Vault result checked against expected class.
+### Option A — Purpose never exposed as client-authoritative API input
 
-#### OPTION B — Purpose may exist only as internal server-side field
+```text
+Server derives expected SecretPurpose from trusted Connection.environment
++ vaultSecretId-bound resolution (D-CONN-03-01/02/04).
+No public purpose field on Connections APIs.
+```
 
-Never accepted from client; never authoritative from client even if present in ignored body fields (strip/reject).
+| Dimension                                   | Assessment                |
+| ------------------------------------------- | ------------------------- |
+| Credential-selection authority              | Server-only               |
+| Privilege escalation                        | Lowest                    |
+| LIVE/TESTNET isolation                      | Preserved                 |
+| Model C / workspace / provider / id binding | Compatible                |
+| Environment immutability                    | Complements               |
+| API abuse / tampering                       | No purpose attack surface |
+| Auditability / testability                  | High                      |
+| Backwards compatibility                     | Matches current API       |
 
-#### OPTION C — Optional client purpose
+### Option B — Purpose may exist as internal server-side value; never client-authoritative
 
-**Rejected** — client becomes credential-selection authority.
+```text
+Internal helpers/services may pass purpose.
+Any externally supplied purpose is ignored or rejected (never authoritative).
+```
+
+| Dimension                | Assessment                                                                                             |
+| ------------------------ | ------------------------------------------------------------------------------------------------------ |
+| Difference vs A          | Implementation detail: A forbids public field; B allows internal params + reject/ignore sneaked fields |
+| Security                 | Equivalent if reject/ignore is strict                                                                  |
+| Recommended relationship | **B is a refinement of A**, not an alternative that weakens A                                          |
+
+### Option C — Other
+
+```text
+REJECTED:
+  Optional client purpose as authoritative selector
+  Client purpose that overrides Connection.environment
+  Client purpose that selects sibling vaultSecretId
+```
+
+### Client authority boundary
+
+```text
+CLIENT-AUTHORITATIVE (allowed where API already permits):
+  displayName, provider (at create), credentials (write-only),
+  environment at create only (EXCHANGE live|testnet)
+
+SERVER-DERIVED SECURITY CONTEXT (client MUST NOT be authority):
+  SecretPurpose / credential class
+  credential environment class beyond trusted Connection.environment
+  vaultSecretId selection / sibling selection
+  Vault slot search / provider-only fallback
+```
+
+Client must not replace `Connection.environment` with `SecretPurpose` or use purpose as an alternate environment selector.
+
+### Attack scenarios
+
+| Scenario | Client action                     | Expected                                                            |
+| -------- | --------------------------------- | ------------------------------------------------------------------- |
+| 1        | TESTNET + purpose=Trading         | DENY / ignore / reject — no LIVE credentials                        |
+| 2        | LIVE + purpose=TradingTestnet     | DENY — no TESTNET credentials                                       |
+| 3        | LIVE + purpose=TradingLive        | Must not select sibling secret; vaultSecretId remains authoritative |
+| 4        | LIVE + vaultSecretId=other        | DENY (not client-settable)                                          |
+| 5        | TESTNET + provider-only selection | DENY                                                                |
+| 6        | Unknown purpose                   | No credential-selection authority                                   |
+| 7        | Omits purpose                     | Normal server-derived behavior                                      |
+| 8        | Internal server-derived purpose   | Allowed under server contract + Model C                             |
+
+### API / DTO review
+
+| Artifact                                      | Client purpose?        | Notes                                         |
+| --------------------------------------------- | ---------------------- | --------------------------------------------- |
+| `CreateConnectionMetadataDto`                 | No                     | `environment?` only                           |
+| `RenameConnectionMetadataDto`                 | No                     | displayName only                              |
+| `StoreConnectionCredentialsDto`               | No                     | credentials object only                       |
+| Connections controller validate/store/replace | No                     | path id + auth context                        |
+| Handshake/capability request types            | No purpose field today | Future internal purpose under 01 — not client |
+| Web ConnectionsPage                           | No purpose             | Hardcodes live on create                      |
+
+If a sneaked `purpose` field appears in a future body, policy requires **reject or ignore** (never authority). Do not remove anything in this governance act.
+
+### Security analysis
+
+| Control                                   | A         | B                     |
+| ----------------------------------------- | --------- | --------------------- |
+| Client not credential-selection authority | PASS      | PASS if ignore/reject |
+| LIVE/TESTNET isolation                    | PASS      | PASS                  |
+| Model C                                   | PASS      | PASS                  |
+| vaultSecretId binding                     | PASS      | PASS                  |
+| Sibling / provider-only / cross-env       | FORBIDDEN | FORBIDDEN             |
+| Parameter tampering                       | No field  | Must strip/reject     |
+
+### Decision matrix
+
+| Client input           | Connection environment | Actual purpose | Expected                                                                   |
+| ---------------------- | ---------------------- | -------------- | -------------------------------------------------------------------------- |
+| omitted                | LIVE                   | Trading        | governed LIVE policy                                                       |
+| omitted                | LIVE                   | TradingLive    | governed LIVE policy                                                       |
+| omitted                | LIVE                   | TradingTestnet | DENY                                                                       |
+| purpose=Trading        | TESTNET                | Trading        | **OPEN — PO DECISION** (DENY / ignore / reject — client not authoritative) |
+| purpose=TradingLive    | TESTNET                | TradingLive    | **OPEN — PO DECISION** (client not authoritative)                          |
+| purpose=TradingTestnet | LIVE                   | TradingTestnet | DENY                                                                       |
+| purpose=TradingLive    | LIVE                   | TradingLive    | governed by vaultSecretId binding; client input not authoritative          |
+| purpose=unknown        | LIVE                   | any            | no client authority                                                        |
+| vaultSecretId=sibling  | LIVE                   | valid sibling  | DENY                                                                       |
+
+### Future test matrix
+
+1. client purpose=Trading on TESTNET
+2. client purpose=TradingLive on TESTNET
+3. client purpose=TradingTestnet on LIVE
+4. client purpose=TradingLive on LIVE with sibling secret
+5. client-supplied vaultSecretId
+6. provider-only lookup
+7. omitted purpose
+8. unknown purpose
+9. internal server-derived purpose
+10. wrong workspace
+11. wrong provider
+12. environment tampering
+13. Model C mismatch
+14. no secret leakage
+15. handshake path
+16. capability path
+    17–20. regression D-CONN-03-01…04
+
+No external venue calls.
+
+### Cross-decision consistency (01–05 chain)
+
+```text
+D-CONN-03-01: Server derives purpose; pass through validate→handshake→capability
+D-CONN-03-02: LIVE {Trading,TradingLive}; TESTNET {TradingTestnet}; id-bound; no fallback
+D-CONN-03-03: EXCHANGE+NULL FAIL CLOSED; non-EXCHANGE NULL may continue; NULL≠LIVE
+D-CONN-03-04: Actual Vault purpose vs Connection.environment before use
+D-CONN-03-05: Client MUST NOT be authoritative for SecretPurpose (OPEN)
+```
+
+Collective chain:
+
+```text
+Connection → trusted environment → expected purpose class
+→ exact vaultSecretId → actual Vault secret → actual SecretPurpose
+→ Model C → credential use → handshake/capability
+```
+
+No client input may bypass this chain.
 
 ### Recommended for PO/Governance consideration
 
 ```text
 RECOMMENDED FOR PO/GOVERNANCE CONSIDERATION:
 OPTION A
-(with OPTION B as implementation detail: ignore/reject any sneaked purpose field)
+  — Purpose never exposed as client-authoritative API input
 
-OPTION C: REJECTED
+WITH OPTION B AS IMPLEMENTATION DETAIL:
+  — Internal server-side purpose parameters allowed
+  — Any externally supplied purpose ignored or rejected (never authoritative)
+
+OPTION C (client-authoritative purpose):
+  REJECTED — do not approve
+
+Difference A vs B:
+  A = public contract: no purpose field / no client authority
+  B = defensive implementation: even if a purpose key is smuggled in a body,
+      it must not become credential-selection authority
 ```
-
-Preserves Model C, environment isolation, workspace isolation, no fallback, no credential confusion.
-
-### PO/Governance approval required
 
 ```text
 PO/GOVERNANCE APPROVAL REQUIRED: YES
@@ -1153,45 +1381,43 @@ Status: OPEN — NOT FROZEN
 
 ## Cross-Decision Consistency
 
-With **D-CONN-03-01=A**, **D-CONN-03-02=A**, and **D-CONN-03-03=B** frozen, if PO later freezes **04** (recommended use-path actual-purpose gate) and **05=A**, the composition guarantees:
+With **D-CONN-03-01…04 frozen**, if PO freezes **05=A** (or A+B defensive), the composition guarantees:
 
-| Guarantee                                           | How      |
-| --------------------------------------------------- | -------- |
-| LIVE → LIVE purpose only (id-bound)                 | 01+02+04 |
-| TESTNET → TESTNET purpose only                      | 01+02+04 |
-| NULL EXCHANGE → no trading credential use           | 03       |
-| NULL ≠ LIVE                                         | 03       |
-| Actual purpose verified before handshake/capability | 04       |
-| Client cannot select Vault purpose                  | 05       |
-| Provider-only / sibling-secret fallback forbidden   | 01+02+04 |
+| Guarantee                                           | How                         |
+| --------------------------------------------------- | --------------------------- |
+| LIVE → LIVE purpose only (id-bound)                 | 01+02+04                    |
+| TESTNET → TESTNET purpose only                      | 01+02+04                    |
+| NULL EXCHANGE → no trading credential use           | 03                          |
+| NULL ≠ LIVE                                         | 03                          |
+| Actual purpose verified before handshake/capability | 04                          |
+| Client cannot select Vault purpose                  | 05 (OPEN — recommended A/B) |
+| Provider-only / sibling-secret fallback forbidden   | 01+02+04+05                 |
 
 **Inconsistency warnings for PO:**
 
-1. Expected-purpose-only 04 without actual-purpose verification weakens Model C.
-2. Post-handshake-only 04 allows mismatched credential use.
-3. Implementing 01–03 without freezing 04 leaves handshake able to omit purpose until gates land.
-
----
+1. Approving client-authoritative purpose (05 Option C) would bypass 01–04.
+2. Allowing client purpose to pick between Trading/TradingLive would violate D-CONN-03-02 id-binding.
+3. Implementing 01–04 without freezing 05 leaves a future API-expansion risk if purpose is added carelessly.
 
 ## Security Matrix
 
-| Connection environment                | Vault purpose  | Expected result                                       |
-| ------------------------------------- | -------------- | ----------------------------------------------------- |
-| LIVE                                  | Trading        | governed by **D-CONN-03-02** (FROZEN)                 |
-| LIVE                                  | TradingLive    | governed by **D-CONN-03-02** (FROZEN)                 |
-| LIVE                                  | TradingTestnet | **DENY**                                              |
-| TESTNET                               | Trading        | **DENY**                                              |
-| TESTNET                               | TradingLive    | **DENY**                                              |
-| TESTNET                               | TradingTestnet | **ALLOW**                                             |
-| NULL                                  | Trading        | **DENY for EXCHANGE** (**D-CONN-03-03** FROZEN)       |
-| NULL                                  | TradingLive    | **DENY for EXCHANGE** (**D-CONN-03-03** FROZEN)       |
-| NULL                                  | TradingTestnet | **DENY**                                              |
-| wrong workspace                       | any            | **DENY**                                              |
-| wrong provider / wrong vaultSecretId  | any            | **DENY**                                              |
-| provider-only lookup                  | n/a            | **FORBIDDEN / DENY**                                  |
-| sibling-secret substitution           | n/a            | **FORBIDDEN / DENY**                                  |
-| client-supplied purpose               | n/a            | **FORBIDDEN / DENY**                                  |
-| mismatch reaches handshake/capability | n/a            | **OPEN — D-CONN-03-04** (must FAIL CLOSED before use) |
+| Connection environment                | Vault purpose  | Expected result                                 |
+| ------------------------------------- | -------------- | ----------------------------------------------- |
+| LIVE                                  | Trading        | governed by **D-CONN-03-02** (FROZEN)           |
+| LIVE                                  | TradingLive    | governed by **D-CONN-03-02** (FROZEN)           |
+| LIVE                                  | TradingTestnet | **DENY**                                        |
+| TESTNET                               | Trading        | **DENY**                                        |
+| TESTNET                               | TradingLive    | **DENY**                                        |
+| TESTNET                               | TradingTestnet | **ALLOW**                                       |
+| NULL                                  | Trading        | **DENY for EXCHANGE** (**D-CONN-03-03** FROZEN) |
+| NULL                                  | TradingLive    | **DENY for EXCHANGE** (**D-CONN-03-03** FROZEN) |
+| NULL                                  | TradingTestnet | **DENY**                                        |
+| wrong workspace                       | any            | **DENY**                                        |
+| wrong provider / wrong vaultSecretId  | any            | **DENY**                                        |
+| provider-only lookup                  | n/a            | **FORBIDDEN / DENY**                            |
+| sibling-secret substitution           | n/a            | **FORBIDDEN / DENY**                            |
+| client-supplied purpose               | n/a            | **FORBIDDEN / DENY**                            |
+| mismatch reaches handshake/capability | n/a            | **DENY before use** (**D-CONN-03-04** FROZEN)   |
 
 ---
 
@@ -1289,17 +1515,17 @@ Protected leftovers:          UNTOUCHED
 D-CONN-03-01: FROZEN — APPROVED OPTION A
 D-CONN-03-02: FROZEN — APPROVED OPTION A
 D-CONN-03-03: FROZEN — APPROVED OPTION B
-D-CONN-03-04: OPEN
+D-CONN-03-04: FROZEN — APPROVED OPTION A
 D-CONN-03-05: OPEN
 
 Full five-decision freeze artifact: NOT CREATED
-Reason: D-CONN-03-04…05 lack explicit PO approval.
-D-CONN-03-04…05 recommendations are NOT approvals.
+Reason: D-CONN-03-05 lacks explicit PO approval.
+D-CONN-03-05 recommendations are NOT approvals.
 ```
 
 ### How PO completes freeze later
 
-PO/Governance must explicitly approve D-CONN-03-04…05. Only when **all five** are approved may a separate freeze artifact be created:
+PO/Governance must explicitly approve D-CONN-03-05. Only when **all five** are approved may a separate freeze artifact be created:
 
 ```text
 docs/project/version-3/wave-6/v3-l02-fiv-conn-03-po-governance-decision-freeze.md
@@ -1313,7 +1539,7 @@ Freeze still does **not** authorize implementation.
 
 ```text
 Next required PO decision:
-  D-CONN-03-04
+  D-CONN-03-05
 
 After PO freezes D-CONN-03-01…05 (all five):
   FIV-CONN-03 ARCHITECTURE REVIEW
