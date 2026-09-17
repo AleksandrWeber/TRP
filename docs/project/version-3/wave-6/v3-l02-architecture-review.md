@@ -8,8 +8,8 @@
 **Nature:** Architecture Review. **Not** Security PASS. **Not** Planning Approval. **Not** Slice Approval. **Not** implementation authorization. **Not** live-capital activation. **Not** FIV.
 **Original review baseline:** `621080b6c9ea9c1e52f7d60a372fc4316174a1a5`
 **Human-start PO freeze:** [`v3-l02-human-start-decision-freeze.md`](./v3-l02-human-start-decision-freeze.md)
-**Re-review scope:** AD-L02-04 after PO-L02-05A…05D
-**Re-review baseline:** post human-start decision freeze (same commit family as freeze + this update)
+**Re-review scope:** AD-L02-04 (prior); AD-L02-07 / AD-L02-09 / AD-L02-11 (this act)
+**Re-review baseline:** post human-start freeze `3f9b609…` + this UNKNOWN/idempotency/crash-window resolution
 
 ```text
 ARCHITECTURE REVIEW / AD-L02-04 RE-REVIEW.
@@ -30,26 +30,33 @@ Protected dirty/untracked leftovers outside this artifact were **not** modified.
 ### Final package verdict
 
 ```text
-ARCHITECTURE BLOCKED
+ARCHITECTURE APPROVED WITH CONDITIONS
 ```
 
-Overall V3-L02 Architecture remains **BLOCKED** because AD-L02-07 / AD-L02-09 / AD-L02-11 (and related live cancel/persistence) are still unresolved. This is **not** a Security PASS and **not** implementation authorization.
+This is **not** Security PASS, **not** Slice Approval, **not** implementation authorization, **not** live-capital activation, and **not** FIV.
 
-### AD-L02-04 re-review verdict (this act)
+### Individual AD verdicts (this act + prior)
 
-```text
-AD-L02-04 = APPROVED WITH CONDITIONS
-```
+| Decision | Status |
+| -------- | ------ |
+| AD-L02-01 | **APPROVED WITH CONDITIONS** (NON-SoT freeze) |
+| AD-L02-04 | **APPROVED WITH CONDITIONS** |
+| **AD-L02-07** | **APPROVED WITH CONDITIONS** (this act) |
+| **AD-L02-09** | **APPROVED WITH CONDITIONS** (this act) |
+| **AD-L02-11** | **APPROVED WITH CONDITIONS** (this act) |
+| AD-L02-14 | **APPROVED WITH CONDITIONS** |
 
-PO-L02-05A…05D freeze the durability and consumption model. Architecture can now specify a coherent technical realization for human-start that satisfies the frozen PO contract **without** changing PO decisions and **without** weakening UNKNOWN / no-blind-retry rules.
+### Why CONDITIONS (not unconditional APPROVED)
 
-### Why package remains BLOCKED
+1. Security Review **NOT PASS** / not performed.
+2. Live `ExecutionAdapterPort` adapters not realized (AD-L02-14 conditions).
+3. AD-L02-01: `live-trading-engine` / `EmergencyManager` remain mounted NON-SoT hazards until operationally enforced.
+4. Designs in §§6–8 / cancel / reconcile / persistence are **not implemented** (no schema/migrations/code in this act).
+5. Per-venue client-order-id / query semantics remain adapter-boundary dependencies to confirm at implementation (must not invent unsupported venue capabilities).
 
-1. ~~AD-L02-04 (human-start)~~ → **APPROVED WITH CONDITIONS** (see §5).
-2. **AD-L02-07 / AD-L02-09 / AD-L02-11:** Canonical order domain has **no first-class UNKNOWN**; live crash-window / durable duplicate-prevention for venue I/O is **not** architecturally established on the canonical path.
-3. **AD-L02-01 hazard:** Parallel `live-trading-engine` remains **mounted** and implements a **cancel-all** Kill Switch (`EmergencyManager`) that contradicts PO-L02-08 if mistaken for L02 SoT (conditions from prior review still apply).
+### Closed by this act
 
-Human-start PO escalation is **closed**. Remaining blockers prevent overall Architecture PASS.
+Prior package **BLOCKED** reason (missing coherent UNKNOWN + idempotency + crash-window architecture) is **resolved as Architecture design**. UNKNOWN model is **not** weakened; blind retry remains forbidden; claim ≠ submit ≠ accept ≠ fill.
 
 ---
 
@@ -84,8 +91,10 @@ Human-start PO escalation is **closed**. Remaining blockers prevent overall Arch
 | ---- | ------ |
 | Block A / Block B | **PO DECIDED** |
 | PO-L02-05A…05D | **PO DECIDED** |
-| AD-L02-04 | **APPROVED WITH CONDITIONS** (this re-review) |
-| Package Architecture Review | **BLOCKED** (remaining ADs) |
+| AD-L02-04 | **APPROVED WITH CONDITIONS** |
+| AD-L02-07 / 09 / 11 | **APPROVED WITH CONDITIONS** (this act) |
+| Package Architecture Review | **APPROVED WITH CONDITIONS** |
+| Cancel / reconcile / live persistence designs | **APPROVED WITH CONDITIONS** (this act) |
 | Security Review | **NOT PERFORMED** / **NOT PASS** |
 | S01–S06 | **NOT GRANTED** |
 | V3-L02 IMPLEMENTATION | **NOT AUTHORIZED** |
@@ -379,105 +388,317 @@ None — realizes PO-L02-05A…05D as decided. Does not alter grain or UNKNOWN b
 
 High sensitivity (replay, cross-binding, races). Hand off to Security Review — **NOT PASS**.
 
-## 6. AD-L02-07 — UNKNOWN
+## 6. AD-L02-07 — First-Class UNKNOWN
 
-### Requirement
+### Decision
 
-UNKNOWN is first-class. UNKNOWN ≠ SUCCESS / ACCEPTED / REJECTED / FILLED / CANCELLED. Must not silently coerce.
+**APPROVED WITH CONDITIONS**
 
-### Repository evidence
+Introduce a first-class durable business state **`unknown`** on the canonical live order/execution aggregate, distinct from rejected / cancelled / filled / acknowledged(accepted) / success.
 
-| Surface | Representation |
-| ------- | -------------- |
-| `OrderStatus` | **No UNKNOWN** |
-| Transitions | SUBMITTED → ACKNOWLEDGED / REJECTED / CANCEL_PENDING only |
-| Adapter query | `outcome: 'unknown'` + `reconciliationRequired: true` (paper) |
-| Engine reconcile | Can surface `reconciliationRequired`; does not encode durable UNKNOWN order status |
+PO business lifecycle (frozen) maps to technical encoding as follows (Architecture encoding; PO names remain authoritative for governance):
 
-### Minimum architectural change required (design only — not implemented)
+| PO business distinction | Technical representation (canonical Orders path) | Notes |
+| ----------------------- | ------------------------------------------------ | ----- |
+| REQUESTED | `proposed` / `risk_pending` (pre-live-admission completion) | Existing paper statuses reused where equivalent |
+| ADMITTED | Live-eligible executable + durable admission context; **not** venue-submitted | ALLOW ≠ submitted |
+| SUBMITTED | `submitted` **and/or** durable `submission_phase = transmitted \| transmit_pending` | Local intent that venue I/O was entered — **not** accept |
+| ACCEPTED | `acknowledged` (venue-accepted / resting or ack) | Requires established venue acceptance |
+| REJECTED | `rejected` | Requires established venue/local reject — **not** timeout |
+| **UNKNOWN** | **`unknown`** (NEW first-class `OrderStatus`) | Persisted; `reconciliation_required = true` |
+| FILLED | `filled` | Venue-authoritative fill facts |
+| CANCELLED | `cancelled` | Venue-authoritative cancel (or proven never-open after reconcile) |
+| (internal) | `cancel_pending` | Cancel requested / in flight — may transition to `unknown` on ambiguity |
 
-1. Introduce an explicit durable uncertain-outcome representation on the canonical order/execution path (status and/or execution-result marker) that is distinct from REJECTED/CANCELLED/FILLED/ACKNOWLEDGED.
-2. Map adapter/transport ambiguity → that representation (never to success).
-3. Persist reconciliation-required flag with order identity / venue identifiers.
-4. Operator-visible state must not display false terminal success/cancel.
+**Existing capability:** paper `OrderStatus` has no `unknown`; adapter `query` already returns `outcome: 'unknown'`.
+**Does not yet exist:** durable `unknown` on `PaperOrder` / live order aggregate; legal transitions including UNKNOWN.
 
-Exact schema encoding remains Architecture responsibility **after** blocker clearance; PO business distinctions remain frozen.
+### Legal transitions involving UNKNOWN
 
-### Status
+```text
+submitted | cancel_pending  →  unknown          (ambiguous venue outcome)
+unknown                     →  acknowledged     (reconcile: accepted)
+unknown                     →  rejected         (reconcile: known reject / never accepted)
+unknown                     →  filled           (reconcile: fill established)
+unknown                     →  cancelled        (reconcile: cancel established)
+unknown                     →  unknown          (reconcile inconclusive / timed out)
+```
 
-**APPROVED WITH CONDITIONS** (encoding approach approved in principle; **not** implementable as PASS until design is applied in a later authorized slice)
+Forbidden coercions:
 
-Conditions:
+- timeout / network / lost response / parse failure → **must not** become `rejected` or `cancelled` or `filled` or success
+- absence of local row alone → **must not** prove venue absence without reconcile
+- human-start claim / local ALLOW → **must not** become ACCEPTED/FILLED
 
-- Encoding must preserve all PO lifecycle distinctions.
-- Must integrate with AD-L02-09/11 and cancel mapping.
-- No false success / false reject that invites duplicate submit.
+### Ambiguity classification matrix
 
-**Practical review status for L02 readiness:** **BLOCKED** pending concrete encoding selection committed in a follow-up Architecture note after AD-L02-04 PO escalation — current domain **cannot** represent UNKNOWN as first-class order state.
+| Event | Local result | Rationale |
+| ----- | ------------ | --------- |
+| Timeout after transmit possible | **UNKNOWN** | Venue may have accepted |
+| Connection reset after transmit possible | **UNKNOWN** | Same |
+| HTTP/network failure after transmit possible | **UNKNOWN** | Same |
+| Failure **before** durable pre-send marker / before transmit | No venue effect if marker proves not transmitted; else **UNKNOWN** if transmission possibility cannot be ruled out | Prefer UNKNOWN when unsure |
+| Venue response lost after transmission | **UNKNOWN** | Classic lost-response |
+| Process crash after claim, before transmit marker | Claimed; not submitted; **not** venue success | New human-start for new attempt; order may remain pre-submit |
+| Process crash after pre-send marker / during / after transmit before durable response | **UNKNOWN** | Distributed boundary |
+| Response parsing failure after bytes received | **UNKNOWN** (or known if parse-safe reject code established) | Do not invent success |
+| Uncertain submit result | **UNKNOWN** | |
+| Uncertain cancel result | **UNKNOWN** (cancel path) | Not cancel success |
+| Venue explicit reject with verified payload | **REJECTED** | Known |
+| Venue explicit accept/ack | **ACCEPTED** | Known |
+| Venue explicit fill | **FILLED** (or partial per fill model) | Known |
 
-Register status for AD-L02-07: **BLOCKED** (domain gap).
+### Invariants
+
+- UNKNOWN is first-class persisted business state.
+- `claim ≠ submit ≠ accept ≠ fill`.
+- UNKNOWN ≠ SUCCESS / ACCEPTED / REJECTED / FILLED / CANCELLED.
+- No blind retry from UNKNOWN.
+- Venue is authoritative for already-submitted orders once established via reconcile.
+
+### Failure behavior
+
+Fail-closed for **new** live exposure while UNKNOWN exists for the same logical action. Operator visibility of UNKNOWN required (L04 UI out of scope — operational persistence must still encode it).
+
+### Remaining conditions / dependencies
+
+- Schema/status enum change not implemented.
+- Adapter must return honest ambiguity signals (AD-L02-14).
+- Security: SD-L02-06 UNKNOWN manipulation / trust.
+- Must not weaken UNKNOWN to “fix” claim burn.
+
+### Rationale
+
+PO-L02-14 and Block A cancel/idempotency invariants require a durable, non-coercible uncertain state. Paper adapter already prototypes `outcome: 'unknown'`; Orders domain must elevate it.
 
 ---
 
-## 7. AD-L02-09 — Idempotency
+## 7. AD-L02-09 — Live Idempotency
 
-### Existing paper infrastructure
+### Decision
 
-- `clientOrderId` + `idempotencyKey` on intent; order id derived from workspace + clientOrderId.
-- Propose replay via repository lookups.
-- Engine: non-EXECUTABLE → `already_executed`; fill uniqueness / optimistic concurrency.
-- Intent mode hardcoded `paper`.
+**APPROVED WITH CONDITIONS**
 
-### Live gap
+One **logical live action** has a durable identity owned by the **canonical Orders aggregate** (same BC as `PaperOrder` / future live-capable order row — **not** `live-trading-engine` / `trading_orders` parallel stack).
 
-No proven durable “submitted-unconfirmed / UNKNOWN” + venue client-order-id contract on canonical live path. Exchange stubs throw; MOCK is parallel stack.
+### Exact logical identity
 
-### Crash-window timeline (duplicate-order risk)
+| Element | Definition |
+| ------- | ---------- |
+| **Primary logical order id** | Server-derived stable `orderId` = deterministic function of `(workspaceId, clientOrderId)` — **existing pattern** in `order-intent.ts` (`ord_${sha256(workspaceId:clientOrderId)}`) |
+| **clientOrderId** | Client-provided (or strategy-derived) string; **unique per workspace**; durable on order row (`@@unique([workspaceId, clientOrderId])` exists on `paper_orders`) |
+| **idempotencyKey** | Client-provided (or derived for strategy) key for the **HTTP/API logical operation**; **unique per workspace** (`@@unique([workspaceId, idempotencyKey])` exists) |
+| **Venue client order id** | Adapter maps platform `clientOrderId` (or a deterministic transform thereof) to venue `clientOrderId` / `clOrdId` / equivalent **where supported**; **same value retained across retries of the same logical action** |
+| **Generation** | Established at **logical live-action creation** (propose/create), **before** human-start claim and **before** venue I/O |
+| **Owner** | Orders BC / durable order row |
+| **Scope** | Workspace-scoped uniqueness |
+| **Restart / workers / instances** | Identity is DB-durable; all workers/instances must reuse the same row |
 
-| Step | Event | Known? | Duplicate risk if naive retry |
-| ---- | ----- | ------ | ----------------------------- |
-| T0 | Request created | Local | Low if idempotent create |
-| T1 | Admission | Local | N/A |
-| T2 | Persistence (intent / about-to-submit) | **Required** | If missing → high |
-| T3 | Venue request sent | In flight | High without durable marker |
-| T4 | Venue accepts | Venue yes / local maybe no | **Critical** |
-| T5 | Response lost | **UNKNOWN** | Blind retry → duplicate |
-| T6 | Process state | Partial | Restart must recover T2–T5 markers |
-| T7 | Retry | Only after reconcile | Blind retry forbidden (PO) |
-| T8 | Reconciliation | Venue authoritative | Required before retry |
+**Existing capability:** `PaperOrder` uniques on `clientOrderId`, `idempotencyKey`, `intentHash`.
+**Does not yet exist:** live mode on that aggregate; pre-send / UNKNOWN / venue-id / reconcile metadata fields; live adapter mapping of client order id.
 
-### Architectural requirements
+### Mandatory UNKNOWN retry rule
 
-1. Stable logical order identity + local idempotency key retained across retries.
-2. Venue client-order-id (or equivalent) where supported; same identity on logical retry.
-3. Durable persistence of submission/UNKNOWN state that survives restart.
-4. Concurrent requests must serialize on identity (no double venue create).
-5. Worker retry must not mint new venue identity.
-6. After UNKNOWN: reconcile before retry (PO frozen).
+```text
+UNKNOWN → reconcile (venue authoritative query) → determine state
+  → only then decide whether another mutating action is permitted
+```
 
-### Status
+| Situation | Retry? |
+| --------- | ------ |
+| Blind resubmit while UNKNOWN | **Forbidden** |
+| Reconcile → ACCEPTED/FILLED/CANCELLED | Continue that state; **no new submit** |
+| Reconcile → REJECTED / proven never-created | New logical action requires **new** identity (new clientOrderId / idempotencyKey) + new human-start |
+| Reconcile inconclusive | Remain UNKNOWN; delay; retry **reconcile** only (not submit) |
+| Continuing same logical action after reconcile says “not on venue” and policy allows recreate | Only if Architecture/Security later approve explicit recreate; **default L02: treat as new logical action with new ids** — do not silently reuse a consumed submit attempt without reconcile proof |
 
-**BLOCKED** — mechanism not established for live canonical path; paper primitives are insufficient alone.
+### Venue client-order-id participation
+
+| Venue | Participation (design) | Residual ambiguity |
+| ----- | ---------------------- | ------------------ |
+| BINANCE / BYBIT / OKX | Adapters **MUST** send stable client order id equivalent on submit when API supports it; use it in reconcile queries | Exact endpoint/field mapping = adapter implementation dependency — **do not invent** here; confirm at adapter design |
+| Venue without equivalent | Rely on durable local identity + conservative UNKNOWN + reconcile-by-venue-order-id when known; residual duplicate risk must be contained by **no blind retry** + fail-closed new exposure | Marked **Architecture/Security dependency** at adapter boundary |
+| MOCK | Test-only; must still honor identity + UNKNOWN rules in tests | |
+
+### Invariants
+
+- Duplicate HTTP / concurrent / worker / queue / restart must converge on **one** durable row.
+- Human-start claim is **not** an idempotency substitute (PO/AD-L02-04).
+- Same logical retry retains same `orderId` / `clientOrderId` / venue client order id.
+- Lost response ⇒ UNKNOWN ⇒ reconcile-before-mutate.
+
+### Failure behavior
+
+Unique constraint violations on create ⇒ return existing logical action (idempotent replay), never a second venue identity.
+
+### Remaining conditions
+
+- Live fields/migrations not implemented.
+- Per-venue id mapping confirmed in adapter work (AD-L02-14).
+- Security: SD-L02-05 duplicate financial actions / idempotency abuse.
+
+### Rationale
+
+Extends existing paper uniqueness rather than inventing a parallel identity system; satisfies PO-L02-13 without claiming exactly-once venue submission.
 
 ---
 
-## 8. AD-L02-11 — Crash Window
+## 8. AD-L02-11 — Crash-Window Persistence
 
-| Crash | Known outcome? | UNKNOWN? | Safe retry? | Reconcile? | Duplicate risk | Durable info required |
-| ----- | -------------- | -------- | ----------- | ---------- | -------------- | ---------------------- |
-| A. Before venue request | No venue effect | No | Yes (after gates) | No | Low if no send | Intent + admission context |
-| B. During venue request | Ambiguous | **Yes** | **No** blind | **Yes** | **High** | Pre-send marker + client-order-id |
-| C. After accept, before response | Venue may have order | **Yes** | **No** blind | **Yes** | **High** | Same |
-| D. After response, before persist | Local loss | Treat UNKNOWN until recovered | No blind | Yes | High | Response must be durable ASAP |
-| E. After persist, before ack | Known if persist includes outcome | Maybe | Depends | If needed | Lower | Persist-before-ack |
-| F. During retry | Depends on prior marker | Often | Only post-reconcile | Yes | High if blind | Idempotent identity |
-| G. During reconciliation | Evolving | Until resolved | No conflicting mutate | In progress | Mis-merge risk | Venue IDs + local IDs |
+### Decision
 
-Architecture selection (conditional on later approval): prefer **persist “about-to-submit / submitted-unconfirmed” before or atomically around send**, never “send with no durable marker”.
+**APPROVED WITH CONDITIONS**
 
-### Status
+Acknowledge the **distributed-system boundary**: a local DB transaction **cannot** atomically include the external venue call. Architecture therefore requires durable **pre-send** and **post-outcome** markers and UNKNOWN for the gap.
 
-**BLOCKED** — depends on AD-L02-07/09 durability; not currently guaranteed.
+### Submit flow (logical)
+
+1. Receive logical live-order request.
+2. Establish durable logical order/action identity (`clientOrderId` / `idempotencyKey` / `orderId`) — persist order row (REQUESTED…).
+3. Validate authorization/admission (non-claiming human-start verify as needed).
+4. Validate human-start binding/freshness.
+5. Mandatory S04 revalidation immediately before irreversible I/O.
+6. Atomically claim human-start (AD-L02-04).
+7. Persist **pre-I/O** state: e.g. `submission_phase = ready_to_transmit` / `transmit_pending` with timestamps + venue client order id **before** socket write (AD-L02-11).
+8. Perform venue I/O (ExecutionEngine → ExecutionAdapterPort only).
+9. Interpret venue result.
+10. Persist known ACCEPTED/REJECTED/FILLED **or** **UNKNOWN**.
+11. Reconcile UNKNOWN where required (no blind retry).
+
+Persistence **before** venue I/O: identity + admission context + human-start claim correlation + **pre-send marker**.
+Persistence **after** venue I/O: outcome or UNKNOWN + venue order id when known + reconcile metadata.
+
+### Crash timeline (T0–T8)
+
+| Point | Meaning | Crash survival / behavior |
+| ----- | ------- | ------------------------- |
+| T0 | Logical live action created | Row exists; no claim; no venue |
+| T1 | Human-start validated (verify-only) | Unclaimed proof still usable |
+| T2 | S04 revalidation passes | Ephemeral unless stamped; must revalidate again before I/O on resume |
+| T3 | Human-start atomically claimed | Claim durable; **≠ submit** |
+| T4 | Venue request about to be sent (pre-send marker persisted) | Marker durable; if crash here before transmit → treat as **not transmitted** only if marker protocol proves no write; if unsure → UNKNOWN |
+| T5 | Venue request transmitted | Must assume venue **may** have received → on crash **UNKNOWN** |
+| T6 | Venue may have accepted/rejected/executed | Authoritative at venue; local may be UNKNOWN |
+| T7 | Response reaches application | Still volatile until T8 |
+| T8 | Local persistence records outcome | Known state or UNKNOWN persisted |
+
+| Crash boundary | Proof | Venue | State | Safe mutate retry? | Reconcile? |
+| -------------- | ----- | ----- | ----- | ------------------ | ---------- |
+| Before claim (＜T3) | Unclaimed | None | Pre-submit | Yes after gates + new/same proof rules | No |
+| Immediately after claim (T3) | Claimed | None | Pre-submit | **No** reuse of same proof; new human-start for new attempt; order not venue-submitted | No |
+| After pre-send marker, before/during transmit (T4–T5) | Claimed | Maybe | **UNKNOWN** if transmit possible | **No** blind submit | **Yes** |
+| After transmit, before response (T5–T7) | Claimed | Maybe | **UNKNOWN** | **No** blind submit | **Yes** |
+| After accept at venue, before local persist (T6–T8) | Claimed | Yes possible | **UNKNOWN** until persist/reconcile | **No** blind submit | **Yes** |
+| After response, before persist (T7–T8) | Claimed | Known at app momentarily | Treat **UNKNOWN** if persist lost | **No** blind submit | **Yes** |
+| After local persist (T8) | Claimed | Per persisted outcome | Durable known/UNKNOWN | Per state machine | If UNKNOWN |
+
+### Cancel crash window (aligned)
+
+Same pattern with cancel idempotency key + `cancel_pending` → UNKNOWN on ambiguity → reconcile → CANCELLED / FILLED / remain UNKNOWN. **No** blind re-cancel. **No** EmergencyManager cancel-all.
+
+### Invariants
+
+- Pre-send durable marker required before irreversible transmit.
+- External I/O outside local transaction.
+- Claim ≠ submit ≠ accept ≠ fill.
+- UNKNOWN preserved across crashes in the transmit ambiguity window.
+
+### Remaining conditions
+
+- Marker fields / migrations not implemented.
+- Worker orchestration for reconcile not implemented.
+- Depends on AD-L02-07/09 encodings.
+
+### Rationale
+
+Makes the unavoidable distributed gap explicit and fail-safe via UNKNOWN + reconcile rather than false terminal states.
+
+---
+
+## 8A. Reconciliation Contract (Minimum L02)
+
+### Decision
+
+**APPROVED WITH CONDITIONS** (design contract)
+
+| Question | Contract |
+| -------- | -------- |
+| Component | Canonical `ExecutionEngineService.reconcile` → adapter `query` / venue status by **workspace + clientOrderId (+ venue order id if known)** |
+| Local UNKNOWN mapping | Lookup by durable `orderId` / `clientOrderId` / `venue_order_id` when present |
+| Venue reports order | Map established venue status → ACCEPTED / FILLED / CANCELLED / REJECTED per adapter mapping; clear UNKNOWN |
+| Venue reports no order | **Not** automatic REJECTED if transmit may have occurred and venue indexing lag possible — keep UNKNOWN or apply venue-documented “definitely absent” only when adapter can justify; otherwise remain UNKNOWN |
+| Venue ambiguous / timeout | Remain UNKNOWN; schedule delayed reconcile; **no** mutate |
+| Repeated reconcile failure | Remain UNKNOWN; fail-closed new exposure; operator/ops escalation (L04 out of scope) |
+| Resolutions allowed | UNKNOWN → ACCEPTED \| REJECTED \| FILLED \| CANCELLED \| UNKNOWN |
+| SoT | Venue for already-submitted; never `live-trading-engine` sync |
+
+**Dependency:** exact venue query APIs = AD-L02-14 adapter work; do not invent unsupported capabilities.
+
+---
+
+## 8B. Cancel Architecture (Resolved with 07/09/11)
+
+### Decision
+
+**APPROVED WITH CONDITIONS**
+
+| Venue outcome | Domain |
+| ------------- | ------ |
+| Cancel accepted | CANCELLED |
+| Already cancelled | CANCELLED when established |
+| Already filled | FILLED; cancel not successful |
+| Not found / timeout / network / lost | **UNKNOWN** (not cancel success) |
+| UNKNOWN | Remain until reconcile; **no blind repeated cancel** |
+
+Cancel uses its own durable idempotency key scoped to the cancel logical action on the same order identity. EmergencyManager **excluded** from L02. No automatic cancel-all (PO-L02-08/09/10).
+
+---
+
+## 8C. Persistence Model (Design Proposal)
+
+### Design proposal (not migrated)
+
+Extend canonical order aggregate (pattern: `PaperOrder` / `paper_orders`) for live-capable rows **or** additive columns on the same Orders persistence:
+
+| Concern | Fields / constraints |
+| ------- | -------------------- |
+| Identity | `id`, `workspace_id`, `client_order_id`, `idempotency_key` — keep `@@unique([workspaceId, clientOrderId])`, `@@unique([workspaceId, idempotencyKey])` |
+| Status | include **`unknown`**; `cancel_pending` |
+| Venue | `venue_client_order_id`, `venue_order_id` nullable |
+| Crash window | `submission_phase` (`none` \| `ready_to_transmit` \| `transmitted` \| `completed`), `transmit_attempted_at`, `last_venue_attempt_at` |
+| UNKNOWN / reconcile | `reconciliation_required`, `unknown_entered_at`, `last_reconcile_at`, `reconcile_attempts` |
+| Human-start | `human_start_proof_id` / claim correlation nullable |
+| Timestamps | `created_at`, `recorded_at`, `updated_at` |
+| Cancel | cancel idempotency key unique per workspace where applicable (existing cancel patterns) |
+
+Human-start proofs: separate durable table per AD-L02-04 (Prisma).
+
+### Existing vs missing
+
+| Capability | Status |
+| ---------- | ------ |
+| Paper order uniques / lifecycle entries | **Exists** |
+| Adapter query `unknown` outcome (paper) | **Exists** |
+| Engine reconcile hook | **Exists** (paper) |
+| `OrderStatus.unknown` | **Missing** |
+| Live mode + pre-send markers + reconcile metadata | **Missing** |
+| Durable human-start store | **Missing** (in-memory only) |
+| Live ExecutionAdapterPort | **Missing** |
+
+Out of L02 persistence: L03 audit log, L04 UI, L05 replay subsystem.
+
+---
+
+## 8D. Multi-Instance / Concurrency Proof
+
+| Case | Durable record | Atomic prevention | Venue I/O? | Resulting state | Reconcile? |
+| ---- | -------------- | ----------------- | ---------- | --------------- | ---------- |
+| **A** Two API instances same logical request | Same `idempotencyKey`/`clientOrderId` row | Unique insert / fetch-existing | At most one critical section wins pre-send+claim | Single logical order | If winner UNKNOWN |
+| **B** Two workers same job | Same order row + optimistic version / phase CAS | CAS on `submission_phase` / version | One transmit | One attempt or UNKNOWN | If ambiguous |
+| **C** Client timeout + retry | Existing row by idempotency key | Return existing; no new identity | No second submit while UNKNOWN/in-flight | Same logical action | If UNKNOWN |
+| **D** Crash after submit before persist | Pre-send/`transmitted` marker | Marker implies ambiguity | Already may have occurred | **UNKNOWN** on recovery | **Required** |
+| **E** Two operators same human-start proof | One proof row | Atomic claim | At most one claim→I/O path | Loser fail-closed | If winner UNKNOWN |
+| **F** Replay claimed proof | Claimed proof | `claimed_at IS NOT NULL` | No | Deny | N/A |
 
 ---
 
@@ -536,7 +757,7 @@ No false cancellation success; timeout/lost-response/not-found do not automatica
 
 ### Status
 
-**BLOCKED** — honest live cancel semantics require UNKNOWN encoding + reconciliation boundary; EmergencyManager cancel-all must stay outside L02 SoT.
+**APPROVED WITH CONDITIONS** — mapping aligned with AD-L02-07/09/11 (§8B). EmergencyManager remains excluded. Implementation not authorized.
 
 ---
 
@@ -557,7 +778,7 @@ No false cancellation success; timeout/lost-response/not-found do not automatica
 
 ### Status
 
-**APPROVED WITH CONDITIONS** (boundary defined); **implementation not authorized**. Minimum path required for AC-14 remains unrealized on live canonical path → readiness **BLOCKED**.
+**APPROVED WITH CONDITIONS** — minimum contract in §8A. Implementation / live adapter query not authorized yet; Security must review trust boundary.
 
 ---
 
@@ -651,7 +872,7 @@ S04 places C7 (authz) before session/human-start. PO cell lists human-start and 
 
 ### Status
 
-**BLOCKED** — required persistence model not present for live canonical UNKNOWN/crash-window; no schema changes in this act.
+**APPROVED WITH CONDITIONS** — minimum model in §8C (design proposal only). **No migrations in this act.** Existing `paper_orders` uniques are the foundation; live UNKNOWN/marker columns **do not yet exist**.
 
 ---
 
@@ -681,14 +902,14 @@ Statuses: **PASS** / **PASS WITH REQUIRED CLARIFICATION** / **BLOCKED**
 | AC-07 | Paper Freeze / liveCapitalAuthorized hard stops | **PASS** | S04 V2 stops present; production unauthorized |
 | AC-08 | Credentials only in adapter from Vault | **BLOCKED** | Live adapter boundary not realized; Security owns PASS later |
 | AC-09 | Real submit for approved venues only | **BLOCKED** | No live ExecutionAdapterPort |
-| AC-10 | Real cancel honest semantics | **BLOCKED** | UNKNOWN/cancel mapping incomplete |
-| AC-11 | Idempotency across retry/timeout/restart | **BLOCKED** | AD-L02-09 |
-| AC-12 | Ambiguous → unknown/reconcile | **BLOCKED** | AD-L02-07 |
-| AC-13 | Crash-window persistence | **BLOCKED** | AD-L02-11 |
-| AC-14 | Minimum reconciliation path | **BLOCKED** | Boundary defined; live path missing |
+| AC-10 | Real cancel honest semantics | **PASS WITH REQUIRED CLARIFICATION** | Mapping approved (§8B); not implemented; adapters pending |
+| AC-11 | Idempotency across retry/timeout/restart | **PASS WITH REQUIRED CLARIFICATION** | AD-L02-09 APPROVED WITH CONDITIONS; not implemented |
+| AC-12 | Ambiguous → unknown/reconcile | **PASS WITH REQUIRED CLARIFICATION** | AD-L02-07 APPROVED WITH CONDITIONS; not implemented |
+| AC-13 | Crash-window persistence | **PASS WITH REQUIRED CLARIFICATION** | AD-L02-11 APPROVED WITH CONDITIONS; not implemented |
+| AC-14 | Minimum reconciliation path | **PASS WITH REQUIRED CLARIFICATION** | Contract §8A; live adapter query pending |
 | AC-15 | Fail-closed new exposure under uncertainty | **PASS WITH REQUIRED CLARIFICATION** | Admission fail-closed; I/O path missing |
-| AC-16 | No false success for UNKNOWN | **BLOCKED** | Needs UNKNOWN encoding |
-| AC-17 | No false reject inviting duplicate | **BLOCKED** | Needs UNKNOWN encoding |
+| AC-16 | No false success for UNKNOWN | **PASS WITH REQUIRED CLARIFICATION** | Encoding decided; must be implemented later without coercion |
+| AC-17 | No false reject inviting duplicate | **PASS WITH REQUIRED CLARIFICATION** | Ambiguity→UNKNOWN decided; implementation pending |
 | AC-18 | No credential leakage | **BLOCKED** | Security Review (not performed) |
 | AC-19 | No cross-workspace execution/credentials | **BLOCKED** | Security Review |
 | AC-20 | No Paper/Live API confusion | **PASS WITH REQUIRED CLARIFICATION** | Port currently paper-locked (good); live API design pending |
@@ -705,8 +926,8 @@ Statuses: **PASS** / **PASS WITH REQUIRED CLARIFICATION** / **BLOCKED**
 | Status | Count |
 | ------ | ----- |
 | PASS | 6 |
-| PASS WITH REQUIRED CLARIFICATION | 9 |
-| BLOCKED | 12 |
+| PASS WITH REQUIRED CLARIFICATION | 17 |
+| BLOCKED | 4 |
 
 ---
 
@@ -716,15 +937,15 @@ Statuses: **PASS** / **PASS WITH REQUIRED CLARIFICATION** / **BLOCKED**
 | ----------- | ------- | -------- | ------ | --------------- | --------- | --------------- |
 | **AD-L02-01** | Canonical path required; parallel engine NON-SoT | AppModule mounts both; coordinator bypasses engine; EmergencyManager cancel-all | **APPROVED WITH CONDITIONS** | Freeze NON-SoT; never wire L02 through parallel stack | None | Dual-path hazard |
 | **AD-L02-04** | Durable shared store; claim after S04 revalidation immediately before I/O; at-most-one claim | PO-L02-05A…05D freeze; Prisma pattern like KS/policy | **APPROVED WITH CONDITIONS** | Implement later under slice auth; Security review; wire verify≠claim on canonical path | PO freeze closed | SD-L02-04 still required |
-| **AD-L02-07** | No OrderStatus UNKNOWN | `order-status.ts` | **BLOCKED** | Design+encode UNKNOWN without changing PO semantics | None if encoding faithful | False success/reject (SD-L02-06) |
-| **AD-L02-09** | Live idempotency not established on canonical path | Paper keys only; stubs throw | **BLOCKED** | Durable identity + venue client-order-id contract | None | Duplicate financial actions (SD-L02-05) |
-| **AD-L02-11** | Crash-window not guaranteed | No live submitted-unconfirmed persistence | **BLOCKED** | Persist-before/around send; reconcile rules | None | Lost-response safety |
+| **AD-L02-07** | First-class `unknown` status + ambiguity matrix | PO-L02-14; `order-status.ts` gap | **APPROVED WITH CONDITIONS** | Implement encoding later; no coercion | None | SD-L02-06 |
+| **AD-L02-09** | Workspace-unique clientOrderId/idempotencyKey; venue client id; UNKNOWN→reconcile | `PaperOrder` uniques; `order-intent.ts` | **APPROVED WITH CONDITIONS** | Live fields + adapter mapping later | None | SD-L02-05 |
+| **AD-L02-11** | Pre-send marker; T0–T8; non-atomic venue boundary | Distributed I/O gap | **APPROVED WITH CONDITIONS** | Persist markers later; workers/reconcile | None | Lost-response |
 | **AD-L02-14** | Live adapters must sit on ExecutionAdapterPort | Paper-only port; exchange stubs parallel | **APPROVED WITH CONDITIONS** | Implement live port adapters later; handshake ≠ authz | None | SSRF/egress/creds (SD-L02-01/02) |
-| Cancel mapping | Honest mapping needs UNKNOWN | Engine cancel unwired; EmergencyManager cancel-all | **BLOCKED** | Map outcomes; exclude auto cancel-all | Aligns PO-12/08 | — |
+| Cancel mapping | Honest mapping with UNKNOWN | §8B; EmergencyManager excluded | **APPROVED WITH CONDITIONS** | Implement later; exclude auto cancel-all | Aligns PO-12/08 | — |
 | Reconciliation | Boundary defined; not realized live | Engine.reconcile paper | **APPROVED WITH CONDITIONS** | Minimum live reconcile path in authorized slices | Aligns PO | — |
 | KS/policy/session | Durable gates align; EmergencyManager conflicts | KillSwitchPersistence vs EmergencyManager | **APPROVED WITH CONDITIONS** | Use durable KS only for L02 | Aligns PO-08/09/10 | SD-L02-07 |
 | Authz gate order | S04 order acceptable if full cell mandatory | `decide-live-admission.ts` | **APPROVED WITH CONDITIONS** | Keep fail-closed; Security confirm | Order subject to review per PO | SD-L02-07 |
-| Operational persistence | Minimum set identified; absent for live UNKNOWN | Orders paper aggregate | **BLOCKED** | Specify persistence without L03/L04/L05 scope creep | None | — |
+| Operational persistence | §8C design on PaperOrder pattern | `paper_orders` uniques exist; live columns missing | **APPROVED WITH CONDITIONS** | Migrate only under later auth | None | — |
 
 ---
 
@@ -742,8 +963,8 @@ Hand off (non-exhaustive):
 | SD-L02-02 | Credential isolation | Vault-in-adapter condition; handshake ≠ authz |
 | SD-L02-03 | Workspace/tenant isolation | Must hold on live path + human-start + creds |
 | SD-L02-04 | Human-start replay/staleness | Blocked on AD-L02-04; multi-instance critical |
-| SD-L02-05 | Duplicate financial actions | Blocked on AD-L02-09/11 |
-| SD-L02-06 | UNKNOWN/lost-response | Blocked on AD-L02-07 |
+| SD-L02-05 | Duplicate financial actions | Design ready for review (AD-L02-09/11 AWC) |
+| SD-L02-06 | UNKNOWN/lost-response | Design ready for review (AD-L02-07 AWC) |
 | SD-L02-07 | KS/authz fail-closed | Durable KS OK direction; EmergencyManager cancel-all hazard; C7 deny-all must hold |
 
 Security may identify additional PO blockers; must not silently alter PO business decisions.
@@ -785,22 +1006,23 @@ Security may identify additional PO blockers; must not silently alter PO busines
 | ID | Blocker | Affected PO | Authority |
 | -- | ------- | ----------- | --------- |
 | AB-01 | Human-start durability/consumption (prior) | PO-L02-05A…05D | **CLOSED** — AD-L02-04 APPROVED WITH CONDITIONS; implementation + Security still pending |
-| AB-02 | No first-class UNKNOWN on canonical orders | PO-L02-14; cancel/idempotency invariants | Architecture encoding (then implement under later auth) |
-| AB-03 | No live canonical idempotency/crash-window persistence | PO-L02-13 | Architecture |
-| AB-04 | Parallel live-trading-engine mounted with EmergencyManager cancel-all | PO-L02-08 (if mis-wired) | Architecture freeze NON-SoT (done here as condition) |
-| AB-05 | No live ExecutionAdapterPort for BINANCE/BYBIT/OKX | PO-L02-01 venue scope | Architecture (later slices) |
-| AB-06 | Honest cancel/reconcile path unrealized on canonical live I/O | PO-L02-12; PO-08/09/10 | Architecture |
+| AB-02 | First-class UNKNOWN design | PO-L02-14 | **CLOSED as Arch design** — AD-L02-07 AWC; implementation pending |
+| AB-03 | Live idempotency + crash-window design | PO-L02-13 | **CLOSED as Arch design** — AD-L02-09/11 AWC; implementation pending |
+| AB-04 | Parallel live-trading-engine mounted with EmergencyManager cancel-all | PO-L02-08 (if mis-wired) | Remains **CONDITION** (AD-L02-01) |
+| AB-05 | No live ExecutionAdapterPort for BINANCE/BYBIT/OKX | PO-L02-01 venue scope | Remains **CONDITION** (AD-L02-14) |
+| AB-06 | Cancel/reconcile path | PO-L02-12; PO-08/09/10 | **CLOSED as Arch design** (§8A/8B); implementation pending |
 
 ---
 
 ## 23. Required Follow-Up
 
-1. ~~PO escalation on human-start~~ — **CLOSED** (PO-L02-05A…05D recorded; AD-L02-04 APPROVED WITH CONDITIONS).
-2. Architecture addendum / future authorized design notes: UNKNOWN encoding + cancel mapping + crash-window persistence (**AD-L02-07 / 09 / 11**) — still blocking package PASS.
-3. **Security Review** of SD-L02-01…07 (separate act) — not started; SD-L02-04 must cover durable claim races.
-4. Only after remaining Arch + Security gates: Planning Approval / Slice Approval consideration — **not granted here**.
+1. ~~PO escalation on human-start~~ — **CLOSED**.
+2. ~~AD-L02-07 / 09 / 11 architecture design~~ — **CLOSED as APPROVED WITH CONDITIONS** (this act).
+3. **Security Review** of SD-L02-01…07 (separate act) — **NOT PASS**; must cover UNKNOWN, idempotency abuse, reconciliation trust, claim races, SSRF/egress, credentials, isolation.
+4. Live adapter realization under AD-L02-14 conditions — not authorized here.
 5. Keep `live-trading-engine` / `EmergencyManager` NON-SoT for L02.
-6. Do **not** implement durable human-start store until explicitly authorized.
+6. Do **not** implement schema/migrations/adapters/human-start store until explicitly authorized.
+7. Planning Approval / Slice Approval — **not granted here**.
 
 ---
 
@@ -825,12 +1047,13 @@ This Architecture Review does NOT authorize:
   - L02 closure
   - Security PASS
 
-PACKAGE ARCHITECTURE VERDICT = BLOCKED
-AD-L02-04 = APPROVED WITH CONDITIONS
+PACKAGE ARCHITECTURE VERDICT = APPROVED WITH CONDITIONS
+AD-L02-04 / 07 / 09 / 11 = APPROVED WITH CONDITIONS
 V3-L02 IMPLEMENTATION REMAINS NOT AUTHORIZED
 S01–S06 remain NOT GRANTED
 Live capital remains NOT ACTIVATED
 Security Review = NOT PASS
+No migrations / no live venue I/O / no FIV in this act
 ```
 
 ---
