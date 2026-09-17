@@ -1671,7 +1671,7 @@ describe('ConnectionsService provider+environment uniqueness (FIV-CONN-02)', () 
 
   const actor = {
     actorUserId: 'user-a',
-    actorRole: Role.ADMINISTRATOR,
+    actorRole: Role.Admin,
   } as const;
 
   async function createExchange(
