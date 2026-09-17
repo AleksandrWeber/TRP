@@ -411,6 +411,11 @@ These **block live venue I/O and Slice Approval**, not the act of recording this
 | SB-06 | Test vs live credential environment separation not verified for L02 |
 | SB-07 | Security regression tests for cross-workspace live mutate/reconcile/credential paths not established |
 
+**Resolution plan (planning only — does not authorize implementation):**
+[`v3-l02-security-conditions-resolution-plan.md`](./v3-l02-security-conditions-resolution-plan.md)
+
+SB-01…SB-07 remain **PLANNED — NOT IMPLEMENTED**. This Security Review verdict is unchanged: **SECURITY PASS WITH CONDITIONS**.
+
 ---
 
 ## 19. Conditions Required Before Slice Approval
