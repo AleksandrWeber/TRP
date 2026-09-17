@@ -121,6 +121,16 @@ describe('mapHttpError', () => {
     ).toBe('An account with this email already exists.');
   });
 
+  it('maps 409 credentials already stored without mislabeling as email conflict', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    expect(
+      mapHttpError(
+        409,
+        JSON.stringify({ message: 'Credentials are already stored. Use replace credentials.' }),
+      ),
+    ).toBe('Credentials are already stored. Use Replace credentials.');
+  });
+
   it('maps deployment idempotency 409 without exposing JSON', () => {
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
     expect(

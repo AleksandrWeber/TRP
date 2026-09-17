@@ -105,7 +105,25 @@ export function mapHttpError(status: number, bodyText: string): string {
     if (lower.includes('binding_id_exists')) {
       return 'That account binding already exists.';
     }
-    return 'An account with this email already exists.';
+    if (
+      lower.includes('credentials are already stored') ||
+      lower.includes('use replace credentials')
+    ) {
+      return 'Credentials are already stored. Use Replace credentials.';
+    }
+    if (lower.includes('credentials are already assigned')) {
+      return 'Credentials are already assigned to this provider in the workspace.';
+    }
+    if (lower.includes('disabled connections cannot store')) {
+      return 'This connection is disabled and cannot store credentials.';
+    }
+    if (lower.includes('email already exists') || lower.includes('user with email already exists')) {
+      return 'An account with this email already exists.';
+    }
+    if (backend && !looksLikeJson(backend)) {
+      return backend;
+    }
+    return 'This action conflicts with the current state. Refresh and try again.';
   }
 
   if (status === 422) {
