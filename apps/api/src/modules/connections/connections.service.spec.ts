@@ -1,3 +1,4 @@
+import { ConflictException } from '@nestjs/common';
 import { describe, expect, it } from 'vitest';
 import { ExchangeSessionAudit, ExchangeSessionService } from '../exchange-connectivity';
 import { Role } from '../identity/role';
@@ -52,19 +53,35 @@ function memoryPrisma(seed: ConnectionRow[] = []) {
         where,
       }: {
         where: {
-          id?: string;
+          id?: string | { not: string };
           workspaceId: string;
           provider?: string;
+          environment?: string | null;
           vaultSecretId?: { not: null };
+          status?: { not: string };
+          connectionType?: string;
         };
-      }) =>
-        rows.find(
-          (row) =>
-            row.workspaceId === where.workspaceId &&
-            (where.id === undefined || row.id === where.id) &&
-            (where.provider === undefined || row.provider === where.provider) &&
-            (where.vaultSecretId === undefined || row.vaultSecretId !== null),
-        ) ?? null,
+      }) => {
+        const idNot = typeof where.id === 'object' && where.id !== null ? where.id.not : undefined;
+        const idEq = typeof where.id === 'string' ? where.id : undefined;
+        return (
+          rows.find((row) => {
+            if (row.workspaceId !== where.workspaceId) return false;
+            if (idEq !== undefined && row.id !== idEq) return false;
+            if (idNot !== undefined && row.id === idNot) return false;
+            if (where.provider !== undefined && row.provider !== where.provider) return false;
+            if (where.environment !== undefined && row.environment !== where.environment) {
+              return false;
+            }
+            if (where.vaultSecretId !== undefined && row.vaultSecretId === null) return false;
+            if (where.status?.not !== undefined && row.status === where.status.not) return false;
+            if (where.connectionType !== undefined && row.connectionType !== where.connectionType) {
+              return false;
+            }
+            return true;
+          }) ?? null
+        );
+      },
       update: async ({
         where,
         data,
@@ -76,6 +93,29 @@ function memoryPrisma(seed: ConnectionRow[] = []) {
       }) => {
         const row = rows.find((candidate) => candidate.id === where.id);
         if (!row) throw new Error('missing');
+        if (data.vaultSecretId !== undefined && data.vaultSecretId !== null) {
+          const nextStatus = data.status ?? row.status;
+          const env = data.environment !== undefined ? data.environment : row.environment;
+          if (row.connectionType === 'EXCHANGE' && env !== null && nextStatus !== 'REVOKED') {
+            const conflict = rows.find(
+              (other) =>
+                other.id !== row.id &&
+                other.workspaceId === row.workspaceId &&
+                other.provider === row.provider &&
+                other.environment === env &&
+                other.connectionType === 'EXCHANGE' &&
+                other.vaultSecretId !== null &&
+                other.status !== 'REVOKED',
+            );
+            if (conflict) {
+              const { Prisma } = await import('@prisma/client');
+              throw new Prisma.PrismaClientKnownRequestError('Unique constraint failed', {
+                code: 'P2002',
+                clientVersion: 'test',
+              });
+            }
+          }
+        }
         if (data.displayName !== undefined) row.displayName = data.displayName;
         if (data.vaultSecretId !== undefined) row.vaultSecretId = data.vaultSecretId;
         if (data.status !== undefined) row.status = data.status;
@@ -89,31 +129,63 @@ function memoryPrisma(seed: ConnectionRow[] = []) {
 }
 
 function memoryVault() {
-  let secret: { id: string; workspaceId: string; type: string } | null = null;
-  const retrieveCalls: Array<{ workspaceId: string; type: string }> = [];
+  const secrets = new Map<
+    string,
+    { id: string; workspaceId: string; type: string; purpose: string }
+  >();
+  const retrieveCalls: Array<{ workspaceId: string; type: string; purpose?: string }> = [];
+  const slotKey = (workspaceId: string, type: string, purpose: string) =>
+    `${workspaceId}::${type}::${purpose}`;
+  const resolvePurpose = (purpose: string | undefined, type: string) => {
+    if (purpose) return purpose;
+    if (type === 'binance' || type === 'bybit' || type === 'okx') return 'trading';
+    if (type === 'openrouter') return 'ai';
+    return 'notification';
+  };
   return {
     retrieveCalls,
-    get: async () => secret,
-    retrieve: async (query: { workspaceId: string; type: string }) => {
-      retrieveCalls.push({ workspaceId: query.workspaceId, type: query.type });
+    get: async (query: { workspaceId: string; type: string; purpose?: string }) => {
+      const purpose = resolvePurpose(query.purpose, query.type);
+      return secrets.get(slotKey(query.workspaceId, query.type, purpose)) ?? null;
+    },
+    retrieve: async (query: { workspaceId: string; type: string; purpose?: string }) => {
+      retrieveCalls.push({
+        workspaceId: query.workspaceId,
+        type: query.type,
+        purpose: query.purpose,
+      });
       return { apiKey: 'key-one', apiSecret: 'secret-one' };
     },
-    store: async (input: { workspaceId: string; type: string; fields: Record<string, string> }) => {
-      secret = { id: 'vault-secret-1', workspaceId: input.workspaceId, type: input.type };
+    store: async (input: {
+      workspaceId: string;
+      type: string;
+      purpose?: string;
+      fields: Record<string, string>;
+    }) => {
+      const purpose = resolvePurpose(input.purpose, input.type);
+      const id = `vault-secret-${secrets.size + 1}`;
+      const secret = { id, workspaceId: input.workspaceId, type: input.type, purpose };
+      secrets.set(slotKey(input.workspaceId, input.type, purpose), secret);
       return { metadata: secret, lifecycle: [] };
     },
     replace: async (input: {
       workspaceId: string;
       type: string;
+      purpose?: string;
       fields: Record<string, string>;
     }) => {
-      if (!secret || secret.workspaceId !== input.workspaceId || secret.type !== input.type) {
-        throw new Error('missing');
-      }
+      const purpose = resolvePurpose(input.purpose, input.type);
+      const key = slotKey(input.workspaceId, input.type, purpose);
+      const secret = secrets.get(key);
+      if (!secret) throw new Error('missing');
       return { metadata: secret, lifecycle: [] };
     },
-    revoke: async () => {
+    revoke: async (query: { workspaceId: string; type: string; purpose?: string }) => {
+      const purpose = resolvePurpose(query.purpose, query.type);
+      const key = slotKey(query.workspaceId, query.type, purpose);
+      const secret = secrets.get(key);
       if (!secret) throw new Error('missing');
+      secrets.delete(key);
       return secret;
     },
   };
@@ -1573,5 +1645,456 @@ describe('ConnectionsService environment model (FIV-CONN-01)', () => {
     await expect(svc.rename('workspace-b', created.id, 'Foreign')).rejects.toThrow(
       'Connection not found',
     );
+  });
+});
+
+describe('ConnectionsService provider+environment uniqueness (FIV-CONN-02)', () => {
+  function service(prisma = memoryPrisma(), vault = memoryVault()) {
+    return {
+      svc: new ConnectionsService(
+        prisma as never,
+        vault as never,
+        successfulValidator(),
+        validationAudit() as never,
+        lifecycleAudit() as never,
+        handshakeStub() as never,
+        sessionService() as never,
+        capabilityStub() as never,
+        openRouterTestStub() as never,
+        openRouterConnectivityStub() as never,
+        openRouterAuditStub() as never,
+        openRouterAiRequestStub() as never,
+      ),
+      vault,
+    };
+  }
+
+  const actor = {
+    actorUserId: 'user-a',
+    actorRole: Role.ADMINISTRATOR,
+  } as const;
+
+  async function createExchange(
+    svc: ConnectionsService,
+    input: {
+      workspaceId: string;
+      displayName: string;
+      environment: 'live' | 'testnet';
+      provider?: string;
+    },
+  ) {
+    return svc.create({
+      workspaceId: input.workspaceId,
+      actorUserId: actor.actorUserId,
+      displayName: input.displayName,
+      environment: input.environment,
+      provider: input.provider ?? 'BINANCE',
+    });
+  }
+
+  it('rejects a second credentialed LIVE Connection for the same workspace+provider', async () => {
+    const { svc } = service();
+    const first = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Live A',
+      environment: 'live',
+    });
+    const second = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Live B',
+      environment: 'live',
+    });
+    await svc.storeCredentials({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: first.id,
+      credentials: { apiKey: 'k1', apiSecret: 's1' },
+    });
+    await expect(
+      svc.storeCredentials({
+        workspaceId: 'workspace-a',
+        ...actor,
+        id: second.id,
+        credentials: { apiKey: 'k2', apiSecret: 's2' },
+      }),
+    ).rejects.toThrow(/provider and environment/i);
+  });
+
+  it('rejects a second credentialed TESTNET Connection for the same workspace+provider', async () => {
+    const { svc } = service();
+    const first = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Test A',
+      environment: 'testnet',
+    });
+    const second = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Test B',
+      environment: 'testnet',
+    });
+    await svc.storeCredentials({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: first.id,
+      credentials: { apiKey: 'k1', apiSecret: 's1' },
+    });
+    await expect(
+      svc.storeCredentials({
+        workspaceId: 'workspace-a',
+        ...actor,
+        id: second.id,
+        credentials: { apiKey: 'k2', apiSecret: 's2' },
+      }),
+    ).rejects.toThrow(/provider and environment/i);
+  });
+
+  it('allows credentialed LIVE and TESTNET to coexist for the same workspace+provider', async () => {
+    const { svc } = service();
+    const live = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Live',
+      environment: 'live',
+    });
+    const testnet = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Testnet',
+      environment: 'testnet',
+    });
+    const liveStored = await svc.storeCredentials({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: live.id,
+      credentials: { apiKey: 'live-k', apiSecret: 'live-s' },
+    });
+    const testnetStored = await svc.storeCredentials({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: testnet.id,
+      credentials: { apiKey: 'test-k', apiSecret: 'test-s' },
+    });
+    expect(liveStored.credentialsStored).toBe(true);
+    expect(testnetStored.credentialsStored).toBe(true);
+    expect(liveStored.environment).toBe('live');
+    expect(testnetStored.environment).toBe('testnet');
+  });
+
+  it('allows same provider+environment across different workspaces', async () => {
+    const { svc } = service();
+    const a = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'A',
+      environment: 'live',
+    });
+    const b = await createExchange(svc, {
+      workspaceId: 'workspace-b',
+      displayName: 'B',
+      environment: 'live',
+    });
+    await svc.storeCredentials({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: a.id,
+      credentials: { apiKey: 'a', apiSecret: 'a' },
+    });
+    const storedB = await svc.storeCredentials({
+      workspaceId: 'workspace-b',
+      ...actor,
+      id: b.id,
+      credentials: { apiKey: 'b', apiSecret: 'b' },
+    });
+    expect(storedB.credentialsStored).toBe(true);
+  });
+
+  it('allows different providers with the same environment in one workspace', async () => {
+    const { svc } = service();
+    const binance = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Binance',
+      environment: 'live',
+      provider: 'BINANCE',
+    });
+    const bybit = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Bybit',
+      environment: 'live',
+      provider: 'BYBIT',
+    });
+    await svc.storeCredentials({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: binance.id,
+      credentials: { apiKey: 'b', apiSecret: 'b' },
+    });
+    const stored = await svc.storeCredentials({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: bybit.id,
+      credentials: { apiKey: 'y', apiSecret: 'y' },
+    });
+    expect(stored.credentialsStored).toBe(true);
+  });
+
+  it('allows multiple NULL-environment metadata-only rows and does not treat NULL as LIVE', async () => {
+    const prisma = memoryPrisma([
+      {
+        id: 'null-1',
+        workspaceId: 'workspace-a',
+        displayName: 'Legacy 1',
+        provider: 'BINANCE',
+        connectionType: 'EXCHANGE',
+        environment: null,
+        vaultSecretId: null,
+        status: 'DISCONNECTED',
+        createdAt: new Date('2026-08-17T16:00:00.000Z'),
+        updatedAt: new Date('2026-08-17T16:00:00.000Z'),
+      },
+      {
+        id: 'null-2',
+        workspaceId: 'workspace-a',
+        displayName: 'Legacy 2',
+        provider: 'BINANCE',
+        connectionType: 'EXCHANGE',
+        environment: null,
+        vaultSecretId: null,
+        status: 'DISCONNECTED',
+        createdAt: new Date('2026-08-17T16:01:00.000Z'),
+        updatedAt: new Date('2026-08-17T16:01:00.000Z'),
+      },
+    ]);
+    const { svc } = service(prisma);
+    const one = await svc.get('workspace-a', 'null-1');
+    const two = await svc.get('workspace-a', 'null-2');
+    expect(one.environment).toBeNull();
+    expect(two.environment).toBeNull();
+    expect(one.environment).not.toBe('live');
+  });
+
+  it('does not apply Strategy B uniqueness to non-EXCHANGE credentialed rows', async () => {
+    const { svc } = service();
+    const first = await svc.create({
+      workspaceId: 'workspace-a',
+      actorUserId: actor.actorUserId,
+      displayName: 'TG1',
+      provider: 'TELEGRAM',
+    });
+    const second = await svc.create({
+      workspaceId: 'workspace-a',
+      actorUserId: actor.actorUserId,
+      displayName: 'TG2',
+      provider: 'TELEGRAM',
+    });
+    // Notification vault slots remain provider/type scoped (omit purpose → notification).
+    // First store occupies the notification slot; second conflicts at Vault — not Strategy B env uniqueness.
+    await svc.storeCredentials({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: first.id,
+      credentials: { botToken: 'token-1' },
+    });
+    await expect(
+      svc.storeCredentials({
+        workspaceId: 'workspace-a',
+        ...actor,
+        id: second.id,
+        credentials: { botToken: 'token-2' },
+      }),
+    ).rejects.toThrow(/provider and environment/i);
+  });
+
+  it('allows a new credentialed Connection after the prior same-env Connection is REVOKED', async () => {
+    const { svc } = service();
+    const first = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'First',
+      environment: 'live',
+    });
+    await svc.storeCredentials({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: first.id,
+      credentials: { apiKey: 'k1', apiSecret: 's1' },
+    });
+    await svc.revoke({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: first.id,
+    });
+    const second = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Second',
+      environment: 'live',
+    });
+    const stored = await svc.storeCredentials({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: second.id,
+      credentials: { apiKey: 'k2', apiSecret: 's2' },
+    });
+    expect(stored.credentialsStored).toBe(true);
+  });
+
+  it('allows multiple metadata-only Connections with the same populated environment', async () => {
+    const { svc } = service();
+    const a = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Meta A',
+      environment: 'live',
+    });
+    const b = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Meta B',
+      environment: 'live',
+    });
+    expect(a.credentialsStored).toBe(false);
+    expect(b.credentialsStored).toBe(false);
+  });
+
+  it('maps concurrent credential-bind uniqueness races to ConflictException', async () => {
+    const { svc } = service();
+    const first = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Race A',
+      environment: 'live',
+    });
+    const second = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Race B',
+      environment: 'live',
+    });
+    // Pre-bind first row as credentialed so second update hits Strategy B / P2002 path.
+    await svc.storeCredentials({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: first.id,
+      credentials: { apiKey: 'k1', apiSecret: 's1' },
+    });
+    await expect(
+      svc.storeCredentials({
+        workspaceId: 'workspace-a',
+        ...actor,
+        id: second.id,
+        credentials: { apiKey: 'k2', apiSecret: 's2' },
+      }),
+    ).rejects.toBeInstanceOf(ConflictException);
+  });
+
+  it('does not create a second logical slot when replacing vaultSecretId on the same Connection', async () => {
+    const { svc } = service();
+    const created = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Primary',
+      environment: 'live',
+    });
+    await svc.storeCredentials({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: created.id,
+      credentials: { apiKey: 'k1', apiSecret: 's1' },
+    });
+    const replaced = await svc.replaceCredentials({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: created.id,
+      credentials: { apiKey: 'k2', apiSecret: 's2' },
+    });
+    expect(replaced.id).toBe(created.id);
+    expect(replaced.environment).toBe('live');
+    expect(replaced.credentialsStored).toBe(true);
+    const sibling = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Sibling',
+      environment: 'live',
+    });
+    await expect(
+      svc.storeCredentials({
+        workspaceId: 'workspace-a',
+        ...actor,
+        id: sibling.id,
+        credentials: { apiKey: 'k3', apiSecret: 's3' },
+      }),
+    ).rejects.toThrow(/provider and environment/i);
+  });
+
+  it('keeps workspace isolation for uniqueness conflicts', async () => {
+    const { svc } = service();
+    const foreign = await createExchange(svc, {
+      workspaceId: 'workspace-b',
+      displayName: 'Foreign',
+      environment: 'live',
+    });
+    await expect(
+      svc.storeCredentials({
+        workspaceId: 'workspace-a',
+        ...actor,
+        id: foreign.id,
+        credentials: { apiKey: 'x', apiSecret: 'y' },
+      }),
+    ).rejects.toThrow('Connection not found');
+  });
+
+  it('stores LIVE and TESTNET credentials under distinct Vault purposes (no cross-env fallback)', async () => {
+    const vault = memoryVault();
+    const { svc } = service(memoryPrisma(), vault);
+    const live = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Live',
+      environment: 'live',
+    });
+    const testnet = await createExchange(svc, {
+      workspaceId: 'workspace-a',
+      displayName: 'Testnet',
+      environment: 'testnet',
+    });
+    await svc.storeCredentials({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: live.id,
+      credentials: { apiKey: 'lk', apiSecret: 'ls' },
+    });
+    await svc.storeCredentials({
+      workspaceId: 'workspace-a',
+      ...actor,
+      id: testnet.id,
+      credentials: { apiKey: 'tk', apiSecret: 'ts' },
+    });
+    const liveSlot = await vault.get({
+      workspaceId: 'workspace-a',
+      type: 'binance',
+      purpose: 'trading_live',
+    });
+    const testnetSlot = await vault.get({
+      workspaceId: 'workspace-a',
+      type: 'binance',
+      purpose: 'trading_testnet',
+    });
+    const legacyTrading = await vault.get({
+      workspaceId: 'workspace-a',
+      type: 'binance',
+      purpose: 'trading',
+    });
+    expect(liveSlot).not.toBeNull();
+    expect(testnetSlot).not.toBeNull();
+    expect(legacyTrading).toBeNull();
+    expect(liveSlot?.id).not.toBe(testnetSlot?.id);
+  });
+
+  it('rejects DEMO and performs no LIVE backfill of NULL environments', async () => {
+    const { svc } = service();
+    await expect(
+      svc.create({
+        workspaceId: 'workspace-a',
+        actorUserId: actor.actorUserId,
+        displayName: 'Demo',
+        environment: 'demo',
+        provider: 'BINANCE',
+      }),
+    ).rejects.toThrow(/live or testnet/i);
+    const telegram = await svc.create({
+      workspaceId: 'workspace-a',
+      actorUserId: actor.actorUserId,
+      displayName: 'TG',
+      provider: 'TELEGRAM',
+    });
+    expect(telegram.environment).toBeNull();
   });
 });

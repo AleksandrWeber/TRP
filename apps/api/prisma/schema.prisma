@@ -190,7 +190,12 @@ model WorkspaceLivePolicyState {
 /// Connection Management-owned workspace metadata (W2-S01-a/b).
 /// Credentials and ciphertext remain Vault-owned; this nullable value is an opaque Vault id only.
 /// environment: ENV1 vocabulary (`live` | `testnet`); nullable until FIV-CONN-04 backfill.
-/// DEMO deferred for Connections. Not Vault purpose. Not uniqueness (FIV-CONN-02).
+/// DEMO deferred for Connections. Not Vault purpose.
+/// FIV-CONN-02 Strategy B uniqueness (SQL migration SoT — Prisma cannot express partial unique):
+///   UNIQUE (workspace_id, provider, environment)
+///   WHERE vault_secret_id IS NOT NULL AND status <> 'REVOKED'
+///     AND environment IS NOT NULL AND connection_type = 'EXCHANGE'
+/// Index name: connection_records_ws_provider_env_credentialed_uidx
 model ConnectionRecord {
   id             String   @id
   workspaceId    String   @map("workspace_id")

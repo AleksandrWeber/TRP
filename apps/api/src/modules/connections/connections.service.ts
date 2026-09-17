@@ -5,6 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../storage/prisma/prisma.module';
 import {
@@ -26,8 +27,9 @@ import {
   type ExchangeSessionObservation,
   type ExchangeSessionView,
 } from '../exchange-connectivity';
+import { purposeForTradingEnvironment } from '../execution-adapter/live-venue-egress/trading-credential-environment';
 import type { Role } from '../identity/role';
-import { SecretVaultService } from '../secret-vault';
+import { SecretPurpose, SecretVaultService } from '../secret-vault';
 import {
   connectionCatalog,
   providerType,
@@ -36,6 +38,7 @@ import {
   type ConnectionType,
 } from './connection-catalog';
 import {
+  isConnectionTradingEnvironment,
   resolveConnectionEnvironmentForCreate,
   type ConnectionTradingEnvironment,
 } from './connection-environment';
@@ -44,6 +47,9 @@ import { assertConnectionTransition, canStartConnectionValidation } from './conn
 import { ConnectionValidationAudit } from './connection-validation-audit';
 import { CONNECTION_VALIDATOR, type ConnectionValidator } from './connection-validator';
 import { vaultSecretTypeForProvider } from './connection-vault';
+
+const CREDENTIAL_SLOT_CONFLICT =
+  'Credentials are already assigned to this provider and environment.';
 
 export type ConnectionStatus =
   | 'DISCONNECTED'
@@ -203,15 +209,24 @@ export class ConnectionsService {
       actorRole: input.actorRole,
       workspaceId: input.workspaceId,
       type: vaultSecretTypeForProvider(connection.provider as ConnectionProvider),
+      purpose: vaultPurposeForConnection(connection),
       fields: input.credentials,
     });
     if (status === 'REVOKED') {
       assertConnectionTransition(status, 'DISCONNECTED');
     }
-    const row = await this.prisma.connectionRecord.update({
-      where: { id: connection.id },
-      data: { vaultSecretId: stored.metadata.id, status: 'DISCONNECTED' },
-    });
+    let row: ConnectionRow;
+    try {
+      row = await this.prisma.connectionRecord.update({
+        where: { id: connection.id },
+        data: { vaultSecretId: stored.metadata.id, status: 'DISCONNECTED' },
+      });
+    } catch (error) {
+      if (isPrismaUniqueConstraint(error)) {
+        throw new ConflictException(CREDENTIAL_SLOT_CONFLICT);
+      }
+      throw error;
+    }
     this.capabilities.clear(input.workspaceId, connection.id);
     this.openRouterConnectivity.clear(input.workspaceId, connection.id);
     this.openRouterAiRequests.clear(input.workspaceId, connection.id);
@@ -247,15 +262,24 @@ export class ConnectionsService {
       actorRole: input.actorRole,
       workspaceId: input.workspaceId,
       type: vaultSecretTypeForProvider(connection.provider as ConnectionProvider),
+      purpose: vaultPurposeForConnection(connection),
       fields: input.credentials,
     });
     if (stored.metadata.id !== connection.vaultSecretId) {
       throw new ConflictException('Credential ownership could not be verified.');
     }
-    const row = await this.prisma.connectionRecord.update({
-      where: { id: connection.id },
-      data: { vaultSecretId: stored.metadata.id, status: 'DISCONNECTED' },
-    });
+    let row: ConnectionRow;
+    try {
+      row = await this.prisma.connectionRecord.update({
+        where: { id: connection.id },
+        data: { vaultSecretId: stored.metadata.id, status: 'DISCONNECTED' },
+      });
+    } catch (error) {
+      if (isPrismaUniqueConstraint(error)) {
+        throw new ConflictException(CREDENTIAL_SLOT_CONFLICT);
+      }
+      throw error;
+    }
     this.capabilities.clear(input.workspaceId, connection.id);
     this.openRouterConnectivity.clear(input.workspaceId, connection.id);
     this.openRouterAiRequests.clear(input.workspaceId, connection.id);
@@ -307,11 +331,13 @@ export class ConnectionsService {
       throw new ConflictException('Credentials have not been stored for this connection.');
     }
     const type = vaultSecretTypeForProvider(connection.provider as ConnectionProvider);
+    const purpose = vaultPurposeForConnection(connection);
     const metadata = await this.vault.get({
       actorWorkspaceId: input.actorUserId,
       actorRole: input.actorRole,
       workspaceId: input.workspaceId,
       type,
+      purpose,
     });
     if (metadata?.id !== connection.vaultSecretId) {
       throw new ConflictException('Credential ownership could not be verified.');
@@ -321,6 +347,7 @@ export class ConnectionsService {
       actorRole: input.actorRole,
       workspaceId: input.workspaceId,
       type,
+      purpose,
     });
     const row = await this.updateStatus(connection.id, 'REVOKED');
     this.capabilities.clear(input.workspaceId, connection.id);
@@ -490,11 +517,13 @@ export class ConnectionsService {
         provider: pending.provider as ConnectionProvider,
       });
       const type = vaultSecretTypeForProvider(pending.provider as ConnectionProvider);
+      const purpose = vaultPurposeForConnection(pending);
       const metadata = await this.vault.get({
         actorWorkspaceId: input.actorUserId,
         actorRole: input.actorRole,
         workspaceId: input.workspaceId,
         type,
+        purpose,
       });
       if (metadata?.id !== pending.vaultSecretId) {
         throw new Error('Vault credential reference could not be verified.');
@@ -504,6 +533,7 @@ export class ConnectionsService {
         actorRole: input.actorRole,
         workspaceId: input.workspaceId,
         type,
+        purpose,
       });
       const result = await this.validator.validate({
         workspaceId: input.workspaceId,
@@ -595,24 +625,46 @@ export class ConnectionsService {
     actorUserId: string,
     actorRole: Role,
   ): Promise<void> {
+    // FIV-CONN-02 Strategy B: provider + environment uniqueness for credentialed rows.
     const existingConnection = await this.prisma.connectionRecord.findFirst({
       where: {
         workspaceId: connection.workspaceId,
         provider: connection.provider,
+        ...(connection.environment !== null ? { environment: connection.environment } : {}),
         vaultSecretId: { not: null },
+        status: { not: 'REVOKED' },
+        id: { not: connection.id },
       },
     });
     if (existingConnection) {
-      throw new ConflictException('Credentials are already assigned to this provider.');
+      throw new ConflictException(CREDENTIAL_SLOT_CONFLICT);
     }
-    const existingSecret = await this.vault.get({
-      actorWorkspaceId: actorUserId,
-      actorRole,
-      workspaceId: connection.workspaceId,
-      type: vaultSecretTypeForProvider(connection.provider as ConnectionProvider),
-    });
-    if (existingSecret !== null) {
-      throw new ConflictException('Credentials are already assigned to this provider.');
+
+    const type = vaultSecretTypeForProvider(connection.provider as ConnectionProvider);
+    const purposes = vaultPurposesToProbe(connection);
+    if (purposes === null) {
+      const existingSecret = await this.vault.get({
+        actorWorkspaceId: actorUserId,
+        actorRole,
+        workspaceId: connection.workspaceId,
+        type,
+      });
+      if (existingSecret !== null) {
+        throw new ConflictException(CREDENTIAL_SLOT_CONFLICT);
+      }
+      return;
+    }
+    for (const purpose of purposes) {
+      const existingSecret = await this.vault.get({
+        actorWorkspaceId: actorUserId,
+        actorRole,
+        workspaceId: connection.workspaceId,
+        type,
+        purpose,
+      });
+      if (existingSecret !== null) {
+        throw new ConflictException(CREDENTIAL_SLOT_CONFLICT);
+      }
     }
   }
 
@@ -621,14 +673,17 @@ export class ConnectionsService {
     actorUserId: string,
     actorRole: Role,
   ): Promise<void> {
+    const type = vaultSecretTypeForProvider(connection.provider as ConnectionProvider);
+    const purpose = vaultPurposeForConnection(connection);
     const existingSecret = await this.vault.get({
       actorWorkspaceId: actorUserId,
       actorRole,
       workspaceId: connection.workspaceId,
-      type: vaultSecretTypeForProvider(connection.provider as ConnectionProvider),
+      type,
+      purpose,
     });
     if (existingSecret !== null && existingSecret.id !== connection.vaultSecretId) {
-      throw new ConflictException('Credentials are already assigned to this provider.');
+      throw new ConflictException(CREDENTIAL_SLOT_CONFLICT);
     }
   }
 
@@ -680,7 +735,42 @@ type ConnectionRow = {
   updatedAt: Date;
 };
 
-function connectionEnvironment(value: string | null | undefined): ConnectionTradingEnvironment | null {
+/** Exact Vault purpose for EXCHANGE Connections with populated environment; omit for legacy/null. */
+function vaultPurposeForConnection(connection: ConnectionRow): string | undefined {
+  if (connection.connectionType !== 'EXCHANGE') {
+    return undefined;
+  }
+  if (!isConnectionTradingEnvironment(connection.environment)) {
+    return undefined;
+  }
+  return purposeForTradingEnvironment(connection.environment);
+}
+
+/**
+ * Vault purposes to probe for slot conflicts.
+ * LIVE-class accepts legacy Trading and TradingLive (ENV1).
+ * null → caller uses omit-purpose default.
+ */
+function vaultPurposesToProbe(connection: ConnectionRow): readonly string[] | null {
+  if (connection.connectionType !== 'EXCHANGE') {
+    return null;
+  }
+  if (connection.environment === 'live') {
+    return [SecretPurpose.Trading, SecretPurpose.TradingLive];
+  }
+  if (connection.environment === 'testnet') {
+    return [SecretPurpose.TradingTestnet];
+  }
+  return null;
+}
+
+function isPrismaUniqueConstraint(error: unknown): boolean {
+  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002';
+}
+
+function connectionEnvironment(
+  value: string | null | undefined,
+): ConnectionTradingEnvironment | null {
   if (value === 'live' || value === 'testnet') {
     return value;
   }
