@@ -10,8 +10,13 @@ import { EmergencyManager } from '../modules/live-trading-engine/emergency-manag
 import { KillSwitchPersistenceService } from '../modules/trading-session/kill-switch/kill-switch-persistence.service';
 import { KillSwitchRecoveryStore } from '../modules/trading-session/kill-switch/kill-switch-recovery-store';
 import { PrismaKillSwitchStateRepository } from '../modules/trading-session/persistence/prisma-kill-switch-state.repository';
-import { WorkspaceLivePolicy } from '../modules/workspace/live-policy/durable-workspace-live-policy-state';
+import {
+  WorkspaceLivePolicy,
+  type DurableWorkspaceLivePolicyState,
+} from '../modules/workspace/live-policy/durable-workspace-live-policy-state';
+import { InMemoryWorkspaceLivePolicyStateRepository } from '../modules/workspace/live-policy/persistence/in-memory-workspace-live-policy-state.repository';
 import { WorkspaceLivePolicyAdminService } from '../modules/workspace/live-policy/workspace-live-policy-admin.service';
+import { WorkspaceLivePolicyPersistenceService } from '../modules/workspace/live-policy/workspace-live-policy-persistence.service';
 import {
   V3_L02_S_EM1_CANONICAL_PATH_MODULE_ROOTS,
   V3_L02_S_EM1_FORBIDDEN_IMPORT_SEGMENTS,
@@ -128,17 +133,10 @@ describe(`V3-L02-S-EM1 EmergencyManager isolation (${V3_L02_S_EM1_SLICE_ID})`, (
   it('Test C — live policy disable does not invoke EmergencyManager / cancel-all', async () => {
     const activateSpy = vi.spyOn(EmergencyManager.prototype, 'activateKillSwitch');
 
-    const { InMemoryWorkspaceLivePolicyStateRepository } = await import(
-      '../modules/workspace/live-policy/persistence/in-memory-workspace-live-policy-state.repository'
-    );
-    const { WorkspaceLivePolicyPersistenceService } = await import(
-      '../modules/workspace/live-policy/workspace-live-policy-persistence.service'
-    );
-
     class StagingRepo extends InMemoryWorkspaceLivePolicyStateRepository {
-      private readonly staged = new WeakMap<object, Parameters<StagingRepo['saveLivePolicyState']>[0]>();
+      private readonly staged = new WeakMap<object, DurableWorkspaceLivePolicyState>();
       override async saveLivePolicyState(
-        state: Parameters<InMemoryWorkspaceLivePolicyStateRepository['saveLivePolicyState']>[0],
+        state: DurableWorkspaceLivePolicyState,
         transaction?: unknown,
       ): Promise<void> {
         if (transaction) {
