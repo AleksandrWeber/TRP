@@ -1,5 +1,9 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
 import {
+  prismaClientForTransaction,
+  type TransactionContext,
+} from '../../../../storage/prisma/prisma-transaction.service';
+import {
   parseWorkspaceLivePolicy,
   WORKSPACE_LIVE_POLICY_STATE_SCHEMA_VERSION,
   type DurableWorkspaceLivePolicyState,
@@ -11,9 +15,13 @@ type LivePolicyStateRow = Prisma.WorkspaceLivePolicyStateGetPayload<Record<strin
 export class PrismaWorkspaceLivePolicyStateRepository implements WorkspaceLivePolicyStateRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async saveLivePolicyState(state: DurableWorkspaceLivePolicyState): Promise<void> {
+  async saveLivePolicyState(
+    state: DurableWorkspaceLivePolicyState,
+    transaction?: TransactionContext,
+  ): Promise<void> {
+    const client = transaction ? prismaClientForTransaction(transaction) : this.prisma;
     const data = toRow(state);
-    await this.prisma.workspaceLivePolicyState.upsert({
+    await client.workspaceLivePolicyState.upsert({
       where: { workspaceId: state.workspaceId },
       create: data,
       update: data,

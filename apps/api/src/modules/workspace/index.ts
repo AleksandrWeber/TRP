@@ -26,9 +26,13 @@ export {
   LIVE_POLICY_STATE_REPOSITORY,
   WorkspaceLivePolicyPersistenceService,
   PrismaWorkspaceLivePolicyStateRepository,
+  WorkspaceLivePolicyAdminService,
+  WorkspaceLivePolicyController,
+  AUTHZ_WORKSPACE_LIVE_POLICY_CHANGE_EVENT,
 } from './live-policy';
 export type {
   DurableWorkspaceLivePolicyState,
   WorkspaceLivePolicyPersistenceOutcome,
   WorkspaceLivePolicyStateRepository,
+  WorkspaceLivePolicyAdminView,
 } from './live-policy';

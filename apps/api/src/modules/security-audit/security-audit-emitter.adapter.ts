@@ -24,6 +24,7 @@ export function toSecurityAuditWrite(
     outcome,
     source,
     occurredAt,
+    correlationId: stringValue(context.correlationId),
     attribution: {
       workspaceId: stringValue(context.workspaceId),
       actorId: stringValue(context.actorUserId) ?? stringValue(context.userId),
@@ -51,6 +52,8 @@ function safePayload(context: LogContext): Readonly<Record<string, unknown>> {
     'role',
     'fromRole',
     'toRole',
+    'fromPolicy',
+    'toPolicy',
     'path',
     'statusCode',
     'type',
@@ -64,6 +67,7 @@ function safePayload(context: LogContext): Readonly<Record<string, unknown>> {
 function resourceTypeFor(eventType: string): string | undefined {
   if (eventType === 'auth.session') return 'session';
   if (eventType === 'authz.role-change') return 'user-role';
+  if (eventType === 'authz.workspace-live-policy-change') return 'workspace-live-policy';
   if (eventType === 'vault.lifecycle' || eventType === 'vault.access-denied') {
     return 'vault-slot';
   }
@@ -75,6 +79,9 @@ function resourceIdFor(eventType: string, context: LogContext): string | undefin
   if (sessionId) return sessionId;
   if (eventType === 'authz.role-change') {
     return stringValue(context.subjectUserId);
+  }
+  if (eventType === 'authz.workspace-live-policy-change') {
+    return stringValue(context.workspaceId);
   }
   if (eventType === 'vault.lifecycle' || eventType === 'vault.access-denied') {
     const type = stringValue(context.type);

@@ -17,6 +17,12 @@ const ATTRIBUTION_RULES: Readonly<Record<string, AttributionRule>> = Object.free
     subjectId: true,
     resourceType: true,
   },
+  'authz.workspace-live-policy-change': {
+    workspaceId: true,
+    actorId: true,
+    resourceType: true,
+    resourceId: true,
+  },
   'authz.deny': { actorId: true },
   'vault.lifecycle': {
     workspaceId: true,

@@ -72,6 +72,7 @@ import { TelegramController } from '../telegram-product/telegram.controller';
 import { TradingOrchestratorController } from '../trading-orchestrator/trading-orchestrator.controller';
 import { WorkflowController } from '../workflow/workflow.controller';
 import { WorkspaceController } from '../workspace/workspace.controller';
+import { WorkspaceLivePolicyController } from '../workspace/live-policy/workspace-live-policy.controller';
 import { AuthController } from './auth.controller';
 import { collectControllerHandlers, isHandlerClassified } from './surface-coverage';
 import { PermissionClass } from './permission-catalog';
@@ -150,6 +151,7 @@ const CUSTOMER_CONTROLLERS: readonly Type<object>[] = [
   TradingOrchestratorController,
   WorkflowController,
   WorkspaceController,
+  WorkspaceLivePolicyController,
   PeopleController,
   ConnectionsController,
   MarketDataSymbolsController,

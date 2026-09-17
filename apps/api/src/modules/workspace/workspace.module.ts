@@ -3,6 +3,7 @@ import type { Metrics } from '../../metrics/metrics';
 import { METRICS } from '../../metrics/metrics.token';
 import { instrumentRepository } from '../../metrics/instrument-repository';
 import { PrismaModule, PrismaService } from '../../storage/prisma/prisma.module';
+import { SecurityAuditModule } from '../security-audit';
 import { PrismaWorkspaceRepository } from './repositories/prisma-workspace.repository';
 import { WORKSPACE_REPOSITORY } from './repositories/workspace.repository.token';
 import { WorkspaceAccessService } from './workspace-access.service';
@@ -11,18 +12,20 @@ import { WorkspaceDomainService } from './workspace-domain.service';
 import { LIVE_POLICY_STATE_REPOSITORY } from './live-policy/workspace-live-policy-state.repository';
 import { PrismaWorkspaceLivePolicyStateRepository } from './live-policy/persistence/prisma-workspace-live-policy-state.repository';
 import { WorkspaceLivePolicyPersistenceService } from './live-policy/workspace-live-policy-persistence.service';
+import { WorkspaceLivePolicyAdminService } from './live-policy/workspace-live-policy-admin.service';
+import { WorkspaceLivePolicyController } from './live-policy/workspace-live-policy.controller';
 
 /**
  * Workspace Nest module (US108 / US158 / US002).
  * Top-level multi-tenant aggregate with membership access checks for trading commands.
  * Exposes authenticated bootstrap plus list / create / get / rename / archive transports (PC-14).
  *
- * PROPOSED-V3-L01-S02: Workspace-owned live-policy satellite persistence ports
- * (no Admin/enablement HTTP API in S02).
+ * PROPOSED-V3-L01-S02: Workspace-owned live-policy satellite persistence ports.
+ * PROPOSED-V3-L01-S03: Admin enable/disable + Security Audit (RoleAdmin + membership).
  */
 @Module({
-  imports: [PrismaModule],
-  controllers: [WorkspaceController],
+  imports: [PrismaModule, SecurityAuditModule],
+  controllers: [WorkspaceController, WorkspaceLivePolicyController],
   providers: [
     {
       provide: WORKSPACE_REPOSITORY,
@@ -36,6 +39,7 @@ import { WorkspaceLivePolicyPersistenceService } from './live-policy/workspace-l
       inject: [PrismaService],
     },
     WorkspaceLivePolicyPersistenceService,
+    WorkspaceLivePolicyAdminService,
     WorkspaceDomainService,
     WorkspaceAccessService,
   ],

@@ -1,3 +1,4 @@
+import type { TransactionContext } from '../../../../storage/prisma/prisma-transaction.service';
 import type { DurableWorkspaceLivePolicyState } from '../durable-workspace-live-policy-state';
 import type { WorkspaceLivePolicyStateRepository } from '../workspace-live-policy-state.repository';
 
@@ -5,7 +6,10 @@ import type { WorkspaceLivePolicyStateRepository } from '../workspace-live-polic
 export class InMemoryWorkspaceLivePolicyStateRepository implements WorkspaceLivePolicyStateRepository {
   private readonly byWorkspaceId = new Map<string, DurableWorkspaceLivePolicyState>();
 
-  async saveLivePolicyState(state: DurableWorkspaceLivePolicyState): Promise<void> {
+  async saveLivePolicyState(
+    state: DurableWorkspaceLivePolicyState,
+    _transaction?: TransactionContext,
+  ): Promise<void> {
     this.byWorkspaceId.set(state.workspaceId, state);
   }
 

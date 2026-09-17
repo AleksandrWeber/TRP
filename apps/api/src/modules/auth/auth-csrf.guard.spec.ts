@@ -97,4 +97,50 @@ describe('AuthCsrfGuard (V3-S01-c)', () => {
       ),
     ).toBe(true);
   });
+
+  it('requires a matching CSRF header for cookie-authenticated live-policy enable', () => {
+    expect(() =>
+      guard.canActivate(
+        context({
+          method: 'POST',
+          url: '/v1/workspaces/ws-1/live-policy/enable',
+          cookie: 'trp_refresh=secret; trp_csrf=token-1',
+        }),
+      ),
+    ).toThrow(ForbiddenException);
+
+    expect(
+      guard.canActivate(
+        context({
+          method: 'POST',
+          url: '/v1/workspaces/ws-1/live-policy/enable',
+          cookie: 'trp_refresh=secret; trp_csrf=token-1',
+          csrfHeader: 'token-1',
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('requires a matching CSRF header for cookie-authenticated live-policy disable', () => {
+    expect(() =>
+      guard.canActivate(
+        context({
+          method: 'POST',
+          url: '/v1/workspaces/ws-1/live-policy/disable',
+          cookie: 'trp_access=access-token; trp_csrf=token-2',
+        }),
+      ),
+    ).toThrow(ForbiddenException);
+
+    expect(
+      guard.canActivate(
+        context({
+          method: 'POST',
+          url: '/v1/workspaces/ws-1/live-policy/disable',
+          cookie: 'trp_access=access-token; trp_csrf=token-2',
+          csrfHeader: 'token-2',
+        }),
+      ),
+    ).toBe(true);
+  });
 });

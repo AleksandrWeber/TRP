@@ -63,6 +63,15 @@ const CATALOG: Readonly<Record<string, SecurityAuditClassification>> = Object.fr
     financialIntegrityValue: 'critical',
     retention: 'longest',
   },
+  'authz.workspace-live-policy-change': {
+    eventClass: 'privilege',
+    criticality: 'critical',
+    investigationValue: 'Who changed workspace live policy from which state to which state?',
+    customerTrustValue: 'high',
+    securityImpact: 'critical',
+    financialIntegrityValue: 'critical',
+    retention: 'longest',
+  },
   'authz.deny': {
     eventClass: 'authorization',
     criticality: 'critical',

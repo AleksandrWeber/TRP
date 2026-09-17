@@ -30,6 +30,36 @@ describe('security-audit-emitter.adapter (V3-S05-a)', () => {
     });
   });
 
+  it('maps workspace live-policy change events with from/to policy', () => {
+    const write = toSecurityAuditWrite(
+      'authz.workspace-live-policy-change',
+      {
+        event: 'authz.workspace-live-policy-change',
+        outcome: 'changed',
+        actorUserId: 'admin-1',
+        workspaceId: 'ws-1',
+        fromPolicy: 'PAPER',
+        toPolicy: 'LIVE_POLICY_OPTED_IN',
+        correlationId: 'corr-1',
+      },
+      'authorization',
+    );
+
+    expect(write).toMatchObject({
+      eventType: 'authz.workspace-live-policy-change',
+      outcome: 'changed',
+      source: 'authorization',
+      correlationId: 'corr-1',
+      attribution: {
+        actorId: 'admin-1',
+        workspaceId: 'ws-1',
+        resourceType: 'workspace-live-policy',
+        resourceId: 'ws-1',
+      },
+      payload: { fromPolicy: 'PAPER', toPolicy: 'LIVE_POLICY_OPTED_IN' },
+    });
+  });
+
   it('excludes routine session refresh from audit history', () => {
     expect(
       toSecurityAuditWrite(

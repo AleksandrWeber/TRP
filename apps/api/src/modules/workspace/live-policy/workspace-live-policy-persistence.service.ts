@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import type { TransactionContext } from '../../../storage/prisma/prisma-transaction.service';
 import {
   buildPaperLivePolicyState,
   buildWorkspaceLivePolicyState,
@@ -15,7 +16,8 @@ import {
 
 /**
  * PROPOSED-V3-L01-S02 — Workspace live-policy persistence service.
- * Domain / repository ports only. No Admin API, Gate, KS, Session, or credentials.
+ * Domain / repository ports for the S02 SoT. Optional transaction supports S03
+ * mandatory audit coupling (PO-S03-05). No Gate, KS, Session, or credentials.
  */
 @Injectable()
 export class WorkspaceLivePolicyPersistenceService {
@@ -61,14 +63,17 @@ export class WorkspaceLivePolicyPersistenceService {
   }
 
   /**
-   * Persist an explicit policy value via domain port (S03 may consume later).
-   * S02 does not expose HTTP/Admin enablement for this method.
+   * Persist an explicit policy value via the S02 SoT domain port.
+   * Optional transaction participates in S03 mandatory-audit commits.
    */
-  async persistPolicy(input: {
-    workspaceId: string;
-    policy: WorkspaceLivePolicy;
-    recordedAt?: string;
-  }): Promise<WorkspaceLivePolicyPersistenceOutcome> {
+  async persistPolicy(
+    input: {
+      workspaceId: string;
+      policy: WorkspaceLivePolicy;
+      recordedAt?: string;
+    },
+    transaction?: TransactionContext,
+  ): Promise<WorkspaceLivePolicyPersistenceOutcome> {
     const prior = await this.loadState(input.workspaceId);
     const outcome = buildWorkspaceLivePolicyState({
       workspaceId: input.workspaceId,
@@ -79,7 +84,7 @@ export class WorkspaceLivePolicyPersistenceService {
     if (!outcome.ok) {
       return outcome;
     }
-    await this.repository.saveLivePolicyState(outcome.state);
+    await this.repository.saveLivePolicyState(outcome.state, transaction);
     return outcome;
   }
 }
