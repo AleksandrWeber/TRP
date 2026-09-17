@@ -11,6 +11,7 @@ import { SecretPurpose } from '../modules/secret-vault/secret-purpose';
 import { WorkspaceLivePolicy } from '../modules/workspace/live-policy/durable-workspace-live-policy-state';
 import { InMemoryHumanStartProofStore } from '../modules/trading-session/live-admission/in-memory-human-start-proof.store';
 import { LiveAdmissionService } from '../modules/trading-session/live-admission/live-admission.service';
+import { issueHumanStartProof } from '../modules/trading-session/live-admission/domain/human-start-proof';
 import { createOrderIntent, OrderSide, OrderType } from '../modules/orders/domain/order-intent';
 import { OrderStatus } from '../modules/orders/domain/order-status';
 import { SubmissionPhase } from '../modules/orders/domain/order-execution-state';
@@ -181,7 +182,6 @@ async function issueToken(
     sessionId: string;
     actionCommand: string;
     nowIso: string;
-    ttlMs: number;
   }>,
 ) {
   return admission.issueHumanStart({
@@ -190,7 +190,6 @@ async function issueToken(
     sessionId: overrides?.sessionId ?? SESS_A,
     actionCommand: overrides?.actionCommand ?? ACTION_SUBMIT,
     nowIso: overrides?.nowIso ?? NOW,
-    ttlMs: overrides?.ttlMs,
   });
 }
 
@@ -735,8 +734,16 @@ describe(`V3-L02-S-ISO1 isolation regression (${V3_L02_S_ISO1_SLICE_ID})`, () =>
     });
 
     it('ISO-H03 — expired (evaluatedAt far future / ttl) deny', async () => {
-      const { admission } = createAdmissionService();
-      const issued = await issueToken(admission, { ttlMs: 1_000 });
+      const { admission, store } = createAdmissionService();
+      const { record, issued } = issueHumanStartProof({
+        actorId: ACTOR_A,
+        workspaceId: WS_A,
+        sessionId: SESS_A,
+        actionCommand: ACTION_SUBMIT,
+        nowIso: NOW,
+        ttlMs: 1_000,
+      });
+      await store.save(record);
       const gate = await gateCmd({
         admission,
         token: issued.token,

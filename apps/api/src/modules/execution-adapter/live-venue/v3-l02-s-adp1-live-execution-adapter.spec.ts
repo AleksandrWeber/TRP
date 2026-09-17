@@ -12,6 +12,7 @@ import { FinancialRounding } from '../../financial';
 import { WorkspaceLivePolicy } from '../../workspace/live-policy/durable-workspace-live-policy-state';
 import { InMemoryHumanStartProofStore } from '../../trading-session/live-admission/in-memory-human-start-proof.store';
 import { LiveAdmissionService } from '../../trading-session/live-admission/live-admission.service';
+import { issueHumanStartProof } from '../../trading-session/live-admission/domain/human-start-proof';
 import {
   PaperLimitFillPolicy,
   PaperMarketFillPolicy,
@@ -121,7 +122,6 @@ async function issueToken(
     sessionId: string;
     actionCommand: string;
     nowIso: string;
-    ttlMs: number;
   }>,
 ) {
   return admission.issueHumanStart({
@@ -130,7 +130,6 @@ async function issueToken(
     sessionId: overrides?.sessionId ?? SESS,
     actionCommand: overrides?.actionCommand ?? ACTION,
     nowIso: overrides?.nowIso ?? NOW,
-    ttlMs: overrides?.ttlMs,
   });
 }
 
@@ -381,8 +380,16 @@ describe('V3-L02-S-ADP1 live execution adapter', () => {
 
   // 4. human-start expired
   it('4 — human-start expired → human_start_expired', async () => {
-    const { admission } = createAdmissionService();
-    const issued = await issueToken(admission, { ttlMs: 1_000 });
+    const { admission, store } = createAdmissionService();
+    const { record, issued } = issueHumanStartProof({
+      actorId: ACTOR,
+      workspaceId: WS,
+      sessionId: SESS,
+      actionCommand: ACTION,
+      nowIso: NOW,
+      ttlMs: 1_000,
+    });
+    await store.save(record);
     const gate = await assertLiveVenueIoPreconditions({
       admission,
       command: {

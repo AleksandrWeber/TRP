@@ -14,6 +14,7 @@
 import type { Role } from '../../identity/role';
 import type {
   ClaimHumanStartAfterS04Result,
+  EvaluateLiveAdmissionCommand,
   LiveAdmissionService,
 } from '../../trading-session/live-admission/live-admission.service';
 import type { LiveAdmissionSessionFacts } from '../../trading-session/live-admission/domain/session-live-eligibility';
@@ -33,13 +34,7 @@ export type LiveVenueIoGateCommand = Readonly<{
   claimedLogicalActionId?: string | null;
   evaluatedAt?: string;
   /** Gate identity for S04 — required for ALLOW (otherwise GATE_UNAVAILABLE). */
-  gateRequest?: {
-    libraryEntryId?: string;
-    strategyFamilyId?: string;
-    strategyVersion?: string;
-    exchangeScopeId?: string;
-    tacticPoint?: string;
-  };
+  gateRequest?: EvaluateLiveAdmissionCommand['gateRequest'];
   /** Harness overrides only — production omits (C7 remains deny-all). */
   v2Overrides?: {
     liveCapitalAuthorized?: boolean;
