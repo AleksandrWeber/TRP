@@ -440,6 +440,10 @@ export class ConnectionsService {
     },
     pending: ConnectionRow,
   ): Promise<ConnectionMetadataView> {
+    // FIV-CONN-03 / D-CONN-03-03: EXCHANGE + NULL environment FAIL CLOSED before Vault use.
+    if (!isConnectionTradingEnvironment(pending.environment)) {
+      return this.finishValidation(pending, 'VALIDATION_FAILED');
+    }
     try {
       const result = await this.handshake.perform({
         workspaceId: input.workspaceId,
@@ -448,6 +452,7 @@ export class ConnectionsService {
         connectionId: pending.id,
         provider: pending.provider,
         vaultSecretId: pending.vaultSecretId as string,
+        environment: pending.environment,
       });
       const completed = await this.finishValidation(pending, result.outcome);
       if (result.outcome === 'CONNECTED') {
@@ -467,6 +472,7 @@ export class ConnectionsService {
             connectionId: pending.id,
             provider: pending.provider,
             vaultSecretId: pending.vaultSecretId as string,
+            environment: pending.environment,
             handshakeSucceeded: true,
           })
           .catch(() => undefined);

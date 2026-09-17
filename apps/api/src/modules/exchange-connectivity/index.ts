@@ -87,6 +87,14 @@ export {
   type ExchangeHandshakeRequest,
 } from './exchange-handshake.service';
 export {
+  resolveGovernedExchangeCredentials,
+  acceptancePurposesForConnectionEnvironment,
+  assertConnectionPurposeModelC,
+  type GovernedExchangeCredentialRequest,
+  type GovernedExchangeCredentialResult,
+  type ExchangeCredentialUseDenyReason,
+} from './exchange-connection-credential';
+export {
   EXCHANGE_PROVIDER_ADAPTERS,
   type ExchangeHandshakeAdapterKind,
   type ExchangeHandshakeAdapterRequest,

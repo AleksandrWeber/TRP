@@ -14,7 +14,7 @@ import {
   SYSTEM_HANDSHAKE_CLOCK,
   type HandshakeClock,
 } from './exchange-handshake.tokens';
-import { vaultSecretTypeForExchangeProvider } from './exchange-handshake.vault';
+import { resolveGovernedExchangeCredentials } from './exchange-connection-credential';
 import {
   EXCHANGE_PROVIDER_ADAPTERS,
   type ExchangeProviderAdapter,
@@ -27,6 +27,8 @@ export type ExchangeHandshakeRequest = Readonly<{
   connectionId: string;
   provider: string;
   vaultSecretId: string;
+  /** Trusted Connection.environment — required for FIV-CONN-03 Model C. */
+  environment: string | null;
 }>;
 
 /**
@@ -101,38 +103,28 @@ export class ExchangeHandshakeService {
   }
 
   private async execute(input: ExchangeHandshakeRequest): Promise<ExchangeHandshakeOutcome> {
-    const type = vaultSecretTypeForExchangeProvider(input.provider);
-    if (type === null) {
-      return 'VALIDATION_FAILED';
-    }
-
     const adapter = this.adapters.get(input.provider);
     if (!adapter || !adapter.implemented) {
       return 'VALIDATION_FAILED';
     }
 
-    const metadata = await this.vault.get({
-      actorWorkspaceId: input.actorUserId,
-      actorRole: input.actorRole,
+    const resolved = await resolveGovernedExchangeCredentials(this.vault, {
       workspaceId: input.workspaceId,
-      type,
+      actorUserId: input.actorUserId,
+      actorRole: input.actorRole,
+      provider: input.provider,
+      environment: input.environment,
+      vaultSecretId: input.vaultSecretId,
     });
-    if (metadata?.id !== input.vaultSecretId) {
+    if (!resolved.ok) {
       return 'VALIDATION_FAILED';
     }
-
-    const credentials = await this.vault.retrieve({
-      actorWorkspaceId: input.actorUserId,
-      actorRole: input.actorRole,
-      workspaceId: input.workspaceId,
-      type,
-    });
 
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), this.timeoutMs);
     try {
       const adapterResult = await adapter.handshake({
-        credentials,
+        credentials: resolved.credentials,
         nowMs: this.clock.nowMs(),
         signal: controller.signal,
       });

@@ -19,7 +19,7 @@ import {
   type ExchangeCapabilityView,
 } from './exchange-capability.projection';
 import { canUseVerifiedCapability } from './exchange-capability';
-import { vaultSecretTypeForExchangeProvider } from './exchange-handshake.vault';
+import { resolveGovernedExchangeCredentials } from './exchange-connection-credential';
 import {
   DEFAULT_HANDSHAKE_TIMEOUT_MS,
   HANDSHAKE_CLOCK,
@@ -35,6 +35,8 @@ export type ExchangeCapabilityVerificationRequest = Readonly<{
   connectionId: string;
   provider: string;
   vaultSecretId: string;
+  /** Trusted Connection.environment — required for FIV-CONN-03 Model C. */
+  environment: string | null;
   handshakeSucceeded: boolean;
 }>;
 
@@ -133,38 +135,28 @@ export class ExchangeCapabilityService {
   private async execute(
     input: ExchangeCapabilityVerificationRequest,
   ): Promise<ExchangeCapabilityAdapterResult> {
-    const type = vaultSecretTypeForExchangeProvider(input.provider);
-    if (type === null) {
-      return { kind: 'failed' };
-    }
-
     const adapter = this.adapters.get(input.provider);
     if (!adapter || !adapter.implemented) {
       return { kind: 'not_implemented' };
     }
 
-    const metadata = await this.vault.get({
-      actorWorkspaceId: input.actorUserId,
-      actorRole: input.actorRole,
+    const resolved = await resolveGovernedExchangeCredentials(this.vault, {
       workspaceId: input.workspaceId,
-      type,
+      actorUserId: input.actorUserId,
+      actorRole: input.actorRole,
+      provider: input.provider,
+      environment: input.environment,
+      vaultSecretId: input.vaultSecretId,
     });
-    if (metadata?.id !== input.vaultSecretId) {
+    if (!resolved.ok) {
       return { kind: 'failed' };
     }
-
-    const credentials = await this.vault.retrieve({
-      actorWorkspaceId: input.actorUserId,
-      actorRole: input.actorRole,
-      workspaceId: input.workspaceId,
-      type,
-    });
 
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), this.timeoutMs);
     try {
       const adapterResult = await adapter.verify({
-        credentials,
+        credentials: resolved.credentials,
         nowMs: this.clock.nowMs(),
         signal: controller.signal,
       });

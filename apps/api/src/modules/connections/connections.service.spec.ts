@@ -847,6 +847,51 @@ describe('ConnectionsService exchange handshake (W2-S02-b)', () => {
     return { service, vault, created };
   }
 
+  it('FIV-CONN-03: EXCHANGE + NULL environment FAIL CLOSED before handshake/Vault', async () => {
+    const now = new Date('2026-09-17T12:00:00.000Z');
+    const handshake = handshakeStub('CONNECTED');
+    const vault = memoryVault();
+    const seeded = memoryPrisma([
+      {
+        id: 'null-env-exchange',
+        workspaceId: 'workspace-a',
+        displayName: 'Legacy NULL EXCHANGE',
+        provider: 'BINANCE',
+        connectionType: 'EXCHANGE',
+        environment: null,
+        vaultSecretId: 'vault-secret-legacy',
+        status: 'DISCONNECTED',
+        createdAt: now,
+        updatedAt: now,
+      },
+    ]);
+    const service = new ConnectionsService(
+      seeded as never,
+      vault as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+      handshake as never,
+      sessionService() as never,
+      capabilityStub() as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
+    );
+
+    const validated = await service.validate({
+      workspaceId: 'workspace-a',
+      actorUserId: 'operator-a',
+      actorRole: Role.Trader,
+      id: 'null-env-exchange',
+    });
+
+    expect(validated.status).toBe('VALIDATION_FAILED');
+    expect(handshake.calls).toEqual([]);
+    expect(vault.retrieveCalls).toEqual([]);
+  });
+
   it('assigns Connected only after the handshake service reports authenticated communication', async () => {
     const handshake = handshakeStub('CONNECTED');
     const { service, vault, created } = await credentialedExchange(handshake);

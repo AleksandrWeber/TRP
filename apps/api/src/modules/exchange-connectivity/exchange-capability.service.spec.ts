@@ -7,13 +7,32 @@ import { ExchangeCapabilityService } from './exchange-capability.service';
 import type { HandshakeHttpRequest, HandshakeHttpResponse } from './exchange-handshake.http';
 import { PlannedExchangeCapabilityAdapter } from './planned-capability.adapter';
 
-function memoryVault(options?: { secretId?: string }) {
-  const retrieveCalls: Array<{ workspaceId: string; type: string }> = [];
+function memoryVault(options?: { secretId?: string; purpose?: string }) {
+  const retrieveCalls: Array<{ workspaceId: string; type: string; purpose?: string }> = [];
+  const purpose = options?.purpose ?? 'trading_live';
   return {
     retrieveCalls,
-    get: async () => ({ id: options?.secretId ?? 'vault-secret-1' }),
-    retrieve: async (query: { workspaceId: string; type: string }) => {
-      retrieveCalls.push({ workspaceId: query.workspaceId, type: query.type });
+    get: async (query: { workspaceId: string; type: string; purpose?: string }) => {
+      if (query.purpose !== purpose) {
+        return null;
+      }
+      return {
+        id: options?.secretId ?? 'vault-secret-1',
+        workspaceId: query.workspaceId,
+        type: query.type,
+        purpose,
+        state: 'CONNECTED',
+        operatorLabel: 'Connected',
+        createdAt: '2026-09-17T00:00:00.000Z',
+        updatedAt: '2026-09-17T00:00:00.000Z',
+      };
+    },
+    retrieve: async (query: { workspaceId: string; type: string; purpose?: string }) => {
+      retrieveCalls.push({
+        workspaceId: query.workspaceId,
+        type: query.type,
+        purpose: query.purpose,
+      });
       return { apiKey: 'key-one', apiSecret: 'secret-one' };
     },
   };
@@ -67,6 +86,7 @@ const request = {
   connectionId: 'connection-a',
   provider: 'BINANCE',
   vaultSecretId: 'vault-secret-1',
+  environment: 'live',
   handshakeSucceeded: true,
 } as const;
 

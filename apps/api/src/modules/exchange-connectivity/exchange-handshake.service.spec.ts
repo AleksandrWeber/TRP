@@ -8,17 +8,48 @@ import { PlannedExchangeHandshakeAdapter } from './planned-handshake.adapter';
 
 function memoryVault(options?: {
   secretId?: string;
+  purpose?: string;
   fields?: Record<string, string>;
-  retrieve?: (query: { workspaceId: string; type: string }) => Promise<Record<string, string>>;
+  retrieve?: (query: {
+    workspaceId: string;
+    type: string;
+    purpose?: string;
+  }) => Promise<Record<string, string>>;
 }) {
-  const retrieveCalls: Array<{ workspaceId: string; type: string; actorUserId: string }> = [];
+  const retrieveCalls: Array<{
+    workspaceId: string;
+    type: string;
+    purpose?: string;
+    actorUserId: string;
+  }> = [];
+  const purpose = options?.purpose ?? 'trading_live';
   return {
     retrieveCalls,
-    get: async () => ({ id: options?.secretId ?? 'vault-secret-1' }),
-    retrieve: async (query: { actorWorkspaceId: string; workspaceId: string; type: string }) => {
+    get: async (query: { workspaceId: string; type: string; purpose?: string }) => {
+      if (query.purpose !== purpose) {
+        return null;
+      }
+      return {
+        id: options?.secretId ?? 'vault-secret-1',
+        workspaceId: query.workspaceId,
+        type: query.type,
+        purpose,
+        state: 'CONNECTED',
+        operatorLabel: 'Connected',
+        createdAt: '2026-09-17T00:00:00.000Z',
+        updatedAt: '2026-09-17T00:00:00.000Z',
+      };
+    },
+    retrieve: async (query: {
+      actorWorkspaceId: string;
+      workspaceId: string;
+      type: string;
+      purpose?: string;
+    }) => {
       retrieveCalls.push({
         workspaceId: query.workspaceId,
         type: query.type,
+        purpose: query.purpose,
         actorUserId: query.actorWorkspaceId,
       });
       if (options?.retrieve) {
@@ -87,6 +118,7 @@ const request = {
   connectionId: 'connection-a',
   provider: 'BINANCE',
   vaultSecretId: 'vault-secret-1',
+  environment: 'live',
 } as const;
 
 describe('ExchangeHandshakeService (W2-S02-b)', () => {
@@ -100,7 +132,12 @@ describe('ExchangeHandshakeService (W2-S02-b)', () => {
 
     expect(result).toEqual({ outcome: 'CONNECTED' });
     expect(vault.retrieveCalls).toEqual([
-      { workspaceId: 'workspace-a', type: 'binance', actorUserId: 'operator-a' },
+      {
+        workspaceId: 'workspace-a',
+        type: 'binance',
+        purpose: 'trading_live',
+        actorUserId: 'operator-a',
+      },
     ]);
     expect(http.requests).toHaveLength(1);
     expect(http.requests[0]?.url).toContain('/sapi/v1/account/apiRestrictions');
