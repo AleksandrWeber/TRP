@@ -560,6 +560,10 @@ Next governance action: **PO Review of Security Final Close-out**, then (separat
 [`v3-l02-slice-approval-readiness.md`](./v3-l02-slice-approval-readiness.md).
 Readiness status recorded there: `READY FOR PO SLICE APPROVAL` — package does **not** grant Slice Approval or authorize FIV.
 
+**FIV Authorization & Execution Package (reference only; does not grant FIV Authorization):**
+[`v3-l02-fiv-authorization-execution-package.md`](./v3-l02-fiv-authorization-execution-package.md).
+Verdict: `READY FOR PO FIV AUTHORIZATION REVIEW` — does **not** authorize or execute FIV.
+
 ---
 
 ## STOP
