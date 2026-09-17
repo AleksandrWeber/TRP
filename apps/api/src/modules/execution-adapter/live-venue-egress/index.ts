@@ -42,6 +42,9 @@ export {
 
 export {
   TRADING_CREDENTIAL_ENVIRONMENTS,
+  CONNECTION_TRADING_ENVIRONMENTS,
+  isTradingCredentialEnvironment,
+  isConnectionTradingEnvironment,
   tradingEnvironmentFromPurpose,
   purposeForTradingEnvironment,
   egressEnvironmentForCredential,
@@ -49,6 +52,7 @@ export {
   OKX_DEMO_TRADING_HEADER_NAME,
   OKX_DEMO_TRADING_HEADER_VALUE,
   type TradingCredentialEnvironment,
+  type ConnectionTradingEnvironment,
 } from './trading-credential-environment';
 
 export {

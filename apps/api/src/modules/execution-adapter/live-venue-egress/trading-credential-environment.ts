@@ -15,10 +15,23 @@ import type { LiveVenueEnvironment, LiveVenueId } from './live-venue-allowlist';
 export const TRADING_CREDENTIAL_ENVIRONMENTS = Object.freeze(['live', 'testnet', 'demo'] as const);
 export type TradingCredentialEnvironment = (typeof TRADING_CREDENTIAL_ENVIRONMENTS)[number];
 
+/**
+ * Connection-persisted environments (FIV-CONN-01).
+ * Subset of ENV1 `TradingCredentialEnvironment` — DEMO deferred for Connections.
+ */
+export const CONNECTION_TRADING_ENVIRONMENTS = Object.freeze(['live', 'testnet'] as const);
+export type ConnectionTradingEnvironment = (typeof CONNECTION_TRADING_ENVIRONMENTS)[number];
+
 export function isTradingCredentialEnvironment(
   value: string,
 ): value is TradingCredentialEnvironment {
   return (TRADING_CREDENTIAL_ENVIRONMENTS as readonly string[]).includes(value);
+}
+
+export function isConnectionTradingEnvironment(
+  value: unknown,
+): value is ConnectionTradingEnvironment {
+  return value === 'live' || value === 'testnet';
 }
 
 /**

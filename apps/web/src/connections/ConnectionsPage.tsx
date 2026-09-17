@@ -82,7 +82,14 @@ export function ConnectionsPage() {
     setSaving(true);
     setError(null);
     try {
-      const created = await api.createConnection({ displayName: displayName.trim(), provider });
+      const selectedType = catalog?.connectionTypes.find((type) =>
+        type.providers.some((item) => item.id === provider),
+      );
+      const created = await api.createConnection({
+        displayName: displayName.trim(),
+        provider,
+        ...(selectedType?.id === 'EXCHANGE' ? { environment: 'live' as const } : {}),
+      });
       setConnections((items) => [...items, created]);
       setDisplayName('');
     } catch (reason) {

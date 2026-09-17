@@ -189,12 +189,15 @@ model WorkspaceLivePolicyState {
 
 /// Connection Management-owned workspace metadata (W2-S01-a/b).
 /// Credentials and ciphertext remain Vault-owned; this nullable value is an opaque Vault id only.
+/// environment: ENV1 vocabulary (`live` | `testnet`); nullable until FIV-CONN-04 backfill.
+/// DEMO deferred for Connections. Not Vault purpose. Not uniqueness (FIV-CONN-02).
 model ConnectionRecord {
   id             String   @id
   workspaceId    String   @map("workspace_id")
   displayName    String   @map("display_name")
   provider       String
   connectionType String   @map("connection_type")
+  environment    String?  @map("environment")
   vaultSecretId  String?  @map("vault_secret_id")
   status         String   @default("DISCONNECTED")
   createdAt      DateTime @map("created_at")

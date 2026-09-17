@@ -162,6 +162,8 @@ export type ConnectionMetadataView = {
   displayName: string;
   provider: ConnectionProvider;
   connectionType: ConnectionType;
+  /** ENV1 Connection environments: live | testnet. Null until backfill (FIV-CONN-04). */
+  environment: 'live' | 'testnet' | null;
   status:
     | 'DISCONNECTED'
     | 'PENDING_VALIDATION'
@@ -4236,7 +4238,11 @@ export const api = {
     request<OperationalContinuityReadinessView>('/operational-continuity/readiness'),
   getConnection: (id: string) =>
     request<ConnectionMetadataView>(`/connections/${encodeURIComponent(id)}`),
-  createConnection: (body: { displayName: string; provider: ConnectionProvider }) =>
+  createConnection: (body: {
+    displayName: string;
+    provider: ConnectionProvider;
+    environment?: 'live' | 'testnet';
+  }) =>
     request<ConnectionMetadataView>('/connections', {
       method: 'POST',
       body: JSON.stringify(body),

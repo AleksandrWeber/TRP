@@ -1,4 +1,10 @@
-import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../../storage/prisma/prisma.module';
 import {
@@ -29,6 +35,10 @@ import {
   type ConnectionProvider,
   type ConnectionType,
 } from './connection-catalog';
+import {
+  resolveConnectionEnvironmentForCreate,
+  type ConnectionTradingEnvironment,
+} from './connection-environment';
 import { ConnectionLifecycleAudit } from './connection-lifecycle-audit';
 import { assertConnectionTransition, canStartConnectionValidation } from './connection-lifecycle';
 import { ConnectionValidationAudit } from './connection-validation-audit';
@@ -54,6 +64,8 @@ export type ConnectionMetadataView = {
   displayName: string;
   provider: ConnectionProvider;
   connectionType: ConnectionType;
+  /** ENV1 Connection environments: live | testnet. Null until backfill (FIV-CONN-04). */
+  environment: ConnectionTradingEnvironment | null;
   status: ConnectionStatus;
   credentialsStored: boolean;
   exchangeProvider: ExchangeProviderMetadata | null;
@@ -103,6 +115,7 @@ export class ConnectionsService {
     actorUserId: string;
     displayName: string;
     provider: string;
+    environment?: string | null;
   }): Promise<ConnectionMetadataView> {
     const connectionType = providerType(input.provider);
     if (!connectionType) {
@@ -110,6 +123,17 @@ export class ConnectionsService {
     }
     if (connectionType === 'EXCHANGE' && lookupExchangeProvider(input.provider) === null) {
       throw new NotFoundException('Offered provider not found');
+    }
+    const resolved = resolveConnectionEnvironmentForCreate({
+      connectionType,
+      environment: input.environment,
+    });
+    if (!resolved.ok) {
+      throw new BadRequestException(
+        resolved.reason === 'environment_required'
+          ? 'Environment is required for exchange connections.'
+          : 'Environment must be live or testnet.',
+      );
     }
     const now = new Date();
     const row = await this.prisma.connectionRecord.create({
@@ -119,6 +143,7 @@ export class ConnectionsService {
         displayName: input.displayName.trim(),
         provider: input.provider,
         connectionType,
+        environment: resolved.environment,
         status: 'DISCONNECTED',
         createdAt: now,
       },
@@ -141,6 +166,7 @@ export class ConnectionsService {
     displayName: string,
   ): Promise<ConnectionMetadataView> {
     await this.getRow(workspaceId, id);
+    // FIV-CONN-01: environment is immutable after create — rename writes displayName only.
     const row = await this.prisma.connectionRecord.update({
       where: { id },
       data: { displayName: displayName.trim() },
@@ -615,6 +641,7 @@ export class ConnectionsService {
       displayName: row.displayName,
       provider: row.provider as ConnectionProvider,
       connectionType: row.connectionType as ConnectionType,
+      environment: connectionEnvironment(row.environment),
       status,
       credentialsStored,
       exchangeProvider:
@@ -646,11 +673,20 @@ type ConnectionRow = {
   displayName: string;
   provider: string;
   connectionType: string;
+  environment: string | null;
   vaultSecretId: string | null;
   status: string;
   createdAt: Date;
   updatedAt: Date;
 };
+
+function connectionEnvironment(value: string | null | undefined): ConnectionTradingEnvironment | null {
+  if (value === 'live' || value === 'testnet') {
+    return value;
+  }
+  // Null/unknown remain distinguishable — never silently map to live.
+  return null;
+}
 
 function connectionStatus(status: string): ConnectionStatus {
   if (

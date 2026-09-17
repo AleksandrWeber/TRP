@@ -9,18 +9,28 @@ type ConnectionRow = {
   displayName: string;
   provider: string;
   connectionType: string;
+  environment: string | null;
   vaultSecretId: string | null;
   status: string;
   createdAt: Date;
   updatedAt: Date;
 };
 
-function memoryPrisma() {
-  const rows: ConnectionRow[] = [];
+function memoryPrisma(seed: ConnectionRow[] = []) {
+  const rows: ConnectionRow[] = [...seed];
   return {
     connectionRecord: {
-      create: async ({ data }: { data: Omit<ConnectionRow, 'updatedAt' | 'vaultSecretId'> }) => {
-        const row = { ...data, vaultSecretId: null, updatedAt: data.createdAt };
+      create: async ({
+        data,
+      }: {
+        data: Omit<ConnectionRow, 'updatedAt' | 'vaultSecretId'> & { environment?: string | null };
+      }) => {
+        const row = {
+          ...data,
+          environment: data.environment ?? null,
+          vaultSecretId: null,
+          updatedAt: data.createdAt,
+        };
         rows.push(row);
         return row;
       },
@@ -60,13 +70,17 @@ function memoryPrisma() {
         data,
       }: {
         where: { id: string };
-        data: Partial<Pick<ConnectionRow, 'displayName' | 'vaultSecretId' | 'status'>>;
+        data: Partial<
+          Pick<ConnectionRow, 'displayName' | 'vaultSecretId' | 'status' | 'environment'>
+        >;
       }) => {
         const row = rows.find((candidate) => candidate.id === where.id);
         if (!row) throw new Error('missing');
         if (data.displayName !== undefined) row.displayName = data.displayName;
         if (data.vaultSecretId !== undefined) row.vaultSecretId = data.vaultSecretId;
         if (data.status !== undefined) row.status = data.status;
+        // FIV-CONN-01: normal update path must not rewrite environment; service never passes it.
+        if (data.environment !== undefined) row.environment = data.environment;
         row.updatedAt = new Date('2026-08-17T16:05:00.000Z');
         return row;
       },
@@ -357,6 +371,7 @@ describe('ConnectionsService (W2-S01)', () => {
       workspaceId: 'workspace-a',
       actorUserId: 'user-a',
       displayName: ' Primary Binance ',
+      environment: 'live',
       provider: 'BINANCE',
     });
 
@@ -365,6 +380,7 @@ describe('ConnectionsService (W2-S01)', () => {
       displayName: 'Primary Binance',
       provider: 'BINANCE',
       connectionType: 'EXCHANGE',
+      environment: 'live',
       status: 'DISCONNECTED',
       exchangeProvider: {
         id: 'BINANCE',
@@ -440,6 +456,7 @@ describe('ConnectionsService (W2-S01)', () => {
       workspaceId: 'workspace-a',
       actorUserId: 'user-a',
       displayName: 'Primary Binance',
+      environment: 'live',
       provider: 'BINANCE',
     });
 
@@ -596,6 +613,7 @@ describe('ConnectionsService (W2-S01)', () => {
       workspaceId: 'workspace-a',
       actorUserId: 'user-a',
       displayName: 'Primary Binance',
+      environment: 'live',
       provider: 'BINANCE',
     });
     await service.storeCredentials({
@@ -707,6 +725,7 @@ describe('ConnectionsService exchange provider reference (W2-S02-a)', () => {
       workspaceId: 'workspace-a',
       actorUserId: 'user-a',
       displayName: 'Primary Binance',
+      environment: 'live',
       provider: 'BINANCE',
     });
 
@@ -743,6 +762,7 @@ describe('ConnectionsService exchange handshake (W2-S02-b)', () => {
       workspaceId: 'workspace-a',
       actorUserId: 'user-a',
       displayName: `${provider} connection`,
+      environment: 'live',
       provider,
     });
     await service.storeCredentials({
@@ -858,6 +878,7 @@ describe('ConnectionsService exchange session health (W2-S02-c)', () => {
       workspaceId: 'workspace-a',
       actorUserId: 'user-a',
       displayName: 'Primary Binance',
+      environment: 'live',
       provider: 'BINANCE',
     });
     await service.storeCredentials({
@@ -1061,6 +1082,7 @@ describe('ConnectionsService exchange capability verification (W2-S02-d)', () =>
       workspaceId: 'workspace-a',
       actorUserId: 'user-a',
       displayName: 'Primary Binance',
+      environment: 'live',
       provider: 'BINANCE',
     });
     await connected.storeCredentials({
@@ -1121,6 +1143,7 @@ describe('ConnectionsService exchange capability verification (W2-S02-d)', () =>
       workspaceId: 'workspace-a',
       actorUserId: 'user-a',
       displayName: 'Primary Binance',
+      environment: 'live',
       provider: 'BINANCE',
     });
     await service.storeCredentials({
@@ -1174,6 +1197,7 @@ describe('ConnectionsService exchange capability verification (W2-S02-d)', () =>
       workspaceId: 'workspace-a',
       actorUserId: 'user-a',
       displayName: 'Primary Binance',
+      environment: 'live',
       provider: 'BINANCE',
     });
     await service.storeCredentials({
@@ -1217,6 +1241,7 @@ describe('ConnectionsService exchange capability verification (W2-S02-d)', () =>
       workspaceId: 'workspace-a',
       actorUserId: 'user-a',
       displayName: 'Primary Binance',
+      environment: 'live',
       provider: 'BINANCE',
     });
     await service.storeCredentials({
@@ -1426,5 +1451,127 @@ describe('ConnectionsService OpenRouter connectivity (W2-S05-a)', () => {
       workspaceId: 'workspace-a',
       connectionId: created.id,
     });
+  });
+});
+
+describe('ConnectionsService environment model (FIV-CONN-01)', () => {
+  function service() {
+    return new ConnectionsService(
+      memoryPrisma() as never,
+      memoryVault() as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+      handshakeStub() as never,
+      sessionService() as never,
+      capabilityStub() as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
+    );
+  }
+
+  it('represents LIVE and TESTNET exchange environments without exposing secrets', async () => {
+    const svc = service();
+    const live = await svc.create({
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      displayName: 'Live Binance',
+      environment: 'live',
+      provider: 'BINANCE',
+    });
+    const testnet = await svc.create({
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      displayName: 'Testnet Binance',
+      environment: 'testnet',
+      provider: 'BINANCE',
+    });
+
+    expect(live.environment).toBe('live');
+    expect(testnet.environment).toBe('testnet');
+    expect(live.credentialsStored).toBe(false);
+    expect(JSON.stringify(live)).not.toMatch(/apiKey|password|token|secret|ciphertext/i);
+    expect(JSON.stringify(testnet)).not.toMatch(/apiKey|password|token|secret|ciphertext/i);
+  });
+
+  it('rejects omitted and demo environments for exchange creates (no implicit LIVE)', async () => {
+    const svc = service();
+    await expect(
+      svc.create({
+        workspaceId: 'workspace-a',
+        actorUserId: 'user-a',
+        displayName: 'Missing env',
+        provider: 'BINANCE',
+      }),
+    ).rejects.toThrow(/Environment is required/i);
+    await expect(
+      svc.create({
+        workspaceId: 'workspace-a',
+        actorUserId: 'user-a',
+        displayName: 'Demo env',
+        environment: 'demo',
+        provider: 'BINANCE',
+      }),
+    ).rejects.toThrow(/live or testnet/i);
+  });
+
+  it('preserves null environment for notification creates and seeded legacy rows', async () => {
+    const telegram = await service().create({
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      displayName: 'Telegram',
+      provider: 'TELEGRAM',
+    });
+    expect(telegram.environment).toBeNull();
+
+    const seeded = new ConnectionsService(
+      memoryPrisma([
+        {
+          id: 'legacy-1',
+          workspaceId: 'workspace-a',
+          displayName: 'Legacy Binance',
+          provider: 'BINANCE',
+          connectionType: 'EXCHANGE',
+          environment: null,
+          vaultSecretId: null,
+          status: 'DISCONNECTED',
+          createdAt: new Date('2026-08-17T16:00:00.000Z'),
+          updatedAt: new Date('2026-08-17T16:00:00.000Z'),
+        },
+      ]) as never,
+      memoryVault() as never,
+      successfulValidator(),
+      validationAudit() as never,
+      lifecycleAudit() as never,
+      handshakeStub() as never,
+      sessionService() as never,
+      capabilityStub() as never,
+      openRouterTestStub() as never,
+      openRouterConnectivityStub() as never,
+      openRouterAuditStub() as never,
+      openRouterAiRequestStub() as never,
+    );
+    const legacy = await seeded.get('workspace-a', 'legacy-1');
+    expect(legacy.environment).toBeNull();
+  });
+
+  it('keeps environment immutable through rename and workspace-isolated', async () => {
+    const svc = service();
+    const created = await svc.create({
+      workspaceId: 'workspace-a',
+      actorUserId: 'user-a',
+      displayName: 'Primary Binance',
+      environment: 'testnet',
+      provider: 'BINANCE',
+    });
+    const renamed = await svc.rename('workspace-a', created.id, 'Renamed Binance');
+    expect(renamed.environment).toBe('testnet');
+    expect(renamed.displayName).toBe('Renamed Binance');
+    await expect(svc.get('workspace-b', created.id)).rejects.toThrow('Connection not found');
+    await expect(svc.rename('workspace-b', created.id, 'Foreign')).rejects.toThrow(
+      'Connection not found',
+    );
   });
 });

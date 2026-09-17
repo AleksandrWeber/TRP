@@ -24,6 +24,7 @@ const connection: ConnectionMetadataView = {
   displayName: 'Primary Binance',
   provider: 'BINANCE',
   connectionType: 'EXCHANGE',
+  environment: 'live',
   status: 'CONNECTED',
   credentialsStored: true,
   exchangeProvider: null,

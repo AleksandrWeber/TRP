@@ -91,6 +91,7 @@ export class ConnectionsController {
       actorUserId: request.user.userId,
       displayName: body.displayName,
       provider: body.provider,
+      environment: body.environment,
     });
   }
 
