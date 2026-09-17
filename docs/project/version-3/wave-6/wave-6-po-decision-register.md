@@ -53,12 +53,16 @@ Provide a precise register of unresolved decisions that Product Owner / Chief Ar
 | V3-L01-S01 Slice Approval                    | **GRANTED** ([`v3-l01-s01-approval.md`](./v3-l01-s01-approval.md)) — Inventory & honesty baseline; S01 **CLOSED**         |
 | V3-L01-S02 Slice Approval                    | **GRANTED** ([`v3-l01-s02-slice-approval.md`](./v3-l01-s02-slice-approval.md)) — persistence + Paper defaulting           |
 | V3-L01-S02 Final Close                       | **GRANTED / CLOSED** ([`v3-l01-s02-final-close.md`](./v3-l01-s02-final-close.md)) — impl `d6bfba29e0ec3b73e1d964ba60c8bb3230a2bc23`; PO Review **PASS** |
-| V3-L01-S03 / S04 implementation auth         | **NOT GRANTED**                                                                                                          |
+| V3-L01-S03 Planning Proposal                 | **PREPARED** ([`v3-l01-s03-planning-proposal.md`](./v3-l01-s03-planning-proposal.md))                                   |
+| V3-L01-S03 Planning Review                   | **PASS WITH REQUIRED PO DECISIONS**                                                                                      |
+| V3-L01-S03 Slice Approval                    | **GRANTED** ([`v3-l01-s03-slice-approval.md`](./v3-l01-s03-slice-approval.md)) — Admin enable/disable + audit             |
+| V3-L01-S03 Implementation Authorization      | **GRANTED** (S03 only; after governance synchronization)                                                               |
+| V3-L01-S04 implementation auth               | **NOT GRANTED**                                                                                                          |
 | Live-capital activation                      | **NOT AUTHORIZED**                                                                                                       |
 | FIV live/test environment                    | **NOT YET ESTABLISHED**                                                                                                  |
 | Technical Debt closure                       | **NOT AUTHORIZED**                                                                                                       |
 
-Statuses above reflect D-GOV-01…04, ADR-020 **Accepted**, review PASSes, Final Approval **GRANTED**, **D-GOV-05 GRANTED**, V3-L01 Package Planning **GRANTED**, V3-L01 Slice Planning Approval **GRANTED**, **V3-L01-S01 CLOSED**, **V3-L01-S02 CLOSED**, and S02 Final Close **GRANTED**. Live-capital activation / FIV / production release / live UI remain separately gated. S03/S04 implementation authorization remains per-slice and **NOT GRANTED**. Do not invent further status changes.
+Statuses above reflect D-GOV-01…04, ADR-020 **Accepted**, review PASSes, Final Approval **GRANTED**, **D-GOV-05 GRANTED**, V3-L01 Package Planning **GRANTED**, V3-L01 Slice Planning Approval **GRANTED**, **V3-L01-S01 CLOSED**, **V3-L01-S02 CLOSED**, S02 Final Close **GRANTED**, and **V3-L01-S03 Slice Approval GRANTED** (implementation authorized for S03 only). Live-capital activation / FIV / production release / live UI remain separately gated. **S04** implementation authorization remains **NOT GRANTED**. Do not invent further status changes.
 
 ---
 
@@ -391,7 +395,7 @@ Wave 6 implementation may proceed according to the approved Wave 6 Planning Pack
 ## V3-L01-S02 PO DESIGN DECISIONS
 
 Authority: **Product Owner / Chief Architect** via [`v3-l01-s02-slice-approval.md`](./v3-l01-s02-slice-approval.md).
-These decisions resolve the S02-blocking portion of **D-ARCH-02** (persistence / defaulting). Enablement API / audit remain **OPEN** for **S03**.
+These decisions resolve the S02-blocking portion of **D-ARCH-02** (persistence / defaulting). Enablement API / audit were subsequently decided for **S03** (see **V3-L01-S03 PO DESIGN DECISIONS** below).
 
 | ID | Decision | Status |
 | -- | -------- | ------ |
@@ -408,8 +412,38 @@ V3-L01-S02 Slice Approval = GRANTED
 V3-L01-S02 Implementation = COMPLETE (d6bfba29e0ec3b73e1d964ba60c8bb3230a2bc23)
 V3-L01-S02 PO Review = PASS
 V3-L01-S02 Final Close = GRANTED / CLOSED
-≠ S03 / S04 AUTHORIZED
+≠ S04 AUTHORIZED
 ≠ LIVE CAPITAL ACTIVATED
+```
+
+---
+
+## V3-L01-S03 PO DESIGN DECISIONS
+
+Authority: **Product Owner / Chief Architect** via [`v3-l01-s03-slice-approval.md`](./v3-l01-s03-slice-approval.md).
+These decisions resolve the S03-blocking portion of **D-ARCH-02** (enablement API / audit). Planning proposal: [`v3-l01-s03-planning-proposal.md`](./v3-l01-s03-planning-proposal.md). Planning Review = **PASS WITH REQUIRED PO DECISIONS**.
+
+| ID | Decision | Status |
+| -- | -------- | ------ |
+| **PO-S03-01** | Admin authz = existing PermissionClass + role matrix + RolesGuard + **RoleAdmin / C6** + active workspace membership via WorkspaceAccessService; no new auth framework; **LiveCommand / C7 remains deny-all** (not used for enablement) | **DECIDED / APPROVED** |
+| **PO-S03-02** | API shape = **only** `POST /v1/workspaces/:workspaceId/live-policy/enable` and `POST .../disable`; no new GET unless mandatory convention requires; S02 SoT remains canonical read/write source | **DECIDED / APPROVED** |
+| **PO-S03-03** | Enable/disable **idempotent**; same-state success without stored-state change; no duplicate transition merely because requested == current | **DECIDED / APPROVED** |
+| **PO-S03-04** | Audit = reuse V3 Security Audit (classified, append-only, integrity-hashed, workspace-scoped, actor-attributed); add live-policy event type via existing catalog; no parallel audit subsystem | **DECIDED / APPROVED** |
+| **PO-S03-05** | Policy persist + successful policy-change audit **transactional** (precedent: People.assignRoleWithMandatoryAudit); forbid intentional “policy changed + audit missing” | **DECIDED / APPROVED** |
+| **PO-S03-06** | Failed authorization **MUST NOT** create successful policy-change audit; may reuse existing deny/failure audit mechanism; no new failure-audit subsystem; no scope expansion to invent one | **DECIDED / APPROVED** |
+| **PO-S03-07** | Successful audit identifies authenticated actor, workspace, previous policy, resulting policy, timestamp, correlation/request ID where available; existing actor identity conventions | **DECIDED / APPROVED** |
+| **PO-S03-08** | Error semantics = existing Nest/API/domain conventions (authn / authz / workspace access / validation-domain / persistence); no new global error taxonomy | **DECIDED / APPROVED** |
+| **PO-S03-09** | Disable → **PAPER ONLY**; no credential revoke, Vault, Gate, KS, Session, PermissionClass, Paper Freeze, V2 liveCapitalAuthorized, exchange ops, or capital movement | **DECIDED / APPROVED** |
+| **PO-S03-10** | MFA **not** introduced in S03; future MFA for real-capital activation separately governed | **NON-BLOCKING** |
+| **PO-S03-11** | Slice ID remains **PROPOSED-V3-L01-S03**; no rename / canonicalize | **NON-BLOCKING / RETAINED** |
+
+```text
+V3-L01-S03 Slice Approval = GRANTED
+V3-L01-S03 Implementation = AUTHORIZED (S03 only)
+LIVE_POLICY_OPTED_IN = workspace policy opt-in ONLY
+≠ S04 AUTHORIZED
+≠ LIVE CAPITAL ACTIVATED
+≠ L02–L05 AUTHORIZED
 ```
 
 ---
@@ -420,8 +454,8 @@ Authority default: **CHIEF ARCHITECT / ARCHITECTURE** for technical design withi
 
 | ID            | What must be decided?                                                    | Why                                              | Package / gate | If OPEN                                       | Impl?         | FIV?          | Release?      | W6 close?     | Evidence                          |
 | ------------- | ------------------------------------------------------------------------ | ------------------------------------------------ | -------------- | --------------------------------------------- | ------------- | ------------- | ------------- | ------------- | --------------------------------- |
-| **D-ARCH-01** | L01–L05 **slice decomposition**                                          | Slices not in Master Plan/Roadmap                | All L          | **L01 planning decomposition GRANTED** (PROPOSED-V3-L01-S01…S04); **S01 CLOSED**; **S02 CLOSED**; S03–S04 / **L02–L05 still OPEN** | YES (L02–L05; L01 S03–S04) | NOT SPECIFIED | NOT SPECIFIED | NOT SPECIFIED | [`v3-l01-slice-approval.md`](./v3-l01-slice-approval.md); [`v3-l01-s01-approval.md`](./v3-l01-s01-approval.md); [`v3-l01-s02-slice-approval.md`](./v3-l01-s02-slice-approval.md); [`v3-l01-s02-final-close.md`](./v3-l01-s02-final-close.md); Planning Package |
-| **D-ARCH-02** | Workspace live policy persistence / enablement API shape                 | Persistence shape decided for S02; enablement API remains S03 | L01            | **S02 persistence DECIDED** (PO-S02-01…06); enablement API / audit **still OPEN** (S03) | YES (S03 enablement) | NOT SPECIFIED | YES           | YES           | [`v3-l01-s02-slice-approval.md`](./v3-l01-s02-slice-approval.md) |
+| **D-ARCH-01** | L01–L05 **slice decomposition**                                          | Slices not in Master Plan/Roadmap                | All L          | **L01 planning decomposition GRANTED** (PROPOSED-V3-L01-S01…S04); **S01 CLOSED**; **S02 CLOSED**; **S03 Slice Approval GRANTED**; S04 / **L02–L05 still OPEN** | YES (L02–L05; L01 S04) | NOT SPECIFIED | NOT SPECIFIED | NOT SPECIFIED | [`v3-l01-slice-approval.md`](./v3-l01-slice-approval.md); [`v3-l01-s01-approval.md`](./v3-l01-s01-approval.md); [`v3-l01-s02-slice-approval.md`](./v3-l01-s02-slice-approval.md); [`v3-l01-s02-final-close.md`](./v3-l01-s02-final-close.md); [`v3-l01-s03-slice-approval.md`](./v3-l01-s03-slice-approval.md); Planning Package |
+| **D-ARCH-02** | Workspace live policy persistence / enablement API shape                 | Persistence shape decided for S02; enablement API / audit decided for S03 | L01            | **S02 persistence DECIDED** (PO-S02-01…06); **S03 enablement API / audit DECIDED** (PO-S03-01…09); S03 impl auth **GRANTED** | YES (S03 enablement authorized) | NOT SPECIFIED | YES           | YES           | [`v3-l01-s02-slice-approval.md`](./v3-l01-s02-slice-approval.md); [`v3-l01-s03-slice-approval.md`](./v3-l01-s03-slice-approval.md) |
 | **D-ARCH-03** | Runtime Enforcement Gate **live admission attributes**                   | Dependency named; attributes NOT SPECIFIED       | L01/L02        | Live admission undefined                      | YES           | YES           | YES           | YES           | Roadmap deps; L01                 |
 | **D-ARCH-04** | Session integration for live mode                                        | Minor extension named; detail OPEN               | L01            | Session live mode undefined                   | YES           | YES           | YES           | YES           | Master Plan §10                   |
 | **D-ARCH-05** | Kill Switch live execution wiring                                        | Foundation closed; live proof deferred to Wave 6 | L01/L02/L04    | Exit KS criterion unmet                       | YES           | YES           | YES           | YES           | W3 deferral; Wave 6 exit          |
@@ -588,12 +622,13 @@ Supported under current governance boundary:
 - Opening subsequent **package-level** planning / approval / slice work for V3-L01…L05 under existing lifecycle gates
 - V3-L01 **S01** — **CLOSED** (Inventory & honesty baseline)
 - V3-L01 **S02** — **CLOSED** (Workspace live-policy persistence & Paper defaulting; Final Close [`v3-l01-s02-final-close.md`](./v3-l01-s02-final-close.md); impl `d6bfba29e0ec3b73e1d964ba60c8bb3230a2bc23`)
-- V3-L01 **S03–S04** individual slice planning / implementation authorization (still required; **NOT GRANTED**)
+- V3-L01 **S03** — **SLICE APPROVED / IMPLEMENTATION AUTHORIZED** ([`v3-l01-s03-slice-approval.md`](./v3-l01-s03-slice-approval.md); PO-S03-01…09 binding; Admin enable/disable + audit only)
+- V3-L01 **S04** individual slice planning / implementation authorization (still required; **NOT GRANTED**)
 - Architecture analysis / security analysis (planning-gate; OPEN mechanisms resolved in-package)
 - FIV **preparation** (environment requirements listing — not FIV execution/PASS)
 - Read-only evidence gathering
 
-**D-GOV-05 GRANTED ≠ live capital enabled. V3-L01 Slice Planning APPROVED ≠ all slices implementation-authorized. V3-L01-S02 CLOSED ≠ S03–S04 authorized. Per-slice Approvals still required for S03–S04. Rule 1 still constrains irreversible promises (esp. live UI).**
+**D-GOV-05 GRANTED ≠ live capital enabled. V3-L01 Slice Planning APPROVED ≠ all slices implementation-authorized. V3-L01-S03 AUTHORIZED ≠ S04 authorized ≠ live capital activated. Per-slice Approval still required for S04. Rule 1 still constrains irreversible promises (esp. live UI).**
 
 ---
 
@@ -623,9 +658,9 @@ Supported under current governance boundary:
 2. D-GOV-01 ADR↔L01 sequencing — **DECIDED A**: approved live-capital ADR exists (**ADR-020 Accepted**)
 3. D-GOV-04 ADR creation/approval path — **DECIDED**; Final Approval = **GRANTED**; D-GOV-01 approved-ADR prerequisite **SATISFIED**
 4. D-GOV-02 — **DECIDED C**: Wave 5 CLOSED not blanket prerequisite; Rule 1 still constrains irreversible promises (esp. live UI)
-5. Existing Development Lifecycle **package Planning Approval** for L01 — **GRANTED**; **slice authorization** — Slice Planning **GRANTED**; **V3-L01-S01** — **CLOSED**; **V3-L01-S02** — **CLOSED**; S03–S04 individual slice implementation authorization still required
-6. D-ARCH-01 **L01 planning decomposition** — **GRANTED** (PROPOSED-V3-L01-S01…S04); **S01 CLOSED**; **S02 CLOSED**; D-ARCH-02 **S02 persistence DECIDED** (PO-S02-01…06); enablement API / D-ARCH-03 · D-ARCH-04 · D-ARCH-05 (as applicable) — remain OPEN / resolve in-package per later slice
-7. Security: Admin enablement controls OPEN items affecting L01 — resolve in **S03** / later
+5. Existing Development Lifecycle **package Planning Approval** for L01 — **GRANTED**; **slice authorization** — Slice Planning **GRANTED**; **V3-L01-S01** — **CLOSED**; **V3-L01-S02** — **CLOSED**; **V3-L01-S03** — **Slice Approval GRANTED / Implementation AUTHORIZED**; S04 individual slice implementation authorization still required
+6. D-ARCH-01 **L01 planning decomposition** — **GRANTED** (PROPOSED-V3-L01-S01…S04); **S01 CLOSED**; **S02 CLOSED**; **S03 Slice Approval GRANTED**; D-ARCH-02 **S02 persistence DECIDED** (PO-S02-01…06) **and S03 enablement/audit DECIDED** (PO-S03-01…09); D-ARCH-03 · D-ARCH-04 · D-ARCH-05 (as applicable) — remain OPEN / resolve in-package per later slice (esp. S04)
+7. Security: Admin enablement controls for L01 S03 — **DECIDED** (PO-S03-01…09); MFA for production activation remains separately gated (PO-S03-10 non-blocking)
 
 ### B. Before L02 production code
 
@@ -668,8 +703,9 @@ All exit criteria evidence · PO Wave COMPLETE declaration · no outstanding AUT
   ~~* Whether Wave 5 CLOSED is a blanket Wave 6 prerequisite~~ — **DECIDED by D-GOV-02 Interpretation C**: NOT a blanket prerequisite
   ~~* Wave-level implementation authorization~~ — **DECIDED by D-GOV-05**: **GRANTED** (subject to package/slice gates; live activation separately gated)
 - ~~Whether Wave 5 may COMPLETE with CM-15 deferred~~ — **DECIDED by D-GOV-03 Interpretation C**: Wave 5 COMPLETE/CLOSED **withheld**; no new exception/waiver; existing CM-15 lifecycle preserved for later completion when external dependency is available (does **not** equate DEFERRED with RESERVED; does **not** newly establish “all packages must always CLOSE”)
-- L01–L05 slice IDs — **L01 planning decomposition GRANTED** as PROPOSED-V3-L01-S01…S04 ([`v3-l01-slice-approval.md`](./v3-l01-slice-approval.md)); **S01 CLOSED**; **S02 CLOSED** ([`v3-l01-s02-final-close.md`](./v3-l01-s02-final-close.md)); canonical ID rename **OPEN** if required (PO-S02-07 non-blocking); S03–S04 / **L02–L05** still OPEN
-- Workspace live-policy persistence mechanics (S02 portion of D-ARCH-02) — **RESOLVED** by PO-S02-01…06 and **CLOSED** with S02 Final Close; enablement API / audit schema remain **OPEN** for S03
+- L01–L05 slice IDs — **L01 planning decomposition GRANTED** as PROPOSED-V3-L01-S01…S04 ([`v3-l01-slice-approval.md`](./v3-l01-slice-approval.md)); **S01 CLOSED**; **S02 CLOSED** ([`v3-l01-s02-final-close.md`](./v3-l01-s02-final-close.md)); **S03 Slice Approval GRANTED** ([`v3-l01-s03-slice-approval.md`](./v3-l01-s03-slice-approval.md)); canonical ID rename **OPEN / NON-BLOCKING** (PO-S02-07; PO-S03-11 retained); S04 / **L02–L05** still OPEN
+- Workspace live-policy persistence mechanics (S02 portion of D-ARCH-02) — **RESOLVED** by PO-S02-01…06 and **CLOSED** with S02 Final Close
+- Enablement API / audit schema (S03 portion of D-ARCH-02) — **RESOLVED** by PO-S03-01…09; S03 Slice Approval **GRANTED**
 - Gate live admission attribute set
 - SEC-16 integrity mechanism choice
 - L05 replay mechanism
@@ -678,7 +714,7 @@ All exit criteria evidence · PO Wave COMPLETE declaration · no outstanding AUT
 - Financial action log retention
 - Safe FIV venue identity
 - Production live release checklist contents
-- MFA procedural detail for live enablement
+- MFA procedural detail for live enablement (PO-S03-10: not in S03; remains OPEN for production activation)
 
 ---
 
@@ -707,10 +743,11 @@ This register does **not** authorize and does **not** claim:
 **V3-L01 Slice Planning Approval** is recorded as **GRANTED** ([`v3-l01-slice-approval.md`](./v3-l01-slice-approval.md)). That accepts the S01→S04 planning decomposition. It does **not** authorize en-bloc implementation of all four slices, live capital, FIV, production release, credentials, or live UI.
 **V3-L01-S01 Slice Approval** is recorded as **GRANTED**; S01 Final Close = **CLOSED** ([`v3-l01-s01-final-close.md`](./v3-l01-s01-final-close.md)).
 **V3-L01-S02 Slice Approval** is recorded as **GRANTED** ([`v3-l01-s02-slice-approval.md`](./v3-l01-s02-slice-approval.md)).
-**V3-L01-S02 Final Close** is recorded as **GRANTED / CLOSED** ([`v3-l01-s02-final-close.md`](./v3-l01-s02-final-close.md)) — implementation `d6bfba29e0ec3b73e1d964ba60c8bb3230a2bc23` (`feat(wave-6): implement v3-l01-s02`); PO Review **PASS**. It does **not** authorize S03/S04, live capital, FIV, production release, credentials, or live UI.
+**V3-L01-S02 Final Close** is recorded as **GRANTED / CLOSED** ([`v3-l01-s02-final-close.md`](./v3-l01-s02-final-close.md)) — implementation `d6bfba29e0ec3b73e1d964ba60c8bb3230a2bc23` (`feat(wave-6): implement v3-l01-s02`); PO Review **PASS**. It does **not** authorize S04, live capital, FIV, production release, credentials, or live UI.
+**V3-L01-S03 Slice Approval** is recorded as **GRANTED** ([`v3-l01-s03-slice-approval.md`](./v3-l01-s03-slice-approval.md)). Planning Review = **PASS WITH REQUIRED PO DECISIONS**. **PO-S03-01…09 = DECIDED / APPROVED**. **PO-S03-10 / PO-S03-11 = NON-BLOCKING**. **V3-L01-S03 Implementation = AUTHORIZED** (S03 only — Admin enable/disable + audit). It does **not** authorize S04, L02–L05, live capital, FIV, production release, credentials, LiveCommand activation, Gate/KS/Session wiring, or live UI.
 
 ---
 
 ## STOP
 
-STOP — D-GOV-05 = GRANTED. ADR-020 = Accepted. V3-L01 Package Planning = GRANTED. V3-L01 Slice Planning = GRANTED (S01→S04 planning decomposition). **V3-L01-S01 = CLOSED**. **V3-L01-S02 = CLOSED** (Final Close GRANTED; impl `d6bfba29e0ec3b73e1d964ba60c8bb3230a2bc23`; PO Review PASS). S03/S04 implementation = NOT GRANTED. Wave 6 implementation AUTHORIZED (wave-level; subject to package/slice gates). Live-capital activation = NOT AUTHORIZED. Live FIV = NOT PERFORMED. Wave 5 remains NOT COMPLETE / NOT CLOSED. CM-15 remains NOT CLOSED. Do not implement S03–S04 from this register sync. Do not enable live capital.
+STOP — D-GOV-05 = GRANTED. ADR-020 = Accepted. V3-L01 Package Planning = GRANTED. V3-L01 Slice Planning = GRANTED (S01→S04 planning decomposition). **V3-L01-S01 = CLOSED**. **V3-L01-S02 = CLOSED** (Final Close GRANTED; impl `d6bfba29e0ec3b73e1d964ba60c8bb3230a2bc23`; PO Review PASS). **V3-L01-S03 Slice Approval = GRANTED**. **V3-L01-S03 Implementation = AUTHORIZED** (S03 only). S04 implementation = NOT GRANTED. Wave 6 implementation AUTHORIZED (wave-level; subject to package/slice gates). Live-capital activation = NOT AUTHORIZED. Live FIV = NOT PERFORMED. Wave 5 remains NOT COMPLETE / NOT CLOSED. CM-15 remains NOT CLOSED. Do not implement S04 from this register sync. Do not enable live capital.
