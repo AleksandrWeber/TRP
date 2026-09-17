@@ -6,15 +6,19 @@
 **Package:** V3-L02 — Live order I/O on the canonical execution path
 **Authority:** Senior Staff Engineer / Chief Architect (Architecture Review only)
 **Nature:** Architecture Review. **Not** Security PASS. **Not** Planning Approval. **Not** Slice Approval. **Not** implementation authorization. **Not** live-capital activation. **Not** FIV.
-**Repository baseline:** `621080b6c9ea9c1e52f7d60a372fc4316174a1a5`
+**Original review baseline:** `621080b6c9ea9c1e52f7d60a372fc4316174a1a5`
+**Human-start PO freeze:** [`v3-l02-human-start-decision-freeze.md`](./v3-l02-human-start-decision-freeze.md)
+**Re-review scope:** AD-L02-04 after PO-L02-05A…05D
+**Re-review baseline:** post human-start decision freeze (same commit family as freeze + this update)
 
 ```text
-ARCHITECTURE REVIEW ONLY.
+ARCHITECTURE REVIEW / AD-L02-04 RE-REVIEW.
 Architecture MUST NOT change frozen PO decisions.
 If architecture cannot satisfy a PO decision → ARCHITECTURE BLOCKER → PO ESCALATION.
 V3-L02 IMPLEMENTATION REMAINS NOT AUTHORIZED.
 S01–S06 remain NOT GRANTED.
 Security Review was NOT performed.
+AD-L02-04 status updated below; overall package verdict remains driven by remaining blockers.
 ```
 
 Protected dirty/untracked leftovers outside this artifact were **not** modified.
@@ -23,23 +27,29 @@ Protected dirty/untracked leftovers outside this artifact were **not** modified.
 
 ## 1. Executive Architecture Verdict
 
-### Final verdict
+### Final package verdict
 
 ```text
 ARCHITECTURE BLOCKED
 ```
 
-### Why
+Overall V3-L02 Architecture remains **BLOCKED** because AD-L02-07 / AD-L02-09 / AD-L02-11 (and related live cancel/persistence) are still unresolved. This is **not** a Security PASS and **not** implementation authorization.
 
-Repository evidence shows a coherent **target** direction (canonical `ExecutionEngineService` → `ExecutionAdapterPort`; S04 admission cell; durable workspace Kill Switch; Block A/B PO business rules frozen). It does **not** currently guarantee safe realization of the frozen PO contract for live venue I/O.
+### AD-L02-04 re-review verdict (this act)
 
-Critical blockers that prevent Architecture PASS:
+```text
+AD-L02-04 = APPROVED WITH CONDITIONS
+```
 
-1. **AD-L02-04 (human-start):** S04 `consume-on-evaluate` + in-memory store cannot simultaneously satisfy PO-L02-05 single-use/freshness **and** PO-L02-04 mandatory immediate admission revalidation before irreversible venue I/O under multi-instance/restart/crash windows. Current binding also lacks frozen **ACTION/COMMAND** grain.
+PO-L02-05A…05D freeze the durability and consumption model. Architecture can now specify a coherent technical realization for human-start that satisfies the frozen PO contract **without** changing PO decisions and **without** weakening UNKNOWN / no-blind-retry rules.
+
+### Why package remains BLOCKED
+
+1. ~~AD-L02-04 (human-start)~~ → **APPROVED WITH CONDITIONS** (see §5).
 2. **AD-L02-07 / AD-L02-09 / AD-L02-11:** Canonical order domain has **no first-class UNKNOWN**; live crash-window / durable duplicate-prevention for venue I/O is **not** architecturally established on the canonical path.
-3. **AD-L02-01 hazard:** Parallel `live-trading-engine` remains **mounted** and implements a **cancel-all** Kill Switch (`EmergencyManager`) that contradicts PO-L02-08 if mistaken for L02 SoT.
+3. **AD-L02-01 hazard:** Parallel `live-trading-engine` remains **mounted** and implements a **cancel-all** Kill Switch (`EmergencyManager`) that contradicts PO-L02-08 if mistaken for L02 SoT (conditions from prior review still apply).
 
-Until these are resolved (including required PO escalation for human-start consumption timing), Architecture **cannot** approve L02 technical realization.
+Human-start PO escalation is **closed**. Remaining blockers prevent overall Architecture PASS.
 
 ---
 
@@ -53,6 +63,8 @@ Until these are resolved (including required PO escalation for human-start consu
 | [`v3-l02-po-decision-freeze.md`](./v3-l02-po-decision-freeze.md) | Prior PO freeze |
 | [`v3-l02-po-financial-scope-decision.md`](./v3-l02-po-financial-scope-decision.md) | Block A PO DECIDED |
 | [`v3-l02-po-block-b-decision-freeze.md`](./v3-l02-po-block-b-decision-freeze.md) | Block B PO DECIDED |
+| [`v3-l02-human-start-decision-options.md`](./v3-l02-human-start-decision-options.md) | Human-start options (neutral) |
+| [`v3-l02-human-start-decision-freeze.md`](./v3-l02-human-start-decision-freeze.md) | **PO-L02-05A…05D DECIDED** |
 | S04 close / LiveAdmission L02 contract | Admission ≠ execute; `l02MustRevalidateBeforeVenueIo: true` |
 
 ### Frozen PO decisions Architecture MUST NOT alter
@@ -63,6 +75,7 @@ Until these are resolved (including required PO escalation for human-start consu
 - Cancel / idempotency invariants
 - C7 final gate; no bypass; authorization cell composition
 - Human-start grain WORKSPACE + ACTOR + SESSION + ACTION/COMMAND
+- Human-start durability durable shared (PO-L02-05A); consume/claim immediately before irreversible venue I/O (PO-L02-05B); at-most-one claim (PO-L02-05C); mandatory S04 revalidation (PO-L02-05D)
 - KS / policy disable / session end: block **new** only; no auto cancel-all; venue authoritative; reconcile UNKNOWN
 
 ### Current authorization state
@@ -70,7 +83,9 @@ Until these are resolved (including required PO escalation for human-start consu
 | Item | Status |
 | ---- | ------ |
 | Block A / Block B | **PO DECIDED** |
-| This Architecture Review | **BLOCKED** (verdict above) |
+| PO-L02-05A…05D | **PO DECIDED** |
+| AD-L02-04 | **APPROVED WITH CONDITIONS** (this re-review) |
+| Package Architecture Review | **BLOCKED** (remaining ADs) |
 | Security Review | **NOT PERFORMED** / **NOT PASS** |
 | S01–S06 | **NOT GRANTED** |
 | V3-L02 IMPLEMENTATION | **NOT AUTHORIZED** |
@@ -191,84 +206,178 @@ Dual path + cancel-all prototype is a high-risk confusion hazard → Security Re
 
 ---
 
-## 5. AD-L02-04 — Human-Start
+## 5. AD-L02-04 — Human-Start (Re-Review after PO-L02-05A…05D)
 
-### PO-frozen grain
+### Prior status
 
-**WORKSPACE + ACTOR + SESSION + ACTION/COMMAND**
+**BLOCKED / REQUIRES PO DECISION** (original Architecture Review).
 
-Must be: explicit, human-initiated, actor/workspace/session/action-bound, fresh, single-use, replay-resistant, non-transferable, non-permanent.
+### PO decisions now frozen (must not be altered)
 
-### Current mechanism (repository)
+| ID | Decision |
+| -- | -------- |
+| **PO-L02-05A** | Durable shared persistence; in-memory Map is **not** final |
+| **PO-L02-05B** | Validate → authz/admission → S04 revalidation → **atomic claim** → irreversible venue I/O |
+| **PO-L02-05C** | At most one valid claim authorizes one logical live action; claim ≠ venue submission/accept/fill; UNKNOWN + reconcile-before-retry; no blind retry |
+| **PO-L02-05D** | Mandatory S04 revalidation immediately before I/O; human-start does not replace S04/C7/policy/KS/session/creds/venue readiness |
+| Grain (Block B) | WORKSPACE + ACTOR + SESSION + ACTION/COMMAND |
+
+### Current repository (unchanged by this review)
 
 | Property | Current |
 | -------- | ------- |
-| Binding | actor + workspace + session **only** — **missing ACTION/COMMAND** |
-| TTL | 15 minutes |
-| Single-use | Yes — `consumeIfActive` on evaluate |
-| Storage | **In-memory Map** |
-| JWT alone | Rejected (correct) |
+| Binding | actor + workspace + session only — ACTION/COMMAND still missing in code |
+| TTL | 15 minutes (`HUMAN_START_PROOF_TTL_MS`) |
+| Consume timing | **On evaluate** via `verifyAndConsumeHumanStartProof` |
+| Storage | `InMemoryHumanStartProofStore` (Nest binding) |
+| Port | `HumanStartProofStore`: `save` / `findByTokenHash` / `consumeIfActive` |
 
-### Failure-mode analysis
+In-memory Map remains **interim S04 substrate only** — **not** the final L02 architecture (PO-L02-05A).
 
-| Scenario | Current guarantee? | Notes |
-| -------- | ------------------ | ----- |
-| 1. Multi-instance | **No** | Proof invisible across instances |
-| 2. Process restart | **No** | Store lost |
-| 3. Worker retry | **Unsafe** | Re-evaluate may see missing/replayed after consume |
-| 4. Concurrent consumers | **Weak** | In-memory consume not distributed-atomic |
-| 5. Race | **Weak** | No durable compare-and-swap across nodes |
-| 6. Atomic consume | Local only | Not cluster-safe |
-| 7. Stale proof | TTL enforced locally | OK if store present |
-| 8. Replay | Local consume | OK if store present |
-| 9. Crash after evaluation | **Critical** | Proof consumed; I/O may not have occurred |
-| 10. Crash before venue I/O | **Critical** | Same — proof burned; revalidate fails or invites unsafe redesign |
-| 11. Crash after venue I/O | Outcome may be UNKNOWN (see AD-L02-11); proof already consumed |
-| 12. Horizontal scaling | **No** | In-memory |
+### Architecture selection — durable persistence mechanism
 
-### Contradiction (Architecture Blocker)
+**Selected mechanism:** Prisma-backed PostgreSQL table in the existing API database, following the same durability pattern as `WorkspaceLivePolicyState` and `WorkspaceKillSwitchState` (`apps/api/prisma/schema.prisma`).
 
-PO-L02-04 cell item 10 requires **immediate S04 admission revalidation immediately before irreversible venue I/O**.
+**Rationale (repository-backed):**
 
-S04 currently **consumes** human-start on `evaluate`.
+- Shared across API instances (multi-instance).
+- Survives process restart.
+- Supports atomic conditional updates (`UPDATE … WHERE consumed_at IS NULL AND expires_at > now()`).
+- Fits existing Nest persistence style (`KillSwitchPersistenceService`, workspace live-policy persistence).
+- Implements the existing `HumanStartProofStore` port (or a narrow extension) without inventing a parallel proof subsystem.
 
-Therefore:
+**Not selected as L02 human-start SoT:** Redis-only ephemeral caches; process-local Maps; `live-trading-engine` state; session runtime leases alone (session lease ≠ human-start).
 
-- If L02 evaluates (and consumes) early, I/O-time revalidation cannot present a valid unused proof.
-- If L02 skips consume until I/O, that **changes** the S04 consume-on-evaluate mechanism.
-- Block B freeze states PO is **not** authorizing an implementation change to the current in-memory mechanism; durability is Arch/Sec — but **consumption timing** relative to I/O revalidation is unresolved and safety-critical.
+**Not implemented in this act** — schema/migration deferred to a future authorized slice.
 
-Additionally, frozen grain requires **ACTION/COMMAND** binding which the current record does not store or verify.
+### Required schema / state (design — not migrated)
 
-### Required architectural properties (not implemented)
+Logical record fields:
 
-1. ACTION/COMMAND binding on issue + verify.
-2. Durable, workspace-isolated store with atomic consume suitable for multi-instance.
-3. Explicit freshness model that preserves single-use **and** I/O-time revalidation (requires PO authorization to refine S04 consume timing — see escalation).
-4. Defined behavior for crash between last successful revalidation and venue response (ties to AD-L02-11).
+| Field | Purpose |
+| ----- | ------- |
+| `id` (proof id) | Stable identity |
+| `token_hash` | SHA-256 of presented token; unique lookup |
+| `workspace_id` | Binding |
+| `actor_id` | Binding |
+| `session_id` | Binding |
+| `action_command` | Binding (PO grain ACTION/COMMAND) — opaque stable string for the logical live action |
+| `created_at` | Issue time |
+| `expires_at` | TTL / freshness |
+| `claimed_at` / `consumed_at` | Null until atomic claim; set once |
+| `claimed_logical_action_id` (optional but recommended) | Correlation to the logical live action authorized by the claim |
+| `schema_version` | Evolution |
+
+Indexes: unique `token_hash`; index `(workspace_id, actor_id, session_id, action_command)` for ops/debug (uniqueness of **claim** is on proof id / token, not “one proof per action forever” unless product later freezes issue policy).
+
+Token plaintext: never persisted (current pattern retained).
+
+### Atomic claim / consume semantics
+
+```text
+CRITICAL SECTION (single instance of success across the cluster):
+  1. Validate proof presentation (hash lookup, not expired, binding match including ACTION/COMMAND, not already claimed)
+  2. Run full S04 revalidation (V2 / KS / policy / authz / session / Gate / human-start freshness+binding) — fail-closed
+  3. Atomically claim:
+       UPDATE human_start_proofs
+       SET claimed_at = $now, claimed_logical_action_id = $action
+       WHERE id = $id
+         AND claimed_at IS NULL
+         AND expires_at > $now
+       — success rowcount MUST be 1
+  4. Only after claim success: initiate irreversible venue I/O
+```
+
+Admission / early evaluation paths may **validate without claiming** (verify-only). They MUST NOT burn the single-use claim.
+
+**Race-safety:** conditional update (or equivalent serializable transaction) is mandatory. Loser of concurrent claim → fail-closed (`replayed` / already claimed).
+
+### Ordering with S04 (PO-L02-05B / 05D)
+
+```text
+human-start validation (verify-only as needed)
+  → all required authorization/admission checks
+  → mandatory S04 revalidation immediately before irreversible venue I/O
+  → atomic human-start claim
+  → irreversible venue I/O
+```
+
+Human-start does **not** replace S04, C7, policy, KS, session, credentials, or venue readiness.
+
+### Uniqueness / idempotency constraints
+
+| Layer | Guarantee |
+| ----- | --------- |
+| Human-start (PO-L02-05C) | **At most one** successful claim per proof; that claim authorizes **one** logical live action |
+| Venue submission | **Not** promised exactly-once by human-start alone |
+| After claim + ambiguous I/O | Outcome **UNKNOWN**; reconcile before retry; **no blind retry** |
+| Order/venue idempotency | Remains **AD-L02-09 / AD-L02-11** — required so a later authorized retry does not mint a duplicate venue order |
+
+### Multi-instance / restart / concurrency / worker retry
+
+| Concern | Treatment |
+| ------- | --------- |
+| Multi-instance | Shared Postgres row + atomic claim |
+| Process restart | Unclaimed proofs remain until TTL; claimed proofs remain claimed |
+| Concurrent requests | One claim wins; others fail-closed |
+| Worker retry before claim | May re-validate; claim still atomic |
+| Worker retry after claim | Must **not** treat claim as license to blind re-submit; follow order identity + UNKNOWN/reconcile (AD-L02-09/11) |
+| Same proof replay after claim | Fail-closed |
+
+### Crash windows (authorization vs venue)
+
+| Crash point | Proof state | Venue | Required behavior |
+| ----------- | ----------- | ----- | ----------------- |
+| Before claim | Unclaimed (if durable) | None | Re-issue or retry path may still claim if TTL/binding OK; S04 revalidate again |
+| After claim, before venue I/O | **Claimed** | None | Claim does **not** prove submission; do **not** interpret as success; new live attempt needs new human-start (or explicit PO-approved recovery — none authorized here); fail-closed for that proof |
+| During venue I/O | Claimed | Ambiguous | **UNKNOWN**; reconcile-before-retry; no blind retry |
+| After venue I/O, before local persistence | Claimed | Possibly accepted | **UNKNOWN** until durable local+venue reconcile; claim ≠ accept/fill |
+
+**Do not weaken UNKNOWN** to “recover” a burned claim.
+
+### Claim vs UNKNOWN relationship
+
+- Successful claim ⇒ authorization for **one** attempt to start irreversible I/O for the bound logical action.
+- Successful claim ⇒ **not** SUBMITTED / ACCEPTED / FILLED.
+- Lost/ambiguous venue response ⇒ **UNKNOWN** (AD-L02-07 encoding still required on order/execution path).
+- Retry after UNKNOWN ⇒ reconciliation first; new human-start required if prior proof already claimed (typical); never blind retry.
+
+### Satisfaction of AD-L02-04
+
+| Requirement | Satisfied by architecture? |
+| ----------- | -------------------------- |
+| PO grain including ACTION/COMMAND | Yes — schema + verify must include `action_command` |
+| Durable multi-instance / restart | Yes — Prisma/Postgres shared store |
+| Single-use / replay-resistant | Yes — atomic claim |
+| Freshness / TTL | Yes — retain TTL; re-check at claim |
+| I/O-time S04 revalidation | Yes — ordered before claim |
+| Consume-at-I/O timing | Yes — PO-L02-05B |
+| At-most-one claim | Yes — PO-L02-05C |
+| Claim ≠ venue outcome | Yes — explicit invariant |
+| No blind retry / UNKNOWN preserved | Yes — deferred to AD-L02-07/09/11 for encoding/execution markers |
 
 ### Status
 
-**BLOCKED** / **REQUIRES PO DECISION**
+**APPROVED WITH CONDITIONS**
 
-### PO escalation (required)
+### Conditions (binding for any future implementation authorization)
 
-```text
-ARCHITECTURE BLOCKER → PO ESCALATION REQUIRED
-```
+1. Implement durable Prisma store + Nest binding replacing in-memory for L02-capable deployments; keep fail-closed if store unavailable.
+2. Extend issue/verify with **ACTION/COMMAND** binding.
+3. Split verify-only vs atomic claim; **do not** claim on early admission evaluate.
+4. Place claim immediately after successful S04 revalidation and immediately before irreversible venue I/O on the **canonical** ExecutionEngine path only.
+5. Never treat claim as venue submission/accept/fill.
+6. Coordinate with AD-L02-09/11 so post-claim ambiguity uses UNKNOWN + reconcile, not blind retry.
+7. Security Review (SD-L02-04 and related) remains mandatory before implementation PASS claims.
+8. **No implementation is authorized by this Architecture re-review.**
 
-**Escalation question:** Authorize an L02 human-start freshness/consumption model that:
+### PO impact
 
-- preserves PO-L02-05 grain (including ACTION/COMMAND),
-- preserves freshness/TTL + single-use + replay resistance,
-- enables mandatory revalidation immediately before irreversible venue I/O,
-- and permits Architecture to specify durable storage + consume-at-I/O (or equivalent two-phase model),
+None — realizes PO-L02-05A…05D as decided. Does not alter grain or UNKNOWN business rules.
 
-**without** treating early consume-on-evaluate as permanently immutable if it prevents safe I/O revalidation.
+### Security impact
 
-Architecture will **not** silently change PO-L02-05 or drop I/O revalidation.
-
----
+High sensitivity (replay, cross-binding, races). Hand off to Security Review — **NOT PASS**.
 
 ## 6. AD-L02-07 — UNKNOWN
 
@@ -564,8 +673,8 @@ Statuses: **PASS** / **PASS WITH REQUIRED CLARIFICATION** / **BLOCKED**
 | AC | Title (short) | Status | Notes |
 | -- | ------------- | ------ | ----- |
 | AC-01 | Canonical engine/adapter only; no parallel SoT | **PASS WITH REQUIRED CLARIFICATION** | Direction approved; engine NON-SoT freeze required; parallel module still mounted |
-| AC-02 | Revalidate before irreversible I/O | **BLOCKED** | Tied to AD-L02-04 consume contradiction |
-| AC-03 | Human-start per approved model | **BLOCKED** | Grain + durability + consume model unresolved |
+| AC-02 | Revalidate before irreversible I/O | **PASS WITH REQUIRED CLARIFICATION** | Ordering approved (PO-05B/05D + AD-L02-04); live I/O path not implemented |
+| AC-03 | Human-start per approved model | **PASS WITH REQUIRED CLARIFICATION** | Model APPROVED WITH CONDITIONS; not implemented; Security pending |
 | AC-04 | Authorization evaluated; cross-workspace reject | **PASS WITH REQUIRED CLARIFICATION** | S04 evaluates; live I/O path absent |
 | AC-05 | Workspace isolation orders/credentials | **PASS WITH REQUIRED CLARIFICATION** | Pattern exists; live adapters absent — Security verifies |
 | AC-06 | KS ACTIVE blocks new live submit | **PASS WITH REQUIRED CLARIFICATION** | Admission blocks; live submit path absent; EmergencyManager hazard |
@@ -596,8 +705,8 @@ Statuses: **PASS** / **PASS WITH REQUIRED CLARIFICATION** / **BLOCKED**
 | Status | Count |
 | ------ | ----- |
 | PASS | 6 |
-| PASS WITH REQUIRED CLARIFICATION | 7 |
-| BLOCKED | 14 |
+| PASS WITH REQUIRED CLARIFICATION | 9 |
+| BLOCKED | 12 |
 
 ---
 
@@ -606,7 +715,7 @@ Statuses: **PASS** / **PASS WITH REQUIRED CLARIFICATION** / **BLOCKED**
 | Decision ID | Finding | Evidence | Status | Required Action | PO impact | Security impact |
 | ----------- | ------- | -------- | ------ | --------------- | --------- | --------------- |
 | **AD-L02-01** | Canonical path required; parallel engine NON-SoT | AppModule mounts both; coordinator bypasses engine; EmergencyManager cancel-all | **APPROVED WITH CONDITIONS** | Freeze NON-SoT; never wire L02 through parallel stack | None | Dual-path hazard |
-| **AD-L02-04** | Grain mismatch; in-memory; consume vs I/O revalidate contradiction | `human-start-proof.ts`; L02 contract revalidate flag | **BLOCKED** / **REQUIRES PO DECISION** | PO escalate freshness/consume model; then durable ACTION/COMMAND-bound store | **Escalation required** | Replay/staleness (SD-L02-04) |
+| **AD-L02-04** | Durable shared store; claim after S04 revalidation immediately before I/O; at-most-one claim | PO-L02-05A…05D freeze; Prisma pattern like KS/policy | **APPROVED WITH CONDITIONS** | Implement later under slice auth; Security review; wire verify≠claim on canonical path | PO freeze closed | SD-L02-04 still required |
 | **AD-L02-07** | No OrderStatus UNKNOWN | `order-status.ts` | **BLOCKED** | Design+encode UNKNOWN without changing PO semantics | None if encoding faithful | False success/reject (SD-L02-06) |
 | **AD-L02-09** | Live idempotency not established on canonical path | Paper keys only; stubs throw | **BLOCKED** | Durable identity + venue client-order-id contract | None | Duplicate financial actions (SD-L02-05) |
 | **AD-L02-11** | Crash-window not guaranteed | No live submitted-unconfirmed persistence | **BLOCKED** | Persist-before/around send; reconcile rules | None | Lost-response safety |
@@ -675,7 +784,7 @@ Security may identify additional PO blockers; must not silently alter PO busines
 
 | ID | Blocker | Affected PO | Authority |
 | -- | ------- | ----------- | --------- |
-| AB-01 | Human-start consume-on-evaluate vs mandatory I/O revalidation; missing ACTION/COMMAND; in-memory multi-instance failure | PO-L02-04 item 10; PO-L02-05 | **PO ESCALATION** + Arch/Sec |
+| AB-01 | Human-start durability/consumption (prior) | PO-L02-05A…05D | **CLOSED** — AD-L02-04 APPROVED WITH CONDITIONS; implementation + Security still pending |
 | AB-02 | No first-class UNKNOWN on canonical orders | PO-L02-14; cancel/idempotency invariants | Architecture encoding (then implement under later auth) |
 | AB-03 | No live canonical idempotency/crash-window persistence | PO-L02-13 | Architecture |
 | AB-04 | Parallel live-trading-engine mounted with EmergencyManager cancel-all | PO-L02-08 (if mis-wired) | Architecture freeze NON-SoT (done here as condition) |
@@ -686,12 +795,12 @@ Security may identify additional PO blockers; must not silently alter PO busines
 
 ## 23. Required Follow-Up
 
-1. **PO escalation** on human-start freshness/consumption model (AB-01) — blocking.
-2. After PO response: Architecture addendum selecting durable human-start design + ACTION/COMMAND binding.
-3. Architecture addendum: UNKNOWN encoding + cancel mapping + crash-window persistence (AD-L02-07/09/11).
-4. **Security Review** of SD-L02-01…07 (separate act) — not started.
-5. Only then: Planning Approval / Slice Approval consideration — **not granted here**.
-6. Keep `live-trading-engine` / `EmergencyManager` NON-SoT for L02.
+1. ~~PO escalation on human-start~~ — **CLOSED** (PO-L02-05A…05D recorded; AD-L02-04 APPROVED WITH CONDITIONS).
+2. Architecture addendum / future authorized design notes: UNKNOWN encoding + cancel mapping + crash-window persistence (**AD-L02-07 / 09 / 11**) — still blocking package PASS.
+3. **Security Review** of SD-L02-01…07 (separate act) — not started; SD-L02-04 must cover durable claim races.
+4. Only after remaining Arch + Security gates: Planning Approval / Slice Approval consideration — **not granted here**.
+5. Keep `live-trading-engine` / `EmergencyManager` NON-SoT for L02.
+6. Do **not** implement durable human-start store until explicitly authorized.
 
 ---
 
@@ -716,10 +825,12 @@ This Architecture Review does NOT authorize:
   - L02 closure
   - Security PASS
 
-ARCHITECTURE VERDICT = BLOCKED
+PACKAGE ARCHITECTURE VERDICT = BLOCKED
+AD-L02-04 = APPROVED WITH CONDITIONS
 V3-L02 IMPLEMENTATION REMAINS NOT AUTHORIZED
 S01–S06 remain NOT GRANTED
 Live capital remains NOT ACTIVATED
+Security Review = NOT PASS
 ```
 
 ---
