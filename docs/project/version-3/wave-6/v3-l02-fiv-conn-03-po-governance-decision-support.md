@@ -12,9 +12,10 @@
 STATUS:
 D-CONN-03-01 FROZEN (PO APPROVED — OPTION A)
 D-CONN-03-02 FROZEN (PO APPROVED — OPTION A)
-D-CONN-03-03…05 OPEN — DECISION SUPPORT PENDING PO APPROVAL
+D-CONN-03-03 FROZEN (PO APPROVED — OPTION B)
+D-CONN-03-04…05 OPEN — DECISION SUPPORT PENDING PO APPROVAL
 
-Full decision-freeze artifact:  NOT CREATED (awaiting D-CONN-03-03…05)
+Full decision-freeze artifact:  NOT CREATED (awaiting D-CONN-03-04…05)
 Implementation:                 NOT PERFORMED
 Implementation authorization:   NOT GRANTED
 External I/O:                   ZERO
@@ -53,8 +54,10 @@ FROZEN — APPROVED OPTION A
 D-CONN-03-02:
 FROZEN — APPROVED OPTION A
 
+D-CONN-03-03:
+FROZEN — APPROVED OPTION B
+
 Still open:
-D-CONN-03-03
 D-CONN-03-04
 D-CONN-03-05
 ```
@@ -62,8 +65,8 @@ D-CONN-03-05
 ### Pre-check (this update)
 
 ```text
-HEAD:        e6c036f232b1d1b767e8bc34a3c81920774e386d
-origin/main: e6c036f232b1d1b767e8bc34a3c81920774e386d
+HEAD:        7e38f4f2c0a456b6f8bbb57f396f9c6c9cd456a9
+origin/main: 7e38f4f2c0a456b6f8bbb57f396f9c6c9cd456a9
 HEAD == origin/main: YES
 ```
 
@@ -90,8 +93,8 @@ RECOMMENDED FOR PO/GOVERNANCE CONSIDERATION
   ≠
 APPROVED / FROZEN / ACCEPTED
 
-D-CONN-03-01 and D-CONN-03-02 are FROZEN (explicit PO approvals).
-D-CONN-03-03…05 recommendations remain non-binding.
+D-CONN-03-01, D-CONN-03-02, and D-CONN-03-03 are FROZEN (explicit PO approvals).
+D-CONN-03-04…05 recommendations remain non-binding.
 ```
 
 ---
@@ -131,7 +134,7 @@ governed EXCHANGE validate → handshake → capability path.
 ```text
 This freezes the GOVERNANCE DECISION ONLY.
 It does NOT authorize implementation.
-It does NOT freeze D-CONN-03-03…05 by itself.
+It does NOT freeze D-CONN-03-04…05 by itself.
 It does NOT create the full FIV-CONN-03 decision-freeze artifact.
 ```
 
@@ -289,7 +292,7 @@ credential fallback, first-match selection, or provider-only resolution.
 ```text
 This freezes the GOVERNANCE POLICY ONLY.
 It does NOT authorize implementation.
-It does NOT freeze D-CONN-03-03…05.
+It does NOT freeze D-CONN-03-04…05.
 It does NOT create the full five-decision freeze artifact.
 ```
 
@@ -563,12 +566,59 @@ See section "D-CONN-03-02 — PO DECISION" above.
 
 ---
 
-## D-CONN-03-03 — DECISION SUPPORT
+## D-CONN-03-03 — PO DECISION
 
 ```text
-Status: OPEN — PO APPROVAL REQUIRED
-Depends on: D-CONN-03-01 FROZEN; D-CONN-03-02 FROZEN
-Does NOT freeze NULL-environment policy in this act.
+Status:                         FROZEN
+Decision:                       APPROVED — OPTION B
+Decision authority:             PO / Governance
+Implementation authorization:   NOT GRANTED
+```
+
+### Exact frozen decision
+
+```text
+For EXCHANGE Connections, validate/handshake/capability MUST FAIL CLOSED while
+Connection.environment IS NULL. Non-EXCHANGE NULL behavior may continue where
+already supported by the domain. NULL MUST NEVER equal LIVE. A NULL EXCHANGE
+Connection MUST NOT perform omit-purpose Trading retrieval. No backfill or
+environment mutation is performed by FIV-CONN-03.
+```
+
+### Required properties (frozen)
+
+1. EXCHANGE + NULL environment: **FAIL CLOSED** for trading credential validation/handshake/capability.
+2. Non-EXCHANGE + NULL: may continue according to existing domain behavior.
+3. NULL is not LIVE.
+4. NULL cannot authorize Trading.
+5. NULL cannot authorize TradingLive.
+6. NULL cannot authorize TradingTestnet.
+7. No omit-purpose Trading retrieval for NULL EXCHANGE.
+8. No provider-only lookup.
+9. No sibling-secret substitution.
+10. No cross-environment fallback.
+11. No client-controlled purpose.
+12. No backfill in FIV-CONN-03.
+13. No schema/migration changes as part of this decision.
+14. Future FIV-CONN-04 backfill remains separately governed.
+
+```text
+This freezes the POLICY ONLY.
+It does NOT authorize implementation.
+It does NOT freeze D-CONN-03-04…05.
+It does NOT create the full five-decision freeze artifact.
+```
+
+### Prior decision support (retained for audit)
+
+The Option A/B analysis for NULL-environment behavior remains below for history. **PO selected OPTION B.**
+
+---
+
+## D-CONN-03-03 — DECISION SUPPORT (historical)
+
+```text
+Status: SUPERSEDED BY PO DECISION ABOVE — was OPEN; now FROZEN OPTION B
 ```
 
 ### Question
@@ -785,82 +835,264 @@ REJECTED:
 ```
 
 ```text
-PO/GOVERNANCE APPROVAL REQUIRED: YES
-Status: OPEN — NOT FROZEN
+PO/GOVERNANCE APPROVAL: GRANTED (this session)
+Status: FROZEN — APPROVED OPTION B
+See section "D-CONN-03-03 — PO DECISION" above.
 ```
 
 ---
 
-## Decision D-CONN-03-04 — Model C mismatch enforcement timing
+## D-CONN-03-04 — DECISION SUPPORT
+
+```text
+Status: OPEN — PO APPROVAL REQUIRED
+Depends on: D-CONN-03-01…03 FROZEN
+Does NOT freeze Model C mismatch timing in this act.
+```
 
 ### Question
 
-At which trust boundaries must `Connection.environment` be compared to Vault SecretPurpose (via `tradingEnvironmentFromPurpose`) so that incorrect-purpose secrets cannot be used for handshake/capability?
-
-### Current repository evidence / flow
+At what exact points must the system enforce:
 
 ```text
-credential lookup (Vault get by workspace+type[+purpose])
-  → credential retrieval (Vault retrieve plaintext in-memory)
-  → credential use (adapter handshake / capability verify)
+Connection.environment
+        ↕
+Vault SecretPurpose
 ```
 
-Today: EXCHANGE validate jumps from Connection row → handshake omit-purpose get/retrieve → adapter use. **No Model C mismatch assert** in Connections module.
+so that Model C remains fail closed and an incorrect-purpose credential cannot reach validate use / handshake / capability?
+
+### Repository evidence (current path)
+
+```text
+ConnectionsService.validate
+  → getRow (environment + vaultSecretId available)
+  → EXCHANGE: completeExchangeHandshake
+       → handshake.perform({ workspaceId, provider, vaultSecretId })  // env/purpose LOST
+            → vault.get({ workspaceId, type })   // omit purpose → Trading
+            → check metadata.id === vaultSecretId
+            → vault.retrieve({ workspaceId, type })  // omit purpose
+            → adapter.handshake(credentials)         // USE
+       → on CONNECTED: capabilities.verify({ … vaultSecretId })
+            → same omit-purpose get/retrieve → USE
+```
+
+| #   | Finding                                                                       | Evidence                                        |
+| --- | ----------------------------------------------------------------------------- | ----------------------------------------------- |
+| 1   | `environment` + `vaultSecretId` available on Connection row at validate start | `validate()` / `getRow`                         |
+| 2   | Purpose resolved only for store/replace/revoke/local validate today           | `vaultPurposeForConnection`                     |
+| 3   | EXCHANGE handshake/capability omit purpose                                    | handshake/capability services                   |
+| 4   | No Model C `tradingEnvironmentFromPurpose` check in Connections module        | grep: absent                                    |
+| 5   | Id check exists after get, before retrieve                                    | `metadata.id !== vaultSecretId` → fail          |
+| 6   | Handshake can run without environment/purpose mismatch check                  | current flow                                    |
+| 7   | Capability can run after handshake without separate Model C gate              | current flow                                    |
+| 8   | NULL EXCHANGE still reaches handshake today                                   | until D-CONN-03-03 implemented                  |
+| 9   | No sibling-secret search at use time today                                    | id check only; omit-purpose is different hazard |
+| 10  | Store writes exact purpose for populated env                                  | CONN-02                                         |
 
 ### Distinctions (mandatory)
 
-| Stage      | Meaning                                          |
-| ---------- | ------------------------------------------------ |
-| Lookup     | Resolve Vault metadata for expected purpose / id |
-| Retrieval  | Decrypt/return fields in memory                  |
-| Use        | Sign/call adapter                                |
-| Handshake  | Connectivity proof                               |
-| Capability | Post-handshake capability verify                 |
+| Stage                    | Meaning                                                                 |
+| ------------------------ | ----------------------------------------------------------------------- |
+| A. Credential lookup     | Find Connection + `vaultSecretId` reference                             |
+| B. Credential retrieval  | Vault get/retrieve of the referenced secret + purpose metadata          |
+| C. Credential validation | Model C: env class ↔ actual SecretPurpose; id/workspace/provider checks |
+| D. Credential use        | Permit credentials into handshake/capability adapters                   |
+| E. Handshake             | Provider connectivity proof                                             |
+| F. Capability            | Post-handshake capability verify                                        |
 
-**Requirement:** Incorrect-purpose secret must not reach **use**.
+**Hard requirement:** Invalid environment/purpose relationship must not reach **D/E/F**.
 
-### Options
+### Option A — Enforce Model C before credential use (actual purpose verified before handshake/capability)
 
-#### OPTION A — Enforce at store + replace + before retrieve on validate/handshake/capability
+```text
+Connection context
+  → D-CONN-03-03: if EXCHANGE && env NULL → FAIL CLOSED (no retrieve)
+  → D-CONN-03-01/02: resolve purpose via vaultSecretId within env allowlist
+  → vault.get(purpose-bound) + id match
+  → verify tradingEnvironmentFromPurpose(actualPurpose) === connection.environment
+  → only then vault.retrieve + handshake/capability
+```
 
-Minimum points:
+Also strongly preferred at **store/replace** bind time (write purpose must match Connection env class) so bad binds fail early.
 
-1. **Before bind (store/replace):** expected purpose class from Connection.environment must match purpose being written / replaced.
-2. **Before Vault retrieve on validate path:** derive expected purpose policy; perform purpose-bound get; require `metadata.id === vaultSecretId`; assert `tradingEnvironmentFromPurpose(resolvedPurpose) === connection.environment` (for populated env).
-3. **Handshake and capability** inherit the same pre-retrieve gate (no separate weaker path).
+| Dimension                 | Assessment                                                          |
+| ------------------------- | ------------------------------------------------------------------- |
+| Security                  | Blocks use of mismatched purpose; actual purpose checked before use |
+| Duplication               | Low if shared helper; store gate optional-but-preferred             |
+| Consistency with 01/02/03 | Direct                                                              |
+| Complexity                | Moderate                                                            |
+| Risk                      | Low if actual-purpose check is mandatory (not expected-only)        |
 
-| Dimension      | Assessment                                    |
-| -------------- | --------------------------------------------- |
-| Security value | Prevents wrong-class bind and wrong-class use |
-| Duplication    | Acceptable; defense in depth at bind + use    |
-| Failure        | Fail closed before plaintext use              |
-| Scope          | CONN-03                                       |
-| Testability    | Unit asserts at each gate                     |
+### Option B — Enforce at every governed boundary
 
-#### OPTION B — Validate-path only (leave store/replace without mismatch assert)
+```text
+1. Before retrieval where expected purpose class is known (gate NULL; select allowlist)
+2. Immediately after Vault get using actual SecretPurpose metadata
+3. Before handshake/use
+4. Before capability/use
+```
 
-Leaves a window where wrong-class material could be bound (if ever possible) and only fails later.
+Must reuse one shared Model C assert to avoid divergent policy. Should **not** re-retrieve secrets at each step.
 
-#### OPTION C — Store only
+| Dimension             | Assessment                                  |
+| --------------------- | ------------------------------------------- |
+| Security              | Defense in depth                            |
+| Duplication           | Higher call-site count; OK if single helper |
+| Risk of inconsistency | Medium if copy-pasted checks differ         |
+| Complexity            | Higher than A                               |
 
-Leaves handshake/capability omit-purpose hazard unfixed — **insufficient** alone.
+### Option C — Other
+
+```text
+No additional architecture required.
+
+REJECTED:
+  - Expected-purpose-only checks without verifying actual Vault purpose
+  - Store-only enforcement (leaves validate path open)
+  - Post-handshake-only checks (too late — credential already used)
+  - Sibling-secret search to “find a matching purpose”
+```
+
+### Pre-retrieval analysis
+
+`Connection.environment` yields an **expected purpose class** (LIVE allowlist vs TESTNET singleton) under D-CONN-03-02. Pre-retrieval gates should:
+
+- FAIL CLOSED if EXCHANGE env NULL (D-CONN-03-03)
+- FAIL CLOSED if `vaultSecretId` missing
+- Select the Vault slot by **id-matched** purpose within allowlist (not ambient)
+
+**Expected purpose alone is not sufficient** to prove the bound secret is correct.
+
+### Post-retrieval analysis
+
+After `vault.get` returns metadata for the id-matched slot:
+
+```text
+actualPurpose = metadata.purpose
+assert tradingEnvironmentFromPurpose(actualPurpose) === connection.environment
+assert metadata.id === connection.vaultSecretId
+assert workspace/type/provider consistent
+```
+
+Only then retrieve plaintext and allow use. This is the strongest Model C control because it uses the **actual** Vault SecretPurpose.
+
+### Handshake safety
+
+Required conceptual sequence:
+
+```text
+Connection context
+→ derive expected environment/purpose class
+→ resolve exact vaultSecretId within allowlist
+→ retrieve actual secret metadata
+→ verify Model C (actual purpose)
+→ only then permit handshake
+```
+
+No handshake with mismatched credential.
+
+### Capability safety
+
+Capability MUST use the same purpose-bound, Model-C-verified credential context as handshake. It must not:
+
+- omit purpose
+- re-resolve by provider only
+- substitute a sibling LIVE secret
+- bypass NULL EXCHANGE fail-closed
+
+### Error / fail-closed semantics
+
+| Condition                          | Required behavior                                                            |
+| ---------------------------------- | ---------------------------------------------------------------------------- |
+| Missing environment (EXCHANGE)     | FAIL CLOSED (D-CONN-03-03) — no retrieve                                     |
+| Missing vaultSecretId              | Existing Conflict — credentials not stored                                   |
+| Missing Vault secret / id mismatch | FAIL CLOSED / VALIDATION_FAILED                                              |
+| Wrong workspace                    | DENY (ACL + workspaceId)                                                     |
+| Wrong provider / type              | DENY                                                                         |
+| Wrong purpose / env class mismatch | FAIL CLOSED before use                                                       |
+| Stale/revoked credential           | Existing status/revoke semantics — fail closed for validate when not allowed |
+| Malformed / unexpected purpose     | FAIL CLOSED                                                                  |
+| Handshake attempted after mismatch | Must be unreachable if gates hold                                            |
+
+Reuse existing Conflict / VALIDATION_FAILED patterns; do not invent new public error taxonomy unless Architecture Review requires it.
+
+### Security matrix
+
+| Environment                 | Actual Vault Purpose | Expected                             |
+| --------------------------- | -------------------- | ------------------------------------ |
+| LIVE                        | Trading              | governed LIVE policy (D-CONN-03-02)  |
+| LIVE                        | TradingLive          | governed LIVE policy (D-CONN-03-02)  |
+| LIVE                        | TradingTestnet       | **DENY**                             |
+| TESTNET                     | Trading              | **DENY**                             |
+| TESTNET                     | TradingLive          | **DENY**                             |
+| TESTNET                     | TradingTestnet       | **ALLOW**                            |
+| NULL                        | Trading              | **DENY for EXCHANGE** (D-CONN-03-03) |
+| NULL                        | TradingLive          | **DENY for EXCHANGE** (D-CONN-03-03) |
+| NULL                        | TradingTestnet       | **DENY**                             |
+| wrong workspace             | any                  | **DENY**                             |
+| wrong provider              | any                  | **DENY**                             |
+| wrong vaultSecretId         | any                  | **DENY**                             |
+| provider-only lookup        | n/a                  | **FORBIDDEN / DENY**                 |
+| sibling-secret substitution | n/a                  | **FORBIDDEN / DENY**                 |
+
+### Future test matrix
+
+1. Expected purpose derivation
+2. Actual SecretPurpose verification
+3. LIVE + Trading
+4. LIVE + TradingLive
+5. LIVE + TradingTestnet → DENY
+6. TESTNET + Trading → DENY
+7. TESTNET + TradingLive → DENY
+8. TESTNET + TradingTestnet → ALLOW
+9. NULL + Trading → EXCHANGE DENY
+10. NULL + TradingLive → EXCHANGE DENY
+11. NULL + TradingTestnet → DENY
+12. Wrong workspace
+13. Wrong provider
+14. Wrong vaultSecretId
+15. Provider-only lookup rejection
+16. Sibling-secret substitution rejection
+17. Handshake blocked on mismatch
+18. Capability blocked on mismatch
+19. No secret leakage
+20. Deterministic vaultSecretId binding
+21. Regression D-CONN-03-01
+22. Regression D-CONN-03-02
+23. Regression D-CONN-03-03
+
+No external venue calls.
+
+### Cross-decision dependencies
+
+```text
+D-CONN-03-01: FROZEN — APPROVED OPTION A
+D-CONN-03-02: FROZEN — APPROVED OPTION A
+D-CONN-03-03: FROZEN — APPROVED OPTION B
+D-CONN-03-04: OPEN
+D-CONN-03-05: OPEN
+Full five-decision freeze: NOT CREATED
+```
 
 ### Recommended for PO/Governance consideration
 
 ```text
 RECOMMENDED FOR PO/GOVERNANCE CONSIDERATION:
-OPTION A
+OPTION A as the minimum mandatory use-path gate:
+  actual Vault SecretPurpose verified against Connection.environment
+  BEFORE handshake/capability credential use
+  (plus D-CONN-03-03 NULL gate before any EXCHANGE retrieve)
 
-Minimum non-negotiable subset even if PO narrows:
-  mismatch / purpose-bound checks MUST run before credential use
-  on handshake and capability (and Connections validate orchestration).
+WITH PREFERRED ADDITIONS (may be folded into Option A freeze text):
+  - store/replace bind-time Model C gate
+  - shared helper reused at capability (Option B-style depth without duplicate retrieval)
 
-Store+replace gates strongly preferred to prevent bad binds.
+REJECTED:
+  expected-purpose-only without actual-purpose verification
+  store-only / post-handshake-only enforcement
+  sibling-secret search
 ```
-
-Architecture Review may specify exact helper placement; PO freezes **which stages are mandatory**.
-
-### PO/Governance approval required
 
 ```text
 PO/GOVERNANCE APPROVAL REQUIRED: YES
@@ -921,45 +1153,45 @@ Status: OPEN — NOT FROZEN
 
 ## Cross-Decision Consistency
 
-With **D-CONN-03-01=A** and **D-CONN-03-02=A** frozen, if PO later freezes **03=B (or EXCHANGE-scoped A), 04=A, 05=A**, the composition guarantees:
+With **D-CONN-03-01=A**, **D-CONN-03-02=A**, and **D-CONN-03-03=B** frozen, if PO later freezes **04** (recommended use-path actual-purpose gate) and **05=A**, the composition guarantees:
 
-| Guarantee                                                    | How                    |
-| ------------------------------------------------------------ | ---------------------- |
-| LIVE Connection → LIVE purpose only (id-bound)               | 01+02+04               |
-| TESTNET Connection → TESTNET purpose only                    | 01+02+04               |
-| NULL environment → never implicitly LIVE                     | 03                     |
-| NULL EXCHANGE → no trading credential use until env assigned | 03                     |
-| Mismatch → FAIL CLOSED                                       | 04 before use (+ bind) |
-| Client cannot select Vault purpose                           | 05                     |
-| Provider-only / sibling-secret fallback forbidden            | 01+02                  |
-| Cross-workspace fallback forbidden                           | ACL + workspaceId      |
+| Guarantee                                           | How      |
+| --------------------------------------------------- | -------- |
+| LIVE → LIVE purpose only (id-bound)                 | 01+02+04 |
+| TESTNET → TESTNET purpose only                      | 01+02+04 |
+| NULL EXCHANGE → no trading credential use           | 03       |
+| NULL ≠ LIVE                                         | 03       |
+| Actual purpose verified before handshake/capability | 04       |
+| Client cannot select Vault purpose                  | 05       |
+| Provider-only / sibling-secret fallback forbidden   | 01+02+04 |
 
 **Inconsistency warnings for PO:**
 
-1. Approving omit-purpose Trading retrieve for NULL EXCHANGE **conflicts** with frozen D-CONN-03-01.
-2. Choosing **04=C (store only)** still contradicts residual CONN-03 validate-path purpose.
-3. Implementing 01+02 without freezing 03 leaves NULL EXCHANGE validate as omit-purpose Trading hazard.
+1. Expected-purpose-only 04 without actual-purpose verification weakens Model C.
+2. Post-handshake-only 04 allows mismatched credential use.
+3. Implementing 01–03 without freezing 04 leaves handshake able to omit purpose until gates land.
 
 ---
 
 ## Security Matrix
 
-| Connection environment               | Vault purpose  | Expected result                                          |
-| ------------------------------------ | -------------- | -------------------------------------------------------- |
-| LIVE                                 | Trading        | governed by **D-CONN-03-02** (FROZEN — id-matched ALLOW) |
-| LIVE                                 | TradingLive    | governed by **D-CONN-03-02** (FROZEN — id-matched ALLOW) |
-| LIVE                                 | TradingTestnet | **DENY**                                                 |
-| TESTNET                              | Trading        | **DENY**                                                 |
-| TESTNET                              | TradingLive    | **DENY**                                                 |
-| TESTNET                              | TradingTestnet | **ALLOW**                                                |
-| NULL                                 | Trading        | **OPEN — D-CONN-03-03**                                  |
-| NULL                                 | TradingLive    | **OPEN — D-CONN-03-03**                                  |
-| NULL                                 | TradingTestnet | **DENY**                                                 |
-| wrong workspace                      | any            | **DENY**                                                 |
-| wrong provider / wrong vaultSecretId | any            | **DENY**                                                 |
-| provider-only lookup (populated env) | n/a            | **FORBIDDEN / DENY**                                     |
-| sibling-secret substitution          | n/a            | **FORBIDDEN / DENY** (D-CONN-03-02)                      |
-| client-supplied purpose              | n/a            | **FORBIDDEN / DENY**                                     |
+| Connection environment                | Vault purpose  | Expected result                                       |
+| ------------------------------------- | -------------- | ----------------------------------------------------- |
+| LIVE                                  | Trading        | governed by **D-CONN-03-02** (FROZEN)                 |
+| LIVE                                  | TradingLive    | governed by **D-CONN-03-02** (FROZEN)                 |
+| LIVE                                  | TradingTestnet | **DENY**                                              |
+| TESTNET                               | Trading        | **DENY**                                              |
+| TESTNET                               | TradingLive    | **DENY**                                              |
+| TESTNET                               | TradingTestnet | **ALLOW**                                             |
+| NULL                                  | Trading        | **DENY for EXCHANGE** (**D-CONN-03-03** FROZEN)       |
+| NULL                                  | TradingLive    | **DENY for EXCHANGE** (**D-CONN-03-03** FROZEN)       |
+| NULL                                  | TradingTestnet | **DENY**                                              |
+| wrong workspace                       | any            | **DENY**                                              |
+| wrong provider / wrong vaultSecretId  | any            | **DENY**                                              |
+| provider-only lookup                  | n/a            | **FORBIDDEN / DENY**                                  |
+| sibling-secret substitution           | n/a            | **FORBIDDEN / DENY**                                  |
+| client-supplied purpose               | n/a            | **FORBIDDEN / DENY**                                  |
+| mismatch reaches handshake/capability | n/a            | **OPEN — D-CONN-03-04** (must FAIL CLOSED before use) |
 
 ---
 
@@ -1056,18 +1288,18 @@ Protected leftovers:          UNTOUCHED
 ```text
 D-CONN-03-01: FROZEN — APPROVED OPTION A
 D-CONN-03-02: FROZEN — APPROVED OPTION A
-D-CONN-03-03: OPEN
+D-CONN-03-03: FROZEN — APPROVED OPTION B
 D-CONN-03-04: OPEN
 D-CONN-03-05: OPEN
 
 Full five-decision freeze artifact: NOT CREATED
-Reason: D-CONN-03-03…05 lack explicit PO approval.
-D-CONN-03-03…05 recommendations are NOT approvals.
+Reason: D-CONN-03-04…05 lack explicit PO approval.
+D-CONN-03-04…05 recommendations are NOT approvals.
 ```
 
 ### How PO completes freeze later
 
-PO/Governance must explicitly approve D-CONN-03-03…05. Only when **all five** are approved may a separate freeze artifact be created:
+PO/Governance must explicitly approve D-CONN-03-04…05. Only when **all five** are approved may a separate freeze artifact be created:
 
 ```text
 docs/project/version-3/wave-6/v3-l02-fiv-conn-03-po-governance-decision-freeze.md
@@ -1081,7 +1313,7 @@ Freeze still does **not** authorize implementation.
 
 ```text
 Next required PO decision:
-  D-CONN-03-03
+  D-CONN-03-04
 
 After PO freezes D-CONN-03-01…05 (all five):
   FIV-CONN-03 ARCHITECTURE REVIEW
