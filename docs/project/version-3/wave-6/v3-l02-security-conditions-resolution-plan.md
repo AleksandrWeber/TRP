@@ -248,7 +248,9 @@ Contract tests with mocked HTTP; **no production venue calls** unless separately
 
 ### Status
 
-**PLANNED — NOT IMPLEMENTED**
+**ADP1 COMPLETE — implementation-complete for adapter realization (SB-04), with runtime live-I/O gated/blocked.**
+Evidence: `docs/project/version-3/wave-6/v3-l02-s-adp1-live-execution-adapter-implementation-evidence.md`.
+Live adapters bound via `RoutingExecutionAdapter`; ENV1+EG1+S04+HS1 consumed; `allowRealVenueIo=false`; C7 deny-all preserved. **Not** live trading activated. **Not** Slice Approval. **Not** FIV.
 
 ### PO gate
 
@@ -256,7 +258,7 @@ None within frozen venue scope. **New PO** for additional venues or live capital
 
 ### Implementation authorization
 
-**Required**. Depends on SB-01, SB-06; practically after SB-02/SB-03 for safe I/O wiring.
+ADP1 authorized and implemented for SB-04 adapter realization only; real venue I/O remains gated/blocked.
 
 ---
 
@@ -447,7 +449,7 @@ None for tests. Live production calls require separate authorization (not part o
 | SB-01 | SSRF/egress allowlist on live adapters   | Outbound gate + allowlisted hosts wired to live adapters | Arbitrary URL deny; redirect deny; private IP deny; paper isolation | SD-L02-01 close-out | AD-L02-14             | None†                        | **EG1 COMPLETE** (ADP1 must consume gate)                         |
 | SB-02 | Durable HS claim-at-I/O + ACTION/COMMAND | Prisma store; claim CAS; verify≠claim                    | Replay/race/binding/expiry/restart/multi-instance                   | SD-L02-04           | AD-L02-04             | None (frozen)                | **HS1 COMPLETE** (claim API; Engine live I/O wiring residual)     |
 | SB-03 | UNKNOWN/pre-send/reconcile persistence   | Status+markers+reconcile fields; engine behavior         | Crash matrix; no blind retry                                        | SD-L02-05/06        | AD-L02-07/09/11       | None (frozen)                | **UNK1 COMPLETE** (venue query wiring residual for ADP1)          |
-| SB-04 | Live ExecutionAdapterPort                | Live adapters bound to EXECUTION_ADAPTER under gates     | Mocked submit/cancel/query; fail-closed                             | SD-L02-01/02/06     | AD-L02-01/14          | None† / capital act separate | **PLANNED — NOT IMPLEMENTED**                                     |
+| SB-04 | Live ExecutionAdapterPort                | Live adapters bound to EXECUTION_ADAPTER under gates     | Mocked submit/cancel/query; fail-closed                             | SD-L02-01/02/06     | AD-L02-01/14          | None† / capital act separate | **ADP1 COMPLETE** (runtime live-I/O gated/blocked)                |
 | SB-05 | EmergencyManager isolation               | No L02 dependency; regressions                           | KS/policy/session no cancel-all; no Engine→EM                       | SD-L02-07           | AD-L02-01             | None*                        | **EM1 COMPLETE** (isolation evidenced; EM still mounted residual) |
 | SB-06 | Test/live credential separation          | Env metadata + adapter checks                            | Mismatch fail-closed; no secret logs                                | SD-L02-02           | AD-L02-14             | Maybe‡                       | **ENV1 COMPLETE** (ADP1 must consume binding)                     |
 | SB-07 | Cross-workspace live regressions         | Dedicated suite green                                    | Full isolation matrix                                               | SD-L02-03           | —                     | None                         | **PLANNED — NOT IMPLEMENTED**                                     |
@@ -526,9 +528,9 @@ This Security Conditions Resolution Plan does NOT authorize:
   - Slice Approval
 
 Existence of this plan ≠ authorization to begin coding.
-SB-04 and SB-07 remain PLANNED — NOT IMPLEMENTED.
-SB-05 (EM1), SB-02 (HS1), SB-03 (UNK1), SB-01 (EG1), and SB-06 (ENV1) have separately authorized implementation evidence; Slice Approval remains NOT GRANTED.
-V3-L02 full live implementation remains NOT AUTHORIZED.
+SB-07 remains PLANNED — NOT IMPLEMENTED.
+SB-05 (EM1), SB-02 (HS1), SB-03 (UNK1), SB-01 (EG1), SB-06 (ENV1), and SB-04 (ADP1) have separately authorized implementation evidence; Slice Approval remains NOT GRANTED.
+V3-L02 full live implementation remains NOT AUTHORIZED. Runtime live-I/O remains gated/blocked.
 ```
 
 ---

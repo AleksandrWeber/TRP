@@ -57,6 +57,7 @@ describe('US166 — paper-only Execution Adapter boundary', () => {
       mode: 'paper',
       status: 'healthy',
       credentialsConfigured: false,
+      realVenueIoEnabled: false,
     });
   });
 

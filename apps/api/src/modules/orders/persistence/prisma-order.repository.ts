@@ -306,7 +306,16 @@ function parseIntent(value: Prisma.JsonValue): OrderIntent {
     paperAccountId: string(input.paperAccountId, 'paperAccountId'),
     tradingSessionId: string(input.tradingSessionId, 'tradingSessionId'),
     sessionFencingToken: number(input.sessionFencingToken, 'sessionFencingToken'),
-    mode: string(input.mode, 'mode') as 'paper',
+    mode: string(input.mode, 'mode') as 'paper' | 'live',
+    liveVenue:
+      input.liveVenue === undefined || input.liveVenue === null
+        ? null
+        : (string(input.liveVenue, 'liveVenue') as 'BINANCE' | 'BYBIT' | 'OKX'),
+    liveTradingEnvironment:
+      input.liveTradingEnvironment === undefined || input.liveTradingEnvironment === null
+        ? null
+        : (string(input.liveTradingEnvironment, 'liveTradingEnvironment') as
+            'live' | 'testnet' | 'demo'),
     origin,
     signalIntentId:
       input.signalIntentId === undefined || input.signalIntentId === null

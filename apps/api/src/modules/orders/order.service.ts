@@ -116,6 +116,9 @@ export class OrderService {
   }
 
   async create(command: CreateOrderCommand): Promise<Order> {
+    if (command.mode === 'live') {
+      throw new Error('live order creation is not activated for capital movement');
+    }
     const account = await this.accounts.findById(command.workspaceId, command.paperAccountId);
     if (!account || account.mode !== 'paper') {
       throw new Error('paper account not found in workspace');

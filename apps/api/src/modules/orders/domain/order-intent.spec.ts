@@ -74,10 +74,21 @@ describe('US159 — Order Intent and identity contracts', () => {
     expect(limit.limitPrice).toBe('60000.12');
   });
 
-  it('structurally prevents live and short-opening intents', () => {
-    expect(() => createOrderIntent({ ...base, mode: 'live' as never })).toThrow(
-      /mode must be paper/,
-    );
+  it('allows live intents with trusted venue/environment; rejects short-opening', () => {
+    const live = createOrderIntent({
+      ...base,
+      clientOrderId: 'live-001',
+      idempotencyKey: 'idem-live-001',
+      mode: 'live',
+      liveVenue: 'BINANCE',
+      liveTradingEnvironment: 'testnet',
+    });
+    expect(live.mode).toBe('live');
+    expect(live.liveVenue).toBe('BINANCE');
+    expect(live.liveTradingEnvironment).toBe('testnet');
+
+    expect(() => createOrderIntent({ ...base, mode: 'live' })).toThrow(/requires venue/);
+
     expect(() =>
       createOrderIntent({
         ...base,

@@ -219,6 +219,7 @@ describe('V3-L02-S-UNK1 execution engine UNKNOWN path', () => {
           mode: 'paper' as const,
           status: 'healthy' as const,
           credentialsConfigured: false as const,
+          realVenueIoEnabled: false as const,
         }),
     };
     const { engine, orders } = createEngine(adapter, store);
@@ -364,6 +365,7 @@ describe('V3-L02-S-UNK1 execution engine UNKNOWN path', () => {
           mode: 'paper' as const,
           status: 'healthy' as const,
           credentialsConfigured: false as const,
+          realVenueIoEnabled: false as const,
         }),
     };
     const { engine } = createEngine(adapter, store);

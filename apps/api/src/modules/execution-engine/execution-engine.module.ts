@@ -6,6 +6,7 @@ import { M2_PAPER_FILL_CONFIGURATION } from '../execution-adapter/paper-fill-con
 import { OrdersModule } from '../orders';
 import { AccountingReconciliationModule } from '../positions/reconciliation/accounting-reconciliation.module';
 import { TradingSessionModule } from '../trading-session';
+import { LiveAdmissionModule } from '../trading-session/live-admission';
 import { ExecutionEngineService } from './execution-engine.service';
 import { PAPER_FILL_CONFIGURATION } from './execution-engine.tokens';
 import { FillQueryService } from './fill-query.service';
@@ -18,6 +19,7 @@ import { PrismaFillRepository } from './persistence/prisma-fill.repository';
     ExecutionAdapterModule,
     OrdersModule,
     TradingSessionModule,
+    LiveAdmissionModule,
     AccountingReconciliationModule,
   ],
   providers: [

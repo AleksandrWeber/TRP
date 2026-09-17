@@ -5,12 +5,15 @@ import type {
   AdapterCancellationResult,
   AdapterOrderQueryResult,
   AdapterSubmissionResult,
+  CancelCommand,
   ExecutionAdapterCapabilities,
   ExecutionAdapterHealth,
   ExecutionAdapterPort,
+  ExecutionCommand,
   PaperCancelCommand,
   PaperExecutionCommand,
   PaperQueryCommand,
+  QueryCommand,
 } from './execution-adapter.port';
 import {
   assertPaperFillConfiguration,
@@ -21,7 +24,10 @@ import { matchPaperOrder } from './paper-matching';
 
 @Injectable()
 export class PaperExecutionAdapter implements ExecutionAdapterPort {
-  async submit(command: PaperExecutionCommand): Promise<AdapterSubmissionResult> {
+  async submit(command: ExecutionCommand): Promise<AdapterSubmissionResult> {
+    if (command.mode !== 'paper') {
+      throw new Error('paper execution adapter rejects non-paper commands');
+    }
     assertPaperCommand(command);
     const configuration = assertPaperFillConfiguration(command.configuration);
     const adapterOrderId = stableAdapterOrderId(
@@ -60,7 +66,10 @@ export class PaperExecutionAdapter implements ExecutionAdapterPort {
     return Object.freeze({ outcome: 'acknowledged', ...base });
   }
 
-  async cancel(command: PaperCancelCommand): Promise<AdapterCancellationResult> {
+  async cancel(command: CancelCommand): Promise<AdapterCancellationResult> {
+    if (command.mode !== 'paper') {
+      throw new Error('paper execution adapter rejects non-paper commands');
+    }
     assertPaperMode(command.mode);
     return Object.freeze({
       outcome: 'cancel_acknowledged',
@@ -70,7 +79,10 @@ export class PaperExecutionAdapter implements ExecutionAdapterPort {
     });
   }
 
-  async query(command: PaperQueryCommand): Promise<AdapterOrderQueryResult> {
+  async query(command: QueryCommand): Promise<AdapterOrderQueryResult> {
+    if (command.mode !== 'paper') {
+      throw new Error('paper execution adapter rejects non-paper commands');
+    }
     assertPaperMode(command.mode);
     return Object.freeze({
       outcome: 'unknown',
@@ -97,6 +109,7 @@ export class PaperExecutionAdapter implements ExecutionAdapterPort {
       mode: 'paper',
       status: 'healthy',
       credentialsConfigured: false,
+      realVenueIoEnabled: false,
     });
   }
 }

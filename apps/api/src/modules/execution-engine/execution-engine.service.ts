@@ -8,9 +8,20 @@ import {
 import {
   EXECUTION_ADAPTER,
   type ExecutionAdapterPort,
+  type ExecutionCommand,
+  type LiveExecutionCommand,
   type PaperExecutionCommand,
 } from '../execution-adapter';
 import type { PaperFillConfiguration } from '../execution-adapter/paper-fill-configuration';
+import {
+  assertLiveVenueIoPreconditions,
+  LIVE_VENUE_IO_ACTION_CANCEL,
+  LIVE_VENUE_IO_ACTION_SUBMIT,
+} from '../execution-adapter/live-venue';
+import { purposeForTradingEnvironment } from '../execution-adapter/live-venue-egress/trading-credential-environment';
+import type { Role } from '../identity/role';
+import { LiveAdmissionService } from '../trading-session/live-admission/live-admission.service';
+import type { LiveAdmissionSessionFacts } from '../trading-session/live-admission/domain/session-live-eligibility';
 import { OrderService } from '../orders/order.service';
 import type { Order } from '../orders/domain/order';
 import { OrderStatus } from '../orders/domain/order-status';
@@ -46,6 +57,15 @@ export type SubmitExecutionCommand = Readonly<{
   marketState: ExecutionMarketState;
   occurredAt: string;
   recordedAt: string;
+  /** Live path (ADP1): human-start token required before irreversible venue I/O. */
+  humanStartToken?: string | null;
+  actorRole?: Role;
+  liveSessionFacts?: LiveAdmissionSessionFacts | null;
+  v2Overrides?: {
+    liveCapitalAuthorized?: boolean;
+    paperFreezeBlocksLive?: boolean;
+  };
+  authorizationOverride?: 'allowed' | 'denied' | 'unknown';
 }>;
 
 export type CancelExecutionCommand = Readonly<{
@@ -56,6 +76,14 @@ export type CancelExecutionCommand = Readonly<{
   correlationId?: string;
   occurredAt: string;
   recordedAt: string;
+  humanStartToken?: string | null;
+  actorRole?: Role;
+  liveSessionFacts?: LiveAdmissionSessionFacts | null;
+  v2Overrides?: {
+    liveCapitalAuthorized?: boolean;
+    paperFreezeBlocksLive?: boolean;
+  };
+  authorizationOverride?: 'allowed' | 'denied' | 'unknown';
 }>;
 
 export type ReconcileExecutionCommand = Readonly<{
@@ -111,12 +139,15 @@ export class ExecutionEngineService {
     @Optional()
     @Inject(AccountingReconciliationService)
     private readonly accountingReconciliation?: AccountingReconciliationService,
+    @Optional()
+    @Inject(LiveAdmissionService)
+    private readonly liveAdmission?: LiveAdmissionService,
   ) {}
 
   async submit(command: SubmitExecutionCommand): Promise<ExecutionResult> {
     const order = await this.orders.get(command.workspaceId, command.orderId);
     if (!order) throw new Error('order not found in workspace');
-    assertPaper(order);
+    assertSupportedExecutionMode(order);
 
     // UNKNOWN must reconcile first — no blind retry (AD-L02-11 / UNK1).
     if (order.status === OrderStatus.UNKNOWN) {
@@ -162,6 +193,12 @@ export class ExecutionEngineService {
     );
     if (!session) throw new Error('trading session not found for order');
     assertExecutionEligible(session, order.intent.sessionFencingToken, command.occurredAt);
+
+    // Live path: S04 revalidation + atomic human-start claim immediately before I/O.
+    // Claim ≠ SUBMITTED. Paper path skips admission (ADP1 does not weaken C7).
+    if (order.intent.mode === 'live') {
+      await this.assertLiveIoGate(order, command, LIVE_VENUE_IO_ACTION_SUBMIT);
+    }
 
     // Pre-send then transmitted markers BEFORE adapter I/O (AD-L02-11).
     const prepared = await this.transactions.run(async (transaction) => {
@@ -287,6 +324,11 @@ export class ExecutionEngineService {
           return { order: acknowledged, fill: null, outcome: 'resting' } as const;
         }
 
+        // Live adapters must not invent fills; paper fill path requires roundingContext.
+        if (acknowledgement.mode === 'live' || !acknowledgement.roundingContext) {
+          return { order: acknowledged, fill: null, outcome: 'resting' } as const;
+        }
+
         const fill = createPaperFill({
           workspaceId: order.workspaceId,
           exchangeScopeId: order.intent.exchangeScopeId,
@@ -359,23 +401,64 @@ export class ExecutionEngineService {
   async cancel(command: CancelExecutionCommand): Promise<Order> {
     const order = await this.orders.get(command.workspaceId, command.orderId);
     if (!order) throw new Error('order not found in workspace');
-    assertPaper(order);
+    assertSupportedExecutionMode(order);
     if (order.status === OrderStatus.CANCELLED) return order;
     if (order.status === OrderStatus.FILLED || order.status === OrderStatus.REJECTED) {
       throw new Error(`order cannot be cancelled from ${order.status}`);
+    }
+    if (order.status === OrderStatus.UNKNOWN) {
+      throw new Error('order is UNKNOWN; reconcile before cancel retry');
     }
     if (order.adapterOrderId === null) {
       throw new Error('execution engine cancels only submitted orders');
     }
 
-    await this.adapter.cancel({
-      mode: 'paper',
-      workspaceId: order.workspaceId,
-      orderId: order.id,
-      clientOrderId: order.intent.clientOrderId,
-      adapterOrderId: order.adapterOrderId,
-      idempotencyKey: required(command.idempotencyKey, 'idempotency key'),
-    });
+    if (order.intent.mode === 'live') {
+      await this.assertLiveIoGate(order, command, LIVE_VENUE_IO_ACTION_CANCEL);
+    }
+
+    const cancelResult = await this.adapter.cancel(
+      order.intent.mode === 'live'
+        ? {
+            mode: 'live' as const,
+            workspaceId: order.workspaceId,
+            orderId: order.id,
+            clientOrderId: order.intent.clientOrderId,
+            adapterOrderId: order.adapterOrderId,
+            idempotencyKey: required(command.idempotencyKey, 'idempotency key'),
+            instrument: order.intent.instrument,
+            venue: order.intent.liveVenue!,
+            tradingEnvironment: order.intent.liveTradingEnvironment!,
+            vaultType: vaultTypeForVenue(order.intent.liveVenue!),
+            purpose: purposeForTradingEnvironment(order.intent.liveTradingEnvironment!),
+          }
+        : {
+            mode: 'paper' as const,
+            workspaceId: order.workspaceId,
+            orderId: order.id,
+            clientOrderId: order.intent.clientOrderId,
+            adapterOrderId: order.adapterOrderId,
+            idempotencyKey: required(command.idempotencyKey, 'idempotency key'),
+          },
+    );
+
+    if (cancelResult.outcome === 'unknown') {
+      return this.orders.markSubmissionUnknown(order, {
+        eventType: 'OrderUnknownAfterCancelAmbiguity',
+        actorId: command.actorId,
+        correlationId: command.correlationId,
+        ambiguityReason: cancelResult.ambiguityReason,
+        adapterOrderId: order.adapterOrderId,
+        occurredAt: command.occurredAt,
+        recordedAt: command.recordedAt,
+      });
+    }
+    if (cancelResult.outcome === 'already_filled') {
+      throw new Error('order already filled at venue; not cancellable');
+    }
+    if (cancelResult.outcome === 'rejected') {
+      throw new Error(`live cancel rejected: ${cancelResult.reason}`);
+    }
 
     return this.orders.confirmCancellation({
       workspaceId: command.workspaceId,
@@ -423,11 +506,25 @@ export class ExecutionEngineService {
       current.adapterOrderId !== null &&
       current.status !== OrderStatus.UNKNOWN
     ) {
-      const query = await this.adapter.query({
-        mode: 'paper',
-        workspaceId: current.workspaceId,
-        adapterOrderId: current.adapterOrderId,
-      });
+      const query = await this.adapter.query(
+        current.intent.mode === 'live'
+          ? {
+              mode: 'live' as const,
+              workspaceId: current.workspaceId,
+              adapterOrderId: current.adapterOrderId,
+              clientOrderId: current.intent.clientOrderId,
+              instrument: current.intent.instrument,
+              venue: current.intent.liveVenue!,
+              tradingEnvironment: current.intent.liveTradingEnvironment!,
+              vaultType: vaultTypeForVenue(current.intent.liveVenue!),
+              purpose: purposeForTradingEnvironment(current.intent.liveTradingEnvironment!),
+            }
+          : {
+              mode: 'paper' as const,
+              workspaceId: current.workspaceId,
+              adapterOrderId: current.adapterOrderId,
+            },
+      );
       reconciliationRequired = query.reconciliationRequired;
     }
     if (current.status === OrderStatus.UNKNOWN) {
@@ -452,14 +549,79 @@ export class ExecutionEngineService {
       order.status === OrderStatus.EXECUTABLE ? 'resting' : 'already_executed';
     return Object.freeze({ order, fill: fills.at(0) ?? null, outcome });
   }
+
+  private async assertLiveIoGate(
+    order: Order,
+    command: SubmitExecutionCommand | CancelExecutionCommand,
+    actionCommand: string,
+  ): Promise<void> {
+    if (!this.liveAdmission) {
+      throw new Error('live admission service required for live execution');
+    }
+    if (!command.actorRole) {
+      throw new Error('live execution requires actorRole for C7 evaluation');
+    }
+    const gate = await assertLiveVenueIoPreconditions({
+      admission: this.liveAdmission,
+      command: {
+        workspaceId: order.workspaceId,
+        sessionId: order.intent.tradingSessionId,
+        actorId: command.actorId,
+        actorRole: command.actorRole,
+        humanStartToken: command.humanStartToken ?? '',
+        actionCommand,
+        session: command.liveSessionFacts ?? null,
+        claimedLogicalActionId: order.id,
+        evaluatedAt: command.occurredAt,
+        v2Overrides: command.v2Overrides,
+        authorizationOverride: command.authorizationOverride,
+        gateRequest: {
+          exchangeScopeId: order.intent.exchangeScopeId,
+          libraryEntryId: 'live-execution-engine',
+        },
+      },
+    });
+    if (!gate.ok) {
+      throw new Error(`live_io_gate_denied:${gate.reason}`);
+    }
+    // Explicit invariant: claim ≠ venue submitted.
+    if (gate.claimMeansVenueSubmitted !== false) {
+      throw new Error('live_io_gate_invariant_broken');
+    }
+  }
 }
 
 function buildAdapterCommand(
   order: Order,
   command: SubmitExecutionCommand,
   configuration: PaperFillConfiguration,
-): PaperExecutionCommand {
-  return Object.freeze({
+): ExecutionCommand {
+  if (order.intent.mode === 'live') {
+    const venue = order.intent.liveVenue;
+    const tradingEnvironment = order.intent.liveTradingEnvironment;
+    if (!venue || !tradingEnvironment) {
+      throw new Error('live order missing venue/environment binding');
+    }
+    const live: LiveExecutionCommand = Object.freeze({
+      mode: 'live',
+      workspaceId: order.workspaceId,
+      orderId: order.id,
+      clientOrderId: order.intent.clientOrderId,
+      intentHash: order.intent.intentHash,
+      instrument: order.intent.instrument,
+      side: order.intent.side,
+      type: order.intent.type,
+      quantity: order.intent.quantity,
+      limitPrice: order.intent.limitPrice,
+      venue,
+      tradingEnvironment,
+      vaultType: vaultTypeForVenue(venue),
+      purpose: purposeForTradingEnvironment(tradingEnvironment),
+    });
+    return live;
+  }
+
+  const paper: PaperExecutionCommand = Object.freeze({
     mode: 'paper',
     workspaceId: order.workspaceId,
     orderId: order.id,
@@ -482,10 +644,19 @@ function buildAdapterCommand(
     }),
     configuration,
   });
+  return paper;
 }
 
-function assertPaper(order: Order): void {
-  if (order.intent.mode !== 'paper') throw new Error('execution engine is paper-only');
+function vaultTypeForVenue(venue: 'BINANCE' | 'BYBIT' | 'OKX'): 'binance' | 'bybit' | 'okx' {
+  if (venue === 'BINANCE') return 'binance';
+  if (venue === 'BYBIT') return 'bybit';
+  return 'okx';
+}
+
+function assertSupportedExecutionMode(order: Order): void {
+  if (order.intent.mode !== 'paper' && order.intent.mode !== 'live') {
+    throw new Error('unsupported order execution mode');
+  }
 }
 
 function assertMandatoryRiskDecision(order: Order, occurredAt: string): void {

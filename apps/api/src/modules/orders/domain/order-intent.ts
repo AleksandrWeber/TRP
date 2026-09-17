@@ -1,6 +1,8 @@
 import { createHash } from 'node:crypto';
 import { resolveExchangeScopeId } from '../../exchange-scope';
 import { FinancialDecimal } from '../../financial';
+import type { LiveVenueId } from '../../execution-adapter/live-venue-egress/live-venue-allowlist';
+import type { TradingCredentialEnvironment } from '../../execution-adapter/live-venue-egress/trading-credential-environment';
 
 export enum OrderSide {
   BUY = 'buy',
@@ -25,6 +27,8 @@ export type OrderMarketCheckpoint = Readonly<{
 
 export type OrderOrigin = 'manual' | 'strategy';
 
+export type OrderExecutionMode = 'paper' | 'live';
+
 export type OrderIntent = Readonly<{
   intentVersion: 1;
   orderId: string;
@@ -37,7 +41,11 @@ export type OrderIntent = Readonly<{
   paperAccountId: string;
   tradingSessionId: string;
   sessionFencingToken: number;
-  mode: 'paper';
+  mode: OrderExecutionMode;
+  /** Live venue binding (null for paper). Trusted server-side only. */
+  liveVenue: LiveVenueId | null;
+  /** Live credential environment (null for paper). Trusted server-side only. */
+  liveTradingEnvironment: TradingCredentialEnvironment | null;
   origin: OrderOrigin;
   /** Immutable Signal Intent id when origin is strategy; otherwise null. */
   signalIntentId: string | null;
@@ -65,7 +73,9 @@ export type CreateOrderIntentInput = Readonly<{
   paperAccountId: string;
   tradingSessionId: string;
   sessionFencingToken: number;
-  mode: 'paper';
+  mode: OrderExecutionMode;
+  liveVenue?: LiveVenueId | null;
+  liveTradingEnvironment?: TradingCredentialEnvironment | null;
   origin: OrderOrigin;
   /** Required when origin is strategy; forbidden for manual. */
   signalIntentId?: string | null;
@@ -86,13 +96,14 @@ export type CreateOrderIntentInput = Readonly<{
 }>;
 
 /**
- * Immutable paper Order Intent (US159 / US221 / ADR-012).
- * Financial values remain canonical decimal strings and semantic identity
- * excludes operational correlation/recorded timestamps.
- * Strategy-origin intents carry an immutable Signal Intent reference.
+ * Immutable Order Intent (US159 / US221 / ADR-012 / V3-L02-S-ADP1).
+ * Paper semantic identity remains M2-compatible.
+ * Live mode requires trusted venue + trading environment (ENV1).
  */
 export function createOrderIntent(input: CreateOrderIntentInput): OrderIntent {
-  if (input.mode !== 'paper') throw new Error('order mode must be paper');
+  if (input.mode !== 'paper' && input.mode !== 'live') {
+    throw new Error('order mode must be paper or live');
+  }
   if (input.origin !== 'manual' && input.origin !== 'strategy') {
     throw new Error('unsupported order origin');
   }
@@ -116,6 +127,9 @@ export function createOrderIntent(input: CreateOrderIntentInput): OrderIntent {
   assertIso(input.occurredAt, 'occurredAt');
   assertIso(input.recordedAt, 'recordedAt');
 
+  const liveVenue = normalizeLiveVenue(input.mode, input.liveVenue);
+  const liveTradingEnvironment = normalizeLiveEnvironment(input.mode, input.liveTradingEnvironment);
+
   const positionEffect =
     input.side === OrderSide.SELL
       ? OrderPositionEffect.REDUCE_ONLY
@@ -128,20 +142,23 @@ export function createOrderIntent(input: CreateOrderIntentInput): OrderIntent {
   }
 
   const limitPrice = normalizeLimitPrice(input.type, input.limitPrice);
-  // Manual semantic identity stays M2-compatible (no Signal Intent fields).
-  // Strategy identity includes the immutable Signal Intent reference.
+  // Manual semantic identity stays M2-compatible for paper (no Signal Intent fields).
+  // Live identity includes venue + environment. Strategy identity includes Signal Intent.
   const semanticIdentity =
-    input.origin === 'strategy'
+    input.mode === 'live'
       ? {
           intentVersion: 1 as const,
           workspaceId,
           paperAccountId,
           tradingSessionId,
           sessionFencingToken,
-          mode: 'paper' as const,
-          origin: 'strategy' as const,
-          signalIntentId: signalIntentId!,
-          signalIntentHash: signalIntentHash!,
+          mode: 'live' as const,
+          liveVenue,
+          liveTradingEnvironment,
+          origin: input.origin,
+          ...(input.origin === 'strategy'
+            ? { signalIntentId: signalIntentId!, signalIntentHash: signalIntentHash! }
+            : {}),
           instrument,
           side: input.side,
           type: input.type,
@@ -151,23 +168,43 @@ export function createOrderIntent(input: CreateOrderIntentInput): OrderIntent {
           marketCheckpoint,
           occurredAt: input.occurredAt,
         }
-      : {
-          intentVersion: 1 as const,
-          workspaceId,
-          paperAccountId,
-          tradingSessionId,
-          sessionFencingToken,
-          mode: 'paper' as const,
-          origin: 'manual' as const,
-          instrument,
-          side: input.side,
-          type: input.type,
-          positionEffect,
-          quantity: quantity.toString(),
-          limitPrice,
-          marketCheckpoint,
-          occurredAt: input.occurredAt,
-        };
+      : input.origin === 'strategy'
+        ? {
+            intentVersion: 1 as const,
+            workspaceId,
+            paperAccountId,
+            tradingSessionId,
+            sessionFencingToken,
+            mode: 'paper' as const,
+            origin: 'strategy' as const,
+            signalIntentId: signalIntentId!,
+            signalIntentHash: signalIntentHash!,
+            instrument,
+            side: input.side,
+            type: input.type,
+            positionEffect,
+            quantity: quantity.toString(),
+            limitPrice,
+            marketCheckpoint,
+            occurredAt: input.occurredAt,
+          }
+        : {
+            intentVersion: 1 as const,
+            workspaceId,
+            paperAccountId,
+            tradingSessionId,
+            sessionFencingToken,
+            mode: 'paper' as const,
+            origin: 'manual' as const,
+            instrument,
+            side: input.side,
+            type: input.type,
+            positionEffect,
+            quantity: quantity.toString(),
+            limitPrice,
+            marketCheckpoint,
+            occurredAt: input.occurredAt,
+          };
   const intentHash = sha256(stableJson(semanticIdentity));
   const orderId = `ord_${sha256(`${workspaceId}:${clientOrderId}`).slice(0, 32)}`;
 
@@ -178,7 +215,9 @@ export function createOrderIntent(input: CreateOrderIntentInput): OrderIntent {
     paperAccountId,
     tradingSessionId,
     sessionFencingToken,
-    mode: 'paper' as const,
+    mode: input.mode,
+    liveVenue,
+    liveTradingEnvironment,
     origin: input.origin,
     signalIntentId,
     signalIntentHash,
@@ -198,6 +237,38 @@ export function createOrderIntent(input: CreateOrderIntentInput): OrderIntent {
     occurredAt: input.occurredAt,
     recordedAt: input.recordedAt,
   });
+}
+
+function normalizeLiveVenue(
+  mode: OrderExecutionMode,
+  value: LiveVenueId | null | undefined,
+): LiveVenueId | null {
+  if (mode === 'paper') {
+    if (value !== undefined && value !== null) {
+      throw new Error('paper order intent cannot bind a live venue');
+    }
+    return null;
+  }
+  if (value !== 'BINANCE' && value !== 'BYBIT' && value !== 'OKX') {
+    throw new Error('live order intent requires venue BINANCE|BYBIT|OKX');
+  }
+  return value;
+}
+
+function normalizeLiveEnvironment(
+  mode: OrderExecutionMode,
+  value: TradingCredentialEnvironment | null | undefined,
+): TradingCredentialEnvironment | null {
+  if (mode === 'paper') {
+    if (value !== undefined && value !== null) {
+      throw new Error('paper order intent cannot bind a live trading environment');
+    }
+    return null;
+  }
+  if (value !== 'live' && value !== 'testnet' && value !== 'demo') {
+    throw new Error('live order intent requires trading environment live|testnet|demo');
+  }
+  return value;
 }
 
 function normalizeSignalIntentReference(input: CreateOrderIntentInput): {
