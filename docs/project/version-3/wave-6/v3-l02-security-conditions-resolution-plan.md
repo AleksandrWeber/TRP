@@ -556,6 +556,10 @@ Live capital / venue I/O: NOT AUTHORIZED
 
 Next governance action: **PO Review of Security Final Close-out**, then (separately) Slice Approval if supported.
 
+**Slice Approval / Pre-FIV readiness package (reference only; does not change SB statuses):**
+[`v3-l02-slice-approval-readiness.md`](./v3-l02-slice-approval-readiness.md).
+Readiness status recorded there: `READY FOR PO SLICE APPROVAL` — package does **not** grant Slice Approval or authorize FIV.
+
 ---
 
 ## STOP
