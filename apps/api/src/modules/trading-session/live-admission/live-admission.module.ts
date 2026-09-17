@@ -17,14 +17,15 @@ import { KillSwitchPersistenceService } from '../kill-switch/kill-switch-persist
 import { KillSwitchRecoveryStore } from '../kill-switch/kill-switch-recovery-store';
 import { PrismaKillSwitchStateRepository } from '../persistence/prisma-kill-switch-state.repository';
 import { HUMAN_START_PROOF_STORE } from './human-start-proof.tokens';
-import { InMemoryHumanStartProofStore } from './in-memory-human-start-proof.store';
+import { PrismaHumanStartProofStore } from './prisma-human-start-proof.store';
 import { LiveAdmissionService } from './live-admission.service';
 
 @Module({
   providers: [
     {
       provide: HUMAN_START_PROOF_STORE,
-      useClass: InMemoryHumanStartProofStore,
+      useFactory: (prisma: PrismaService) => new PrismaHumanStartProofStore(prisma),
+      inject: [PrismaService],
     },
     {
       provide: LIVE_POLICY_STATE_REPOSITORY,

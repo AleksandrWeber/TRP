@@ -126,6 +126,7 @@ describe('LiveAdmissionService (PROPOSED-V3-L01-S04)', () => {
       actorId: 'actor-1',
       workspaceId: 'ws-1',
       sessionId: 'sess-1',
+      actionCommand: 'LIVE_SUBMIT_ORDER',
       nowIso: '2026-09-17T12:00:00.000Z',
     });
     const decision = await service.evaluate({
@@ -135,6 +136,7 @@ describe('LiveAdmissionService (PROPOSED-V3-L01-S04)', () => {
       actorRole: Role.Trader,
       session: sessionFacts,
       humanStartToken: issued.token,
+      actionCommand: 'LIVE_SUBMIT_ORDER',
       gateRequest: { libraryEntryId: 'lib-1' },
       v2Overrides: { liveCapitalAuthorized: true, paperFreezeBlocksLive: false },
       authorizationOverride: 'allowed',
@@ -154,6 +156,7 @@ describe('LiveAdmissionService (PROPOSED-V3-L01-S04)', () => {
       actorId: 'actor-1',
       workspaceId: 'ws-1',
       sessionId: 'sess-1',
+      actionCommand: 'LIVE_SUBMIT_ORDER',
     });
     const decision = await service.evaluate({
       workspaceId: 'ws-1',
@@ -162,6 +165,7 @@ describe('LiveAdmissionService (PROPOSED-V3-L01-S04)', () => {
       actorRole: Role.Trader,
       session: sessionFacts,
       humanStartToken: issued.token,
+      actionCommand: 'LIVE_SUBMIT_ORDER',
       gateRequest: { libraryEntryId: 'lib-1' },
       v2Overrides: { liveCapitalAuthorized: true, paperFreezeBlocksLive: false },
       authorizationOverride: 'allowed',
@@ -185,6 +189,7 @@ describe('LiveAdmissionService (PROPOSED-V3-L01-S04)', () => {
       actorId: 'actor-1',
       workspaceId: 'ws-1',
       sessionId: 'sess-1',
+      actionCommand: 'LIVE_SUBMIT_ORDER',
     });
     const decision = await service.evaluate({
       workspaceId: 'ws-1',
@@ -193,6 +198,7 @@ describe('LiveAdmissionService (PROPOSED-V3-L01-S04)', () => {
       actorRole: Role.Trader,
       session: sessionFacts,
       humanStartToken: issued.token,
+      actionCommand: 'LIVE_SUBMIT_ORDER',
       gateRequest: { libraryEntryId: 'lib-1' },
       v2Overrides: { liveCapitalAuthorized: true, paperFreezeBlocksLive: false },
       authorizationOverride: 'allowed',
@@ -210,6 +216,7 @@ describe('LiveAdmissionService (PROPOSED-V3-L01-S04)', () => {
       actorId: 'actor-1',
       workspaceId: 'ws-1',
       sessionId: 'sess-1',
+      actionCommand: 'LIVE_SUBMIT_ORDER',
     });
     const decision = await service.evaluate({
       workspaceId: 'ws-1',
@@ -218,6 +225,7 @@ describe('LiveAdmissionService (PROPOSED-V3-L01-S04)', () => {
       actorRole: Role.Trader,
       session: { ...sessionFacts, workspaceId: 'ws-other' },
       humanStartToken: issued.token,
+      actionCommand: 'LIVE_SUBMIT_ORDER',
       gateRequest: { libraryEntryId: 'lib-1' },
       v2Overrides: { liveCapitalAuthorized: true, paperFreezeBlocksLive: false },
       authorizationOverride: 'allowed',
@@ -236,6 +244,7 @@ describe('LiveAdmissionService (PROPOSED-V3-L01-S04)', () => {
       actorId: 'actor-1',
       workspaceId: 'ws-1',
       sessionId: 'sess-1',
+      actionCommand: 'LIVE_SUBMIT_ORDER',
     });
     await service.evaluate({
       workspaceId: 'ws-1',
@@ -244,6 +253,7 @@ describe('LiveAdmissionService (PROPOSED-V3-L01-S04)', () => {
       actorRole: Role.Trader,
       session: sessionFacts,
       humanStartToken: issued.token,
+      actionCommand: 'LIVE_SUBMIT_ORDER',
       gateRequest: { libraryEntryId: 'lib-1' },
       v2Overrides: { liveCapitalAuthorized: true, paperFreezeBlocksLive: false },
       authorizationOverride: 'allowed',
@@ -288,6 +298,7 @@ describe('LiveAdmissionService (PROPOSED-V3-L01-S04)', () => {
       actorId: 'actor-1',
       workspaceId: 'ws-1',
       sessionId: 'sess-1',
+      actionCommand: 'LIVE_SUBMIT_ORDER',
     });
     const contract = await service.evaluateForL02Contract({
       workspaceId: 'ws-1',
@@ -296,6 +307,7 @@ describe('LiveAdmissionService (PROPOSED-V3-L01-S04)', () => {
       actorRole: Role.Trader,
       session: sessionFacts,
       humanStartToken: issued.token,
+      actionCommand: 'LIVE_SUBMIT_ORDER',
       gateRequest: { libraryEntryId: 'lib-1' },
       v2Overrides: { liveCapitalAuthorized: true, paperFreezeBlocksLive: false },
       authorizationOverride: 'allowed',

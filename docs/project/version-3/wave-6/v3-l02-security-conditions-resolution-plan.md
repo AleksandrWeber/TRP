@@ -166,7 +166,9 @@ Replay; concurrent claim; wrong actor/workspace/session/action; expired; restart
 
 ### Status
 
-**PLANNED — NOT IMPLEMENTED**
+**HS1 IMPLEMENTATION-COMPLETE** (durable persistence + ACTION/COMMAND + verify≠claim + atomic claim API). Evidence: [`v3-l02-s-hs1-human-start-implementation-evidence.md`](./v3-l02-s-hs1-human-start-implementation-evidence.md).
+
+**Not** Slice Approval. Live Engine claim-before-I/O wiring and venue I/O remain unauthorized. SB-02 residual: integrate `claimHumanStartAfterS04Revalidation` at irreversible I/O boundary when ADP1 is separately authorized.
 
 ### PO gate
 
@@ -174,7 +176,7 @@ None for realizing frozen PO-L02-05A…D. **New PO** only if changing TTL, grain
 
 ### Implementation authorization
 
-**Required** before coding.
+**Granted for L02-S-HS1 only** (separate PO/task act). Remaining SB-01/03/04/06/07 coding remains unauthorized.
 
 ---
 
@@ -413,7 +415,7 @@ None for tests. Live production calls require separate authorization (not part o
 | Slice ID | Objective | SBs | Likely components | Deps | Sec risk | Tests | Arch review | Sec verify | PO | Live I/O |
 | -------- | --------- | --- | ----------------- | ---- | -------- | ----- | ----------- | ---------- | -- | -------- |
 | **L02-S-EM1** | Prove/enforce EM non-reachability from L02 capital path | SB-05 | composition, import lint/tests, docs boundary | None | Medium (confusion) | No EM on KS/policy/session; no Engine→EM | Confirm NON-SoT | Yes | No* | **Forbidden** |
-| **L02-S-HS1** | Durable human-start + ACTION/COMMAND + claim-at-I/O API | SB-02 | Prisma HS table, store, LiveAdmission verify≠claim, Engine claim hook (no venue) | Impl auth | High | Replay/race/binding/restart | AD-L02-04 | SD-L02-04 | No | **Forbidden** |
+| **L02-S-HS1** | Durable human-start + ACTION/COMMAND + claim-at-I/O API | SB-02 | Prisma HS table, store, LiveAdmission verify≠claim, Engine claim hook (no venue) | Impl auth | High | Replay/race/binding/restart | AD-L02-04 | SD-L02-04 | No | **HS1 COMPLETE — PO review next** |
 | **L02-S-UNK1** | UNKNOWN status + pre-send + reconcile metadata | SB-03 | Orders status/transitions, persistence fields, engine markers | HS1 helpful | High | Crash-window unit/integration w/ fake adapter | AD-L02-07/09/11 | SD-L02-05/06 | No | **Forbidden** |
 | **L02-S-EG1** | Live egress allowlist gate | SB-01 | shared outbound validator for live adapters | Impl auth | High (SSRF) | Allowlist/redirect/private-IP fails | AD-L02-14 | SD-L02-01 | No† | **Forbidden** |
 | **L02-S-ENV1** | Test/live credential↔endpoint binding | SB-06 | Vault metadata checks, adapter factory guards | EG1 aligned | High | Mismatch fail-closed; no log leak | AD-L02-14 | SD-L02-02 | Maybe‡ | **Forbidden** |
@@ -438,7 +440,7 @@ None for tests. Live production calls require separate authorization (not part o
 | SB | Condition | Implementation Evidence | Required Tests | Security Evidence | Architecture Evidence | PO Gate | Status |
 | -- | --------- | ----------------------- | -------------- | ----------------- | --------------------- | ------- | ------ |
 | SB-01 | SSRF/egress allowlist on live adapters | Outbound gate + allowlisted hosts wired to live adapters | Arbitrary URL deny; redirect deny; private IP deny; paper isolation | SD-L02-01 close-out | AD-L02-14 | None† | **PLANNED — NOT IMPLEMENTED** |
-| SB-02 | Durable HS claim-at-I/O + ACTION/COMMAND | Prisma store; claim CAS; verify≠claim | Replay/race/binding/expiry/restart/multi-instance | SD-L02-04 | AD-L02-04 | None (frozen) | **PLANNED — NOT IMPLEMENTED** |
+| SB-02 | Durable HS claim-at-I/O + ACTION/COMMAND | Prisma store; claim CAS; verify≠claim | Replay/race/binding/expiry/restart/multi-instance | SD-L02-04 | AD-L02-04 | None (frozen) | **HS1 COMPLETE** (claim API; Engine live I/O wiring residual) |
 | SB-03 | UNKNOWN/pre-send/reconcile persistence | Status+markers+reconcile fields; engine behavior | Crash matrix; no blind retry | SD-L02-05/06 | AD-L02-07/09/11 | None (frozen) | **PLANNED — NOT IMPLEMENTED** |
 | SB-04 | Live ExecutionAdapterPort | Live adapters bound to EXECUTION_ADAPTER under gates | Mocked submit/cancel/query; fail-closed | SD-L02-01/02/06 | AD-L02-01/14 | None† / capital act separate | **PLANNED — NOT IMPLEMENTED** |
 | SB-05 | EmergencyManager isolation | No L02 dependency; regressions | KS/policy/session no cancel-all; no Engine→EM | SD-L02-07 | AD-L02-01 | None* | **EM1 COMPLETE** (isolation evidenced; EM still mounted residual) |
@@ -519,8 +521,9 @@ This Security Conditions Resolution Plan does NOT authorize:
   - Slice Approval
 
 Existence of this plan ≠ authorization to begin coding.
-SB-01…SB-07 remain PLANNED — NOT IMPLEMENTED.
-V3-L02 IMPLEMENTATION REMAINS NOT AUTHORIZED.
+SB-01, SB-03, SB-04, SB-06, SB-07 remain PLANNED — NOT IMPLEMENTED.
+SB-05 (EM1) and SB-02 (HS1) have separately authorized implementation evidence; Slice Approval remains NOT GRANTED.
+V3-L02 full live implementation remains NOT AUTHORIZED.
 ```
 
 ---

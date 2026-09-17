@@ -1,9 +1,13 @@
 /**
- * PROPOSED-V3-L01-S04 — Live admission evaluator service.
+ * PROPOSED-V3-L01-S04 / V3-L02-S-HS1 — Live admission evaluator service.
  *
  * Orchestrates snapshot inputs into decideLiveAdmission.
  * No Security Audit persistence of runtime decisions (PO-S04-11).
  * No exchange I/O. No C7 activation. No Vault.
+ *
+ * Human-start: evaluate verifies without claim (PO-L02-05B/D).
+ * claimHumanStartAfterS04Revalidation: S04 revalidate → atomic claim.
+ * Claim ≠ submit ≠ accept ≠ fill. Venue I/O is out of HS1 scope.
  */
 
 import { Inject, Injectable, Optional } from '@nestjs/common';
@@ -17,8 +21,10 @@ import { decideLiveAdmission } from './domain/decide-live-admission';
 import type { LiveAdmissionDecision } from './domain/live-admission-decision';
 import { mapGateToAdmissionInput } from './domain/gate-admission-input';
 import {
+  claimHumanStartProof,
   issueHumanStartProof,
-  verifyAndConsumeHumanStartProof,
+  verifyHumanStartProof,
+  type HumanStartClaimResult,
   type HumanStartProofStore,
   type IssuedHumanStartProof,
 } from './domain/human-start-proof';
@@ -48,6 +54,11 @@ export type EvaluateLiveAdmissionCommand = Readonly<{
   actorRole: Role;
   /** Presented human-start token — JWT alone is insufficient. */
   humanStartToken?: string | null;
+  /**
+   * ACTION/COMMAND the proof must authorize (PO-L02-05 grain).
+   * Required when a human-start token is presented.
+   */
+  actionCommand?: string | null;
   /** Session facts (caller supplies minimal eligibility facts). */
   session: LiveAdmissionSessionFacts | null;
   /** Optional Gate request fields for LIVE_ADMISSION_GATE_PORT. */
@@ -73,6 +84,33 @@ export type EvaluateLiveAdmissionCommand = Readonly<{
   evaluatedAt?: string;
 }>;
 
+export type ClaimHumanStartAfterS04Command = EvaluateLiveAdmissionCommand &
+  Readonly<{
+    actionCommand: string;
+    claimedLogicalActionId?: string | null;
+  }>;
+
+/**
+ * Authorization-claim outcome only. Never encodes venue SUBMITTED/ACCEPTED/FILLED.
+ */
+export type ClaimHumanStartAfterS04Result =
+  | Readonly<{
+      status: 'claimed';
+      proofId: string;
+      claimedAt: string;
+      actionCommand: string;
+      admission: LiveAdmissionDecision;
+    }>
+  | Readonly<{
+      status: 'admission_denied';
+      admission: LiveAdmissionDecision;
+    }>
+  | Readonly<{
+      status: 'claim_denied';
+      reason: Exclude<HumanStartClaimResult['status'], 'claimed'>;
+      admission: LiveAdmissionDecision;
+    }>;
+
 @Injectable()
 export class LiveAdmissionService {
   private readonly humanStartStore: HumanStartProofStore;
@@ -91,11 +129,12 @@ export class LiveAdmissionService {
     this.humanStartStore = humanStartStore ?? new InMemoryHumanStartProofStore();
   }
 
-  /** Issue a human-start proof bound to actor/workspace/session (PO-S04-06). */
+  /** Issue a human-start proof bound to actor/workspace/session/ACTION (PO-L02-05). */
   async issueHumanStart(input: {
     actorId: string;
     workspaceId: string;
     sessionId: string;
+    actionCommand: string;
     nowIso?: string;
   }): Promise<IssuedHumanStartProof> {
     const nowIso = input.nowIso ?? new Date().toISOString();
@@ -103,6 +142,7 @@ export class LiveAdmissionService {
       actorId: input.actorId,
       workspaceId: input.workspaceId,
       sessionId: input.sessionId,
+      actionCommand: input.actionCommand,
       nowIso,
     });
     await this.humanStartStore.save(record);
@@ -112,6 +152,7 @@ export class LiveAdmissionService {
   /**
    * Evaluate fail-closed live admission.
    * ALLOW ≠ execution. Does not persist Security Audit events.
+   * Human-start is verified without claim (PO-L02-05B).
    */
   async evaluate(command: EvaluateLiveAdmissionCommand): Promise<LiveAdmissionDecision> {
     const evaluatedAt = command.evaluatedAt ?? new Date().toISOString();
@@ -152,6 +193,55 @@ export class LiveAdmissionService {
   ): Promise<LiveAdmissionL02Contract> {
     const decision = await this.evaluate(command);
     return toLiveAdmissionL02Contract(decision);
+  }
+
+  /**
+   * Mandatory ordering (PO-L02-05B/D):
+   * S04 revalidation → atomic human-start claim.
+   * Does NOT perform venue I/O. Claim ≠ SUBMITTED/ACCEPTED/FILLED.
+   *
+   * Integration point for later live Engine: call this immediately before
+   * irreversible venue I/O; do not claim earlier in admission-only evaluate().
+   */
+  async claimHumanStartAfterS04Revalidation(
+    command: ClaimHumanStartAfterS04Command,
+  ): Promise<ClaimHumanStartAfterS04Result> {
+    const evaluatedAt = command.evaluatedAt ?? new Date().toISOString();
+    const admission = await this.evaluate({
+      ...command,
+      actionCommand: command.actionCommand,
+      evaluatedAt,
+    });
+    if (!admission.allowed) {
+      return Object.freeze({ status: 'admission_denied', admission });
+    }
+
+    const claim = await claimHumanStartProof({
+      store: this.humanStartStore,
+      presentedToken: command.humanStartToken,
+      expectedActorId: command.actorId,
+      expectedWorkspaceId: command.workspaceId,
+      expectedSessionId: command.sessionId,
+      expectedActionCommand: command.actionCommand,
+      nowIso: evaluatedAt,
+      claimedLogicalActionId: command.claimedLogicalActionId ?? null,
+    });
+
+    if (claim.status !== 'claimed') {
+      return Object.freeze({
+        status: 'claim_denied',
+        reason: claim.status,
+        admission,
+      });
+    }
+
+    return Object.freeze({
+      status: 'claimed',
+      proofId: claim.record.id,
+      claimedAt: claim.record.claimedAt!,
+      actionCommand: claim.record.actionCommand,
+      admission,
+    });
   }
 
   /**
@@ -204,14 +294,16 @@ export class LiveAdmissionService {
     | 'actor_mismatch'
     | 'workspace_mismatch'
     | 'session_mismatch'
+    | 'action_mismatch'
   > {
-    // JWT alone / omitted token → missing (PO-S04-06).
-    const result = await verifyAndConsumeHumanStartProof({
+    // JWT alone / omitted token → missing (PO-S04-06). Verify without claim (PO-L02-05B).
+    const result = await verifyHumanStartProof({
       store: this.humanStartStore,
       presentedToken: command.humanStartToken,
       expectedActorId: command.actorId,
       expectedWorkspaceId: command.workspaceId,
       expectedSessionId: command.sessionId,
+      expectedActionCommand: command.actionCommand ?? '',
       nowIso,
     });
     return result.status;

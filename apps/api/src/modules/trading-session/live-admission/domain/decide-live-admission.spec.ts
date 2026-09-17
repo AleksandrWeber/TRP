@@ -172,6 +172,12 @@ describe('decideLiveAdmission (PROPOSED-V3-L01-S04)', () => {
     );
   });
 
+  it('HS1 wrong ACTION/COMMAND (human-start) denies', () => {
+    expect(decideLiveAdmission(base({ humanStart: 'action_mismatch' })).reason).toBe(
+      'HUMAN_START_ACTION_MISMATCH',
+    );
+  });
+
   it('T-25 expired human-start denies', () => {
     expect(decideLiveAdmission(base({ humanStart: 'expired' })).reason).toBe('HUMAN_START_EXPIRED');
   });

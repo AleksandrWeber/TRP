@@ -31,7 +31,8 @@ export type LiveAdmissionHumanStartInput =
   | 'unknown'
   | 'actor_mismatch'
   | 'workspace_mismatch'
-  | 'session_mismatch';
+  | 'session_mismatch'
+  | 'action_mismatch';
 
 export type LiveAdmissionSessionInput = Readonly<{
   available: boolean;
@@ -177,6 +178,9 @@ export function decideLiveAdmission(input: DecideLiveAdmissionInput): LiveAdmiss
   if (input.humanStart === 'session_mismatch') {
     return deny(base, 'HUMAN_START_SESSION_MISMATCH');
   }
+  if (input.humanStart === 'action_mismatch') {
+    return deny(base, 'HUMAN_START_ACTION_MISMATCH');
+  }
   if (input.humanStart !== 'valid') {
     return deny(base, 'HUMAN_START_INVALID');
   }
@@ -219,6 +223,7 @@ function mapHumanStartLabel(
     humanStart === 'actor_mismatch' ||
     humanStart === 'workspace_mismatch' ||
     humanStart === 'session_mismatch' ||
+    humanStart === 'action_mismatch' ||
     humanStart === 'invalid'
   ) {
     return 'invalid';

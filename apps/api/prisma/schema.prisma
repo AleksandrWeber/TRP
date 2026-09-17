@@ -879,6 +879,27 @@ model WorkspaceKillSwitchState {
   @@map("workspace_kill_switch_states")
 }
 
+/// V3-L02-S-HS1 — Durable human-start authorization proofs (PO-L02-05A…D).
+/// Token plaintext is never stored (SHA-256 hash only). Claim ≠ venue submit/accept/fill.
+model HumanStartProof {
+  id                     String    @id
+  tokenHash              String    @unique @map("token_hash")
+  workspaceId            String    @map("workspace_id")
+  actorId                String    @map("actor_id")
+  sessionId              String    @map("session_id")
+  actionCommand          String    @map("action_command")
+  createdAt              DateTime  @map("created_at")
+  expiresAt              DateTime  @map("expires_at")
+  claimedAt              DateTime? @map("claimed_at")
+  claimedLogicalActionId String?   @map("claimed_logical_action_id")
+  schemaVersion          Int       @default(1) @map("schema_version")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  @@index([workspaceId, actorId, sessionId])
+  @@index([workspaceId, expiresAt])
+  @@map("human_start_proofs")
+}
+
 /// W3-O05-b — Durable monitoring health state on existing Security Platform owner.
 /// Workspace-scoped operational monitoring substrate. Distinct from audit/incident SoT.
 /// Persistence only — restart recovery and health evaluation are later slices.

@@ -22,12 +22,18 @@ export {
 } from './domain/live-admission-decision';
 export {
   HUMAN_START_PROOF_TTL_MS,
+  HUMAN_START_PROOF_SCHEMA_VERSION,
   hashHumanStartToken,
   issueHumanStartProof,
+  verifyHumanStartProof,
+  claimHumanStartProof,
   verifyAndConsumeHumanStartProof,
   type HumanStartProofRecord,
   type HumanStartProofStore,
   type HumanStartVerifyResult,
+  type HumanStartClaimResult,
+  type HumanStartClaimBindings,
+  type HumanStartDenialStatus,
   type IssuedHumanStartProof,
 } from './domain/human-start-proof';
 export {
@@ -56,8 +62,14 @@ export {
   type LiveAdmissionL02Contract,
 } from './domain/live-admission-l02-contract';
 export { InMemoryHumanStartProofStore } from './in-memory-human-start-proof.store';
+export { PrismaHumanStartProofStore } from './prisma-human-start-proof.store';
 export { HUMAN_START_PROOF_STORE } from './human-start-proof.tokens';
-export { LiveAdmissionService, type EvaluateLiveAdmissionCommand } from './live-admission.service';
+export {
+  LiveAdmissionService,
+  type EvaluateLiveAdmissionCommand,
+  type ClaimHumanStartAfterS04Command,
+  type ClaimHumanStartAfterS04Result,
+} from './live-admission.service';
 export { LiveAdmissionModule } from './live-admission.module';
 export {
   LIVE_ADMISSION_GATE_PORT,
