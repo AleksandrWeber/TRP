@@ -11,3 +11,24 @@ export { WorkspaceStatus } from './workspace-status';
 export type { WorkspaceRepository } from './repositories/workspace.repository';
 export { WORKSPACE_REPOSITORY } from './repositories/workspace.repository.token';
 export { InMemoryWorkspaceRepository } from './repositories/in-memory-workspace.repository';
+export {
+  WorkspaceLivePolicy,
+  WORKSPACE_LIVE_POLICY_STATE_SCHEMA_VERSION,
+  parseWorkspaceLivePolicy,
+  isWorkspaceLivePolicy,
+  resolveEffectiveWorkspaceLivePolicy,
+  isLivePolicyOptedIn,
+  livePolicyAuthorizesLiveTrading,
+  livePolicyAuthorizesAdmission,
+  livePolicyAuthorizesExecution,
+  buildPaperLivePolicyState,
+  buildWorkspaceLivePolicyState,
+  LIVE_POLICY_STATE_REPOSITORY,
+  WorkspaceLivePolicyPersistenceService,
+  PrismaWorkspaceLivePolicyStateRepository,
+} from './live-policy';
+export type {
+  DurableWorkspaceLivePolicyState,
+  WorkspaceLivePolicyPersistenceOutcome,
+  WorkspaceLivePolicyStateRepository,
+} from './live-policy';

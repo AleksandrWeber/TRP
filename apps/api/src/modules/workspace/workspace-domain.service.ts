@@ -1,10 +1,11 @@
-import { Inject, Injectable, type OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Optional, type OnModuleInit } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import type { Workspace } from './workspace';
 import { toWorkspaceId, type WorkspaceId } from './workspace-id';
 import { WorkspaceStatus } from './workspace-status';
 import type { WorkspaceRepository } from './repositories/workspace.repository';
 import { WORKSPACE_REPOSITORY } from './repositories/workspace.repository.token';
+import { WorkspaceLivePolicyPersistenceService } from './live-policy/workspace-live-policy-persistence.service';
 
 export type CreateWorkspaceInput = {
   name: string;
@@ -17,6 +18,9 @@ export type CreateWorkspaceInput = {
  * create / getById / findByOwner / bootstrapForOwner / rename / archive.
  * Storage is delegated to WorkspaceRepository (no owned Map).
  *
+ * PROPOSED-V3-L01-S02: new workspaces seed Paper live-policy via optional
+ * WorkspaceLivePolicyPersistenceService (persistence ports only; no Admin API).
+ *
  * Independent of Campaign / Auth / REST / Pipeline / Prisma.
  */
 @Injectable()
@@ -27,6 +31,8 @@ export class WorkspaceDomainService implements OnModuleInit {
   constructor(
     @Inject(WORKSPACE_REPOSITORY)
     private readonly repository: WorkspaceRepository,
+    @Optional()
+    private readonly livePolicyPersistence?: WorkspaceLivePolicyPersistenceService,
   ) {}
 
   async onModuleInit(): Promise<void> {
@@ -49,6 +55,10 @@ export class WorkspaceDomainService implements OnModuleInit {
 
     await this.repository.save(workspace);
     this.byId.set(workspace.id, workspace);
+
+    // PO-S02-03: new workspaces are Paper by default (explicit satellite row).
+    await this.livePolicyPersistence?.ensurePaperDefault(workspace.id);
+
     return workspace;
   }
 
