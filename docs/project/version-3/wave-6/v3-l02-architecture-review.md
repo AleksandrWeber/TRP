@@ -17,7 +17,7 @@ Architecture MUST NOT change frozen PO decisions.
 If architecture cannot satisfy a PO decision → ARCHITECTURE BLOCKER → PO ESCALATION.
 V3-L02 IMPLEMENTATION REMAINS NOT AUTHORIZED.
 S01–S06 remain NOT GRANTED.
-Security Review was NOT performed.
+Security Review: see [`v3-l02-security-review.md`](./v3-l02-security-review.md) — **SECURITY PASS WITH CONDITIONS** (not Slice Approval; not implementation auth).
 AD-L02-04 status updated below; overall package verdict remains driven by remaining blockers.
 ```
 
@@ -48,7 +48,7 @@ This is **not** Security PASS, **not** Slice Approval, **not** implementation au
 
 ### Why CONDITIONS (not unconditional APPROVED)
 
-1. Security Review **NOT PASS** / not performed.
+1. Security Review **PASS WITH CONDITIONS** (live I/O still blocked by Security CONDITIONS/SB-*).
 2. Live `ExecutionAdapterPort` adapters not realized (AD-L02-14 conditions).
 3. AD-L02-01: `live-trading-engine` / `EmergencyManager` remain mounted NON-SoT hazards until operationally enforced.
 4. Designs in §§6–8 / cancel / reconcile / persistence are **not implemented** (no schema/migrations/code in this act).
@@ -95,7 +95,7 @@ Prior package **BLOCKED** reason (missing coherent UNKNOWN + idempotency + crash
 | AD-L02-07 / 09 / 11 | **APPROVED WITH CONDITIONS** (this act) |
 | Package Architecture Review | **APPROVED WITH CONDITIONS** |
 | Cancel / reconcile / live persistence designs | **APPROVED WITH CONDITIONS** (this act) |
-| Security Review | **NOT PERFORMED** / **NOT PASS** |
+| Security Review | **SECURITY PASS WITH CONDITIONS** ([`v3-l02-security-review.md`](./v3-l02-security-review.md)) |
 | S01–S06 | **NOT GRANTED** |
 | V3-L02 IMPLEMENTATION | **NOT AUTHORIZED** |
 | Live capital / FIV / live venue I/O | **NOT ACTIVATED** / **NOT PERFORMED** |
@@ -386,7 +386,7 @@ None — realizes PO-L02-05A…05D as decided. Does not alter grain or UNKNOWN b
 
 ### Security impact
 
-High sensitivity (replay, cross-binding, races). Hand off to Security Review — **NOT PASS**.
+High sensitivity (replay, cross-binding, races). Hand off completed in Security Review — **PASS WITH CONDITIONS**.
 
 ## 6. AD-L02-07 — First-Class UNKNOWN
 
@@ -910,8 +910,8 @@ Statuses: **PASS** / **PASS WITH REQUIRED CLARIFICATION** / **BLOCKED**
 | AC-15 | Fail-closed new exposure under uncertainty | **PASS WITH REQUIRED CLARIFICATION** | Admission fail-closed; I/O path missing |
 | AC-16 | No false success for UNKNOWN | **PASS WITH REQUIRED CLARIFICATION** | Encoding decided; must be implemented later without coercion |
 | AC-17 | No false reject inviting duplicate | **PASS WITH REQUIRED CLARIFICATION** | Ambiguity→UNKNOWN decided; implementation pending |
-| AC-18 | No credential leakage | **BLOCKED** | Security Review (not performed) |
-| AC-19 | No cross-workspace execution/credentials | **BLOCKED** | Security Review |
+| AC-18 | No credential leakage | **PASS WITH REQUIRED CLARIFICATION** | Security PWC; live adapter hygiene still required |
+| AC-19 | No cross-workspace execution/credentials | **PASS WITH REQUIRED CLARIFICATION** | Security PWC; live path tests still required |
 | AC-20 | No Paper/Live API confusion | **PASS WITH REQUIRED CLARIFICATION** | Port currently paper-locked (good); live API design pending |
 | AC-21 | No C7 bypass; deny-all unless PO act | **PASS** | Matrix deny-all; must remain until explicit PO act |
 | AC-22 | No L03 audit log in L02 | **PASS** | Out of scope preserved |
@@ -926,8 +926,8 @@ Statuses: **PASS** / **PASS WITH REQUIRED CLARIFICATION** / **BLOCKED**
 | Status | Count |
 | ------ | ----- |
 | PASS | 6 |
-| PASS WITH REQUIRED CLARIFICATION | 17 |
-| BLOCKED | 4 |
+| PASS WITH REQUIRED CLARIFICATION | 19 |
+| BLOCKED | 2 |
 
 ---
 
@@ -953,19 +953,17 @@ Statuses: **PASS** / **PASS WITH REQUIRED CLARIFICATION** / **BLOCKED**
 
 This Architecture Review is **NOT** Security Review.
 
-**Do NOT mark SD-L02-01…07 PASS.**
+**SD-L02-01…07:** recorded in [`v3-l02-security-review.md`](./v3-l02-security-review.md) as **PASS WITH CONDITIONS** (not unconditional PASS; live I/O not authorized).
 
-Hand off (non-exhaustive):
-
-| ID | Topic | Architecture note |
-| -- | ----- | ----------------- |
-| SD-L02-01 | SSRF / egress / venue allowlist | Live adapters not built; allowlist mandatory before I/O |
-| SD-L02-02 | Credential isolation | Vault-in-adapter condition; handshake ≠ authz |
-| SD-L02-03 | Workspace/tenant isolation | Must hold on live path + human-start + creds |
-| SD-L02-04 | Human-start replay/staleness | Blocked on AD-L02-04; multi-instance critical |
-| SD-L02-05 | Duplicate financial actions | Design ready for review (AD-L02-09/11 AWC) |
-| SD-L02-06 | UNKNOWN/lost-response | Design ready for review (AD-L02-07 AWC) |
-| SD-L02-07 | KS/authz fail-closed | Durable KS OK direction; EmergencyManager cancel-all hazard; C7 deny-all must hold |
+| ID | Topic | Security verdict |
+| -- | ----- | ---------------- |
+| SD-L02-01 | SSRF / egress / venue allowlist | **PASS WITH CONDITIONS** |
+| SD-L02-02 | Credential isolation | **PASS WITH CONDITIONS** |
+| SD-L02-03 | Authz / C7 / S04 (+ isolation) | **PASS WITH CONDITIONS** |
+| SD-L02-04 | Human-start replay/staleness | **PASS WITH CONDITIONS** |
+| SD-L02-05 | Duplicate financial actions | **PASS WITH CONDITIONS** |
+| SD-L02-06 | UNKNOWN/lost-response | **PASS WITH CONDITIONS** |
+| SD-L02-07 | KS/authz/cancel/EM | **PASS WITH CONDITIONS** |
 
 Security may identify additional PO blockers; must not silently alter PO business decisions.
 
@@ -1018,7 +1016,7 @@ Security may identify additional PO blockers; must not silently alter PO busines
 
 1. ~~PO escalation on human-start~~ — **CLOSED**.
 2. ~~AD-L02-07 / 09 / 11 architecture design~~ — **CLOSED as APPROVED WITH CONDITIONS** (this act).
-3. **Security Review** of SD-L02-01…07 (separate act) — **NOT PASS**; must cover UNKNOWN, idempotency abuse, reconciliation trust, claim races, SSRF/egress, credentials, isolation.
+3. **Security Review** — **SECURITY PASS WITH CONDITIONS** (`v3-l02-security-review.md`). Live I/O / Slice Approval still require SB-01…SB-07 clearance.
 4. Live adapter realization under AD-L02-14 conditions — not authorized here.
 5. Keep `live-trading-engine` / `EmergencyManager` NON-SoT for L02.
 6. Do **not** implement schema/migrations/adapters/human-start store until explicitly authorized.
@@ -1052,7 +1050,7 @@ AD-L02-04 / 07 / 09 / 11 = APPROVED WITH CONDITIONS
 V3-L02 IMPLEMENTATION REMAINS NOT AUTHORIZED
 S01–S06 remain NOT GRANTED
 Live capital remains NOT ACTIVATED
-Security Review = NOT PASS
+Security Review = PASS WITH CONDITIONS (live I/O NOT authorized)
 No migrations / no live venue I/O / no FIV in this act
 ```
 
@@ -1060,9 +1058,9 @@ No migrations / no live venue I/O / no FIV in this act
 
 ## STOP
 
-**STOP.** Architecture Review recorded.
+**STOP.** Architecture Review recorded; Security Review completed separately as **PASS WITH CONDITIONS**.
 
-Do not implement V3-L02 from this artifact.
+Do not implement V3-L02 from these artifacts.
 Do not activate C7.
 Do not perform live venue I/O.
-Resolve PO escalation (human-start) and complete Security Review before any implementation authorization.
+Clear Security SB-01…SB-07 and remaining Architecture CONDITIONS before any implementation / Slice Approval authorization.
