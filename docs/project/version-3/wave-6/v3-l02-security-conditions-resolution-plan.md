@@ -319,7 +319,9 @@ Fail closed on test↔live credential/endpoint confusion.
 
 ### Status
 
-**PLANNED — NOT IMPLEMENTED** (not verified for L02)
+**ENV1 COMPLETE — implementation-complete for credential/environment separation (SB-06).**
+Evidence: `docs/project/version-3/wave-6/v3-l02-s-env1-credential-environment-implementation-evidence.md`.
+Trusted Vault purposes: `trading`/`trading_live` (LIVE), `trading_testnet`, `trading_demo` (OKX). Binding integrates EG1; Paper/Mock deny trading secret retrieve/use. **Not** live-adapter security. **Not** Slice Approval. **Not** FIV.
 
 ### PO gate
 
@@ -327,7 +329,7 @@ May need **PO confirmation** only if introducing new environment labels beyond e
 
 ### Implementation authorization
 
-**Required** before coding; no credential provisioning in that act without separate ops authorization.
+ENV1 authorized and implemented for SB-06 boundary only; no credential provisioning; no live venue I/O.
 
 ---
 
@@ -447,7 +449,7 @@ None for tests. Live production calls require separate authorization (not part o
 | SB-03 | UNKNOWN/pre-send/reconcile persistence   | Status+markers+reconcile fields; engine behavior         | Crash matrix; no blind retry                                        | SD-L02-05/06        | AD-L02-07/09/11       | None (frozen)                | **UNK1 COMPLETE** (venue query wiring residual for ADP1)          |
 | SB-04 | Live ExecutionAdapterPort                | Live adapters bound to EXECUTION_ADAPTER under gates     | Mocked submit/cancel/query; fail-closed                             | SD-L02-01/02/06     | AD-L02-01/14          | None† / capital act separate | **PLANNED — NOT IMPLEMENTED**                                     |
 | SB-05 | EmergencyManager isolation               | No L02 dependency; regressions                           | KS/policy/session no cancel-all; no Engine→EM                       | SD-L02-07           | AD-L02-01             | None*                        | **EM1 COMPLETE** (isolation evidenced; EM still mounted residual) |
-| SB-06 | Test/live credential separation          | Env metadata + adapter checks                            | Mismatch fail-closed; no secret logs                                | SD-L02-02           | AD-L02-14             | Maybe‡                       | **PLANNED — NOT IMPLEMENTED**                                     |
+| SB-06 | Test/live credential separation          | Env metadata + adapter checks                            | Mismatch fail-closed; no secret logs                                | SD-L02-02           | AD-L02-14             | Maybe‡                       | **ENV1 COMPLETE** (ADP1 must consume binding)                     |
 | SB-07 | Cross-workspace live regressions         | Dedicated suite green                                    | Full isolation matrix                                               | SD-L02-03           | —                     | None                         | **PLANNED — NOT IMPLEMENTED**                                     |
 
 ---
@@ -524,8 +526,8 @@ This Security Conditions Resolution Plan does NOT authorize:
   - Slice Approval
 
 Existence of this plan ≠ authorization to begin coding.
-SB-04, SB-06, SB-07 remain PLANNED — NOT IMPLEMENTED.
-SB-05 (EM1), SB-02 (HS1), SB-03 (UNK1), and SB-01 (EG1) have separately authorized implementation evidence; Slice Approval remains NOT GRANTED.
+SB-04 and SB-07 remain PLANNED — NOT IMPLEMENTED.
+SB-05 (EM1), SB-02 (HS1), SB-03 (UNK1), SB-01 (EG1), and SB-06 (ENV1) have separately authorized implementation evidence; Slice Approval remains NOT GRANTED.
 V3-L02 full live implementation remains NOT AUTHORIZED.
 ```
 

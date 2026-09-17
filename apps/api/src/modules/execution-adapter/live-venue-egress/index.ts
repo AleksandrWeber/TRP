@@ -39,3 +39,25 @@ export {
   type LiveVenueEgressHttpRequest,
   type LiveVenueEgressHttpResult,
 } from './live-venue-egress-http';
+
+export {
+  TRADING_CREDENTIAL_ENVIRONMENTS,
+  tradingEnvironmentFromPurpose,
+  purposeForTradingEnvironment,
+  egressEnvironmentForCredential,
+  okxDemoHeadersRequired,
+  OKX_DEMO_TRADING_HEADER_NAME,
+  OKX_DEMO_TRADING_HEADER_VALUE,
+  type TradingCredentialEnvironment,
+} from './trading-credential-environment';
+
+export {
+  assertLiveCredentialEnvironmentBinding,
+  assertMayRetrieveTradingCredential,
+  redactCredentialMaterial,
+  liveCredentialBindingErrorMessage,
+  type TrustedCredentialBindingInput,
+  type RequestedLiveCredentialUse,
+  type LiveCredentialEnvironmentBindingResult,
+  type LiveCredentialEnvironmentDenyReason,
+} from './live-credential-environment-policy';

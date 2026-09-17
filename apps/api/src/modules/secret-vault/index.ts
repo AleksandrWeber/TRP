@@ -11,7 +11,12 @@ export {
   isHoldableSecretType,
   listHoldableSecretTypes,
 } from './holdable-secret-type';
-export { SecretPurpose, defaultPurposeForType } from './secret-purpose';
+export {
+  SecretPurpose,
+  defaultPurposeForType,
+  isSecretPurpose,
+  isTradingSecretPurpose,
+} from './secret-purpose';
 export {
   SecretState,
   OperatorSecretLabel,
