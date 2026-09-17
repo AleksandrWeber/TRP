@@ -6,15 +6,16 @@
 **Package:** V3-L02 / FIV-CRED-02 / FIV-PRE-01
 **Slice:** FIV-CONN-03 — Connection API/Domain Contract
 **Authority:** PO/Governance Decision Support (under Product Owner + Chief Architect)
-**Nature:** **DECISION SUPPORT ONLY — PENDING PO APPROVAL.** Does **not** freeze decisions. Does **not** authorize implementation. Does **not** grant Slice Approval. Does **not** modify production code, schema, migrations, Vault, credentials, or protected leftovers.
+**Nature:** **PO DECISION RECORDING + DECISION SUPPORT.** Records only explicitly PO-approved decisions. Remaining decisions stay OPEN. Does **not** authorize implementation. Does **not** grant Slice Approval. Does **not** create the full five-decision freeze artifact. Does **not** modify production code, schema, migrations, Vault, credentials, or protected leftovers.
 
 ```text
 STATUS:
-DECISION SUPPORT — PENDING PO APPROVAL
+D-CONN-03-01 FROZEN (PO APPROVED — OPTION A)
+D-CONN-03-02…05 OPEN — DECISION SUPPORT PENDING PO APPROVAL
 
+Full decision-freeze artifact:  NOT CREATED (awaiting D-CONN-03-02…05)
 Implementation:                 NOT PERFORMED
 Implementation authorization:   NOT GRANTED
-Decision freeze artifact:       NOT CREATED (no explicit PO approvals in this session)
 External I/O:                   ZERO
 Binance / Bybit / OKX:          ZERO
 FIV:                            NOT PERFORMED
@@ -45,19 +46,21 @@ CLOSED
 FIV-CONN-03:
 PLANNING REVIEW PASS WITH REQUIRED PO DECISIONS
 
-Open decisions:
-D-CONN-03-01
+D-CONN-03-01:
+FROZEN — APPROVED OPTION A
+
+Still open:
 D-CONN-03-02
 D-CONN-03-03
 D-CONN-03-04
 D-CONN-03-05
 ```
 
-### Pre-check (decision-support start)
+### Pre-check (this update)
 
 ```text
-HEAD:        31f2c40c9c3a0c53274bab12ab7851bae49512cd
-origin/main: 31f2c40c9c3a0c53274bab12ab7851bae49512cd
+HEAD:        ce9aaac0b5f46dfb8730abdc9fa4d358b9bf0ccd
+origin/main: ce9aaac0b5f46dfb8730abdc9fa4d358b9bf0ccd
 HEAD == origin/main: YES
 ```
 
@@ -83,13 +86,59 @@ Protected dirty/untracked leftovers were recorded and left untouched.
 RECOMMENDED FOR PO/GOVERNANCE CONSIDERATION
   ≠
 APPROVED / FROZEN / ACCEPTED
-```
 
-No decision below is frozen by this document.
+Only D-CONN-03-01 is FROZEN below (explicit PO approval in this session).
+D-CONN-03-02…05 recommendations remain non-binding.
+```
 
 ---
 
-## Decision D-CONN-03-01 — Handshake strategy
+## D-CONN-03-01 — PO DECISION
+
+```text
+Status:                         FROZEN
+Decision:                       APPROVED — OPTION A
+Decision authority:             PO / Governance
+Implementation authorization:   NOT GRANTED
+```
+
+### Exact frozen decision
+
+```text
+Derive Vault SecretPurpose server-side from trusted
+Connection.environment and explicitly pass that derived purpose through the
+governed EXCHANGE validate → handshake → capability path.
+```
+
+### Required properties (frozen)
+
+| Property                              | Requirement                                                |
+| ------------------------------------- | ---------------------------------------------------------- |
+| Purpose derivation                    | Server-side only                                           |
+| Environment context                   | Trusted `Connection.environment`                           |
+| Propagation                           | Explicit purpose through validate → handshake → capability |
+| Provider-only lookup                  | **FORBIDDEN**                                              |
+| Omit-purpose retrieval                | **FORBIDDEN** on the governed multi-env path               |
+| Client-controlled purpose             | **FORBIDDEN**                                              |
+| Model C                               | Authoritative                                              |
+| Environment ↔ purpose mismatch        | **FAIL CLOSED**                                            |
+| LIVE / TESTNET                        | Remain isolated                                            |
+| Cross-environment credential fallback | **FORBIDDEN**                                              |
+
+```text
+This freezes the GOVERNANCE DECISION ONLY.
+It does NOT authorize implementation.
+It does NOT freeze D-CONN-03-02…05.
+It does NOT create the full FIV-CONN-03 decision-freeze artifact.
+```
+
+### Prior analysis (retained for audit)
+
+The original option analysis for handshake strategy remains below for history. **PO selected OPTION A.** Options B/C/D are not approved.
+
+---
+
+## Decision D-CONN-03-01 — Handshake strategy (historical analysis)
 
 ### Question
 
@@ -171,7 +220,7 @@ Allowed by Architecture C-06 **only if** Testnet cannot CONNECT via omit-purpose
 | Compatibility | Conflicts with Planning Review residual ownership        |
 | Risk          | **Unacceptable** unless paired with fail-closed interim  |
 
-### Recommended for PO/Governance consideration
+### Recommended for PO/Governance consideration (historical — superseded)
 
 ```text
 RECOMMENDED FOR PO/GOVERNANCE CONSIDERATION:
@@ -185,126 +234,285 @@ residual LIVE trading_live vs trading retrieve debt until a follow-on gate.
 
 Rationale: Matches frozen D-CRED-02-08 preference for purpose-aware retrieve on CRED-02 validate path; closes repository-confirmed hazard; keeps origins in CRED-04.
 
-### PO/Governance approval required
+### PO/Governance status
 
 ```text
-PO/GOVERNANCE APPROVAL REQUIRED: YES
-Status: OPEN — NOT FROZEN
+PO/GOVERNANCE APPROVAL: GRANTED (this session)
+Status: FROZEN — APPROVED OPTION A
+See section "D-CONN-03-01 — PO DECISION" above.
 ```
 
 ---
 
-## Decision D-CONN-03-02 — LIVE dual-purpose policy
+## D-CONN-03-02 — DECISION SUPPORT
+
+```text
+Status: OPEN — PO APPROVAL REQUIRED
+Highest-risk remaining decision: YES
+Depends on: D-CONN-03-01 FROZEN (purpose must be passed on validate path)
+Does NOT freeze LIVE dual-purpose policy in this act.
+```
 
 ### Question
 
-For `Connection.environment = live`, which Vault purposes may satisfy retrieve/validate/handshake/capability, and under what exact match rules — without creating cross-environment credential fallback?
-
-### Current repository evidence
-
-| Purpose                              | ENV1 class via `tradingEnvironmentFromPurpose` | Store path today (populated env)                                          | Slot probe today               |
-| ------------------------------------ | ---------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------ |
-| `Trading` (`trading`)                | `live`                                         | Legacy omit-purpose stores; **not** written by new populated-`live` store | Probed for LIVE slot conflicts |
-| `TradingLive` (`trading_live`)       | `live`                                         | Written by `purposeForTradingEnvironment('live')`                         | Probed                         |
-| `TradingTestnet` (`trading_testnet`) | `testnet`                                      | Written for `testnet` Connections                                         | Probed for TESTNET only        |
-
-Frozen **D-CRED-02-08** already states:
+For `Connection.environment = LIVE` (`live`), should the governed Connection path accept:
 
 ```text
-live     ↔ Trading / TradingLive   (LIVE-class ALLOW)
-testnet  ↔ TradingTestnet
+A: SecretPurpose.Trading AND SecretPurpose.TradingLive
+   as two explicitly permitted LIVE purposes
+   (within a deterministic, non-fallback resolution contract)
+
+OR
+
+B: normalize the governed Connection path to exactly one LIVE purpose
+
+OR another repository-grounded policy?
 ```
 
-Handshake still omit-purpose → always `Trading`. Connection `vaultSecretId` is checked against retrieved metadata id after get.
-
-**Why two LIVE purposes exist:** Historical Connections omit-purpose defaulted exchange secrets to `Trading`. ENV1 later introduced explicit `TradingLive`. Both are LIVE-class. They are **not** Testnet.
-
-### Options
-
-#### OPTION A — LIVE accepts Trading and TradingLive as equivalent LIVE-class; TESTNET accepts only TradingTestnet
+Must preserve:
 
 ```text
-LIVE Connection:
-  ALLOW purpose ∈ {Trading, TradingLive}
-  DENY  TradingTestnet / other
-
-TESTNET Connection:
-  ALLOW TradingTestnet only
-  DENY  Trading / TradingLive
-
-Resolution rule (required if A):
-  Resolve by exact Vault slot for the Connection's vaultSecretId
-  within the ALLOW set for that environment class.
-  NEVER cascade across environment classes.
-  NEVER "try until one works" across LIVE and TESTNET.
+LIVE ≠ TESTNET
+TradingTestnet MUST NEVER be accepted as a LIVE credential
 ```
 
-| Dimension               | Assessment                                                                               |
-| ----------------------- | ---------------------------------------------------------------------------------------- |
-| D-CRED-02 compatibility | **Direct match** to frozen LIVE-class mapping                                            |
-| Migration               | No Vault mutation                                                                        |
-| Backwards compatibility | Preserves legacy `Trading` secrets after CONN-04 backfill-to-live                        |
-| Security                | Safe **iff** id-bound within LIVE-class only; no ambient provider-only probe at use time |
-| Operational             | Operators keep legacy LIVE credentials usable                                            |
-| Test matrix             | LIVE×{Trading,TradingLive} ALLOW; LIVE×TradingTestnet DENY; TESTNET×LIVE-class DENY      |
-| Risk                    | Medium if implementers misread as “try all purposes” — freeze text must forbid cascade   |
+### Repository evidence (independent inspection)
 
-#### OPTION B — Normalize LIVE Connection path to exactly one purpose (`TradingLive`)
+| #   | Finding                                                                                                  | Evidence                                                                                                                            |
+| --- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `SecretPurpose.Trading` = legacy default LIVE-class for exchange types                                   | `defaultPurposeForType(binance\|bybit\|okx)` → `Trading`; omit-purpose Vault path                                                   |
+| 2   | `SecretPurpose.TradingLive` = explicit LIVE purpose                                                      | `purposeForTradingEnvironment('live')` → `TradingLive`                                                                              |
+| 3   | `SecretPurpose.TradingTestnet` = TESTNET only                                                            | `purposeForTradingEnvironment('testnet')`; ENV1 maps to `testnet`                                                                   |
+| 4   | Trading vs TradingLive are **same ENV1 environment class** (`live`), not distinct venue security classes | `tradingEnvironmentFromPurpose(Trading\|TradingLive)` → `live`                                                                      |
+| 5   | Trading vs TradingTestnet **are** distinct environment classes                                           | ENV1 + D-CRED-02-08                                                                                                                 |
+| 6   | New populated-`live` Connection store writes **TradingLive only**                                        | `vaultPurposeForConnection` → `purposeForTradingEnvironment`                                                                        |
+| 7   | Legacy / NULL-env / omit-purpose paths still land on **Trading**                                         | handshake/capability omit purpose; `vaultPurposeForConnection` returns undefined when env null                                      |
+| 8   | Multi-purpose probing exists **only for slot conflict checks**, not for credential use                   | `vaultPurposesToProbe`: LIVE probes `[Trading, TradingLive]` in `assertCredentialSlotAvailable` — conflict if **any** slot occupied |
+| 9   | Store/replace/revoke/local-validate use **exact** `vaultPurposeForConnection` (single purpose)           | `connections.service.ts`                                                                                                            |
+| 10  | No code falls back TradingLive → Trading or Trading → TradingLive at **retrieve/use**                    | Exact purpose or omit-purpose only                                                                                                  |
+| 11  | No Connections path reaches TradingTestnet from LIVE store/retrieve helpers                              | LIVE probe list excludes Testnet; store uses TradingLive                                                                            |
+| 12  | Handshake/capability can reach Trading from any EXCHANGE validate via omit-purpose                       | Residual hazard; mitigated by frozen D-CONN-03-01 going forward                                                                     |
+| 13  | Connection.environment available on row before handshake; **lost** at handshake request                  | `ExchangeHandshakeRequest` has no env/purpose                                                                                       |
+| 14  | `vaultSecretId` is the Connection credential reference; get checks `metadata.id === vaultSecretId`       | handshake/capability after get                                                                                                      |
+| 15  | Existing Connection↔Vault purpose inventory in live DB was **not** re-queried in this act                | Association counts remain NOT VERIFIED here; policy must not require inventory mutation                                             |
+
+**Interpretation:** Trading and TradingLive are **historical + explicit LIVE-class aliases**, not LIVE vs TESTNET. Dual-purpose at use time is a compatibility question inside LIVE-class only.
+
+### Option A — LIVE-class `{Trading, TradingLive}`; TESTNET `{TradingTestnet}`
 
 ```text
-LIVE Connection retrieve/validate uses TradingLive only.
-Legacy Trading secrets require a separate governed migration (out of CONN-03).
+LIVE Connection allowed purpose class:
+  { Trading, TradingLive }
+
+TESTNET Connection allowed purpose class:
+  { TradingTestnet }
+
+Equivalence is ONLY within the LIVE environment class.
 ```
 
-| Dimension               | Assessment                                                                      |
-| ----------------------- | ------------------------------------------------------------------------------- |
-| D-CRED-02 compatibility | Narrower than frozen allowlist (still compatible if PO chooses narrowing)       |
-| Migration               | **Not** performed in CONN-03; legacy LIVE validate may fail until separate work |
-| Backwards compatibility | Weak for pre-CONN-02 `Trading` rows                                             |
-| Security                | Simpler exact-purpose surface                                                   |
-| Operational             | Breaks legacy LIVE until migration/ops action                                   |
-| Risk                    | High operational; may force premature Vault work (out of scope)                 |
+**This does NOT mean “try both until one works.”**
 
-#### OPTION C — Prefer TradingLive, then Trading, but only when metadata.id === connection.vaultSecretId
-
-Functionally a constrained form of Option A (ordered dual LIVE-class, id-matched). Same security envelope as A if cascade never includes Testnet.
-
-### Forbidden policies (explicit)
+#### Deterministic resolution contract required if PO chooses A
 
 ```text
+Inputs (trusted):
+  workspaceId, provider/type, connection.environment=live,
+  connection.vaultSecretId
+
+Allowlist:
+  P = { Trading, TradingLive }   // fixed set; never includes TradingTestnet
+
+Algorithm (deterministic; order does not change outcome):
+  1. If vaultSecretId is null → no credential use (validate cannot proceed)
+  2. For each purpose p in P (fixed enumeration):
+       meta = vault.get({ workspaceId, type, purpose: p })
+       if meta !== null AND meta.id === vaultSecretId:
+         selectedPurpose = p
+         break
+  3. If no selectedPurpose → FAIL CLOSED (DENY)
+  4. Assert tradingEnvironmentFromPurpose(selectedPurpose) === 'live'
+     else FAIL CLOSED
+  5. vault.retrieve({ workspaceId, type, purpose: selectedPurpose })
+  6. Use credentials only after steps 3–5 succeed
+
 FORBIDDEN:
-  try Trading → TradingLive → TradingTestnet
-  try multiple environments until one credential works
-  first valid credential wins (ambient)
-  provider-only fallback
-  cross-workspace fallback
-  TESTNET consuming Trading / TradingLive
-  LIVE consuming TradingTestnet
-  client-controlled purpose selection
-  silent Vault purpose rewrite / reclassification
+  - selecting a different LIVE secret that does not match vaultSecretId
+  - probing TradingTestnet for LIVE
+  - "first occupied slot wins"
+  - provider-only get without purpose after D-CONN-03-01
+  - cross-workspace lookup
 ```
+
+Because Vault rows are unique per `(workspaceId, type, purpose)` and ids are unique, **at most one** purpose in P can own a given `vaultSecretId`. Probe order cannot create non-determinism under the id-match rule.
+
+| Dimension               | Assessment                                                                                |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| Security                | Safe under id-match + allowlist; blocks Testnet                                           |
+| Architecture            | Compatible with frozen D-CONN-03-01 (pass selectedPurpose)                                |
+| Model C / D-CRED-02-08  | **Direct match** to frozen LIVE-class allowlist                                           |
+| Migration               | No Vault mutation                                                                         |
+| Backwards compatibility | Legacy Trading + new TradingLive both usable when referenced                              |
+| Determinism             | Yes, with id-match contract                                                               |
+| Ambiguity               | Id not found → DENY (fail closed)                                                         |
+| Risk                    | Medium if implementers misread as ambient cascade — freeze text must include the contract |
+
+### Option B — Normalize LIVE path to exactly one purpose
+
+Repository-grounded single purpose for **new** writes is already `TradingLive`.
+
+```text
+LIVE Connection path uses TradingLive only.
+Legacy Trading secrets are out of band unless separately migrated.
+```
+
+| Dimension                 | Assessment                                                                                     |
+| ------------------------- | ---------------------------------------------------------------------------------------------- |
+| Backward compatibility    | **Weak** for Connections whose `vaultSecretId` points at Trading                               |
+| Existing LIVE credentials | Pre-CONN-02 omit-purpose stores are Trading                                                    |
+| Migration implications    | Would require governed Vault/ops work **outside** CONN-03 (forbidden to silent-normalize here) |
+| Operational impact        | LIVE validate fails for legacy Trading until migration                                         |
+| Security                  | Simpler exact-purpose surface                                                                  |
+| D-CRED-02 consistency     | Narrower than frozen “Trading / TradingLive ALLOW”                                             |
+| Risk                      | High operational; may pressure unauthorized Vault changes                                      |
+
+**Which purpose if B?** Repository evidence points to **TradingLive** (current `purposeForTradingEnvironment('live')`), not Trading. PO must still choose B explicitly — not auto-selected here.
+
+### Other option
+
+```text
+No additional architecture option is required.
+Options A and B cover the repository-grounded design space.
+OPTION C (ambient "try Trading then TradingLive then use whichever exists
+without vaultSecretId match") is REJECTED as non-deterministic fallback.
+```
+
+### Critical fallback analysis
+
+| Scenario | Setup                                                                       | Deterministic governed behavior under Option A contract                                                     | Option B                                             |
+| -------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| 1        | LIVE; Trading **and** TradingLive secrets exist as **different** Vault rows | Use the purpose whose metadata.id === `connection.vaultSecretId` only; never the sibling LIVE secret        | TradingLive only; Trading-referenced Connection DENY |
+| 2        | LIVE; Trading absent; TradingLive exists                                    | ALLOW **iff** vaultSecretId matches TradingLive row; else DENY — **not** “fallback because Trading missing” | ALLOW iff id matches TradingLive                     |
+| 3        | LIVE; Trading exists; TradingLive absent                                    | ALLOW **iff** vaultSecretId matches Trading; else DENY                                                      | DENY (unless id somehow TradingLive)                 |
+| 4        | LIVE; only TradingTestnet exists                                            | **DENY**                                                                                                    | **DENY**                                             |
+| 5        | TESTNET; Trading exists                                                     | **DENY**                                                                                                    | **DENY**                                             |
+| 6        | TESTNET; TradingLive exists                                                 | **DENY**                                                                                                    | **DENY**                                             |
+| 7        | TESTNET; TradingTestnet exists                                              | **ALLOW** subject to workspace/id/other checks                                                              | same                                                 |
+| 8        | LIVE; wrong workspace credential                                            | **DENY**                                                                                                    | **DENY**                                             |
+| 9        | LIVE; provider matches; purpose/env class mismatches                        | **FAIL CLOSED** — do not silently select another credential                                                 | **FAIL CLOSED**                                      |
+
+```text
+Fallback from TradingLive → Trading because TradingLive missing:
+  NOT a free fallback — only id-matched allowlist membership (Option A)
+  or DENY (Option B).
+
+Fallback from LIVE → TradingTestnet:
+  ALWAYS FORBIDDEN
+
+"First valid credential wins":
+  FORBIDDEN
+```
+
+### Determinism requirement
+
+Policy must **not** depend on DB row order, creation time, network order, retry order, or “which secret happens to exist” without id binding.
+
+If multiple LIVE-class secrets exist in a workspace, selection is solely by `connection.vaultSecretId` within the allowlist. Ambiguity (id not in allowlist slots) → **FAIL CLOSED**.
+
+### Security analysis
+
+| Control                       | Option A + id-match               | Option B        |
+| ----------------------------- | --------------------------------- | --------------- |
+| Model C                       | PASS                              | PASS (narrower) |
+| ENV1                          | PASS                              | PASS            |
+| EG1                           | Unaffected (origins CRED-04)      | Unaffected      |
+| Workspace isolation           | PASS if workspaceId always passed | PASS            |
+| Exact-purpose resolution      | PASS after selectedPurpose chosen | PASS            |
+| No provider-only lookup       | Required by D-CONN-03-01          | Required        |
+| No cross-environment fallback | PASS if Testnet excluded from P   | PASS            |
+| Secret non-exposure           | Unchanged                         | Unchanged       |
+| Fail-closed                   | Id miss / class mismatch DENY     | DENY            |
+| C7 / FIV safety               | Unchanged DENY-ALL / no I/O       | Unchanged       |
+
+```text
+FORBIDDEN REMAINS:
+  LIVE → TradingTestnet
+  TESTNET → Trading
+  TESTNET → TradingLive
+  LIVE → arbitrary testnet credential
+```
+
+### Decision matrix (D-CONN-03-02)
+
+| Connection environment  | Vault purpose  | Candidate policy result                                          |
+| ----------------------- | -------------- | ---------------------------------------------------------------- |
+| LIVE                    | Trading        | **OPEN — PO DECISION** (A: ALLOW if id-matched; B: DENY)         |
+| LIVE                    | TradingLive    | **OPEN — PO DECISION** (A/B: ALLOW if id-matched / exact)        |
+| LIVE                    | TradingTestnet | **DENY**                                                         |
+| TESTNET                 | Trading        | **DENY**                                                         |
+| TESTNET                 | TradingLive    | **DENY**                                                         |
+| TESTNET                 | TradingTestnet | **ALLOW** (subject to other checks)                              |
+| NULL                    | Trading        | **OPEN — D-CONN-03-03**                                          |
+| NULL                    | TradingLive    | **OPEN — D-CONN-03-03**                                          |
+| NULL                    | TradingTestnet | **DENY**                                                         |
+| wrong workspace         | any            | **DENY**                                                         |
+| provider-only lookup    | n/a            | **FORBIDDEN / DENY**                                             |
+| client-supplied purpose | n/a            | **FORBIDDEN / DENY** (D-CONN-03-05 still open; principle intact) |
+
+LIVE + Trading / TradingLive are **not** marked ALLOW as frozen.
+
+### Future test matrix (implementation later)
+
+1. LIVE + Trading (id-matched)
+2. LIVE + TradingLive (id-matched)
+3. LIVE + TradingTestnet → DENY
+4. TESTNET + Trading → DENY
+5. TESTNET + TradingLive → DENY
+6. TESTNET + TradingTestnet → ALLOW
+7. Multiple LIVE-purpose credentials in workspace; Connection bound to one → only that one used
+8. Missing Trading with TradingLive present → id-match only (no free fallback)
+9. Missing TradingLive with Trading present → id-match only under A; DENY under B
+10. Wrong workspace → DENY
+11. Wrong provider / vaultSecretId mismatch → DENY
+12. Provider-only lookup → DENY
+13. Client-supplied purpose → rejected
+14. Deterministic resolution (probe order independence under id-match)
+15. Ambiguity (id not in allowlist) → FAIL CLOSED
+16. Secret non-leakage
+17. No external venue calls
+
+### Cross-decision dependencies
+
+```text
+D-CONN-03-01: FROZEN — APPROVED OPTION A
+D-CONN-03-02: OPEN
+D-CONN-03-03: OPEN
+D-CONN-03-04: OPEN
+D-CONN-03-05: OPEN
+```
+
+Frozen D-CONN-03-01 requires a derived purpose on the validate path; D-CONN-03-02 defines **which LIVE-class purposes are eligible** and the deterministic selection rule. Do not claim the full FIV-CONN-03 decision set is frozen.
 
 ### Recommended for PO/Governance consideration
 
 ```text
 RECOMMENDED FOR PO/GOVERNANCE CONSIDERATION:
 OPTION A
-(with id-matched resolution within LIVE-class allowlist;
- OPTION C as an ordered refinement of A)
+  — LIVE-class allowlist {Trading, TradingLive}
+  — TESTNET-class {TradingTestnet}
+  — deterministic vaultSecretId-matched resolution within allowlist
+  — NEVER ambient cascade; NEVER Testnet on LIVE path
 
-Do NOT select ambient multi-purpose cascade.
-Do NOT normalize Vault data in CONN-03 (OPTION B only if PO accepts
-legacy LIVE breakage or schedules separate migration outside CONN-03).
+OPTION B
+  — only if PO explicitly accepts legacy Trading LIVE breakage
+    or schedules separate governed migration outside CONN-03
+
+OPTION C (ambient try-until-works):
+  REJECTED — do not approve
 ```
-
-Rationale: Preserves frozen D-CRED-02-08 LIVE-class allowlist; avoids Vault mutation; blocks cross-env fallback when id-bound.
-
-### PO/Governance approval required
 
 ```text
 PO/GOVERNANCE APPROVAL REQUIRED: YES
 Status: OPEN — NOT FROZEN
-Highest-risk decision: YES
 ```
 
 ---
@@ -521,7 +729,7 @@ Status: OPEN — NOT FROZEN
 
 ## Cross-Decision Consistency
 
-If PO later freezes the **recommended set** (01=A, 02=A/C id-matched, 03=A or documented B, 04=A, 05=A), the composition guarantees:
+If PO later freezes the **recommended remaining set** (02=A id-matched, 03=A or documented B, 04=A, 05=A) **together with already-frozen D-CONN-03-01=A**, the composition guarantees:
 
 | Guarantee                                 | How                                         |
 | ----------------------------------------- | ------------------------------------------- |
@@ -536,21 +744,22 @@ If PO later freezes the **recommended set** (01=A, 02=A/C id-matched, 03=A or do
 
 **Inconsistency warnings for PO:**
 
-1. Choosing **01=C (defer)** without **03/deny interim** reopens C-06.
+1. ~~Choosing 01=C (defer) without interim~~ — **N/A: D-CONN-03-01 is FROZEN Option A.**
 2. Choosing **02=B (TradingLive only)** without a migration plan breaks legacy `Trading` after NULL→live backfill.
 3. Choosing **03=B** while claiming “NULL never retrieves LIVE-class” is contradictory — B explicitly allows omit-purpose `Trading` for NULL as a **documented exception**, not as LIVE identity.
 4. Choosing **04=C (store only)** contradicts residual CONN-03 purpose (validate path).
+5. Implementing D-CONN-03-01 without freezing D-CONN-03-02 leaves LIVE-class selection underspecified for legacy Trading vs TradingLive.
 
 ---
 
 ## Security Matrix
 
-Results that depend on OPEN decisions are marked accordingly. **No ALLOW invented beyond frozen D-CRED-02 where applicable.**
+Results that depend on OPEN decisions are marked accordingly. **No LIVE+Trading / LIVE+TradingLive ALLOW frozen without PO decision on D-CONN-03-02.**
 
 | Connection environment               | Vault purpose  | Expected result                                                                                                  |
 | ------------------------------------ | -------------- | ---------------------------------------------------------------------------------------------------------------- |
-| LIVE                                 | Trading        | **OPEN — PO DECISION REQUIRED** (D-CONN-03-02: ALLOW under Option A/C; DENY under Option B)                      |
-| LIVE                                 | TradingLive    | **ALLOW** (all viable 02 options; matches current store)                                                         |
+| LIVE                                 | Trading        | **OPEN — PO DECISION REQUIRED** (D-CONN-03-02: ALLOW if id-matched under A; DENY under B)                        |
+| LIVE                                 | TradingLive    | **OPEN — PO DECISION REQUIRED** (D-CONN-03-02: ALLOW under A/B if id/exact match)                                |
 | LIVE                                 | TradingTestnet | **DENY**                                                                                                         |
 | TESTNET                              | Trading        | **DENY**                                                                                                         |
 | TESTNET                              | TradingLive    | **DENY**                                                                                                         |
@@ -656,20 +865,20 @@ Protected leftovers:          UNTOUCHED
 ## PO/Governance Decision Status
 
 ```text
-D-CONN-03-01: OPEN
+D-CONN-03-01: FROZEN — APPROVED OPTION A
 D-CONN-03-02: OPEN
 D-CONN-03-03: OPEN
 D-CONN-03-04: OPEN
 D-CONN-03-05: OPEN
 
-Decision freeze artifact: NOT CREATED
-Reason: No explicit PO/Governance approvals were supplied in this session.
-Recommendations above are NOT approvals.
+Full five-decision freeze artifact: NOT CREATED
+Reason: Only D-CONN-03-01 has explicit PO approval.
+D-CONN-03-02…05 recommendations are NOT approvals.
 ```
 
-### How PO freezes later
+### How PO completes freeze later
 
-PO/Governance must explicitly approve each decision (option letter + any refinements). Only then may a separate freeze artifact be created:
+PO/Governance must explicitly approve D-CONN-03-02…05. Only when **all five** are approved may a separate freeze artifact be created:
 
 ```text
 docs/project/version-3/wave-6/v3-l02-fiv-conn-03-po-governance-decision-freeze.md
@@ -682,15 +891,17 @@ Freeze still does **not** authorize implementation.
 ## Next governance gate
 
 ```text
-After PO freezes D-CONN-03-01…05:
+Next required PO decision:
+  D-CONN-03-02
+
+After PO freezes D-CONN-03-01…05 (all five):
   FIV-CONN-03 ARCHITECTURE REVIEW
   + FIV-CONN-03 SECURITY REVIEW
   → PO/Governance Planning Approval
   → Slice Approval
   → Implementation (only if authorized)
 
-Until freeze:
-  Decisions remain OPEN
+Until all five are frozen:
   Implementation authorization: NOT GRANTED
 ```
 
