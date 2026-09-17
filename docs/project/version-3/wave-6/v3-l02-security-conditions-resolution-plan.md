@@ -441,7 +441,7 @@ None for tests. Live production calls require separate authorization (not part o
 | SB-02 | Durable HS claim-at-I/O + ACTION/COMMAND | Prisma store; claim CAS; verify≠claim | Replay/race/binding/expiry/restart/multi-instance | SD-L02-04 | AD-L02-04 | None (frozen) | **PLANNED — NOT IMPLEMENTED** |
 | SB-03 | UNKNOWN/pre-send/reconcile persistence | Status+markers+reconcile fields; engine behavior | Crash matrix; no blind retry | SD-L02-05/06 | AD-L02-07/09/11 | None (frozen) | **PLANNED — NOT IMPLEMENTED** |
 | SB-04 | Live ExecutionAdapterPort | Live adapters bound to EXECUTION_ADAPTER under gates | Mocked submit/cancel/query; fail-closed | SD-L02-01/02/06 | AD-L02-01/14 | None† / capital act separate | **PLANNED — NOT IMPLEMENTED** |
-| SB-05 | EmergencyManager isolation | No L02 dependency; regressions | KS/policy/session no cancel-all; no Engine→EM | SD-L02-07 | AD-L02-01 | None* | **PLANNED — NOT IMPLEMENTED** |
+| SB-05 | EmergencyManager isolation | No L02 dependency; regressions | KS/policy/session no cancel-all; no Engine→EM | SD-L02-07 | AD-L02-01 | None* | **EM1 COMPLETE** (isolation evidenced; EM still mounted residual) |
 | SB-06 | Test/live credential separation | Env metadata + adapter checks | Mismatch fail-closed; no secret logs | SD-L02-02 | AD-L02-14 | Maybe‡ | **PLANNED — NOT IMPLEMENTED** |
 | SB-07 | Cross-workspace live regressions | Dedicated suite green | Full isolation matrix | SD-L02-03 | — | None | **PLANNED — NOT IMPLEMENTED** |
 

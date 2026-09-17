@@ -30,6 +30,8 @@ export type WorkspaceLivePolicyAdminView = Readonly<{
 /**
  * PROPOSED-V3-L01-S03 — Admin enable/disable orchestration over the S02 SoT.
  * Control-plane only. No Gate / KS / Session / credentials / LiveCommand.
+ *
+ * V3-L02-S-EM1: disable → PAPER does not invoke EmergencyManager / cancel-all.
  */
 @Injectable()
 export class WorkspaceLivePolicyAdminService {

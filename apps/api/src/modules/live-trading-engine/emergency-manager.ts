@@ -39,6 +39,12 @@ export type KillSwitchResult = Readonly<{
  * 4. Close Positions (configurable, via Position Engine)
  *
  * Does not depend on Exchange Adapter connectivity.
+ *
+ * V3-L02-S-EM1 / SB-05: NON-SoT for V3-L02. Not part of the canonical
+ * Orders → ExecutionEngine → ExecutionAdapterPort path. Must not be invoked by
+ * durable workspace Kill Switch arming, LIVE_POLICY disable, TradingSession stop,
+ * or order-specific cancel. Remains a separate emergency capability (C7-gated
+ * `/v1/live/kill-switch` only). Broad cancel-all here is NOT L02 cancel semantics.
  */
 @Injectable()
 export class EmergencyManager {

@@ -414,7 +414,11 @@ These **block live venue I/O and Slice Approval**, not the act of recording this
 **Resolution plan (planning only — does not authorize implementation):**
 [`v3-l02-security-conditions-resolution-plan.md`](./v3-l02-security-conditions-resolution-plan.md)
 
-SB-01…SB-07 remain **PLANNED — NOT IMPLEMENTED**. This Security Review verdict is unchanged: **SECURITY PASS WITH CONDITIONS**.
+**EM1 implementation evidence (isolation only):**
+[`v3-l02-s-em1-emergency-manager-isolation-evidence.md`](./v3-l02-s-em1-emergency-manager-isolation-evidence.md) —
+L02-S-EM1 complete for demonstrable L02↛EmergencyManager isolation; SB-05 residual (EM still mounted behind C7) remains documented. SB-01…04 / 06 / 07 unchanged (**NOT IMPLEMENTED**).
+
+This Security Review verdict is unchanged: **SECURITY PASS WITH CONDITIONS**.
 
 ---
 

@@ -30,6 +30,9 @@ export type PersistClearedKillSwitchCommand = Readonly<{
  * W3-O04-b — durable Kill Switch persistence on Trading Session owner.
  * W3-O04-c — write-through to recovery store after hydrate.
  * Does not execute halt or wire admission.
+ *
+ * V3-L02-S-EM1: Does not import or invoke EmergencyManager / cancel-all.
+ * Arming blocks new live admission via S04; does not auto-cancel venue orders.
  */
 @Injectable()
 export class KillSwitchPersistenceService {
