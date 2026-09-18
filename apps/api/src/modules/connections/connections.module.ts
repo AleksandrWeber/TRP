@@ -11,6 +11,7 @@ import { ConnectionValidationAudit } from './connection-validation-audit';
 import { CONNECTION_VALIDATOR, DeterministicConnectionValidator } from './connection-validator';
 import { Conn04MigrationBoundaryService } from './conn04-migration-boundary.service';
 import { ConnectionsService } from './connections.service';
+import { FivConn04APreflightService } from './fiv-conn-04-a-preflight.service';
 import { MIGRATION_GATE_DURABLE_AUTHORITY } from './migration-gate-durable-authority.port';
 import { MIGRATION_GATE_PORT } from './migration-gate.port';
 import { PrismaMigrationGateAdapter } from './prisma-migration-gate.adapter';
@@ -38,11 +39,13 @@ import { PrismaMigrationGateAdapter } from './prisma-migration-gate.adapter';
       useExisting: PrismaMigrationGateAdapter,
     },
     Conn04MigrationBoundaryService,
+    FivConn04APreflightService,
   ],
   exports: [
     MIGRATION_GATE_PORT,
     MIGRATION_GATE_DURABLE_AUTHORITY,
     Conn04MigrationBoundaryService,
+    FivConn04APreflightService,
   ],
 })
 export class ConnectionsModule {}
