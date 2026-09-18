@@ -4,8 +4,7 @@
  */
 
 import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   MIGRATION_GATE_AUDIT_EVENT_TYPE,
@@ -32,8 +31,6 @@ import {
   type MigrationGateGrant,
 } from './migration-gate';
 import { MIGRATION_GATE_PORT, type MigrationGatePort } from './migration-gate.port';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const NOW = Date.parse('2026-09-18T12:00:00.000Z');
 const ACQUIRED = '2026-09-18T10:00:00.000Z';
