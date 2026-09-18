@@ -15,6 +15,8 @@ export class ConnectionMigrationGateAudit {
     input: {
       outcome: MigrationGateAuditOutcome;
       actorId: string;
+      /** Target workspace for blocked mutations (D-B03-03 / COND-SEC-B06). */
+      workspaceId?: string;
       payload: Readonly<Record<string, unknown>>;
       correlationId?: string;
     },
@@ -31,6 +33,7 @@ export class ConnectionMigrationGateAudit {
         source: 'connections',
         attribution: {
           actorId: input.actorId,
+          ...(input.workspaceId !== undefined ? { workspaceId: input.workspaceId } : {}),
           resourceType: 'migration-gate',
           resourceId: 'FIV-CONN-04',
         },

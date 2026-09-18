@@ -44,9 +44,15 @@ import {
 } from './connection-environment';
 import { ConnectionLifecycleAudit } from './connection-lifecycle-audit';
 import { assertConnectionTransition, canStartConnectionValidation } from './connection-lifecycle';
+import { ConnectionMigrationGateAudit } from './connection-migration-gate-audit';
+import {
+  assertDenySetAllowed,
+  assertDenySetAllowedAfterVault,
+} from './connection-migration-gate-enforcement';
 import { ConnectionValidationAudit } from './connection-validation-audit';
 import { CONNECTION_VALIDATOR, type ConnectionValidator } from './connection-validator';
 import { vaultSecretTypeForProvider } from './connection-vault';
+import { MIGRATION_GATE_PORT, type MigrationGatePort } from './migration-gate.port';
 
 const CREDENTIAL_SLOT_CONFLICT =
   'Credentials are already assigned to this provider and environment.';
@@ -98,6 +104,9 @@ export class ConnectionsService {
     private readonly openRouterConnectivity: OpenRouterConnectivityService,
     private readonly openRouterAudit: OpenRouterConnectivityAudit,
     private readonly openRouterAiRequests: OpenRouterAiRequestService,
+    @Inject(MIGRATION_GATE_PORT)
+    private readonly migrationGate: MigrationGatePort,
+    private readonly migrationGateAudit: ConnectionMigrationGateAudit,
   ) {}
 
   catalog(): ConnectionCatalogView {
@@ -140,6 +149,16 @@ export class ConnectionsService {
           ? 'Environment is required for exchange connections.'
           : 'Environment must be live or testnet.',
       );
+    }
+    if (connectionType === 'EXCHANGE') {
+      await assertDenySetAllowed({
+        migrationGate: this.migrationGate,
+        audit: this.migrationGateAudit,
+        method: 'create',
+        connectionType: 'EXCHANGE',
+        workspaceId: input.workspaceId,
+        actorUserId: input.actorUserId,
+      });
     }
     const now = new Date();
     const row = await this.prisma.connectionRecord.create({
@@ -188,6 +207,14 @@ export class ConnectionsService {
     credentials: Record<string, string>;
   }): Promise<ConnectionMetadataView> {
     const connection = await this.getRow(input.workspaceId, input.id);
+    await assertDenySetAllowed({
+      migrationGate: this.migrationGate,
+      audit: this.migrationGateAudit,
+      method: 'storeCredentials',
+      workspaceId: input.workspaceId,
+      actorUserId: input.actorUserId,
+      connectionId: input.id,
+    });
     const status = connectionStatus(connection.status);
     if (status === 'DISABLED') {
       throw new ConflictException('Disabled connections cannot store credentials.');
@@ -211,6 +238,14 @@ export class ConnectionsService {
       type: vaultSecretTypeForProvider(connection.provider as ConnectionProvider),
       purpose: vaultPurposeForConnection(connection),
       fields: input.credentials,
+    });
+    await assertDenySetAllowedAfterVault({
+      migrationGate: this.migrationGate,
+      audit: this.migrationGateAudit,
+      method: 'storeCredentials',
+      workspaceId: input.workspaceId,
+      actorUserId: input.actorUserId,
+      connectionId: input.id,
     });
     if (status === 'REVOKED') {
       assertConnectionTransition(status, 'DISCONNECTED');
@@ -250,6 +285,14 @@ export class ConnectionsService {
     credentials: Record<string, string>;
   }): Promise<ConnectionMetadataView> {
     const connection = await this.getRow(input.workspaceId, input.id);
+    await assertDenySetAllowed({
+      migrationGate: this.migrationGate,
+      audit: this.migrationGateAudit,
+      method: 'replaceCredentials',
+      workspaceId: input.workspaceId,
+      actorUserId: input.actorUserId,
+      connectionId: input.id,
+    });
     const status = connectionStatus(connection.status);
     if (connection.vaultSecretId === null) {
       throw new ConflictException('Credentials have not been stored for this connection.');
@@ -268,6 +311,14 @@ export class ConnectionsService {
     if (stored.metadata.id !== connection.vaultSecretId) {
       throw new ConflictException('Credential ownership could not be verified.');
     }
+    await assertDenySetAllowedAfterVault({
+      migrationGate: this.migrationGate,
+      audit: this.migrationGateAudit,
+      method: 'replaceCredentials',
+      workspaceId: input.workspaceId,
+      actorUserId: input.actorUserId,
+      connectionId: input.id,
+    });
     let row: ConnectionRow;
     try {
       row = await this.prisma.connectionRecord.update({
@@ -325,6 +376,14 @@ export class ConnectionsService {
     id: string;
   }): Promise<ConnectionMetadataView> {
     const connection = await this.getRow(input.workspaceId, input.id);
+    await assertDenySetAllowed({
+      migrationGate: this.migrationGate,
+      audit: this.migrationGateAudit,
+      method: 'revoke',
+      workspaceId: input.workspaceId,
+      actorUserId: input.actorUserId,
+      connectionId: input.id,
+    });
     const status = connectionStatus(connection.status);
     assertConnectionTransition(status, 'REVOKED');
     if (connection.vaultSecretId === null) {
@@ -348,6 +407,15 @@ export class ConnectionsService {
       workspaceId: input.workspaceId,
       type,
       purpose,
+    });
+    // C-B03-01: mid-flight re-observe before Connection REVOKED mutation.
+    await assertDenySetAllowedAfterVault({
+      migrationGate: this.migrationGate,
+      audit: this.migrationGateAudit,
+      method: 'revoke',
+      workspaceId: input.workspaceId,
+      actorUserId: input.actorUserId,
+      connectionId: input.id,
     });
     const row = await this.updateStatus(connection.id, 'REVOKED');
     this.capabilities.clear(input.workspaceId, connection.id);

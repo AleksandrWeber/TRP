@@ -423,6 +423,31 @@ function openRouterAiRequestStub() {
   };
 }
 
+/** Default inactive migration gate — B-03 allow path for regression suites. */
+function inactiveMigrationGate() {
+  return {
+    observe: async () => ({ ok: true as const, observation: 'INACTIVE' as const }),
+    acquire: async () => ({ ok: false as const, reason: 'GATE_UNAUTHORIZED' as const }),
+    release: async () => ({ ok: false as const, reason: 'GATE_UNAUTHORIZED' as const }),
+    heartbeat: async () => ({ ok: false as const, reason: 'GATE_UNAUTHORIZED' as const }),
+    validate: async () => ({
+      ok: false as const,
+      reason: 'GATE_INACTIVE' as const,
+      observation: 'INACTIVE' as const,
+    }),
+  };
+}
+
+function migrationGateAuditStub() {
+  const events: Array<Record<string, unknown>> = [];
+  return {
+    events,
+    record: async (input: Record<string, unknown>) => {
+      events.push(input);
+    },
+  };
+}
+
 describe('ConnectionsService (W2-S01)', () => {
   it('creates metadata only with the provider type and disconnected default', async () => {
     const service = new ConnectionsService(
@@ -438,6 +463,8 @@ describe('ConnectionsService (W2-S01)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const connection = await service.create({
       workspaceId: 'workspace-a',
@@ -486,6 +513,8 @@ describe('ConnectionsService (W2-S01)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -523,6 +552,8 @@ describe('ConnectionsService (W2-S01)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -575,6 +606,8 @@ describe('ConnectionsService (W2-S01)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -630,6 +663,8 @@ describe('ConnectionsService (W2-S01)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -680,6 +715,8 @@ describe('ConnectionsService (W2-S01)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -763,6 +800,8 @@ describe('ConnectionsService exchange provider reference (W2-S02-a)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
 
     const catalog = service.catalog();
@@ -792,6 +831,8 @@ describe('ConnectionsService exchange provider reference (W2-S02-a)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -829,6 +870,8 @@ describe('ConnectionsService exchange handshake (W2-S02-b)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -878,6 +921,8 @@ describe('ConnectionsService exchange handshake (W2-S02-b)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
 
     const validated = await service.validate({
@@ -990,6 +1035,8 @@ describe('ConnectionsService exchange session health (W2-S02-c)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -1154,6 +1201,8 @@ describe('ConnectionsService exchange session health (W2-S02-c)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -1194,6 +1243,8 @@ describe('ConnectionsService exchange capability verification (W2-S02-d)', () =>
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await connected.create({
       workspaceId: 'workspace-a',
@@ -1255,6 +1306,8 @@ describe('ConnectionsService exchange capability verification (W2-S02-d)', () =>
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -1309,6 +1362,8 @@ describe('ConnectionsService exchange capability verification (W2-S02-d)', () =>
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -1353,6 +1408,8 @@ describe('ConnectionsService exchange capability verification (W2-S02-d)', () =>
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -1408,6 +1465,8 @@ describe('ConnectionsService OpenRouter connectivity (W2-S05-a)', () => {
       openRouterConnectivityStub() as never,
       openRouterAudit as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
 
     const created = await service.create({
@@ -1470,6 +1529,8 @@ describe('ConnectionsService OpenRouter connectivity (W2-S05-a)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -1509,6 +1570,8 @@ describe('ConnectionsService OpenRouter connectivity (W2-S05-a)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -1550,6 +1613,8 @@ describe('ConnectionsService OpenRouter connectivity (W2-S05-a)', () => {
       openRouterConnectivityStub() as never,
       openRouterAudit as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const created = await service.create({
       workspaceId: 'workspace-a',
@@ -1586,6 +1651,8 @@ describe('ConnectionsService environment model (FIV-CONN-01)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
   }
 
@@ -1669,6 +1736,8 @@ describe('ConnectionsService environment model (FIV-CONN-01)', () => {
       openRouterConnectivityStub() as never,
       openRouterAuditStub() as never,
       openRouterAiRequestStub() as never,
+      inactiveMigrationGate() as never,
+      migrationGateAuditStub() as never,
     );
     const legacy = await seeded.get('workspace-a', 'legacy-1');
     expect(legacy.environment).toBeNull();
@@ -1709,6 +1778,8 @@ describe('ConnectionsService provider+environment uniqueness (FIV-CONN-02)', () 
         openRouterConnectivityStub() as never,
         openRouterAuditStub() as never,
         openRouterAiRequestStub() as never,
+        inactiveMigrationGate() as never,
+        migrationGateAuditStub() as never,
       ),
       vault,
     };

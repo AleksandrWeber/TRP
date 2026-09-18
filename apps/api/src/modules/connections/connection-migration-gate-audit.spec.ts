@@ -32,6 +32,34 @@ describe('ConnectionMigrationGateAudit', () => {
     );
   });
 
+  it('includes workspaceId in attribution for blocked mutations when provided', async () => {
+    const record = vi.fn(async () => ({ id: 'a' }));
+    const audit = new ConnectionMigrationGateAudit({ record } as never);
+    await audit.record({
+      outcome: 'lifecycle_mutation_blocked',
+      actorId: 'user-a',
+      workspaceId: 'ws-a',
+      payload: {
+        gateKey: 'FIV-CONN-04',
+        operation: 'CREDENTIAL_STORE',
+        observation: 'ACTIVE',
+        workspaceId: 'ws-a',
+        outcome: 'lifecycle_mutation_blocked',
+        result: 'denied',
+      },
+    });
+    expect(record).toHaveBeenCalledWith(
+      expect.objectContaining({
+        outcome: 'lifecycle_mutation_blocked',
+        attribution: expect.objectContaining({
+          actorId: 'user-a',
+          workspaceId: 'ws-a',
+        }),
+      }),
+      undefined,
+    );
+  });
+
   it('rejects payloads containing forbidden fencingToken key', async () => {
     const record = vi.fn(async () => ({ id: 'a' }));
     const audit = new ConnectionMigrationGateAudit({ record } as never);
