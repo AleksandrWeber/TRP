@@ -142,7 +142,7 @@ describe('FIV-CONN-04-B-05 B05-S1 audit integrity', () => {
     beforeEach(() => {
       row = inactive(0);
       dbNow = new Date('2026-09-18T12:00:00.000Z');
-      securityRecord = vi.fn(async () => ({ id: 'b02-audit' }));
+      securityRecord = vi.fn(async (_event: unknown, _txn?: unknown) => ({ id: 'b02-audit' }));
       vi.clearAllMocks();
 
       mockClient.$queryRaw.mockImplementation(async (arg: unknown) => {
@@ -204,7 +204,8 @@ describe('FIV-CONN-04-B-05 B05-S1 audit integrity', () => {
       });
       expect(result.ok).toBe(true);
       expect(securityRecord).toHaveBeenCalled();
-      const [event, txn] = securityRecord.mock.calls[0] ?? [];
+      const event = securityRecord.mock.calls[0]?.[0];
+      const txn = securityRecord.mock.calls[0]?.[1];
       expect(event).toEqual(
         expect.objectContaining({
           eventType: MIGRATION_GATE_AUDIT_EVENT_TYPE,

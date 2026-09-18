@@ -128,7 +128,12 @@ describe('FIV-CONN-04-B-05 B05-S2 secret / sensitive-key leakage', () => {
     });
 
     it('safe allow path retains fenceGeneration and omits forbidden keys/values', async () => {
-      const record = vi.fn(async () => ({ id: 'ok' }));
+      type AuditEvent = {
+        eventType: string;
+        outcome: string;
+        payload: Record<string, unknown>;
+      };
+      const record = vi.fn(async (_event: AuditEvent, _txn?: unknown) => ({ id: 'ok' }));
       const audit = new ConnectionMigrationGateAudit({ record } as never);
       await audit.record({
         outcome: 'gate_acquired',
@@ -145,7 +150,11 @@ describe('FIV-CONN-04-B-05 B05-S2 secret / sensitive-key leakage', () => {
         },
       });
       expect(record).toHaveBeenCalledTimes(1);
-      const [event] = record.mock.calls[0] ?? [];
+      const event = record.mock.calls[0]?.[0];
+      expect(event).toBeDefined();
+      if (!event) {
+        throw new Error('expected SecurityAuditService.record to receive an event');
+      }
       expect(event).toEqual(
         expect.objectContaining({
           eventType: MIGRATION_GATE_AUDIT_EVENT_TYPE,
@@ -157,7 +166,7 @@ describe('FIV-CONN-04-B-05 B05-S2 secret / sensitive-key leakage', () => {
           }),
         }),
       );
-      const payload = event.payload as Record<string, unknown>;
+      const payload = event.payload;
       expect(payload).not.toHaveProperty('fencingToken');
       expect(payload).not.toHaveProperty('unrelatedNoise');
       expect(payload).not.toHaveProperty('secret');

@@ -155,6 +155,7 @@ describe('FIV-CONN-04-B-05 B05-S3 security smoke', () => {
           actorUserId: 'user-smoke',
         }),
       ).rejects.toBeInstanceOf(ConflictException);
+      expect(events).toHaveLength(1);
       expect(events[0]).toMatchObject({
         outcome: 'lifecycle_mutation_blocked',
         payload: expect.objectContaining({
