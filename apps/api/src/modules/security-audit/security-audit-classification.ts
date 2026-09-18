@@ -117,6 +117,16 @@ const CATALOG: Readonly<Record<string, SecurityAuditClassification>> = Object.fr
     financialIntegrityValue: 'high',
     retention: 'long',
   },
+  'connection.migration-gate': {
+    eventClass: 'connection',
+    criticality: 'high',
+    investigationValue:
+      'Who acquired, released, reclaimed, or was denied the FIV-CONN-04 migration-gate lease?',
+    customerTrustValue: 'high',
+    securityImpact: 'high',
+    financialIntegrityValue: 'high',
+    retention: 'long',
+  },
   'platform.abuse.throttled': {
     eventClass: 'security-platform',
     criticality: 'high',

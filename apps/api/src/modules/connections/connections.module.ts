@@ -6,9 +6,12 @@ import { SecurityAuditModule } from '../security-audit';
 import { WorkspaceModule } from '../workspace';
 import { ConnectionsController } from './connections.controller';
 import { ConnectionLifecycleAudit } from './connection-lifecycle-audit';
+import { ConnectionMigrationGateAudit } from './connection-migration-gate-audit';
 import { ConnectionValidationAudit } from './connection-validation-audit';
 import { CONNECTION_VALIDATOR, DeterministicConnectionValidator } from './connection-validator';
 import { ConnectionsService } from './connections.service';
+import { MIGRATION_GATE_PORT } from './migration-gate.port';
+import { PrismaMigrationGateAdapter } from './prisma-migration-gate.adapter';
 
 @Module({
   imports: [
@@ -25,6 +28,10 @@ import { ConnectionsService } from './connections.service';
     ConnectionLifecycleAudit,
     ConnectionValidationAudit,
     ConnectionsService,
+    ConnectionMigrationGateAudit,
+    PrismaMigrationGateAdapter,
+    { provide: MIGRATION_GATE_PORT, useExisting: PrismaMigrationGateAdapter },
   ],
+  exports: [MIGRATION_GATE_PORT],
 })
 export class ConnectionsModule {}

@@ -48,6 +48,10 @@ const ATTRIBUTION_RULES: Readonly<Record<string, AttributionRule>> = Object.free
     resourceType: true,
     resourceId: true,
   },
+  /** Global migration-gate lifecycle — workspace optional (COND-SEC-B06). */
+  'connection.migration-gate': {
+    actorId: true,
+  },
   'platform.abuse.throttled': {},
   'platform.deny.shaped': {},
   'continuity.recovery-completed': {},

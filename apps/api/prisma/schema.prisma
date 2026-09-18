@@ -887,6 +887,28 @@ model WorkspaceKillSwitchState {
   @@map("workspace_kill_switch_states")
 }
 
+/// FIV-CONN-04-B-02 — Global singleton migration-gate lease (durable SoT).
+/// Not workspace/provider/environment scoped. Do not overload TradingSession.
+model ConnectionMigrationGateLease {
+  gateKey            String    @id @map("gate_key")
+  purpose            String
+  state              String
+  holderId           String?   @map("holder_id")
+  fenceGeneration    Int       @default(0) @map("fence_generation")
+  acquiredAt         DateTime? @map("acquired_at")
+  expiresAt          DateTime? @map("expires_at")
+  authorizedWindowMs Int?      @map("authorized_window_ms")
+  authorizedUntil    DateTime? @map("authorized_until")
+  heartbeatAt        DateTime? @map("heartbeat_at")
+  actorKind          String?   @map("actor_kind")
+  correlationId      String?   @map("correlation_id")
+  schemaVersion      Int       @default(1) @map("schema_version")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  @@map("connection_migration_gate_leases")
+}
+
 /// V3-L02-S-HS1 — Durable human-start authorization proofs (PO-L02-05A…D).
 /// Token plaintext is never stored (SHA-256 hash only). Claim ≠ venue submit/accept/fill.
 model HumanStartProof {
