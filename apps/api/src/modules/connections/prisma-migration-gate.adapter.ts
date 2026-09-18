@@ -29,6 +29,7 @@ import {
   type MigrationGateReasonCode,
   type PrivilegedActorContext,
 } from './migration-gate';
+import type { MigrationGateDurableAuthority } from './migration-gate-durable-authority.port';
 import type {
   MigrationGateAcquireInput,
   MigrationGateAcquireResult,
@@ -81,7 +82,9 @@ function failHeartbeat(
 }
 
 @Injectable()
-export class PrismaMigrationGateAdapter implements MigrationGatePort {
+export class PrismaMigrationGateAdapter
+  implements MigrationGatePort, MigrationGateDurableAuthority
+{
   constructor(
     private readonly prisma: PrismaService,
     private readonly transactions: PrismaTransactionService,
