@@ -43,7 +43,7 @@ function operator(overrides: Partial<PrivilegedActorContext> = {}): PrivilegedAc
 async function attemptPrivilegedD(
   boundary: Conn04MigrationBoundaryService,
   g: MigrationGateGrant,
-  dSpy: ReturnType<typeof vi.fn>,
+  dSpy: ReturnType<typeof vi.fn<() => void>>,
 ): Promise<{ ok: true } | { ok: false; reason: string }> {
   const proof = await boundary.assertWriteAuthority(Object.freeze({}) as TransactionContext, g);
   if (!proof.ok) {
@@ -63,7 +63,7 @@ describe('FIV-CONN-04-B-06 boundary concurrency (RACE-09 / RACE-10 / AC-B20)', (
   };
   let durable: { assertDurableAuthorityCas: ReturnType<typeof vi.fn> };
   let boundary: Conn04MigrationBoundaryService;
-  let dSpy: ReturnType<typeof vi.fn>;
+  let dSpy: ReturnType<typeof vi.fn<() => void>>;
 
   beforeEach(() => {
     port = {
@@ -74,7 +74,7 @@ describe('FIV-CONN-04-B-06 boundary concurrency (RACE-09 / RACE-10 / AC-B20)', (
       validate: vi.fn(),
     };
     durable = { assertDurableAuthorityCas: vi.fn() };
-    dSpy = vi.fn();
+    dSpy = vi.fn<() => void>();
     boundary = new Conn04MigrationBoundaryService(
       port as unknown as MigrationGatePort,
       durable as unknown as MigrationGateDurableAuthority,

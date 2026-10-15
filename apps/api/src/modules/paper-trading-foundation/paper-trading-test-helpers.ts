@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { MarketSymbolCache } from '../market-data-foundation/market-symbol.cache';
 import { MarketTickerCache } from '../market-data-foundation/market-ticker.cache';
 import type { WorkspaceAccessService } from '../workspace';
@@ -17,6 +17,29 @@ import { PaperTradingAccountAudit } from './paper-trading-account.audit';
 import { PaperTradingAccountService } from './paper-trading-account.service';
 import { InMemoryPaperTradingAccountStore } from './paper-trading-account.store';
 import { PaperTradingFoundationController } from './paper-trading-foundation.controller';
+
+// Explicit Mock<> keeps declaration emit portable under Vitest 4 (avoids deep @vitest/spy paths).
+type AuditRecordMock = { record: Mock<(payload: { outcome: string }) => Promise<void>> };
+
+export type PaperTradingTestStack = {
+  accounts: InMemoryPaperTradingAccountStore;
+  orders: InMemoryPaperOrderStore;
+  fills: InMemoryPaperFillStore;
+  symbols: MarketSymbolCache;
+  tickers: MarketTickerCache;
+  gateway: PaperOrderMarketDataGateway;
+  accountService: PaperTradingAccountService;
+  orderService: PaperOrderService;
+  executionService: PaperExecutionService;
+  portfolioService: PaperPortfolioService;
+  portfolioAudit: AuditRecordMock;
+  executionAudit: AuditRecordMock;
+  controller: PaperTradingFoundationController;
+  trader: AuthUser;
+  workspaceAccess: {
+    assertMember: Mock<(workspaceId: string, userId: string) => void>;
+  };
+};
 
 export function seedKnownSymbolAndTicker(
   symbols: MarketSymbolCache,
@@ -59,17 +82,27 @@ export function seedKnownSymbolAndTicker(
   });
 }
 
-export function buildPaperTradingTestStack(options?: { denyWorkspaceB?: boolean }) {
+export function buildPaperTradingTestStack(options?: {
+  denyWorkspaceB?: boolean;
+}): PaperTradingTestStack {
   const accounts = new InMemoryPaperTradingAccountStore();
   const orders = new InMemoryPaperOrderStore();
   const fills = new InMemoryPaperFillStore();
   const symbols = new MarketSymbolCache();
   const tickers = new MarketTickerCache();
   const gateway = new PaperOrderMarketDataGateway(symbols, tickers);
-  const accountAudit = { record: vi.fn().mockResolvedValue(undefined) };
-  const orderAudit = { record: vi.fn().mockResolvedValue(undefined) };
-  const executionAudit = { record: vi.fn().mockResolvedValue(undefined) };
-  const portfolioAudit = { record: vi.fn().mockResolvedValue(undefined) };
+  const accountAudit: AuditRecordMock = {
+    record: vi.fn<(payload: { outcome: string }) => Promise<void>>().mockResolvedValue(undefined),
+  };
+  const orderAudit: AuditRecordMock = {
+    record: vi.fn<(payload: { outcome: string }) => Promise<void>>().mockResolvedValue(undefined),
+  };
+  const executionAudit: AuditRecordMock = {
+    record: vi.fn<(payload: { outcome: string }) => Promise<void>>().mockResolvedValue(undefined),
+  };
+  const portfolioAudit: AuditRecordMock = {
+    record: vi.fn<(payload: { outcome: string }) => Promise<void>>().mockResolvedValue(undefined),
+  };
   const accountService = new PaperTradingAccountService(
     accounts,
     accountAudit as unknown as PaperTradingAccountAudit,
@@ -100,8 +133,8 @@ export function buildPaperTradingTestStack(options?: { denyWorkspaceB?: boolean 
     displayName: 'Trader',
     role: Role.Trader,
   };
-  const workspaceAccess = {
-    assertMember: vi.fn((workspaceId: string, userId: string) => {
+  const workspaceAccess: PaperTradingTestStack['workspaceAccess'] = {
+    assertMember: vi.fn<(workspaceId: string, userId: string) => void>((workspaceId, userId) => {
       if (
         options?.denyWorkspaceB !== false &&
         workspaceId === 'workspace-b' &&

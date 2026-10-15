@@ -121,14 +121,14 @@ describe('FIV-CONN-04-B-06 security smoke', () => {
   let dbNow: Date;
   let adapterA: PrismaMigrationGateAdapter;
   let adapterB: PrismaMigrationGateAdapter;
-  let dSpy: ReturnType<typeof vi.fn>;
+  let dSpy: ReturnType<typeof vi.fn<() => void>>;
 
   const actorA = { actorId: 'smoke-a', actorKind: 'OPERATOR' as const };
 
   beforeEach(() => {
     row = inactive(0);
     dbNow = new Date('2026-09-18T12:00:00.000Z');
-    dSpy = vi.fn();
+    dSpy = vi.fn<() => void>();
     vi.clearAllMocks();
     installCasMocks(
       () => row,
