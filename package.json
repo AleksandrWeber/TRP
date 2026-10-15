@@ -18,12 +18,16 @@
     "release:validate": "tsx tools/release/src/cli.ts --no-git",
     "prepare": "husky"
   },
+  "lint-staged": {
+    "*.{ts,tsx,js,json,md}": "prettier --write"
+  },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.1",
     "globals": "^16.0.0",
     "husky": "^9.1.7",
+    "lint-staged": "17.6.0",
     "prettier": "^3.5.3",
     "tsx": "4.19.3",
     "turbo": "^2.4.4",
