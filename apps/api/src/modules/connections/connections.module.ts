@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AiConnectivityModule } from '../ai-connectivity';
 import { ExchangeConnectivityModule } from '../exchange-connectivity';
 import { SecretVaultModule } from '../secret-vault';
+import { FivConn04DVaultMetadataModule } from '../secret-vault/fiv-conn-04-d-vault-metadata.module';
 import { SecurityAuditModule } from '../security-audit';
 import { WorkspaceModule } from '../workspace';
 import { ConnectionsController } from './connections.controller';
@@ -23,6 +24,7 @@ import { PrismaMigrationGateAdapter } from './prisma-migration-gate.adapter';
   imports: [
     WorkspaceModule,
     SecretVaultModule,
+    FivConn04DVaultMetadataModule,
     SecurityAuditModule,
     ExchangeConnectivityModule,
     AiConnectivityModule,

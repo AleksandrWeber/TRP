@@ -1,19 +1,26 @@
 /**
- * FIV-CONN-04-D / P-D-02 + Stage 3 — Conn04SystemJobMigrationEntry (Option A).
+ * FIV-CONN-04-D / P-D-02 + Stage 3 + VMP-1 — Conn04SystemJobMigrationEntry (Option A).
  *
  * Trusted D orchestration boundary for SYSTEM_JOB ↔ B-04.
  * Constructs the ratified identity internally. Does NOT accept caller-supplied
  * actor identity fields or raw privileged context from callers.
  * Does NOT UPDATE Connection.environment, expose HTTP, or activate cron.
  * Stage 3 attaches write-unit authority/CAS scaffolding only (no backfill loop).
+ * VMP-1: injects Vault metadata port and exposes a callable INTERNAL lookup seam
+ * with Connection-derived binding + blank-ID zero-I/O guards (not Stage 4 loop).
  * Must remain unexported from ConnectionsModule until a separately authorized consumer exists.
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   PrismaTransactionService,
   type TransactionContext,
 } from '../../storage/prisma/prisma-transaction.service';
+import {
+  FIV_CONN_04_D_VAULT_METADATA_PORT,
+  type FivConn04DVaultMetadataLookupResult,
+  type FivConn04DVaultMetadataPort,
+} from '../secret-vault/fiv-conn-04-d-vault-metadata.port';
 import {
   Conn04MigrationBoundaryService,
   type Conn04BoundaryFail,
@@ -37,12 +44,24 @@ function refuseUnknown(): Conn04WriteProofResult {
   return { ok: false, reason: 'GATE_UNKNOWN', observation: 'UNKNOWN' };
 }
 
+function isNonBlankId(value: string | null | undefined): value is string {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+/** Connection-derived binding inputs for the internal Vault metadata seam (same Connection only). */
+type Conn04VaultMetadataConnectionBinding = Readonly<{
+  workspaceId: string;
+  vaultSecretId: string | null;
+}>;
+
 @Injectable()
 export class Conn04SystemJobMigrationEntry {
   constructor(
     private readonly boundary: Conn04MigrationBoundaryService,
     private readonly writeUnit: FivConn04DEnvironmentBackfillWrite,
     private readonly transactions: PrismaTransactionService,
+    @Inject(FIV_CONN_04_D_VAULT_METADATA_PORT)
+    private readonly vaultMetadata: FivConn04DVaultMetadataPort,
   ) {}
 
   /**
@@ -117,5 +136,26 @@ export class Conn04SystemJobMigrationEntry {
     } catch {
       return refuseUnknown();
     }
+  }
+
+  /**
+   * Callable INTERNAL Entry lookup seam (VMP-1 / OQ-VMP-04).
+   * Derives `{ workspaceId, vaultSecretId }` from the same Connection only.
+   * Blank-ID validation before any port/repository I/O. Propagates fail-closed
+   * NOT_FOUND / UNAVAILABLE / INVALID. Does NOT run Stage 4 freshness / occupancy / C
+   * orchestration, env UPDATE, or backfill.
+   */
+  async lookupVaultMetadataForConnection(
+    connection: Conn04VaultMetadataConnectionBinding,
+  ): Promise<FivConn04DVaultMetadataLookupResult> {
+    const workspaceId = connection.workspaceId;
+    const vaultSecretId = connection.vaultSecretId;
+    if (!isNonBlankId(workspaceId) || !isNonBlankId(vaultSecretId)) {
+      return Object.freeze({ ok: false, reason: 'INVALID' });
+    }
+    return this.vaultMetadata.lookupExact({
+      workspaceId: workspaceId.trim(),
+      vaultSecretId: vaultSecretId.trim(),
+    });
   }
 }

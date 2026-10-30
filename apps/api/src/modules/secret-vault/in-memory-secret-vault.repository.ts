@@ -1,4 +1,8 @@
-import type { SecretSlot, SecretVaultRepository } from './secret-vault.repository';
+import type {
+  SecretSlot,
+  SecretVaultMetadataProjection,
+  SecretVaultRepository,
+} from './secret-vault.repository';
 import { cloneSecretVaultRecord, type SecretVaultRecord } from './secret-record';
 import { assertCiphertextOnlyPersist } from './secret-persist';
 
@@ -38,6 +42,23 @@ export class InMemorySecretVaultRepository implements SecretVaultRepository {
     return [...this.bySlot.values()]
       .filter((record) => record.workspaceId === workspaceId)
       .map((record) => cloneSecretVaultRecord(record));
+  }
+
+  async findMetadataByIdAndWorkspaceId(
+    vaultSecretId: string,
+    workspaceId: string,
+  ): Promise<SecretVaultMetadataProjection | null> {
+    for (const record of this.bySlot.values()) {
+      if (record.id === vaultSecretId && record.workspaceId === workspaceId) {
+        return Object.freeze({
+          id: record.id,
+          workspaceId: record.workspaceId,
+          purpose: record.purpose,
+          state: record.state,
+        });
+      }
+    }
+    return null;
   }
 
   async deleteIfRevision(slot: SecretSlot, expectedRevision: number): Promise<boolean> {

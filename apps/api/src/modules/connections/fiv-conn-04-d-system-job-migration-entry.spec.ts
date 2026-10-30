@@ -44,6 +44,8 @@ import {
 import { MIGRATION_GATE_DURABLE_AUTHORITY } from './migration-gate-durable-authority.port';
 import { MIGRATION_GATE_PORT } from './migration-gate.port';
 import { PrismaMigrationGateAdapter } from './prisma-migration-gate.adapter';
+import type { FivConn04DVaultMetadataPort } from '../secret-vault/fiv-conn-04-d-vault-metadata.port';
+import { FIV_CONN_04_D_VAULT_METADATA_PORT } from '../secret-vault/fiv-conn-04-d-vault-metadata.port';
 
 const ACQUIRED = '2026-10-30T10:00:00.000Z';
 const EXPIRES = '2026-10-30T10:15:00.000Z';
@@ -80,6 +82,7 @@ describe('Conn04SystemJobMigrationEntry (P-D-02 Option A + Stage 3)', () => {
   };
   let writeUnit: { assertWriteAuthorityInTransaction: ReturnType<typeof vi.fn> };
   let transactions: { run: ReturnType<typeof vi.fn> };
+  let vaultMetadata: FivConn04DVaultMetadataPort;
   let entry: Conn04SystemJobMigrationEntry;
 
   beforeEach(() => {
@@ -95,10 +98,14 @@ describe('Conn04SystemJobMigrationEntry (P-D-02 Option A + Stage 3)', () => {
     transactions = {
       run: vi.fn(async (work: (tx: object) => Promise<unknown>) => work({ marker: 'entry-txn' })),
     };
+    vaultMetadata = {
+      lookupExact: vi.fn(),
+    };
     entry = new Conn04SystemJobMigrationEntry(
       boundary as unknown as Conn04MigrationBoundaryService,
       writeUnit as unknown as FivConn04DEnvironmentBackfillWrite,
       transactions as unknown as PrismaTransactionService,
+      vaultMetadata,
     );
   });
 
@@ -183,8 +190,11 @@ describe('Conn04SystemJobMigrationEntry (P-D-02 Option A + Stage 3)', () => {
     expect(src).not.toMatch(/environment\s*:/);
     expect(src).not.toMatch(/connectionMigrationGateLease/);
     expect(src).not.toMatch(/process\.env/);
-    expect(src).not.toMatch(/SecretVault|TradingRuntime|ExecutionAdapter/);
+    expect(src).not.toMatch(/SecretVaultService|TradingRuntime|ExecutionAdapter/);
+    expect(src).not.toMatch(/SECRET_VAULT_REPOSITORY/);
     expect(src).not.toMatch(/runEnvironmentBackfill/);
+    expect(src).toMatch(/FIV_CONN_04_D_VAULT_METADATA_PORT/);
+    expect(src).toMatch(/lookupVaultMetadataForConnection/);
 
     const controllerSrc = readFileSync(join(__dirname, 'connections.controller.ts'), 'utf8');
     expect(controllerSrc).not.toMatch(/Conn04SystemJobMigrationEntry/);
@@ -303,6 +313,11 @@ describe('P-D-02 ConnectionsModule Nest export isolation (CONDITION-2)', () => {
     expect(moduleExports()).not.toContain(MIGRATION_GATE_DURABLE_AUTHORITY);
     expect(moduleExports()).not.toContain(Conn04SystemJobMigrationEntry);
     expect(moduleExports()).not.toContain(FivConn04DEnvironmentBackfillWrite);
+    expect(moduleExports()).not.toContain(FIV_CONN_04_D_VAULT_METADATA_PORT);
+  });
+
+  it('T-VMP-10: does not re-export Vault metadata port token', () => {
+    expect(moduleExports()).not.toContain(FIV_CONN_04_D_VAULT_METADATA_PORT);
   });
 });
 
@@ -399,9 +414,14 @@ describe('P-D-02 Entry-driven audit attribution', () => {
       assertDurableAuthorityCas: vi.fn(),
     } as never);
     const writeUnit = new FivConn04DEnvironmentBackfillWrite(boundary);
-    const entry = new Conn04SystemJobMigrationEntry(boundary, writeUnit, {
-      run: async <T>(work: (tx: object) => Promise<T>) => work({ marker: 'pd02-write-txn' }),
-    } as never);
+    const entry = new Conn04SystemJobMigrationEntry(
+      boundary,
+      writeUnit,
+      {
+        run: async <T>(work: (tx: object) => Promise<T>) => work({ marker: 'pd02-write-txn' }),
+      } as never,
+      { lookupExact: vi.fn() },
+    );
 
     const result = await entry.start({ correlationId: 'pd02-audit-corr' });
     expect(result.ok).toBe(true);

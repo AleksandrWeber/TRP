@@ -10,10 +10,35 @@ import {
 } from './secret-ciphertext';
 import { cloneSecretVaultRecord, type SecretVaultRecord } from './secret-record';
 import { assertCiphertextOnlyPersist } from './secret-persist';
-import type { SecretSlot, SecretVaultRepository } from './secret-vault.repository';
+import type {
+  SecretSlot,
+  SecretVaultMetadataProjection,
+  SecretVaultRepository,
+} from './secret-vault.repository';
 import type { HoldableSecretType } from './holdable-secret-type';
 import type { SecretPurpose } from './secret-purpose';
 import type { PersistedSecretState } from './secret-state';
+
+const METADATA_SELECT = Object.freeze({
+  id: true,
+  workspaceId: true,
+  purpose: true,
+  state: true,
+});
+
+function toMetadataProjection(row: {
+  id: string;
+  workspaceId: string;
+  purpose: string;
+  state: string;
+}): SecretVaultMetadataProjection {
+  return Object.freeze({
+    id: row.id,
+    workspaceId: row.workspaceId,
+    purpose: row.purpose,
+    state: row.state,
+  });
+}
 
 type VaultSecretRow = {
   id: string;
@@ -158,6 +183,17 @@ export class PrismaSecretVaultRepository implements SecretVaultRepository {
       where: { workspaceId },
     });
     return rows.map((row) => toRecord(row));
+  }
+
+  async findMetadataByIdAndWorkspaceId(
+    vaultSecretId: string,
+    workspaceId: string,
+  ): Promise<SecretVaultMetadataProjection | null> {
+    const row = await this.prisma.vaultSecret.findFirst({
+      where: { id: vaultSecretId, workspaceId },
+      select: METADATA_SELECT,
+    });
+    return row ? toMetadataProjection(row) : null;
   }
 
   async deleteIfRevision(

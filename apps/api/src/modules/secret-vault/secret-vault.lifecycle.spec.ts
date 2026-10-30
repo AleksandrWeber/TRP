@@ -5,7 +5,11 @@ import { withTamperedPayload, withTamperedPayloadTag } from './secret-ciphertext
 import { metadataContainsSecretFields } from './secret-record';
 import { OperatorSecretLabel, SecretState } from './secret-state';
 import { SecretVaultService, type Clock } from './secret-vault.service';
-import type { SecretSlot, SecretVaultRepository } from './secret-vault.repository';
+import type {
+  SecretSlot,
+  SecretVaultMetadataProjection,
+  SecretVaultRepository,
+} from './secret-vault.repository';
 import type { SecretVaultRecord } from './secret-record';
 import { ProductCapability, capabilitiesWhenVaultUnavailable } from './vault-failure';
 import {
@@ -60,6 +64,13 @@ class RollbackVaultRepository implements SecretVaultRepository {
 
   listByWorkspaceId(workspaceId: string): Promise<SecretVaultRecord[]> {
     return this.delegate.listByWorkspaceId(workspaceId);
+  }
+
+  findMetadataByIdAndWorkspaceId(
+    vaultSecretId: string,
+    workspaceId: string,
+  ): Promise<SecretVaultMetadataProjection | null> {
+    return this.delegate.findMetadataByIdAndWorkspaceId(vaultSecretId, workspaceId);
   }
 
   deleteIfRevision(slot: SecretSlot, expectedRevision: number): Promise<boolean> {
@@ -124,6 +135,13 @@ class StaleOnceRepository implements SecretVaultRepository {
 
   listByWorkspaceId(workspaceId: string): Promise<SecretVaultRecord[]> {
     return this.delegate.listByWorkspaceId(workspaceId);
+  }
+
+  findMetadataByIdAndWorkspaceId(
+    vaultSecretId: string,
+    workspaceId: string,
+  ): Promise<SecretVaultMetadataProjection | null> {
+    return this.delegate.findMetadataByIdAndWorkspaceId(vaultSecretId, workspaceId);
   }
 
   deleteIfRevision(slot: SecretSlot, expectedRevision: number): Promise<boolean> {
