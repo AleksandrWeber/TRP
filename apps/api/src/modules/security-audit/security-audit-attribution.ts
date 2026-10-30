@@ -52,6 +52,17 @@ const ATTRIBUTION_RULES: Readonly<Record<string, AttributionRule>> = Object.free
   'connection.migration-gate': {
     actorId: true,
   },
+  /**
+   * FIV-CONN-04-D environment backfill (COND-IA-04 / parent Slice §13 floor).
+   * Requires SYSTEM_JOB actorId on the SYSTEM_JOB path plus workspace/resource
+   * for per-row investigation (Full-D IA §7.2; connection.* lifecycle pattern).
+   */
+  'connection.environment-backfill': {
+    workspaceId: true,
+    actorId: true,
+    resourceType: true,
+    resourceId: true,
+  },
   'platform.abuse.throttled': {},
   'platform.deny.shaped': {},
   'continuity.recovery-completed': {},

@@ -96,6 +96,39 @@ describe('SecurityAuditService', () => {
     ).rejects.toThrow('sensitive field');
   });
 
+  it('admits classified connection.environment-backfill with required attribution', async () => {
+    const service = new SecurityAuditService(new InMemorySecurityAuditRepository());
+
+    await expect(
+      service.record({
+        eventType: 'connection.environment-backfill',
+        source: 'connections',
+        outcome: 'updated_live',
+        attribution: {
+          workspaceId: 'workspace-a',
+          actorId: 'system-job:fiv-conn-04-migration-backfill',
+          resourceType: 'connection',
+          resourceId: 'conn-1',
+        },
+        payload: {
+          connectionId: 'conn-1',
+          previousEnvironment: null,
+          newEnvironment: 'live',
+        },
+      }),
+    ).resolves.toMatchObject({
+      eventType: 'connection.environment-backfill',
+      eventClass: 'connection',
+      outcome: 'updated_live',
+      attribution: {
+        workspaceId: 'workspace-a',
+        actorId: 'system-job:fiv-conn-04-migration-backfill',
+        resourceType: 'connection',
+        resourceId: 'conn-1',
+      },
+    });
+  });
+
   it('persists Identity-global role attribution without a workspace', async () => {
     const service = new SecurityAuditService(new InMemorySecurityAuditRepository());
 

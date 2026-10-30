@@ -49,4 +49,26 @@ describe('security-audit-attribution', () => {
       actorId: 'admin-1',
     });
   });
+
+  it('requires workspace/actor/resource attribution for connection.environment-backfill', () => {
+    expect(
+      normalizeSecurityAuditAttribution('connection.environment-backfill', {
+        workspaceId: 'workspace-a',
+        actorId: 'system-job:fiv-conn-04-migration-backfill',
+        resourceType: 'connection',
+        resourceId: 'conn-1',
+      }),
+    ).toEqual({
+      workspaceId: 'workspace-a',
+      actorId: 'system-job:fiv-conn-04-migration-backfill',
+      resourceType: 'connection',
+      resourceId: 'conn-1',
+    });
+
+    expect(() =>
+      normalizeSecurityAuditAttribution('connection.environment-backfill', {
+        actorId: 'system-job:fiv-conn-04-migration-backfill',
+      }),
+    ).toThrow(/attribution\.workspaceId/);
+  });
 });

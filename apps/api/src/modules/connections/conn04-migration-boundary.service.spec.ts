@@ -3,21 +3,27 @@
  *
  * Covers start/resume/HB/release/write-proof walls + txn spy (IMPL-COND-B04-03).
  * No real Vault, venue I/O, credentials, or capital.
+ * P-D-02: also asserts Nest export internalization of B-04 / PORT / durable.
  */
 
+import { MODULE_METADATA } from '@nestjs/common/constants';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { TransactionContext } from '../../storage/prisma/prisma-transaction.service';
 import { Conn04MigrationBoundaryService } from './conn04-migration-boundary.service';
+import { ConnectionsModule } from './connections.module';
 import {
   MIGRATION_GATE_KEY_FIV_CONN_04,
   MIGRATION_GATE_PURPOSE_FIV_CONN_04_MIGRATION_BACKFILL,
   type MigrationGateGrant,
   type PrivilegedActorContext,
 } from './migration-gate';
-import type { MigrationGateDurableAuthority } from './migration-gate-durable-authority.port';
-import type { MigrationGatePort } from './migration-gate.port';
+import {
+  MIGRATION_GATE_DURABLE_AUTHORITY,
+  type MigrationGateDurableAuthority,
+} from './migration-gate-durable-authority.port';
+import { MIGRATION_GATE_PORT, type MigrationGatePort } from './migration-gate.port';
 
 const ACQUIRED = '2026-09-18T10:00:00.000Z';
 const EXPIRES = '2026-09-18T10:15:00.000Z';
@@ -129,9 +135,9 @@ describe('Conn04MigrationBoundaryService (FIV-CONN-04-B-04)', () => {
       ok: false,
       observation: 'EXPIRED',
     });
-    expect(
-      await boundary.heartbeat({ actor, grant: g, proposedExpiresAt: EXPIRES }),
-    ).toMatchObject({ ok: false, observation: 'EXPIRED' });
+    expect(await boundary.heartbeat({ actor, grant: g, proposedExpiresAt: EXPIRES })).toMatchObject(
+      { ok: false, observation: 'EXPIRED' },
+    );
     const txn = Object.freeze({}) as TransactionContext;
     expect(await boundary.assertWriteAuthority(txn, g)).toMatchObject({ ok: false });
   });
@@ -159,9 +165,9 @@ describe('Conn04MigrationBoundaryService (FIV-CONN-04-B-04)', () => {
     expect(await boundary.resume({ actor, grant: g })).toMatchObject({
       observation: 'OWNERSHIP_LOST',
     });
-    expect(
-      await boundary.heartbeat({ actor, grant: g, proposedExpiresAt: EXPIRES }),
-    ).toMatchObject({ observation: 'OWNERSHIP_LOST' });
+    expect(await boundary.heartbeat({ actor, grant: g, proposedExpiresAt: EXPIRES })).toMatchObject(
+      { observation: 'OWNERSHIP_LOST' },
+    );
     expect(await boundary.release({ actor, grant: g })).toMatchObject({
       observation: 'OWNERSHIP_LOST',
     });
@@ -292,10 +298,7 @@ describe('Conn04MigrationBoundaryService (FIV-CONN-04-B-04)', () => {
   });
 
   it('T15 / T16 / T17 / T18: security walls — no env UPDATE / Vault / venue / public HTTP in façade', () => {
-    const src = readFileSync(
-      join(__dirname, 'conn04-migration-boundary.service.ts'),
-      'utf8',
-    );
+    const src = readFileSync(join(__dirname, 'conn04-migration-boundary.service.ts'), 'utf8');
     expect(src).not.toMatch(/from ['"].*secret-vault/i);
     expect(src).not.toMatch(/SecretVaultService/);
     expect(src).not.toMatch(/connectionRecord\.(update|create)/i);
@@ -332,5 +335,24 @@ describe('Conn04MigrationBoundaryService (FIV-CONN-04-B-04)', () => {
     // Construction used distinct port + durable mocks — proves companion DI shape.
     expect(port.acquire).toBeDefined();
     expect(durable.assertDurableAuthorityCas).toBeDefined();
+  });
+
+  describe('P-D-02 CONDITION-2: ConnectionsModule must not export privileged gate surface', () => {
+    const exportsMeta = (): unknown[] => {
+      const raw = Reflect.getMetadata(MODULE_METADATA.EXPORTS, ConnectionsModule) as unknown;
+      return Array.isArray(raw) ? raw : [];
+    };
+
+    it('separately asserts Conn04MigrationBoundaryService is absent from exports', () => {
+      expect(exportsMeta()).not.toContain(Conn04MigrationBoundaryService);
+    });
+
+    it('separately asserts MIGRATION_GATE_PORT is absent from exports', () => {
+      expect(exportsMeta()).not.toContain(MIGRATION_GATE_PORT);
+    });
+
+    it('separately asserts MIGRATION_GATE_DURABLE_AUTHORITY is absent from exports', () => {
+      expect(exportsMeta()).not.toContain(MIGRATION_GATE_DURABLE_AUTHORITY);
+    });
   });
 });

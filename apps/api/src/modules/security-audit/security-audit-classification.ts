@@ -127,6 +127,16 @@ const CATALOG: Readonly<Record<string, SecurityAuditClassification>> = Object.fr
     financialIntegrityValue: 'high',
     retention: 'long',
   },
+  'connection.environment-backfill': {
+    eventClass: 'connection',
+    criticality: 'high',
+    investigationValue:
+      'Did FIV-CONN-04 environment backfill update, block, skip, or summarize a Connection environment change?',
+    customerTrustValue: 'high',
+    securityImpact: 'high',
+    financialIntegrityValue: 'high',
+    retention: 'long',
+  },
   'platform.abuse.throttled': {
     eventClass: 'security-platform',
     criticality: 'high',
