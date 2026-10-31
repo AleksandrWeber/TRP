@@ -23,7 +23,7 @@ RATIFICATION RECORD PATH:
   docs/project/version-3/wave-6/
   v3-l02-fiv-conn-04-d-stage-4-po-delivery-acceptance-ratification-act.md
 RATIFICATION RECORD SHA-256:
-  600182bf7b588a7821fb383218a425e27d61a33ef29ff13c84d14c9cb3913473
+  81ba50f949e4816d12666852fc48b110e9660b3fb87d5ebecfb4ab2d7b6d1211
 
 INDEPENDENT REVIEW VERDICT: PASS WITH OBSERVATIONS
   (0 BLOCKER / 0 MAJOR / 0 MINOR / 5 OBSERVATIONS IR-OBS-01…05)
@@ -52,7 +52,7 @@ NO AUTOMATIC PROGRESSION
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | **Pre-ratification draft SHA-256** | `6071d32c4c28cde5eae13612b8a589bb919d50d505a356c1a0bc8083ea5e38aa`                                      |
 | **Ratification record path**       | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-stage-4-po-delivery-acceptance-ratification-act.md` |
-| **Ratification record SHA-256**    | `600182bf7b588a7821fb383218a425e27d61a33ef29ff13c84d14c9cb3913473`                                      |
+| **Ratification record SHA-256**    | `81ba50f949e4816d12666852fc48b110e9660b3fb87d5ebecfb4ab2d7b6d1211`                                      |
 | **PO decision date**               | **2026-10-31**                                                                                          |
 | **Option selected**                | **1 — ACCEPT DELIVERY WITH OBSERVATIONS**                                                               |
 | **Options 2 and 3**                | **NOT SELECTED**                                                                                        |
@@ -76,7 +76,7 @@ Post-ratification status-banner and option-selection updates on this filename ar
 | **Independent Review verdict**     | **PASS WITH OBSERVATIONS**                                                                                                                     |
 | **PO decision**                    | **OPTION 1 SELECTED** (Options 2 and 3 **NOT SELECTED**)                                                                                       |
 | **Pre-ratification draft SHA-256** | `6071d32c4c28cde5eae13612b8a589bb919d50d505a356c1a0bc8083ea5e38aa`                                                                             |
-| **Ratification record**            | `v3-l02-fiv-conn-04-d-stage-4-po-delivery-acceptance-ratification-act.md` (`600182bf7b588a7821fb383218a425e27d61a33ef29ff13c84d14c9cb3913473`) |
+| **Ratification record**            | `v3-l02-fiv-conn-04-d-stage-4-po-delivery-acceptance-ratification-act.md` (`81ba50f949e4816d12666852fc48b110e9660b3fb87d5ebecfb4ab2d7b6d1211`) |
 | **Decision Register**              | **NOT synchronized** by this acceptance                                                                                                        |
 | **Formal Stage 4 closure**         | **NOT granted** by this acceptance                                                                                                             |
 
@@ -294,7 +294,7 @@ On **2026-10-31**, the sole Product Owner selected **exactly one** option. Recor
 - Does **not** authorize Stage 5 or later.
 - Does **not** synchronize the Decision Register by itself unless a separate PO task explicitly authorizes sync.
 
-**Selection:** **SELECTED** (PO decision date **2026-10-31**; ratified by `v3-l02-fiv-conn-04-d-stage-4-po-delivery-acceptance-ratification-act.md`, SHA-256 `600182bf7b588a7821fb383218a425e27d61a33ef29ff13c84d14c9cb3913473`)
+**Selection:** **SELECTED** (PO decision date **2026-10-31**; ratified by `v3-l02-fiv-conn-04-d-stage-4-po-delivery-acceptance-ratification-act.md`, SHA-256 `81ba50f949e4816d12666852fc48b110e9660b3fb87d5ebecfb4ab2d7b6d1211`)
 
 ### Option 2 — RETURN FOR REMEDIATION
 
@@ -342,6 +342,6 @@ STAGE 5+: NOT AUTHORIZED
 PRE-RATIFICATION DRAFT SHA-256:
   6071d32c4c28cde5eae13612b8a589bb919d50d505a356c1a0bc8083ea5e38aa
 RATIFICATION RECORD SHA-256:
-  600182bf7b588a7821fb383218a425e27d61a33ef29ff13c84d14c9cb3913473
+  81ba50f949e4816d12666852fc48b110e9660b3fb87d5ebecfb4ab2d7b6d1211
 ================================================================
 ```

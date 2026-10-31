@@ -24,7 +24,7 @@ RATIFICATION RECORD PATH:
   docs/project/version-3/wave-6/
   v3-l02-fiv-conn-04-d-stage-4-formal-closure-po-ratification-act.md
 RATIFICATION RECORD SHA-256:
-  afda949921d18ad46be8d49c05818442e8430b3da1e1864f0b606dc88efdadbe
+  a9e1fd01104a9b4f36dbb9df5360777f93523f9164dd7b9e229f8aa4935d7160
 
 PREREQUISITE DELIVERY ACCEPTANCE:
   D-CONN04-FULL-D-IA-S4-DELIVERY-ACCEPT
@@ -58,7 +58,7 @@ NO AUTOMATIC PROGRESSION
 | ---------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | **Pre-ratification Closure Act draft SHA-256** | `3043a0eb027be2c048e23741527b92e7ea3e75fec00d18f411183562e45aa446`                                 |
 | **Ratification record path**                   | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-stage-4-formal-closure-po-ratification-act.md` |
-| **Ratification record SHA-256**                | `afda949921d18ad46be8d49c05818442e8430b3da1e1864f0b606dc88efdadbe`                                 |
+| **Ratification record SHA-256**                | `a9e1fd01104a9b4f36dbb9df5360777f93523f9164dd7b9e229f8aa4935d7160`                                 |
 | **PO decision date**                           | **2026-10-31**                                                                                     |
 | **Option selected**                            | **1 — RATIFY FORMAL STAGE 4 CLOSURE**                                                              |
 | **Options 2 and 3**                            | **NOT SELECTED**                                                                                   |
@@ -83,7 +83,7 @@ Post-ratification status-banner and option-selection updates on this filename ar
 | **PO decision**                    | **OPTION 1 SELECTED** (Options 2 and 3 **NOT SELECTED**)                                                                                  |
 | **Formal Stage 4 status**          | **CLOSED** (PS-A / S4-WP-1…3 only)                                                                                                        |
 | **Pre-ratification draft SHA-256** | `3043a0eb027be2c048e23741527b92e7ea3e75fec00d18f411183562e45aa446`                                                                        |
-| **Ratification record**            | `v3-l02-fiv-conn-04-d-stage-4-formal-closure-po-ratification-act.md` (`afda949921d18ad46be8d49c05818442e8430b3da1e1864f0b606dc88efdadbe`) |
+| **Ratification record**            | `v3-l02-fiv-conn-04-d-stage-4-formal-closure-po-ratification-act.md` (`a9e1fd01104a9b4f36dbb9df5360777f93523f9164dd7b9e229f8aa4935d7160`) |
 | **Decision Register**              | **NOT synchronized** — lag accepted as separate recordkeeping condition                                                                   |
 
 ### 1.1 Decision ID uniqueness (pre-draft check)
@@ -109,11 +109,13 @@ Post-ratification status-banner and option-selection updates on this filename ar
 
 ### 1.3 Delivery acceptance provenance (independently recalculated)
 
-| Artifact                                                                                            | Path                                                                                                    | Independently recalculated SHA-256 (current repository bytes)      |
-| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| Updated Delivery Acceptance Act                                                                     | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-stage-4-po-delivery-acceptance-act-draft.md`        | `7d648b1e387a4243ddb75955f052efbc8d2a4b78f285f4ca83d4a6303328d3fb` |
-| Delivery Acceptance Ratification Record                                                             | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-stage-4-po-delivery-acceptance-ratification-act.md` | `600182bf7b588a7821fb383218a425e27d61a33ef29ff13c84d14c9cb3913473` |
-| Pre-ratification Acceptance Act digest (historical binding; preserved in both acceptance documents) | same Acceptance Act path, pre-edit bytes                                                                | `6071d32c4c28cde5eae13612b8a589bb919d50d505a356c1a0bc8083ea5e38aa` |
+Repository-byte digests below were independently verified at the Formal Closure Act hash-reconciliation date, after the Stage 4 delivery commit and after the Delivery Acceptance Act hash-reference correction, and before any subsequent edit of this Closure Act. They are not permanently current after future edits.
+
+| Artifact                                                                                            | Path                                                                                                    | Independently recalculated SHA-256 (repository bytes at Formal Closure Act hash-reconciliation) |
+| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Updated Delivery Acceptance Act                                                                     | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-stage-4-po-delivery-acceptance-act-draft.md`        | `2ea6d0ab93d4676ed0b3938e1e9b20a0e802d8767b3cb2398dc28a23ead6aa44`                              |
+| Delivery Acceptance Ratification Record                                                             | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-stage-4-po-delivery-acceptance-ratification-act.md` | `81ba50f949e4816d12666852fc48b110e9660b3fb87d5ebecfb4ab2d7b6d1211`                              |
+| Pre-ratification Acceptance Act digest (historical binding; preserved in both acceptance documents) | same Acceptance Act path, pre-edit bytes                                                                | `6071d32c4c28cde5eae13612b8a589bb919d50d505a356c1a0bc8083ea5e38aa`                              |
 
 ### 1.4 Accepted Git baselines
 
@@ -268,7 +270,7 @@ On **2026-10-31**, the sole Product Owner selected **exactly one** option. Recor
 - Does **not** authorize Git staging / commit / amend / push / pull / merge / rebase / cherry-pick / main integration.
 - Does **not** authorize Stage 5 or later.
 
-**Selection:** **SELECTED** (PO decision date **2026-10-31**; ratified by `v3-l02-fiv-conn-04-d-stage-4-formal-closure-po-ratification-act.md`, SHA-256 `afda949921d18ad46be8d49c05818442e8430b3da1e1864f0b606dc88efdadbe`)
+**Selection:** **SELECTED** (PO decision date **2026-10-31**; ratified by `v3-l02-fiv-conn-04-d-stage-4-formal-closure-po-ratification-act.md`, SHA-256 `a9e1fd01104a9b4f36dbb9df5360777f93523f9164dd7b9e229f8aa4935d7160`)
 
 ### Option 2 — RETURN FOR CLARIFICATION
 
@@ -320,6 +322,6 @@ STAGE 5+: NOT AUTHORIZED
 PRE-RATIFICATION CLOSURE ACT SHA-256:
   3043a0eb027be2c048e23741527b92e7ea3e75fec00d18f411183562e45aa446
 RATIFICATION RECORD SHA-256:
-  afda949921d18ad46be8d49c05818442e8430b3da1e1864f0b606dc88efdadbe
+  a9e1fd01104a9b4f36dbb9df5360777f93523f9164dd7b9e229f8aa4935d7160
 ================================================================
 ```
