@@ -106,6 +106,7 @@ describe('Conn04SystemJobMigrationEntry (P-D-02 Option A + Stage 3)', () => {
       writeUnit as unknown as FivConn04DEnvironmentBackfillWrite,
       transactions as unknown as PrismaTransactionService,
       vaultMetadata,
+      { connectionRecord: { findFirst: vi.fn() } } as never,
     );
   });
 
@@ -187,7 +188,9 @@ describe('Conn04SystemJobMigrationEntry (P-D-02 Option A + Stage 3)', () => {
     expect(src).not.toMatch(/@Controller|@Post\(|@Patch\(|@Put\(|@Get\(/);
     expect(src).not.toMatch(/Cron|Scheduler|@Interval/);
     expect(src).not.toMatch(/connectionRecord\.(update|create)/i);
-    expect(src).not.toMatch(/environment\s*:/);
+    // Forbid Connection.environment mutation / assignment; Prisma select reads are allowed.
+    expect(src).not.toMatch(/environment\s*:\s*['"`]live['"`]/);
+    expect(src).not.toMatch(/data\s*:\s*\{[\s\S]*environment\s*:/);
     expect(src).not.toMatch(/connectionMigrationGateLease/);
     expect(src).not.toMatch(/process\.env/);
     expect(src).not.toMatch(/SecretVaultService|TradingRuntime|ExecutionAdapter/);
@@ -421,6 +424,7 @@ describe('P-D-02 Entry-driven audit attribution', () => {
         run: async <T>(work: (tx: object) => Promise<T>) => work({ marker: 'pd02-write-txn' }),
       } as never,
       { lookupExact: vi.fn() },
+      { connectionRecord: { findFirst: vi.fn() } } as never,
     );
 
     const result = await entry.start({ correlationId: 'pd02-audit-corr' });

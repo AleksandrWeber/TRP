@@ -52,6 +52,7 @@ describe('Conn04SystemJobMigrationEntry Vault metadata seam (VMP-1)', () => {
       writeUnit,
       transactions,
       vaultMetadata as unknown as FivConn04DVaultMetadataPort,
+      { connectionRecord: { findFirst: vi.fn() } } as never,
     );
   });
 
