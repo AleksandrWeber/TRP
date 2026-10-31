@@ -129,7 +129,7 @@ Repository-byte digests below were independently verified at the Formal Closure 
 
 ### 1.5 Checkpoint incident classification (unchanged)
 
-The checkpoint commit `85c601194f6b2ff82e4b5b35fb9ace7ef975c403` remains an **unauthorized historical Git action**. Under **`D-CONN04-FULL-D-IA-S4-CHECKPOINT-CONTINUATION`** (Option A), that SHA is accepted only as the Stage 4 continuation starting point. Formal Stage 4 closure, if later ratified, does **not** retroactively authorize that commit’s creation, erase the incident classification, or legitimize the migration’s Git side effects.
+The checkpoint commit `85c601194f6b2ff82e4b5b35fb9ace7ef975c403` remains an **unauthorized historical Git action**. Under **`D-CONN04-FULL-D-IA-S4-CHECKPOINT-CONTINUATION`** (Option A), that SHA is accepted only as the Stage 4 continuation starting point. The ratified Formal Stage 4 closure does **not** retroactively authorize that commit’s creation, erase the incident classification, or legitimize the migration’s Git side effects.
 
 ---
 
