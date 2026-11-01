@@ -8,7 +8,7 @@ How to read this report:
 
 - **Verified repository fact** means a hash, byte size, file presence, or wording read from a named source during this task.
 - **Prior proposal** means Stage I.8, Stage I.9, or Stage I.10 text. Stages I.8, I.9, and I.10 are conversation texts. No repository file for those stages is assumed.
-- **I.11 proposal** means normative text introduced here, including the Stage I.12 two-anchor correction in this file. It is not adopted.
+- **I.11 proposal** means normative text introduced here, including the Stage I.12 two-anchor correction and the Stage I.13 package-payload identity correction in this file. It is not adopted.
 - **Untested** means the control is specified and was not executed. Specification is not evidence that the control ran.
 - **Open PO decision** means a governance choice this report does not make.
 
@@ -206,6 +206,10 @@ Before reading `content_bytes`, the parser checks that `content_length` is withi
 
 `package-payload-sha256` is SHA-256 of this entire byte string, magic included. The payload contains no manifest, no freeze record, and no digest of itself.
 
+`PROPOSED — NOT ADOPTED — FOR PO DECISION ONLY`
+
+The accepted Package Anchor identifies one exact frozen payload: these bytes and this hash. The package payload bytes disclosed to a provider must be those bytes. A different payload hash is an integrity failure. Capturing or describing the different bytes does not make that attempt eligible to count, and the attempt cannot be relabelled, rebound, or later associated with the accepted Package Anchor. The Package Anchor does not bind every byte of the transport envelope defined in §6.1. It continues to identify the original payload when a later request carries different payload bytes. It does not authorize that later request to count.
+
 ### 4.6 Adversarial cases for paths and objects
 
 These cases are specified. They were not executed.
@@ -387,6 +391,36 @@ Three layers stay distinct.
 
 A local file hash of a prepared prompt is `PREPARED` only. Re-serializing a parsed JSON object produces a different byte string and must not be substituted for the sent bytes. The hashed request is the byte string at the boundary, not a later canonicalization.
 
+**Package payload and transport representation.** `PROPOSED — NOT ADOPTED — FOR PO DECISION ONLY`
+
+Two byte strings stay distinct.
+
+The **package payload** is the canonical binary string in §4.5. Its identity is `package-payload-sha256` on the accepted Package Anchor. Disclosure to a provider must carry those exact bytes.
+
+The **transport representation** is the external request envelope around that payload: API serialization, framing, headers, authentication metadata, and other protocol fields. It may differ from a locally prepared request because the client adds that envelope. That difference does not by itself invalidate the Package Anchor.
+
+A transport difference can still count only when all of the following hold:
+
+1. The exact package payload bytes inside the transmitted request are identifiable as one byte range.
+2. SHA-256 of that range equals the accepted Package Anchor's `package-payload-sha256`.
+3. The capture shows which range of `transmitted-request.bin` is that payload.
+4. The transport step does not alter, truncate, normalize, reorder, substitute, or otherwise change those payload bytes.
+5. The existing correlation, completeness, seal, and Evidence Anchor rules also pass.
+
+The seal verifier, who is not the capture operator, computes that range hash by reading the retained `transmitted-request.bin`. The recorded `transmitted-request-sha256`, the offset, and the length do not prove the payload bytes. If that file is not available to the verifier, `package-payload-identity` is `UNVERIFIABLE`.
+
+An arbitrary transport transformation is not treated as safe. If the payload bytes inside the transmitted request cannot be identified, `package-payload-identity` is `UNVERIFIABLE` and the attempt does not count. If the identified bytes hash to a different value, `package-payload-identity` is `MISMATCH` and the attempt does not count. Full capture of the different bytes does not cure the mismatch. The response is not relabelled onto the accepted Package Anchor or onto a later package.
+
+| Condition                                                                  | Package Anchor                                                                   | Assessment attempt                                                                             | Matrix                              |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------- |
+| Transport envelope differs, and the exact embedded package payload matches | Remains valid for the original payload                                           | May count only when `package-payload-identity` is `MATCH` and every other counting rule passes | Eligible for that attempt           |
+| Exact package payload differs from the accepted Package Anchor             | Remains valid only for the original package. It is not corrupted by the mismatch | Non-counting. Not relabelled or rebound                                                        | Excluded                            |
+| Package payload cannot be extracted from the transmitted request           | Remains valid for the original package                                           | Non-counting. Identity is `UNVERIFIABLE`                                                       | Excluded                            |
+| A new package is prepared after a payload mismatch                         | The old anchor does not bind the new package                                     | The new attempt needs a new accepted Package Anchor and a separate disclosure authorization    | Not eligible until those gates pass |
+| A provider response from the old package is offered against a new package  | The old anchor remains a historical record of the old payload                    | Cannot be rebound or reused                                                                    | Excluded                            |
+
+The Evidence Anchor records this check. It does not prove that the provider processed the payload or that hidden provider inputs are known. `TRANSPORT-PAIR` and `ID-LINK` keep the limits already stated in this section.
+
 ### 6.2 Evidence-source comparison
 
 Availability of each source is unknown. None was tested.
@@ -467,7 +501,7 @@ Observability:
 
 Proposal for the capture record. Nothing in this subsection is created by this task.
 
-For each attempt, the capture point writes the sent bytes and the response bytes, computes SHA-256 immediately, and records `capture-utc` before later application code can edit those files. The attempt directory holds `transmitted-request.bin`, `response.bin`, the attachment bytes, and `seal-record.txt`. Attachment bytes are hashed on their own and compared with the package member or the prepared attachment. `MATCH` means equal length and equal SHA-256. Any other result is `MISMATCH`.
+For each attempt, the capture point writes the sent bytes and the response bytes, computes SHA-256 immediately, and records `capture-utc` before later application code can edit those files. The attempt directory holds `transmitted-request.bin`, `response.bin`, the attachment bytes, and `seal-record.txt`. `transmitted-request.bin` is the retained request representation for the payload-identity check. The independent seal verifier must be able to read it. If it is absent or unreadable by that verifier, `package-payload-identity` is `UNVERIFIABLE`. Attachment bytes are hashed on their own and compared with the package member or the prepared attachment. `MATCH` in that attachment comparison means equal length and equal SHA-256. Any other attachment result is `MISMATCH`.
 
 `seal-record.txt` does not contain its own digest. `seal-record-sha256` is SHA-256 of that file, stored in a one-line sibling `SEAL-DIGEST.txt` of the form `seal-record-sha256: ` plus 64 lowercase hex digits and one LF. The digest is not written back into the seal.
 
@@ -535,6 +569,8 @@ A seal counts toward quorum only when all of the following hold:
 - `capture-status` is `COMPLETE`
 - every attachment line is `MATCH`
 - transmitted request and response are evidenced, not the `NOT-EVIDENCED` tokens
+- the accepted Evidence Anchor for this attempt has `package-payload-identity: MATCH`, and the seal verifier recomputed that result from the retained `transmitted-request.bin` byte range, not from the request hash alone
+- `MISMATCH` and `UNVERIFIABLE` do not count, including when the differing payload bytes were fully captured
 - the Stage I.9 mandatory assessment content is present in the sealed assessment
 - provider, model, and API are the approved D3 triple, with no substitution
 - the package hashes equal the accepted Package Anchor (§7.3)
@@ -634,11 +670,11 @@ Record type: `POST-CAPTURE-EVIDENCE-ANCHOR`. One record per attempt. A second at
 
 This record is created only after that attempt has been fully captured, validated, and sealed under §6. It binds that attempt to the Package Anchor already accepted in §7.3. It does not authorize commencement, disclosure, CC-02, or CC-06. It stores identifiers, hashes, lengths, and controlled metadata only. It does not contain raw request bodies, raw response bodies, provider secrets, credentials, or package content. A field that would hold those bytes is an unknown field and is rejected.
 
-The file uses §5.3 line rules. Maximum length 16,384 bytes. Specification token `I.12-1`.
+The file uses §5.3 line rules. Maximum length 16,384 bytes. Specification token `I.13-1`. The Stage I.13 correction adds the payload-identity fields. No Evidence Anchor is created by this correction.
 
 Lines, in order:
 
-1. `evidence-anchor-spec-version: I.12-1`
+1. `evidence-anchor-spec-version: I.13-1`
 2. `evidence-anchor-record-type: POST-CAPTURE-EVIDENCE-ANCHOR`
 3. `evidence-anchor-id: EA-` plus 32 lowercase hex digits. Assigned only when the record is written. This report does not assign one
 4. `package-anchor-ref: ` the `po-decision-ref` token of one `ACCEPTED` Package Anchor
@@ -656,29 +692,37 @@ Lines, in order:
 16. `instructions-observable: ` `FULL` or `PARTIAL`
 17. `transmitted-request-sha256: ` 64 lowercase hex digits, or exactly `TRANSMISSION-NOT-EVIDENCED`
 18. `transmitted-request-byte-length: ` a canonical decimal from 0 through 8,388,608, or exactly `TRANSMISSION-NOT-EVIDENCED`, in agreement with the previous field
-19. `response-sha256: ` 64 lowercase hex digits, or exactly `RESPONSE-NOT-EVIDENCED`
-20. `response-byte-length: ` a canonical decimal from 0 through 8,388,608, or exactly `RESPONSE-NOT-EVIDENCED`, in agreement with the previous field
-21. `seal-record-sha256: ` 64 lowercase hex digits, equal to `SEAL-DIGEST.txt` for this attempt
-22. `seal-record-byte-length: ` a canonical decimal from 1 through 16,384, equal to the length of `seal-record.txt`
-23. `attachment-count: ` a canonical decimal from 0 through 32
-24. If the count is N and N is greater than 0, exactly N attachment lines, order `1..N`. If the count is 0, there are no attachment lines. The next field then follows.
+19. `package-payload-identity: ` exactly `MATCH`, `MISMATCH`, or `UNVERIFIABLE`
+20. `payload-link-method: ` exactly `BYTE-RANGE-IN-TRANSMITTED-REQUEST` or `NOT-ESTABLISHED`
+21. `payload-byte-offset: ` a canonical decimal, or exactly `UNVERIFIABLE`
+22. `payload-byte-length: ` a canonical decimal from 1 through 8,388,608, or exactly `UNVERIFIABLE`
+23. `response-sha256: ` 64 lowercase hex digits, or exactly `RESPONSE-NOT-EVIDENCED`
+24. `response-byte-length: ` a canonical decimal from 0 through 8,388,608, or exactly `RESPONSE-NOT-EVIDENCED`, in agreement with the previous field
+25. `seal-record-sha256: ` 64 lowercase hex digits, equal to `SEAL-DIGEST.txt` for this attempt
+26. `seal-record-byte-length: ` a canonical decimal from 1 through 16,384, equal to the length of `seal-record.txt`
+27. `attachment-count: ` a canonical decimal from 0 through 32
+28. If the count is N and N is greater than 0, exactly N attachment lines, order `1..N`. If the count is 0, there are no attachment lines. The next field then follows.
 
 ```
 attachment:<order><TAB><path><TAB><byte-length><TAB><64-lowercase-hex>
 ```
 
-`path` uses §4.2. `byte-length` is a canonical decimal from 0 through 1,048,576. The hex is the attachment content hash. These lines are digest references. They must equal the seal's attachment path, length, and hash. The seal's `MATCH` or `MISMATCH` token is not copied; an acceptance requires every seal attachment to be `MATCH`.
+`path` uses §4.2. `byte-length` is a canonical decimal from 0 through 1,048,576. The hex is the attachment content hash. These lines are digest references. They must equal the seal's attachment path, length, and hash. The seal's attachment result `MATCH` or `MISMATCH` is not copied. An acceptance requires every seal attachment result to be `MATCH`. That attachment result is a different field from `package-payload-identity`.
 
-25. `capture-utc: ` a §5.4 timestamp
-26. `seal-utc: ` a §5.4 timestamp, greater than or equal to `capture-utc`
-27. `evidence-anchor-utc: ` a §5.4 timestamp, greater than or equal to `seal-utc`
-28. `capture-operator-id: ` 1 through 64 characters matching `[A-Za-z0-9._@-]+`
-29. `recorder-id: ` the same token grammar, and not equal to `capture-operator-id`
-30. `verifier-id: ` the same token grammar, and not equal to `capture-operator-id`
-31. `custodian-id: ` the same token grammar, and not equal to `capture-operator-id`. It may equal `recorder-id`. It may equal `verifier-id` when that person is not the capture operator
-32. `verification-outcome: ` exactly one of `ACCEPTED`, `RECORDED-NON-COUNTING`, `REJECTED`
+29. `capture-utc: ` a §5.4 timestamp
+30. `seal-utc: ` a §5.4 timestamp, greater than or equal to `capture-utc`
+31. `evidence-anchor-utc: ` a §5.4 timestamp, greater than or equal to `seal-utc`
+32. `capture-operator-id: ` 1 through 64 characters matching `[A-Za-z0-9._@-]+`
+33. `recorder-id: ` the same token grammar, and not equal to `capture-operator-id`
+34. `verifier-id: ` the same token grammar, and not equal to `capture-operator-id`
+35. `custodian-id: ` the same token grammar, and not equal to `capture-operator-id`. It may equal `recorder-id`. It may equal `verifier-id` when that person is not the capture operator
+36. `verification-outcome: ` exactly one of `ACCEPTED`, `RECORDED-NON-COUNTING`, `REJECTED`
 
-`ACCEPTED` is the only outcome that can count toward quorum. It requires the §6.7 counting rules, equality with the named Package Anchor, and the separation rules below. `RECORDED-NON-COUNTING` records a sealed attempt that does not count. `REJECTED` authorizes nothing. Unknown outcomes are rejected.
+`MATCH` is valid only after the seal verifier, who is not the capture operator, reads the retained `transmitted-request.bin` for this attempt. The verifier checks that the file length equals `transmitted-request-byte-length` and that SHA-256 of the entire file equals `transmitted-request-sha256`. The verifier then hashes the half-open range `[payload-byte-offset, payload-byte-offset + payload-byte-length)`. That addition must not overflow, and the range must lie inside the file. The range digest must equal the accepted Package Anchor's `package-payload-sha256`. `payload-link-method` must be `BYTE-RANGE-IN-TRANSMITTED-REQUEST`, and both offset and length must be canonical decimals. The capture operator's assertion of `MATCH` is not this check. A recorded request hash, offset, and length are not a substitute for the file. If the file is absent, unreadable by the verifier, or the whole-file length or hash disagrees, the identity is `UNVERIFIABLE`. A normalized, truncated, reordered, or substituted range is not `MATCH`.
+
+`MISMATCH` requires the same kind of identified range, with a SHA-256 that differs from `package-payload-sha256`. `UNVERIFIABLE` requires `payload-link-method: NOT-ESTABLISHED` and `UNVERIFIABLE` on both offset and length. Any other combination is a grammar failure. These fields do not contain payload bytes, request bodies, response bodies, secrets, or credentials.
+
+`ACCEPTED` is the only outcome that can count toward quorum. It requires `package-payload-identity: MATCH`, the §6.7 counting rules, equality with the named Package Anchor, and the separation rules below. `MISMATCH` and `UNVERIFIABLE` are not `ACCEPTED`. They may be `RECORDED-NON-COUNTING`. `REJECTED` authorizes nothing. Unknown outcomes are rejected. An Evidence Anchor does not prove provider-side receipt or model processing.
 
 A Google `provider` value is grammatically legal because D3 names Google. While Google privacy is deferred and package-receipt eligibility is unresolved, submission to Google is forbidden, and `verification-outcome` for a Google attempt cannot be `ACCEPTED`.
 
@@ -686,12 +730,12 @@ Unknown fields, duplicate fields, missing fields, wrong order, empty values, upp
 
 **Evidence roles.** `PROPOSED — NOT ADOPTED — FOR PO DECISION ONLY`
 
-| Role                                 | Function                                                                                                       |
-| ------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| Capture operator                     | Runs the send and writes the local capture and seal. May also be the package preparer                          |
-| Seal verifier                        | Recomputes the seal digest, correlation, attachments, and Package Anchor identity. Is not the capture operator |
-| Product Owner                        | Accepts or rejects the Evidence Anchor. This report does not act as the Product Owner                          |
-| Evidence Anchor recorder / custodian | Writes the record in the evidence store. Is not the capture operator                                           |
+| Role                                 | Function                                                                                                                                                                                                                     |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Capture operator                     | Runs the send and writes the local capture and seal. May also be the package preparer                                                                                                                                        |
+| Seal verifier                        | Reads the retained `transmitted-request.bin`, recomputes its whole-file hash and the payload byte-range hash, and checks the seal digest, correlation, attachments, and Package Anchor identity. Is not the capture operator |
+| Product Owner                        | Accepts or rejects the Evidence Anchor. This report does not act as the Product Owner                                                                                                                                        |
+| Evidence Anchor recorder / custodian | Writes the record in the evidence store. Is not the capture operator                                                                                                                                                         |
 
 | Combination                                                                             | Result                                                                                     |
 | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
@@ -742,7 +786,7 @@ The stale canvas citation and the Design Content Baseline remain outside the pac
 2. Only after that check, and only after separate D7 authorization and all eligibility gates, submit one provider attempt.
 3. Capture the actual request and the complete response under §6.
 4. Create `seal-record.txt` and the detached `SEAL-DIGEST.txt`.
-5. The seal verifier, who is not the capture operator, checks the seal, the request/response correlation, the attachments, and equality with the Package Anchor.
+5. The seal verifier, who is not the capture operator, reads the retained `transmitted-request.bin` and recomputes the payload-range hash required for `MATCH`. A request hash without those bytes is not that check. The verifier also checks the seal, the request/response correlation, the attachments, and equality with the Package Anchor.
 6. Create one Post-capture Evidence Anchor for that attempt.
 7. Independently verify that record and, when the counting rules pass, accept it. This report does not perform that act.
 8. Only an `ACCEPTED` Evidence Anchor may place that seal in the discrepancy matrix.
@@ -760,6 +804,7 @@ Decision 4 approves protocol text only. It does not freeze a package, write eith
 - An Evidence Anchor cannot refer to a superseded or otherwise invalid Package Anchor. `package-anchor-ref`, both package hashes, and `package-version` must still identify an `ACCEPTED` Package Anchor at acceptance time.
 - Conflicting accepted records for the same attempt, as defined in §7.4, reject both for quorum use.
 - A package change after a provider submission does not relabel that attempt onto the new package. The old response does not count against the new package bytes. There is no recovery path that pairs an old provider response with new package bytes.
+- A disclosed payload whose hash differs from the accepted Package Anchor does not corrupt that anchor. The anchor still identifies the original payload. The mismatched attempt does not count and cannot be rebound to the original anchor or to a later package. A later package needs its own accepted Package Anchor and its own disclosure authorization.
 
 Mismatch handling: stop. Offer nothing further to a provider. Do not repair a Package Anchor by editing it to follow changed files, and do not repair an Evidence Anchor by editing it to follow a changed seal.
 
@@ -784,52 +829,53 @@ Mismatch handling: stop. Offer nothing further to a provider. Do not repair a Pa
 
 Paper analysis only. No package was built, no provider was contacted, and no anchor was written.
 
-| Case                                                                     | Counts                                                                                                                                                                                                | Anchor                                                                                                                             | Matrix                                                                                                                            |
-| ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Package Anchor accepted, then a member changes before submission         | No submission, so no attempt counts                                                                                                                                                                   | The prior Package Anchor does not cover the changed package                                                                        | Does not begin                                                                                                                    |
-| Package bytes unchanged, transmitted request differs from prepared bytes | Counts only when the transmitted bytes are `SUBMITTED`, `instructions-observable` is `FULL`, and every other counting rule passes. A missing operator-controlled byte is `PARTIAL` and does not count | Package Anchor stays valid. Prepared bytes remain class `PREPARED`                                                                 | Does not begin from this attempt unless it is one of three `ACCEPTED` Evidence Anchors                                            |
-| Response truncated                                                       | Does not count                                                                                                                                                                                        | Package Anchor stays valid. The Evidence Anchor, if written, is `RECORDED-NON-COUNTING` or is absent                               | Does not begin                                                                                                                    |
-| Two responses for one attempt                                            | Does not count. The parser does not choose a body                                                                                                                                                     | An `ACCEPTED` Evidence Anchor for that attempt is forbidden                                                                        | Does not begin                                                                                                                    |
-| Seal exists and no Evidence Anchor is accepted                           | Does not count                                                                                                                                                                                        | Package Anchor stays valid. The seal is not independently anchored                                                                 | Does not begin                                                                                                                    |
-| Evidence Anchor bytes change after acceptance                            | The altered bytes are not the accepted record                                                                                                                                                         | Silent overwrite is void. The attempt does not count until a new record is independently accepted. Conflicting copies do not count | Does not use the altered record                                                                                                   |
-| Package Anchor superseded after a provider attempt                       | The old response does not count against the new package                                                                                                                                               | The Evidence Anchor keeps the old package identity and is not relabelled                                                           | Does not begin for the new package with that attempt                                                                              |
-| Capture operator is also the Evidence Anchor custodian                   | Does not count                                                                                                                                                                                        | The Evidence Anchor is not independent                                                                                             | Does not begin                                                                                                                    |
-| Three complete seals, two Evidence Anchors accepted                      | Two seals count. That is not a quorum. No N−1 and no automatic replacement                                                                                                                            | The third seal is unanchored for quorum purposes                                                                                   | Does not begin. State remains `INCONCLUSIVE / NOT COMPLETED`                                                                      |
-| Three Evidence Anchors, one names the wrong package version              | The mismatched record does not count. Two records are not a quorum                                                                                                                                    | The wrong reference is invalid                                                                                                     | Does not begin                                                                                                                    |
-| Retry after timeout                                                      | The timeout attempt does not count. The retry is a new `attempt-id` and needs its own seal and Evidence Anchor. The two are not combined                                                              | Each record stands on its own attempt                                                                                              | Does not begin until three counting Evidence Anchors exist                                                                        |
-| Google privacy remains deferred                                          | A Google attempt does not count and Google receives no package bytes                                                                                                                                  | A Google Evidence Anchor cannot be `ACCEPTED`                                                                                      | Does not include Google. The roster still needs three counting assessments, and this report does not create a two-provider quorum |
+| Case                                                             | Counts                                                                                                                                                                                                                                                                               | Anchor                                                                                                                             | Matrix                                                                                                                            |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Package Anchor accepted, then a member changes before submission | No submission, so no attempt counts                                                                                                                                                                                                                                                  | The prior Package Anchor does not cover the changed package                                                                        | Does not begin                                                                                                                    |
+| Transport envelope differs from the prepared request             | May count only when the embedded package payload is identified, `package-payload-identity` is `MATCH` against the accepted Package Anchor, and every other counting rule passes. `MISMATCH` and `UNVERIFIABLE` do not count. Capturing a different payload does not make it eligible | The Package Anchor stays valid for the original payload. It is not corrupted, and it does not bind the different payload           | Eligible for this attempt only on `MATCH`, and only as one of three `ACCEPTED` Evidence Anchors. A payload mismatch is excluded   |
+| Response truncated                                               | Does not count                                                                                                                                                                                                                                                                       | Package Anchor stays valid. The Evidence Anchor, if written, is `RECORDED-NON-COUNTING` or is absent                               | Does not begin                                                                                                                    |
+| Two responses for one attempt                                    | Does not count. The parser does not choose a body                                                                                                                                                                                                                                    | An `ACCEPTED` Evidence Anchor for that attempt is forbidden                                                                        | Does not begin                                                                                                                    |
+| Seal exists and no Evidence Anchor is accepted                   | Does not count                                                                                                                                                                                                                                                                       | Package Anchor stays valid. The seal is not independently anchored                                                                 | Does not begin                                                                                                                    |
+| Evidence Anchor bytes change after acceptance                    | The altered bytes are not the accepted record                                                                                                                                                                                                                                        | Silent overwrite is void. The attempt does not count until a new record is independently accepted. Conflicting copies do not count | Does not use the altered record                                                                                                   |
+| Package Anchor superseded after a provider attempt               | The old response does not count against the new package                                                                                                                                                                                                                              | The Evidence Anchor keeps the old package identity and is not relabelled                                                           | Does not begin for the new package with that attempt                                                                              |
+| Capture operator is also the Evidence Anchor custodian           | Does not count                                                                                                                                                                                                                                                                       | The Evidence Anchor is not independent                                                                                             | Does not begin                                                                                                                    |
+| Three complete seals, two Evidence Anchors accepted              | Two seals count. That is not a quorum. No N−1 and no automatic replacement                                                                                                                                                                                                           | The third seal is unanchored for quorum purposes                                                                                   | Does not begin. State remains `INCONCLUSIVE / NOT COMPLETED`                                                                      |
+| Three Evidence Anchors, one names the wrong package version      | The mismatched record does not count. Two records are not a quorum                                                                                                                                                                                                                   | The wrong reference is invalid                                                                                                     | Does not begin                                                                                                                    |
+| Retry after timeout                                              | The timeout attempt does not count. The retry is a new `attempt-id` and needs its own seal and Evidence Anchor. The two are not combined                                                                                                                                             | Each record stands on its own attempt                                                                                              | Does not begin until three counting Evidence Anchors exist                                                                        |
+| Google privacy remains deferred                                  | A Google attempt does not count and Google receives no package bytes                                                                                                                                                                                                                 | A Google Evidence Anchor cannot be `ACCEPTED`                                                                                      | Does not include Google. The roster still needs three counting assessments, and this report does not create a two-provider quorum |
 
 ---
 
 ## 8. Integrated consistency matrix
 
-| Rule                                                              | After I.11                                                                                                                               |
-| ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| D1–D3 and the D3 roster                                           | Unchanged. No substitution                                                                                                               |
-| Google privacy deferred; Google not eligible to receive a package | Unchanged. Seal grammar does not create eligibility                                                                                      |
-| D4 scope                                                          | Protocol text only, if later approved. Excludes Stage H §4.1. Does not freeze, anchor, disclose, or commence                             |
-| Payload encoding                                                  | Length-prefixed binary, magic `OCPKG1`, non-circular. Manifest and freeze record are outside the payload                                 |
-| Path validation                                                   | `I.11-ASCII-1`. Host locale and filesystem canonicalization are not inputs                                                               |
-| Hashed objects                                                    | Regular-file content bytes only. Links, devices, streams, xattrs, ACLs, resource forks, mode, owner, and timestamps are outside the hash |
-| Manifest and freeze grammar                                       | Closed fields, closed tokens, canonical decimals, operational caps. Empty package rejected                                               |
-| Numeric limits                                                    | Operational caps in §5.1. Not integer-type maxima                                                                                        |
-| Operator-controlled request bytes                                 | Required for `SUBMITTED` and for `FULL`                                                                                                  |
-| Provider-internal instructions                                    | Not required. `OUTSIDE-OPERATOR-CAPTURE` does not fail the seal                                                                          |
-| Response pairing                                                  | `ID-LINK` or `TRANSPORT-PAIR` inside one attempt. Retries are not combined. Partial and truncated responses do not count                 |
-| Local request hash                                                | `PREPARED` only. Not transmission proof                                                                                                  |
-| Capture                                                           | Not proof of model processing. Not tested                                                                                                |
-| Package Anchor independence                                       | Requires preparer ≠ Package Anchor custodian and preparer ≠ package verifier. Not established in this repository                         |
-| Evidence Anchor independence                                      | Requires capture operator ≠ seal verifier and capture operator ≠ Evidence Anchor custodian. Not established in this repository           |
-| Anchor locations                                                  | Package Anchor is outside the package directory. Evidence Anchor is outside the seal directory. Neither is in sole operator control      |
-| Package change                                                    | Invalidates the prior Package Anchor for the new bytes. Old responses are not relabelled onto the new package                            |
-| Seal or attempt change                                            | Invalidates that attempt's Evidence Anchor. Accepted records are not overwritten                                                         |
-| Package Anchor versus D4 and D7                                   | Pre-disclosure record. A later PO act and a prerequisite to considering D7. Neither D4 nor D7. Not a seal record                         |
-| Evidence Anchor versus commencement                               | Post-capture record. It does not authorize D7, disclosure, CC-02, or CC-06                                                               |
-| Provider review-level outcome                                     | Providers do not issue the three review-level tokens                                                                                     |
-| No N−1 and no automatic replacement                               | Unchanged. Non-counting attempts stay `INCONCLUSIVE / NOT COMPLETED`                                                                     |
-| Operative CC-02, CC-06, OQ-CENSUS-01, SQL EXEC, Census EXEC       | Unchanged                                                                                                                                |
-| D5 and D6                                                         | Not started                                                                                                                              |
-| Signature infrastructure                                          | Not proposed and not assumed                                                                                                             |
+| Rule                                                              | After I.11                                                                                                                                                                                     |
+| ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D1–D3 and the D3 roster                                           | Unchanged. No substitution                                                                                                                                                                     |
+| Google privacy deferred; Google not eligible to receive a package | Unchanged. Seal grammar does not create eligibility                                                                                                                                            |
+| D4 scope                                                          | Protocol text only, if later approved. Excludes Stage H §4.1. Does not freeze, anchor, disclose, or commence                                                                                   |
+| Payload encoding                                                  | Length-prefixed binary, magic `OCPKG1`, non-circular. Manifest and freeze record are outside the payload                                                                                       |
+| Path validation                                                   | `I.11-ASCII-1`. Host locale and filesystem canonicalization are not inputs                                                                                                                     |
+| Hashed objects                                                    | Regular-file content bytes only. Links, devices, streams, xattrs, ACLs, resource forks, mode, owner, and timestamps are outside the hash                                                       |
+| Manifest and freeze grammar                                       | Closed fields, closed tokens, canonical decimals, operational caps. Empty package rejected                                                                                                     |
+| Numeric limits                                                    | Operational caps in §5.1. Not integer-type maxima                                                                                                                                              |
+| Operator-controlled request bytes                                 | Required for `SUBMITTED` and for `FULL`                                                                                                                                                        |
+| Package payload versus transport envelope                         | The Package Anchor binds the canonical payload hash. A transport difference counts only with `package-payload-identity: MATCH`. `MISMATCH` and `UNVERIFIABLE` do not count and are not rebound |
+| Provider-internal instructions                                    | Not required. `OUTSIDE-OPERATOR-CAPTURE` does not fail the seal                                                                                                                                |
+| Response pairing                                                  | `ID-LINK` or `TRANSPORT-PAIR` inside one attempt. Retries are not combined. Partial and truncated responses do not count                                                                       |
+| Local request hash                                                | `PREPARED` only. Not transmission proof                                                                                                                                                        |
+| Capture                                                           | Not proof of model processing. Not tested                                                                                                                                                      |
+| Package Anchor independence                                       | Requires preparer ≠ Package Anchor custodian and preparer ≠ package verifier. Not established in this repository                                                                               |
+| Evidence Anchor independence                                      | Requires capture operator ≠ seal verifier and capture operator ≠ Evidence Anchor custodian. Not established in this repository                                                                 |
+| Anchor locations                                                  | Package Anchor is outside the package directory. Evidence Anchor is outside the seal directory. Neither is in sole operator control                                                            |
+| Package change                                                    | Invalidates the prior Package Anchor for the new bytes. Old responses are not relabelled onto the new package                                                                                  |
+| Seal or attempt change                                            | Invalidates that attempt's Evidence Anchor. Accepted records are not overwritten                                                                                                               |
+| Package Anchor versus D4 and D7                                   | Pre-disclosure record. A later PO act and a prerequisite to considering D7. Neither D4 nor D7. Not a seal record                                                                               |
+| Evidence Anchor versus commencement                               | Post-capture record. It does not authorize D7, disclosure, CC-02, or CC-06                                                                                                                     |
+| Provider review-level outcome                                     | Providers do not issue the three review-level tokens                                                                                                                                           |
+| No N−1 and no automatic replacement                               | Unchanged. Non-counting attempts stay `INCONCLUSIVE / NOT COMPLETED`                                                                                                                           |
+| Operative CC-02, CC-06, OQ-CENSUS-01, SQL EXEC, Census EXEC       | Unchanged                                                                                                                                                                                      |
+| D5 and D6                                                         | Not started                                                                                                                                                                                    |
+| Signature infrastructure                                          | Not proposed and not assumed                                                                                                                                                                   |
 
 No contradiction with the preserved Stage I.9 severity split or the Stage I.10 three-object hash split was introduced. Stage I.10 Unicode path permission is narrowed, in §4.1, to ASCII. The Stage I.12 correction separates the pre-disclosure Package Anchor from the post-capture Evidence Anchor. That separation is explicit.
 
@@ -844,7 +890,7 @@ Residual limitations:
 - Unicode 15.1.0 is intentionally unused. A non-ASCII member name cannot be represented under `I.11-ASCII-1`.
 - Platform checks that the host cannot perform (`ADS-CHECK-UNAVAILABLE`, `XATTR-CHECK-UNAVAILABLE`, `MOUNT-CHECK-UNAVAILABLE`, `LINK-COUNT-NOT-EVIDENCED`, `FILE-IDENTITY-NOT-EVIDENCED`, `PATH-CONTAINMENT-NOT-EVIDENCED`) block the offer of a hash. They do not become a pass.
 - Advisory locks do not stop a same-credential writer.
-- `TRANSPORT-PAIR` binds a response to submitted bytes on one captured exchange. It does not prove the model processed those bytes.
+- `TRANSPORT-PAIR` binds a response to submitted bytes on one captured exchange. It does not prove the model processed those bytes. A transmitted-request hash is not, by itself, a package-payload match. Only an identified byte range whose SHA-256 equals the accepted Package Anchor can be `MATCH`. If that range cannot be identified, the attempt is `UNVERIFIABLE` and does not count. The Evidence Anchor does not prove provider-side processing.
 - `ID-LINK` is only as strong as the interface that returned the id. No API is asserted to return one.
 - Hidden provider instructions stay outside operator capture.
 - The clock-source token does not prove the clock.
@@ -860,7 +906,7 @@ Residual limitations:
 
 These remain open. This report does not ask the PO to re-decide the technical choices already fixed in §§4–7 (ASCII grammar, numeric caps, empty-package rejection, single-attempt pairing, and the two anchor field lists). Those are part of the proposal text.
 
-1. Adopt, edit, or reject the I.11 text, including the I.12 two-anchor correction, together with the unaffected I.8, I.9, and I.10 text. **OPEN.** That choice is Decision 4. It is not made here.
+1. Adopt, edit, or reject the I.11 text, including the I.12 two-anchor correction and the I.13 package-payload identity correction, together with the unaffected I.8, I.9, and I.10 text. **OPEN.** That choice is Decision 4. It is not made here.
 2. Establish a Package Anchor custodian who is not the package preparer, and a package verifier who is not the preparer. **OPEN.** Not established by the current sole-Project-Owner record.
 3. Establish an Evidence Anchor custodian who is not the capture operator, and a seal verifier who is not the capture operator. **OPEN.** The same sole-Project-Owner record does not establish this second separation.
 4. Deploy the Package Anchor store and the Evidence Anchor store outside sole operator control. **OPEN.** Decision 4 does not do this.
@@ -886,7 +932,7 @@ Specification readiness is not operational readiness. Neither anchor exists. Sep
 
 `PROPOSED — NOT ADOPTED — FOR PO DECISION ONLY`
 
-> The Stage I.9 approval sentence also includes the Stage I.10 canonical payload, manifest, freeze record, request/response correlation rule, and external-anchor prerequisite, together with the Stage I.11 path grammar `I.11-ASCII-1`, regular-file collection rules, manifest and freeze-record grammar `I.11-1`, operational numeric limits, empty-package prohibition, single-attempt capture and correlation rules, the pre-disclosure Package Anchor schema `I.12-1` including its separation-of-duties prerequisite, and the post-capture Evidence Anchor schema `I.12-1` including its separate separation-of-duties prerequisite, and it still excludes Stage H §4.1, and it still does not freeze a package, write either anchor, appoint a custodian, accept hashes, disclose material, commence a review, designate an adjudicator, amend operative CC-02, synchronize controlled documents, re-adopt CC-01 through CC-06, satisfy CC-02, perform CC-06, close OQ-CENSUS-01, decide Google privacy, decide D5 or D6 or D7, authorize provider contact, or authorize SQL EXEC or Census EXEC, and it does not establish that separation of duties currently exists for either anchor.
+> The Stage I.9 approval sentence also includes the Stage I.10 canonical payload, manifest, freeze record, request/response correlation rule, and external-anchor prerequisite, together with the Stage I.11 path grammar `I.11-ASCII-1`, regular-file collection rules, manifest and freeze-record grammar `I.11-1`, operational numeric limits, empty-package prohibition, single-attempt capture and correlation rules, the pre-disclosure Package Anchor schema `I.12-1` including its separation-of-duties prerequisite, and the post-capture Evidence Anchor schema `I.13-1`, including its package-payload identity rule that only `MATCH` can count and its separate separation-of-duties prerequisite, and it still excludes Stage H §4.1, and it still does not freeze a package, write either anchor, appoint a custodian, accept hashes, disclose material, commence a review, designate an adjudicator, amend operative CC-02, synchronize controlled documents, re-adopt CC-01 through CC-06, satisfy CC-02, perform CC-06, close OQ-CENSUS-01, decide Google privacy, decide D5 or D6 or D7, authorize provider contact, or authorize SQL EXEC or Census EXEC, and it does not establish that separation of duties currently exists for either anchor.
 
 ---
 
