@@ -8,7 +8,7 @@ How to read this report:
 
 - **Verified repository fact** means a hash, byte size, file presence, or wording read from a named source during this task.
 - **Prior proposal** means Stage I.8, Stage I.9, or Stage I.10 text. Stages I.8, I.9, and I.10 are conversation texts. No repository file for those stages is assumed.
-- **I.11 proposal** means normative text introduced here. It is not adopted.
+- **I.11 proposal** means normative text introduced here, including the Stage I.12 two-anchor correction in this file. It is not adopted.
 - **Untested** means the control is specified and was not executed. Specification is not evidence that the control ran.
 - **Open PO decision** means a governance choice this report does not make.
 
@@ -20,18 +20,21 @@ No package, manifest, freeze record, capture record, or anchor was created. No s
 
 Stage I.10 left four specification gaps: path grammar that still allowed cross-platform collisions and did not define filesystem object types; manifest and freeze-record fields whose tokens, ranges, and empty-package behavior were incomplete; request/response capture that did not define a trustworthy byte boundary, retry handling, or tamper limits; and an anchor whose independence was not tied to a real separation of duties.
 
-This report resolves those four areas with one ASCII path grammar, one regular-file collection rule, one closed manifest and freeze grammar with operational size caps, one fail-closed capture and single-attempt pairing rule, and one anchor schema that is valid only when the preparer cannot write it.
+This report resolves those four areas with one ASCII path grammar, one regular-file collection rule, one closed manifest and freeze grammar with operational size caps, one fail-closed capture and single-attempt pairing rule, and two anchor records that are valid only when the person who prepares the bound bytes cannot write the record. The Stage I.12 correction splits the earlier single anchor into two records with two times:
+
+- The **Package Anchor** is a pre-disclosure record. It binds the frozen package before any provider receives package bytes. It contains no seal hash and no attempt id.
+- The **Post-capture Evidence Anchor** is a later record, one per completed attempt. It binds that attempt's seal to the already accepted Package Anchor after capture. It is not commencement authority.
 
 **Readiness verdict: `READY FOR D4 PRODUCT OWNER REVIEW`.**
 
-That verdict is specification readiness. It is not operational readiness. The anchor store is not deployed. Separation of duties is not established. No capture path was tested. Decision 4 is not approved.
+That verdict is specification readiness. It is not operational readiness. Neither anchor store is deployed. Separation of duties is not established for either record. No capture path was tested. Decision 4 is not approved.
 
 Residual limitations, all fail-closed and all untested:
 
-- The Decision Register records a sole Project Owner, and this repository shows no second custodian. An anchor written by the package preparer is not independent.
+- The Decision Register records a sole Project Owner, and this repository shows no second custodian. A Package Anchor written by the package preparer is not independent. An Evidence Anchor written by the capture operator is not independent.
 - `TRANSPORT-PAIR` and `ID-LINK` bind captured bytes. They do not prove that a model processed those bytes.
 - Provider-internal instructions remain outside operator capture.
-- A person who can rewrite both the package directory and the anchor store can still replace the package.
+- A person who can rewrite both the package directory and the Package Anchor store can still replace the package. A person who can rewrite both the seal directory and the Evidence Anchor store can still replace the seal.
 - Local agreement among payload, manifest, and freeze record still does not detect a joint rewrite of those three objects.
 
 ---
@@ -265,7 +268,7 @@ A zero-member payload is forbidden, including a payload whose encoding could rep
 
 Governance reason, separate from the encoding: a review package has to be able to carry the bound SQL candidate, the current design canvas, the binding manifest, and a review-scope file. An empty package can still be hashed and could be mistaken for a frozen review object. Fail closed.
 
-Non-emptiness is not sufficiency. This grammar does not assemble members. A later anchor is eligible for the current candidate only when the package also satisfies §7.4. That eligibility rule is not exercised here. `scope/review-scope.txt` does not exist.
+Non-emptiness is not sufficiency. This grammar does not assemble members. A later Package Anchor is eligible for the current candidate only when the package also satisfies §7.5. That eligibility rule is not exercised here. `scope/review-scope.txt` does not exist.
 
 ### 5.3 Shared line rules
 
@@ -362,7 +365,7 @@ The parser is deterministic. On any failure it rejects the object and offers no 
 
 What local verification detects: accidental corruption, a substituted member, a substituted manifest, a substituted freeze record, extra or missing objects, illegal paths, and illegal file types.
 
-What it does not detect: a party who can rewrite the members, the manifest, and the freeze record together. That case needs the anchor in §7, and only when that anchor is outside the rewriter's control.
+What it does not detect: a party who can rewrite the members, the manifest, and the freeze record together. That case needs the pre-disclosure Package Anchor in §7.3, and only when that anchor is outside the rewriter's control. Seal hashes are not part of that record. They belong to the later Evidence Anchor in §7.4.
 
 ---
 
@@ -470,7 +473,11 @@ For each attempt, the capture point writes the sent bytes and the response bytes
 
 An optional `prev-seal-record-sha256` chain may link attempt digests in time order. The first record uses `NONE`. A hash chain detects a middle edit when the later links are preserved. It does not protect against an administrator who rewrites the whole chain and recomputes every digest. The chain is not described as that protection.
 
-Append-only storage and write-once storage are deployment choices. This repository does not contain such a store, and this proposal does not invent one. A seal supports a review-level outcome only after its `seal-record-sha256`, package hashes, and attempt id are in the §7 anchor. That anchoring step is not performed here. Same-person rewrite of the seal directory and the anchor remains undetected, as in §7.
+Append-only storage and write-once storage are deployment choices. This repository does not contain such a store, and this proposal does not invent one.
+
+The pre-disclosure Package Anchor (§7.3) is written before any provider response exists. It binds package identity only. It does not contain `seal-record-sha256`, an attempt id, or any other seal field. A future seal hash cannot be inserted into that record.
+
+A seal supports a review-level outcome only after a separate Post-capture Evidence Anchor (§7.4) for that same `attempt-id` is accepted. That later record stores the seal digest, the attempt id, and the package hashes already bound by the Package Anchor. Creating the Evidence Anchor is not performed here. Same-person rewrite of the seal directory and the Evidence Anchor store remains undetected, as in §7.4. Same-person rewrite of the package directory and the Package Anchor store remains undetected, as in §7.3.
 
 ### 6.7 Seal grammar
 
@@ -491,8 +498,8 @@ Lines, in order:
 9. `provider: ` exactly `Anthropic`, `OpenAI`, or `Google`
 10. `model: ` exactly the D3 model for that provider: `claude-opus-5-5`, `gpt-6.1-sol`, or `gemini-4-argon`
 11. `api: ` exactly `first-party-claude`, `first-party-openai`, or `paid-gemini-developer`, matching the provider
-12. `package-payload-sha256: ` 64 lowercase hex digits from the anchored freeze identity
-13. `manifest-payload-sha256: ` 64 lowercase hex digits from the anchored freeze identity
+12. `package-payload-sha256: ` 64 lowercase hex digits from the accepted Package Anchor
+13. `manifest-payload-sha256: ` 64 lowercase hex digits from the accepted Package Anchor
 14. `prepared-request-sha256: ` 64 lowercase hex digits
 15. `prepared-request-byte-length: ` canonical decimal, 0 through 8,388,608
 16. `transmitted-request-sha256: ` 64 lowercase hex digits, or exactly `TRANSMISSION-NOT-EVIDENCED`
@@ -530,7 +537,8 @@ A seal counts toward quorum only when all of the following hold:
 - transmitted request and response are evidenced, not the `NOT-EVIDENCED` tokens
 - the Stage I.9 mandatory assessment content is present in the sealed assessment
 - provider, model, and API are the approved D3 triple, with no substitution
-- the package hashes equal the accepted anchor (§7), once such an anchor exists
+- the package hashes equal the accepted Package Anchor (§7.3)
+- an accepted Post-capture Evidence Anchor (§7.4) exists for this `attempt-id`, its package hashes and package version equal that Package Anchor, and its `seal-record-sha256` equals `SEAL-DIGEST.txt`
 
 `UNAVAILABLE` on request id is not allowed for `ID-LINK`. Provider outcome tokens, if present in the response, are retained and are not the review-level outcome. No provider issues `INCONCLUSIVE / NOT COMPLETED`, `BLOCKED — UNRESOLVED CRITICAL/HIGH`, or `PASS WITH OBSERVATIONS`.
 
@@ -538,36 +546,36 @@ Google remains ineligible to receive package bytes while privacy is deferred and
 
 ---
 
-## 7. Clarification D — Independent PO anchor and separation of duties
+## 7. Clarification D — Package Anchor and Post-capture Evidence Anchor
 
 `PROPOSED — NOT ADOPTED — FOR PO DECISION ONLY`
 
-This section replaces the Stage I.10 anchor recommendation. It does not create an anchor, appoint a person, or accept a hash.
+This section replaces the Stage I.10 anchor recommendation and corrects the Stage I.11 single-anchor wording. The Package Anchor and the Post-capture Evidence Anchor are two records, created at two times. This section does not create either record, appoint a person, or accept a hash.
 
 ### 7.1 Roles and permitted combinations
 
-| Role                         | Function                                                                                                                                                 |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Package preparer             | Assembles the staging root, payload, manifest, and freeze record                                                                                         |
-| Package verifier             | Recomputes hashes from the staged regular files and the manifest, using §5.6, and is a different person from the preparer                                |
-| Product Owner                | Accepts or rejects the verified hashes. This report does not act as the Product Owner                                                                    |
-| Anchor custodian             | Writes the anchor record in the PO-controlled store. Cannot be the preparer                                                                              |
-| Provider submission operator | May transmit only after a later Decision 7, an accepted anchor match, and every eligibility gate. This role is not authorized to transmit by this report |
+| Role                         | Function                                                                                                                                                         |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Package preparer             | Assembles the staging root, payload, manifest, and freeze record                                                                                                 |
+| Package verifier             | Recomputes hashes from the staged regular files and the manifest, using §5.6, and is a different person from the preparer                                        |
+| Product Owner                | Accepts or rejects the verified hashes. This report does not act as the Product Owner                                                                            |
+| Package Anchor custodian     | Writes the Package Anchor in the PO-controlled store. Cannot be the preparer                                                                                     |
+| Provider submission operator | May transmit only after a later Decision 7, an accepted Package Anchor match, and every eligibility gate. This role is not authorized to transmit by this report |
 
 Permitted and prohibited combinations:
 
-| Combination                                                           | Result                                                                                                                               |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Product Owner and anchor custodian                                    | Permitted. The PO may hold the anchor store                                                                                          |
-| Verifier and custodian, verifier is not the preparer                  | Permitted                                                                                                                            |
-| Verifier and preparer are the same person                             | The recomputation is a self-check only. It does not satisfy independence. Anchor acceptance stays unavailable                        |
-| Preparer and anchor custodian                                         | Prohibited. An anchor this pair writes is not acceptance                                                                             |
-| Preparer and Product Owner are the same person for the acceptance act | Prohibited for acceptance. If no other arrangement exists, separation is not established and no anchor is valid                      |
-| Submission operator and preparer                                      | The send is still prohibited until a valid anchor matches the bytes immediately before send. This report does not authorize the send |
+| Combination                                                           | Result                                                                                                                                       |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Product Owner and Package Anchor custodian                            | Permitted. The PO may hold the Package Anchor store                                                                                          |
+| Verifier and Package Anchor custodian, verifier is not the preparer   | Permitted                                                                                                                                    |
+| Verifier and preparer are the same person                             | The recomputation is a self-check only. It does not satisfy independence. Package Anchor acceptance stays unavailable                        |
+| Preparer and Package Anchor custodian                                 | Prohibited. A Package Anchor this pair writes is not acceptance                                                                              |
+| Preparer and Product Owner are the same person for the acceptance act | Prohibited for acceptance. If no other arrangement exists, separation is not established and no Package Anchor is valid                      |
+| Submission operator and preparer                                      | The send is still prohibited until a valid Package Anchor matches the bytes immediately before send. This report does not authorize the send |
 
 **Verified gap.** The Decision Register D3 authority field says Product Owner (sole Project Owner). No `CODEOWNERS` file exists at `CODEOWNERS` or `.github/CODEOWNERS`. A GitHub API read of branch protection for `AleksandrWeber/TRP` branch `main` returned Forbidden, so required reviews and push restrictions were not verified. The register is a Markdown file in this repository. The working tree can modify it; it is already modified and uncommitted relative to HEAD. Git history was not shown to be immutable.
 
-**Unresolved operational prerequisite:** this repository does not establish a person, distinct from the package preparer, who alone can write an anchor the preparer cannot edit. Separation of duties is specified and is not in place. This report does not pretend that it exists. Until that prerequisite is met by a later PO arrangement, no anchor acceptance is valid, and provider disclosure stays unavailable.
+**Unresolved operational prerequisite:** this repository does not establish a person, distinct from the package preparer, who alone can write a Package Anchor the preparer cannot edit. Separation of duties is specified and is not in place. This report does not pretend that it exists, and it does not treat the sole Project Owner as a second custodian. Until that prerequisite is met by a later PO arrangement, no Package Anchor acceptance is valid, and provider disclosure stays unavailable. The same gap applies to the Evidence Anchor in §7.4.
 
 ### 7.2 Decision Register suitability
 
@@ -579,90 +587,217 @@ The Decision Register is the place where PO decisions are written when the PO re
 - Branch protection could not be verified.
 - A git commit records history. It does not, by itself, stop a later edit to the same file, and protection against history rewrite was not verified.
 
-**Recommendation:** the anchor is a PO-controlled record stored outside the package directory and outside sole preparer write access. The package directory is the directory that contains the staging root, `PACKAGE-MANIFEST.txt`, and `FREEZE-RECORD.txt`. The anchor is not stored there and is not a second copy of the files.
+**Recommendation:** the Package Anchor is a PO-controlled record stored outside the package directory and outside sole preparer write access. The package directory is the directory that contains the staging root, `PACKAGE-MANIFEST.txt`, and `FREEZE-RECORD.txt`. The Package Anchor is not stored there and is not a second copy of the files. The Evidence Anchor is a second record in a store outside the seal directory and outside sole capture-operator write access. The Decision Register is neither store.
 
 A new signature system is not proposed. A signature scheme would need a named signer, key custody, a published verification key, a signature format, revocation and rotation rules, and a timestamp log. Those prerequisites are not in the repository. They remain open and are not required for this clarification.
 
-No concrete external store is named here, because none was verified. Naming a product would invent infrastructure. The schema below is the requirement. Deploying the store is a later PO act, and it is not Decision 4.
+No concrete external store is named here, because none was verified. Naming a product would invent infrastructure. The schemas below are the requirement. Deploying either store is a later PO act, and it is not Decision 4.
 
-### 7.3 Anchor schema
+### 7.3 Pre-disclosure Package Anchor schema
 
 `PROPOSED — NOT ADOPTED — FOR PO DECISION ONLY`
 
-The anchor file uses §5.3 line rules. Maximum length 2,048 bytes. Token `I.11-1`.
+The Package Anchor file uses §5.3 line rules. Maximum length 2,048 bytes. Its specification token is `I.12-1`. Its purpose is acceptance of one frozen package before disclosure. It is created only after §5.6 succeeds and before any provider receives package bytes.
+
+The record binds package identity and acceptance only. It has no attempt id, no seal hash, no request hash, and no response hash. Keys from §6.7 and §7.4 are unknown keys on this record and are rejected.
 
 Lines, in order:
 
-1. `anchor-spec-version: I.11-1`
-2. `manifest-spec-version: I.11-1`
-3. `path-grammar: I.11-ASCII-1`
-4. `package-version: ` the manifest token
-5. `member-count: ` the same canonical decimal, 1 through 32
-6. `freeze-utc: ` the same timestamp as the freeze record
-7. `package-payload-sha256: ` 64 lowercase hex digits
-8. `manifest-payload-sha256: ` 64 lowercase hex digits
-9. `review-scope-path: ` a §4.2 path that is a member of the package. For the current candidate the required path is `scope/review-scope.txt`
-10. `review-scope-sha256: ` 64 lowercase hex digits, equal to that member's content hash
-11. `anchor-utc: ` a §5.4 timestamp, greater than or equal to `freeze-utc` when both are compared as UTC timestamps
-12. `po-decision-ref: ` `PO-ANCHOR-` plus `YYYYMMDD` plus `-` plus 8 lowercase hex digits. Assigned only when the PO writes the anchor. This report does not assign one
-13. `preparer-id: ` 1 through 64 characters matching `[A-Za-z0-9._@-]+`
-14. `verifier-id: ` the same token grammar, and not equal to `preparer-id`
-15. `custodian-id: ` the same token grammar, and not equal to `preparer-id`. It may equal the Product Owner's id
-16. `verification-outcome: ACCEPTED`
-17. `package-directory-ref: ` 1 through 64 characters matching `[A-Za-z0-9._-]+`. A label only. Slashes, backslashes, and path separators are rejected so the field cannot point at a second copy
+1. `anchor-spec-version: I.12-1`
+2. `anchor-record-type: PACKAGE-ANCHOR`
+3. `manifest-spec-version: I.11-1`
+4. `path-grammar: I.11-ASCII-1`
+5. `package-version: ` the manifest token
+6. `member-count: ` the same canonical decimal, 1 through 32
+7. `freeze-utc: ` the same timestamp as the freeze record
+8. `package-payload-sha256: ` 64 lowercase hex digits
+9. `manifest-payload-sha256: ` 64 lowercase hex digits
+10. `review-scope-path: ` a §4.2 path that is a member of the package. For the current candidate the required path is `scope/review-scope.txt`
+11. `review-scope-sha256: ` 64 lowercase hex digits, equal to that member's content hash
+12. `anchor-utc: ` a §5.4 timestamp, greater than or equal to `freeze-utc` when both are compared as UTC timestamps
+13. `po-decision-ref: ` `PO-ANCHOR-` plus `YYYYMMDD` plus `-` plus 8 lowercase hex digits. Assigned only when the PO writes the Package Anchor. This report does not assign one
+14. `preparer-id: ` 1 through 64 characters matching `[A-Za-z0-9._@-]+`
+15. `verifier-id: ` the same token grammar, and not equal to `preparer-id`
+16. `custodian-id: ` the same token grammar, and not equal to `preparer-id`. It may equal the Product Owner's id
+17. `verification-outcome: ACCEPTED`
+18. `package-directory-ref: ` 1 through 64 characters matching `[A-Za-z0-9._-]+`. A label only. Slashes, backslashes, and path separators are rejected so the field cannot point at a second copy
 
-Any value other than `ACCEPTED` is not an acceptance record. A rejection note may use a separate file with `verification-outcome: REJECTED` and the same identity fields; a `REJECTED` file authorizes nothing and is not an anchor.
+Any value other than `ACCEPTED` is not an acceptance record. A rejection note may use a separate file with `verification-outcome: REJECTED` and the same identity fields; a `REJECTED` file authorizes nothing and is not a Package Anchor.
 
-Unknown fields, duplicate fields, missing fields, wrong order, empty values, and id collisions between preparer and verifier or preparer and custodian reject the file. Two `ACCEPTED` records for the same `package-payload-sha256`, `manifest-payload-sha256`, and `package-version` must be byte-identical or both are rejected as a conflict. A different hash is a different package and needs its own anchor.
+Unknown fields, duplicate fields, missing fields, wrong order, empty values, and id collisions between preparer and verifier or preparer and custodian reject the file. Two `ACCEPTED` records for the same `package-payload-sha256`, `manifest-payload-sha256`, and `package-version` must be byte-identical or both are rejected as a conflict. A different hash is a different package and needs its own Package Anchor. The preparer must be unable to edit the Package Anchor store. If that separation is not established, no valid Package Anchor exists and no disclosure is permitted.
 
-### 7.4 Current-candidate eligibility
+### 7.4 Post-capture Evidence Anchor
 
-This rule is not a freeze. It states when an anchor for the current candidate would be allowed to exist. None of these steps is performed now.
+`PROPOSED — NOT ADOPTED — FOR PO DECISION ONLY`
 
-An anchor for the current candidate is eligible only when the package contains at least these regular-file members:
+Record type: `POST-CAPTURE-EVIDENCE-ANCHOR`. One record per attempt. A second attempt, including a retry, gets its own record and its own `evidence-anchor-id`. Records are not merged across providers and are not updated in place.
+
+This record is created only after that attempt has been fully captured, validated, and sealed under §6. It binds that attempt to the Package Anchor already accepted in §7.3. It does not authorize commencement, disclosure, CC-02, or CC-06. It stores identifiers, hashes, lengths, and controlled metadata only. It does not contain raw request bodies, raw response bodies, provider secrets, credentials, or package content. A field that would hold those bytes is an unknown field and is rejected.
+
+The file uses §5.3 line rules. Maximum length 16,384 bytes. Specification token `I.12-1`.
+
+Lines, in order:
+
+1. `evidence-anchor-spec-version: I.12-1`
+2. `evidence-anchor-record-type: POST-CAPTURE-EVIDENCE-ANCHOR`
+3. `evidence-anchor-id: EA-` plus 32 lowercase hex digits. Assigned only when the record is written. This report does not assign one
+4. `package-anchor-ref: ` the `po-decision-ref` token of one `ACCEPTED` Package Anchor
+5. `package-payload-sha256: ` 64 lowercase hex digits, equal to that Package Anchor
+6. `manifest-payload-sha256: ` 64 lowercase hex digits, equal to that Package Anchor
+7. `package-version: ` the same package-version token as that Package Anchor
+8. `provider: ` exactly `Anthropic`, `OpenAI`, or `Google`
+9. `model: ` the D3 model for that provider, exactly `claude-opus-5-5`, `gpt-6.1-sol`, or `gemini-4-argon`
+10. `api: ` exactly `first-party-claude`, `first-party-openai`, or `paid-gemini-developer`, matching the provider
+11. `attempt-id: ` `ATTEMPT-` plus 32 lowercase hex digits, equal to the seal
+12. `evidence-class: ` one of `PREPARED`, `SUBMITTED`, `ACKNOWLEDGED`, `PROCESSED`
+13. `correlation-class: ` one of `ID-LINK`, `TRANSPORT-PAIR`, `TEMPORAL-ONLY`, `NONE`
+14. `capture-status: ` one of the §6.7 capture-status tokens
+15. `stream-status: ` one of the §6.7 stream-status tokens
+16. `instructions-observable: ` `FULL` or `PARTIAL`
+17. `transmitted-request-sha256: ` 64 lowercase hex digits, or exactly `TRANSMISSION-NOT-EVIDENCED`
+18. `transmitted-request-byte-length: ` a canonical decimal from 0 through 8,388,608, or exactly `TRANSMISSION-NOT-EVIDENCED`, in agreement with the previous field
+19. `response-sha256: ` 64 lowercase hex digits, or exactly `RESPONSE-NOT-EVIDENCED`
+20. `response-byte-length: ` a canonical decimal from 0 through 8,388,608, or exactly `RESPONSE-NOT-EVIDENCED`, in agreement with the previous field
+21. `seal-record-sha256: ` 64 lowercase hex digits, equal to `SEAL-DIGEST.txt` for this attempt
+22. `seal-record-byte-length: ` a canonical decimal from 1 through 16,384, equal to the length of `seal-record.txt`
+23. `attachment-count: ` a canonical decimal from 0 through 32
+24. If the count is N and N is greater than 0, exactly N attachment lines, order `1..N`. If the count is 0, there are no attachment lines. The next field then follows.
+
+```
+attachment:<order><TAB><path><TAB><byte-length><TAB><64-lowercase-hex>
+```
+
+`path` uses §4.2. `byte-length` is a canonical decimal from 0 through 1,048,576. The hex is the attachment content hash. These lines are digest references. They must equal the seal's attachment path, length, and hash. The seal's `MATCH` or `MISMATCH` token is not copied; an acceptance requires every seal attachment to be `MATCH`.
+
+25. `capture-utc: ` a §5.4 timestamp
+26. `seal-utc: ` a §5.4 timestamp, greater than or equal to `capture-utc`
+27. `evidence-anchor-utc: ` a §5.4 timestamp, greater than or equal to `seal-utc`
+28. `capture-operator-id: ` 1 through 64 characters matching `[A-Za-z0-9._@-]+`
+29. `recorder-id: ` the same token grammar, and not equal to `capture-operator-id`
+30. `verifier-id: ` the same token grammar, and not equal to `capture-operator-id`
+31. `custodian-id: ` the same token grammar, and not equal to `capture-operator-id`. It may equal `recorder-id`. It may equal `verifier-id` when that person is not the capture operator
+32. `verification-outcome: ` exactly one of `ACCEPTED`, `RECORDED-NON-COUNTING`, `REJECTED`
+
+`ACCEPTED` is the only outcome that can count toward quorum. It requires the §6.7 counting rules, equality with the named Package Anchor, and the separation rules below. `RECORDED-NON-COUNTING` records a sealed attempt that does not count. `REJECTED` authorizes nothing. Unknown outcomes are rejected.
+
+A Google `provider` value is grammatically legal because D3 names Google. While Google privacy is deferred and package-receipt eligibility is unresolved, submission to Google is forbidden, and `verification-outcome` for a Google attempt cannot be `ACCEPTED`.
+
+Unknown fields, duplicate fields, missing fields, wrong order, empty values, uppercase hex, leading zeros, and a package reference that does not match an `ACCEPTED` Package Anchor reject the file. Two `ACCEPTED` records for the same `attempt-id` must be byte-identical. If they differ, both are in conflict, neither counts, and the conflict is investigated. The same rule applies to two `ACCEPTED` records with the same `evidence-anchor-id`.
+
+**Evidence roles.** `PROPOSED — NOT ADOPTED — FOR PO DECISION ONLY`
+
+| Role                                 | Function                                                                                                       |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| Capture operator                     | Runs the send and writes the local capture and seal. May also be the package preparer                          |
+| Seal verifier                        | Recomputes the seal digest, correlation, attachments, and Package Anchor identity. Is not the capture operator |
+| Product Owner                        | Accepts or rejects the Evidence Anchor. This report does not act as the Product Owner                          |
+| Evidence Anchor recorder / custodian | Writes the record in the evidence store. Is not the capture operator                                           |
+
+| Combination                                                                             | Result                                                                                     |
+| --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Product Owner and Evidence Anchor custodian                                             | Permitted                                                                                  |
+| Seal verifier and custodian, verifier is not the capture operator                       | Permitted                                                                                  |
+| Recorder and custodian are the same person, and that person is not the capture operator | Permitted                                                                                  |
+| Capture operator and seal verifier                                                      | Prohibited. The check is a self-check and is not independent anchoring                     |
+| Capture operator and Evidence Anchor custodian or recorder                              | Prohibited. The resulting record is not acceptance                                         |
+| Separation unavailable                                                                  | The local seal may remain. It is not independently anchored and cannot count toward quorum |
+
+The evidence store is outside the seal directory and outside sole capture-operator control. This repository does not establish that custodian. The sole Project Owner is not assumed to be a second person. This is the same unresolved operational prerequisite as §7.1. The rule is not weakened to make anchoring look executable.
+
+### 7.5 Current-candidate eligibility
+
+`PROPOSED — NOT ADOPTED — FOR PO DECISION ONLY`
+
+This rule is not a freeze. It states when a Package Anchor for the current candidate would be allowed to exist. None of these steps is performed now.
+
+A Package Anchor for the current candidate is eligible only when the package contains at least these regular-file members:
 
 | Logical path                                                 | Eligibility condition                                                                                                                                                                                                      |
 | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sql/option-c-vault-id-census-draft.sql`                     | Length 22,116 and SHA-256 `fc2500e7e0eccb07454ed24c7438f1864ced1ff88b4e3ec601b94ad26bbcab3c`, unless a later PO decision binds a different snapshot                                                                        |
 | `canvas/option-c-vault-id-census-plan.canvas.tsx`            | SHA-256 `c70f45dcfbc74f55765bd682caa6ebff551673cf06120e76d9222251a0680c2e` at the time of this report, unless a later hash-matched snapshot replaces it by a new PO-bound identity                                         |
 | `binding/option-c-vault-id-census-draft.binding-manifest.md` | SHA-256 `de2913f522ea55deefd7d4c93140f405974696363315793e32202bcde05dec38` at the time of this report, with the prior non-reliance note that historical "PERFORMED — PASS WITH OBSERVATIONS" labels are not CC-02 evidence |
-| `scope/review-scope.txt`                                     | Does not exist. Until it exists, is hashed, and is a member, no anchor is eligible                                                                                                                                         |
+| `scope/review-scope.txt`                                     | Does not exist. Until it exists, is hashed, and is a member, no Package Anchor is eligible                                                                                                                                 |
 
 The stale canvas citation and the Design Content Baseline remain outside the package. Runbook, Evidence Protocol, Authorization Package, Decision Register, and Stage H remain outside the package, as previously proposed, because they carry operative and historical governance material.
 
-### 7.5 Verification, invalidation, and sequence
+### 7.6 Verification, invalidation, and sequence
 
-The verifier, who is not the preparer, recomputes the payload hash, the manifest hash, and the review-scope hash with §5.6. The custodian records `ACCEPTED` only when those recomputed values equal the freeze record and the eligibility rule is met. The evidence of acceptance is the anchor file itself. If the preparer can edit that file, the evidence is void.
+`PROPOSED — NOT ADOPTED — FOR PO DECISION ONLY`
 
-Any change to a member, the manifest, the scope bytes, or the package version produces a new hash or a new version. The previous anchor does not cover the new bytes. There is no in-place update. Disclosure requires a fresh match to an `ACCEPTED` anchor for those exact hashes.
-
-Mismatch handling: stop. Offer nothing to a provider. Do not repair the mismatch by editing the anchor to follow the package, and do not repair it by editing the package to follow an anchor without a new verifier run and a new acceptance.
-
-Sequence:
+**Package Anchor sequence.** The package verifier, who is not the preparer, recomputes the payload hash, the manifest hash, and the review-scope hash with §5.6. The Package Anchor custodian records `ACCEPTED` only when those values equal the freeze record and §7.5 is met. The evidence of package acceptance is the Package Anchor file. If the preparer can edit that file, the acceptance is void.
 
 1. Prepare the staging directory.
 2. Run §5.6. On failure, stop. No hash is offered for disclosure.
 3. Write the detached freeze record.
 4. The verifier independently recomputes the hashes.
-5. The PO records acceptance in the external anchor. That act is not Decision 4 and it is not Decision 7. This report does not perform it.
-6. Re-read the local files and require them to still match the anchored hashes.
-7. Only then may a separate Decision 7 be considered.
-8. Provider disclosure occurs only after Decision 7 and after every other applicable gate, including the unresolved Google eligibility rule. An anchor is not permission to disclose.
+5. The PO records acceptance in the Package Anchor. That act is not Decision 4 and it is not Decision 7. This report does not perform it.
+6. Re-read the local files and require them to still match the Package Anchor.
+7. Only then may a separate Decision 7 be considered. D7 is the sole commencement authorization. The Package Anchor is a prerequisite to that consideration. It is not a substitute for D7.
+8. Provider disclosure occurs only after Decision 7 and after every other applicable gate, including the unresolved Google eligibility rule. A Package Anchor is not permission to disclose.
 
-Decision 4 approves protocol text only. It does not freeze a package, write an anchor, appoint a custodian, accept hashes, authorize provider contact, disclose material, or commence a review. An anchor is a prerequisite to considering D7. It is not a substitute for D7. D7 would still not authorize SQL EXEC or Census EXEC.
+**Evidence Anchor sequence.** This sequence starts only after steps 1 through 8. Each attempt is independent.
 
-### 7.6 Threat model
+1. Verify that the Package Anchor is still `ACCEPTED` and that the current package bytes still match it. On mismatch, stop. Do not submit.
+2. Only after that check, and only after separate D7 authorization and all eligibility gates, submit one provider attempt.
+3. Capture the actual request and the complete response under §6.
+4. Create `seal-record.txt` and the detached `SEAL-DIGEST.txt`.
+5. The seal verifier, who is not the capture operator, checks the seal, the request/response correlation, the attachments, and equality with the Package Anchor.
+6. Create one Post-capture Evidence Anchor for that attempt.
+7. Independently verify that record and, when the counting rules pass, accept it. This report does not perform that act.
+8. Only an `ACCEPTED` Evidence Anchor may place that seal in the discrepancy matrix.
+9. Repeat steps 1 through 8 independently for each provider attempt.
+10. Cross-provider comparison does not begin until all three required assessments are complete and each has its own `ACCEPTED` Evidence Anchor.
 
-| Threat                                                                 | Local payload, manifest, and freeze record | Independent anchor                                        |
-| ---------------------------------------------------------------------- | ------------------------------------------ | --------------------------------------------------------- |
-| Accidental corruption of one object                                    | Detected                                   | Detected on compare                                       |
-| Manifest replaced, freeze record left in place                         | Detected                                   | Detected                                                  |
-| Package bytes replaced, freeze record left in place                    | Detected                                   | Detected                                                  |
-| Package, manifest, and freeze record rewritten together                | Not detected                               | Detected when the rewriter cannot write the anchor        |
-| Preparer can edit only the package directory                           | Not detected for a joint rewrite           | Detected when the custodian is not the preparer           |
-| Preparer can also edit the anchor store                                | Not detected                               | Not detected                                              |
-| Sole Project Owner is also the preparer, and no other custodian exists | Not detected                               | Not detected. This is the current unresolved prerequisite |
-| Compromise of the workstation and of the anchor store                  | Not detected                               | Not detected                                              |
+Evidence anchoring is post-capture integrity. It does not authorize commencement. It does not satisfy CC-02 or CC-06. It does not close OQ-CENSUS-01. There is no N−1 and no automatic replacement. A failed attempt, an unanchored seal, or a `RECORDED-NON-COUNTING` record does not count. The review-level state remains `INCONCLUSIVE / NOT COMPLETED` until three counting Evidence Anchors exist. A replacement attempt requires a separate PO decision. It is not implied here.
+
+Decision 4 approves protocol text only. It does not freeze a package, write either anchor, appoint a custodian, accept hashes, authorize provider contact, disclose material, or commence a review. D7 would still not authorize SQL EXEC or Census EXEC.
+
+**Invalidation.**
+
+- A change to a package member, the manifest, the freeze record, the scope bytes, or the package version invalidates the prior Package Anchor for the changed package. The old record is not edited to match the new bytes. Disclosure of the new bytes requires a new Package Anchor.
+- A change to a seal, transmitted request, response, attachment, or attempt identity invalidates the Evidence Anchor that bound the previous bytes. The correction is a new record. Accepted records are not overwritten.
+- An Evidence Anchor cannot refer to a superseded or otherwise invalid Package Anchor. `package-anchor-ref`, both package hashes, and `package-version` must still identify an `ACCEPTED` Package Anchor at acceptance time.
+- Conflicting accepted records for the same attempt, as defined in §7.4, reject both for quorum use.
+- A package change after a provider submission does not relabel that attempt onto the new package. The old response does not count against the new package bytes. There is no recovery path that pairs an old provider response with new package bytes.
+
+Mismatch handling: stop. Offer nothing further to a provider. Do not repair a Package Anchor by editing it to follow changed files, and do not repair an Evidence Anchor by editing it to follow a changed seal.
+
+### 7.7 Threat model
+
+`PROPOSED — NOT ADOPTED — FOR PO DECISION ONLY`
+
+| Threat                                                      | Local files                 | Package Anchor                                             | Evidence Anchor                                                                   |
+| ----------------------------------------------------------- | --------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Accidental corruption of one package object                 | Detected                    | Detected on compare                                        | Not its job                                                                       |
+| Joint rewrite of package, manifest, and freeze record       | Not detected                | Detected when the preparer cannot write the Package Anchor | Does not repair a bad package binding                                             |
+| Seal rewritten after capture, Evidence Anchor left in place | Seal digest mismatch        | Unchanged                                                  | Detected on compare                                                               |
+| Seal, digest, and Evidence Anchor rewritten together        | Not detected                | Unchanged                                                  | Not detected when the rewriter can write the evidence store                       |
+| Capture operator is the Evidence Anchor custodian           | Seal may exist              | Unchanged                                                  | Not independent. The seal cannot count                                            |
+| Package Anchor superseded after an attempt                  | Old bytes no longer current | Old acceptance does not cover the new package              | The attempt stays bound to the old package and does not count against the new one |
+| Sole Project Owner is the only person available             | Not detected                | Not established. Current prerequisite                      | Not established. Current prerequisite                                             |
+| Compromise of the workstation and of both stores            | Not detected                | Not detected                                               | Not detected                                                                      |
+
+### 7.8 Two-anchor cases
+
+`PROPOSED — NOT ADOPTED — FOR PO DECISION ONLY`
+
+Paper analysis only. No package was built, no provider was contacted, and no anchor was written.
+
+| Case                                                                     | Counts                                                                                                                                                                                                | Anchor                                                                                                                             | Matrix                                                                                                                            |
+| ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Package Anchor accepted, then a member changes before submission         | No submission, so no attempt counts                                                                                                                                                                   | The prior Package Anchor does not cover the changed package                                                                        | Does not begin                                                                                                                    |
+| Package bytes unchanged, transmitted request differs from prepared bytes | Counts only when the transmitted bytes are `SUBMITTED`, `instructions-observable` is `FULL`, and every other counting rule passes. A missing operator-controlled byte is `PARTIAL` and does not count | Package Anchor stays valid. Prepared bytes remain class `PREPARED`                                                                 | Does not begin from this attempt unless it is one of three `ACCEPTED` Evidence Anchors                                            |
+| Response truncated                                                       | Does not count                                                                                                                                                                                        | Package Anchor stays valid. The Evidence Anchor, if written, is `RECORDED-NON-COUNTING` or is absent                               | Does not begin                                                                                                                    |
+| Two responses for one attempt                                            | Does not count. The parser does not choose a body                                                                                                                                                     | An `ACCEPTED` Evidence Anchor for that attempt is forbidden                                                                        | Does not begin                                                                                                                    |
+| Seal exists and no Evidence Anchor is accepted                           | Does not count                                                                                                                                                                                        | Package Anchor stays valid. The seal is not independently anchored                                                                 | Does not begin                                                                                                                    |
+| Evidence Anchor bytes change after acceptance                            | The altered bytes are not the accepted record                                                                                                                                                         | Silent overwrite is void. The attempt does not count until a new record is independently accepted. Conflicting copies do not count | Does not use the altered record                                                                                                   |
+| Package Anchor superseded after a provider attempt                       | The old response does not count against the new package                                                                                                                                               | The Evidence Anchor keeps the old package identity and is not relabelled                                                           | Does not begin for the new package with that attempt                                                                              |
+| Capture operator is also the Evidence Anchor custodian                   | Does not count                                                                                                                                                                                        | The Evidence Anchor is not independent                                                                                             | Does not begin                                                                                                                    |
+| Three complete seals, two Evidence Anchors accepted                      | Two seals count. That is not a quorum. No N−1 and no automatic replacement                                                                                                                            | The third seal is unanchored for quorum purposes                                                                                   | Does not begin. State remains `INCONCLUSIVE / NOT COMPLETED`                                                                      |
+| Three Evidence Anchors, one names the wrong package version              | The mismatched record does not count. Two records are not a quorum                                                                                                                                    | The wrong reference is invalid                                                                                                     | Does not begin                                                                                                                    |
+| Retry after timeout                                                      | The timeout attempt does not count. The retry is a new `attempt-id` and needs its own seal and Evidence Anchor. The two are not combined                                                              | Each record stands on its own attempt                                                                                              | Does not begin until three counting Evidence Anchors exist                                                                        |
+| Google privacy remains deferred                                          | A Google attempt does not count and Google receives no package bytes                                                                                                                                  | A Google Evidence Anchor cannot be `ACCEPTED`                                                                                      | Does not include Google. The roster still needs three counting assessments, and this report does not create a two-provider quorum |
 
 ---
 
@@ -683,23 +818,26 @@ Decision 4 approves protocol text only. It does not freeze a package, write an a
 | Response pairing                                                  | `ID-LINK` or `TRANSPORT-PAIR` inside one attempt. Retries are not combined. Partial and truncated responses do not count                 |
 | Local request hash                                                | `PREPARED` only. Not transmission proof                                                                                                  |
 | Capture                                                           | Not proof of model processing. Not tested                                                                                                |
-| Anchor independence                                               | Requires preparer ≠ custodian and preparer ≠ verifier. Not established in this repository                                                |
-| Anchor location                                                   | Outside the package directory and outside sole preparer control                                                                          |
-| Package change                                                    | Invalidates the previous anchor for the new bytes                                                                                        |
-| Anchor versus D4 and D7                                           | Later PO act and a D7 prerequisite. Neither D4 nor D7                                                                                    |
+| Package Anchor independence                                       | Requires preparer ≠ Package Anchor custodian and preparer ≠ package verifier. Not established in this repository                         |
+| Evidence Anchor independence                                      | Requires capture operator ≠ seal verifier and capture operator ≠ Evidence Anchor custodian. Not established in this repository           |
+| Anchor locations                                                  | Package Anchor is outside the package directory. Evidence Anchor is outside the seal directory. Neither is in sole operator control      |
+| Package change                                                    | Invalidates the prior Package Anchor for the new bytes. Old responses are not relabelled onto the new package                            |
+| Seal or attempt change                                            | Invalidates that attempt's Evidence Anchor. Accepted records are not overwritten                                                         |
+| Package Anchor versus D4 and D7                                   | Pre-disclosure record. A later PO act and a prerequisite to considering D7. Neither D4 nor D7. Not a seal record                         |
+| Evidence Anchor versus commencement                               | Post-capture record. It does not authorize D7, disclosure, CC-02, or CC-06                                                               |
 | Provider review-level outcome                                     | Providers do not issue the three review-level tokens                                                                                     |
 | No N−1 and no automatic replacement                               | Unchanged. Non-counting attempts stay `INCONCLUSIVE / NOT COMPLETED`                                                                     |
 | Operative CC-02, CC-06, OQ-CENSUS-01, SQL EXEC, Census EXEC       | Unchanged                                                                                                                                |
 | D5 and D6                                                         | Not started                                                                                                                              |
 | Signature infrastructure                                          | Not proposed and not assumed                                                                                                             |
 
-No contradiction with the preserved Stage I.9 severity split or the Stage I.10 three-object hash split was introduced. Stage I.10 Unicode path permission is narrowed, in §4.1, to ASCII. That narrowing is explicit.
+No contradiction with the preserved Stage I.9 severity split or the Stage I.10 three-object hash split was introduced. Stage I.10 Unicode path permission is narrowed, in §4.1, to ASCII. The Stage I.12 correction separates the pre-disclosure Package Anchor from the post-capture Evidence Anchor. That separation is explicit.
 
 ---
 
 ## 9. Threat model and residual assurance limitations
 
-The threat model is §7.6 plus the capture limits in §6. Local hashes are a consistency check. The external anchor is the specified control for joint replacement of the package directory. Neither control was executed.
+The threat model is §7.7 plus the capture limits in §6. Local hashes are a consistency check. The Package Anchor is the specified control for joint replacement of the package directory before disclosure. The Evidence Anchor is the specified control for joint replacement of one attempt's seal after capture. Neither anchor was deployed. Neither control was executed.
 
 Residual limitations:
 
@@ -710,24 +848,27 @@ Residual limitations:
 - `ID-LINK` is only as strong as the interface that returned the id. No API is asserted to return one.
 - Hidden provider instructions stay outside operator capture.
 - The clock-source token does not prove the clock.
-- If the anchor store is controlled by the preparer, joint replacement is still possible. The register's sole-Project-Owner wording and the absence of a verified second custodian leave this prerequisite open.
+- If the Package Anchor store is controlled by the preparer, joint replacement of the package is still possible. If the Evidence Anchor store is controlled by the capture operator, joint replacement of the seal is still possible. The register's sole-Project-Owner wording and the absence of a verified second custodian leave both prerequisites open. Neither anchor is deployed.
+- While Google privacy is deferred, Google cannot receive package bytes, a Google Evidence Anchor cannot be `ACCEPTED`, and this specification does not reduce the quorum to two.
 - Baseline bytes `7714f95b8202771dfa1835d279983fafef9505af5a678f12344bdc79f1ca0ac7` remain unverified and outside the package.
-- `scope/review-scope.txt` does not exist, so no current-candidate anchor can be eligible.
-- No seal, package, manifest, freeze record, capture record, or anchor was created. No test in the matrices was run.
+- `scope/review-scope.txt` does not exist, so no current-candidate Package Anchor can be eligible.
+- No seal, package, manifest, freeze record, capture record, Package Anchor, or Evidence Anchor was created. No test in the matrices was run. The §7.8 cases are paper analysis.
 
 ---
 
 ## 10. Remaining PO decisions and dependencies
 
-These remain open. This report does not ask the PO to re-decide the technical choices already fixed in §§4–7 (ASCII grammar, numeric caps, empty-package rejection, single-attempt pairing, anchor field list). Those are part of the proposal text.
+These remain open. This report does not ask the PO to re-decide the technical choices already fixed in §§4–7 (ASCII grammar, numeric caps, empty-package rejection, single-attempt pairing, and the two anchor field lists). Those are part of the proposal text.
 
-1. Adopt, edit, or reject the I.11 text together with the unaffected I.8, I.9, and I.10 text. **OPEN.** That choice is Decision 4. It is not made here.
-2. Establish a custodian who is not the package preparer, and a verifier who is not the preparer. **OPEN.** Not established by the current sole-Project-Owner record.
-3. Record an external anchor for a specific package after those roles exist. **OPEN.** Decision 4 does not do this. The scope file does not exist.
-4. Decide Google privacy and package-receipt eligibility. **OPEN.** Unchanged.
-5. Designate the human adjudicator under D5. **OPEN.**
-6. Synchronize documents and re-adopt criteria under D6. **OPEN.**
-7. Authorize commencement under D7, only after the anchor matches the local files and every other gate is met. **OPEN.** D7 would still not authorize SQL EXEC or Census EXEC.
+1. Adopt, edit, or reject the I.11 text, including the I.12 two-anchor correction, together with the unaffected I.8, I.9, and I.10 text. **OPEN.** That choice is Decision 4. It is not made here.
+2. Establish a Package Anchor custodian who is not the package preparer, and a package verifier who is not the preparer. **OPEN.** Not established by the current sole-Project-Owner record.
+3. Establish an Evidence Anchor custodian who is not the capture operator, and a seal verifier who is not the capture operator. **OPEN.** The same sole-Project-Owner record does not establish this second separation.
+4. Deploy the Package Anchor store and the Evidence Anchor store outside sole operator control. **OPEN.** Decision 4 does not do this.
+5. Record a Package Anchor for a specific package after those package roles exist. **OPEN.** The scope file does not exist. This act does not record seal hashes.
+6. Decide Google privacy and package-receipt eligibility. **OPEN.** Unchanged.
+7. Designate the human adjudicator under D5. **OPEN.**
+8. Synchronize documents and re-adopt criteria under D6. **OPEN.**
+9. Authorize commencement under D7, only after the Package Anchor matches the local files and every other gate is met. **OPEN.** D7 would still not authorize SQL EXEC or Census EXEC. Evidence Anchors are created only after that commencement and after capture.
 
 ---
 
@@ -735,9 +876,9 @@ These remain open. This report does not ask the PO to re-decide the technical ch
 
 **`READY FOR D4 PRODUCT OWNER REVIEW`**
 
-The four specification gaps now have one implementable grammar each: ASCII paths and regular-file collection; a closed manifest and freeze record with operational caps; a single-attempt capture rule that fail-closes weak pairing; and an anchor schema that is void without separation of duties.
+The four specification gaps now have one implementable grammar each: ASCII paths and regular-file collection; a closed manifest and freeze record with operational caps; a single-attempt capture rule that fail-closes weak pairing; and two anchor schemas that are void without separation of duties. The Package Anchor precedes disclosure and contains no seal fields. The Evidence Anchor follows capture and binds one attempt to that Package Anchor.
 
-Specification readiness is not operational readiness. The anchor does not exist. Separation of duties is not established. Capture was not tested. Decision 4 is not approved. Disclosure is not authorized. SQL EXEC and Census EXEC are not authorized.
+Specification readiness is not operational readiness. Neither anchor exists. Separation of duties is not established for either record. Capture was not tested. Decision 4 is not approved. Disclosure is not authorized. SQL EXEC and Census EXEC are not authorized.
 
 ---
 
@@ -745,12 +886,12 @@ Specification readiness is not operational readiness. The anchor does not exist.
 
 `PROPOSED — NOT ADOPTED — FOR PO DECISION ONLY`
 
-> The Stage I.9 approval sentence also includes the Stage I.10 canonical payload, manifest, freeze record, request/response correlation rule, and external-anchor prerequisite, together with the Stage I.11 path grammar `I.11-ASCII-1`, regular-file collection rules, manifest and freeze-record grammar `I.11-1`, operational numeric limits, empty-package prohibition, single-attempt capture and correlation rules, and external-anchor schema including the separation-of-duties prerequisite, and it still excludes Stage H §4.1, and it still does not freeze a package, write an anchor, appoint a custodian, accept hashes, disclose material, commence a review, designate an adjudicator, amend operative CC-02, synchronize controlled documents, re-adopt CC-01 through CC-06, satisfy CC-02, perform CC-06, close OQ-CENSUS-01, decide Google privacy, decide D5 or D6 or D7, authorize provider contact, or authorize SQL EXEC or Census EXEC, and it does not establish that separation of duties currently exists.
+> The Stage I.9 approval sentence also includes the Stage I.10 canonical payload, manifest, freeze record, request/response correlation rule, and external-anchor prerequisite, together with the Stage I.11 path grammar `I.11-ASCII-1`, regular-file collection rules, manifest and freeze-record grammar `I.11-1`, operational numeric limits, empty-package prohibition, single-attempt capture and correlation rules, the pre-disclosure Package Anchor schema `I.12-1` including its separation-of-duties prerequisite, and the post-capture Evidence Anchor schema `I.12-1` including its separate separation-of-duties prerequisite, and it still excludes Stage H §4.1, and it still does not freeze a package, write either anchor, appoint a custodian, accept hashes, disclose material, commence a review, designate an adjudicator, amend operative CC-02, synchronize controlled documents, re-adopt CC-01 through CC-06, satisfy CC-02, perform CC-06, close OQ-CENSUS-01, decide Google privacy, decide D5 or D6 or D7, authorize provider contact, or authorize SQL EXEC or Census EXEC, and it does not establish that separation of duties currently exists for either anchor.
 
 ---
 
 Stage I.11 is a review and proposal only. Decision 4 remains **NOT DECIDED / NOT APPROVED**. D1–D3 remain unchanged. Stage H remains **NOT ADOPTED**. CC-02 remains **INSUFFICIENT EVIDENCE**. CC-06 remains **NOT PERFORMED**. OQ-CENSUS-01 remains **OPEN**. SQL EXEC and Census EXEC remain **NOT AUTHORIZED**.
 
-No provider was contacted. No project material was disclosed. No package was frozen. No independent anchor was created. No external AI assessment was run. No SQL was executed.
+No provider was contacted. No project material was disclosed. No package was frozen. No Package Anchor was created. No Evidence Anchor was created. No external AI assessment was run. No SQL was executed.
 
 The next step is Product Owner review of this Stage I.11 report. It is not implementation and it is not progression to D5, D6, or D7.
