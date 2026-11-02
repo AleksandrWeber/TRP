@@ -34,30 +34,30 @@ PRODUCTION / DEPLOYMENT / LIVE-CAPITAL OPERATIONS: NOT AUTHORIZED
 
 ## 1. Decision identification
 
-| Field                            | Value                                                                                                          |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| **Project**                      | FIV-CONN-04-D                                                                                                  |
-| **Wave**                         | 6 — Live Trading                                                                                               |
-| **Decision / Act ID**            | **`D-CONN04-FULL-D-IA-VMP`**                                                                                   |
-| **Decision title**               | Vault Metadata Port — Implementation Authorization                                                             |
-| **Decision authority**           | Product Owner (sole Project Owner)                                                                             |
-| **Decision class**               | Implementation Authorization (Port work package **VMP-1** only)                                                |
-| **Final decision**               | **APPROVED / RATIFIED**                                                                                        |
-| **Status**                       | **APPROVED / RATIFIED — EFFECTIVE**                                                                            |
-| **Ratification / decision date** | **2026-10-30**                                                                                                 |
-| **Implementation authorization** | **GRANTED** for **VMP-1** only, under the hash-bound Port IA and conditions below                              |
-| **Governing IA artifact path**   | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-vault-metadata-port-implementation-authorization-draft.md` |
-| **Governing IA SHA-256**         | `18e177ef154b8a35dc333faefa05c73729150c3822e78818fdc85bfe45db89e6`                                             |
+| Field | Value |
+| --- | --- |
+| **Project** | FIV-CONN-04-D |
+| **Wave** | 6 — Live Trading |
+| **Decision / Act ID** | **`D-CONN04-FULL-D-IA-VMP`** |
+| **Decision title** | Vault Metadata Port — Implementation Authorization |
+| **Decision authority** | Product Owner (sole Project Owner) |
+| **Decision class** | Implementation Authorization (Port work package **VMP-1** only) |
+| **Final decision** | **APPROVED / RATIFIED** |
+| **Status** | **APPROVED / RATIFIED — EFFECTIVE** |
+| **Ratification / decision date** | **2026-10-30** |
+| **Implementation authorization** | **GRANTED** for **VMP-1** only, under the hash-bound Port IA and conditions below |
+| **Governing IA artifact path** | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-vault-metadata-port-implementation-authorization-draft.md` |
+| **Governing IA SHA-256** | `18e177ef154b8a35dc333faefa05c73729150c3822e78818fdc85bfe45db89e6` |
 
 ### 1.1 Governing IA integrity at ratification recording
 
-| Check                  | Result                                                                                                                                                         |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File exists            | **Yes**                                                                                                                                                        |
-| Recalculated SHA-256   | `18e177ef154b8a35dc333faefa05c73729150c3822e78818fdc85bfe45db89e6`                                                                                             |
-| Match to approved hash | **MATCH**                                                                                                                                                      |
-| Decision ID            | `D-CONN04-FULL-D-IA-VMP`                                                                                                                                       |
-| Binding rule           | This act binds **only** to the exact IA path and SHA-256 above. Material content drift of the IA after this hash requires a new Product Owner act / rebinding. |
+| Check | Result |
+| --- | --- |
+| File exists | **Yes** |
+| Recalculated SHA-256 | `18e177ef154b8a35dc333faefa05c73729150c3822e78818fdc85bfe45db89e6` |
+| Match to approved hash | **MATCH** |
+| Decision ID | `D-CONN04-FULL-D-IA-VMP` |
+| Binding rule | This act binds **only** to the exact IA path and SHA-256 above. Material content drift of the IA after this hash requires a new Product Owner act / rebinding. |
 
 ---
 
@@ -67,14 +67,14 @@ The Product Owner **APPROVES / RATIFIES**:
 
 **RATIFY** the hash-bound Vault Metadata Port Implementation Authorization package identified in §1, and **GRANT** implementation authority for the single bounded Port work package **VMP-1**, subject to all conditions and exclusions in that package and restated in this act.
 
-| Statement                                                    | Binding after this act                                    |
-| ------------------------------------------------------------ | --------------------------------------------------------- |
-| This document is an **effective** Product Owner ratification | **Yes**                                                   |
-| Coding may begin for **VMP-1** within the ratified IA scope  | **Yes** — after this formal recording                     |
-| Port delivery Independent Review                             | **NOT YET COMPLETED** — mandatory before Port closure     |
-| Port closure                                                 | **NOT YET APPROVED** — separate PO act required           |
-| Full-D Stage 4 or later                                      | **NOT AUTHORIZED**                                        |
-| Port work package ID                                         | **VMP-1** (does **not** alter Full-D Stage 0–9 numbering) |
+| Statement | Binding after this act |
+| --- | --- |
+| This document is an **effective** Product Owner ratification | **Yes** |
+| Coding may begin for **VMP-1** within the ratified IA scope | **Yes** — after this formal recording |
+| Port delivery Independent Review | **NOT YET COMPLETED** — mandatory before Port closure |
+| Port closure | **NOT YET APPROVED** — separate PO act required |
+| Full-D Stage 4 or later | **NOT AUTHORIZED** |
+| Port work package ID | **VMP-1** (does **not** alter Full-D Stage 0–9 numbering) |
 
 ```text
 EFFECTIVE AUTHORIZATION:
@@ -88,15 +88,15 @@ EFFECTIVE AUTHORIZATION:
 
 ## 3. Authority and predecessor chain
 
-| Predecessor                             | Role                                                                                                                       | Verified path / ID                                                                                                          | Current verified SHA-256 / status                                                                                                      |
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| Successor selection                     | Order / package selection after Stage 3, before Stage 4; authorized Port-IA **preparation**, **not** Port coding by itself | `D-CONN04-FULL-D-IA-S23-B-VMP-SUCC` — `v3-l02-fiv-conn-04-d-vault-metadata-port-successor-po-ratification.md`               | `31c4d17236878cf96392f2ed6d2229fb1fddc25c0dc0641d0f35e3042b433a98` — **RATIFIED — SUCCESSOR SELECTION**                                |
-| Successor-01 amendment text             | Architectural amendment for dedicated Vault metadata port                                                                  | `v3-l02-fiv-conn-04-d-implementation-authorization-amendment-po-vault-b-final-candidate-successor-01.md`                    | `79386c9120e20c3a36648a869e6d196c7f6d96130b808006d723fac4e4ee8acb`                                                                     |
-| Successor-01 approval / re-ratification | Approves Successor-01; port coding **not** authorized by S01 alone                                                         | `D-CONN04-PO-VAULT-B-IA-AMD-S01` — `v3-l02-fiv-conn-04-d-po-vault-b-ia-amendment-successor-01-approval-and-ratification.md` | `cdba4ad50ab1691307ef94579669c4fa5c8a81ad0d30c9b44514e586c56fbc97` — **APPROVED AND RATIFIED** (coding still not granted by S01 alone) |
-| Stage 3 formal closure                  | Stage 3 remains closed                                                                                                     | `D-CONN04-FULL-D-IA-S23-B-S3-CLOSE` — `v3-l02-fiv-conn-04-d-stage-3-po-closure-decision.md`                                 | `a28599dd6fe8a45cc3753c1ab6304ea6eb75c7a88363088b1572a644c51f9dc0` — **APPROVED — STAGE 3 FORMALLY CLOSED**                            |
-| Stage 3 Independent Review              | Delivery IR accepted under Stage 3 closure                                                                                 | `v3-l02-fiv-conn-04-d-stage-3-independent-review.md`                                                                        | `4f3ccaa093af768d63e829229c8aceaabea03a18733f7f340ce88e0c86b8542e`                                                                     |
-| Wave 6 Decision Register                | Authoritative register (synchronized after this act)                                                                       | `wave-6-po-decision-register.md`                                                                                            | Pre-sync baseline `6abad25bd8b27dafcb991193bd9eb6c01b5d25274845e2003e91183a791048b0`                                                   |
-| Port IA (ratified package text)         | Hash-bound authorization package                                                                                           | §1 governing IA                                                                                                             | `18e177ef154b8a35dc333faefa05c73729150c3822e78818fdc85bfe45db89e6` — **RATIFIED by this act**                                          |
+| Predecessor | Role | Verified path / ID | Current verified SHA-256 / status |
+| --- | --- | --- | --- |
+| Successor selection | Order / package selection after Stage 3, before Stage 4; authorized Port-IA **preparation**, **not** Port coding by itself | `D-CONN04-FULL-D-IA-S23-B-VMP-SUCC` — `v3-l02-fiv-conn-04-d-vault-metadata-port-successor-po-ratification.md` | `31c4d17236878cf96392f2ed6d2229fb1fddc25c0dc0641d0f35e3042b433a98` — **RATIFIED — SUCCESSOR SELECTION** |
+| Successor-01 amendment text | Architectural amendment for dedicated Vault metadata port | `v3-l02-fiv-conn-04-d-implementation-authorization-amendment-po-vault-b-final-candidate-successor-01.md` | `79386c9120e20c3a36648a869e6d196c7f6d96130b808006d723fac4e4ee8acb` |
+| Successor-01 approval / re-ratification | Approves Successor-01; port coding **not** authorized by S01 alone | `D-CONN04-PO-VAULT-B-IA-AMD-S01` — `v3-l02-fiv-conn-04-d-po-vault-b-ia-amendment-successor-01-approval-and-ratification.md` | `cdba4ad50ab1691307ef94579669c4fa5c8a81ad0d30c9b44514e586c56fbc97` — **APPROVED AND RATIFIED** (coding still not granted by S01 alone) |
+| Stage 3 formal closure | Stage 3 remains closed | `D-CONN04-FULL-D-IA-S23-B-S3-CLOSE` — `v3-l02-fiv-conn-04-d-stage-3-po-closure-decision.md` | `a28599dd6fe8a45cc3753c1ab6304ea6eb75c7a88363088b1572a644c51f9dc0` — **APPROVED — STAGE 3 FORMALLY CLOSED** |
+| Stage 3 Independent Review | Delivery IR accepted under Stage 3 closure | `v3-l02-fiv-conn-04-d-stage-3-independent-review.md` | `4f3ccaa093af768d63e829229c8aceaabea03a18733f7f340ce88e0c86b8542e` |
+| Wave 6 Decision Register | Authoritative register (synchronized after this act) | `wave-6-po-decision-register.md` | Pre-sync baseline `6abad25bd8b27dafcb991193bd9eb6c01b5d25274845e2003e91183a791048b0` |
+| Port IA (ratified package text) | Hash-bound authorization package | §1 governing IA | `18e177ef154b8a35dc333faefa05c73729150c3822e78818fdc85bfe45db89e6` — **RATIFIED by this act** |
 
 ### 3.1 Authorization-gate relationship
 
@@ -148,22 +148,22 @@ This act does **not** expand scope beyond the governing IA.
 
 The following remain **NOT AUTHORIZED** (unless a separate future PO decision expands scope):
 
-| Exclusion                                                                    | Status             |
-| ---------------------------------------------------------------------------- | ------------------ |
-| Full-D Stage 4 commencement or coding                                        | **NOT AUTHORIZED** |
-| Per-attempt Vault freshness loop                                             | **NOT AUTHORIZED** |
-| Occupancy and C classifier orchestration                                     | **NOT AUTHORIZED** |
-| `runEnvironmentBackfill` operational loop                                    | **NOT AUTHORIZED** |
-| `Connection.environment` UPDATE                                              | **NOT AUTHORIZED** |
-| Stages 5–8                                                                   | **NOT AUTHORIZED** |
-| FIV-CONN-04-E                                                                | **NOT AUTHORIZED** |
-| Production deployment or activation                                          | **NOT AUTHORIZED** |
-| Live-capital operations                                                      | **NOT AUTHORIZED** |
-| New B-04 authority mechanisms                                                | **NOT AUTHORIZED** |
-| New Port Security Audit events                                               | **NOT AUTHORIZED** |
-| Public HTTP / DTO / Nest export of the Entry lookup seam                     | **NOT AUTHORIZED** |
+| Exclusion | Status |
+| --- | --- |
+| Full-D Stage 4 commencement or coding | **NOT AUTHORIZED** |
+| Per-attempt Vault freshness loop | **NOT AUTHORIZED** |
+| Occupancy and C classifier orchestration | **NOT AUTHORIZED** |
+| `runEnvironmentBackfill` operational loop | **NOT AUTHORIZED** |
+| `Connection.environment` UPDATE | **NOT AUTHORIZED** |
+| Stages 5–8 | **NOT AUTHORIZED** |
+| FIV-CONN-04-E | **NOT AUTHORIZED** |
+| Production deployment or activation | **NOT AUTHORIZED** |
+| Live-capital operations | **NOT AUTHORIZED** |
+| New B-04 authority mechanisms | **NOT AUTHORIZED** |
+| New Port Security Audit events | **NOT AUTHORIZED** |
+| Public HTTP / DTO / Nest export of the Entry lookup seam | **NOT AUTHORIZED** |
 | Any unapproved production source or test file outside the ratified inventory | **NOT AUTHORIZED** |
-| Automatic progression after Port delivery or Port closure                    | **FORBIDDEN**      |
+| Automatic progression after Port delivery or Port closure | **FORBIDDEN** |
 
 **Port closure must not automatically authorize Full-D Stage 4.** Stage 4 requires its own separate Product Owner authorization.
 
@@ -171,17 +171,17 @@ The following remain **NOT AUTHORIZED** (unless a separate future PO decision ex
 
 ## 6. Independent Review and closure conditions
 
-| Gate                                                         | Binding under this ratification                                                           |
-| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| Pre-implementation Independent Review of the Port IA package | **OPTIONAL** — may be performed; **not** a mandatory coding entry gate                    |
-| Written Independent Review of completed Port delivery        | **MANDATORY** before separate PO Port closure — **NOT YET COMPLETED**                     |
-| Permitted final delivery IR verdicts                         | **`PASS`** or **`PASS WITH OBSERVATIONS`**                                                |
-| BLOCKER findings                                             | Must be **zero** for Port closure eligibility                                             |
-| MAJOR findings                                               | Must be **zero** for Port closure eligibility                                             |
-| Observations                                                 | Every observation must record severity, impact, evidence, and disposition                 |
-| `PASS WITH OBSERVATIONS`                                     | Residual observations require **explicit PO acceptance** in the separate Port closure act |
-| Port closure form                                            | Separate written Product Owner decision required — **NOT YET APPROVED**                   |
-| Stage 4 effect of Port closure                               | **None** — does **not** authorize Stage 4                                                 |
+| Gate | Binding under this ratification |
+| --- | --- |
+| Pre-implementation Independent Review of the Port IA package | **OPTIONAL** — may be performed; **not** a mandatory coding entry gate |
+| Written Independent Review of completed Port delivery | **MANDATORY** before separate PO Port closure — **NOT YET COMPLETED** |
+| Permitted final delivery IR verdicts | **`PASS`** or **`PASS WITH OBSERVATIONS`** |
+| BLOCKER findings | Must be **zero** for Port closure eligibility |
+| MAJOR findings | Must be **zero** for Port closure eligibility |
+| Observations | Every observation must record severity, impact, evidence, and disposition |
+| `PASS WITH OBSERVATIONS` | Residual observations require **explicit PO acceptance** in the separate Port closure act |
+| Port closure form | Separate written Product Owner decision required — **NOT YET APPROVED** |
+| Stage 4 effect of Port closure | **None** — does **not** authorize Stage 4 |
 
 ---
 
@@ -189,9 +189,9 @@ The following remain **NOT AUTHORIZED** (unless a separate future PO decision ex
 
 Recorded without alteration:
 
-| Set                     | Status under this act   |
-| ----------------------- | ----------------------- |
-| **F-OBS-01…F-OBS-04**   | **OPEN**                |
+| Set | Status under this act |
+| --- | --- |
+| **F-OBS-01…F-OBS-04** | **OPEN** |
 | **S3-OBS-01…S3-OBS-03** | **ACCEPTED / RECORDED** |
 
 No remediation, waiver, closure, or silent reclassification is included in **VMP-1**.  
@@ -203,16 +203,16 @@ If implementation planning discovers that any observation is a hard prerequisite
 
 ## 8. B-04 and architecture boundaries
 
-| Boundary                                                          | Binding                                                                                                    |
-| ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| B-04 lease and durable write-authority mechanisms                 | **UNCHANGED**                                                                                              |
-| Port as B-04 substitute                                           | **Forbidden** — Port is not a B-04 substitute                                                              |
-| Dedicated Vault module exports                                    | Metadata port token **only**                                                                               |
-| `SecretVaultModule` for D Entry path                              | **UNCHANGED** (continues to export `SecretVaultService` for other approved flows including A Preflight)    |
-| Human ACL and A Preflight behavior                                | **UNCHANGED**                                                                                              |
-| Nest DI / Option A                                                | Educational composition boundary only — **not** production S2S authentication or Vault authorization proof |
-| Ciphertext / plaintext / decryption exposure via port/view/select | **Forbidden**                                                                                              |
-| IA-REV-03 crash-after-commit residual                             | Remains **unresolved** / **not solved** by Port package                                                    |
+| Boundary | Binding |
+| --- | --- |
+| B-04 lease and durable write-authority mechanisms | **UNCHANGED** |
+| Port as B-04 substitute | **Forbidden** — Port is not a B-04 substitute |
+| Dedicated Vault module exports | Metadata port token **only** |
+| `SecretVaultModule` for D Entry path | **UNCHANGED** (continues to export `SecretVaultService` for other approved flows including A Preflight) |
+| Human ACL and A Preflight behavior | **UNCHANGED** |
+| Nest DI / Option A | Educational composition boundary only — **not** production S2S authentication or Vault authorization proof |
+| Ciphertext / plaintext / decryption exposure via port/view/select | **Forbidden** |
+| IA-REV-03 crash-after-commit residual | Remains **unresolved** / **not solved** by Port package |
 
 ---
 
@@ -248,14 +248,14 @@ CONDITIONS / REMARKS:       VMP-1 only. Port delivery IR mandatory before separa
                             PO Port closure. Stage 4+ remain NOT AUTHORIZED.
 ```
 
-| Field                                     | Value                                                                                                                                                                                                 |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Product Owner decision                    | **APPROVE**                                                                                                                                                                                           |
-| Approved Decision / Act ID                | **`D-CONN04-FULL-D-IA-VMP`**                                                                                                                                                                          |
-| Approved IA SHA-256                       | `18e177ef154b8a35dc333faefa05c73729150c3822e78818fdc85bfe45db89e6`                                                                                                                                    |
-| Decision date                             | **2026-10-30**                                                                                                                                                                                        |
+| Field | Value |
+| --- | --- |
+| Product Owner decision | **APPROVE** |
+| Approved Decision / Act ID | **`D-CONN04-FULL-D-IA-VMP`** |
+| Approved IA SHA-256 | `18e177ef154b8a35dc333faefa05c73729150c3822e78818fdc85bfe45db89e6` |
+| Decision date | **2026-10-30** |
 | Product Owner approval / signature record | Written governance approval evidence recorded herein (same convention as prior Product Owner ratifications). **Not** a handwritten signature, cryptographic signature, or external approval mechanism |
-| Conditions or remarks                     | Authorize **VMP-1** only under the hash-bound Port IA; mandatory delivery IR; separate PO Port closure; Stage 4+ **NOT AUTHORIZED**                                                                   |
+| Conditions or remarks | Authorize **VMP-1** only under the hash-bound Port IA; mandatory delivery IR; separate PO Port closure; Stage 4+ **NOT AUTHORIZED** |
 
 ---
 
@@ -263,11 +263,11 @@ CONDITIONS / REMARKS:       VMP-1 only. Port delivery IR mandatory before separa
 
 Decision Register synchronization is the administrative step that follows actual Product Owner approval of this ratification act and is performed together with recording this act.
 
-| Statement                                  | Binding                                               |
-| ------------------------------------------ | ----------------------------------------------------- |
-| This act ratifies `D-CONN04-FULL-D-IA-VMP` | **Yes**                                               |
+| Statement | Binding |
+| --- | --- |
+| This act ratifies `D-CONN04-FULL-D-IA-VMP` | **Yes** |
 | Register sync required after this approval | **Yes** — additive entry for `D-CONN04-FULL-D-IA-VMP` |
-| Register sync authorizes Stage 4           | **No**                                                |
+| Register sync authorizes Stage 4 | **No** |
 
 ---
 
@@ -307,14 +307,14 @@ live capital remain NOT AUTHORIZED. Port closure does not authorize Stage 4.
 
 ## 13. Repository baseline at ratification recording
 
-| Field                        | Value                                                   |
-| ---------------------------- | ------------------------------------------------------- |
-| Branch                       | `main`                                                  |
-| HEAD                         | `a59c533977923a45413a176ad143325a948feeb8`              |
-| Updated by this task         | This ratification act + additive Decision Register sync |
-| Governing Port IA file bytes | **Unchanged** (hash-bound)                              |
-| Application source / tests   | **Unchanged**                                           |
-| Pre-existing dirty/untracked | **Preserved**                                           |
+| Field | Value |
+| --- | --- |
+| Branch | `main` |
+| HEAD | `a59c533977923a45413a176ad143325a948feeb8` |
+| Updated by this task | This ratification act + additive Decision Register sync |
+| Governing Port IA file bytes | **Unchanged** (hash-bound) |
+| Application source / tests | **Unchanged** |
+| Pre-existing dirty/untracked | **Preserved** |
 
 ---
 

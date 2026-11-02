@@ -41,30 +41,30 @@ NO AUTOMATIC PROGRESSION
 
 ## 1. Decision identification
 
-| Field                                   | Value                                                                                                          |
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| **Project**                             | FIV-CONN-04-D                                                                                                  |
-| **Wave**                                | 6 — Live Trading                                                                                               |
-| **Decision authority**                  | Product Owner (sole Project Owner)                                                                             |
-| **Decision / Act ID**                   | **`D-CONN04-FULL-D-IA-VMP-CLOSE`**                                                                             |
-| **Governing authorization**             | **`D-CONN04-FULL-D-IA-VMP`**                                                                                   |
-| **Work package closed**                 | **VMP-1** — Vault Metadata Port delivery                                                                       |
-| **Decision date**                       | **2026-10-30**                                                                                                 |
-| **Final decision**                      | **APPROVE — accept VMP1-OBS-01…03 and formally close VMP-1**                                                   |
-| **Status**                              | **APPROVED — VMP-1 FORMALLY CLOSED**                                                                           |
-| **Delivery Independent Review verdict** | **`PASS WITH OBSERVATIONS`** (preserved; **not** upgraded to `PASS`)                                           |
-| **Effective**                           | Upon formal recording of this act and Decision Register synchronization on 2026-10-30; exact time not recorded |
+| Field | Value |
+| --- | --- |
+| **Project** | FIV-CONN-04-D |
+| **Wave** | 6 — Live Trading |
+| **Decision authority** | Product Owner (sole Project Owner) |
+| **Decision / Act ID** | **`D-CONN04-FULL-D-IA-VMP-CLOSE`** |
+| **Governing authorization** | **`D-CONN04-FULL-D-IA-VMP`** |
+| **Work package closed** | **VMP-1** — Vault Metadata Port delivery |
+| **Decision date** | **2026-10-30** |
+| **Final decision** | **APPROVE — accept VMP1-OBS-01…03 and formally close VMP-1** |
+| **Status** | **APPROVED — VMP-1 FORMALLY CLOSED** |
+| **Delivery Independent Review verdict** | **`PASS WITH OBSERVATIONS`** (preserved; **not** upgraded to `PASS`) |
+| **Effective** | Upon formal recording of this act and Decision Register synchronization on 2026-10-30; exact time not recorded |
 
 ---
 
 ## 2. Authority and approval evidence
 
-| Field                    | Value                                                                                                                                                                                                                                                           |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Authority**            | Product Owner (sole Project Owner of this project)                                                                                                                                                                                                              |
-| **Decision date**        | 2026-10-30                                                                                                                                                                                                                                                      |
-| **Approval evidence**    | The sole Project Owner explicitly decided to accept all three residual Delivery Independent Review observations (VMP1-OBS-01…03) and to formally close VMP-1, and directed recording of this Formal Closure Decision Act plus Decision Register synchronization |
-| **Signature convention** | Written governance approval evidence recorded herein (same convention as prior Product Owner ratifications). **Not** a handwritten signature, cryptographic signature, or external approval mechanism                                                           |
+| Field | Value |
+| --- | --- |
+| **Authority** | Product Owner (sole Project Owner of this project) |
+| **Decision date** | 2026-10-30 |
+| **Approval evidence** | The sole Project Owner explicitly decided to accept all three residual Delivery Independent Review observations (VMP1-OBS-01…03) and to formally close VMP-1, and directed recording of this Formal Closure Decision Act plus Decision Register synchronization |
+| **Signature convention** | Written governance approval evidence recorded herein (same convention as prior Product Owner ratifications). **Not** a handwritten signature, cryptographic signature, or external approval mechanism |
 
 This act records an **actual Product Owner decision**. The Delivery Independent Review established eligibility for PO Port closure consideration under the ratified Port IA; it did **not** itself close VMP-1. The Product Owner has now **separately** accepted the residual observations and approved formal VMP-1 closure.
 
@@ -74,33 +74,33 @@ This act records an **actual Product Owner decision**. The Delivery Independent 
 
 All hashes below were recalculated against the repository files before this act was recorded, except where noted.
 
-| #   | Artifact                                                  | Path                                                                                                           | Verified SHA-256 / note                                                                                         |
-| --- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| A   | Governing Port IA (`D-CONN04-FULL-D-IA-VMP` package text) | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-vault-metadata-port-implementation-authorization-draft.md` | `18e177ef154b8a35dc333faefa05c73729150c3822e78818fdc85bfe45db89e6`                                              |
-| B   | Port IA Ratification Act                                  | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-vault-metadata-port-po-ratification-draft.md`              | `7e38e65996a87ec3b60d6f913a739a59e752641304d9a7df3c2357fa46693f14`                                              |
-| C   | VMP-1 implementation evidence                             | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-vmp-1-implementation-evidence.md`                          | `e65c208cf565a9969e435b2157404e988a845811c9480f1a92a00b722785569f`                                              |
-| D   | Delivery Independent Review                               | Supplied as a completed read-only Delivery IR in the Product Owner / review session context                    | **No repository IR file / hash** — do not invent a hash; independent verdict used: **`PASS WITH OBSERVATIONS`** |
-| E   | Wave 6 Decision Register (pre-closure sync baseline)      | `docs/project/version-3/wave-6/wave-6-po-decision-register.md`                                                 | Pre-sync working-tree register (already contained `D-CONN04-FULL-D-IA-VMP` ratification entry)                  |
+| # | Artifact | Path | Verified SHA-256 / note |
+| --- | --- | --- | --- |
+| A | Governing Port IA (`D-CONN04-FULL-D-IA-VMP` package text) | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-vault-metadata-port-implementation-authorization-draft.md` | `18e177ef154b8a35dc333faefa05c73729150c3822e78818fdc85bfe45db89e6` |
+| B | Port IA Ratification Act | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-vault-metadata-port-po-ratification-draft.md` | `7e38e65996a87ec3b60d6f913a739a59e752641304d9a7df3c2357fa46693f14` |
+| C | VMP-1 implementation evidence | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-vmp-1-implementation-evidence.md` | `e65c208cf565a9969e435b2157404e988a845811c9480f1a92a00b722785569f` |
+| D | Delivery Independent Review | Supplied as a completed read-only Delivery IR in the Product Owner / review session context | **No repository IR file / hash** — do not invent a hash; independent verdict used: **`PASS WITH OBSERVATIONS`** |
+| E | Wave 6 Decision Register (pre-closure sync baseline) | `docs/project/version-3/wave-6/wave-6-po-decision-register.md` | Pre-sync working-tree register (already contained `D-CONN04-FULL-D-IA-VMP` ratification entry) |
 
 **Integrity at recording:** Port IA and Ratification Act hashes **MATCH** the ratified expected values. No later PO decision superseding or revoking `D-CONN04-FULL-D-IA-VMP` or the Delivery IR result was found before this act.
 
 ### 3.1 Delivery Independent Review gate (session evidence)
 
-| Field                                                  | Record                                                                                                                                                    |
-| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **IR form**                                            | Completed read-only Delivery Independent Review (session report; **not** persisted as a separate wave-6 IR markdown hash in this repository at recording) |
-| **Overall verdict**                                    | **`PASS WITH OBSERVATIONS`**                                                                                                                              |
-| **BLOCKER**                                            | **0**                                                                                                                                                     |
-| **MAJOR**                                              | **0**                                                                                                                                                     |
-| **MINOR**                                              | **0**                                                                                                                                                     |
-| **OBSERVATIONS**                                       | **3** — VMP1-OBS-01, VMP1-OBS-02, VMP1-OBS-03                                                                                                             |
-| **Scope violations identified**                        | **None**                                                                                                                                                  |
-| **Focused tests (as independently re-verified in IR)** | 7 files / 59 tests passed                                                                                                                                 |
-| **API TypeScript check**                               | Passed                                                                                                                                                    |
-| **ESLint (VMP-1 touched files)**                       | Passed                                                                                                                                                    |
-| **Full Turbo build**                                   | **Skipped** — must **not** be described as passed                                                                                                         |
-| **Eligible for separate PO Port closure?**             | **YES** (subject to explicit PO acceptance of residual observations)                                                                                      |
-| **Stage 4 authorized by IR?**                          | **NO**                                                                                                                                                    |
+| Field | Record |
+| --- | --- |
+| **IR form** | Completed read-only Delivery Independent Review (session report; **not** persisted as a separate wave-6 IR markdown hash in this repository at recording) |
+| **Overall verdict** | **`PASS WITH OBSERVATIONS`** |
+| **BLOCKER** | **0** |
+| **MAJOR** | **0** |
+| **MINOR** | **0** |
+| **OBSERVATIONS** | **3** — VMP1-OBS-01, VMP1-OBS-02, VMP1-OBS-03 |
+| **Scope violations identified** | **None** |
+| **Focused tests (as independently re-verified in IR)** | 7 files / 59 tests passed |
+| **API TypeScript check** | Passed |
+| **ESLint (VMP-1 touched files)** | Passed |
+| **Full Turbo build** | **Skipped** — must **not** be described as passed |
+| **Eligible for separate PO Port closure?** | **YES** (subject to explicit PO acceptance of residual observations) |
+| **Stage 4 authorized by IR?** | **NO** |
 
 The Delivery IR verdict remains **`PASS WITH OBSERVATIONS`**. This act does **not** rewrite or upgrade that verdict to `PASS`.
 
@@ -110,20 +110,20 @@ The Delivery IR verdict remains **`PASS WITH OBSERVATIONS`**. This act does **no
 
 The Product Owner **ACCEPTS** the residual Delivery Independent Review observations as assessed in that review. Acceptance does **not** authorize unrelated changes and does **not** imply that the underlying historical facts were altered or that the observations were technically remediated.
 
-| Observation     | Title                                                  | Short description (as assessed)                                                                                         | PO disposition                |
-| --------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| **VMP1-OBS-01** | IA draft banner artifact                               | Ratified Port IA bytes still contain draft/not-ratified banner text while separately ratified by hash-bound act         | **ACCEPTED BY PRODUCT OWNER** |
+| Observation | Title | Short description (as assessed) | PO disposition |
+| --- | --- | --- | --- |
+| **VMP1-OBS-01** | IA draft banner artifact | Ratified Port IA bytes still contain draft/not-ratified banner text while separately ratified by hash-bound act | **ACCEPTED BY PRODUCT OWNER** |
 | **VMP1-OBS-02** | `connections.module.ts` historical attribution context | Historical F-OBS-04 / S3-OBS-01 dirty-file attribution notes vs clean pre-impl baseline for the Port-only module import | **ACCEPTED BY PRODUCT OWNER** |
-| **VMP1-OBS-03** | Nest educational DI limitation                         | Nest same-module DI is an educational composition boundary only; not production S2S / Vault AuthZ proof                 | **ACCEPTED BY PRODUCT OWNER** |
+| **VMP1-OBS-03** | Nest educational DI limitation | Nest same-module DI is an educational composition boundary only; not production S2S / Vault AuthZ proof | **ACCEPTED BY PRODUCT OWNER** |
 
 **Finding counts at closure:** **0 BLOCKER / 0 MAJOR / 0 MINOR** remain. Observations are **accepted**, **not** marked fixed or remediated.
 
 ### 4.1 Unrelated observation statuses — preserved
 
-| Set                     | Status under this act                                                  |
-| ----------------------- | ---------------------------------------------------------------------- |
-| **F-OBS-01…F-OBS-04**   | **OPEN** — unchanged; this act does **not** close, waive, or remediate |
-| **S3-OBS-01…S3-OBS-03** | **ACCEPTED / RECORDED** — unchanged                                    |
+| Set | Status under this act |
+| --- | --- |
+| **F-OBS-01…F-OBS-04** | **OPEN** — unchanged; this act does **not** close, waive, or remediate |
+| **S3-OBS-01…S3-OBS-03** | **ACCEPTED / RECORDED** — unchanged |
 
 ---
 
@@ -137,14 +137,14 @@ The Product Owner **APPROVES**:
 
 ### 5.2 What this closure establishes
 
-| Statement                              | Binding                                       |
-| -------------------------------------- | --------------------------------------------- |
-| VMP-1 implementation has been reviewed | **YES**                                       |
-| Delivery Independent Review verdict    | Remains **`PASS WITH OBSERVATIONS`**          |
-| VMP1-OBS-01…03                         | Explicitly **ACCEPTED BY PRODUCT OWNER**      |
-| VMP-1 governance status                | **FORMALLY CLOSED** by this separate PO act   |
-| Closure scope                          | **Only** VMP-1 under `D-CONN04-FULL-D-IA-VMP` |
-| Decision ID                            | **`D-CONN04-FULL-D-IA-VMP-CLOSE`**            |
+| Statement | Binding |
+| --- | --- |
+| VMP-1 implementation has been reviewed | **YES** |
+| Delivery Independent Review verdict | Remains **`PASS WITH OBSERVATIONS`** |
+| VMP1-OBS-01…03 | Explicitly **ACCEPTED BY PRODUCT OWNER** |
+| VMP-1 governance status | **FORMALLY CLOSED** by this separate PO act |
+| Closure scope | **Only** VMP-1 under `D-CONN04-FULL-D-IA-VMP` |
+| Decision ID | **`D-CONN04-FULL-D-IA-VMP-CLOSE`** |
 
 ### 5.3 Relationship to prior acts
 
@@ -160,18 +160,18 @@ The Product Owner **APPROVES**:
 
 This act explicitly records:
 
-| Item                                                                         | Status                                 |
-| ---------------------------------------------------------------------------- | -------------------------------------- |
-| Full-D Stage 4 commencement or coding                                        | **NOT AUTHORIZED**                     |
-| Subsequent stages (including Stages 5–8)                                     | **NOT AUTHORIZED**                     |
-| Full-D consumer loop / per-attempt freshness (Vault + occupancy + C)         | **NOT AUTHORIZED**                     |
-| `Connection.environment` UPDATE                                              | **NOT AUTHORIZED**                     |
-| Backfill execution / `runEnvironmentBackfill` operational loop               | **NOT AUTHORIZED**                     |
-| New B-04 authority                                                           | **NOT AUTHORIZED**                     |
-| Unrelated implementation or refactoring                                      | **NOT AUTHORIZED**                     |
-| Change to ratified Port IA bytes / SHA-256                                   | **NOT AUTHORIZED** / **NOT PERFORMED** |
+| Item | Status |
+| --- | --- |
+| Full-D Stage 4 commencement or coding | **NOT AUTHORIZED** |
+| Subsequent stages (including Stages 5–8) | **NOT AUTHORIZED** |
+| Full-D consumer loop / per-attempt freshness (Vault + occupancy + C) | **NOT AUTHORIZED** |
+| `Connection.environment` UPDATE | **NOT AUTHORIZED** |
+| Backfill execution / `runEnvironmentBackfill` operational loop | **NOT AUTHORIZED** |
+| New B-04 authority | **NOT AUTHORIZED** |
+| Unrelated implementation or refactoring | **NOT AUTHORIZED** |
+| Change to ratified Port IA bytes / SHA-256 | **NOT AUTHORIZED** / **NOT PERFORMED** |
 | Change to predecessor decision records or unrelated observation dispositions | **NOT AUTHORIZED** / **NOT PERFORMED** |
-| FIV-CONN-04-E / production / live-capital activity                           | **NOT AUTHORIZED**                     |
+| FIV-CONN-04-E / production / live-capital activity | **NOT AUTHORIZED** |
 
 Any subsequent stage requires a **separate, explicit Product Owner decision and authorization act**. This act contains **no** wording of automatic progression.
 

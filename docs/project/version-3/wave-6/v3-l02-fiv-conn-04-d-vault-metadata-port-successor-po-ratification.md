@@ -45,30 +45,30 @@ NO IMPLEMENTATION AUTHORIZATION GRANTED BY THIS ACT
 
 ## 1. Decision identification
 
-| Field                                 | Value                                                                    |
-| ------------------------------------- | ------------------------------------------------------------------------ |
-| **Decision title**                    | Vault Metadata Port — Successor Selection After Stage 3 (Before Stage 4) |
-| **Decision / Act ID**                 | **`D-CONN04-FULL-D-IA-S23-B-VMP-SUCC`**                                  |
-| **Project**                           | FIV-CONN-04-D                                                            |
-| **Wave**                              | 6 — Live Trading                                                         |
-| **Decision authority**                | Product Owner (sole Project Owner)                                       |
-| **Decision class**                    | Successor-selection / governance direction only                          |
-| **Final decision**                    | **RATIFIED**                                                             |
-| **Status**                            | **RATIFIED — SUCCESSOR SELECTION**                                       |
-| **Ratification date**                 | **2026-10-30**                                                           |
-| **Implementation authorization**      | **NOT GRANTED**                                                          |
-| **Port Implementation Authorization** | **NOT GRANTED** — separate future PO decision required                   |
+| Field                             | Value                                                                                          |
+| --------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **Decision title**                | Vault Metadata Port — Successor Selection After Stage 3 (Before Stage 4)                       |
+| **Decision / Act ID**             | **`D-CONN04-FULL-D-IA-S23-B-VMP-SUCC`**                                                        |
+| **Project**                       | FIV-CONN-04-D                                                                                  |
+| **Wave**                          | 6 — Live Trading                                                                               |
+| **Decision authority**            | Product Owner (sole Project Owner)                                                             |
+| **Decision class**                | Successor-selection / governance direction only                                                |
+| **Final decision**                | **RATIFIED**                                                                                   |
+| **Status**                        | **RATIFIED — SUCCESSOR SELECTION**                                                             |
+| **Ratification date**             | **2026-10-30**                                                                                 |
+| **Implementation authorization**  | **NOT GRANTED**                                                                                |
+| **Port Implementation Authorization** | **NOT GRANTED** — separate future PO decision required                                     |
 
 ---
 
 ## 2. Authority and ratification evidence
 
-| Field                    | Value                                                                                                                                                                                                                                                                                         |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Authority**            | Product Owner (sole Project Owner of this project)                                                                                                                                                                                                                                            |
-| **Decision date**        | 2026-10-30                                                                                                                                                                                                                                                                                    |
+| Field                    | Value                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Authority**            | Product Owner (sole Project Owner of this project)                                                                                                                                                                                                                                                                                                             |
+| **Decision date**        | 2026-10-30                                                                                                                                                                                                                                                                                                                                                     |
 | **Approval evidence**    | The sole Project Owner explicitly **RATIFIED** the current successor-selection candidate identified below, adopting its successor-selection decision and its explicit scope boundaries, and directed recording of this final ratification act plus additive Decision Register synchronization |
-| **Signature convention** | Written governance approval evidence recorded herein (same convention as prior Product Owner ratifications). **Not** a handwritten signature, cryptographic signature, or external approval mechanism                                                                                         |
+| **Signature convention** | Written governance approval evidence recorded herein (same convention as prior Product Owner ratifications). **Not** a handwritten signature, cryptographic signature, or external approval mechanism                                                                                                                                                          |
 
 This act records an **actual Product Owner decision**. The candidate document prepared the precise text for review; it did **not** itself ratify. Only the Project Owner may ratify. This act is that ratification.
 
@@ -78,8 +78,8 @@ This act records an **actual Product Owner decision**. The candidate document pr
 
 | Field                      | Value                                                                                                                                      |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Candidate path**         | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-vault-metadata-port-successor-po-decision-candidate.md`                                |
-| **Verified SHA-256**       | `dd8af55d361373d55778e70e113c32adb899fbb4bd65611e9e006a5ea6b8fb24`                                                                         |
+| **Candidate path**         | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-vault-metadata-port-successor-po-decision-candidate.md`                               |
+| **Verified SHA-256**       | `dd8af55d361373d55778e70e113c32adb899fbb4bd65611e9e006a5ea6b8fb24`                                                                        |
 | **Candidate Decision ID**  | `D-CONN04-FULL-D-IA-S23-B-VMP-SUCC` (same ID; now **RATIFIED** by this act)                                                                |
 | **Integrity at recording** | **MATCH** — candidate digest verified against the value previously reported and against repository file bytes before this act was recorded |
 
@@ -99,12 +99,12 @@ The Product Owner **RATIFIES**:
 
 ### 4.1 Selected successor
 
-| Field                          | Value                                                                             |
-| ------------------------------ | --------------------------------------------------------------------------------- |
-| **Selected successor package** | **Vault Metadata Port**                                                           |
-| **Position in sequence**       | After Stage 3 formal closure; **before** Stage 4                                  |
-| **Governing amendment text**   | Successor-01 (approved under `D-CONN04-PO-VAULT-B-IA-AMD-S01`)                    |
-| **Package type**               | Separate work package (successor selection only under this act)                   |
+| Field                          | Value                                                                          |
+| ------------------------------ | ------------------------------------------------------------------------------ |
+| **Selected successor package** | **Vault Metadata Port**                                                        |
+| **Position in sequence**       | After Stage 3 formal closure; **before** Stage 4                               |
+| **Governing amendment text**   | Successor-01 (approved under `D-CONN04-PO-VAULT-B-IA-AMD-S01`)                 |
+| **Package type**               | Separate work package (successor selection only under this act)                |
 | **Next required gate**         | Separate detailed **Port Implementation Authorization** (not granted by this act) |
 
 ### 4.2 Binding sequence (governance direction only)
@@ -132,21 +132,21 @@ STAGE 3 FORMALLY CLOSED (D-CONN04-FULL-D-IA-S23-B-S3-CLOSE)
 
 ### 5.2 What this ratification does **NOT** authorize
 
-| Item                                                                     | Status under this act |
-| ------------------------------------------------------------------------ | --------------------- |
-| Vault Metadata Port coding / Nest / provider / repository implementation | **NOT AUTHORIZED**    |
-| Stage 4 coding or commencement                                           | **NOT AUTHORIZED**    |
-| Stages 5–8                                                               | **NOT AUTHORIZED**    |
-| `Connection.environment` UPDATE                                          | **NOT AUTHORIZED**    |
-| Full-D backfill loop / execution                                         | **NOT AUTHORIZED**    |
-| Vault metadata **freshness** implementation / per-attempt freshness loop | **NOT AUTHORIZED**    |
-| FIV-CONN-04-E                                                            | **NOT AUTHORIZED**    |
-| Production activation / deployment / live-capital operations             | **NOT AUTHORIZED**    |
-| Automatic progression to any subsequent stage or package                 | **FORBIDDEN**         |
-| Closing / remediating F-OBS-01…F-OBS-04 without separate PO scope        | **NOT AUTHORIZED**    |
-| Silently closing S3-OBS-01…S3-OBS-03                                     | **NOT AUTHORIZED**    |
-| Reinterpreting or invalidating prior decision IDs listed in §7           | **FORBIDDEN**         |
-| Treating this Decision ID as Port Implementation Authorization           | **FORBIDDEN**         |
+| Item                                                                      | Status under this act  |
+| ------------------------------------------------------------------------- | ---------------------- |
+| Vault Metadata Port coding / Nest / provider / repository implementation  | **NOT AUTHORIZED**     |
+| Stage 4 coding or commencement                                            | **NOT AUTHORIZED**     |
+| Stages 5–8                                                                | **NOT AUTHORIZED**     |
+| `Connection.environment` UPDATE                                           | **NOT AUTHORIZED**     |
+| Full-D backfill loop / execution                                          | **NOT AUTHORIZED**     |
+| Vault metadata **freshness** implementation / per-attempt freshness loop  | **NOT AUTHORIZED**     |
+| FIV-CONN-04-E                                                             | **NOT AUTHORIZED**     |
+| Production activation / deployment / live-capital operations              | **NOT AUTHORIZED**     |
+| Automatic progression to any subsequent stage or package                  | **FORBIDDEN**          |
+| Closing / remediating F-OBS-01…F-OBS-04 without separate PO scope         | **NOT AUTHORIZED**     |
+| Silently closing S3-OBS-01…S3-OBS-03                                      | **NOT AUTHORIZED**     |
+| Reinterpreting or invalidating prior decision IDs listed in §7            | **FORBIDDEN**          |
+| Treating this Decision ID as Port Implementation Authorization            | **FORBIDDEN**          |
 
 ```text
 AUTHORIZED BY THIS ACT: SUCCESSOR ORDER + PORT-IA-PACKAGE PREPARATION ONLY
@@ -158,19 +158,19 @@ NEXT IMPLEMENTATION AUTHORIZATION MUST BE A SEPARATE EXPLICIT PO DECISION
 
 ## 6. Preserved governance posture
 
-| Item                                                                                | Status under this act (unchanged unless noted)                                                  |
-| ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| Option B Stage 2–3 IA (`D-CONN04-FULL-D-IA-S23-B`)                                  | **APPROVED** — bounded Stage 2–3 scope                                                          |
-| Stage 3 commencement (`D-CONN04-FULL-D-IA-S23-B-S3`)                                | Historical commence authorization preserved                                                     |
-| Stage 3 formal closure (`D-CONN04-FULL-D-IA-S23-B-S3-CLOSE`)                        | **APPROVED — STAGE 3 FORMALLY CLOSED** (preserved)                                              |
-| Stage 3 IR verdict                                                                  | **PASS WITH OBSERVATIONS** — accepted under Stage 3 closure                                     |
-| S3-OBS-01…S3-OBS-03                                                                 | **ACCEPTED / REMAIN RECORDED** (non-blocking)                                                   |
-| F-OBS-01…F-OBS-04                                                                   | **OPEN** (unchanged)                                                                            |
-| Successor-01 IA Amendment (`D-CONN04-PO-VAULT-B-IA-AMD-S01`)                        | **APPROVED AND RATIFIED** — architectural amendment only; **port coding NOT AUTHORIZED** by S01 |
-| KO-COND-01 (`D-CONN04-KO-COND-01`)                                                  | **CLOSED / SATISFIED**                                                                          |
-| Stage 4 commencement                                                                | **NOT AUTHORIZED**                                                                              |
-| Stages 5–8 / env UPDATE / Full-D backfill execution / E / production / live capital | **NOT AUTHORIZED**                                                                              |
-| Wave 6 STOP / non-authorization restrictions                                        | **Remain in force**                                                                             |
+| Item                                                         | Status under this act (unchanged unless noted)                                      |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| Option B Stage 2–3 IA (`D-CONN04-FULL-D-IA-S23-B`)           | **APPROVED** — bounded Stage 2–3 scope                                              |
+| Stage 3 commencement (`D-CONN04-FULL-D-IA-S23-B-S3`)         | Historical commence authorization preserved                                         |
+| Stage 3 formal closure (`D-CONN04-FULL-D-IA-S23-B-S3-CLOSE`) | **APPROVED — STAGE 3 FORMALLY CLOSED** (preserved)                                  |
+| Stage 3 IR verdict                                           | **PASS WITH OBSERVATIONS** — accepted under Stage 3 closure                         |
+| S3-OBS-01…S3-OBS-03                                          | **ACCEPTED / REMAIN RECORDED** (non-blocking)                                       |
+| F-OBS-01…F-OBS-04                                            | **OPEN** (unchanged)                                                                |
+| Successor-01 IA Amendment (`D-CONN04-PO-VAULT-B-IA-AMD-S01`) | **APPROVED AND RATIFIED** — architectural amendment only; **port coding NOT AUTHORIZED** by S01 |
+| KO-COND-01 (`D-CONN04-KO-COND-01`)                           | **CLOSED / SATISFIED**                                                              |
+| Stage 4 commencement                                         | **NOT AUTHORIZED**                                                                  |
+| Stages 5–8 / env UPDATE / Full-D backfill execution / E / production / live capital | **NOT AUTHORIZED**                                                   |
+| Wave 6 STOP / non-authorization restrictions                 | **Remain in force**                                                                 |
 
 ---
 
@@ -178,17 +178,17 @@ NEXT IMPLEMENTATION AUTHORIZATION MUST BE A SEPARATE EXPLICIT PO DECISION
 
 This act **preserves** and does **not** reinterpret, weaken, or invalidate:
 
-| Decision ID                                        | Status preserved                                                                        |
-| -------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `D-CONN04-FULL-D-IA-S23-B`                         | Option B Stage 2–3 IA — remains as recorded                                             |
-| `D-CONN04-FULL-D-IA-S23-B-S3`                      | Stage 3 commence — historical                                                           |
-| `D-CONN04-FULL-D-IA-S23-B-S3-CLOSE`                | Stage 3 **FORMALLY CLOSED**                                                             |
-| `D-CONN04-PO-VAULT-B-IA-AMD-S01`                   | Successor-01 amendment **APPROVED AND RATIFIED**; coding still not granted by S01 alone |
-| `D-CONN04-PO-VAULT-B-IA-AMD`                       | Package ratification — historical                                                       |
-| `D-CONN04-PO-VAULT-B`                              | Strategy ratification — preserved                                                       |
-| `D-CONN04-KO-COND-01` / `D-CONN04-KO-COND-01-CLAR` | KO-COND-01 closed / clarification preserved                                             |
-| `D-CONN04-FULL-D-IA`                               | Full-D IA grant with amendments — preserved                                             |
-| Wave 6 STOP / non-authorization language           | Remains binding                                                                         |
+| Decision ID                              | Status preserved                                      |
+| ---------------------------------------- | ----------------------------------------------------- |
+| `D-CONN04-FULL-D-IA-S23-B`               | Option B Stage 2–3 IA — remains as recorded           |
+| `D-CONN04-FULL-D-IA-S23-B-S3`            | Stage 3 commence — historical                         |
+| `D-CONN04-FULL-D-IA-S23-B-S3-CLOSE`      | Stage 3 **FORMALLY CLOSED**                           |
+| `D-CONN04-PO-VAULT-B-IA-AMD-S01`         | Successor-01 amendment **APPROVED AND RATIFIED**; coding still not granted by S01 alone |
+| `D-CONN04-PO-VAULT-B-IA-AMD`             | Package ratification — historical                     |
+| `D-CONN04-PO-VAULT-B`                    | Strategy ratification — preserved                     |
+| `D-CONN04-KO-COND-01` / `D-CONN04-KO-COND-01-CLAR` | KO-COND-01 closed / clarification preserved |
+| `D-CONN04-FULL-D-IA`                     | Full-D IA grant with amendments — preserved           |
+| Wave 6 STOP / non-authorization language | Remains binding                                       |
 
 `D-CONN04-FULL-D-IA-S23-B-VMP-SUCC` is now the **ratified** Decision ID for successor selection only. It is **not** a Port Implementation Authorization ID.
 
@@ -198,19 +198,19 @@ This act **preserves** and does **not** reinterpret, weaken, or invalidate:
 
 All hashes below were verified against **current repository file bytes** at ratification recording unless noted as the candidate’s previously reported digest.
 
-| #   | Artifact / role                                                            | Path                                                                                                                                   | Verified SHA-256                                                   |
-| --- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| 1   | **Ratified candidate** (this act’s subject)                                | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-vault-metadata-port-successor-po-decision-candidate.md`                            | `dd8af55d361373d55778e70e113c32adb899fbb4bd65611e9e006a5ea6b8fb24` |
-| 2   | Stage 3 PO formal closure (`D-CONN04-FULL-D-IA-S23-B-S3-CLOSE`)            | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-stage-3-po-closure-decision.md`                                                    | `a28599dd6fe8a45cc3753c1ab6304ea6eb75c7a88363088b1572a644c51f9dc0` |
-| 3   | Stage 3 Independent Review                                                 | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-stage-3-independent-review.md`                                                     | `4f3ccaa093af768d63e829229c8aceaabea03a18733f7f340ce88e0c86b8542e` |
-| 4   | Option B Implementation Authorization (`D-CONN04-FULL-D-IA-S23-B`)         | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-implementation-authorization-option-b-po-decision.md`                              | `dbc7aea6d99328122c31818305011c11157a0e5cfab862d560cea757e4d550d4` |
-| 5   | Full-D Implementation Authorization package                                | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-implementation-authorization.md`                                                   | `2c6890ba0e2ed3fe08b1ee84ee20df787eae814b8728465fff5a939356b9c1ee` |
-| 6   | Successor-01 IA Amendment text (approved under S01)                        | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-implementation-authorization-amendment-po-vault-b-final-candidate-successor-01.md` | `79386c9120e20c3a36648a869e6d196c7f6d96130b808006d723fac4e4ee8acb` |
-| 7   | Wave 6 PO Decision Register (pre-sync baseline for this act)               | `docs/project/version-3/wave-6/wave-6-po-decision-register.md`                                                                         | `648b6bc8f7a071c4edeb2417616d50ceeeb566aef3e56101e525e7acbc08882b` |
-| 8   | Post-commit integrity reconciliation                                       | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-post-commit-integrity-reconciliation.md`                                           | `6454398cc1949a197536ea4c7a879199a40fd8db26af8d1feca667bd46056f22` |
-| 9   | Successor-01 approval / re-ratification (`D-CONN04-PO-VAULT-B-IA-AMD-S01`) | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-po-vault-b-ia-amendment-successor-01-approval-and-ratification.md`                 | `cdba4ad50ab1691307ef94579669c4fa5c8a81ad0d30c9b44514e586c56fbc97` |
-| 10  | KO-COND-01 formal closure (`D-CONN04-KO-COND-01`)                          | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-ko-cond-01-formal-closure-act.md`                                                  | `3a5c10bf1a0518dd2306410d2f4b3164daf69ae3db9dc9c28d0e8c0cc58fb2fe` |
-| 11  | Stage 2 Independent Review (F-OBS carry-forward source)                    | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-stage-2-independent-review.md`                                                     | `4300644c40f6af5c3fe1724eb33213ce3de248d34b371ad702fc98cb8bdcd470` |
+| #   | Artifact / role                                                                 | Path                                                                                                                                   | Verified SHA-256                                                   |
+| --- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| 1   | **Ratified candidate** (this act’s subject)                                     | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-vault-metadata-port-successor-po-decision-candidate.md`                           | `dd8af55d361373d55778e70e113c32adb899fbb4bd65611e9e006a5ea6b8fb24` |
+| 2   | Stage 3 PO formal closure (`D-CONN04-FULL-D-IA-S23-B-S3-CLOSE`)                 | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-stage-3-po-closure-decision.md`                                                   | `a28599dd6fe8a45cc3753c1ab6304ea6eb75c7a88363088b1572a644c51f9dc0` |
+| 3   | Stage 3 Independent Review                                                      | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-stage-3-independent-review.md`                                                     | `4f3ccaa093af768d63e829229c8aceaabea03a18733f7f340ce88e0c86b8542e` |
+| 4   | Option B Implementation Authorization (`D-CONN04-FULL-D-IA-S23-B`)              | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-implementation-authorization-option-b-po-decision.md`                              | `dbc7aea6d99328122c31818305011c11157a0e5cfab862d560cea757e4d550d4` |
+| 5   | Full-D Implementation Authorization package                                     | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-implementation-authorization.md`                                                   | `2c6890ba0e2ed3fe08b1ee84ee20df787eae814b8728465fff5a939356b9c1ee` |
+| 6   | Successor-01 IA Amendment text (approved under S01)                             | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-implementation-authorization-amendment-po-vault-b-final-candidate-successor-01.md` | `79386c9120e20c3a36648a869e6d196c7f6d96130b808006d723fac4e4ee8acb` |
+| 7   | Wave 6 PO Decision Register (pre-sync baseline for this act)                    | `docs/project/version-3/wave-6/wave-6-po-decision-register.md`                                                                         | `648b6bc8f7a071c4edeb2417616d50ceeeb566aef3e56101e525e7acbc08882b` |
+| 8   | Post-commit integrity reconciliation                                            | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-post-commit-integrity-reconciliation.md`                                           | `6454398cc1949a197536ea4c7a879199a40fd8db26af8d1feca667bd46056f22` |
+| 9   | Successor-01 approval / re-ratification (`D-CONN04-PO-VAULT-B-IA-AMD-S01`)      | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-po-vault-b-ia-amendment-successor-01-approval-and-ratification.md`               | `cdba4ad50ab1691307ef94579669c4fa5c8a81ad0d30c9b44514e586c56fbc97` |
+| 10  | KO-COND-01 formal closure (`D-CONN04-KO-COND-01`)                               | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-ko-cond-01-formal-closure-act.md`                                                  | `3a5c10bf1a0518dd2306410d2f4b3164daf69ae3db9dc9c28d0e8c0cc58fb2fe` |
+| 11  | Stage 2 Independent Review (F-OBS carry-forward source)                         | `docs/project/version-3/wave-6/v3-l02-fiv-conn-04-d-stage-2-independent-review.md`                                                     | `4300644c40f6af5c3fe1724eb33213ce3de248d34b371ad702fc98cb8bdcd470` |
 
 **Integrity note:** Binding decisions and IDs remain those of the prior acts. Digests above identify current repository evidence used for this ratification. Historical recording-time seals embedded in prior acts may differ from current digests after Prettier / commit packaging; this act does **not** rewrite historical seals inside prior documents.
 
@@ -235,14 +235,14 @@ Do **not** rewrite unrelated historical decision bodies. Do **not** delete or re
 
 ## 10. Repository baseline at ratification
 
-| Field                        | Value                                                                           |
-| ---------------------------- | ------------------------------------------------------------------------------- |
-| Branch                       | `main`                                                                          |
-| HEAD                         | `a59c533977923a45413a176ad143325a948feeb8`                                      |
-| Created by this task         | This ratification act + additive Decision Register sync only                    |
-| Application source / tests   | **Unchanged**                                                                   |
-| Candidate document           | **Retained** as historical evidence (not deleted / not substantively rewritten) |
-| Pre-existing dirty/untracked | **Preserved**                                                                   |
+| Field                         | Value                                                          |
+| ----------------------------- | -------------------------------------------------------------- |
+| Branch                        | `main`                                                         |
+| HEAD                          | `a59c533977923a45413a176ad143325a948feeb8`                     |
+| Created by this task          | This ratification act + additive Decision Register sync only   |
+| Application source / tests    | **Unchanged**                                                  |
+| Candidate document            | **Retained** as historical evidence (not deleted / not substantively rewritten) |
+| Pre-existing dirty/untracked  | **Preserved**                                                  |
 
 ---
 
