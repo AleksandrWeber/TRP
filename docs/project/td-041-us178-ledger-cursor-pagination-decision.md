@@ -2,10 +2,10 @@
 
 **Decision ID:** TD-041 / US178 Ledger Cursor Pagination  
 **Date:** 2026-11-08  
-**Status:** ACCEPTED — Option A  
+**Status:** SUPERSEDED by [`td-041-us178-ledger-cursor-pagination-option-b-decision.md`](./td-041-us178-ledger-cursor-pagination-option-b-decision.md)
 **Authority:** Product Owner
 
-This record is the accepted contract for one implementation sprint. It does not resolve TD-041. It does not authorize or change FIV-CONN-04-D Stage 4. `docs/project/technical-debt.md` is not updated here.
+Option A applied to the first pagination sprint. Option B supersedes the HTTP no-limit behavior. This file is retained as the historical record. It does not authorize or change FIV-CONN-04-D Stage 4.
 
 | Field                                                             | Accepted decision                                                    |
 | ----------------------------------------------------------------- | -------------------------------------------------------------------- |

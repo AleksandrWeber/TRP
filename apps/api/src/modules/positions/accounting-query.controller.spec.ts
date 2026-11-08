@@ -1,6 +1,9 @@
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { describe, expect, it, vi } from 'vitest';
-import { LedgerHistoryCursorError } from '../ledger/domain/ledger-history-cursor';
+import {
+  LEDGER_HISTORY_DEFAULT_LIMIT,
+  LedgerHistoryCursorError,
+} from '../ledger/domain/ledger-history-cursor';
 import { Role } from '../identity/role';
 import { AccountingQueryController } from './accounting-query.controller';
 import type { AccountingQueryService } from './accounting-query.service';
@@ -72,17 +75,18 @@ describe('US178 — accounting query API', () => {
     },
   );
 
-  it('rejects a cursor without limit before reading the ledger', async () => {
-    const queries = { ledgerView: vi.fn() };
+  it('continues a cursor-only request with the default page size', async () => {
+    const queries = { ledgerView: vi.fn().mockResolvedValue({ transactions: [] }) };
     const controller = new AccountingQueryController(
       queries as unknown as AccountingQueryService,
       { assertMember: vi.fn() } as never,
     );
 
-    await expect(
-      controller.ledger(request, 'account-1', 'workspace-1', { cursor: 'opaque' }),
-    ).rejects.toBeInstanceOf(BadRequestException);
-    expect(queries.ledgerView).not.toHaveBeenCalled();
+    await controller.ledger(request, 'account-1', 'workspace-1', { cursor: 'opaque' });
+    expect(queries.ledgerView).toHaveBeenCalledWith('workspace-1', 'account-1', {
+      limit: LEDGER_HISTORY_DEFAULT_LIMIT,
+      cursor: 'opaque',
+    });
   });
 
   it('rejects a malformed cursor as 400 instead of reading the ledger', async () => {

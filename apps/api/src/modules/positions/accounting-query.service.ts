@@ -77,13 +77,7 @@ export class AccountingQueryService {
     });
   }
 
-  async ledgerView(workspaceId: string, paperAccountId: string, page?: LedgerHistoryRead) {
-    if (!page) {
-      await this.assertAccount(workspaceId, paperAccountId);
-      const transactions = await this.ledger.listByAccount(workspaceId, paperAccountId);
-      return ledgerEnvelope(transactions);
-    }
-
+  async ledgerView(workspaceId: string, paperAccountId: string, page: LedgerHistoryRead) {
     const after = page.cursor
       ? decodeLedgerHistoryCursor(page.cursor, { workspaceId, paperAccountId })
       : undefined;

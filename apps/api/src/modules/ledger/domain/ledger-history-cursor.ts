@@ -1,9 +1,10 @@
 /**
- * US178 optional ledger-history cursor (TD-041, Option A).
+ * US178 ledger-history cursor (TD-041, Option B).
  * Opaque base64url JSON. This is not cryptographic integrity protection.
  */
 
 export const LEDGER_HISTORY_CURSOR_VERSION = 1;
+export const LEDGER_HISTORY_DEFAULT_LIMIT = 50;
 export const LEDGER_HISTORY_MAX_LIMIT = 100;
 
 export type LedgerHistoryPosition = Readonly<{

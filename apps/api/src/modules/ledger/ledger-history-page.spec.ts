@@ -19,6 +19,7 @@ import {
   decodeLedgerHistoryCursor,
   encodeLedgerHistoryCursor,
   isAfterLedgerHistoryPosition,
+  LEDGER_HISTORY_DEFAULT_LIMIT,
   LedgerHistoryCursorError,
 } from './domain/ledger-history-cursor';
 import { LedgerService } from './ledger.service';
@@ -121,28 +122,49 @@ describe('TD-041 US178 ledger history cursor', () => {
     );
   });
 
-  it('keeps the no-query response on the full ordered history without nextCursor', async () => {
-    const { service, ledger, fullCalls } = queryService(rows);
-    const view = await service.ledgerView(workspaceId, paperAccountId);
+  it('returns the default 50-row page when limit is omitted and never reads the full account', async () => {
+    const history = many(60);
+    const { service, ledger } = queryService(history);
+    const controller = new AccountingQueryController(service, { assertMember: vi.fn() } as never);
 
-    expect(ledger.listByAccountPage).not.toHaveBeenCalled();
-    expect(fullCalls).toEqual(['full']);
-    expect(view).toEqual({
-      dataClass: 'authoritative_ledger',
-      projection: false,
-      authoritative: true,
-      transactions: rows.map((row) => ({
-        id: row.id,
-        causeType: row.causeType,
-        causeId: row.causeId,
-        currency: row.currency,
-        occurredAt: row.occurredAt,
-        recordedAt: row.recordedAt,
-        entries: row.entries,
-        compensationReason: row.compensationReason,
-      })),
+    const view = await controller.ledger(reader, paperAccountId, workspaceId);
+
+    expect(view.transactions).toHaveLength(LEDGER_HISTORY_DEFAULT_LIMIT);
+    expect(view.nextCursor).toEqual(expect.any(String));
+    expect(ledger.listByAccount).not.toHaveBeenCalled();
+    expect(ledger.listByAccountPage).toHaveBeenCalledWith(
+      expect.objectContaining({ limit: LEDGER_HISTORY_DEFAULT_LIMIT }),
+    );
+    const requested = ledger.listByAccountPage.mock.calls[0]?.[0] as LedgerAccountPageQuery;
+    expect(requested.after).toBeUndefined();
+  });
+
+  it('honors an explicit limit of 100 and continues a cursor-only request at the default size', async () => {
+    const history = many(120);
+    const { service, ledger } = queryService(history);
+    const controller = new AccountingQueryController(service, { assertMember: vi.fn() } as never);
+
+    const wide = await controller.ledger(reader, paperAccountId, workspaceId, { limit: '100' });
+    expect(wide.transactions).toHaveLength(100);
+    expect(wide.nextCursor).toEqual(expect.any(String));
+    expect(ledger.listByAccountPage).toHaveBeenCalledWith(expect.objectContaining({ limit: 100 }));
+
+    ledger.listByAccountPage.mockClear();
+    const continued = await controller.ledger(reader, paperAccountId, workspaceId, {
+      cursor: wide.nextCursor,
     });
-    expect(view).not.toHaveProperty('nextCursor');
+    expect(continued.transactions).toHaveLength(20);
+    expect(continued.nextCursor).toBeUndefined();
+    expect(ledger.listByAccount).not.toHaveBeenCalled();
+    expect(ledger.listByAccountPage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        limit: LEDGER_HISTORY_DEFAULT_LIMIT,
+        after: {
+          occurredAt: wide.transactions.at(-1)!.occurredAt,
+          id: wide.transactions.at(-1)!.id,
+        },
+      }),
+    );
   });
 
   it('walks equal timestamps and page boundaries without skips or duplicates', async () => {
@@ -189,6 +211,17 @@ describe('TD-041 US178 ledger history cursor', () => {
       service.ledgerView(workspaceId, paperAccountId, { limit: 10, cursor: foreign }),
     ).rejects.toThrow(/does not match/);
     expect(ledger.listByAccountPage).toHaveBeenCalledTimes(1);
+    expect(ledger.listByAccount).not.toHaveBeenCalled();
+  });
+
+  it('returns 400 for a malformed cursor without reading the ledger', async () => {
+    const { service, ledger } = queryService(rows);
+    const controller = new AccountingQueryController(service, { assertMember: vi.fn() } as never);
+
+    await expect(
+      controller.ledger(reader, paperAccountId, workspaceId, { cursor: 'not-a-cursor' }),
+    ).rejects.toBeInstanceOf(BadRequestException);
+    expect(ledger.listByAccountPage).not.toHaveBeenCalled();
     expect(ledger.listByAccount).not.toHaveBeenCalled();
   });
 
@@ -291,6 +324,12 @@ describe('TD-041 US178 ledger history cursor', () => {
     }
   });
 });
+
+function many(count: number): LedgerTransaction[] {
+  return Array.from({ length: count }, (_, index) =>
+    transaction(`row-${index}`, new Date(Date.UTC(2026, 0, 1) + index * 1000).toISOString()),
+  ).sort(byHistory);
+}
 
 const reader = {
   user: {

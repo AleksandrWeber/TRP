@@ -10,7 +10,11 @@ import {
   Req,
 } from '@nestjs/common';
 import type { AuthUser } from '../auth/jwt.strategy';
-import { LedgerHistoryCursorError } from '../ledger/domain/ledger-history-cursor';
+import {
+  LEDGER_HISTORY_DEFAULT_LIMIT,
+  LEDGER_HISTORY_MAX_LIMIT,
+  LedgerHistoryCursorError,
+} from '../ledger/domain/ledger-history-cursor';
 import { WorkspaceAccessService } from '../workspace';
 import { AccountingQueryService, type LedgerHistoryRead } from './accounting-query.service';
 import { RequirePermission } from '../auth/decorators/require-permission.decorator';
@@ -64,7 +68,6 @@ export class AccountingQueryController {
     return this.run(request.user, workspaceHeader, async (workspaceId) => {
       const page = parseLedgerHistoryQuery(query);
       try {
-        if (!page) return await this.queries.ledgerView(workspaceId, paperAccountId);
         return await this.queries.ledgerView(workspaceId, paperAccountId, page);
       } catch (error) {
         if (error instanceof LedgerHistoryCursorError) {
@@ -127,24 +130,21 @@ function requiredHeader(value: string | undefined): string {
 
 const LIMIT_ERROR = 'Ledger history limit must be an integer between 1 and 100.';
 
-function parseLedgerHistoryQuery(
-  query: LedgerHistoryQuery | undefined,
-): LedgerHistoryRead | undefined {
-  if (!query) return undefined;
-  const limitText = singleQueryValue(query.limit, 'limit')?.trim();
-  const cursorText = singleQueryValue(query.cursor, 'cursor')?.trim();
-  if (!limitText && !cursorText) return undefined;
-  if (cursorText && !limitText) {
-    throw new BadRequestException('Ledger history cursor requires limit.');
-  }
-  if (!limitText || !/^\d+$/.test(limitText)) {
-    throw new BadRequestException(LIMIT_ERROR);
-  }
-  const limit = Number(limitText);
-  if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
-    throw new BadRequestException(LIMIT_ERROR);
-  }
+function parseLedgerHistoryQuery(query: LedgerHistoryQuery | undefined): LedgerHistoryRead {
+  const limitRaw = singleQueryValue(query?.limit, 'limit');
+  const cursorText = singleQueryValue(query?.cursor, 'cursor')?.trim();
+  const limit =
+    limitRaw === undefined ? LEDGER_HISTORY_DEFAULT_LIMIT : parseExplicitLimit(limitRaw.trim());
   return cursorText ? { limit, cursor: cursorText } : { limit };
+}
+
+function parseExplicitLimit(limitText: string): number {
+  if (!/^\d+$/.test(limitText)) throw new BadRequestException(LIMIT_ERROR);
+  const limit = Number(limitText);
+  if (!Number.isInteger(limit) || limit < 1 || limit > LEDGER_HISTORY_MAX_LIMIT) {
+    throw new BadRequestException(LIMIT_ERROR);
+  }
+  return limit;
 }
 
 function singleQueryValue(value: string | string[] | undefined, name: string): string | undefined {
