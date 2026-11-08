@@ -1,6 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { FillQueryService } from '../execution-engine';
-import { LedgerService } from '../ledger';
+import {
+  decodeLedgerHistoryCursor,
+  encodeLedgerHistoryCursor,
+} from '../ledger/domain/ledger-history-cursor';
+import { LedgerService, type LedgerTransaction } from '../ledger';
 import { PaperAccountService } from '../paper-account';
 import { PORTFOLIO_REPOSITORY, type PortfolioRepository } from './persistence/portfolio.repository';
 import { POSITION_REPOSITORY, type PositionRepository } from './persistence/position.repository';
@@ -9,6 +13,11 @@ import {
   type PositionValuationRepository,
 } from './persistence/position-valuation.repository';
 import { AccountingReconciliationService } from './reconciliation/accounting-reconciliation.service';
+
+export type LedgerHistoryRead = Readonly<{
+  limit: number;
+  cursor?: string;
+}>;
 
 @Injectable()
 export class AccountingQueryService {
@@ -68,26 +77,29 @@ export class AccountingQueryService {
     });
   }
 
-  async ledgerView(workspaceId: string, paperAccountId: string) {
+  async ledgerView(workspaceId: string, paperAccountId: string, page?: LedgerHistoryRead) {
+    if (!page) {
+      await this.assertAccount(workspaceId, paperAccountId);
+      const transactions = await this.ledger.listByAccount(workspaceId, paperAccountId);
+      return ledgerEnvelope(transactions);
+    }
+
+    const after = page.cursor
+      ? decodeLedgerHistoryCursor(page.cursor, { workspaceId, paperAccountId })
+      : undefined;
     await this.assertAccount(workspaceId, paperAccountId);
-    const transactions = await this.ledger.listByAccount(workspaceId, paperAccountId);
-    return Object.freeze({
-      dataClass: 'authoritative_ledger',
-      projection: false,
-      authoritative: true,
-      transactions: transactions.map((transaction) =>
-        Object.freeze({
-          id: transaction.id,
-          causeType: transaction.causeType,
-          causeId: transaction.causeId,
-          currency: transaction.currency,
-          occurredAt: transaction.occurredAt,
-          recordedAt: transaction.recordedAt,
-          entries: transaction.entries,
-          compensationReason: transaction.compensationReason,
-        }),
-      ),
+    const result = await this.ledger.listByAccountPage({
+      workspaceId,
+      paperAccountId,
+      limit: page.limit,
+      ...(after ? { after } : {}),
     });
+    const last = result.transactions.at(-1);
+    const nextCursor =
+      result.hasMore && last
+        ? encodeLedgerHistoryCursor({ workspaceId, paperAccountId }, last)
+        : undefined;
+    return ledgerEnvelope(result.transactions, nextCursor);
   }
 
   async portfolioView(workspaceId: string, paperAccountId: string) {
@@ -116,4 +128,27 @@ export class AccountingQueryService {
       throw new Error('paper account not found in workspace');
     }
   }
+}
+
+function ledgerEnvelope(transactions: readonly LedgerTransaction[], nextCursor?: string) {
+  return Object.freeze({
+    dataClass: 'authoritative_ledger' as const,
+    projection: false as const,
+    authoritative: true as const,
+    transactions: Object.freeze(transactions.map(presentTransaction)),
+    ...(nextCursor ? { nextCursor } : {}),
+  });
+}
+
+function presentTransaction(transaction: LedgerTransaction) {
+  return Object.freeze({
+    id: transaction.id,
+    causeType: transaction.causeType,
+    causeId: transaction.causeId,
+    currency: transaction.currency,
+    occurredAt: transaction.occurredAt,
+    recordedAt: transaction.recordedAt,
+    entries: transaction.entries,
+    compensationReason: transaction.compensationReason,
+  });
 }

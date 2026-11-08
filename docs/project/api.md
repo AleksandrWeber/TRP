@@ -361,6 +361,27 @@ Guarantees:
 - Portfolio/Position views expose version, freshness, and completeness/source
   metadata where available; reconciliation exposes match/mismatch status
 
+Ledger history (`GET /v1/accounting/accounts/:paperAccountId/ledger`) accepts
+optional `limit` and `cursor` (TD-041 / US178, Option A). There is no default
+page size. A request with neither parameter keeps the original response: the
+full account history in ascending `(occurredAt, id)` order, the same envelope,
+and no `nextCursor`.
+
+When `limit` is present it must be an integer from 1 through 100. The response
+contains at most that many transactions. `nextCursor` is present only when
+another page exists, and it identifies the last returned transaction, not a
+lookahead row. Send that opaque value back unchanged with the same `limit`.
+Continuation is strictly `occurredAt` greater, or the same `occurredAt` and
+`id` greater. The server always filters by the authorized workspace and the
+path paper account. An exhausted page omits `nextCursor`.
+
+`cursor` without `limit`, a non-integer or out-of-range `limit`, a malformed
+or wrong-version cursor, and a cursor whose workspace or paper account does
+not match the request are `400`. Invalid input does not fall back to the full
+history. The cursor is opaque base64url JSON. It is not a signature. Omitting
+`limit` remains an unbounded read, so TD-041 stays open. Account summary,
+portfolio refresh, and accounting rebuild still read the full ledger.
+
 ---
 
 ## Paper Orders (RC-16 M2 US164)

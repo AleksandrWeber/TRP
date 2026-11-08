@@ -6,15 +6,22 @@ import {
   Headers,
   NotFoundException,
   Param,
+  Query,
   Req,
 } from '@nestjs/common';
 import type { AuthUser } from '../auth/jwt.strategy';
+import { LedgerHistoryCursorError } from '../ledger/domain/ledger-history-cursor';
 import { WorkspaceAccessService } from '../workspace';
-import { AccountingQueryService } from './accounting-query.service';
+import { AccountingQueryService, type LedgerHistoryRead } from './accounting-query.service';
 import { RequirePermission } from '../auth/decorators/require-permission.decorator';
 import { PermissionClass } from '../auth/permission-catalog';
 
 type RequestWithUser = { user: AuthUser };
+
+type LedgerHistoryQuery = Readonly<{
+  limit?: string | string[];
+  cursor?: string | string[];
+}>;
 
 /** Workspace/account-scoped, read-only accounting API (US178). */
 @Controller({ path: 'accounting', version: '1' })
@@ -52,10 +59,20 @@ export class AccountingQueryController {
     @Req() request: RequestWithUser,
     @Param('paperAccountId') paperAccountId: string,
     @Headers('x-workspace-id') workspaceHeader: string | undefined,
+    @Query() query?: LedgerHistoryQuery,
   ) {
-    return this.run(request.user, workspaceHeader, (workspaceId) =>
-      this.queries.ledgerView(workspaceId, paperAccountId),
-    );
+    return this.run(request.user, workspaceHeader, async (workspaceId) => {
+      const page = parseLedgerHistoryQuery(query);
+      try {
+        if (!page) return await this.queries.ledgerView(workspaceId, paperAccountId);
+        return await this.queries.ledgerView(workspaceId, paperAccountId, page);
+      } catch (error) {
+        if (error instanceof LedgerHistoryCursorError) {
+          throw new BadRequestException(error.message);
+        }
+        throw error;
+      }
+    });
   }
 
   @Get('accounts/:paperAccountId/portfolio')
@@ -106,4 +123,34 @@ function requiredHeader(value: string | undefined): string {
   const normalized = value?.trim();
   if (!normalized) throw new BadRequestException('X-Workspace-Id header is required');
   return normalized;
+}
+
+const LIMIT_ERROR = 'Ledger history limit must be an integer between 1 and 100.';
+
+function parseLedgerHistoryQuery(
+  query: LedgerHistoryQuery | undefined,
+): LedgerHistoryRead | undefined {
+  if (!query) return undefined;
+  const limitText = singleQueryValue(query.limit, 'limit')?.trim();
+  const cursorText = singleQueryValue(query.cursor, 'cursor')?.trim();
+  if (!limitText && !cursorText) return undefined;
+  if (cursorText && !limitText) {
+    throw new BadRequestException('Ledger history cursor requires limit.');
+  }
+  if (!limitText || !/^\d+$/.test(limitText)) {
+    throw new BadRequestException(LIMIT_ERROR);
+  }
+  const limit = Number(limitText);
+  if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
+    throw new BadRequestException(LIMIT_ERROR);
+  }
+  return cursorText ? { limit, cursor: cursorText } : { limit };
+}
+
+function singleQueryValue(value: string | string[] | undefined, name: string): string | undefined {
+  if (value === undefined) return undefined;
+  if (Array.isArray(value)) {
+    throw new BadRequestException(`Ledger history ${name} must be a single value.`);
+  }
+  return value;
 }

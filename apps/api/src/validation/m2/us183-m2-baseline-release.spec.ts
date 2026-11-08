@@ -37,10 +37,16 @@ describe('US183 — M2 performance baseline and release readiness', () => {
     expect(practical.maxConsumerLagMs).toBeLessThan(M2_BASELINE_LIMITS.practicalMaxConsumerLagMs);
   }, 60_000);
 
-  it('has no M2 architecture blockers and records minor pre-M3 recommendations', () => {
+  it('has no M2 architecture blockers after ledger history gained a cursor page', () => {
     const findings = evaluateM2ArchitectureConformance();
     expect(findings.filter((finding) => finding.severity === 'blocker')).toEqual([]);
-    expect(m2ConformanceVerdict(findings)).toBe('PASS WITH MINOR RECOMMENDATIONS');
+    expect(findings.filter((finding) => finding.severity === 'recommendation')).toEqual([]);
+    expect(m2ConformanceVerdict(findings)).toBe('PASS');
+    expect(
+      findings.some(
+        (finding) => finding.id === 'M2-ledger-query-pagination' && finding.severity === 'pass',
+      ),
+    ).toBe(true);
     expect(
       findings.some(
         (finding) => finding.id === 'ADR-015-ledger-append-only' && finding.severity === 'pass',

@@ -26,7 +26,12 @@ import {
   type LedgerTransaction,
 } from './domain/ledger-transaction';
 import { summarizeLedger, type LedgerAccountSummary } from './domain/ledger-account-summary';
-import { LEDGER_REPOSITORY, type LedgerRepository } from './persistence/ledger.repository';
+import {
+  LEDGER_REPOSITORY,
+  type LedgerAccountPage,
+  type LedgerAccountPageQuery,
+  type LedgerRepository,
+} from './persistence/ledger.repository';
 
 export type OpenPaperAccountLedgerCommand = Readonly<{
   workspaceId: string;
@@ -157,6 +162,10 @@ export class LedgerService {
 
   listByAccount(workspaceId: string, paperAccountId: string): Promise<LedgerTransaction[]> {
     return this.ledger.listByAccount(workspaceId, paperAccountId);
+  }
+
+  listByAccountPage(query: LedgerAccountPageQuery): Promise<LedgerAccountPage> {
+    return this.ledger.listByAccountPage(query);
   }
 
   async summarizeAccount(

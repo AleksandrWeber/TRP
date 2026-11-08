@@ -10,7 +10,11 @@ import {
   type LedgerEntry,
   type LedgerTransaction,
 } from '../domain/ledger-transaction';
-import type { LedgerRepository } from './ledger.repository';
+import type {
+  LedgerAccountPage,
+  LedgerAccountPageQuery,
+  LedgerRepository,
+} from './ledger.repository';
 
 type LedgerRow = Prisma.LedgerTransactionGetPayload<{ include: { entries: true } }>;
 
@@ -84,6 +88,36 @@ export class PrismaLedgerRepository implements LedgerRepository {
       orderBy: [{ occurredAt: 'asc' }, { id: 'asc' }],
     });
     return rows.map(toDomain);
+  }
+
+  async listByAccountPage(query: LedgerAccountPageQuery): Promise<LedgerAccountPage> {
+    const after = query.after;
+    const rows = await this.prisma.ledgerTransaction.findMany({
+      where: {
+        workspaceId: query.workspaceId,
+        paperAccountId: query.paperAccountId,
+        ...(after
+          ? {
+              OR: [
+                { occurredAt: { gt: new Date(after.occurredAt) } },
+                {
+                  occurredAt: new Date(after.occurredAt),
+                  id: { gt: after.id },
+                },
+              ],
+            }
+          : {}),
+      },
+      include: { entries: { orderBy: { line: 'asc' } } },
+      orderBy: [{ occurredAt: 'asc' }, { id: 'asc' }],
+      take: query.limit + 1,
+    });
+    const hasMore = rows.length > query.limit;
+    const pageRows = hasMore ? rows.slice(0, query.limit) : rows;
+    return {
+      transactions: pageRows.map(toDomain),
+      hasMore,
+    };
   }
 }
 
