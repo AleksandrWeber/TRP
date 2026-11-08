@@ -105,16 +105,24 @@ export function evaluateM1ArchitectureConformance(): ReadonlyArray<ConformanceFi
   });
 
   const moduleSrc = readFileSync(join(EVENT_PROCESSING_ROOT, 'event-processing.module.ts'), 'utf8');
-  const runtimeInMemory = /InMemoryOutboxRepository/.test(moduleSrc);
-  findings.push({
-    id: 'TD-035-runtime-wiring',
-    severity: 'recommendation',
-    detail: runtimeInMemory
-      ? 'EventProcessingModule still wires InMemory Outbox/Inbox by default (TD-035); Prisma drivers validated in US149.'
-      : 'EventProcessingModule uses durable Prisma Outbox/Inbox at runtime.',
-  });
+  findings.push(td035RuntimeWiringFinding(moduleSrc));
 
   return Object.freeze(findings);
+}
+
+const TD035_PRISMA_RUNTIME_DETAIL =
+  'EventProcessingModule uses durable Prisma Outbox/Inbox at runtime.';
+const TD035_IN_MEMORY_RUNTIME_DETAIL =
+  'EventProcessingModule still wires InMemory Outbox/Inbox by default (TD-035); Prisma drivers validated in US149.';
+
+/** TD-035 severity follows whether the runtime module still names the in-memory outbox. */
+export function td035RuntimeWiringFinding(moduleSource: string): ConformanceFinding {
+  const runtimeInMemory = /InMemoryOutboxRepository/.test(moduleSource);
+  return {
+    id: 'TD-035-runtime-wiring',
+    severity: runtimeInMemory ? 'recommendation' : 'pass',
+    detail: runtimeInMemory ? TD035_IN_MEMORY_RUNTIME_DETAIL : TD035_PRISMA_RUNTIME_DETAIL,
+  };
 }
 
 export function conformanceVerdict(

@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
   conformanceVerdict,
   evaluateM1ArchitectureConformance,
+  td035RuntimeWiringFinding,
 } from './m1-architecture-conformance';
 import {
   M1_BASELINE_LIMITS,
@@ -61,5 +62,26 @@ describe('US152 — M1 performance baseline and Mini Validation exit', () => {
     expect(
       findings.some((row) => row.id === 'M1-query-sse-surface' && row.severity === 'pass'),
     ).toBe(true);
+  });
+
+  it('reports TD-035 runtime wiring as pass for the Prisma module and recommendation if in-memory is wired', () => {
+    const findings = evaluateM1ArchitectureConformance();
+    const wiring = findings.find((row) => row.id === 'TD-035-runtime-wiring');
+    expect(wiring).toEqual({
+      id: 'TD-035-runtime-wiring',
+      severity: 'pass',
+      detail: 'EventProcessingModule uses durable Prisma Outbox/Inbox at runtime.',
+    });
+
+    expect(
+      td035RuntimeWiringFinding(
+        'providers: [new InMemoryOutboxRepository(), new InMemoryInboxRepository()]',
+      ),
+    ).toEqual({
+      id: 'TD-035-runtime-wiring',
+      severity: 'recommendation',
+      detail:
+        'EventProcessingModule still wires InMemory Outbox/Inbox by default (TD-035); Prisma drivers validated in US149.',
+    });
   });
 });
