@@ -63,7 +63,7 @@ Related:
 | TD-038    | Live Market Nest Outbox Wiring                        | Resolved (M2)      | US155 switched `EventProcessingModule` to Prisma Outbox/Inbox/ConsumerCheckpoint providers and lifecycle polling without changing ADR-013 contracts.                                                                                                                                                                      | Completed in RC-16 M2                       |
 | TD-039    | Exact Decimal Mark Source                             | Resolved (M3 gate) | Canonical `MarkPriceEvent.price` / `MarkPriceDraft.price` are exact decimal text. Binance bookTicker midpoints are computed with `FinancialDecimal` (no `Number` authority). Valuation consumes the decimal string without accepting JavaScript numbers as the mark source.                                               | Completed 2026-07-29                        |
 | TD-040    | Position Fill Application Ordering                    | Resolved (M3 gate) | Explicit per-Position Fill application ordinals persist in `position_fill_applications` under the Position lock. Rebuild prefers that durable order over Fill timestamps so interleaved delivery remains reproducible after restart/replay; unique `fill_id` blocks duplicate reordering.                                 | Completed 2026-07-29                        |
-| TD-041    | Ledger History Pagination                             | Planned            | US178 Ledger history is workspace/account scoped and read-only but currently unbounded. Add stable cursor pagination before RC-17 E19 operational history grows.                                                                                                                                                          | RC-17 E19                                   |
+| TD-041    | Ledger History Pagination                             | Resolved (US178)   | Closed by Option B (PO): HTTP pages default to 50 and cap at 100; a cursor without limit continues at 50. Summary, portfolio refresh, and rebuild stay full-history. See td-041-us178-ledger-cursor-pagination-option-b-decision.md. Commit f1abf629dfed055ef3fc1e510a2d4335a2a7c754.                                     | Completed 2026-11-08                        |
 | TD-042    | Durable Consumer Fan-out Progress                     | Resolved (M3 gate) | Outbox stores durable per-consumer delivery acknowledgements in `outbox_consumer_deliveries`. The dispatcher skips already-acked consumers on retry/restart, records ack after successful handle, and only then marks the Outbox row published — preserving at-least-once transport with idempotent fan-out progress.     | Completed 2026-07-29                        |
 | TD-043    | Playwright regression suite                           | Deferred           | RC-17 deliberately skipped introducing Playwright. CANONICAL stack intent still lists Playwright. Shipped product tests are Vitest. Add browser regression coverage (Login, Lab, Strategies, Campaign, Knowledge, Production, AI) in a later RC once tooling is approved.                                                 | Future RC (E2E tooling)                     |
 | TD-044    | Gradual web Error Stack                               | Deferred           | RC-17 mapped API errors in existing `shared/api` / research-control clients (`mapHttpError`). A fuller shared ErrorAlert / useApiError stack remains optional and should not block production readiness.                                                                                                                  | Future RC (UX hardening)                    |
@@ -151,6 +151,7 @@ This item is not a Wave 2 blocker and must not delay Wave 2.
 - TD-039 — Exact Decimal Mark Source (canonical MarkPriceEvent/Draft decimal text + book mid)
 - TD-040 — Position Fill Application Ordering (durable per-Position ordinals + rebuild)
 - TD-042 — Durable Consumer Fan-out Progress (per-consumer Outbox acknowledgement)
+- TD-041 — Ledger History Pagination (HTTP Option B: default 50, max 100; internal full history unchanged; f1abf62)
 
 ### Planned
 
@@ -159,7 +160,6 @@ This item is not a Wave 2 blocker and must not delay Wave 2.
 - TD-028 — Execution Model (M2 US159–US178 complete; M3–M6 runtime work remains)
 - TD-029 — Advanced Performance Metrics (Sharpe / Sortino / Calmar)
 - TD-036 — Runtime Recovery and Reconciliation (RC-17 baselined; residuals below)
-- TD-041 — Ledger History Pagination
 
 ### Future
 
@@ -212,7 +212,6 @@ Evidence: [`e17-stage-4-technical-review.md`](./e17-stage-4-technical-review.md)
 - TD-028 — continue the canonical execution model through RC-17 ops/safety.
 - TD-032 — extend semantic/operational metadata validation to RC-17 artifacts.
 - TD-036 — implement runtime recovery and reconciliation (**RC-17 E17**).
-- TD-041 — add stable Ledger-history pagination before E19 operational growth.
 
 ### Backlog only
 
@@ -228,16 +227,16 @@ explicit. No additional hidden blocker was found.
 
 ## Future milestones (possible RCs)
 
-| Possible RC   | Theme                              | Candidate debt                                         |
-| ------------- | ---------------------------------- | ------------------------------------------------------ |
-| RC-13+        | Persistence / durability           | TD-001, TD-002, TD-003                                 |
-| RC-14+        | Legacy migration                   | TD-004, TD-011, TD-012, TD-013                         |
-| RC-15+        | Knowledge intelligence             | TD-007                                                 |
-| RC-16         | Paper runtime baseline (delivered) | TD-034…TD-042 (gates resolved where marked)            |
-| RC-17         | Production readiness / ops runtime | TD-002, TD-005, TD-006, TD-028, TD-032, TD-036, TD-041 |
-| RC-16+        | Simulation analytics & scale       | TD-029, TD-030, TD-033                                 |
-| Future        | Reporting                          | TD-031, TD-043, TD-044                                 |
-| Opportunistic | Hygiene                            | TD-008, TD-009, TD-010                                 |
+| Possible RC   | Theme                              | Candidate debt                                 |
+| ------------- | ---------------------------------- | ---------------------------------------------- |
+| RC-13+        | Persistence / durability           | TD-001, TD-002, TD-003                         |
+| RC-14+        | Legacy migration                   | TD-004, TD-011, TD-012, TD-013                 |
+| RC-15+        | Knowledge intelligence             | TD-007                                         |
+| RC-16         | Paper runtime baseline (delivered) | TD-034…TD-042 (gates resolved where marked)    |
+| RC-17         | Production readiness / ops runtime | TD-002, TD-005, TD-006, TD-028, TD-032, TD-036 |
+| RC-16+        | Simulation analytics & scale       | TD-029, TD-030, TD-033                         |
+| Future        | Reporting                          | TD-031, TD-043, TD-044                         |
+| Opportunistic | Hygiene                            | TD-008, TD-009, TD-010                         |
 
 Exact RC numbering follows [`release-history.md`](./release-history.md) and
 [`roadmap.md`](./roadmap.md).
