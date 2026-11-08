@@ -35,11 +35,11 @@ This review does not grant implementation authorization or Stage 4 execution aut
 
 | Record                                                     | SHA-256                                                            | Result                                                                 |
 | ---------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------- |
-| Entry research                                             | `58de7535146b6a5f11eb6c094b0a437640f19f52d48ba8c6eb55fb9fecc6e9ad` | **RESEARCHED / NOT SELECTED**                                          |
-| Cohort research                                            | `4fa5ff9e089bf0279bf2557f2833ab46a20f3e9b5330e239a6e2f53bff048580` | **RESEARCHED / NOT SELECTED**                                          |
-| Environment research                                       | `c7fead1faa98814a849f9174d0adc95ced63fcb5908fb15a3207f8b9db48a634` | **RESEARCHED / NOT SELECTED**                                          |
-| Design `D-CONN04-FULL-D-IA-S4-INVOCATION-READINESS-DESIGN` | `6df9b53c7d8a4981e7379f6b9e778fd9d8b68e3dbef3973d27319efa3471f4f9` | **PROPOSED / NOT APPROVED.** Recommendation R0 marked **NOT SELECTED** |
-| Readiness `ASMT-CONN04-S4-INVOKE-READY-2026-11-08`         | `80a38465d786c496ac603dc983cb12fc1d4ef374884eb44cf899abfedc57786a` | **BLOCKED.** Cites the four hashes above                               |
+| Entry research                                             | `60514cd130782e17ce12591a21bcc0875b748a6273f28ac023215a9fc675fc11` | **RESEARCHED / NOT SELECTED**                                          |
+| Cohort research                                            | `e48fcee575512446ecce3120bb8f02a7673612de952c6dc2e91a3e7df4b306fc` | **RESEARCHED / NOT SELECTED**                                          |
+| Environment research                                       | `0e3aa36f625d161e497646bc7b0f769a7671c9e754a3244deea6ee3fc4f7e3f7` | **RESEARCHED / NOT SELECTED**                                          |
+| Design `D-CONN04-FULL-D-IA-S4-INVOCATION-READINESS-DESIGN` | `94db0496cefba6dcec7419fe74f17deb39ff7b00c954f40ce8db8b007c7803ab` | **PROPOSED / NOT APPROVED.** Recommendation R0 marked **NOT SELECTED** |
+| Readiness `ASMT-CONN04-S4-INVOKE-READY-2026-11-08`         | `68aa6dbfca22ca44e1d86915d9009f645b6c097da8725c04323e167a4d0c6c7a` | **BLOCKED.** Cites the four hashes above                               |
 | Decision Register worktree                                 | `6657b3dac95f19f5a38c81e1230f6b3cfee55932e6f98aa29717b15c381f6144` | **Unchanged by this task.** No new row                                 |
 
 The readiness assessment names the same four hashes this review recomputed. It does not cite this review, because this review was written after the assessment.

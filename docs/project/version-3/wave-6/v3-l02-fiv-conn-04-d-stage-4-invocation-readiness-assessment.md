@@ -37,10 +37,10 @@ Research does not grant implementation authorization or Stage 4 execution author
 
 | Record                                                     | SHA-256                                                            | Status                        |
 | ---------------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------- |
-| Entry research `RPT-CONN04-S4-INVOKE-ENTRY-2026-11-08`     | `58de7535146b6a5f11eb6c094b0a437640f19f52d48ba8c6eb55fb9fecc6e9ad` | **RESEARCHED / NOT SELECTED** |
-| Cohort research `RPT-CONN04-S4-INVOKE-COHORT-2026-11-08`   | `4fa5ff9e089bf0279bf2557f2833ab46a20f3e9b5330e239a6e2f53bff048580` | **RESEARCHED / NOT SELECTED** |
-| Environment research `RPT-CONN04-S4-INVOKE-ENV-2026-11-08` | `c7fead1faa98814a849f9174d0adc95ced63fcb5908fb15a3207f8b9db48a634` | **RESEARCHED / NOT SELECTED** |
-| Design `D-CONN04-FULL-D-IA-S4-INVOCATION-READINESS-DESIGN` | `6df9b53c7d8a4981e7379f6b9e778fd9d8b68e3dbef3973d27319efa3471f4f9` | **PROPOSED / NOT APPROVED**   |
+| Entry research `RPT-CONN04-S4-INVOKE-ENTRY-2026-11-08`     | `60514cd130782e17ce12591a21bcc0875b748a6273f28ac023215a9fc675fc11` | **RESEARCHED / NOT SELECTED** |
+| Cohort research `RPT-CONN04-S4-INVOKE-COHORT-2026-11-08`   | `e48fcee575512446ecce3120bb8f02a7673612de952c6dc2e91a3e7df4b306fc` | **RESEARCHED / NOT SELECTED** |
+| Environment research `RPT-CONN04-S4-INVOKE-ENV-2026-11-08` | `0e3aa36f625d161e497646bc7b0f769a7671c9e754a3244deea6ee3fc4f7e3f7` | **RESEARCHED / NOT SELECTED** |
+| Design `D-CONN04-FULL-D-IA-S4-INVOCATION-READINESS-DESIGN` | `94db0496cefba6dcec7419fe74f17deb39ff7b00c954f40ce8db8b007c7803ab` | **PROPOSED / NOT APPROVED**   |
 | M1 acceptance decision                                     | `d88c5e02c83b4abe9203511eb14264ef33ad72a1d7320ec031beb12070fde30a` | **ACCEPTED — TWO FILES ONLY** |
 | Caller acceptance decision                                 | `79a0bef1c5024a79ea56baa77e5d7f72094d3ea11b79e29fd809ceffff30d6e2` | **ACCEPTED — TWO FILES ONLY** |
 | Implementation acceptance act                              | `94006f48e02406325317476885ddcf32a6aafb0d74794838cf29f12ba281e57f` | **ACCEPTED — OPTION A**       |
