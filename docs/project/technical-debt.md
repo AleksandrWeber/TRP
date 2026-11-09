@@ -1,6 +1,6 @@
 # TRP — Technical Debt Register
 
-Last updated: 2026-08-17 (TD-W2-001 added from W2-S01-c validation; Version 2 residuals TD-045…TD-052 remain)
+Last updated: 2026-11-09 (TD-009 closed — pipeline module dependency cycle removed)
 
 Living register of known technical debt. Reviewed at RC-15.1 closeout after Validation Sprint V1 (VS001–VS004); TD-028…TD-033 added from Validation Sprint findings. TD-035 and TD-038 resolved by M2 US155 PostgreSQL runtime wiring. Version 2 Product Completion residuals (formerly duplicated in Audit v2) are indexed here. Wave 2 flaky-test residual TD-W2-001 is recorded below; it is not a Wave 2 blocker.
 
@@ -46,7 +46,7 @@ Related:
 | TD-006    | Production authorization/workspace scope              | Partial (M2)       | US158 adds Trader role, CommandAuthorizationService (Trader/Admin), and WorkspaceAccessService membership checks for trading commands. The retired Stage-1 `production/` execution path no longer bypasses that gate; remaining authorization migration is limited to later runtime surfaces.                             | RC-16 safety foundation                     |
 | TD-007    | No Vector Search                                      | Deferred           | Knowledge search is deterministic in-memory text / tag / experimentId filters only                                                                                                                                                                                                                                        | Possible RC-15+ (Knowledge intelligence)    |
 | TD-008    | Prisma `any` in legacy tests                          | Closed             | Was: RC-15.1 scoped `@typescript-eslint/no-explicit-any` off for `**/*.spec.ts`, `**/*.test.ts`, and `**/validation/**`; production code stayed strict. Closed: explicit `any` went from 36 to 0 across `knowledge.service.integration.spec.ts`, `knowledge.version-consistency.spec.ts`, `experiments.service.spec.ts`, `strategy-optimization.service.spec.ts`, and `technical-indicators-error.filter.spec.ts`. `@typescript-eslint/no-explicit-any` is restored as error for specs, tests, and validation. Those five specs passed 43 tests. Negative optimization cases and their assertions were preserved. Production behavior was not changed. `tsc --noEmit` is not globally green: the known errors remain in two untracked FIV-CONN-04-D stage-4 specs, `fiv-conn-04-d-stage-4-consumer-loop.spec.ts` and `fiv-conn-04-d-stage-4-explicit-caller.spec.ts`. Commit 9a89d794c378843f923f12c7c580cc341f77e57a. | Completed 2026-11-09                        |
-| TD-009    | `forwardRef` for Pipeline module wiring               | Accepted           | `KnowledgeModule` uses `forwardRef(() => PipelineModule)` to break Nest cycle `Knowledge → Pipeline → Experiments → Knowledge`                                                                                                                                                                                            | Planned (optional module-boundary cleanup)  |
+| TD-009    | `forwardRef` for Pipeline module wiring               | Closed             | Was: `KnowledgeModule` used `forwardRef(() => PipelineModule)` and `PipelineModule` used `forwardRef(() => ExperimentsModule)` for the Nest cycle `Knowledge → Pipeline → Experiments → Knowledge`. Closed: both `forwardRef` calls are removed. `KnowledgeModule` keeps a direct `PipelineModule` import for `PipelineExecutor`, `PipelineTemplateService`, and `PipelineDomainService`. `PipelineModule` does not import Experiments. Campaign registration moved to `PipelineStepRegistrationModule`, which imports Pipeline, Knowledge, Experiments, and Campaign Persistence in one direction. `registerKnowledgePipelineSteps` stays on `KnowledgeModule.onModuleInit` behind `knowledge.prepare`. `registerCampaignPipelineSteps` stays behind `campaign.prepare` via `registerPipelineCampaignSteps`, in the same order: `campaign.prepare`, `campaign.execute`, `campaign.aggregate`, `campaign.build-report`, `campaign.persist`. Focused verification passed 34 tests across `pipeline.module.di.spec.ts`, `knowledge-steps.spec.ts`, `campaign-steps.spec.ts`, `pipeline-executor.spec.ts`, and `pipeline-registry.spec.ts`. ESLint and Prettier passed for the changed TypeScript files. `tsc --noEmit` is not globally green: the known errors remain in two untracked FIV-CONN-04-D stage-4 specs, `fiv-conn-04-d-stage-4-consumer-loop.spec.ts` and `fiv-conn-04-d-stage-4-explicit-caller.spec.ts`. Commit 5e8793b5986789a120ae57d777195e917acc51de. | Completed 2026-11-09                        |
 | TD-010    | Extract `InsightGenerationService`                    | Closed             | Was: deterministic Insight draft generation lived in pipeline step rule helpers (`insight-extraction.rules`, cross-analysis persist mapping). Closed: `extractInsightDrafts` moved into `InsightGenerationService.extractInsightDrafts`. Cross-campaign `toInsightInput` moved into a separate `InsightGenerationService.toInsightInput`. Both mapping algorithms remain behaviorally distinct. `ExtractInsightsStep` and `PersistCrossAnalysisStep` delegate mapping to the service. Persistence through `InsightDomainService.create` remains unchanged. Module/provider wiring completed without a new module cycle. 34 relevant tests passed; ESLint and Prettier passed. `tsc --noEmit` is not globally green: the known errors remain in two untracked FIV-CONN-04-D stage-4 specs, `fiv-conn-04-d-stage-4-consumer-loop.spec.ts` and `fiv-conn-04-d-stage-4-explicit-caller.spec.ts`. Commit 4a3df43186808bcbb21acf4c0086a96175bbdf4f. | Completed 2026-11-09                        |
 | TD-011    | Legacy `CampaignReport.recommendations`               | Accepted Legacy    | Pre-RC-13 string[] guidance on Campaign Report; overlaps Recommendation domain. **Do not expand.** Migration planned in RC-14+.                                                                                                                                                                                           | RC-14+                                      |
 | TD-012    | Legacy `KnowledgeEntry.insights` string[]             | Accepted Legacy    | Free-text bullets (often copied from campaign recommendations); name collides with Insight domain. **Do not expand.** Migration planned in RC-14+.                                                                                                                                                                        | RC-14+                                      |
@@ -107,7 +107,6 @@ This item is not a Wave 2 blocker and must not delay Wave 2.
 
 - TD-001 — InMemory Repository
 - TD-003 — PipelineRun not persisted
-- TD-009 — `forwardRef` for Pipeline module wiring
 
 ### Accepted Legacy
 
@@ -152,6 +151,10 @@ This item is not a Wave 2 blocker and must not delay Wave 2.
 - TD-W2-001 — Market State wiring test isolated from Prisma connection startup; focused run and five repeats passed (2058f56)
 - TD-008 — Explicit `any` removed from five specs (36 → 0); `@typescript-eslint/no-explicit-any` restored as error for specs, tests, and validation; 43 tests passed; negative optimization cases and assertions preserved; no production behavior change. `tsc --noEmit` is not globally green: two untracked FIV-CONN-04-D stage-4 specs still fail (9a89d79)
 - TD-010 — Insight mapping extracted into `InsightGenerationService`; `extractInsightDrafts` and `toInsightInput` remain separate; both pipeline steps delegate; `InsightDomainService.create` unchanged; 34 tests passed. `tsc --noEmit` is not globally green: two untracked FIV-CONN-04-D stage-4 specs still fail (4a3df43)
+
+### Closed
+
+- TD-009 — Pipeline module cycle removed. `KnowledgeModule` imports `PipelineModule` directly. `PipelineStepRegistrationModule` registers campaign steps behind `campaign.prepare`; knowledge registration stays behind `knowledge.prepare`. 34 tests passed across 5 files. ESLint and Prettier passed. `tsc --noEmit` is not globally green: two untracked FIV-CONN-04-D stage-4 specs still fail (5e8793b)
 
 ### Planned
 
@@ -234,7 +237,7 @@ explicit. No additional hidden blocker was found.
 | RC-17         | Production readiness / ops runtime | TD-002, TD-005, TD-006, TD-028, TD-032, TD-036 |
 | RC-16+        | Simulation analytics & scale       | TD-030, TD-033                                 |
 | Future        | Reporting                          | TD-031, TD-043, TD-044                         |
-| Opportunistic | Hygiene                            | TD-009                                         |
+| Opportunistic | Hygiene                            | TD-009 (Closed)                                |
 
 Exact RC numbering follows [`release-history.md`](./release-history.md) and
 [`roadmap.md`](./roadmap.md).
