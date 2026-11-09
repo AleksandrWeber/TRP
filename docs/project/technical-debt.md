@@ -35,6 +35,7 @@ Related:
 
 ## Current debt
 
+<!-- prettier-ignore -->
 | ID        | Item                                                  | Status             | Notes                                                                                                                                                                                                                                                                                                                     | Future milestone                            |
 | --------- | ----------------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
 | TD-001    | InMemory Repository                                   | Accepted           | Campaign / Knowledge / Experiment domain stores use in-memory Maps; no durable Repository abstraction yet                                                                                                                                                                                                                 | Possible RC-13+ (Persistence hardening)     |
@@ -51,7 +52,7 @@ Related:
 | TD-012    | Legacy `KnowledgeEntry.insights` string[]             | Accepted Legacy    | Free-text bullets (often copied from campaign recommendations); name collides with Insight domain. **Do not expand.** Migration planned in RC-14+.                                                                                                                                                                        | RC-14+                                      |
 | TD-013    | Legacy `ResearchAnalysis` parallel stack              | Accepted Legacy    | Deterministic `ResearchAnalysis` / `POST /campaigns/analyze` duplicates Insight / Recommendation / ResearchReport concerns. **Do not expand.** Migration planned in RC-14+.                                                                                                                                               | RC-14+                                      |
 | TD-028    | Execution Model                                       | In progress        | US159–US178 + M3 US221–US223 complete the durable canonical Order/Risk/Execution/Fill/accounting path including strategy origin. Remaining work is continuous safety, recovery, and operations under **RC-17**.                                                                                                           | RC-17 (ADR-012)                             |
-| TD-029    | Advanced Performance Metrics                          | Planned            | `PerformanceReport` covers net profit, total return, CAGR, drawdown, volatility, win rate, profit factor; risk-adjusted metrics (Sharpe, Sortino, Calmar) not yet computed. (VS001/VS004)                                                                                                                                 | RC-16+ (Performance analytics)              |
+| TD-029    | Advanced Performance Metrics                          | Resolved           | Was: research `PerformanceReport` had net profit, total return, CAGR, drawdown, volatility, win rate, and profit factor; Sharpe, Sortino, and Calmar were not computed (VS001/VS004). Resolved on the research/backtest report only. Adjacent simple returns use chronological snapshots. Sharpe is the mean divided by the sample standard deviation (n-1), risk-free rate 0, not annualized. Sortino target is 0; downside deviation is the RMS of min(r, 0) over every valid return. Calmar is the existing CAGR divided by the maximum fractional drawdown, not currency or percent drawdown. Unavailable results are null, not 0. Paper Trading Sharpe, US202 execution-quality analytics, and TD-030 weights are unchanged. Analyzer, performance-module, ESLint, and Prettier checks passed. `tsc --noEmit` still fails only in pre-existing untracked `fiv-conn-04-d-stage-4-consumer-loop.spec.ts` and `fiv-conn-04-d-stage-4-explicit-caller.spec.ts`. Commit f9263b3c900d36fbccabc20d64ce49f66187a817. | Completed 2026-11-09                        |
 | TD-030    | Scoring Strategy                                      | Deferred           | Strategy Comparison uses a fixed weighted-score model with hardcoded weights; deterministic but not configurable/pluggable. (VS001/VS003)                                                                                                                                                                                 | RC-16+ (Comparison configurability)         |
 | TD-031    | Report Exporters                                      | Future             | `SimulationReport` is an immutable in-memory / JSON artifact; no PDF / CSV / HTML exporters. (VS004)                                                                                                                                                                                                                      | Future (Reporting)                          |
 | TD-032    | Operational Metadata Isolation                        | Mitigated (M2)     | ADR-013/014/018 semantic vs operational split is enforced in market events and in M2 Fill, valuation, Portfolio source-hash, and deterministic rebuild inputs. Continue validation across RC-17 runtime artifacts.                                                                                                        | RC-17                                       |
@@ -152,13 +153,13 @@ This item is not a Wave 2 blocker and must not delay Wave 2.
 - TD-040 — Position Fill Application Ordering (durable per-Position ordinals + rebuild)
 - TD-042 — Durable Consumer Fan-out Progress (per-consumer Outbox acknowledgement)
 - TD-041 — Ledger History Pagination (HTTP Option B: default 50, max 100; internal full history unchanged; f1abf62)
+- TD-029 — Advanced Performance Metrics (research Sharpe, Sortino, and Calmar; null when unavailable; f9263b3)
 
 ### Planned
 
 - TD-002 — Durable runtime queue/scheduler ownership
 - TD-010 — Extract `InsightGenerationService` (shared deterministic Insight drafting)
 - TD-028 — Execution Model (M2 US159–US178 complete; M3–M6 runtime work remains)
-- TD-029 — Advanced Performance Metrics (Sharpe / Sortino / Calmar)
 - TD-036 — Runtime Recovery and Reconciliation (RC-17 baselined; residuals below)
 
 ### Future
@@ -217,8 +218,8 @@ Evidence: [`e17-stage-4-technical-review.md`](./e17-stage-4-technical-review.md)
 
 - TD-001, TD-003, TD-004, TD-007…TD-013 — legacy persistence, scheduling,
   intelligence, typing, layering, and duplicate-domain cleanup.
-- TD-029…TD-031 and TD-033 — analytics, scoring, exporters, and large-dataset
-  scalability.
+- TD-030, TD-031, and TD-033 — analytics, scoring, exporters, and large-dataset
+  scalability. TD-029 was in this 2026-07-30 backlog and is now resolved.
 
 TD-042 was exposed by this final audit; all identified release blockers are now
 explicit. No additional hidden blocker was found.
@@ -234,7 +235,7 @@ explicit. No additional hidden blocker was found.
 | RC-15+        | Knowledge intelligence             | TD-007                                         |
 | RC-16         | Paper runtime baseline (delivered) | TD-034…TD-042 (gates resolved where marked)    |
 | RC-17         | Production readiness / ops runtime | TD-002, TD-005, TD-006, TD-028, TD-032, TD-036 |
-| RC-16+        | Simulation analytics & scale       | TD-029, TD-030, TD-033                         |
+| RC-16+        | Simulation analytics & scale       | TD-030, TD-033                                 |
 | Future        | Reporting                          | TD-031, TD-043, TD-044                         |
 | Opportunistic | Hygiene                            | TD-008, TD-009, TD-010                         |
 
