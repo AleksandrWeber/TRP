@@ -1,4 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
+import type { OhlcvBar } from '@trp/research';
 
 vi.mock('@trp/research', () => ({
   DEFAULT_BACKTEST_CONFIG: {
@@ -49,11 +50,21 @@ vi.mock('@trp/research', () => ({
     datasetBarCount: 500,
     generatedAt: '2026-07-16T09:00:00.000Z',
   })),
-  resolveSlice: vi.fn(({ bars, startIndex, endIndex }: any) => ({
-    bars: bars.slice(startIndex, endIndex + 1),
-    ref: {},
-    sliceIdentity: 'slice-id',
-  })),
+  resolveSlice: vi.fn(
+    ({
+      bars,
+      startIndex,
+      endIndex,
+    }: {
+      bars: OhlcvBar[];
+      startIndex: number;
+      endIndex: number;
+    }) => ({
+      bars: bars.slice(startIndex, endIndex + 1),
+      ref: {},
+      sliceIdentity: 'slice-id',
+    }),
+  ),
   buildSliceIdentity: vi.fn(
     (datasetId: string, startIndex: number, endIndex: number, role: string) =>
       `${datasetId}:${startIndex}:${endIndex}:${role}`,
@@ -67,6 +78,9 @@ vi.mock('../../common/git', () => ({
 
 import { ExperimentsService } from './experiments.service';
 import { NoOpLogger } from '../../logging/noop.logger';
+import type { PrismaService } from '../../storage/prisma/prisma.module';
+import type { DatasetsService } from '../datasets/datasets.service';
+import type { KnowledgeService } from '../knowledge/knowledge.service';
 import {
   KNOWLEDGE_SCHEMA_VERSION,
   RESEARCH_ENGINE_VERSION,
@@ -82,10 +96,37 @@ function reportOf(experiment: { report: unknown }): ExperimentReportShape {
   return experiment.report as ExperimentReportShape;
 }
 
+type ExperimentCreateData = {
+  datasetId: string;
+  strategyId: string;
+  strategyVersion: string;
+  configHash: string;
+  gitCommit: string | null;
+  verdict: string;
+  report: {
+    researchEngineVersion: string;
+    validationVersion: string;
+  };
+  metrics: Record<string, unknown>;
+  validation: Record<string, unknown>;
+  trades: unknown[];
+};
+
 describe('ExperimentsService provenance', () => {
-  let prisma: any;
-  let datasetsService: any;
-  let knowledge: any;
+  let prisma: {
+    dataset: {
+      findUnique: ReturnType<typeof vi.fn>;
+    };
+    experiment: {
+      create: ReturnType<typeof vi.fn>;
+    };
+  };
+  let datasetsService: {
+    getBars: ReturnType<typeof vi.fn>;
+  };
+  let knowledge: {
+    recordFromExperiment: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(() => {
     prisma = {
@@ -97,7 +138,7 @@ describe('ExperimentsService provenance', () => {
         }),
       },
       experiment: {
-        create: vi.fn().mockImplementation(async ({ data }: any) => ({
+        create: vi.fn().mockImplementation(async ({ data }: { data: ExperimentCreateData }) => ({
           id: 'exp-1',
           ...data,
           dataset: {
@@ -122,21 +163,36 @@ describe('ExperimentsService provenance', () => {
   });
 
   it('stores researchEngineVersion in report', async () => {
-    const service = new ExperimentsService(prisma, datasetsService, knowledge, new NoOpLogger());
+    const service = new ExperimentsService(
+      prisma as unknown as PrismaService,
+      datasetsService as unknown as DatasetsService,
+      knowledge as unknown as KnowledgeService,
+      new NoOpLogger(),
+    );
     const experiment = await service.run('ds-1');
 
     expect(reportOf(experiment).researchEngineVersion).toBe(RESEARCH_ENGINE_VERSION);
   });
 
   it('stores validationVersion in report', async () => {
-    const service = new ExperimentsService(prisma, datasetsService, knowledge, new NoOpLogger());
+    const service = new ExperimentsService(
+      prisma as unknown as PrismaService,
+      datasetsService as unknown as DatasetsService,
+      knowledge as unknown as KnowledgeService,
+      new NoOpLogger(),
+    );
     const experiment = await service.run('ds-1');
 
     expect(reportOf(experiment).validationVersion).toBe(VALIDATION_VERSION);
   });
 
   it('report versions match the single version source', async () => {
-    const service = new ExperimentsService(prisma, datasetsService, knowledge, new NoOpLogger());
+    const service = new ExperimentsService(
+      prisma as unknown as PrismaService,
+      datasetsService as unknown as DatasetsService,
+      knowledge as unknown as KnowledgeService,
+      new NoOpLogger(),
+    );
     const experiment = await service.run('ds-1');
 
     expect(reportOf(experiment).researchEngineVersion).toBe(RESEARCH_ENGINE_VERSION);

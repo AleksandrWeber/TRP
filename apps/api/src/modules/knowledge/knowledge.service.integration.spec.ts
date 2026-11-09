@@ -1,13 +1,36 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { KnowledgeService } from './knowledge.service';
+import { EventBus } from '../events/event-bus.service';
 import { NoOpLogger } from '../../logging/noop.logger';
+import { PrismaService } from '../../storage/prisma/prisma.module';
 import { buildConfigIdentityKey, buildDedupeKey } from './knowledge.helpers';
+import { KnowledgeService } from './knowledge.service';
 
 type KnowledgeRow = {
   id: string;
   type: string;
   payload: Record<string, unknown>;
   createdAt: Date;
+  validationStatus?: string;
+};
+
+type JsonEqualsFilter = {
+  path?: readonly string[];
+  equals?: unknown;
+};
+
+type KnowledgeWhere = {
+  id?: string;
+  type?: string;
+  payload?: JsonEqualsFilter;
+};
+
+type KnowledgeOrder = {
+  createdAt?: 'asc' | 'desc';
+};
+
+type KnowledgeCreateData = {
+  type: string;
+  payload: Record<string, unknown>;
   validationStatus?: string;
 };
 
@@ -39,14 +62,14 @@ function makeHarness() {
 
   const prisma = {
     experiment: {
-      findUnique: vi.fn(async ({ where }: any) => {
+      findUnique: vi.fn(async ({ where }: { where: { id?: string } }) => {
         if (where.id === experiment.id) return experiment;
         return null;
       }),
       findMany: vi.fn(),
     },
     knowledgeEntry: {
-      create: vi.fn(async ({ data }: any) => {
+      create: vi.fn(async ({ data }: { data: KnowledgeCreateData }) => {
         const row: KnowledgeRow = {
           id: `k-${idCounter++}`,
           type: data.type,
@@ -57,57 +80,71 @@ function makeHarness() {
         knowledgeRows.push(row);
         return row;
       }),
-      findUnique: vi.fn(async ({ where }: any) => {
+      findUnique: vi.fn(async ({ where }: { where: KnowledgeWhere }) => {
         return knowledgeRows.find((row) => row.id === where.id) ?? null;
       }),
-      findFirst: vi.fn(async ({ where, orderBy }: any) => {
-        let rows = knowledgeRows.filter((row) => row.type === where.type);
+      findFirst: vi.fn(
+        async ({ where, orderBy }: { where: KnowledgeWhere; orderBy?: KnowledgeOrder }) => {
+          let rows = knowledgeRows.filter((row) => row.type === where.type);
+          const payloadFilter = where.payload;
 
-        if (where?.payload?.path?.[0] === 'dedupeKey') {
-          rows = rows.filter((row) => row.payload.dedupeKey === where.payload.equals);
-        }
+          if (payloadFilter?.path?.[0] === 'dedupeKey') {
+            rows = rows.filter((row) => row.payload.dedupeKey === payloadFilter.equals);
+          }
 
-        if (where?.payload?.path?.[0] === 'configIdentityKey') {
-          rows = rows.filter((row) => row.payload.configIdentityKey === where.payload.equals);
-        }
+          if (payloadFilter?.path?.[0] === 'configIdentityKey') {
+            rows = rows.filter((row) => row.payload.configIdentityKey === payloadFilter.equals);
+          }
 
-        rows.sort((a, b) =>
-          orderBy?.createdAt === 'desc'
-            ? b.createdAt.getTime() - a.createdAt.getTime()
-            : a.createdAt.getTime() - b.createdAt.getTime(),
-        );
+          rows.sort((a, b) =>
+            orderBy?.createdAt === 'desc'
+              ? b.createdAt.getTime() - a.createdAt.getTime()
+              : a.createdAt.getTime() - b.createdAt.getTime(),
+          );
 
-        return rows[0] ?? null;
-      }),
-      findMany: vi.fn(async ({ where, orderBy, select }: any) => {
-        let rows = knowledgeRows.filter((row) => row.type === where?.type);
+          return rows[0] ?? null;
+        },
+      ),
+      findMany: vi.fn(
+        async ({
+          where,
+          orderBy,
+          select,
+        }: {
+          where?: KnowledgeWhere;
+          orderBy?: KnowledgeOrder;
+          select?: { id?: boolean; createdAt?: boolean };
+        }) => {
+          let rows = knowledgeRows.filter((row) => row.type === where?.type);
+          const payloadFilter = where?.payload;
 
-        if (where?.payload?.path?.[0] === 'dedupeKey') {
-          rows = rows.filter((row) => row.payload.dedupeKey === where.payload.equals);
-        }
+          if (payloadFilter?.path?.[0] === 'dedupeKey') {
+            rows = rows.filter((row) => row.payload.dedupeKey === payloadFilter.equals);
+          }
 
-        if (where?.payload?.path?.[0] === 'supersedesKnowledgeId') {
-          rows = rows.filter((row) => row.payload.supersedesKnowledgeId === where.payload.equals);
-        }
+          if (payloadFilter?.path?.[0] === 'supersedesKnowledgeId') {
+            rows = rows.filter((row) => row.payload.supersedesKnowledgeId === payloadFilter.equals);
+          }
 
-        rows.sort((a, b) =>
-          orderBy?.createdAt === 'desc'
-            ? b.createdAt.getTime() - a.createdAt.getTime()
-            : a.createdAt.getTime() - b.createdAt.getTime(),
-        );
+          rows.sort((a, b) =>
+            orderBy?.createdAt === 'desc'
+              ? b.createdAt.getTime() - a.createdAt.getTime()
+              : a.createdAt.getTime() - b.createdAt.getTime(),
+          );
 
-        if (select) {
-          return rows.map((row) => ({ id: row.id, createdAt: row.createdAt }));
-        }
+          if (select) {
+            return rows.map((row) => ({ id: row.id, createdAt: row.createdAt }));
+          }
 
-        return rows;
-      }),
+          return rows;
+        },
+      ),
     },
-  } as any;
+  };
 
   const events = {
     publish: vi.fn(async () => undefined),
-  } as any;
+  };
 
   return { prisma, events, knowledgeRows, experiment };
 }
@@ -137,7 +174,11 @@ describe('KnowledgeService integration-style behavior', () => {
 
   it('creates one new research_outcome from an experiment', async () => {
     const { prisma, events, knowledgeRows } = makeHarness();
-    const service = new KnowledgeService(prisma, events, new NoOpLogger());
+    const service = new KnowledgeService(
+      prisma as unknown as PrismaService,
+      events as unknown as EventBus,
+      new NoOpLogger(),
+    );
 
     const result = await service.recordFromExperiment('exp-1', 'wf-1');
 
@@ -149,7 +190,11 @@ describe('KnowledgeService integration-style behavior', () => {
 
   it('returns duplicate and does not create a second record for the same resultIdentityKey', async () => {
     const { prisma, events, knowledgeRows, experiment } = makeHarness();
-    const service = new KnowledgeService(prisma, events, new NoOpLogger());
+    const service = new KnowledgeService(
+      prisma as unknown as PrismaService,
+      events as unknown as EventBus,
+      new NoOpLogger(),
+    );
 
     process.env.RESEARCH_ENGINE_VERSION = '1.0.3';
     process.env.VALIDATION_VERSION = '1.0.2';
@@ -189,7 +234,11 @@ describe('KnowledgeService integration-style behavior', () => {
 
   it('creates a new record with same configIdentityKey but new resultIdentityKey when engine version changes', async () => {
     const { prisma, events, knowledgeRows, experiment } = makeHarness();
-    const service = new KnowledgeService(prisma, events, new NoOpLogger());
+    const service = new KnowledgeService(
+      prisma as unknown as PrismaService,
+      events as unknown as EventBus,
+      new NoOpLogger(),
+    );
 
     const configIdentityKey = buildConfigIdentityKey(
       experiment.strategyId,
@@ -233,7 +282,11 @@ describe('KnowledgeService integration-style behavior', () => {
 
   it('getLineage resolves predecessor from payload and successor via reverse lookup without modifying existing entries', async () => {
     const { prisma, events, knowledgeRows } = makeHarness();
-    const service = new KnowledgeService(prisma, events, new NoOpLogger());
+    const service = new KnowledgeService(
+      prisma as unknown as PrismaService,
+      events as unknown as EventBus,
+      new NoOpLogger(),
+    );
 
     knowledgeRows.push(
       {

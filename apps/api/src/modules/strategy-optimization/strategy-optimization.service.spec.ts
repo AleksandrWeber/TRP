@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
 import { createExecutionPolicy, createExecutionRequest } from '../execution-simulator';
-import { createPerformanceAnalyticsConfiguration } from '../performance-analytics';
+import {
+  createPerformanceAnalyticsConfiguration,
+  type PerformanceReport,
+} from '../performance-analytics';
 
 import {
   createExecutionConfiguration,
@@ -25,6 +28,24 @@ import { createStrategyOptimizationMetrics } from './strategy-optimization-metri
 
 const NOW = 1_000;
 const ISO_NOW = '2026-07-20T12:00:00.000Z';
+
+function samplePerformanceReport(reportId = 'perf'): PerformanceReport {
+  return {
+    reportId,
+    generatedAt: ISO_NOW,
+    totalExecutions: 1,
+    filledExecutions: 1,
+    partialFilledExecutions: 0,
+    rejectedExecutions: 0,
+    totalCommission: 1,
+    averageCommission: 1,
+    averageExecutionPrice: 100,
+    averageSlippage: 0.5,
+    executionSuccessRate: 1,
+    averageExecutionDuration: 0,
+    diagnostics: { warnings: [], anomalies: [], validationMessages: [] },
+  };
+}
 const clock = Object.freeze({
   now: () => NOW,
   iso: () => ISO_NOW,
@@ -99,15 +120,17 @@ describe('US203 Strategy Optimization — core factories', () => {
   it('rejects invalid optimization criteria', () => {
     expect(() =>
       createOptimizationCriteria({
-        criterion: 'not-a-criterion' as any,
+        // @ts-expect-error unknown criterion is rejected by the runtime validator
+        criterion: 'not-a-criterion',
       }),
     ).toThrow('invalid optimization criteria');
   });
 
   it('requires weights for customWeightedScore', () => {
     expect(() =>
+      // @ts-expect-error customWeightedScore without weights is rejected at runtime
       createOptimizationCriteria({
-        criterion: 'customWeightedScore' as any,
+        criterion: 'customWeightedScore',
       }),
     ).toThrow('weights are required for customWeightedScore');
   });
@@ -190,7 +213,8 @@ describe('US203 Strategy Optimization — core factories', () => {
 
     expect(() =>
       createExecutionConfiguration({
-        executionRequests: null as any,
+        // @ts-expect-error null executionRequests are rejected by the runtime validator
+        executionRequests: null,
         executionPolicy,
       }),
     ).toThrow('executionRequests are required');
@@ -256,25 +280,7 @@ describe('US203 Strategy Optimization — core factories', () => {
       criteriaApplied: 'test',
     });
 
-    const performanceReport = {
-      reportId: 'perf-1',
-      generatedAt: ISO_NOW,
-      totalExecutions: 1,
-      filledExecutions: 1,
-      partialFilledExecutions: 0,
-      rejectedExecutions: 0,
-      totalCommission: 1,
-      averageCommission: 1,
-      averageExecutionPrice: 100,
-      averageSlippage: 0.5,
-      executionSuccessRate: 1,
-      averageExecutionDuration: 0,
-      diagnostics: {
-        warnings: [],
-        anomalies: [],
-        validationMessages: [],
-      },
-    } as any;
+    const performanceReport = samplePerformanceReport('perf-1');
 
     const result1 = createOptimizationResult({
       configurationId: 'cfg-1',
@@ -303,21 +309,7 @@ describe('US203 Strategy Optimization — core factories', () => {
   });
 
   it('rejects OptimizationResult empty configurationId', () => {
-    const performanceReport = {
-      reportId: 'perf',
-      generatedAt: ISO_NOW,
-      totalExecutions: 1,
-      filledExecutions: 1,
-      partialFilledExecutions: 0,
-      rejectedExecutions: 0,
-      totalCommission: 1,
-      averageCommission: 1,
-      averageExecutionPrice: 100,
-      averageSlippage: 0.5,
-      executionSuccessRate: 1,
-      averageExecutionDuration: 0,
-      diagnostics: { warnings: [], anomalies: [], validationMessages: [] },
-    } as any;
+    const performanceReport = samplePerformanceReport();
 
     expect(() =>
       createOptimizationResult({
@@ -341,25 +333,12 @@ describe('US203 Strategy Optimization — core factories', () => {
         reportId: 'report-1',
         bestConfiguration: createOptimizationResult({
           configurationId: 'cfg-1',
-          performanceReport: {
-            reportId: 'perf',
-            generatedAt: ISO_NOW,
-            totalExecutions: 1,
-            filledExecutions: 1,
-            partialFilledExecutions: 0,
-            rejectedExecutions: 0,
-            totalCommission: 1,
-            averageCommission: 1,
-            averageExecutionPrice: 100,
-            averageSlippage: 0.5,
-            executionSuccessRate: 1,
-            averageExecutionDuration: 0,
-            diagnostics: { warnings: [], anomalies: [], validationMessages: [] },
-          } as any,
+          performanceReport: samplePerformanceReport(),
           score: 1,
           rank: 1,
         }),
-        rankedResults: undefined as any,
+        // @ts-expect-error missing rankedResults are rejected by the runtime validator
+        rankedResults: undefined,
         diagnostics: fakeDiagnostics,
       }),
     ).toThrow('rankedResults are required');
@@ -369,21 +348,7 @@ describe('US203 Strategy Optimization — core factories', () => {
         reportId: 'report-1',
         bestConfiguration: createOptimizationResult({
           configurationId: 'cfg-1',
-          performanceReport: {
-            reportId: 'perf',
-            generatedAt: ISO_NOW,
-            totalExecutions: 1,
-            filledExecutions: 1,
-            partialFilledExecutions: 0,
-            rejectedExecutions: 0,
-            totalCommission: 1,
-            averageCommission: 1,
-            averageExecutionPrice: 100,
-            averageSlippage: 0.5,
-            executionSuccessRate: 1,
-            averageExecutionDuration: 0,
-            diagnostics: { warnings: [], anomalies: [], validationMessages: [] },
-          } as any,
+          performanceReport: samplePerformanceReport(),
           score: 1,
           rank: 1,
         }),
@@ -394,21 +359,7 @@ describe('US203 Strategy Optimization — core factories', () => {
 
     const result1 = createOptimizationResult({
       configurationId: 'cfg-1',
-      performanceReport: {
-        reportId: 'perf',
-        generatedAt: ISO_NOW,
-        totalExecutions: 1,
-        filledExecutions: 1,
-        partialFilledExecutions: 0,
-        rejectedExecutions: 0,
-        totalCommission: 1,
-        averageCommission: 1,
-        averageExecutionPrice: 100,
-        averageSlippage: 0.5,
-        executionSuccessRate: 1,
-        averageExecutionDuration: 0,
-        diagnostics: { warnings: [], anomalies: [], validationMessages: [] },
-      } as any,
+      performanceReport: samplePerformanceReport(),
       score: 1,
       rank: 1,
     });
@@ -430,21 +381,7 @@ describe('US203 Strategy Optimization — core factories', () => {
   });
 
   it('rejects OptimizationResult invalid score and rank', () => {
-    const performanceReport = {
-      reportId: 'perf',
-      generatedAt: ISO_NOW,
-      totalExecutions: 1,
-      filledExecutions: 1,
-      partialFilledExecutions: 0,
-      rejectedExecutions: 0,
-      totalCommission: 1,
-      averageCommission: 1,
-      averageExecutionPrice: 100,
-      averageSlippage: 0.5,
-      executionSuccessRate: 1,
-      averageExecutionDuration: 0,
-      diagnostics: { warnings: [], anomalies: [], validationMessages: [] },
-    } as any;
+    const performanceReport = samplePerformanceReport();
 
     expect(() =>
       createOptimizationResult({
@@ -466,21 +403,7 @@ describe('US203 Strategy Optimization — core factories', () => {
   });
 
   it('rejects OptimizationReport mismatched bestConfiguration and rankedResults', () => {
-    const performanceReport = {
-      reportId: 'perf',
-      generatedAt: ISO_NOW,
-      totalExecutions: 1,
-      filledExecutions: 1,
-      partialFilledExecutions: 0,
-      rejectedExecutions: 0,
-      totalCommission: 1,
-      averageCommission: 1,
-      averageExecutionPrice: 100,
-      averageSlippage: 0.5,
-      executionSuccessRate: 1,
-      averageExecutionDuration: 0,
-      diagnostics: { warnings: [], anomalies: [], validationMessages: [] },
-    } as any;
+    const performanceReport = samplePerformanceReport();
 
     const resultTop = createOptimizationResult({
       configurationId: 'cfg-1',
@@ -518,21 +441,7 @@ describe('US203 Strategy Optimization — core factories', () => {
       criteriaApplied: 'test',
     });
 
-    const performanceReport = {
-      reportId: 'perf',
-      generatedAt: ISO_NOW,
-      totalExecutions: 1,
-      filledExecutions: 1,
-      partialFilledExecutions: 0,
-      rejectedExecutions: 0,
-      totalCommission: 1,
-      averageCommission: 1,
-      averageExecutionPrice: 100,
-      averageSlippage: 0.5,
-      executionSuccessRate: 1,
-      averageExecutionDuration: 0,
-      diagnostics: { warnings: [], anomalies: [], validationMessages: [] },
-    } as any;
+    const performanceReport = samplePerformanceReport();
 
     const bestConfiguration = createOptimizationResult({
       configurationId: 'cfg-1',
@@ -554,7 +463,8 @@ describe('US203 Strategy Optimization — core factories', () => {
   it('rejects OptimizationDiagnostics invalid inputs', () => {
     expect(() =>
       createOptimizationDiagnostics({
-        warnings: undefined as any,
+        // @ts-expect-error missing warnings are rejected by the runtime validator
+        warnings: undefined,
         validationMessages: [],
         criteriaApplied: 'x',
       }),
@@ -571,7 +481,8 @@ describe('US203 Strategy Optimization — core factories', () => {
     expect(() =>
       createOptimizationDiagnostics({
         warnings: [],
-        validationMessages: undefined as any,
+        // @ts-expect-error missing validationMessages are rejected by the runtime validator
+        validationMessages: undefined,
         criteriaApplied: 'x',
       }),
     ).toThrow('validationMessages are required');
@@ -595,9 +506,7 @@ describe('US203 Strategy Optimization — core factories', () => {
 
   it('instantiates error types used by StrategyOptimizationService', () => {
     // ValidationError constructor branch coverage
-    expect(
-      () => new (StrategyOptimizationConfigurationFailedError as any)('cfg', 'cause'),
-    ).toBeDefined();
+    expect(() => new StrategyOptimizationConfigurationFailedError('cfg', 'cause')).toBeDefined();
     const validationError = new StrategyOptimizationValidationError('msg', { x: 1 });
     expect(validationError.code).toBe('STRATEGY_OPTIMIZATION_VALIDATION');
 
@@ -622,7 +531,7 @@ describe('US203 Strategy Optimization — core factories', () => {
     const criteria = createOptimizationCriteria({ criterion: 'lowestAverageSlippage' });
 
     expect(() =>
-      (createStrategyOptimizationRequest as any)({
+      createStrategyOptimizationRequest({
         optimizationId: 'opt',
         strategyConfigurations: [],
         optimizationCriteria: criteria,
@@ -631,8 +540,9 @@ describe('US203 Strategy Optimization — core factories', () => {
     ).toThrow('strategyConfigurations must not be empty');
 
     expect(() =>
-      (createStrategyOptimizationRequest as any)({
+      createStrategyOptimizationRequest({
         optimizationId: 'opt',
+        // @ts-expect-error null strategyConfigurations are rejected by the runtime validator
         strategyConfigurations: null,
         optimizationCriteria: criteria,
         executionConfiguration,
@@ -640,7 +550,7 @@ describe('US203 Strategy Optimization — core factories', () => {
     ).toThrow('strategyConfigurations are required');
 
     expect(() =>
-      (createStrategyOptimizationRequest as any)({
+      createStrategyOptimizationRequest({
         optimizationId: 'opt',
         strategyConfigurations: [
           createStrategyConfiguration({
@@ -649,12 +559,13 @@ describe('US203 Strategy Optimization — core factories', () => {
           }),
         ],
         optimizationCriteria: criteria,
+        // @ts-expect-error missing executionConfiguration is rejected by the runtime validator
         executionConfiguration: undefined,
       }),
     ).toThrow('executionConfiguration is required');
 
     expect(() =>
-      (createStrategyOptimizationRequest as any)({
+      createStrategyOptimizationRequest({
         optimizationId: '  ',
         strategyConfigurations: [
           createStrategyConfiguration({

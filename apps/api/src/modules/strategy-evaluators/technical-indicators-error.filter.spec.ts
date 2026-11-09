@@ -10,11 +10,33 @@ import {
 } from '../technical-indicators';
 import { TechnicalIndicatorsErrorFilter } from './technical-indicators-error.filter';
 
+type IndicatorErrorBody = {
+  statusCode: number;
+  code: string;
+  message: string;
+};
+
+function isIndicatorErrorBody(body: unknown): body is IndicatorErrorBody {
+  return (
+    typeof body === 'object' &&
+    body !== null &&
+    'statusCode' in body &&
+    typeof body.statusCode === 'number' &&
+    'code' in body &&
+    typeof body.code === 'string' &&
+    'message' in body &&
+    typeof body.message === 'string'
+  );
+}
+
 function runFilter(exception: TechnicalIndicatorsError) {
-  const sent: { status?: number; body?: any } = {};
+  const sent: { status?: number; body?: IndicatorErrorBody } = {};
   const response = {
     code: (status: number) => ({
       send: (body: unknown) => {
+        if (!isIndicatorErrorBody(body)) {
+          throw new Error('TechnicalIndicatorsErrorFilter sent an unexpected body');
+        }
         sent.status = status;
         sent.body = body;
         return body;
@@ -26,7 +48,10 @@ function runFilter(exception: TechnicalIndicatorsError) {
   } as unknown as ArgumentsHost;
 
   new TechnicalIndicatorsErrorFilter().catch(exception, host);
-  return sent;
+  if (sent.status === undefined || sent.body === undefined) {
+    throw new Error('TechnicalIndicatorsErrorFilter did not send a response');
+  }
+  return { status: sent.status, body: sent.body };
 }
 
 describe('TechnicalIndicatorsErrorFilter (US012)', () => {
