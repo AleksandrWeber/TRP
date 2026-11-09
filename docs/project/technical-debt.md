@@ -1,6 +1,6 @@
 # TRP — Technical Debt Register
 
-Last updated: 2026-11-09 (TD-005 closed — identity and credential persistence)
+Last updated: 2026-11-09 (TD-006 closed — workspace-owner membership)
 
 Living register of known technical debt. Reviewed at RC-15.1 closeout after Validation Sprint V1 (VS001–VS004); TD-028…TD-033 added from Validation Sprint findings. TD-035 and TD-038 resolved by M2 US155 PostgreSQL runtime wiring. Version 2 Product Completion residuals (formerly duplicated in Audit v2) are indexed here. Wave 2 flaky-test residual TD-W2-001 is recorded below; it is not a Wave 2 blocker.
 
@@ -43,7 +43,7 @@ Related:
 | TD-003    | PipelineRun not persisted                             | Accepted           | `PipelineRun` is in-memory only (`PipelineDomainService`); lost on process restart                                                                                                                                                                                                                                        | Possible RC-13+ (Pipeline observability)    |
 | TD-004    | No Scheduler                                          | Deferred           | Jobs are processed by `BackgroundJobRunner` when invoked; no cron / background scheduler                                                                                                                                                                                                                                  | Possible RC-14 (Background scheduling)      |
 | TD-005    | Authentication hardening                              | Closed             | Was: US158 rejects insecure production JWT fallbacks and short secrets at Auth module construction. Login remains passwordless/in-memory Identity for development; durable credential store remains later. Closed: Password login persists through Prisma Identity (`IdentityModule` / `PrismaUserRepository`) and `PrismaPasswordCredentialRepository` on `User.passwordHash`. `AuthModule` binds `PrismaAuthSessionRepository`, `PrismaLoginLockoutRepository`, and `PrismaPasswordResetRepository`. `shouldBootstrapDevelopmentIdentity` remains false, and the development bootstraps are not registered on the product modules. `resolveJwtSecret` still rejects the production JWT fallback and secrets shorter than 16 characters. `apps/api/src/validation/m2/pc18-identity-persistence.integration.spec.ts` passed 4/4 against PostgreSQL database `trp` (`pnpm exec vitest run src/validation/m2/pc18-identity-persistence.integration.spec.ts`, 1.77s): register then login after hydrate, lockout after restart, session list and revoke-others after restart, and password reset after restart. TD-006 authorization scope remains separate. | Completed 2026-11-09                        |
-| TD-006    | Production authorization/workspace scope              | Partial (M2)       | US158 adds Trader role, CommandAuthorizationService (Trader/Admin), and WorkspaceAccessService membership checks for trading commands. The retired Stage-1 `production/` execution path no longer bypasses that gate; remaining authorization migration is limited to later runtime surfaces.                             | RC-16 safety foundation                     |
+| TD-006    | Production authorization/workspace scope              | Closed             | Was: US158 adds Trader role, CommandAuthorizationService (Trader/Admin), and WorkspaceAccessService membership checks for trading commands. The retired Stage-1 `production/` execution path no longer bypasses that gate. V3-S02-b classified HTTP permission classes; that classification did not enforce workspace membership. Closed: workspace-owner membership is enforced before service calls, reads, evaluations, `getOrCreate`, and mutations on all 36 approved handlers (manual paper trading 4, paper engine 14, exchange adapter 6, portfolio 6, risk 6). The owner is allowed. A non-owner, including a non-owner Admin, is denied and the business service is not invoked. A missing header and an unknown workspace keep the existing `requireWorkspaceId` behavior. C5, C3, and C4 classifications and role restrictions are unchanged. Admin is not an implicit owner. The ten census controllers (Push, Teams, Discord, Slack, Email, Operational Continuity, OpenRouter AI request, AI session, AI request history, Security Audit timeline) stay membership-enforced and are recorded in the surface census. Live Trading and LiveCommand stay deny-all and out of scope. `pnpm exec vitest run` of the 15-file authorization suite passed 126 tests. ESLint passed on the changed files. `tsc --noEmit` reports no errors in the TD-006 files. The known errors remain in two untracked FIV-CONN-04-D stage-4 specs, `fiv-conn-04-d-stage-4-consumer-loop.spec.ts` and `fiv-conn-04-d-stage-4-explicit-caller.spec.ts`. Implementation e43430d77c01eed95ae1a24d3c463e414f0c0d30. Typecheck fix 32c80db7e0e7bef9d417c6f22fb84379b6b1167d.                             | Completed 2026-11-09                        |
 | TD-007    | No Vector Search                                      | Deferred           | Knowledge search is deterministic in-memory text / tag / experimentId filters only                                                                                                                                                                                                                                        | Possible RC-15+ (Knowledge intelligence)    |
 | TD-008    | Prisma `any` in legacy tests                          | Closed             | Was: RC-15.1 scoped `@typescript-eslint/no-explicit-any` off for `**/*.spec.ts`, `**/*.test.ts`, and `**/validation/**`; production code stayed strict. Closed: explicit `any` went from 36 to 0 across `knowledge.service.integration.spec.ts`, `knowledge.version-consistency.spec.ts`, `experiments.service.spec.ts`, `strategy-optimization.service.spec.ts`, and `technical-indicators-error.filter.spec.ts`. `@typescript-eslint/no-explicit-any` is restored as error for specs, tests, and validation. Those five specs passed 43 tests. Negative optimization cases and their assertions were preserved. Production behavior was not changed. `tsc --noEmit` is not globally green: the known errors remain in two untracked FIV-CONN-04-D stage-4 specs, `fiv-conn-04-d-stage-4-consumer-loop.spec.ts` and `fiv-conn-04-d-stage-4-explicit-caller.spec.ts`. Commit 9a89d794c378843f923f12c7c580cc341f77e57a. | Completed 2026-11-09                        |
 | TD-009    | `forwardRef` for Pipeline module wiring               | Closed             | Was: `KnowledgeModule` used `forwardRef(() => PipelineModule)` and `PipelineModule` used `forwardRef(() => ExperimentsModule)` for the Nest cycle `Knowledge → Pipeline → Experiments → Knowledge`. Closed: both `forwardRef` calls are removed. `KnowledgeModule` keeps a direct `PipelineModule` import for `PipelineExecutor`, `PipelineTemplateService`, and `PipelineDomainService`. `PipelineModule` does not import Experiments. Campaign registration moved to `PipelineStepRegistrationModule`, which imports Pipeline, Knowledge, Experiments, and Campaign Persistence in one direction. `registerKnowledgePipelineSteps` stays on `KnowledgeModule.onModuleInit` behind `knowledge.prepare`. `registerCampaignPipelineSteps` stays behind `campaign.prepare` via `registerPipelineCampaignSteps`, in the same order: `campaign.prepare`, `campaign.execute`, `campaign.aggregate`, `campaign.build-report`, `campaign.persist`. Focused verification passed 34 tests across `pipeline.module.di.spec.ts`, `knowledge-steps.spec.ts`, `campaign-steps.spec.ts`, `pipeline-executor.spec.ts`, and `pipeline-registry.spec.ts`. ESLint and Prettier passed for the changed TypeScript files. `tsc --noEmit` is not globally green: the known errors remain in two untracked FIV-CONN-04-D stage-4 specs, `fiv-conn-04-d-stage-4-consumer-loop.spec.ts` and `fiv-conn-04-d-stage-4-explicit-caller.spec.ts`. Commit 5e8793b5986789a120ae57d777195e917acc51de. | Completed 2026-11-09                        |
@@ -133,7 +133,6 @@ This item is not a Wave 2 blocker and must not delay Wave 2.
 
 ### Mitigated / Partial
 
-- TD-006 — Production authorization/workspace scope (trading command gate; Stage-1 production path pending)
 - TD-032 — Operational Metadata Isolation (mitigated for M1 market events and M2 Fill/valuation/Portfolio/rebuild; extend in M3+)
 
 ### Resolved
@@ -155,6 +154,7 @@ This item is not a Wave 2 blocker and must not delay Wave 2.
 
 - TD-009 — Pipeline module cycle removed. `KnowledgeModule` imports `PipelineModule` directly. `PipelineStepRegistrationModule` registers campaign steps behind `campaign.prepare`; knowledge registration stays behind `knowledge.prepare`. 34 tests passed across 5 files. ESLint and Prettier passed. `tsc --noEmit` is not globally green: two untracked FIV-CONN-04-D stage-4 specs still fail (5e8793b)
 - TD-005 — Identity and credential persistence closed. Password login, sessions, lockout, and password reset survive a simulated restart. PC-18 integration spec passed 4/4 against PostgreSQL `trp`. Development identity bootstrap stays disabled. US158 JWT secret rules remain.
+- TD-006 — Workspace-owner membership closed on the 36 approved paper, exchange, portfolio, and risk handlers. Membership runs before the service call. Owner allowed; non-owner and non-owner Admin denied without invoking the service. C5/C3/C4 and LiveCommand deny-all unchanged. Ten census controllers recorded. 15-file authorization suite passed 126 tests. ESLint passed. `tsc --noEmit` has no TD-006 errors; two untracked FIV-CONN-04-D stage-4 specs still fail. Commits e43430d77c01eed95ae1a24d3c463e414f0c0d30 and 32c80db7e0e7bef9d417c6f22fb84379b6b1167d.
 
 ### Planned
 
@@ -183,7 +183,7 @@ Living mid-release detail: [`rc-18-residual-register.md`](./rc-18-residual-regis
 | ADL-008 promotion to ACCEPTED (or explicit accepted deferral)          | **RC-18 mandatory**    | Architecture owner                                  | RC-18                    | **Open (US295)**                                                                 |
 | Durable Kill Switch policy for admission/arming                        | **E19 operational**    | E19 Operations owner                                | E19 / RC-18+             | Open                                                                             |
 | Operator recovery status / phase API                                   | **E19 operational**    | E19 Operations owner                                | E19 / RC-18+             | Open                                                                             |
-| TD-005 identity persistence closed; TD-006 authorization remains       | **E19 operational**    | Platform / Auth owner                               | E19 / RC-18+             | TD-005 closed; TD-006 open                                                       |
+| TD-005 identity persistence closed; TD-006 workspace membership closed | **E19 operational**    | Platform / Auth owner                               | E19 / RC-18+             | TD-005 closed; TD-006 closed                                                     |
 | Order proposal from recovery SignalIntent                              | **Future backlog**     | Orders / Canonical path owner                       | Future epic              | Open                                                                             |
 | In-process stage cache durability (lastResult/Sets)                    | **Future backlog**     | Runtime Recovery owner (with RecoveryState)         | After RecoveryState      | Open                                                                             |
 | Local vs original story-title dual scoping notes                       | **Documentation only** | Documentation / Release lead                        | Maintained in epic notes | Open                                                                             |
@@ -209,7 +209,7 @@ Evidence: [`e17-stage-4-technical-review.md`](./e17-stage-4-technical-review.md)
 
 - TD-002 — durable runtime queue/scheduler ownership (E17/E18 clarification).
 - TD-005 — authentication hardening beyond the current development identity (closed 2026-11-09).
-- TD-006 — complete authorization migration on remaining runtime surfaces.
+- TD-006 — workspace-owner membership on the approved handlers (closed 2026-11-09).
 - TD-028 — continue the canonical execution model through RC-17 ops/safety.
 - TD-032 — extend semantic/operational metadata validation to RC-17 artifacts.
 - TD-036 — implement runtime recovery and reconciliation (**RC-17 E17**).
@@ -228,16 +228,16 @@ explicit. No additional hidden blocker was found.
 
 ## Future milestones (possible RCs)
 
-| Possible RC   | Theme                              | Candidate debt                                          |
-| ------------- | ---------------------------------- | ------------------------------------------------------- |
-| RC-13+        | Persistence / durability           | TD-001, TD-002, TD-003                                  |
-| RC-14+        | Legacy migration                   | TD-004, TD-011, TD-012, TD-013                          |
-| RC-15+        | Knowledge intelligence             | TD-007                                                  |
-| RC-16         | Paper runtime baseline (delivered) | TD-034…TD-042 (gates resolved where marked)             |
-| RC-17         | Production readiness / ops runtime | TD-002, TD-005 (Closed), TD-006, TD-028, TD-032, TD-036 |
-| RC-16+        | Simulation analytics & scale       | TD-030, TD-033                                          |
-| Future        | Reporting                          | TD-031, TD-043, TD-044                                  |
-| Opportunistic | Hygiene                            | TD-009 (Closed)                                         |
+| Possible RC   | Theme                              | Candidate debt                                                   |
+| ------------- | ---------------------------------- | ---------------------------------------------------------------- |
+| RC-13+        | Persistence / durability           | TD-001, TD-002, TD-003                                           |
+| RC-14+        | Legacy migration                   | TD-004, TD-011, TD-012, TD-013                                   |
+| RC-15+        | Knowledge intelligence             | TD-007                                                           |
+| RC-16         | Paper runtime baseline (delivered) | TD-034…TD-042 (gates resolved where marked)                      |
+| RC-17         | Production readiness / ops runtime | TD-002, TD-005 (Closed), TD-006 (Closed), TD-028, TD-032, TD-036 |
+| RC-16+        | Simulation analytics & scale       | TD-030, TD-033                                                   |
+| Future        | Reporting                          | TD-031, TD-043, TD-044                                           |
+| Opportunistic | Hygiene                            | TD-009 (Closed)                                                  |
 
 Exact RC numbering follows [`release-history.md`](./release-history.md) and
 [`roadmap.md`](./roadmap.md).
