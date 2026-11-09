@@ -82,6 +82,16 @@ import { PeopleController } from '../identity/people.controller';
 import { ConnectionsController } from '../connections/connections.controller';
 import { MarketDataSymbolsController } from '../market-data-foundation/market-data-symbols.controller';
 import { PaperTradingFoundationController } from '../paper-trading-foundation/paper-trading-foundation.controller';
+import { PushController } from '../push-product/push.controller';
+import { TeamsController } from '../teams-product/teams.controller';
+import { DiscordController } from '../discord-product/discord.controller';
+import { SlackController } from '../slack-product/slack.controller';
+import { EmailController } from '../email-product/email.controller';
+import { OperationalContinuityController } from '../operational-continuity/operational-continuity.controller';
+import { OpenRouterAiRequestController } from '../ai-connectivity/openrouter-ai-request.controller';
+import { WorkspaceAiSessionController } from '../ai-connectivity/workspace-ai-session.controller';
+import { WorkspaceAiRequestHistoryController } from '../ai-connectivity/workspace-ai-request-history.controller';
+import { SecurityAuditTimelineController } from '../security-audit/security-audit-timeline.controller';
 
 const CUSTOMER_CONTROLLERS: readonly Type<object>[] = [
   AppController,
@@ -156,6 +166,16 @@ const CUSTOMER_CONTROLLERS: readonly Type<object>[] = [
   ConnectionsController,
   MarketDataSymbolsController,
   PaperTradingFoundationController,
+  PushController,
+  TeamsController,
+  DiscordController,
+  SlackController,
+  EmailController,
+  OperationalContinuityController,
+  OpenRouterAiRequestController,
+  WorkspaceAiSessionController,
+  WorkspaceAiRequestHistoryController,
+  SecurityAuditTimelineController,
 ];
 
 const PUBLIC_HANDLERS = new Set([
@@ -264,6 +284,40 @@ describe('HTTP surface coverage (V3-S02-b)', () => {
       true,
     );
     expect(handlers.every((handler) => handler.public === false)).toBe(true);
+  });
+
+  it('fails when a TD-006 census controller is omitted or loses its permission class', () => {
+    const names = CUSTOMER_CONTROLLERS.map((controller) => controller.name);
+    const required = [
+      'PushController',
+      'TeamsController',
+      'DiscordController',
+      'SlackController',
+      'EmailController',
+      'OperationalContinuityController',
+      'OpenRouterAiRequestController',
+      'WorkspaceAiSessionController',
+      'WorkspaceAiRequestHistoryController',
+      'SecurityAuditTimelineController',
+    ];
+    expect(names).toEqual(expect.arrayContaining(required));
+
+    const permission = (controller: Type<object>, handler: string) =>
+      collectControllerHandlers(controller).find((entry) => entry.handler === handler)?.permission;
+    expect(permission(PushController, 'bind')).toBe(PermissionClass.OwnWorkspace);
+    expect(permission(TeamsController, 'bind')).toBe(PermissionClass.OwnWorkspace);
+    expect(permission(DiscordController, 'sendTest')).toBe(PermissionClass.OwnWorkspace);
+    expect(permission(SlackController, 'disconnect')).toBe(PermissionClass.OwnWorkspace);
+    expect(permission(EmailController, 'bind')).toBe(PermissionClass.OwnWorkspace);
+    expect(permission(OperationalContinuityController, 'readiness')).toBe(
+      PermissionClass.Projection,
+    );
+    expect(permission(OpenRouterAiRequestController, 'execute')).toBe(PermissionClass.Research);
+    expect(permission(WorkspaceAiSessionController, 'create')).toBe(PermissionClass.Research);
+    expect(permission(WorkspaceAiRequestHistoryController, 'list')).toBe(
+      PermissionClass.Projection,
+    );
+    expect(permission(SecurityAuditTimelineController, 'read')).toBe(PermissionClass.RoleAdmin);
   });
 });
 

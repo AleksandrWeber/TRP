@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Headers,
   HttpException,
@@ -13,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { requireWorkspaceId } from '../../common/workspace/require-workspace';
 import type { AuthUser } from '../auth/jwt.strategy';
-import { WorkspaceDomainService } from '../workspace';
+import { WorkspaceAccessService, WorkspaceDomainService } from '../workspace';
 import {
   PaperExecutionFailedError,
   PaperOrderRejectedError,
@@ -38,6 +39,7 @@ export class PaperTradingController {
   constructor(
     private readonly paper: PaperTradingService,
     private readonly workspaces: WorkspaceDomainService,
+    private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
   @Get('sessions')
@@ -46,7 +48,7 @@ export class PaperTradingController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       return this.paper.listSessions(workspaceId);
     });
   }
@@ -58,7 +60,7 @@ export class PaperTradingController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       return this.paper.getSession(workspaceId, id);
     });
   }
@@ -70,7 +72,7 @@ export class PaperTradingController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       return this.paper.listOrders(workspaceId, req.user.userId, id);
     });
   }
@@ -82,7 +84,7 @@ export class PaperTradingController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       return this.paper.listPositions(workspaceId, req.user.userId, id);
     });
   }
@@ -94,7 +96,7 @@ export class PaperTradingController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       return this.paper.getPortfolio(workspaceId, req.user.userId, id);
     });
   }
@@ -106,7 +108,7 @@ export class PaperTradingController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       return this.paper.listExecutions(workspaceId, id);
     });
   }
@@ -118,7 +120,7 @@ export class PaperTradingController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       return this.paper.listEvents(workspaceId, id);
     });
   }
@@ -130,7 +132,7 @@ export class PaperTradingController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       return this.paper.getStatistics(workspaceId, req.user.userId, id);
     });
   }
@@ -143,7 +145,7 @@ export class PaperTradingController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       return this.paper.createSession(workspaceId, req.user.userId, {
         name: String(body.name ?? ''),
         initialBalance: body.initialBalance !== undefined ? String(body.initialBalance) : undefined,
@@ -159,7 +161,7 @@ export class PaperTradingController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       return this.paper.startSession(workspaceId, id);
     });
   }
@@ -172,7 +174,7 @@ export class PaperTradingController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       return this.paper.pauseSession(workspaceId, id);
     });
   }
@@ -185,7 +187,7 @@ export class PaperTradingController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       return this.paper.stopSession(workspaceId, id);
     });
   }
@@ -198,7 +200,7 @@ export class PaperTradingController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       return this.paper.completeSession(workspaceId, id);
     });
   }
@@ -211,13 +213,19 @@ export class PaperTradingController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       return this.paper.deleteSession(workspaceId, id);
     });
   }
 
-  private workspace(header?: string): string {
-    return requireWorkspaceId(header, this.workspaces);
+  private workspace(user: AuthUser, header?: string): string {
+    const workspaceId = requireWorkspaceId(header, this.workspaces);
+    try {
+      this.workspaceAccess.assertMember(workspaceId, user.userId);
+    } catch {
+      throw new ForbiddenException('workspace access denied');
+    }
+    return workspaceId;
   }
 
   private async run<T>(fn: () => Promise<T>): Promise<T> {

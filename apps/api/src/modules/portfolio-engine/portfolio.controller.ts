@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { requireWorkspaceId } from '../../common/workspace/require-workspace';
 import type { AuthUser } from '../auth/jwt.strategy';
-import { WorkspaceDomainService } from '../workspace';
+import { WorkspaceAccessService, WorkspaceDomainService } from '../workspace';
 import {
   PortfolioArchivedError,
   PortfolioError,
@@ -36,6 +36,7 @@ export class PortfolioController {
   constructor(
     private readonly portfolios: PortfolioService,
     private readonly workspaces: WorkspaceDomainService,
+    private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
   @Get()
@@ -44,7 +45,7 @@ export class PortfolioController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       return this.portfolios.getOrCreate(workspaceId, req.user.userId);
     });
   }
@@ -55,7 +56,7 @@ export class PortfolioController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       await this.portfolios.getOrCreate(workspaceId, req.user.userId);
       return this.portfolios.getBalance(workspaceId);
     });
@@ -67,7 +68,7 @@ export class PortfolioController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       await this.portfolios.getOrCreate(workspaceId, req.user.userId);
       return this.portfolios.getEquity(workspaceId);
     });
@@ -79,7 +80,7 @@ export class PortfolioController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       await this.portfolios.getOrCreate(workspaceId, req.user.userId);
       return this.portfolios.getMargin(workspaceId);
     });
@@ -91,7 +92,7 @@ export class PortfolioController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       await this.portfolios.getOrCreate(workspaceId, req.user.userId);
       return this.portfolios.listSnapshots(workspaceId);
     });
@@ -101,14 +102,20 @@ export class PortfolioController {
   @Post('reset')
   async reset(@Req() req: RequestWithUser, @Headers('x-workspace-id') workspaceIdHeader?: string) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(req.user, workspaceIdHeader);
       await this.portfolios.getOrCreate(workspaceId, req.user.userId);
       return this.portfolios.reset(workspaceId);
     });
   }
 
-  private workspace(workspaceIdHeader?: string): string {
-    return requireWorkspaceId(workspaceIdHeader, this.workspaces);
+  private workspace(user: AuthUser, workspaceIdHeader?: string): string {
+    const workspaceId = requireWorkspaceId(workspaceIdHeader, this.workspaces);
+    try {
+      this.workspaceAccess.assertMember(workspaceId, user.userId);
+    } catch {
+      throw new ForbiddenException('workspace access denied');
+    }
+    return workspaceId;
   }
 
   private async run<T>(action: () => Promise<T>): Promise<T> {

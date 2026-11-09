@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Headers,
   HttpException,
@@ -14,7 +15,7 @@ import { requireWorkspaceId } from '../../common/workspace/require-workspace';
 import { Roles } from '../auth/decorators/roles.decorator';
 import type { AuthUser } from '../auth/jwt.strategy';
 import { Role } from '../identity/role';
-import { WorkspaceDomainService } from '../workspace';
+import { WorkspaceAccessService, WorkspaceDomainService } from '../workspace';
 import {
   ExchangeAdapterError,
   ExchangeNotFoundError,
@@ -41,12 +42,13 @@ export class ExchangeAdapterController {
   constructor(
     private readonly exchanges: ExchangeAdapterService,
     private readonly workspaces: WorkspaceDomainService,
+    private readonly workspaceAccess: WorkspaceAccessService,
   ) {}
 
   @Get()
   async list(@Req() _req: RequestWithUser, @Headers('x-workspace-id') workspaceIdHeader?: string) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(_req.user, workspaceIdHeader);
       return this.exchanges.listExchanges(workspaceId);
     });
   }
@@ -57,7 +59,7 @@ export class ExchangeAdapterController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(_req.user, workspaceIdHeader);
       return this.exchanges.getStatus(workspaceId);
     });
   }
@@ -69,7 +71,7 @@ export class ExchangeAdapterController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(_req.user, workspaceIdHeader);
       return this.exchanges.getCapabilities(workspaceId, id);
     });
   }
@@ -81,7 +83,7 @@ export class ExchangeAdapterController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(_req.user, workspaceIdHeader);
       return this.exchanges.getExchange(workspaceId, id);
     });
   }
@@ -95,7 +97,7 @@ export class ExchangeAdapterController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(_req.user, workspaceIdHeader);
       return this.exchanges.connect(workspaceId, String(body.exchangeId ?? ''));
     });
   }
@@ -109,7 +111,7 @@ export class ExchangeAdapterController {
     @Headers('x-workspace-id') workspaceIdHeader?: string,
   ) {
     return this.run(async () => {
-      const workspaceId = this.workspace(workspaceIdHeader);
+      const workspaceId = this.workspace(_req.user, workspaceIdHeader);
       return this.exchanges.disconnect(
         workspaceId,
         String(body.exchangeId ?? ''),
@@ -118,8 +120,14 @@ export class ExchangeAdapterController {
     });
   }
 
-  private workspace(header?: string): string {
-    return requireWorkspaceId(header, this.workspaces);
+  private workspace(user: AuthUser, header?: string): string {
+    const workspaceId = requireWorkspaceId(header, this.workspaces);
+    try {
+      this.workspaceAccess.assertMember(workspaceId, user.userId);
+    } catch {
+      throw new ForbiddenException('workspace access denied');
+    }
+    return workspaceId;
   }
 
   private async run<T>(fn: () => Promise<T>): Promise<T> {
