@@ -66,10 +66,7 @@ describe('TD-006 census controller membership', () => {
     await denies((actor, id) => controller.status(actor, id), spies);
     await denies((actor, id) => controller.bind(actor, id), spies);
     await denies((actor, id) => controller.vapidPublicKey(actor, id), spies);
-    await denies(
-      (actor, id) => controller.registerSubscription(actor, id, 'agent', undefined),
-      spies,
-    );
+    await denies((actor, id) => controller.registerSubscription(actor, id, 'agent', {}), spies);
     await denies((actor, id) => controller.revokeSubscription(actor, id, 'sub'), spies);
     await denies((actor, id) => controller.sendTest(actor, id), spies);
     await denies((actor, id) => controller.disconnect(actor, id), spies);

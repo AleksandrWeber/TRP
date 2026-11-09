@@ -102,33 +102,27 @@ describe('PaperTradingController (US010)', () => {
   });
 
   it.each([
-    [
-      'execute',
-      (actor: { user: AuthUser }) => controller.execute(actor, { strategyId: 's' }, workspaceId),
-      execute,
-    ],
-    [
-      'positions',
-      (actor: { user: AuthUser }) => controller.positions(actor, workspaceId),
-      listPositions,
-    ],
-    ['history', (actor: { user: AuthUser }) => controller.history(actor, workspaceId), listHistory],
-    [
-      'portfolio',
-      (actor: { user: AuthUser }) => controller.portfolio(actor, workspaceId),
-      portfolio,
-    ],
-  ] as const)('denies non-owner and non-owner Admin before %s', async (_name, call, spy) => {
+    ['execute', execute],
+    ['positions', listPositions],
+    ['history', listHistory],
+    ['portfolio', portfolio],
+  ] as const)('denies non-owner and non-owner Admin before %s', async (name, spy) => {
+    const call = (actor: { user: AuthUser }): unknown => {
+      if (name === 'execute') return controller.execute(actor, { strategyId: 's' }, workspaceId);
+      if (name === 'positions') return controller.positions(actor, workspaceId);
+      if (name === 'history') return controller.history(actor, workspaceId);
+      return controller.portfolio(actor, workspaceId);
+    };
+    const invoke = async (actor: { user: AuthUser }): Promise<unknown> => call(actor);
+
     spy.mockClear();
-    await expect(Promise.resolve().then(() => call(request('other')))).rejects.toBeInstanceOf(
-      ForbiddenException,
-    );
+    await expect(invoke(request('other'))).rejects.toBeInstanceOf(ForbiddenException);
     expect(spy).not.toHaveBeenCalled();
 
     spy.mockClear();
-    await expect(
-      Promise.resolve().then(() => call(request('admin-user', Role.Admin))),
-    ).rejects.toBeInstanceOf(ForbiddenException);
+    await expect(invoke(request('admin-user', Role.Admin))).rejects.toBeInstanceOf(
+      ForbiddenException,
+    );
     expect(spy).not.toHaveBeenCalled();
   });
 });
