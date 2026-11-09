@@ -57,8 +57,11 @@ type Conn04VaultMetadataConnectionBinding = Readonly<{
 @Injectable()
 export class Conn04SystemJobMigrationEntry {
   constructor(
+    @Inject(Conn04MigrationBoundaryService)
     private readonly boundary: Conn04MigrationBoundaryService,
+    @Inject(FivConn04DEnvironmentBackfillWrite)
     private readonly writeUnit: FivConn04DEnvironmentBackfillWrite,
+    @Inject(PrismaTransactionService)
     private readonly transactions: PrismaTransactionService,
     @Inject(FIV_CONN_04_D_VAULT_METADATA_PORT)
     private readonly vaultMetadata: FivConn04DVaultMetadataPort,

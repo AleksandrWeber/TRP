@@ -62,6 +62,11 @@ export class FivConn04DVaultMetadataService implements FivConn04DVaultMetadataPo
       return Object.freeze({ ok: false, reason: 'INVALID' });
     }
 
+    // Requested pair only. A well-formed row for another id or workspace is not a hit.
+    if (row.id !== vaultSecretId || row.workspaceId !== workspaceId) {
+      return Object.freeze({ ok: false, reason: 'NOT_FOUND' });
+    }
+
     const metadata: FivConn04DVaultMetadataView = Object.freeze({
       id: row.id,
       workspaceId: row.workspaceId,

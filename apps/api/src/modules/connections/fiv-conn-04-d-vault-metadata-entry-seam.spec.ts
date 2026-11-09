@@ -4,22 +4,28 @@
  */
 
 import { MODULE_METADATA } from '@nestjs/common/constants';
+import { Test } from '@nestjs/testing';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { PrismaService } from '../../storage/prisma/prisma.module';
 import { PrismaTransactionService } from '../../storage/prisma/prisma-transaction.service';
+import { HoldableSecretType } from '../secret-vault/holdable-secret-type';
+import { InMemorySecretVaultRepository } from '../secret-vault/in-memory-secret-vault.repository';
+import { FivConn04DVaultMetadataModule } from '../secret-vault/fiv-conn-04-d-vault-metadata.module';
 import {
   FIV_CONN_04_D_VAULT_METADATA_PORT,
   type FivConn04DVaultMetadataPort,
 } from '../secret-vault/fiv-conn-04-d-vault-metadata.port';
+import { SECRET_VAULT_REPOSITORY } from '../secret-vault/secret-vault.repository.token';
+import { SecretPurpose } from '../secret-vault/secret-purpose';
+import { SecretState } from '../secret-vault/secret-state';
 import { Conn04MigrationBoundaryService } from './conn04-migration-boundary.service';
 import { ConnectionsModule } from './connections.module';
 import { ConnectionsController } from './connections.controller';
 import { ConnectionsService } from './connections.service';
 import { FivConn04DEnvironmentBackfillWrite } from './fiv-conn-04-d-environment-backfill-write';
 import { Conn04SystemJobMigrationEntry } from './fiv-conn-04-d-system-job-migration-entry';
-import { SecretPurpose } from '../secret-vault/secret-purpose';
-import { SecretState } from '../secret-vault/secret-state';
 
 function moduleExports(): unknown[] {
   const raw = Reflect.getMetadata(MODULE_METADATA.EXPORTS, ConnectionsModule) as unknown;
@@ -163,6 +169,73 @@ describe('Conn04SystemJobMigrationEntry Vault metadata seam (VMP-1)', () => {
       workspaceId: 'ws-a',
       vaultSecretId: 'vault-1',
     });
+  });
+});
+
+describe('Conn04SystemJobMigrationEntry Nest runtime resolution (VMP1-SR-001)', () => {
+  it('T-VMP-15: Nest resolves Entry through the metadata module port token', async () => {
+    const repo = new InMemorySecretVaultRepository();
+    await repo.compareAndSet(
+      Object.freeze({
+        id: 'vault-1',
+        workspaceId: 'ws-a',
+        type: HoldableSecretType.Binance,
+        purpose: SecretPurpose.TradingLive,
+        state: SecretState.Connected,
+        revision: 1,
+        ciphertext: Object.freeze({
+          version: 1 as const,
+          wrappingSalt: 'salt',
+          wrappedDataKey: 'wdk',
+          dataKeyNonce: 'dkn',
+          dataKeyTag: 'dkt',
+          payload: 'payload-cipher-only',
+          payloadNonce: 'pn',
+          payloadTag: 'pt',
+        }),
+        createdAt: '2026-10-30T10:00:00.000Z',
+        updatedAt: '2026-10-30T10:00:00.000Z',
+      }),
+      null,
+    );
+
+    // ConnectionsModule also constructs exchange, AI, workspace, and Prisma providers.
+    // Vitest does not emit design:paramtypes, so this boots the real metadata module
+    // ConnectionsModule imports and the real Entry provider with explicit @Inject tokens.
+    const moduleRef = await Test.createTestingModule({
+      imports: [FivConn04DVaultMetadataModule],
+      providers: [
+        Conn04SystemJobMigrationEntry,
+        { provide: Conn04MigrationBoundaryService, useValue: {} },
+        { provide: FivConn04DEnvironmentBackfillWrite, useValue: {} },
+        { provide: PrismaTransactionService, useValue: {} },
+      ],
+    })
+      .overrideProvider(PrismaService)
+      .useValue({ $connect: async () => undefined, $disconnect: async () => undefined })
+      .overrideProvider(SECRET_VAULT_REPOSITORY)
+      .useValue(repo)
+      .compile();
+
+    try {
+      const entry = moduleRef.get(Conn04SystemJobMigrationEntry);
+      expect(entry).toBeInstanceOf(Conn04SystemJobMigrationEntry);
+      const result = await entry.lookupVaultMetadataForConnection({
+        workspaceId: 'ws-a',
+        vaultSecretId: 'vault-1',
+      });
+      expect(result).toEqual({
+        ok: true,
+        metadata: {
+          id: 'vault-1',
+          workspaceId: 'ws-a',
+          purpose: SecretPurpose.TradingLive,
+          state: SecretState.Connected,
+        },
+      });
+    } finally {
+      await moduleRef.close();
+    }
   });
 });
 

@@ -45,12 +45,23 @@ describe('FivConn04DVaultMetadataService (VMP-1)', () => {
   it('T-VMP-01: success returns only { id, workspaceId, purpose, state }', async () => {
     const repo = new InMemorySecretVaultRepository();
     await repo.compareAndSet(connectedRecord(), null);
+    const findMetadata = vi.spyOn(repo, 'findMetadataByIdAndWorkspaceId');
+    const findBySlot = vi.spyOn(repo, 'findBySlot');
+    const listByWorkspaceId = vi.spyOn(repo, 'listByWorkspaceId');
+    const compareAndSet = vi.spyOn(repo, 'compareAndSet');
+    const deleteIfRevision = vi.spyOn(repo, 'deleteIfRevision');
     const service = new FivConn04DVaultMetadataService(repo);
 
     const result = await service.lookupExact({
       workspaceId: 'ws-a',
       vaultSecretId: 'vault-1',
     });
+    expect(findMetadata).toHaveBeenCalledTimes(1);
+    expect(findMetadata).toHaveBeenCalledWith('vault-1', 'ws-a');
+    expect(findBySlot).not.toHaveBeenCalled();
+    expect(listByWorkspaceId).not.toHaveBeenCalled();
+    expect(compareAndSet).not.toHaveBeenCalled();
+    expect(deleteIfRevision).not.toHaveBeenCalled();
 
     expect(result).toEqual({
       ok: true,
@@ -239,5 +250,100 @@ describe('FivConn04DVaultMetadataService (VMP-1)', () => {
         vaultSecretId: 'vault-1',
       }),
     ).toEqual({ ok: false, reason: 'INVALID' });
+  });
+
+  it('invalid returned state maps to INVALID and omits metadata', async () => {
+    const repo: SecretVaultRepository = {
+      compareAndSet: async () => false,
+      findBySlot: async () => null,
+      listByWorkspaceId: async () => [],
+      findMetadataByIdAndWorkspaceId: async () =>
+        Object.freeze({
+          id: 'vault-1',
+          workspaceId: 'ws-a',
+          purpose: SecretPurpose.TradingLive,
+          state: 'Deleted',
+        }),
+      deleteIfRevision: async () => false,
+    };
+    expect(
+      await new FivConn04DVaultMetadataService(repo).lookupExact({
+        workspaceId: 'ws-a',
+        vaultSecretId: 'vault-1',
+      }),
+    ).toEqual({ ok: false, reason: 'INVALID' });
+  });
+
+  it('blank returned id maps to INVALID and omits metadata', async () => {
+    const repo: SecretVaultRepository = {
+      compareAndSet: async () => false,
+      findBySlot: async () => null,
+      listByWorkspaceId: async () => [],
+      findMetadataByIdAndWorkspaceId: async () =>
+        Object.freeze({
+          id: '   ',
+          workspaceId: 'ws-a',
+          purpose: SecretPurpose.TradingLive,
+          state: SecretState.Connected,
+        }),
+      deleteIfRevision: async () => false,
+    };
+    expect(
+      await new FivConn04DVaultMetadataService(repo).lookupExact({
+        workspaceId: 'ws-a',
+        vaultSecretId: 'vault-1',
+      }),
+    ).toEqual({ ok: false, reason: 'INVALID' });
+  });
+
+  it('Revoked metadata is returned as a four-field success view', async () => {
+    const repo = new InMemorySecretVaultRepository();
+    await repo.compareAndSet(connectedRecord({ state: SecretState.Revoked }), null);
+    const result = await new FivConn04DVaultMetadataService(repo).lookupExact({
+      workspaceId: 'ws-a',
+      vaultSecretId: 'vault-1',
+    });
+    expect(result).toEqual({
+      ok: true,
+      metadata: {
+        id: 'vault-1',
+        workspaceId: 'ws-a',
+        purpose: SecretPurpose.TradingLive,
+        state: SecretState.Revoked,
+      },
+    });
+  });
+
+  it('repository row for a different id or workspace is NOT_FOUND', async () => {
+    async function lookup(row: SecretVaultMetadataProjection) {
+      const repo: SecretVaultRepository = {
+        compareAndSet: async () => false,
+        findBySlot: async () => null,
+        listByWorkspaceId: async () => [],
+        findMetadataByIdAndWorkspaceId: async () => row,
+        deleteIfRevision: async () => false,
+      };
+      return new FivConn04DVaultMetadataService(repo).lookupExact({
+        workspaceId: 'ws-a',
+        vaultSecretId: 'vault-1',
+      });
+    }
+
+    expect(
+      await lookup({
+        id: 'vault-1',
+        workspaceId: 'ws-other',
+        purpose: SecretPurpose.TradingLive,
+        state: SecretState.Connected,
+      }),
+    ).toEqual({ ok: false, reason: 'NOT_FOUND' });
+    expect(
+      await lookup({
+        id: 'vault-other',
+        workspaceId: 'ws-a',
+        purpose: SecretPurpose.TradingLive,
+        state: SecretState.Connected,
+      }),
+    ).toEqual({ ok: false, reason: 'NOT_FOUND' });
   });
 });
