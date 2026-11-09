@@ -41,9 +41,7 @@ export class PerformanceAnalyzer {
   analyze(input: PerformanceAnalyzerInput): PerformanceReport {
     assertFiniteNumber(input.initialCapital, 'initialCapital');
 
-    const orderedSnapshots = [...input.snapshots].sort((a, b) =>
-      a.timestamp.localeCompare(b.timestamp),
-    );
+    const orderedSnapshots = chronologicalSnapshots(input.snapshots);
     const initialEquity =
       orderedSnapshots.length > 0 ? orderedSnapshots[0]!.equity : input.initialCapital;
     const finalEquity =
@@ -78,8 +76,13 @@ export class PerformanceAnalyzer {
         : wallClockDurationMs;
 
     const cagr = computeCagr(initialEquity, finalEquity, durationMs);
-    const { maxDrawdown, maxDrawdownPct } = computeMaxDrawdown(orderedSnapshots);
+    const { maxDrawdown, maxDrawdownPct, maxDrawdownFraction } =
+      computeMaxDrawdown(orderedSnapshots);
     const volatility = computeVolatility(orderedSnapshots);
+    const returns = adjacentSimpleReturns(orderedSnapshots);
+    const sharpeRatio = computeSharpeRatio(returns);
+    const sortinoRatio = computeSortinoRatio(returns);
+    const calmarRatio = computeCalmarRatio(cagr, maxDrawdownFraction);
 
     const tradePnls = input.closedTrades.map(tradePnL);
     const wins = tradePnls.filter((pnl) => pnl > 0);
@@ -111,6 +114,9 @@ export class PerformanceAnalyzer {
       maxDrawdown,
       maxDrawdownPct,
       volatility,
+      sharpeRatio,
+      sortinoRatio,
+      calmarRatio,
       totalTrades,
       winningTrades,
       losingTrades,
@@ -153,14 +159,17 @@ function computeCagr(
 function computeMaxDrawdown(snapshots: readonly PortfolioSnapshot[]): {
   maxDrawdown: number;
   maxDrawdownPct: number;
+  /** Largest peak-to-trough decline as a fraction of that peak. */
+  maxDrawdownFraction: number;
 } {
   if (snapshots.length === 0) {
-    return { maxDrawdown: 0, maxDrawdownPct: 0 };
+    return { maxDrawdown: 0, maxDrawdownPct: 0, maxDrawdownFraction: 0 };
   }
 
   let peak = snapshots[0]!.equity;
   let maxDrawdown = 0;
   let maxDrawdownPct = 0;
+  let maxDrawdownFraction = 0;
 
   for (const snapshot of snapshots) {
     if (snapshot.equity > peak) {
@@ -171,9 +180,81 @@ function computeMaxDrawdown(snapshots: readonly PortfolioSnapshot[]): {
       maxDrawdown = drawdown;
       maxDrawdownPct = peak === 0 ? 0 : (drawdown / Math.abs(peak)) * 100;
     }
+    if (Number.isFinite(peak) && peak !== 0 && Number.isFinite(snapshot.equity)) {
+      const fraction = (peak - snapshot.equity) / Math.abs(peak);
+      if (Number.isFinite(fraction) && fraction > maxDrawdownFraction) {
+        maxDrawdownFraction = fraction;
+      }
+    }
   }
 
-  return { maxDrawdown, maxDrawdownPct };
+  return { maxDrawdown, maxDrawdownPct, maxDrawdownFraction };
+}
+
+/**
+ * Chronological copy. Equal timestamps keep their input order.
+ * The caller-owned snapshot array is left unchanged.
+ */
+function chronologicalSnapshots(snapshots: readonly PortfolioSnapshot[]): PortfolioSnapshot[] {
+  return [...snapshots].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+}
+
+/**
+ * Adjacent simple returns. Prior equity must be finite and positive, and the
+ * current equity and the return must be finite.
+ */
+function adjacentSimpleReturns(snapshots: readonly PortfolioSnapshot[]): number[] {
+  const returns: number[] = [];
+  for (let index = 1; index < snapshots.length; index += 1) {
+    const previous = snapshots[index - 1]!.equity;
+    const current = snapshots[index]!.equity;
+    if (!Number.isFinite(previous) || previous <= 0 || !Number.isFinite(current)) continue;
+    const change = (current - previous) / previous;
+    if (Number.isFinite(change)) returns.push(change);
+  }
+  return returns;
+}
+
+/** Sample standard deviation. Null when n < 2 or the result is non-finite. */
+function sampleStandardDeviation(values: readonly number[]): number | null {
+  if (values.length < 2) return null;
+  const average = mean(values);
+  const variance = sum(values.map((value) => (value - average) ** 2)) / (values.length - 1);
+  const deviation = Math.sqrt(variance);
+  return Number.isFinite(deviation) ? deviation : null;
+}
+
+/** Risk-free rate is zero. Not annualized. */
+function computeSharpeRatio(returns: readonly number[]): number | null {
+  const deviation = sampleStandardDeviation(returns);
+  if (deviation === null || deviation === 0) return null;
+  return finiteRatio(mean(returns), deviation);
+}
+
+/**
+ * Target return is zero. Downside deviation uses every valid return:
+ * negative returns contribute themselves, other returns contribute zero.
+ */
+function computeSortinoRatio(returns: readonly number[]): number | null {
+  if (returns.length === 0) return null;
+  const downsideSquareSum = sum(returns.map((value) => (value < 0 ? value * value : 0)));
+  const downsideDeviation = Math.sqrt(downsideSquareSum / returns.length);
+  if (!Number.isFinite(downsideDeviation) || downsideDeviation === 0) return null;
+  return finiteRatio(mean(returns), downsideDeviation);
+}
+
+/** CAGR / fractional max drawdown. A zero or missing input is unavailable. */
+function computeCalmarRatio(cagr: number | null, maxDrawdownFraction: number): number | null {
+  if (cagr === null || cagr === 0) return null;
+  return finiteRatio(cagr, maxDrawdownFraction);
+}
+
+function finiteRatio(numerator: number, denominator: number): number | null {
+  if (!Number.isFinite(numerator) || !Number.isFinite(denominator) || denominator === 0) {
+    return null;
+  }
+  const ratio = numerator / denominator;
+  return Number.isFinite(ratio) ? ratio : null;
 }
 
 function computeVolatility(snapshots: readonly PortfolioSnapshot[]): number {
