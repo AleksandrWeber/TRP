@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import type { CampaignSession } from '../campaign-session/campaign-session';
 import { CampaignSessionStatus } from '../campaign-session/campaign-session-status';
 import { createInsightDomainService } from '../insight/insight-domain.test-utils';
+import { InsightGenerationService } from '../insight/insight-generation.service';
 import type { KnowledgeEntry } from '../knowledge/knowledge-entry';
 import { NoOpMetrics } from '../../metrics/noop.metrics';
 import { PipelineDomainService } from '../pipeline/pipeline-domain.service';
@@ -80,8 +81,9 @@ function createAnalysisService() {
 
   // Re-register insight steps onto shared registry is unnecessary for cross-analysis;
   // cross-analysis only needs InsightDomainService.create.
-  registerInsightPipelineSteps(registry, { insights });
-  registerCrossAnalysisPipelineSteps(registry, { insights });
+  const insightGeneration = new InsightGenerationService();
+  registerInsightPipelineSteps(registry, { insights, insightGeneration });
+  registerCrossAnalysisPipelineSteps(registry, { insights, insightGeneration });
 
   const service = new CrossCampaignAnalysisService(executor, templates, pipelines);
   return { service, insights, templates };

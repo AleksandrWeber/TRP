@@ -6,6 +6,7 @@ import { PipelineRegistry } from '../pipeline/pipeline-registry';
 import { PipelineTemplateService } from '../pipeline/pipeline-template.service';
 import { registerInsightPipelineSteps } from '../pipeline/steps/insight/register-insight-steps';
 import { InsightDomainService } from './insight-domain.service';
+import { InsightGenerationService } from './insight-generation.service';
 import { InMemoryInsightRepository } from './repositories/in-memory-insight.repository';
 
 /**
@@ -29,7 +30,10 @@ export function createInsightDomainService(): {
     pipelines,
   );
 
-  registerInsightPipelineSteps(registry, { insights: service });
+  registerInsightPipelineSteps(registry, {
+    insights: service,
+    insightGeneration: new InsightGenerationService(),
+  });
 
   return { service, templates, pipelines, executor, registry };
 }

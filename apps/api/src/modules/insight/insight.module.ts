@@ -9,6 +9,7 @@ import { registerInsightPipelineSteps } from '../pipeline/steps/insight/register
 import { WorkspaceModule } from '../workspace';
 import { InsightController } from './insight.controller';
 import { InsightDomainService } from './insight-domain.service';
+import { InsightGenerationService } from './insight-generation.service';
 import { InMemoryInsightRepository } from './repositories/in-memory-insight.repository';
 import { INSIGHT_REPOSITORY } from './repositories/insight.repository.token';
 import { PrismaInsightRepository } from './repositories/prisma-insight.repository';
@@ -33,8 +34,9 @@ import { PrismaInsightRepository } from './repositories/prisma-insight.repositor
       inject: [METRICS],
     },
     InsightDomainService,
+    InsightGenerationService,
   ],
-  exports: [InsightDomainService],
+  exports: [InsightDomainService, InsightGenerationService],
 })
 export class InsightModule implements OnModuleInit {
   constructor(
@@ -42,6 +44,8 @@ export class InsightModule implements OnModuleInit {
     private readonly registry: PipelineRegistry,
     @Inject(InsightDomainService)
     private readonly insights: InsightDomainService,
+    @Inject(InsightGenerationService)
+    private readonly insightGeneration: InsightGenerationService,
   ) {}
 
   onModuleInit(): void {
@@ -49,6 +53,7 @@ export class InsightModule implements OnModuleInit {
 
     registerInsightPipelineSteps(this.registry, {
       insights: this.insights,
+      insightGeneration: this.insightGeneration,
     });
   }
 }

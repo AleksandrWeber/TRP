@@ -1,8 +1,5 @@
-import type { InsightDraft } from '../../../insight/insight-domain.service';
 import type { InsightDomainService } from '../../../insight/insight-domain.service';
-import { InsightSource } from '../../../insight/insight-source';
-import { InsightType } from '../../../insight/insight-type';
-import type { CrossCampaignFinding } from '../../../cross-campaign-analysis/cross-campaign-finding';
+import { InsightGenerationService } from '../../../insight/insight-generation.service';
 import { AbstractPipelineStep } from '../../abstract-pipeline-step';
 import type { PipelineContext } from '../../pipeline-context';
 import { readWorkspaceId } from '../../workspace-context';
@@ -15,10 +12,14 @@ import { CROSS_ANALYSIS_PIPELINE_STEP_METADATA } from './cross-analysis-step-met
 
 /**
  * Cross-analysis stage: persist findings as Insights (US097).
+ * Mapping is delegated to InsightGenerationService.
  * InsightDomainService is the only write path.
  */
 export class PersistCrossAnalysisStep extends AbstractPipelineStep {
-  constructor(private readonly insights: InsightDomainService) {
+  constructor(
+    private readonly insights: InsightDomainService,
+    private readonly insightGeneration: InsightGenerationService,
+  ) {
     super(CROSS_ANALYSIS_PIPELINE_STEP_METADATA.persist);
   }
 
@@ -29,7 +30,10 @@ export class PersistCrossAnalysisStep extends AbstractPipelineStep {
 
     const generatedInsightIds: string[] = [];
     for (const finding of findings) {
-      const created = this.insights.create({ ...toInsightInput(finding), workspaceId });
+      const created = this.insights.create({
+        ...this.insightGeneration.toInsightInput(finding),
+        workspaceId,
+      });
       generatedInsightIds.push(created.id);
     }
 
@@ -45,37 +49,5 @@ export class PersistCrossAnalysisStep extends AbstractPipelineStep {
       },
       generatedInsightIds,
     });
-  }
-}
-
-function toInsightInput(finding: CrossCampaignFinding): InsightDraft {
-  return {
-    campaignSessionId: finding.campaignIds[0],
-    experimentId: finding.experimentIds[0],
-    knowledgeEntryIds: finding.knowledgeEntryIds,
-    type: mapFindingType(finding.kind),
-    title: finding.title,
-    summary: finding.summary,
-    confidence: finding.confidence,
-    sources: [InsightSource.Campaign, InsightSource.Knowledge],
-    metadata: {
-      model: 'cross-campaign-deterministic',
-      promptVersion: 'cross-analysis-1.0.0',
-    },
-  };
-}
-
-function mapFindingType(kind: CrossCampaignFinding['kind']): InsightType {
-  switch (kind) {
-    case 'repeated_finding':
-      return InsightType.PATTERN;
-    case 'recurring_pattern':
-      return InsightType.PATTERN;
-    case 'conflicting_conclusion':
-      return InsightType.ANOMALY;
-    case 'stable_trend':
-      return InsightType.TREND;
-    case 'unique_observation':
-      return InsightType.OBSERVATION;
   }
 }

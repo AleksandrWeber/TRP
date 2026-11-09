@@ -1,4 +1,5 @@
 import type { InsightDomainService } from '../../../insight/insight-domain.service';
+import type { InsightGenerationService } from '../../../insight/insight-generation.service';
 import type { PipelineRegistry } from '../../pipeline-registry';
 import { CompareCrossAnalysisStep } from './compare-cross-analysis.step';
 import { PersistCrossAnalysisStep } from './persist-cross-analysis.step';
@@ -6,6 +7,7 @@ import { PrepareCrossAnalysisStep } from './prepare-cross-analysis.step';
 
 export type CrossAnalysisPipelineStepDeps = {
   insights: InsightDomainService;
+  insightGeneration: InsightGenerationService;
 };
 
 /**
@@ -18,5 +20,5 @@ export function registerCrossAnalysisPipelineSteps(
 ): void {
   registry.register(new PrepareCrossAnalysisStep());
   registry.register(new CompareCrossAnalysisStep());
-  registry.register(new PersistCrossAnalysisStep(deps.insights));
+  registry.register(new PersistCrossAnalysisStep(deps.insights, deps.insightGeneration));
 }

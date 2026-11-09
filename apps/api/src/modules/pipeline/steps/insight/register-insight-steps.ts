@@ -1,4 +1,5 @@
 import type { InsightDomainService } from '../../../insight/insight-domain.service';
+import type { InsightGenerationService } from '../../../insight/insight-generation.service';
 import type { PipelineRegistry } from '../../pipeline-registry';
 import { ExtractInsightsStep } from './extract-insights.step';
 import { PersistInsightsStep } from './persist-insights.step';
@@ -6,6 +7,7 @@ import { PrepareInsightExtractionStep } from './prepare-insight-extraction.step'
 
 export type InsightPipelineStepDeps = {
   insights: InsightDomainService;
+  insightGeneration: InsightGenerationService;
 };
 
 /**
@@ -17,6 +19,6 @@ export function registerInsightPipelineSteps(
   deps: InsightPipelineStepDeps,
 ): void {
   registry.register(new PrepareInsightExtractionStep());
-  registry.register(new ExtractInsightsStep());
+  registry.register(new ExtractInsightsStep(deps.insightGeneration));
   registry.register(new PersistInsightsStep(deps.insights));
 }

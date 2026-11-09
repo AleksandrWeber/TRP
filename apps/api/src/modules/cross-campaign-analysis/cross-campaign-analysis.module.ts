@@ -1,6 +1,7 @@
 import { Inject, Module, OnModuleInit } from '@nestjs/common';
 import { InsightModule } from '../insight/insight.module';
 import { InsightDomainService } from '../insight/insight-domain.service';
+import { InsightGenerationService } from '../insight/insight-generation.service';
 import { PipelineModule } from '../pipeline/pipeline.module';
 import { PipelineRegistry } from '../pipeline/pipeline-registry';
 import { registerCrossAnalysisPipelineSteps } from '../pipeline/steps/cross-analysis/register-cross-analysis-steps';
@@ -25,6 +26,8 @@ export class CrossCampaignAnalysisModule implements OnModuleInit {
     private readonly registry: PipelineRegistry,
     @Inject(InsightDomainService)
     private readonly insights: InsightDomainService,
+    @Inject(InsightGenerationService)
+    private readonly insightGeneration: InsightGenerationService,
   ) {}
 
   onModuleInit(): void {
@@ -32,6 +35,7 @@ export class CrossCampaignAnalysisModule implements OnModuleInit {
 
     registerCrossAnalysisPipelineSteps(this.registry, {
       insights: this.insights,
+      insightGeneration: this.insightGeneration,
     });
   }
 }

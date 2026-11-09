@@ -1,57 +1,96 @@
-import type { InsightDraft } from '../../../insight/insight-domain.service';
-import { InsightSource } from '../../../insight/insight-source';
-import { InsightType } from '../../../insight/insight-type';
-import type { KnowledgeEntry } from '../../../knowledge/knowledge-entry';
-import type { InsightExtractionContext } from './insight-pipeline-context';
+import { Injectable } from '@nestjs/common';
+import type { CrossCampaignFinding } from '../cross-campaign-analysis/cross-campaign-finding';
+import type { KnowledgeEntry } from '../knowledge/knowledge-entry';
+import type { InsightExtractionContext } from '../pipeline/steps/insight/insight-pipeline-context';
+import type { InsightDraft } from './insight-domain.service';
+import { InsightSource } from './insight-source';
+import { InsightType } from './insight-type';
 
 const VERDICT_TAGS = new Set(['pass', 'fail', 'needs_review']);
 
-/**
- * Deterministic Insight drafts from Knowledge entries (US096).
- * No LLM / AI providers — rule-based only.
- */
-export function extractInsightDrafts(extraction: InsightExtractionContext): InsightDraft[] {
-  const entries = extraction.knowledgeEntries;
-  const drafts: InsightDraft[] = [];
-  const baseRefs = {
-    campaignSessionId: extraction.campaignSessionId,
-    knowledgeEntryIds: extraction.knowledgeEntryIds,
-    sources: [InsightSource.Knowledge] as InsightSource[],
-    metadata: {
-      model: 'deterministic-rules',
-      promptVersion: 'insight-extract-1.0.0',
-    },
-  };
+type InsightDraftRefs = Pick<
+  InsightDraft,
+  'campaignSessionId' | 'knowledgeEntryIds' | 'sources' | 'metadata'
+>;
 
-  if (entries.length === 0) {
-    drafts.push({
-      ...baseRefs,
-      type: InsightType.OBSERVATION,
-      title: 'No Knowledge entries available',
-      summary: 'Insight extraction found zero KnowledgeEntry references',
-      confidence: 1,
-      experimentId: extraction.experimentIds[0],
-    });
+/**
+ * Deterministic Insight mapping for Insight and Cross-Campaign pipelines.
+ * Rule-based only — no LLM / AI providers.
+ * Knowledge extraction and cross-campaign finding mapping stay separate operations.
+ */
+@Injectable()
+export class InsightGenerationService {
+  /**
+   * Deterministic Insight drafts from Knowledge entries (US096).
+   */
+  extractInsightDrafts(extraction: InsightExtractionContext): InsightDraft[] {
+    const entries = extraction.knowledgeEntries;
+    const drafts: InsightDraft[] = [];
+    const baseRefs: InsightDraftRefs = {
+      campaignSessionId: extraction.campaignSessionId,
+      knowledgeEntryIds: extraction.knowledgeEntryIds,
+      sources: [InsightSource.Knowledge],
+      metadata: {
+        model: 'deterministic-rules',
+        promptVersion: 'insight-extract-1.0.0',
+      },
+    };
+
+    if (entries.length === 0) {
+      drafts.push({
+        ...baseRefs,
+        type: InsightType.OBSERVATION,
+        title: 'No Knowledge entries available',
+        summary: 'Insight extraction found zero KnowledgeEntry references',
+        confidence: 1,
+        experimentId: extraction.experimentIds[0],
+      });
+      return drafts;
+    }
+
+    drafts.push(buildSummaryDraft(entries, baseRefs, extraction));
+
+    const consistent = buildConsistentTrendDraft(entries, baseRefs, extraction);
+    if (consistent) drafts.push(consistent);
+
+    const repeated = buildRepeatedObservationDraft(entries, baseRefs, extraction);
+    if (repeated) drafts.push(repeated);
+
+    const anomaly = buildAnomalyDraft(entries, baseRefs, extraction);
+    if (anomaly) drafts.push(anomaly);
+
     return drafts;
   }
 
-  drafts.push(buildSummaryDraft(entries, baseRefs, extraction));
+  /**
+   * Map one cross-campaign finding to an Insight draft (US097).
+   * Distinct from Knowledge extraction.
+   */
+  toInsightInput(finding: CrossCampaignFinding): InsightDraft {
+    return {
+      campaignSessionId: finding.campaignIds[0],
+      experimentId: finding.experimentIds[0],
+      knowledgeEntryIds: finding.knowledgeEntryIds,
+      type: mapFindingType(finding.kind),
+      title: finding.title,
+      summary: finding.summary,
+      confidence: finding.confidence,
+      sources: [InsightSource.Campaign, InsightSource.Knowledge],
+      metadata: {
+        model: 'cross-campaign-deterministic',
+        promptVersion: 'cross-analysis-1.0.0',
+      },
+    };
+  }
+}
 
-  const consistent = buildConsistentTrendDraft(entries, baseRefs, extraction);
-  if (consistent) drafts.push(consistent);
-
-  const repeated = buildRepeatedObservationDraft(entries, baseRefs, extraction);
-  if (repeated) drafts.push(repeated);
-
-  const anomaly = buildAnomalyDraft(entries, baseRefs, extraction);
-  if (anomaly) drafts.push(anomaly);
-
-  return drafts;
+export function extractInsightDrafts(extraction: InsightExtractionContext): InsightDraft[] {
+  return new InsightGenerationService().extractInsightDrafts(extraction);
 }
 
 function buildSummaryDraft(
   entries: KnowledgeEntry[],
-  baseRefs: Pick<InsightDraft, 'campaignSessionId' | 'knowledgeEntryIds' | 'sources' | 'metadata'>,
+  baseRefs: InsightDraftRefs,
   extraction: InsightExtractionContext,
 ): InsightDraft {
   const strategies = unique(
@@ -77,7 +116,7 @@ function buildSummaryDraft(
 
 function buildConsistentTrendDraft(
   entries: KnowledgeEntry[],
-  baseRefs: Pick<InsightDraft, 'campaignSessionId' | 'knowledgeEntryIds' | 'sources' | 'metadata'>,
+  baseRefs: InsightDraftRefs,
   extraction: InsightExtractionContext,
 ): InsightDraft | null {
   if (entries.length < 2) return null;
@@ -101,7 +140,7 @@ function buildConsistentTrendDraft(
 
 function buildRepeatedObservationDraft(
   entries: KnowledgeEntry[],
-  baseRefs: Pick<InsightDraft, 'campaignSessionId' | 'knowledgeEntryIds' | 'sources' | 'metadata'>,
+  baseRefs: InsightDraftRefs,
   extraction: InsightExtractionContext,
 ): InsightDraft | null {
   if (entries.length < 2) return null;
@@ -125,7 +164,7 @@ function buildRepeatedObservationDraft(
 
 function buildAnomalyDraft(
   entries: KnowledgeEntry[],
-  baseRefs: Pick<InsightDraft, 'campaignSessionId' | 'knowledgeEntryIds' | 'sources' | 'metadata'>,
+  baseRefs: InsightDraftRefs,
   extraction: InsightExtractionContext,
 ): InsightDraft | null {
   if (entries.length < 2) return null;
@@ -141,6 +180,21 @@ function buildAnomalyDraft(
     confidence: 0.75,
     experimentId: singleOrUndefined(extraction.experimentIds) ?? singleExperiment(entries),
   };
+}
+
+function mapFindingType(kind: CrossCampaignFinding['kind']): InsightType {
+  switch (kind) {
+    case 'repeated_finding':
+      return InsightType.PATTERN;
+    case 'recurring_pattern':
+      return InsightType.PATTERN;
+    case 'conflicting_conclusion':
+      return InsightType.ANOMALY;
+    case 'stable_trend':
+      return InsightType.TREND;
+    case 'unique_observation':
+      return InsightType.OBSERVATION;
+  }
 }
 
 function primaryVerdictTag(entry: KnowledgeEntry): string | undefined {

@@ -6,7 +6,7 @@ export {
   registerInsightPipelineSteps,
   type InsightPipelineStepDeps,
 } from './register-insight-steps';
-export { extractInsightDrafts } from './insight-extraction.rules';
+export { extractInsightDrafts } from '../../../insight/insight-generation.service';
 export {
   readInsightExtractionInput,
   readPersistedInsights,

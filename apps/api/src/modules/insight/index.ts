@@ -1,5 +1,6 @@
 export { InsightModule } from './insight.module';
 export { InsightDomainService } from './insight-domain.service';
+export { InsightGenerationService } from './insight-generation.service';
 export type {
   CreateInsightInput,
   UpdateInsightInput,

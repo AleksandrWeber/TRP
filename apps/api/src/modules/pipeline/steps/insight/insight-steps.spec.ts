@@ -5,8 +5,8 @@ import { InsightType } from '../../../insight/insight-type';
 import { BUILTIN_PIPELINE_TEMPLATE_IDS } from '../../builtin-pipeline-templates';
 import type { PipelineContext } from '../../pipeline-context';
 import { PipelineRunStatus } from '../../pipeline-run-status';
+import { InsightGenerationService } from '../../../insight/insight-generation.service';
 import { ExtractInsightsStep } from './extract-insights.step';
-import { extractInsightDrafts } from './insight-extraction.rules';
 import { readPersistedInsights, type InsightExtractionContext } from './insight-pipeline-context';
 import { INSIGHT_PIPELINE_STEP_METADATA, INSIGHT_PIPELINE_STEPS } from './insight-step-metadata';
 import { PersistInsightsStep } from './persist-insights.step';
@@ -45,7 +45,9 @@ describe('Insight Pipeline Steps (US096)', () => {
   it('registers step classes with matching metadata', () => {
     const { service } = createInsightDomainService();
     expect(new PrepareInsightExtractionStep().getMetadata().stepId).toBe('insights.prepare');
-    expect(new ExtractInsightsStep().getMetadata().stepId).toBe('insights.extract');
+    expect(new ExtractInsightsStep(new InsightGenerationService()).getMetadata().stepId).toBe(
+      'insights.extract',
+    );
     expect(new PersistInsightsStep(service).getMetadata().stepId).toBe('insights.persist');
   });
 
@@ -65,14 +67,14 @@ describe('Insight Pipeline Steps (US096)', () => {
       ],
     };
 
-    const drafts = extractInsightDrafts(extraction);
+    const drafts = new InsightGenerationService().extractInsightDrafts(extraction);
     expect(drafts.some((d) => d.type === InsightType.SUMMARY)).toBe(true);
     expect(drafts.some((d) => d.type === InsightType.TREND)).toBe(true);
     expect(drafts.every((d) => d.metadata?.model === 'deterministic-rules')).toBe(true);
   });
 
   it('detects anomaly when verdicts conflict', () => {
-    const drafts = extractInsightDrafts({
+    const drafts = new InsightGenerationService().extractInsightDrafts({
       experimentIds: ['exp-1'],
       knowledgeEntryIds: ['k-1', 'k-2'],
       knowledgeEntries: [
@@ -86,6 +88,41 @@ describe('Insight Pipeline Steps (US096)', () => {
     });
 
     expect(drafts.some((d) => d.type === InsightType.ANOMALY)).toBe(true);
+  });
+
+  it('keeps extraction order and the empty-knowledge observation', () => {
+    const generation = new InsightGenerationService();
+    const empty = generation.extractInsightDrafts({
+      experimentIds: ['exp-only'],
+      knowledgeEntryIds: [],
+      knowledgeEntries: [],
+    });
+
+    expect(empty).toHaveLength(1);
+    expect(empty[0]).toMatchObject({
+      type: InsightType.OBSERVATION,
+      title: 'No Knowledge entries available',
+      summary: 'Insight extraction found zero KnowledgeEntry references',
+      confidence: 1,
+      experimentId: 'exp-only',
+      knowledgeEntryIds: [],
+      metadata: { model: 'deterministic-rules', promptVersion: 'insight-extract-1.0.0' },
+    });
+
+    const ordered = generation.extractInsightDrafts({
+      experimentIds: ['exp-1', 'exp-2'],
+      knowledgeEntryIds: ['k-1', 'k-2'],
+      knowledgeEntries: [
+        sampleKnowledge({ knowledgeId: 'k-1', title: 'Same note', tags: ['fail'] }),
+        sampleKnowledge({ knowledgeId: 'k-2', title: 'Same note', tags: ['pass'] }),
+      ],
+    });
+
+    expect(ordered.map((draft) => draft.type)).toEqual([
+      InsightType.SUMMARY,
+      InsightType.PATTERN,
+      InsightType.ANOMALY,
+    ]);
   });
 
   describe('pipeline execution', () => {
