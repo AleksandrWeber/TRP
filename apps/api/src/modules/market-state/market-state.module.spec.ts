@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { MarketDataQueryService } from '../live-market-data/api/market-data-query.service';
 import { MARKET_QUALIFICATION_CONSUMER_READ_PORT } from '../market-qualification/ports/market-qualification-consumer.port';
 import { MARKET_PROFILE_CONSUMER_READ_PORT } from '../market-profile/ports/market-profile-consumer.port';
@@ -137,19 +137,36 @@ describe('RC-26 Epic 2 — Market State Nest read wiring', () => {
   });
 
   it('full MarketStateModule wires consumer-read while classify/query stay inactive', async () => {
-    const { MarketStateModule } = await import('./market-state.module');
-    const moduleRef = await Test.createTestingModule({
-      imports: [MarketStateModule],
-    }).compile();
+    const { PrismaClient } = await import('@prisma/client');
+    const { PrismaService } = await import('../../storage/prisma/prisma.module');
+    const connect = vi.spyOn(PrismaClient.prototype, '$connect').mockImplementation(async () => {
+      throw new Error('market-state full-module wiring test must not call Prisma $connect()');
+    });
+    const previousDriver = process.env.PERSISTENCE_DRIVER;
+    process.env.PERSISTENCE_DRIVER = 'memory';
+    try {
+      const { MarketStateModule } = await import('./market-state.module');
+      const moduleRef = await Test.createTestingModule({
+        imports: [MarketStateModule],
+      })
+        .overrideProvider(PrismaService)
+        .useValue({})
+        .compile();
 
-    expect(moduleRef.get(MARKET_STATE_CONSUMER_READ_PORT)).toBeDefined();
-    expect(() => moduleRef.get(MARKET_STATE_SERVICE_PORT)).toThrow();
-    expect(() => moduleRef.get(MARKET_STATE_QUERY_PORT)).toThrow();
-    expect(moduleRef.get(MarketStateBoundaryService).getBoundary().activePorts.consumerRead).toBe(
-      true,
-    );
+      expect(connect).not.toHaveBeenCalled();
+      expect(moduleRef.get(MARKET_STATE_CONSUMER_READ_PORT)).toBeDefined();
+      expect(() => moduleRef.get(MARKET_STATE_SERVICE_PORT)).toThrow();
+      expect(() => moduleRef.get(MARKET_STATE_QUERY_PORT)).toThrow();
+      expect(moduleRef.get(MarketStateBoundaryService).getBoundary().activePorts.consumerRead).toBe(
+        true,
+      );
 
-    await moduleRef.close();
+      await moduleRef.close();
+    } finally {
+      connect.mockRestore();
+      if (previousDriver === undefined) delete process.env.PERSISTENCE_DRIVER;
+      else process.env.PERSISTENCE_DRIVER = previousDriver;
+    }
   });
 
   it('maps LMD snapshots immutably and handles empty sources', async () => {
