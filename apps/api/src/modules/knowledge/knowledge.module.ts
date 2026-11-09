@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Module, OnModuleInit } from '@nestjs/common';
+import { Inject, Module, OnModuleInit } from '@nestjs/common';
 import type { Metrics } from '../../metrics/metrics';
 import { METRICS } from '../../metrics/metrics.token';
 import { instrumentRepository } from '../../metrics/instrument-repository';
@@ -18,10 +18,11 @@ import { PrismaKnowledgeRepository } from './repositories/prisma-knowledge.repos
 /**
  * Knowledge Nest module (US075–US079, US090, US102, US104).
  * Domain KnowledgeRepository — InMemory or Prisma by PERSISTENCE_DRIVER.
- * forwardRef(PipelineModule) — TD-009 (pre-existing).
+ * Imports PipelineModule one way for executor, templates, and step registration.
+ * PipelineModule does not import Knowledge or Experiments (TD-009).
  */
 @Module({
-  imports: [forwardRef(() => PipelineModule), WorkspaceModule],
+  imports: [PipelineModule, WorkspaceModule],
   controllers: [KnowledgeController],
   providers: [
     KnowledgeService,

@@ -104,6 +104,7 @@ import { CrossCampaignAnalysisModule } from './modules/cross-campaign-analysis/c
 import { RecommendationModule } from './modules/recommendation/recommendation.module';
 import { ResearchReportModule } from './modules/research-report/research-report.module';
 import { PipelineModule } from './modules/pipeline/pipeline.module';
+import { PipelineStepRegistrationModule } from './modules/pipeline/pipeline-step-registration.module';
 import { ResearchCampaignModule } from './modules/research-campaign/research-campaign.module';
 import { WorkflowModule } from './modules/workflow/workflow.module';
 import { PrismaModule } from './storage/prisma/prisma.module';
@@ -217,6 +218,7 @@ import { OperationalContinuityModule } from './modules/operational-continuity';
     ResearchReportModule,
     ResearchCampaignModule,
     PipelineModule,
+    PipelineStepRegistrationModule,
     CampaignExportModule,
     CampaignImportModule,
     JobsModule,
