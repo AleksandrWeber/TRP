@@ -1,6 +1,6 @@
 # TRP — Technical Debt Register
 
-Last updated: 2026-11-09 (TD-009 closed — pipeline module dependency cycle removed)
+Last updated: 2026-11-09 (TD-005 closed — identity and credential persistence)
 
 Living register of known technical debt. Reviewed at RC-15.1 closeout after Validation Sprint V1 (VS001–VS004); TD-028…TD-033 added from Validation Sprint findings. TD-035 and TD-038 resolved by M2 US155 PostgreSQL runtime wiring. Version 2 Product Completion residuals (formerly duplicated in Audit v2) are indexed here. Wave 2 flaky-test residual TD-W2-001 is recorded below; it is not a Wave 2 blocker.
 
@@ -42,7 +42,7 @@ Related:
 | TD-002    | InMemory-authoritative Job Queue                      | Planned            | BullMQ mirrors enqueue/retry state, but authoritative Job lookup/dequeue remains in-process. RC-16 event durability uses PostgreSQL Outbox/Inbox; scheduler/worker durability must not rely on the current mirror.                                                                                                        | RC-16 runtime implementation                |
 | TD-003    | PipelineRun not persisted                             | Accepted           | `PipelineRun` is in-memory only (`PipelineDomainService`); lost on process restart                                                                                                                                                                                                                                        | Possible RC-13+ (Pipeline observability)    |
 | TD-004    | No Scheduler                                          | Deferred           | Jobs are processed by `BackgroundJobRunner` when invoked; no cron / background scheduler                                                                                                                                                                                                                                  | Possible RC-14 (Background scheduling)      |
-| TD-005    | Authentication hardening                              | Partial (M2)       | US158 rejects insecure production JWT fallbacks and short secrets at Auth module construction. Login remains passwordless/in-memory Identity for development; durable credential store remains later.                                                                                                                     | RC-16 safety foundation                     |
+| TD-005    | Authentication hardening                              | Closed             | Was: US158 rejects insecure production JWT fallbacks and short secrets at Auth module construction. Login remains passwordless/in-memory Identity for development; durable credential store remains later. Closed: Password login persists through Prisma Identity (`IdentityModule` / `PrismaUserRepository`) and `PrismaPasswordCredentialRepository` on `User.passwordHash`. `AuthModule` binds `PrismaAuthSessionRepository`, `PrismaLoginLockoutRepository`, and `PrismaPasswordResetRepository`. `shouldBootstrapDevelopmentIdentity` remains false, and the development bootstraps are not registered on the product modules. `resolveJwtSecret` still rejects the production JWT fallback and secrets shorter than 16 characters. `apps/api/src/validation/m2/pc18-identity-persistence.integration.spec.ts` passed 4/4 against PostgreSQL database `trp` (`pnpm exec vitest run src/validation/m2/pc18-identity-persistence.integration.spec.ts`, 1.77s): register then login after hydrate, lockout after restart, session list and revoke-others after restart, and password reset after restart. TD-006 authorization scope remains separate. | Completed 2026-11-09                        |
 | TD-006    | Production authorization/workspace scope              | Partial (M2)       | US158 adds Trader role, CommandAuthorizationService (Trader/Admin), and WorkspaceAccessService membership checks for trading commands. The retired Stage-1 `production/` execution path no longer bypasses that gate; remaining authorization migration is limited to later runtime surfaces.                             | RC-16 safety foundation                     |
 | TD-007    | No Vector Search                                      | Deferred           | Knowledge search is deterministic in-memory text / tag / experimentId filters only                                                                                                                                                                                                                                        | Possible RC-15+ (Knowledge intelligence)    |
 | TD-008    | Prisma `any` in legacy tests                          | Closed             | Was: RC-15.1 scoped `@typescript-eslint/no-explicit-any` off for `**/*.spec.ts`, `**/*.test.ts`, and `**/validation/**`; production code stayed strict. Closed: explicit `any` went from 36 to 0 across `knowledge.service.integration.spec.ts`, `knowledge.version-consistency.spec.ts`, `experiments.service.spec.ts`, `strategy-optimization.service.spec.ts`, and `technical-indicators-error.filter.spec.ts`. `@typescript-eslint/no-explicit-any` is restored as error for specs, tests, and validation. Those five specs passed 43 tests. Negative optimization cases and their assertions were preserved. Production behavior was not changed. `tsc --noEmit` is not globally green: the known errors remain in two untracked FIV-CONN-04-D stage-4 specs, `fiv-conn-04-d-stage-4-consumer-loop.spec.ts` and `fiv-conn-04-d-stage-4-explicit-caller.spec.ts`. Commit 9a89d794c378843f923f12c7c580cc341f77e57a. | Completed 2026-11-09                        |
@@ -133,7 +133,6 @@ This item is not a Wave 2 blocker and must not delay Wave 2.
 
 ### Mitigated / Partial
 
-- TD-005 — Authentication hardening (production JWT secret validation; passwordless Identity remains)
 - TD-006 — Production authorization/workspace scope (trading command gate; Stage-1 production path pending)
 - TD-032 — Operational Metadata Isolation (mitigated for M1 market events and M2 Fill/valuation/Portfolio/rebuild; extend in M3+)
 
@@ -155,6 +154,7 @@ This item is not a Wave 2 blocker and must not delay Wave 2.
 ### Closed
 
 - TD-009 — Pipeline module cycle removed. `KnowledgeModule` imports `PipelineModule` directly. `PipelineStepRegistrationModule` registers campaign steps behind `campaign.prepare`; knowledge registration stays behind `knowledge.prepare`. 34 tests passed across 5 files. ESLint and Prettier passed. `tsc --noEmit` is not globally green: two untracked FIV-CONN-04-D stage-4 specs still fail (5e8793b)
+- TD-005 — Identity and credential persistence closed. Password login, sessions, lockout, and password reset survive a simulated restart. PC-18 integration spec passed 4/4 against PostgreSQL `trp`. Development identity bootstrap stays disabled. US158 JWT secret rules remain.
 
 ### Planned
 
@@ -183,7 +183,7 @@ Living mid-release detail: [`rc-18-residual-register.md`](./rc-18-residual-regis
 | ADL-008 promotion to ACCEPTED (or explicit accepted deferral)          | **RC-18 mandatory**    | Architecture owner                                  | RC-18                    | **Open (US295)**                                                                 |
 | Durable Kill Switch policy for admission/arming                        | **E19 operational**    | E19 Operations owner                                | E19 / RC-18+             | Open                                                                             |
 | Operator recovery status / phase API                                   | **E19 operational**    | E19 Operations owner                                | E19 / RC-18+             | Open                                                                             |
-| Auth hardening / authorization leftovers (TD-005 / TD-006)             | **E19 operational**    | Platform / Auth owner                               | E19 / RC-18+             | Open                                                                             |
+| TD-005 identity persistence closed; TD-006 authorization remains       | **E19 operational**    | Platform / Auth owner                               | E19 / RC-18+             | TD-005 closed; TD-006 open                                                       |
 | Order proposal from recovery SignalIntent                              | **Future backlog**     | Orders / Canonical path owner                       | Future epic              | Open                                                                             |
 | In-process stage cache durability (lastResult/Sets)                    | **Future backlog**     | Runtime Recovery owner (with RecoveryState)         | After RecoveryState      | Open                                                                             |
 | Local vs original story-title dual scoping notes                       | **Documentation only** | Documentation / Release lead                        | Maintained in epic notes | Open                                                                             |
@@ -208,7 +208,7 @@ Evidence: [`e17-stage-4-technical-review.md`](./e17-stage-4-technical-review.md)
 ### Open under RC-17 (formerly “during M3–M6”)
 
 - TD-002 — durable runtime queue/scheduler ownership (E17/E18 clarification).
-- TD-005 — authentication hardening beyond the current development identity.
+- TD-005 — authentication hardening beyond the current development identity (closed 2026-11-09).
 - TD-006 — complete authorization migration on remaining runtime surfaces.
 - TD-028 — continue the canonical execution model through RC-17 ops/safety.
 - TD-032 — extend semantic/operational metadata validation to RC-17 artifacts.
@@ -228,16 +228,16 @@ explicit. No additional hidden blocker was found.
 
 ## Future milestones (possible RCs)
 
-| Possible RC   | Theme                              | Candidate debt                                 |
-| ------------- | ---------------------------------- | ---------------------------------------------- |
-| RC-13+        | Persistence / durability           | TD-001, TD-002, TD-003                         |
-| RC-14+        | Legacy migration                   | TD-004, TD-011, TD-012, TD-013                 |
-| RC-15+        | Knowledge intelligence             | TD-007                                         |
-| RC-16         | Paper runtime baseline (delivered) | TD-034…TD-042 (gates resolved where marked)    |
-| RC-17         | Production readiness / ops runtime | TD-002, TD-005, TD-006, TD-028, TD-032, TD-036 |
-| RC-16+        | Simulation analytics & scale       | TD-030, TD-033                                 |
-| Future        | Reporting                          | TD-031, TD-043, TD-044                         |
-| Opportunistic | Hygiene                            | TD-009 (Closed)                                |
+| Possible RC   | Theme                              | Candidate debt                                          |
+| ------------- | ---------------------------------- | ------------------------------------------------------- |
+| RC-13+        | Persistence / durability           | TD-001, TD-002, TD-003                                  |
+| RC-14+        | Legacy migration                   | TD-004, TD-011, TD-012, TD-013                          |
+| RC-15+        | Knowledge intelligence             | TD-007                                                  |
+| RC-16         | Paper runtime baseline (delivered) | TD-034…TD-042 (gates resolved where marked)             |
+| RC-17         | Production readiness / ops runtime | TD-002, TD-005 (Closed), TD-006, TD-028, TD-032, TD-036 |
+| RC-16+        | Simulation analytics & scale       | TD-030, TD-033                                          |
+| Future        | Reporting                          | TD-031, TD-043, TD-044                                  |
+| Opportunistic | Hygiene                            | TD-009 (Closed)                                         |
 
 Exact RC numbering follows [`release-history.md`](./release-history.md) and
 [`roadmap.md`](./roadmap.md).
