@@ -45,7 +45,7 @@ Related:
 | TD-005    | Authentication hardening                              | Partial (M2)       | US158 rejects insecure production JWT fallbacks and short secrets at Auth module construction. Login remains passwordless/in-memory Identity for development; durable credential store remains later.                                                                                                                     | RC-16 safety foundation                     |
 | TD-006    | Production authorization/workspace scope              | Partial (M2)       | US158 adds Trader role, CommandAuthorizationService (Trader/Admin), and WorkspaceAccessService membership checks for trading commands. The retired Stage-1 `production/` execution path no longer bypasses that gate; remaining authorization migration is limited to later runtime surfaces.                             | RC-16 safety foundation                     |
 | TD-007    | No Vector Search                                      | Deferred           | Knowledge search is deterministic in-memory text / tag / experimentId filters only                                                                                                                                                                                                                                        | Possible RC-15+ (Knowledge intelligence)    |
-| TD-008    | Prisma `any` in legacy tests                          | Accepted           | RC-15.1: repository lint restored to green. `@typescript-eslint/no-explicit-any` is now scoped **off for test files only** (`**/*.spec.ts`, `**/*.test.ts`, `**/validation/**`); production code remains strict. Underlying loose Prisma mock typing persists — tighten opportunistically.                                | Planned (test-typing hygiene; non-blocking) |
+| TD-008    | Prisma `any` in legacy tests                          | Closed             | Was: RC-15.1 scoped `@typescript-eslint/no-explicit-any` off for `**/*.spec.ts`, `**/*.test.ts`, and `**/validation/**`; production code stayed strict. Closed: explicit `any` went from 36 to 0 across `knowledge.service.integration.spec.ts`, `knowledge.version-consistency.spec.ts`, `experiments.service.spec.ts`, `strategy-optimization.service.spec.ts`, and `technical-indicators-error.filter.spec.ts`. `@typescript-eslint/no-explicit-any` is restored as error for specs, tests, and validation. Those five specs passed 43 tests. Negative optimization cases and their assertions were preserved. Production behavior was not changed. `tsc --noEmit` is not globally green: the known errors remain in two untracked FIV-CONN-04-D stage-4 specs, `fiv-conn-04-d-stage-4-consumer-loop.spec.ts` and `fiv-conn-04-d-stage-4-explicit-caller.spec.ts`. Commit 9a89d794c378843f923f12c7c580cc341f77e57a. | Completed 2026-11-09                        |
 | TD-009    | `forwardRef` for Pipeline module wiring               | Accepted           | `KnowledgeModule` uses `forwardRef(() => PipelineModule)` to break Nest cycle `Knowledge → Pipeline → Experiments → Knowledge`                                                                                                                                                                                            | Planned (optional module-boundary cleanup)  |
 | TD-010    | Extract `InsightGenerationService`                    | Planned            | Deterministic Insight draft generation currently lives in pipeline step rule helpers (`insight-extraction.rules`, cross-analysis persist mapping); extract a dedicated `InsightGenerationService` for reuse across Insight / Cross-Campaign pipelines                                                                     | Possible RC-14+                             |
 | TD-011    | Legacy `CampaignReport.recommendations`               | Accepted Legacy    | Pre-RC-13 string[] guidance on Campaign Report; overlaps Recommendation domain. **Do not expand.** Migration planned in RC-14+.                                                                                                                                                                                           | RC-14+                                      |
@@ -107,7 +107,6 @@ This item is not a Wave 2 blocker and must not delay Wave 2.
 
 - TD-001 — InMemory Repository
 - TD-003 — PipelineRun not persisted
-- TD-008 — Prisma `any` in legacy tests
 - TD-009 — `forwardRef` for Pipeline module wiring
 
 ### Accepted Legacy
@@ -151,6 +150,7 @@ This item is not a Wave 2 blocker and must not delay Wave 2.
 - TD-041 — Ledger History Pagination (HTTP Option B: default 50, max 100; internal full history unchanged; f1abf62)
 - TD-029 — Advanced Performance Metrics (research Sharpe, Sortino, and Calmar; null when unavailable; f9263b3)
 - TD-W2-001 — Market State wiring test isolated from Prisma connection startup; focused run and five repeats passed (2058f56)
+- TD-008 — Explicit `any` removed from five specs (36 → 0); `@typescript-eslint/no-explicit-any` restored as error for specs, tests, and validation; 43 tests passed; negative optimization cases and assertions preserved; no production behavior change. `tsc --noEmit` is not globally green: two untracked FIV-CONN-04-D stage-4 specs still fail (9a89d79)
 
 ### Planned
 
@@ -234,7 +234,7 @@ explicit. No additional hidden blocker was found.
 | RC-17         | Production readiness / ops runtime | TD-002, TD-005, TD-006, TD-028, TD-032, TD-036 |
 | RC-16+        | Simulation analytics & scale       | TD-030, TD-033                                 |
 | Future        | Reporting                          | TD-031, TD-043, TD-044                         |
-| Opportunistic | Hygiene                            | TD-008, TD-009, TD-010                         |
+| Opportunistic | Hygiene                            | TD-009, TD-010                                 |
 
 Exact RC numbering follows [`release-history.md`](./release-history.md) and
 [`roadmap.md`](./roadmap.md).
