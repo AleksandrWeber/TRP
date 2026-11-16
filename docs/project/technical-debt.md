@@ -1,6 +1,6 @@
 # TRP — Technical Debt Register
 
-Last updated: 2026-11-09 (TD-006 closed — workspace-owner membership)
+Last updated: 2026-11-16 (TD-031 resolved — simulation report CSV, HTML, and PDF summaries)
 
 Living register of known technical debt. Reviewed at RC-15.1 closeout after Validation Sprint V1 (VS001–VS004); TD-028…TD-033 added from Validation Sprint findings. TD-035 and TD-038 resolved by M2 US155 PostgreSQL runtime wiring. Version 2 Product Completion residuals (formerly duplicated in Audit v2) are indexed here. Wave 2 flaky-test residual TD-W2-001 is recorded below; it is not a Wave 2 blocker.
 
@@ -54,7 +54,7 @@ Related:
 | TD-028    | Execution Model                                       | In progress        | US159–US178 + M3 US221–US223 complete the durable canonical Order/Risk/Execution/Fill/accounting path including strategy origin. Remaining work is continuous safety, recovery, and operations under **RC-17**.                                                                                                           | RC-17 (ADR-012)                             |
 | TD-029    | Advanced Performance Metrics                          | Resolved           | Was: research `PerformanceReport` had net profit, total return, CAGR, drawdown, volatility, win rate, and profit factor; Sharpe, Sortino, and Calmar were not computed (VS001/VS004). Resolved on the research/backtest report only. Adjacent simple returns use chronological snapshots. Sharpe is the mean divided by the sample standard deviation (n-1), risk-free rate 0, not annualized. Sortino target is 0; downside deviation is the RMS of min(r, 0) over every valid return. Calmar is the existing CAGR divided by the maximum fractional drawdown, not currency or percent drawdown. Unavailable results are null, not 0. Paper Trading Sharpe, US202 execution-quality analytics, and TD-030 weights are unchanged. Analyzer, performance-module, ESLint, and Prettier checks passed. `tsc --noEmit` still fails only in pre-existing untracked `fiv-conn-04-d-stage-4-consumer-loop.spec.ts` and `fiv-conn-04-d-stage-4-explicit-caller.spec.ts`. Commit f9263b3c900d36fbccabc20d64ce49f66187a817. | Completed 2026-11-09                        |
 | TD-030    | Scoring Strategy                                      | Deferred           | Strategy Comparison uses a fixed weighted-score model with hardcoded weights; deterministic but not configurable/pluggable. (VS001/VS003)                                                                                                                                                                                 | RC-16+ (Comparison configurability)         |
-| TD-031    | Report Exporters                                      | Future             | `SimulationReport` is an immutable in-memory / JSON artifact; no PDF / CSV / HTML exporters. (VS004)                                                                                                                                                                                                                      | Future (Reporting)                          |
+| TD-031    | Report Exporters                                      | Resolved           | Was: `SimulationReport` was an immutable in-memory / JSON artifact with no PDF / CSV / HTML exporters (VS004). Resolved: CSV, HTML, and PDF summary exporters are implemented. The scalar boundary is session identity, backtest scalars, portfolio summary, trade counts, and performance metrics, including Sharpe, Sortino, and Calmar. Null and non-finite metrics are empty in CSV and `Unavailable` in HTML and PDF. Finite zero stays `0`. Nested bars, trades, and snapshots remain on the in-memory report. No REST route was added. PDF uses PDFKit 0.20.2 with Helvetica and rejects characters Helvetica cannot draw. CSV `402ca7293e6227e23bba489d79484c014a4e7aff`. HTML `b162d6c4c9a0330005e330559cb5d72a043c2c0c`. PDF `3846ad274e2ec10b5c1f7b3cfd883e296504f4ac`. | Completed 2026-11-16                        |
 | TD-032    | Operational Metadata Isolation                        | Mitigated (M2)     | ADR-013/014/018 semantic vs operational split is enforced in market events and in M2 Fill, valuation, Portfolio source-hash, and deterministic rebuild inputs. Continue validation across RC-17 runtime artifacts.                                                                                                        | RC-17                                       |
 | TD-033    | Large Dataset Scalability                             | Deferred           | Million-bar workloads retain full per-bar snapshot arrays in memory (~2.7 GB at 1m×10 in VS002) and required an iterative peak/trough fix (spread over large arrays overflowed the call stack). Consider streaming / aggregated snapshots. (VS002)                                                                        | RC-16+ (Scalability)                        |
 | TD-034    | Stage-1 Production Path Consolidation                 | Resolved (M3 gate) | RC-16 Phase0 retired the manual `ProductionService.tick` path, removed the Stage-1 paper adapter, and disabled the direct paper session execution bypass so paper execution can only proceed through the canonical Order → Risk → Execution Engine → Paper Execution Adapter → Fill → Position → Ledger → Portfolio path. | Completed 2026-07-29                        |
@@ -146,6 +146,7 @@ This item is not a Wave 2 blocker and must not delay Wave 2.
 - TD-042 — Durable Consumer Fan-out Progress (per-consumer Outbox acknowledgement)
 - TD-041 — Ledger History Pagination (HTTP Option B: default 50, max 100; internal full history unchanged; f1abf62)
 - TD-029 — Advanced Performance Metrics (research Sharpe, Sortino, and Calmar; null when unavailable; f9263b3)
+- TD-031 — Simulation report CSV, HTML, and PDF summary exporters (402ca72, b162d6c, 3846ad2)
 - TD-W2-001 — Market State wiring test isolated from Prisma connection startup; focused run and five repeats passed (2058f56)
 - TD-008 — Explicit `any` removed from five specs (36 → 0); `@typescript-eslint/no-explicit-any` restored as error for specs, tests, and validation; 43 tests passed; negative optimization cases and assertions preserved; no production behavior change. `tsc --noEmit` is not globally green: two untracked FIV-CONN-04-D stage-4 specs still fail (9a89d79)
 - TD-010 — Insight mapping extracted into `InsightGenerationService`; `extractInsightDrafts` and `toInsightInput` remain separate; both pipeline steps delegate; `InsightDomainService.create` unchanged; 34 tests passed. `tsc --noEmit` is not globally green: two untracked FIV-CONN-04-D stage-4 specs still fail (4a3df43)
@@ -161,10 +162,6 @@ This item is not a Wave 2 blocker and must not delay Wave 2.
 - TD-002 — Durable runtime queue/scheduler ownership
 - TD-028 — Execution Model (M2 US159–US178 complete; M3–M6 runtime work remains)
 - TD-036 — Runtime Recovery and Reconciliation (RC-17 baselined; residuals below)
-
-### Future
-
-- TD-031 — Report Exporters (PDF / CSV / HTML)
 
 ---
 
@@ -218,8 +215,8 @@ Evidence: [`e17-stage-4-technical-review.md`](./e17-stage-4-technical-review.md)
 
 - TD-001, TD-003, TD-004, TD-007…TD-013 — legacy persistence, scheduling,
   intelligence, typing, layering, and duplicate-domain cleanup.
-- TD-030, TD-031, and TD-033 — analytics, scoring, exporters, and large-dataset
-  scalability. TD-029 was in this 2026-07-30 backlog and is now resolved.
+- TD-030 and TD-033 — analytics, scoring, and large-dataset scalability. TD-029
+  and TD-031 were in this 2026-07-30 backlog and are now resolved.
 
 TD-042 was exposed by this final audit; all identified release blockers are now
 explicit. No additional hidden blocker was found.
@@ -236,7 +233,7 @@ explicit. No additional hidden blocker was found.
 | RC-16         | Paper runtime baseline (delivered) | TD-034…TD-042 (gates resolved where marked)                      |
 | RC-17         | Production readiness / ops runtime | TD-002, TD-005 (Closed), TD-006 (Closed), TD-028, TD-032, TD-036 |
 | RC-16+        | Simulation analytics & scale       | TD-030, TD-033                                                   |
-| Future        | Reporting                          | TD-031, TD-043, TD-044                                           |
+| Future        | Reporting                          | TD-043, TD-044                                                   |
 | Opportunistic | Hygiene                            | TD-009 (Closed)                                                  |
 
 Exact RC numbering follows [`release-history.md`](./release-history.md) and
