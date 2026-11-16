@@ -87,8 +87,10 @@ export class BacktestEngine {
         to: session.to,
       });
 
-      // Provider returns ascending timestamps; sort defensively for sequential replay.
-      const ordered = [...bars].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+      // Local repository reads are already chronological. Other providers are not
+      // required to be, so copy and sort only when a timestamp moves backward.
+      // The provider's array is never sorted in place.
+      const ordered = chronologicalBars(bars);
 
       await strategy.initialize(context);
 
@@ -197,6 +199,18 @@ function assertNonEmpty(value: string, field: string): void {
   if (value.trim() === '') {
     throw new Error(`${field} must not be empty`);
   }
+}
+
+function chronologicalBars<T extends { timestamp: string }>(bars: readonly T[]): readonly T[] {
+  if (isChronological(bars)) return bars;
+  return [...bars].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+}
+
+function isChronological(bars: readonly { timestamp: string }[]): boolean {
+  for (let index = 1; index < bars.length; index += 1) {
+    if (bars[index - 1]!.timestamp.localeCompare(bars[index]!.timestamp) > 0) return false;
+  }
+  return true;
 }
 
 function appendSnapshot(sink: PortfolioSnapshot[] | undefined, snapshot: PortfolioSnapshot): void {

@@ -1,10 +1,13 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { toInstrument } from '../market-data/instrument';
-import type { MarketBar } from '../market-data/market-bar';
 import { MarketDataDomainService } from '../market-data/market-data-domain.service';
 import { InMemoryMarketDataRepository } from '../market-data/repositories/in-memory-market-data.repository';
 import { Timeframe } from '../market-data/timeframe';
+import type { MarketBar } from '../market-data/market-bar';
+import { toMarketBarId } from '../market-data/market-bar-id';
 import { LocalRepositoryProvider } from '../market-data-provider/local-repository.provider';
+import type { MarketDataProvider } from '../market-data-provider/market-data-provider';
+import { MarketDataSource } from '../market-data-provider/market-data-source';
 import { ProviderRegistry } from '../market-data-provider/provider-registry';
 import { PortfolioEngine } from '../portfolio/portfolio-engine';
 import { PortfolioStatus } from '../portfolio/portfolio-status';
@@ -255,6 +258,75 @@ describe('BacktestEngine (US118)', () => {
     expect(result.performance.totalTrades).toBe(1);
     expect(result.performance.winningTrades + result.performance.losingTrades).toBe(1);
   });
+
+  it('replays repository bars chronologically when they were saved out of order', async () => {
+    seedBars(marketData, [
+      '2026-07-17T12:00:00.000Z',
+      '2026-07-17T10:00:00.000Z',
+      '2026-07-17T11:00:00.000Z',
+    ]);
+
+    const timestamps: string[] = [];
+    const first = await engine.run(
+      createSession(),
+      recordingStrategy((bar) => timestamps.push(bar.timestamp)),
+    );
+    const secondTimestamps: string[] = [];
+    const second = await engine.run(
+      createSession(),
+      recordingStrategy((bar) => secondTimestamps.push(bar.timestamp)),
+    );
+
+    expect(timestamps).toEqual([
+      '2026-07-17T10:00:00.000Z',
+      '2026-07-17T11:00:00.000Z',
+      '2026-07-17T12:00:00.000Z',
+    ]);
+    expect(secondTimestamps).toEqual(timestamps);
+    expect(first.processedBars).toBe(second.processedBars);
+    expect(first.performance).toEqual(second.performance);
+  });
+});
+
+describe('BacktestEngine provider array', () => {
+  it('sorts an unsorted provider array without changing that array', async () => {
+    const source = [
+      fixedBar('later', '2026-07-17T12:00:00.000Z'),
+      fixedBar('earlier', '2026-07-17T10:00:00.000Z'),
+      fixedBar('same-b', '2026-07-17T11:00:00.000Z'),
+      fixedBar('same-a', '2026-07-17T11:00:00.000Z'),
+    ];
+    const before = source.map((item) => item.id);
+    const seen: string[] = [];
+    const engine = new BacktestEngine(new ProviderRegistry([fixedProvider(source)]));
+
+    await engine.run(
+      createSession(),
+      recordingStrategy((bar) => seen.push(bar.id)),
+    );
+
+    expect(source.map((item) => item.id)).toEqual(before);
+    expect(seen).toEqual(['earlier', 'same-b', 'same-a', 'later']);
+  });
+
+  it('replays an already chronological provider array without reordering it', async () => {
+    const source = [
+      fixedBar('same-a', '2026-07-17T10:00:00.000Z'),
+      fixedBar('same-b', '2026-07-17T10:00:00.000Z'),
+      fixedBar('later', '2026-07-17T11:00:00.000Z'),
+    ];
+    const seen: MarketBar[] = [];
+    const engine = new BacktestEngine(new ProviderRegistry([fixedProvider(source)]));
+
+    await engine.run(
+      createSession(),
+      recordingStrategy((bar) => seen.push(bar)),
+    );
+
+    expect(seen).toEqual(source);
+    expect(seen[0]).toBe(source[0]);
+    expect(seen[1]).toBe(source[1]);
+  });
 });
 
 function createSession(): BacktestSession {
@@ -268,6 +340,41 @@ function createSession(): BacktestSession {
     to: '2026-07-17T23:59:59.000Z',
     status: BacktestStatus.Created,
     createdAt: '2026-07-17T09:00:00.000Z',
+  };
+}
+
+function recordingStrategy(onBar: (bar: MarketBar) => void): Strategy {
+  return {
+    initialize: () => undefined,
+    onBar,
+    finalize: () => undefined,
+  };
+}
+
+function fixedProvider(bars: MarketBar[]): MarketDataProvider {
+  return {
+    supports: (source) => source === MarketDataSource.Local,
+    fetchHistorical: () =>
+      Promise.resolve({
+        bars,
+        source: MarketDataSource.Local,
+        fetchedAt: '2026-07-18T00:00:00.000Z',
+      }),
+  };
+}
+
+function fixedBar(id: string, timestamp: string): MarketBar {
+  return {
+    id: toMarketBarId(id),
+    workspaceId: WS,
+    instrument: toInstrument('BTCUSDT'),
+    timeframe: Timeframe.H1,
+    timestamp,
+    open: 100,
+    high: 110,
+    low: 95,
+    close: 105,
+    volume: 1,
   };
 }
 

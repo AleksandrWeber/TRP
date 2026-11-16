@@ -5,13 +5,17 @@ import type { MarketDataRangeQuery, MarketDataRepository } from './market-data.r
 /**
  * In-memory MarketDataRepository (Map-backed) (US115).
  * No filesystem, database, or serialization.
+ * Stored bars are frozen copies of the caller's input. `findById` returns a
+ * mutable copy because existing callers assign to that result. `findRange`
+ * returns the frozen stored objects in a new array: replay only reads them,
+ * and a caller cannot change stored values or the next query's order.
  */
 export class InMemoryMarketDataRepository implements MarketDataRepository {
   private readonly byId = new Map<string, MarketBar>();
 
   saveBars(bars: MarketBar[]): void {
     for (const bar of bars) {
-      this.byId.set(bar.id, cloneBar(bar));
+      this.byId.set(bar.id, Object.freeze(cloneBar(bar)));
     }
   }
 
@@ -22,9 +26,9 @@ export class InMemoryMarketDataRepository implements MarketDataRepository {
   }
 
   findRange(query: MarketDataRangeQuery): MarketBar[] {
-    return this.matchRange(query)
-      .map(cloneBar)
-      .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+    const matched = this.matchRange(query);
+    matched.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+    return matched;
   }
 
   deleteRange(query: MarketDataRangeQuery): number {
