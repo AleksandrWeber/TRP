@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { CsvSimulationReportExporter } from './csv-simulation-report.exporter';
 import { SimulationReportBuilder } from './simulation-report.builder';
 
 /**
@@ -6,7 +7,7 @@ import { SimulationReportBuilder } from './simulation-report.builder';
  * Immutable research simulation artifact — no UI / REST / Prisma.
  */
 @Module({
-  providers: [SimulationReportBuilder],
-  exports: [SimulationReportBuilder],
+  providers: [SimulationReportBuilder, CsvSimulationReportExporter],
+  exports: [SimulationReportBuilder, CsvSimulationReportExporter],
 })
 export class SimulationReportModule {}
