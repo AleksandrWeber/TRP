@@ -4,6 +4,7 @@ import { BacktestStatus } from '../backtesting/backtest-status';
 import type { PerformanceReport } from '../performance/performance-report';
 import type { WalkForwardResult } from '../walk-forward/walk-forward-result';
 import { StrategyComparisonService } from './strategy-comparison.service';
+import { DEFAULT_STRATEGY_COMPARISON_WEIGHTS } from './strategy-comparison-weights';
 
 describe('StrategyComparisonService (US123)', () => {
   const service = new StrategyComparisonService();
@@ -130,6 +131,90 @@ describe('StrategyComparisonService (US123)', () => {
     expect(comparison.entries).toEqual([]);
     expect(comparison.overallWinnerStrategyId).toBeNull();
     expect(Object.isFrozen(comparison)).toBe(true);
+  });
+
+  it('keeps the historical winner when weights are omitted or passed explicitly', () => {
+    const inputs = [
+      {
+        strategyId: 'return-led',
+        result: backtest({
+          totalReturnPct: 40,
+          maxDrawdown: 20,
+          winRate: 0.4,
+          profitFactor: 1.2,
+        }),
+      },
+      {
+        strategyId: 'drawdown-led',
+        result: backtest({
+          totalReturnPct: 0,
+          maxDrawdown: 0,
+          winRate: 0.4,
+          profitFactor: 1.2,
+        }),
+      },
+    ];
+
+    const omitted = service.compare(inputs);
+    const explicit = service.compare(inputs, DEFAULT_STRATEGY_COMPARISON_WEIGHTS);
+
+    expect(explicit).toEqual(omitted);
+    expect(omitted.overallWinnerStrategyId).toBe('return-led');
+    expect(omitted.rankings.highestReturn[0]).toBe('return-led');
+    expect(omitted.rankings.lowestDrawdown[0]).toBe('drawdown-led');
+  });
+
+  it('changes only the weighted winner when drawdown is the entire contract', () => {
+    const inputs = [
+      {
+        strategyId: 'return-led',
+        result: backtest({
+          totalReturnPct: 40,
+          maxDrawdown: 20,
+          winRate: 0.4,
+          profitFactor: 1.2,
+        }),
+      },
+      {
+        strategyId: 'drawdown-led',
+        result: backtest({
+          totalReturnPct: 0,
+          maxDrawdown: 0,
+          winRate: 0.4,
+          profitFactor: 1.2,
+        }),
+      },
+    ];
+
+    const comparison = service.compare(inputs, {
+      totalReturn: 0,
+      maxDrawdown: 1,
+      profitFactor: 0,
+      winRate: 0,
+    });
+
+    expect(comparison.overallWinnerStrategyId).toBe('drawdown-led');
+    expect(
+      comparison.entries.find((entry) => entry.strategyId === 'drawdown-led')?.weightedScore,
+    ).toBe(1);
+    expect(
+      comparison.entries.find((entry) => entry.strategyId === 'return-led')?.weightedScore,
+    ).toBe(0);
+    expect(comparison.rankings.highestReturn[0]).toBe('return-led');
+    expect(comparison.rankings.lowestDrawdown[0]).toBe('drawdown-led');
+    expect(comparison.rankings.bestProfitFactor).toEqual(['return-led', 'drawdown-led']);
+    expect(comparison.rankings.highestWinRate).toEqual(['return-led', 'drawdown-led']);
+  });
+
+  it('rejects a weight contract that does not sum to 1', () => {
+    expect(() =>
+      service.compare([{ strategyId: 'a', result: backtest({}) }], {
+        totalReturn: 1,
+        maxDrawdown: 1,
+        profitFactor: 0,
+        winRate: 0,
+      }),
+    ).toThrow(/must sum to 1/);
   });
 
   it('rejects duplicate strategy ids', () => {

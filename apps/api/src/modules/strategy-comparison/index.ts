@@ -6,3 +6,8 @@ export type {
   StrategyComparisonEntry,
   StrategyComparisonRankings,
 } from './strategy-comparison';
+export {
+  DEFAULT_STRATEGY_COMPARISON_WEIGHTS,
+  resolveStrategyComparisonWeights,
+} from './strategy-comparison-weights';
+export type { StrategyComparisonWeights } from './strategy-comparison-weights';

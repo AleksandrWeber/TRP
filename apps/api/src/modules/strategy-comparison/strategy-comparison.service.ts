@@ -7,11 +7,10 @@ import type {
   StrategyComparisonEntry,
   StrategyComparisonRankings,
 } from './strategy-comparison';
-
-const WEIGHT_RETURN = 0.4;
-const WEIGHT_DRAWDOWN = 0.3;
-const WEIGHT_PROFIT_FACTOR = 0.2;
-const WEIGHT_WIN_RATE = 0.1;
+import {
+  resolveStrategyComparisonWeights,
+  type StrategyComparisonWeights,
+} from './strategy-comparison-weights';
 
 type MetricRow = {
   strategyId: string;
@@ -30,10 +29,16 @@ type MetricRow = {
 /**
  * Compares multiple BacktestResult / WalkForwardResult outcomes (US123).
  * Produces rankings + weighted overall winner. No optimization / UI / REST / Prisma.
+ * Optional weights are an in-process scoring contract. The default remains
+ * return 0.4, drawdown 0.3, profit factor 0.2, and win rate 0.1.
  */
 @Injectable()
 export class StrategyComparisonService {
-  compare(inputs: readonly StrategyComparisonInput[]): StrategyComparison {
+  compare(
+    inputs: readonly StrategyComparisonInput[],
+    weights?: StrategyComparisonWeights,
+  ): StrategyComparison {
+    const scoringWeights = resolveStrategyComparisonWeights(weights);
     if (inputs.length === 0) {
       return freezeComparison({
         entries: [],
@@ -81,10 +86,10 @@ export class StrategyComparisonService {
         cagr: row.cagr,
         durationMs: row.durationMs,
         weightedScore:
-          WEIGHT_RETURN * returnScores[index]! +
-          WEIGHT_DRAWDOWN * drawdownScores[index]! +
-          WEIGHT_PROFIT_FACTOR * profitFactorScores[index]! +
-          WEIGHT_WIN_RATE * winRateScores[index]!,
+          scoringWeights.totalReturn * returnScores[index]! +
+          scoringWeights.maxDrawdown * drawdownScores[index]! +
+          scoringWeights.profitFactor * profitFactorScores[index]! +
+          scoringWeights.winRate * winRateScores[index]!,
       }),
     );
 
