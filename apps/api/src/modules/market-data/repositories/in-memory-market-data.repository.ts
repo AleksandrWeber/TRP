@@ -31,6 +31,8 @@ type SeriesBucket = {
  *
  * Bars are also indexed by workspace, instrument, and timeframe in timestamp
  * order. Equal timestamps keep the order in which each id was first saved.
+ * A save sorts only the incoming batch, then appends or merges that run into
+ * the series already stored.
  */
 export class InMemoryMarketDataRepository implements MarketDataRepository {
   private readonly byId = new Map<string, MarketBar>();
@@ -170,8 +172,7 @@ export class InMemoryMarketDataRepository implements MarketDataRepository {
         ? (existing?.bars ?? []).filter((bar) => !bucket.removed.has(bar.id))
         : (existing?.bars ?? []);
     const additions = dedupeLastWrite(bucket.added);
-    const merged = additions.length === 0 ? kept : kept.concat(additions);
-    if (merged.length === 0) {
+    if (kept.length === 0 && additions.length === 0) {
       this.writeSeries(workspaceId, instrument, timeframe, [], true);
       return;
     }
@@ -180,12 +181,38 @@ export class InMemoryMarketDataRepository implements MarketDataRepository {
       (existing?.canonical ?? true) &&
       additions.every((bar) => isCanonicalTimestamp(bar.timestamp));
     if (!canonical && bucket.removed.size > 0) {
-      canonical = merged.every((bar) => isCanonicalTimestamp(bar.timestamp));
+      canonical =
+        kept.every((bar) => isCanonicalTimestamp(bar.timestamp)) &&
+        additions.every((bar) => isCanonicalTimestamp(bar.timestamp));
     }
-    if (!isNonDecreasing(merged, this.insertionOrder, canonical)) {
-      merged.sort((left, right) => compareBars(left, right, this.insertionOrder, canonical));
+    if (additions.length === 0) {
+      this.writeSeries(workspaceId, instrument, timeframe, kept, canonical);
+      return;
     }
-    this.writeSeries(workspaceId, instrument, timeframe, merged, canonical);
+
+    const incoming = sortedRun(additions, this.insertionOrder, canonical);
+    if (kept.length === 0) {
+      this.writeSeries(workspaceId, instrument, timeframe, incoming, canonical);
+      return;
+    }
+
+    const order = this.insertionOrder;
+    if (compareBars(kept[kept.length - 1]!, incoming[0]!, order, canonical) <= 0) {
+      this.writeSeries(workspaceId, instrument, timeframe, kept.concat(incoming), canonical);
+      return;
+    }
+    if (compareBars(incoming[incoming.length - 1]!, kept[0]!, order, canonical) <= 0) {
+      this.writeSeries(workspaceId, instrument, timeframe, incoming.concat(kept), canonical);
+      return;
+    }
+
+    this.writeSeries(
+      workspaceId,
+      instrument,
+      timeframe,
+      mergeRuns(kept, incoming, order, canonical),
+      canonical,
+    );
   }
 
   private canonicalBounds(
@@ -314,6 +341,37 @@ function isNonDecreasing(
     if (compareBars(bars[index - 1]!, bars[index]!, order, canonical) > 0) return false;
   }
   return true;
+}
+
+function sortedRun(bars: MarketBar[], order: Map<string, number>, canonical: boolean): MarketBar[] {
+  if (isNonDecreasing(bars, order, canonical)) return bars;
+  bars.sort((left, right) => compareBars(left, right, order, canonical));
+  return bars;
+}
+
+function mergeRuns(
+  left: readonly MarketBar[],
+  right: readonly MarketBar[],
+  order: Map<string, number>,
+  canonical: boolean,
+): MarketBar[] {
+  const merged = new Array<MarketBar>(left.length + right.length);
+  let leftIndex = 0;
+  let rightIndex = 0;
+  let mergedIndex = 0;
+  while (leftIndex < left.length && rightIndex < right.length) {
+    const comparison = compareBars(left[leftIndex]!, right[rightIndex]!, order, canonical);
+    if (comparison === 0 && left[leftIndex]!.id === right[rightIndex]!.id) {
+      leftIndex += 1;
+      continue;
+    }
+    if (comparison <= 0) merged[mergedIndex++] = left[leftIndex++]!;
+    else merged[mergedIndex++] = right[rightIndex++]!;
+  }
+  while (leftIndex < left.length) merged[mergedIndex++] = left[leftIndex++]!;
+  while (rightIndex < right.length) merged[mergedIndex++] = right[rightIndex++]!;
+  merged.length = mergedIndex;
+  return merged;
 }
 
 function lowerBound(bars: readonly MarketBar[], from: string): number {

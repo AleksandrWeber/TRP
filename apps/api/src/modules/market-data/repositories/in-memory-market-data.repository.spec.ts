@@ -267,6 +267,172 @@ describe('InMemoryMarketDataRepository range isolation', () => {
   });
 });
 
+describe('InMemoryMarketDataRepository sorted-run saves', () => {
+  it('stores an ordered batch in timestamp order', () => {
+    const repository = new InMemoryMarketDataRepository();
+    repository.saveBars([
+      bar('a', '2026-07-17T09:00:00.000Z', 1),
+      bar('b', '2026-07-17T10:00:00.000Z', 2),
+      bar('c', '2026-07-17T11:00:00.000Z', 3),
+    ]);
+
+    expect(repository.findRange(RANGE).map((item) => item.id)).toEqual(['a', 'b', 'c']);
+  });
+
+  it('stores a shuffled batch in timestamp order without reordering the caller array', () => {
+    const repository = new InMemoryMarketDataRepository();
+    const input = [
+      bar('c', '2026-07-17T11:00:00.000Z', 3),
+      bar('a', '2026-07-17T09:00:00.000Z', 1),
+      bar('b', '2026-07-17T10:00:00.000Z', 2),
+    ];
+    repository.saveBars(input);
+
+    expect(repository.findRange(RANGE).map((item) => item.id)).toEqual(['a', 'b', 'c']);
+    expect(input.map((item) => item.id)).toEqual(['c', 'a', 'b']);
+    input[0]!.close = 0;
+    expect(repository.findById('c', WORKSPACE)?.close).toBe(3);
+  });
+
+  it('appends an ordered batch onto an existing series', () => {
+    const repository = new InMemoryMarketDataRepository();
+    repository.saveBars([
+      bar('a', '2026-07-17T09:00:00.000Z', 1),
+      bar('b', '2026-07-17T10:00:00.000Z', 2),
+    ]);
+    repository.saveBars([
+      bar('c', '2026-07-17T11:00:00.000Z', 3),
+      bar('d', '2026-07-17T12:00:00.000Z', 4),
+    ]);
+
+    expect(repository.findRange(RANGE).map((item) => item.id)).toEqual(['a', 'b', 'c', 'd']);
+  });
+
+  it('merges a shuffled later batch onto an existing series', () => {
+    const repository = new InMemoryMarketDataRepository();
+    repository.saveBars([
+      bar('a', '2026-07-17T09:00:00.000Z', 1),
+      bar('b', '2026-07-17T10:00:00.000Z', 2),
+    ]);
+    repository.saveBars([
+      bar('d', '2026-07-17T12:00:00.000Z', 4),
+      bar('c', '2026-07-17T11:00:00.000Z', 3),
+    ]);
+
+    expect(repository.findRange(RANGE).map((item) => item.id)).toEqual(['a', 'b', 'c', 'd']);
+  });
+
+  it('inserts a small shuffled batch into the middle of a series', () => {
+    const repository = new InMemoryMarketDataRepository();
+    repository.saveBars([
+      bar('a', '2026-07-17T09:00:00.000Z', 1),
+      bar('b', '2026-07-17T10:00:00.000Z', 2),
+      bar('e', '2026-07-17T12:00:00.000Z', 5),
+    ]);
+    repository.saveBars([
+      bar('d', '2026-07-17T11:00:00.000Z', 4),
+      bar('c', '2026-07-17T10:30:00.000Z', 3),
+    ]);
+
+    expect(repository.findRange(RANGE).map((item) => item.id)).toEqual(['a', 'b', 'c', 'd', 'e']);
+  });
+
+  it('keeps first-save order when a merged batch repeats a timestamp', () => {
+    const repository = new InMemoryMarketDataRepository();
+    repository.saveBars([
+      bar('same-b', '2026-07-17T10:00:00.000Z', 2),
+      bar('same-a', '2026-07-17T10:00:00.000Z', 1),
+    ]);
+    repository.saveBars([
+      bar('late', '2026-07-17T12:00:00.000Z', 4),
+      bar('same-c', '2026-07-17T10:00:00.000Z', 3),
+    ]);
+
+    expect(repository.findRange(RANGE).map((item) => item.id)).toEqual([
+      'same-b',
+      'same-a',
+      'same-c',
+      'late',
+    ]);
+  });
+
+  it('moves a replaced bar across instrument and timeframe without leaving the old series', () => {
+    const repository = new InMemoryMarketDataRepository();
+    repository.saveBars([
+      bar('moved', '2026-07-17T10:00:00.000Z', 1),
+      bar('stays', '2026-07-17T11:00:00.000Z', 2),
+    ]);
+
+    repository.saveBars([
+      {
+        ...bar('moved', '2026-07-17T10:30:00.000Z', 9),
+        instrument: toInstrument('ETHUSDT'),
+        timeframe: Timeframe.M5,
+      },
+    ]);
+
+    expect(repository.findRange(RANGE).map((item) => item.id)).toEqual(['stays']);
+    expect(
+      repository
+        .findRange({
+          ...RANGE,
+          instrument: 'ETHUSDT',
+          timeframe: Timeframe.M5,
+        })
+        .map((item) => [item.id, item.close]),
+    ).toEqual([['moved', 9]]);
+    expect(repository.findById('moved', WORKSPACE)?.timeframe).toBe(Timeframe.M5);
+  });
+
+  it('keeps deleteRange and later saves consistent after merged writes', () => {
+    const repository = new InMemoryMarketDataRepository();
+    repository.saveBars([
+      bar('a', '2026-07-17T09:00:00.000Z', 1),
+      bar('c', '2026-07-17T11:00:00.000Z', 3),
+    ]);
+    repository.saveBars([
+      bar('d', '2026-07-17T12:00:00.000Z', 4),
+      bar('b', '2026-07-17T10:00:00.000Z', 2),
+    ]);
+
+    expect(
+      repository.deleteRange({
+        ...RANGE,
+        from: '2026-07-17T10:00:00.000Z',
+        to: '2026-07-17T11:00:00.000Z',
+      }),
+    ).toBe(2);
+    repository.saveBars([
+      bar('b', '2026-07-17T10:00:00.000Z', 8),
+      bar('e', '2026-07-17T13:00:00.000Z', 5),
+    ]);
+    expect(
+      repository.deleteRange({
+        ...RANGE,
+        from: '2026-07-17T13:00:00.000Z',
+        to: '2026-07-17T13:00:00.000Z',
+      }),
+    ).toBe(1);
+
+    expect(repository.findRange(RANGE).map((item) => [item.id, item.close])).toEqual([
+      ['a', 1],
+      ['b', 8],
+      ['d', 4],
+    ]);
+    expect(repository.findById('c', WORKSPACE)).toBeNull();
+    expect(repository.findById('e', WORKSPACE)).toBeNull();
+    expect(repository.findById('b', WORKSPACE)?.close).toBe(8);
+
+    const first = repository.findRange(RANGE);
+    const second = repository.findRange(RANGE);
+    expect(first).not.toBe(second);
+    expect(first[0]).toBe(second[0]);
+    const loaded = repository.findById('a', WORKSPACE);
+    loaded!.close = 99;
+    expect(repository.findRange(RANGE)[0]?.close).toBe(1);
+  });
+});
+
 function bar(id: string, timestamp: string, close: number): MarketBar {
   return {
     id: toMarketBarId(id),
