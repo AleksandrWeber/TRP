@@ -122,6 +122,149 @@ describe('InMemoryMarketDataRepository range isolation', () => {
     expect(repository.findById('btc', 'ws-2')).toBeNull();
     expect(repository.findById('other-workspace', 'ws-2')?.close).toBe(3);
   });
+
+  it('returns an empty array for a missing workspace and for an inverted range', () => {
+    const repository = new InMemoryMarketDataRepository();
+    repository.saveBars([bar('stored', '2026-07-17T10:00:00.000Z', 105)]);
+
+    expect(repository.findRange({ ...RANGE, workspaceId: 'missing' })).toEqual([]);
+    expect(
+      repository.findRange({
+        ...RANGE,
+        from: '2026-07-17T12:00:00.000Z',
+        to: '2026-07-17T09:00:00.000Z',
+      }),
+    ).toEqual([]);
+    expect(repository.deleteRange({ ...RANGE, workspaceId: 'missing' })).toBe(0);
+  });
+
+  it('sorts bars saved out of order across separate calls', () => {
+    const repository = new InMemoryMarketDataRepository();
+    const input = [
+      bar('late', '2026-07-17T12:00:00.000Z', 3),
+      bar('early', '2026-07-17T09:00:00.000Z', 1),
+    ];
+    repository.saveBars([input[0]!]);
+    repository.saveBars([input[1]!]);
+
+    expect(repository.findRange(RANGE).map((item) => item.id)).toEqual(['early', 'late']);
+    expect(input.map((item) => item.id)).toEqual(['late', 'early']);
+  });
+
+  it('keeps duplicate timestamps in first-save order after a later out-of-order batch', () => {
+    const repository = new InMemoryMarketDataRepository();
+    repository.saveBars([
+      bar('same-b', '2026-07-17T10:00:00.000Z', 2),
+      bar('same-a', '2026-07-17T10:00:00.000Z', 1),
+    ]);
+    repository.saveBars([bar('early', '2026-07-17T09:00:00.000Z', 4)]);
+
+    expect(repository.findRange(RANGE).map((item) => item.id)).toEqual([
+      'early',
+      'same-b',
+      'same-a',
+    ]);
+  });
+
+  it('keeps the last close when one id is saved twice in a batch', () => {
+    const repository = new InMemoryMarketDataRepository();
+    repository.saveBars([
+      bar('same', '2026-07-17T10:00:00.000Z', 1),
+      bar('other', '2026-07-17T10:00:00.000Z', 2),
+      bar('same', '2026-07-17T10:00:00.000Z', 3),
+    ]);
+
+    const found = repository.findRange(RANGE);
+    expect(found.map((item) => item.id)).toEqual(['same', 'other']);
+    expect(found.map((item) => item.close)).toEqual([3, 2]);
+  });
+
+  it('removes a replaced bar from its previous timestamp and workspace', () => {
+    const repository = new InMemoryMarketDataRepository();
+    repository.saveBars([
+      bar('moved', '2026-07-17T10:00:00.000Z', 105),
+      bar('stays', '2026-07-17T11:00:00.000Z', 4),
+    ]);
+    const [previous] = repository.findRange(RANGE);
+
+    repository.saveBars([
+      {
+        ...bar('moved', '2026-07-17T12:00:00.000Z', 200),
+        workspaceId: 'ws-2',
+      },
+    ]);
+
+    expect(previous?.close).toBe(105);
+    expect(repository.findRange(RANGE).map((item) => item.id)).toEqual(['stays']);
+    expect(repository.findById('moved', WORKSPACE)).toBeNull();
+    expect(repository.findById('moved', 'ws-2')?.close).toBe(200);
+    expect(
+      repository
+        .findRange({ ...RANGE, workspaceId: 'ws-2' })
+        .map((item) => [item.id, item.timestamp]),
+    ).toEqual([['moved', '2026-07-17T12:00:00.000Z']]);
+  });
+
+  it('deletes only the indexed range and leaves the surrounding bars', () => {
+    const repository = new InMemoryMarketDataRepository();
+    repository.saveBars([
+      bar('early', '2026-07-17T09:00:00.000Z', 1),
+      bar('middle', '2026-07-17T10:00:00.000Z', 2),
+      bar('late', '2026-07-17T12:00:00.000Z', 3),
+    ]);
+
+    expect(
+      repository.deleteRange({
+        ...RANGE,
+        from: '2026-07-17T10:00:00.000Z',
+        to: '2026-07-17T10:00:00.000Z',
+      }),
+    ).toBe(1);
+
+    expect(repository.findRange(RANGE).map((item) => item.id)).toEqual(['early', 'late']);
+    expect(repository.findById('middle', WORKSPACE)).toBeNull();
+    expect(repository.deleteRange(RANGE)).toBe(2);
+    expect(repository.findRange(RANGE)).toEqual([]);
+  });
+
+  it('preserves localeCompare order when a timestamp is not fixed-width ISO', () => {
+    const repository = new InMemoryMarketDataRepository();
+    repository.saveBars([
+      bar('padded', '2026-07-17T10:00:00.000Z', 2),
+      bar('unpadded', '2026-07-17T1:00:00.000Z', 1),
+    ]);
+
+    const ordered = repository.findRange({
+      ...RANGE,
+      from: '2026-07-17T10:00:00.000Z',
+      to: '2026-07-17T1:00:00.000Z',
+    });
+    expect(ordered.map((item) => item.id)).toEqual(['unpadded', 'padded']);
+    expect(
+      repository.findRange({
+        ...RANGE,
+        from: '2026-07-17T1:00:00.000Z',
+        to: '2026-07-17T10:00:00.000Z',
+      }),
+    ).toEqual([]);
+
+    expect(
+      repository.deleteRange({
+        ...RANGE,
+        from: '2026-07-17T10:00:00.000Z',
+        to: '2026-07-17T10:00:00.000Z',
+      }),
+    ).toBe(1);
+    expect(
+      repository
+        .findRange({
+          ...RANGE,
+          from: '2026-07-17T10:00:00.000Z',
+          to: '2026-07-17T1:00:00.000Z',
+        })
+        .map((item) => item.id),
+    ).toEqual(['unpadded']);
+  });
 });
 
 function bar(id: string, timestamp: string, close: number): MarketBar {
