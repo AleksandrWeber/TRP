@@ -416,6 +416,20 @@ export type CampaignFailedRun = {
   error: string;
 };
 
+export type CampaignCandidateParams = Record<string, string | number | boolean | null>;
+
+/** Completed experiment row from POST /campaigns/run, already ranked by profit factor. */
+export type CampaignCandidate = {
+  rank: number;
+  experimentId: string;
+  params: CampaignCandidateParams;
+  verdict: string;
+  profitFactor: number | null;
+  totalReturnPercent: number | null;
+  expectancy: number | null;
+  maxDrawdownPercent: number | null;
+};
+
 export type CampaignSummary = {
   campaignId: string;
   strategyId: string;
@@ -427,6 +441,8 @@ export type CampaignSummary = {
   bestExperimentId: string | null;
   createdAt: string;
   failedRuns: CampaignFailedRun[];
+  /** Present on a fresh campaign run. History and other summaries omit it. */
+  candidates?: CampaignCandidate[];
 };
 
 export type CampaignHistorySessionView = {

@@ -1,4 +1,4 @@
-import type { CampaignSummary } from '../shared/api';
+import type { CampaignCandidate, CampaignSummary } from '../shared/api';
 import { deduplicate } from '../shared/deduplicate';
 
 export type CampaignResultVerdict = 'PASS' | 'NEEDS_REVIEW' | 'FAIL';
@@ -99,6 +99,91 @@ export function CampaignResultsView({ summary }: CampaignResultsViewProps) {
           </ul>
         </div>
       </div>
+
+      <CandidateRanking candidates={summary.candidates ?? []} winnerId={summary.bestExperimentId} />
     </section>
   );
+}
+
+function CandidateRanking({
+  candidates,
+  winnerId,
+}: {
+  candidates: readonly CampaignCandidate[];
+  winnerId: string | null;
+}) {
+  return (
+    <div className="space-y-3">
+      <h3 className="text-sm font-medium text-slate-300">Candidates</h3>
+      <div className="overflow-x-auto rounded-xl border border-white/10">
+        <table
+          className="min-w-full text-left text-sm text-slate-200"
+          data-testid="candidate-table"
+        >
+          <thead className="bg-white/5 text-slate-400">
+            <tr>
+              <th className="px-4 py-3 font-medium">Rank</th>
+              <th className="px-4 py-3 font-medium">Experiment</th>
+              <th className="px-4 py-3 font-medium">Parameters</th>
+              <th className="px-4 py-3 font-medium">Verdict</th>
+              <th className="px-4 py-3 font-medium">Profit factor</th>
+              <th className="px-4 py-3 font-medium">Return</th>
+              <th className="px-4 py-3 font-medium">Expectancy</th>
+              <th className="px-4 py-3 font-medium">Max drawdown</th>
+            </tr>
+          </thead>
+          <tbody>
+            {candidates.length === 0 ? (
+              <tr>
+                <td colSpan={8} className="px-4 py-3 text-slate-500" data-testid="candidates-empty">
+                  No completed candidates.
+                </td>
+              </tr>
+            ) : (
+              candidates.map((candidate) => {
+                const winner = winnerId !== null && candidate.experimentId === winnerId;
+                return (
+                  <tr
+                    key={candidate.experimentId}
+                    className="border-t border-white/10"
+                    data-testid={winner ? 'candidate-winner' : 'candidate-row'}
+                    data-experiment-id={candidate.experimentId}
+                  >
+                    <td className="px-4 py-3">
+                      {candidate.rank}
+                      {winner ? (
+                        <span className="ml-2 rounded-full border border-emerald-400/40 px-2 py-0.5 text-xs uppercase text-emerald-200">
+                          Winner
+                        </span>
+                      ) : null}
+                    </td>
+                    <td className="px-4 py-3 font-mono text-xs">{candidate.experimentId}</td>
+                    <td className="max-w-xs break-all px-4 py-3 font-mono text-xs text-slate-300">
+                      {formatParams(candidate.params)}
+                    </td>
+                    <td className="px-4 py-3">{candidate.verdict}</td>
+                    <td className="px-4 py-3">{formatMetric(candidate.profitFactor)}</td>
+                    <td className="px-4 py-3">{formatMetric(candidate.totalReturnPercent)}</td>
+                    <td className="px-4 py-3">{formatMetric(candidate.expectancy)}</td>
+                    <td className="px-4 py-3">{formatMetric(candidate.maxDrawdownPercent)}</td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function formatMetric(value: number | null | undefined): string {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return '—';
+  return String(value);
+}
+
+function formatParams(params: CampaignCandidate['params']): string {
+  const entries = Object.entries(params);
+  if (entries.length === 0) return '—';
+  return entries.map(([key, value]) => `${key}=${String(value)}`).join(', ');
 }

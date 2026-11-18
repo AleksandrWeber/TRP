@@ -26,41 +26,232 @@ describe('CampaignController', () => {
   });
 
   describe('POST /campaigns/run', () => {
-    it('calls ResearchCampaignService.run and returns CampaignSummary unchanged', async () => {
-      const summary = {
-        campaignId: 'camp-1',
-        strategyId: 'donchian-breakout',
-        datasetId: 'ds-1',
-        totalRuns: 2,
-        passCount: 0,
-        failCount: 2,
-        needsReviewCount: 0,
-        bestExperimentId: 'exp-2',
-        createdAt: '2026-07-16T12:00:00.000Z',
-        failedRuns: [],
-      };
+    const summary = {
+      campaignId: 'camp-1',
+      strategyId: 'donchian-breakout',
+      datasetId: 'ds-1',
+      totalRuns: 3,
+      passCount: 1,
+      failCount: 2,
+      needsReviewCount: 0,
+      bestExperimentId: 'exp-high',
+      createdAt: '2026-07-16T12:00:00.000Z',
+      failedRuns: [] as Array<{ params: Record<string, number>; error: string }>,
+    };
 
+    it('returns completed candidates in descending profit-factor order and keeps the summary', async () => {
       campaigns.run.mockResolvedValue({
         summary,
         experiments: [
-          { id: 'exp-1', verdict: 'fail', metrics: { profitFactor: 0.4 } },
-          { id: 'exp-2', verdict: 'fail', metrics: { profitFactor: 0.8 } },
+          {
+            id: 'exp-mid',
+            verdict: 'fail',
+            metrics: {
+              profitFactor: 0.6,
+              totalReturnPercent: 1,
+              expectancy: 0.2,
+              maxDrawdownPercent: 8,
+            },
+            report: { params: { channelPeriod: 10 } },
+          },
+          {
+            id: 'exp-high',
+            verdict: 'pass',
+            metrics: {
+              profitFactor: 1.4,
+              totalReturnPercent: 6,
+              expectancy: 1.1,
+              maxDrawdownPercent: 4,
+            },
+            report: { params: { channelPeriod: 20 } },
+          },
+          {
+            id: 'exp-low',
+            verdict: 'fail',
+            metrics: {
+              profitFactor: 0.2,
+              totalReturnPercent: -3,
+              expectancy: -0.4,
+              maxDrawdownPercent: 15,
+            },
+            report: { params: { channelPeriod: 30 } },
+          },
         ],
       });
 
       const result = await controller.run({
         datasetId: 'ds-1',
         strategyId: 'donchian-breakout',
-        paramsList: [{ channelPeriod: 10 }, { channelPeriod: 20 }],
+        paramsList: [{ channelPeriod: 10 }, { channelPeriod: 20 }, { channelPeriod: 30 }],
       });
 
       expect(campaigns.run).toHaveBeenCalledWith({
         datasetId: 'ds-1',
         strategyId: 'donchian-breakout',
-        paramsList: [{ channelPeriod: 10 }, { channelPeriod: 20 }],
+        paramsList: [{ channelPeriod: 10 }, { channelPeriod: 20 }, { channelPeriod: 30 }],
       });
-      expect(result).toEqual(summary);
-      expect(result).toBe(summary);
+      expect(result).toMatchObject(summary);
+      expect(result.failedRuns).toBe(summary.failedRuns);
+      expect(result.candidates.map((candidate) => candidate.experimentId)).toEqual([
+        'exp-high',
+        'exp-mid',
+        'exp-low',
+      ]);
+      expect(result.candidates[0]).toEqual({
+        rank: 1,
+        experimentId: 'exp-high',
+        params: { channelPeriod: 20 },
+        verdict: 'pass',
+        profitFactor: 1.4,
+        totalReturnPercent: 6,
+        expectancy: 1.1,
+        maxDrawdownPercent: 4,
+      });
+      expect(result.bestExperimentId).toBe(result.candidates[0]?.experimentId);
+    });
+
+    it('keeps failed runs out of the ranking', async () => {
+      const failedRuns = [{ params: { channelPeriod: 20 }, error: 'dataset missing' }];
+      const withFailure = { ...summary, failedRuns, totalRuns: 3, passCount: 1, failCount: 1 };
+
+      campaigns.run.mockResolvedValue({
+        summary: withFailure,
+        experiments: [
+          {
+            id: 'exp-low',
+            verdict: 'fail',
+            metrics: { profitFactor: 0.4 },
+            report: { params: { channelPeriod: 10 } },
+          },
+          {
+            id: 'exp-high',
+            verdict: 'pass',
+            metrics: { profitFactor: 1.5 },
+            report: { params: { channelPeriod: 30 } },
+          },
+        ],
+      });
+
+      const result = await controller.run({
+        datasetId: 'ds-1',
+        strategyId: 'donchian-breakout',
+        paramsList: [{ channelPeriod: 10 }, { channelPeriod: 20 }, { channelPeriod: 30 }],
+      });
+
+      expect(result.failedRuns).toEqual(failedRuns);
+      expect(result.candidates.map((candidate) => candidate.experimentId)).toEqual([
+        'exp-high',
+        'exp-low',
+      ]);
+      expect(result.candidates).toHaveLength(2);
+    });
+
+    it('ranks missing and non-finite profit factors after scores that can win', async () => {
+      const withWinner = { ...summary, bestExperimentId: 'exp-infinite' };
+      campaigns.run.mockResolvedValue({
+        summary: withWinner,
+        experiments: [
+          {
+            id: 'exp-missing',
+            verdict: 'fail',
+            metrics: null,
+            report: { params: { channelPeriod: 10 } },
+          },
+          {
+            id: 'exp-nan',
+            verdict: 'fail',
+            metrics: { profitFactor: Number.NaN },
+            report: { params: { channelPeriod: 20 } },
+          },
+          {
+            id: 'exp-infinite',
+            verdict: 'pass',
+            metrics: { profitFactor: Number.POSITIVE_INFINITY },
+            report: { params: { channelPeriod: 30 } },
+          },
+          {
+            id: 'exp-negative-infinity',
+            verdict: 'fail',
+            metrics: { profitFactor: Number.NEGATIVE_INFINITY },
+            report: { params: { channelPeriod: 40 } },
+          },
+          {
+            id: 'exp-finite',
+            verdict: 'fail',
+            metrics: { profitFactor: 0.5 },
+            report: { params: { channelPeriod: 50 } },
+          },
+        ],
+      });
+
+      const result = await controller.run({
+        datasetId: 'ds-1',
+        strategyId: 'donchian-breakout',
+        paramsList: [{ channelPeriod: 10 }],
+      });
+
+      expect(result.candidates.map((candidate) => candidate.experimentId)).toEqual([
+        'exp-infinite',
+        'exp-finite',
+        'exp-missing',
+        'exp-nan',
+        'exp-negative-infinity',
+      ]);
+      expect(result.bestExperimentId).toBe('exp-infinite');
+      expect(result.candidates[0]?.profitFactor).toBe(Number.POSITIVE_INFINITY);
+      expect(result.candidates[2]?.profitFactor).toBeNull();
+      expect(result.candidates[3]?.profitFactor).toBeNaN();
+      expect(result.candidates[4]?.profitFactor).toBe(Number.NEGATIVE_INFINITY);
+      expect(result.candidates[1]?.profitFactor).toBe(0.5);
+    });
+
+    it('keeps the earlier experiment first when profit factors are equal', async () => {
+      const tied = { ...summary, bestExperimentId: 'exp-first' };
+      campaigns.run.mockResolvedValue({
+        summary: tied,
+        experiments: [
+          { id: 'exp-first', verdict: 'pass', metrics: { profitFactor: 1.2 } },
+          { id: 'exp-second', verdict: 'pass', metrics: { profitFactor: 1.2 } },
+          { id: 'exp-lower', verdict: 'fail', metrics: { profitFactor: 0.4 } },
+        ],
+      });
+
+      const result = await controller.run({
+        datasetId: 'ds-1',
+        strategyId: 'donchian-breakout',
+        paramsList: [{ channelPeriod: 10 }, { channelPeriod: 20 }, { channelPeriod: 30 }],
+      });
+
+      expect(result.candidates.map((candidate) => candidate.experimentId)).toEqual([
+        'exp-first',
+        'exp-second',
+        'exp-lower',
+      ]);
+      expect(result.candidates.map((candidate) => candidate.rank)).toEqual([1, 2, 3]);
+      expect(result.bestExperimentId).toBe(result.candidates[0]?.experimentId);
+    });
+
+    it('returns an empty candidate list when every run failed before completion', async () => {
+      const failedRuns = [{ params: { channelPeriod: 10 }, error: 'dataset missing' }];
+      const empty = {
+        ...summary,
+        totalRuns: 1,
+        passCount: 0,
+        failCount: 0,
+        bestExperimentId: null,
+        failedRuns,
+      };
+      campaigns.run.mockResolvedValue({ summary: empty, experiments: [] });
+
+      const result = await controller.run({
+        datasetId: 'ds-1',
+        strategyId: 'donchian-breakout',
+        paramsList: [{ channelPeriod: 10 }],
+      });
+
+      expect(result).toMatchObject(empty);
+      expect(result.candidates).toEqual([]);
+      expect(result.failedRuns).toEqual(failedRuns);
     });
 
     it('rejects missing datasetId', async () => {
