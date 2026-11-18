@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { IsArray, IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
 import type { StrategyParams } from '@trp/research';
 
@@ -18,6 +19,9 @@ export class RunCampaignBodyDto {
   @IsOptional()
   @IsArray()
   @IsObject({ each: true })
+  // design:type is Array, and implicit conversion would otherwise construct
+  // each plain object with `new Array()`. Object keeps parameter values intact.
+  @Type(() => Object)
   paramsList?: StrategyParams[];
 }
 
