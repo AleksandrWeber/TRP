@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
+import { RepositoryPrismaLifecycle } from '../../persistence/repository-prisma-lifecycle';
+import { RepositoryPrismaLifecycleModule } from '../../persistence/repository-prisma-lifecycle.module';
 import { PrismaModule, PrismaService } from '../../storage/prisma/prisma.module';
 import { SecretVaultModule } from '../secret-vault';
 import { DurableNotificationStore } from './adapters/durable-notification-store';
@@ -183,8 +185,9 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
  * RC-24 Epic 6 — Notification Delivery module.
  *
  * Delivery only through configured channels (Telegram active).
- * W3-O01-b / W3-O02-b: optional durable store snapshot via PERSISTENCE_DRIVER=prisma
- * (history + Notification Durable Queue work items on this owner only).
+ * W3-O01-b / W3-O02-b: optional durable store snapshot via W3_PERSISTENCE_DRIVER
+ * (PERSISTENCE_DRIVER fallback, then memory). History and the Notification Durable
+ * Queue stay on this owner only.
  * W5-N01-b: durable Telegram notification anchor persistence on this owner only.
  * W5-N01-c: deterministic restart recovery hydrate for canonical anchors on this owner only.
  * W5-N02-b: durable Email notification anchor persistence on this owner only.
@@ -214,17 +217,20 @@ import { TelegramNotificationRestartRecoveryService } from './telegram-notificat
  * Trading Session / Orders / Ledger. Does not expose REST or trading commands.
  */
 @Module({
-  imports: [PrismaModule, SecretVaultModule],
+  imports: [RepositoryPrismaLifecycleModule, PrismaModule, SecretVaultModule],
   providers: [
     NotificationDeliveryBoundaryService,
     {
       provide: InMemoryNotificationStore,
-      useFactory: async () =>
+      useFactory: async (clients: RepositoryPrismaLifecycle) =>
         createRepositoryByDriver({
+          group: 'w3',
           createMemory: () => new InMemoryNotificationStore(),
           createPrisma: (client) => new DurableNotificationStore(client),
           owner: 'notification-delivery',
+          clients,
         }),
+      inject: [RepositoryPrismaLifecycle],
     },
     {
       provide: TELEGRAM_NOTIFICATION_ANCHOR_REPOSITORY,

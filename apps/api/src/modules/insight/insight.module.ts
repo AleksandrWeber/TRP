@@ -3,6 +3,8 @@ import type { Metrics } from '../../metrics/metrics';
 import { METRICS } from '../../metrics/metrics.token';
 import { instrumentRepository } from '../../metrics/instrument-repository';
 import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
+import { RepositoryPrismaLifecycle } from '../../persistence/repository-prisma-lifecycle';
+import { RepositoryPrismaLifecycleModule } from '../../persistence/repository-prisma-lifecycle.module';
 import { PipelineModule } from '../pipeline/pipeline.module';
 import { PipelineRegistry } from '../pipeline/pipeline-registry';
 import { registerInsightPipelineSteps } from '../pipeline/steps/insight/register-insight-steps';
@@ -16,22 +18,27 @@ import { PrismaInsightRepository } from './repositories/prisma-insight.repositor
 
 /**
  * Insight Nest module (US095–US096, US100, US102, US104).
- * Storage via InsightRepository — InMemory or Prisma by PERSISTENCE_DRIVER.
+ * Storage via InsightRepository — InMemory or Prisma by RESEARCH_PERSISTENCE_DRIVER
+ * (PERSISTENCE_DRIVER fallback, then memory).
  */
 @Module({
-  imports: [PipelineModule, WorkspaceModule],
+  imports: [RepositoryPrismaLifecycleModule, PipelineModule, WorkspaceModule],
   controllers: [InsightController],
   providers: [
     {
       provide: INSIGHT_REPOSITORY,
-      useFactory: async (metrics: Metrics) => {
+      useFactory: async (metrics: Metrics, clients: RepositoryPrismaLifecycle) => {
         const repo = await createRepositoryByDriver({
+          group: 'research',
           createMemory: () => new InMemoryInsightRepository(),
           createPrisma: (client) => new PrismaInsightRepository(client),
+          onHydrationFailure: 'fail',
+          repositoryName: 'insight',
+          clients,
         });
         return instrumentRepository(repo, metrics, 'insight');
       },
-      inject: [METRICS],
+      inject: [METRICS, RepositoryPrismaLifecycle],
     },
     InsightDomainService,
     InsightGenerationService,

@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
+import { RepositoryPrismaLifecycle } from '../../persistence/repository-prisma-lifecycle';
+import { RepositoryPrismaLifecycleModule } from '../../persistence/repository-prisma-lifecycle.module';
 import { RuntimeEnforcementModule } from '../runtime-enforcement';
 import { StrategyLibraryModule } from '../strategy-library';
 import { DurableOrchestrationCoordinationStore } from './adapters/durable-orchestration-coordination.store';
@@ -27,11 +29,12 @@ import { TradingOrchestratorBoundaryService } from './trading-orchestrator-bound
  * RC-26 — Trading Orchestrator module.
  *
  * Epic 6: Consumer read port for Reporting / AI / Command Center.
- * W3-O01-b: optional durable coordination store via PERSISTENCE_DRIVER=prisma.
+ * W3-O01-b: optional durable coordination store via W3_PERSISTENCE_DRIVER
+ * (PERSISTENCE_DRIVER fallback, then memory).
  * Does not import Trading Session / Orders / Risk / Execution / Reporting / AI.
  */
 @Module({
-  imports: [StrategyLibraryModule, RuntimeEnforcementModule],
+  imports: [RepositoryPrismaLifecycleModule, StrategyLibraryModule, RuntimeEnforcementModule],
   providers: [
     TradingOrchestratorBoundaryService,
     InMemoryOrchestratorMarketStateAdapter,
@@ -40,12 +43,15 @@ import { TradingOrchestratorBoundaryService } from './trading-orchestrator-bound
     OrchestratorRuntimeEnforcementConsumerAdapter,
     {
       provide: OrchestrationCoordinationStore,
-      useFactory: async () =>
+      useFactory: async (clients: RepositoryPrismaLifecycle) =>
         createRepositoryByDriver({
+          group: 'w3',
           createMemory: () => new OrchestrationCoordinationStore(),
           createPrisma: (client) => new DurableOrchestrationCoordinationStore(client),
           owner: 'trading-orchestrator',
+          clients,
         }),
+      inject: [RepositoryPrismaLifecycle],
     },
     OrchestrationWorkflowCoordinator,
     TradingOrchestratorService,

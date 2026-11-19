@@ -3,6 +3,8 @@ import type { Metrics } from '../../metrics/metrics';
 import { METRICS } from '../../metrics/metrics.token';
 import { instrumentRepository } from '../../metrics/instrument-repository';
 import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
+import { RepositoryPrismaLifecycle } from '../../persistence/repository-prisma-lifecycle';
+import { RepositoryPrismaLifecycleModule } from '../../persistence/repository-prisma-lifecycle.module';
 import { PipelineModule } from '../pipeline/pipeline.module';
 import { PipelineRegistry } from '../pipeline/pipeline-registry';
 import { registerKnowledgePipelineSteps } from '../pipeline/steps/knowledge/register-knowledge-steps';
@@ -17,26 +19,31 @@ import { PrismaKnowledgeRepository } from './repositories/prisma-knowledge.repos
 
 /**
  * Knowledge Nest module (US075–US079, US090, US102, US104).
- * Domain KnowledgeRepository — InMemory or Prisma by PERSISTENCE_DRIVER.
+ * Domain KnowledgeRepository — InMemory or Prisma by RESEARCH_PERSISTENCE_DRIVER
+ * (PERSISTENCE_DRIVER fallback, then memory). Distinct from Knowledge Lake.
  * Imports PipelineModule one way for executor, templates, and step registration.
  * PipelineModule does not import Knowledge or Experiments (TD-009).
  */
 @Module({
-  imports: [PipelineModule, WorkspaceModule],
+  imports: [RepositoryPrismaLifecycleModule, PipelineModule, WorkspaceModule],
   controllers: [KnowledgeController],
   providers: [
     KnowledgeService,
     KnowledgeExtractionService,
     {
       provide: KNOWLEDGE_REPOSITORY,
-      useFactory: async (metrics: Metrics) => {
+      useFactory: async (metrics: Metrics, clients: RepositoryPrismaLifecycle) => {
         const repo = await createRepositoryByDriver({
+          group: 'research',
           createMemory: () => new InMemoryKnowledgeRepository(),
           createPrisma: (client) => new PrismaKnowledgeRepository(client),
+          onHydrationFailure: 'fail',
+          repositoryName: 'knowledge',
+          clients,
         });
         return instrumentRepository(repo, metrics, 'knowledge');
       },
-      inject: [METRICS],
+      inject: [METRICS, RepositoryPrismaLifecycle],
     },
     KnowledgeDomainService,
   ],

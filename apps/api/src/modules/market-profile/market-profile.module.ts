@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
+import { RepositoryPrismaLifecycle } from '../../persistence/repository-prisma-lifecycle';
+import { RepositoryPrismaLifecycleModule } from '../../persistence/repository-prisma-lifecycle.module';
 import { MarketQualificationModule } from '../market-qualification';
 import { DurableMarketProfileStore } from './adapters/durable-market-profile-store';
 import { InMemoryMarketProfileStore } from './adapters/in-memory-market-profile-store';
@@ -19,7 +21,8 @@ import {
  *
  * Epic 1–5: boundary, observational reads, domain, versioning.
  * Epic 6: consumer read ports for future Orchestrator / Reporting / AI.
- * W3-O01-b: optional durable store snapshot via PERSISTENCE_DRIVER=prisma.
+ * W3-O01-b: optional durable store snapshot via W3_PERSISTENCE_DRIVER
+ * (PERSISTENCE_DRIVER fallback, then memory).
  *
  * Dependency direction: Qualification → Profile (one-way).
  * Does not import Live Market Data directly, Runtime Enforcement,
@@ -27,18 +30,21 @@ import {
  * Does not expose REST / persistence product / calculation algorithms.
  */
 @Module({
-  imports: [MarketQualificationModule],
+  imports: [RepositoryPrismaLifecycleModule, MarketQualificationModule],
   providers: [
     MarketProfileBoundaryService,
     MarketProfileObservationalReadService,
     {
       provide: InMemoryMarketProfileStore,
-      useFactory: async () =>
+      useFactory: async (clients: RepositoryPrismaLifecycle) =>
         createRepositoryByDriver({
+          group: 'w3',
           createMemory: () => new InMemoryMarketProfileStore(),
           createPrisma: (client) => new DurableMarketProfileStore(client),
           owner: 'market-profile',
+          clients,
         }),
+      inject: [RepositoryPrismaLifecycle],
     },
     MarketProfileVersioningService,
     MarketProfileQueryService,

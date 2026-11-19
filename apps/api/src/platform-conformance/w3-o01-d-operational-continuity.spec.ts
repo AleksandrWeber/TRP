@@ -17,6 +17,7 @@ import {
   resetAnalyticalOwnerBootOutcomes,
 } from '../persistence/analytical-owner-continuity-status';
 import { createRepositoryByDriver } from '../persistence/create-repository-by-driver';
+import { RepositoryPrismaLifecycle } from '../persistence/repository-prisma-lifecycle';
 import {
   continuityOwnersMatchDurableSet,
   transitionSafetyAnswers,
@@ -116,24 +117,32 @@ describe('W3-O01-d operational continuity — unit', () => {
   });
 
   it('createRepositoryByDriver memory path records Ready for continuity owner', async () => {
-    const previous = process.env.PERSISTENCE_DRIVER;
+    const previous = {
+      PERSISTENCE_DRIVER: process.env.PERSISTENCE_DRIVER,
+      W3_PERSISTENCE_DRIVER: process.env.W3_PERSISTENCE_DRIVER,
+    };
     process.env.PERSISTENCE_DRIVER = 'memory';
+    delete process.env.W3_PERSISTENCE_DRIVER;
     try {
       class EmptyMemory {
         items: unknown[] = [];
       }
       const repo = await createRepositoryByDriver({
+        group: 'w3',
         createMemory: () => new EmptyMemory(),
         createPrisma: () => {
           throw new Error('prisma should not run');
         },
         owner: 'reporting',
+        clients: new RepositoryPrismaLifecycle(),
       });
       expect(repo).toBeInstanceOf(EmptyMemory);
       expect(getAnalyticalOwnerBootOutcome('reporting')?.outcome).toBe('ready');
     } finally {
-      if (previous === undefined) delete process.env.PERSISTENCE_DRIVER;
-      else process.env.PERSISTENCE_DRIVER = previous;
+      if (previous.PERSISTENCE_DRIVER === undefined) delete process.env.PERSISTENCE_DRIVER;
+      else process.env.PERSISTENCE_DRIVER = previous.PERSISTENCE_DRIVER;
+      if (previous.W3_PERSISTENCE_DRIVER === undefined) delete process.env.W3_PERSISTENCE_DRIVER;
+      else process.env.W3_PERSISTENCE_DRIVER = previous.W3_PERSISTENCE_DRIVER;
     }
   });
 

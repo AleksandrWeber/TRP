@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
+import { RepositoryPrismaLifecycle } from '../../persistence/repository-prisma-lifecycle';
+import { RepositoryPrismaLifecycleModule } from '../../persistence/repository-prisma-lifecycle.module';
 import { DurableStrategyLibraryCertificationAdapter } from './adapters/durable-strategy-library-certification.adapter';
 import { DurableStrategyLibraryReadAdapter } from './adapters/durable-strategy-library-read.adapter';
 import { InMemoryStrategyLibraryCertificationAdapter } from './adapters/in-memory-strategy-library-certification.adapter';
@@ -14,7 +16,8 @@ import { StrategyLibraryBoundaryService } from './strategy-library-boundary.serv
  *
  * Domain: Strategy / Version / Certification / Envelope / Eligibility / Lifecycle (RC-22 CLOSED).
  * RC-23 Epic 2: activates read-only Lookup + Eligibility Nest ports for Runtime Enforcement.
- * W3-O01-b: optional durable store snapshot via PERSISTENCE_DRIVER=prisma.
+ * W3-O01-b: optional durable store snapshot via W3_PERSISTENCE_DRIVER
+ * (PERSISTENCE_DRIVER fallback, then memory).
  *
  * Write ports: Certification Nest is active (PC-02). Registration / Lifecycle Nest remain inactive.
  * Distinct from {@link StrategiesModule} (experimental registry) and
@@ -24,26 +27,35 @@ import { StrategyLibraryBoundaryService } from './strategy-library-boundary.serv
  * PC-01 / PC-02 HTTP transport lives in {@link StrategyLibraryProductModule}.
  */
 @Module({
+  imports: [RepositoryPrismaLifecycleModule],
   providers: [
     StrategyLibraryBoundaryService,
     {
       provide: InMemoryStrategyLibraryReadAdapter,
-      useFactory: async () =>
+      useFactory: async (clients: RepositoryPrismaLifecycle) =>
         createRepositoryByDriver({
+          group: 'w3',
           createMemory: () => new InMemoryStrategyLibraryReadAdapter(),
           createPrisma: (client) => new DurableStrategyLibraryReadAdapter(client),
           owner: 'strategy-library',
+          clients,
         }),
+      inject: [RepositoryPrismaLifecycle],
     },
     {
       provide: InMemoryStrategyLibraryCertificationAdapter,
-      useFactory: async (library: InMemoryStrategyLibraryReadAdapter) =>
+      useFactory: async (
+        library: InMemoryStrategyLibraryReadAdapter,
+        clients: RepositoryPrismaLifecycle,
+      ) =>
         createRepositoryByDriver({
+          group: 'w3',
           createMemory: () => new InMemoryStrategyLibraryCertificationAdapter(library),
           createPrisma: (client) => new DurableStrategyLibraryCertificationAdapter(client, library),
           owner: 'strategy-library',
+          clients,
         }),
-      inject: [InMemoryStrategyLibraryReadAdapter],
+      inject: [InMemoryStrategyLibraryReadAdapter, RepositoryPrismaLifecycle],
     },
     {
       provide: STRATEGY_LIBRARY_LOOKUP_PORT,

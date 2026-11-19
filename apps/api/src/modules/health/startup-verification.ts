@@ -1,6 +1,10 @@
 import { Inject, Injectable, type OnApplicationBootstrap } from '@nestjs/common';
 import type { Logger } from '../../logging/logger';
 import { LOGGER } from '../../logging/logger.token';
+import {
+  describePersistenceDrivers,
+  type PersistenceDriverReport,
+} from '../../persistence/persistence-driver';
 import { ApiHealthCheck } from './api-health-check';
 import { verifySecurityPlatformConfig } from '../../security-platform';
 import { verifyConfigurationValidity } from './configuration-validity';
@@ -29,6 +33,7 @@ export type StartupVerificationResult = Readonly<{
   migrations: string;
   controllersRegistered: number;
   modulesRegistered: number;
+  persistenceDrivers: PersistenceDriverReport;
 }>;
 
 /**
@@ -60,6 +65,8 @@ export class StartupVerification implements OnApplicationBootstrap {
    * Exposed for unit tests without Nest lifecycle.
    */
   async verify(env: NodeJS.ProcessEnv = process.env): Promise<StartupVerificationResult> {
+    // Invalid driver values throw here. They are not downgraded to a development warning.
+    const persistenceDrivers = describePersistenceDrivers(undefined, env);
     const version = this.versionCheck.check(env);
     const api = this.apiHealthCheck.check();
     const database = await this.databaseHealthCheck.check();
@@ -106,6 +113,7 @@ export class StartupVerification implements OnApplicationBootstrap {
       migrations: migrations.status,
       controllersRegistered: api.controllersRegistered,
       modulesRegistered: api.modulesRegistered,
+      persistenceDrivers,
     };
 
     this.logStartupSummary(result, api.registeredModules);
@@ -156,6 +164,7 @@ export class StartupVerification implements OnApplicationBootstrap {
       healthStatus: result.ok ? 'ok' : 'failed',
       issues: result.issues,
       warnings: result.warnings,
+      persistenceDrivers: result.persistenceDrivers,
     });
   }
 }

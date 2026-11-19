@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
+import { RepositoryPrismaLifecycle } from '../../persistence/repository-prisma-lifecycle';
+import { RepositoryPrismaLifecycleModule } from '../../persistence/repository-prisma-lifecycle.module';
 import { DurableExchangeScopeStore } from './adapters/durable-exchange-scope-store';
 import { ExchangeScopeConsumerReadAdapter } from './adapters/exchange-scope-consumer-read.adapter';
 import { InMemoryExchangeScopeStore } from './adapters/in-memory-exchange-scope-store';
@@ -18,7 +20,8 @@ import {
  *
  * Epic 3: Application ports active (service / query).
  * Epic 5: Consumer-read Nest façade + query adapter (immutable projections).
- * W3-O01-b: optional durable store snapshot via PERSISTENCE_DRIVER=prisma.
+ * W3-O01-b: optional durable store snapshot via W3_PERSISTENCE_DRIVER
+ * (PERSISTENCE_DRIVER fallback, then memory).
  * No trading-path commands. No REST. No transport.
  *
  * Does not import Runtime, Orders, Execution, Session, Reporting,
@@ -26,16 +29,20 @@ import {
  * Risk, Accounting, or Knowledge Lake.
  */
 @Module({
+  imports: [RepositoryPrismaLifecycleModule],
   providers: [
     ExchangeScopeBoundaryService,
     {
       provide: InMemoryExchangeScopeStore,
-      useFactory: async () =>
+      useFactory: async (clients: RepositoryPrismaLifecycle) =>
         createRepositoryByDriver({
+          group: 'w3',
           createMemory: () => new InMemoryExchangeScopeStore(),
           createPrisma: (client) => new DurableExchangeScopeStore(client),
           owner: 'exchange-scope',
+          clients,
         }),
+      inject: [RepositoryPrismaLifecycle],
     },
     ExchangeScopeLifecycleService,
     ExchangeScopeQueryService,

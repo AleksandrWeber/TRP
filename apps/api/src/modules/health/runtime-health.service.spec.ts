@@ -282,6 +282,79 @@ describe('RC-01 Runtime Health', () => {
       );
     }
 
+    it('reports both persistence drivers once and does not echo the database URL', async () => {
+      const logger = createLogger();
+      const verification = new StartupVerification(
+        {
+          check: () => ({
+            status: 'up' as const,
+            initialized: true,
+            controllersRegistered: 4,
+            modulesRegistered: 3,
+            registeredModules: ['HealthModule'],
+            detail: 'API initialized',
+          }),
+        } as never,
+        {
+          check: async () => ({ status: 'up' as const, detail: 'Database reachable' }),
+        } as never,
+        {
+          check: async () => ({
+            status: 'up_to_date' as const,
+            pending: [],
+            applied: [],
+            local: [],
+            detail: 'All migrations applied',
+          }),
+        } as never,
+        new VersionCheck(),
+        logger,
+      );
+      const databaseUrl = 'postgresql://user:secret@localhost/trp?password=hunter2';
+      const result = await verification.verify({
+        NODE_ENV: 'development',
+        DATABASE_URL: databaseUrl,
+        APP_VERSION: '0.1.0',
+        PERSISTENCE_DRIVER: 'prisma',
+        RESEARCH_PERSISTENCE_DRIVER: 'memory',
+      });
+
+      expect(result.persistenceDrivers.research).toEqual({
+        group: 'research',
+        driver: 'memory',
+        source: 'group',
+        variable: 'RESEARCH_PERSISTENCE_DRIVER',
+      });
+      expect(result.persistenceDrivers.w3).toEqual({
+        group: 'w3',
+        driver: 'prisma',
+        source: 'global',
+        variable: 'PERSISTENCE_DRIVER',
+      });
+
+      const info = logger.info as ReturnType<typeof vi.fn>;
+      const summaries = info.mock.calls.filter((call) => call[0] === 'Application startup status');
+      expect(summaries).toHaveLength(1);
+      const payload = JSON.stringify(summaries[0]?.[1]);
+      expect(payload).toContain('"source":"group"');
+      expect(payload).toContain('"source":"global"');
+      expect(payload).not.toContain(databaseUrl);
+      expect(payload).not.toContain('secret');
+      expect(payload).not.toContain('hunter2');
+      expect(payload).not.toContain('postgresql://');
+    });
+
+    it('rejects an invalid persistence driver instead of warning', async () => {
+      const verification = createVerification();
+      await expect(
+        verification.verify({
+          NODE_ENV: 'development',
+          DATABASE_URL: 'postgresql://user:secret@localhost/trp',
+          W3_PERSISTENCE_DRIVER: 'sqlite',
+        }),
+      ).rejects.toThrow(/W3_PERSISTENCE_DRIVER="sqlite"/);
+    });
+
     it('passes when database and migrations are healthy', async () => {
       const verification = createVerification();
       const result = await verification.verify({

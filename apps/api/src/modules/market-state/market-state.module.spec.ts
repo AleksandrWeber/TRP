@@ -143,7 +143,9 @@ describe('RC-26 Epic 2 — Market State Nest read wiring', () => {
       throw new Error('market-state full-module wiring test must not call Prisma $connect()');
     });
     const previousDriver = process.env.PERSISTENCE_DRIVER;
+    const previousW3Driver = process.env.W3_PERSISTENCE_DRIVER;
     process.env.PERSISTENCE_DRIVER = 'memory';
+    delete process.env.W3_PERSISTENCE_DRIVER;
     try {
       const { MarketStateModule } = await import('./market-state.module');
       const moduleRef = await Test.createTestingModule({
@@ -166,6 +168,8 @@ describe('RC-26 Epic 2 — Market State Nest read wiring', () => {
       connect.mockRestore();
       if (previousDriver === undefined) delete process.env.PERSISTENCE_DRIVER;
       else process.env.PERSISTENCE_DRIVER = previousDriver;
+      if (previousW3Driver === undefined) delete process.env.W3_PERSISTENCE_DRIVER;
+      else process.env.W3_PERSISTENCE_DRIVER = previousW3Driver;
     }
   });
 

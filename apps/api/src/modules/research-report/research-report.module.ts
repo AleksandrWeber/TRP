@@ -3,6 +3,8 @@ import type { Metrics } from '../../metrics/metrics';
 import { METRICS } from '../../metrics/metrics.token';
 import { instrumentRepository } from '../../metrics/instrument-repository';
 import { createRepositoryByDriver } from '../../persistence/create-repository-by-driver';
+import { RepositoryPrismaLifecycle } from '../../persistence/repository-prisma-lifecycle';
+import { RepositoryPrismaLifecycleModule } from '../../persistence/repository-prisma-lifecycle.module';
 import { WorkspaceModule } from '../workspace';
 import { InMemoryResearchReportRepository } from './repositories/in-memory-research-report.repository';
 import { PrismaResearchReportRepository } from './repositories/prisma-research-report.repository';
@@ -12,22 +14,27 @@ import { ResearchReportDomainService } from './research-report-domain.service';
 
 /**
  * Research Report Nest module (US099, US100, US102, US104).
- * Storage via ResearchReportRepository — InMemory or Prisma by PERSISTENCE_DRIVER.
+ * Storage via ResearchReportRepository — InMemory or Prisma by RESEARCH_PERSISTENCE_DRIVER
+ * (PERSISTENCE_DRIVER fallback, then memory).
  */
 @Module({
-  imports: [WorkspaceModule],
+  imports: [RepositoryPrismaLifecycleModule, WorkspaceModule],
   controllers: [ResearchReportController],
   providers: [
     {
       provide: RESEARCH_REPORT_REPOSITORY,
-      useFactory: async (metrics: Metrics) => {
+      useFactory: async (metrics: Metrics, clients: RepositoryPrismaLifecycle) => {
         const repo = await createRepositoryByDriver({
+          group: 'research',
           createMemory: () => new InMemoryResearchReportRepository(),
           createPrisma: (client) => new PrismaResearchReportRepository(client),
+          onHydrationFailure: 'fail',
+          repositoryName: 'research-report',
+          clients,
         });
         return instrumentRepository(repo, metrics, 'research-report');
       },
-      inject: [METRICS],
+      inject: [METRICS, RepositoryPrismaLifecycle],
     },
     ResearchReportDomainService,
   ],
